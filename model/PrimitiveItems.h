@@ -7,6 +7,11 @@ namespace Sequencer {
 
 namespace Model {
 
+/**
+ * @brief The StringItem class
+ *
+ * @details A primitive Item encapsulating a string value.
+ */
 class StringItem : public Item
 {
 private:

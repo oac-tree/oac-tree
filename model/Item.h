@@ -11,7 +11,9 @@ namespace Model {
 
 /**
  * @brief Abstract interface for all model items
- * @details Todo.
+ * @details Item is the base class for all model items that
+ * need to be represented, created and edited. These include:
+ * sequences, primitive values, variable definitions, etc.
  *
  * @note The design is based on the composite pattern to compose
  * tree structures by assembling primitive or composite items into

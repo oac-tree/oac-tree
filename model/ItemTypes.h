@@ -3,12 +3,17 @@
 
 #include <string>
 
+/**
+ * @brief Definition of the available Item type names.
+ */
 namespace Sequencer {
 
 namespace Model {
 
 using ItemType = std::string;
 
+const ItemType SequenceType = "Sequence";
+const ItemType VariableType = "Variable";
 const ItemType StringType = "String";
 const ItemType Int32Type = "Int32";
 

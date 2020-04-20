@@ -18,6 +18,9 @@ find_package(Qt5 COMPONENTS Widgets REQUIRED)
 add_executable(Sequencer
     main.cpp
     MainWindow.cpp
+    MainWindow.h
 )
+
+add_subdirectory(model)
 
 target_link_libraries(Sequencer Qt5::Widgets)

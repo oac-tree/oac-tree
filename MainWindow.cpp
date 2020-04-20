@@ -1,27 +1,50 @@
 #include "MainWindow.h"
 
 #include <QMenuBar>
+#include <QTreeView>
+#include <QStandardItemModel>
+#include <QStandardItem>
 
-MainWindow::MainWindow()
-    : QMainWindow()
+QList<QStandardItem *> PrepareRow(const QString &first,
+                                  const QString &second,
+                                  const QString &third)
+{
+    return { new QStandardItem(first),
+             new QStandardItem(second),
+             new QStandardItem(third) };
+}
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , __treeview(new QTreeView(this))
+    , __model(new QStandardItemModel(this))
 {
     setWindowTitle("CODAC Sequencer");
-    m_label = new QLabel(this);
-    m_label->setText("<h1>Sequencer main area</h1>");
-    setCentralWidget(m_label);
+    setCentralWidget(__treeview);
+
+    QList<QStandardItem *> preparedRow = PrepareRow("first", "second", "third");
+    QStandardItem *item = __model->invisibleRootItem();
+    item->appendRow(preparedRow);
+
+    QList<QStandardItem *> secondRow = PrepareRow("1", "2", "3");
+    preparedRow.first()->appendRow(secondRow);
+
+    __treeview->setModel(__model);
+    __treeview->expandAll();
+
     CreateMenu();
     CreateToolbar();
 }
 
 void MainWindow::CreateMenu()
 {
-    m_file_menu = menuBar()->addMenu("&File");
-    m_file_menu->addAction("&Exit", this, &MainWindow::close);
+    __file_menu = menuBar()->addMenu("&File");
+    __file_menu->addAction("&Exit", this, &MainWindow::close);
 }
 
 void MainWindow::CreateToolbar()
 {
-    m_toolbar = new QToolBar();
-    addToolBar(m_toolbar);
-    m_toolbar->addAction("Exit", this, &MainWindow::close);
+    __toolbar = new QToolBar();
+    addToolBar(__toolbar);
+    __toolbar->addAction("Exit", this, &MainWindow::close);
 }

@@ -6,19 +6,23 @@
 #include <QMenu>
 #include <QToolBar>
 
+class QTreeView;
+class QStandardItemModel;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    MainWindow();
+    MainWindow(QWidget *parent = nullptr);
 
 private:
     void CreateMenu();
     void CreateToolbar();
-    QLabel *m_label;
-    QMenu *m_file_menu;
-    QToolBar *m_toolbar;
+    QMenu *__file_menu;
+    QToolBar *__toolbar;
+    QTreeView *__treeview;
+    QStandardItemModel *__model;
 };
 
 #endif // MAINWINDOW_H

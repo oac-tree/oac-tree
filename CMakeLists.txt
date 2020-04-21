@@ -16,11 +16,16 @@ endif()
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
 add_executable(Sequencer
-    main.cpp
     MainWindow.cpp
     MainWindow.h
+    TestModel.cpp
+    TestModel.h
+    main.cpp
 )
 
 add_subdirectory(model)
+add_subdirectory(viewmodel)
+
+include_directories(${CMAKE_SOURCE_DIR})
 
 target_link_libraries(Sequencer Qt5::Widgets)

@@ -6,8 +6,10 @@
 #include <QMenu>
 #include <QToolBar>
 
+#include "viewmodel/ViewModel.h"
+#include "model/Item.h"
+
 class QTreeView;
-class QStandardItemModel;
 
 class MainWindow : public QMainWindow
 {
@@ -22,7 +24,8 @@ private:
     QMenu *__file_menu;
     QToolBar *__toolbar;
     QTreeView *__treeview;
-    QStandardItemModel *__model;
+    Sequencer::Model::Item *__model;
+    Sequencer::ViewModel::TreeViewModel * __view_model;
 };
 
 #endif // MAINWINDOW_H

@@ -12,6 +12,7 @@ namespace Model {
 
 using ItemType = std::string;
 
+const ItemType ProjectType = "Project";
 const ItemType SequenceType = "Sequence";
 const ItemType VariableType = "Variable";
 const ItemType StringType = "String";

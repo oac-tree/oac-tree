@@ -2,6 +2,7 @@
 #define ITEM_H
 
 #include <string>
+#include <vector>
 
 #include "ItemTypes.h"
 
@@ -23,6 +24,9 @@ class Item
 {
 private:
     ItemType __item_type;
+    std::vector<Item *> __children;
+
+    virtual bool CompatibleChild(Item * item) const;
 
 protected:
 
@@ -36,7 +40,7 @@ public:
     /**
      * @brief Pure virtual destructor
      */
-    virtual ~Item() = 0;
+    virtual ~Item();
 
     /**
      * @brief Accessor
@@ -50,6 +54,12 @@ public:
      * @return The name to display.
      */
     virtual std::string GetDisplayName() const = 0;
+
+    unsigned GetChildrenCount() const;
+
+    std::vector<Item *> GetChildren() const;
+
+    bool AddChild(Item * item);
 };
 
 }  // namespace Model

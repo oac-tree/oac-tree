@@ -5,6 +5,8 @@ target_sources(Sequencer
         ${CMAKE_CURRENT_LIST_DIR}/ItemTypes.h
         ${CMAKE_CURRENT_LIST_DIR}/PrimitiveItems.cpp
         ${CMAKE_CURRENT_LIST_DIR}/PrimitiveItems.h
+        ${CMAKE_CURRENT_LIST_DIR}/ProjectItem.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/ProjectItem.h
         ${CMAKE_CURRENT_LIST_DIR}/SequenceItem.cpp
         ${CMAKE_CURRENT_LIST_DIR}/SequenceItem.h
         ${CMAKE_CURRENT_LIST_DIR}/VariableItem.cpp

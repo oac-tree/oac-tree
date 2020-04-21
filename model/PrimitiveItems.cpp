@@ -4,6 +4,11 @@ namespace Sequencer {
 
 namespace Model {
 
+bool StringItem::CompatibleChild(Item *) const
+{
+    return false;
+}
+
 StringItem::StringItem(std::string data)
     : Item(StringType)
     , __data(std::move(data))
@@ -19,7 +24,7 @@ void StringItem::SetData(std::string data)
 
 std::string StringItem::GetDisplayName() const
 {
-    return ItemType();
+    return GetType();
 }
 
 std::string StringItem::GetData() const

@@ -1,35 +1,21 @@
 #include "MainWindow.h"
 
+#include "TestModel.h"
+#include "viewmodel/ViewModel.h"
+
 #include <QMenuBar>
 #include <QTreeView>
-#include <QStandardItemModel>
-#include <QStandardItem>
-
-QList<QStandardItem *> PrepareRow(const QString &first,
-                                  const QString &second,
-                                  const QString &third)
-{
-    return { new QStandardItem(first),
-             new QStandardItem(second),
-             new QStandardItem(third) };
-}
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , __treeview(new QTreeView(this))
-    , __model(new QStandardItemModel(this))
+    , __model(Sequencer::TestModel::CreateTestModel())
+    , __view_model(new Sequencer::ViewModel::TreeViewModel(__model))
 {
     setWindowTitle("CODAC Sequencer");
     setCentralWidget(__treeview);
 
-    QList<QStandardItem *> preparedRow = PrepareRow("first", "second", "third");
-    QStandardItem *item = __model->invisibleRootItem();
-    item->appendRow(preparedRow);
-
-    QList<QStandardItem *> secondRow = PrepareRow("1", "2", "3");
-    preparedRow.first()->appendRow(secondRow);
-
-    __treeview->setModel(__model);
+    __treeview->setModel(__view_model);
     __treeview->expandAll();
 
     CreateMenu();

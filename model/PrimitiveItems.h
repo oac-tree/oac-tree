@@ -17,6 +17,8 @@ class StringItem : public Item
 private:
     std::string __data;
 
+    bool CompatibleChild(Item * item) const override;
+
 public:
     /**
      * @brief Constructor

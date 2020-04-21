@@ -35,10 +35,10 @@ public:
      * @brief Constructor
      * @param item_type Typename of this Item
      */
-    Item(ItemType item_type);
+    Item(ItemType item_type = UndefinedType);
 
     /**
-     * @brief Pure virtual destructor
+     * @brief Virtual destructor
      */
     virtual ~Item();
 
@@ -55,10 +55,24 @@ public:
      */
     virtual std::string GetDisplayName() const = 0;
 
+    /**
+     * @brief Accessor.
+     * @details Retrieve the number of child items.
+     * @return Number of child items.
+     */
     unsigned GetChildrenCount() const;
 
+    /**
+     * @brief Accessor.
+     * @return A vector of all contained child items.
+     */
     std::vector<Item *> GetChildren() const;
 
+    /**
+     * @brief Add child item.
+     * @param item Item to add as a child.
+     * @return true on success.
+     */
     bool AddChild(Item * item);
 };
 

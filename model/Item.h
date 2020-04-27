@@ -1,14 +1,18 @@
 #ifndef ITEM_H
 #define ITEM_H
 
+#include <QVariant>
 #include <string>
 #include <vector>
 
+#include "ItemRoles.h"
 #include "ItemTypes.h"
 
 namespace Sequencer {
 
 namespace Model {
+
+class ItemImpl;
 
 /**
  * @brief Abstract interface for all model items
@@ -23,10 +27,13 @@ namespace Model {
 class Item
 {
 private:
+    ItemImpl *__impl;
     ItemType __item_type;
     std::vector<Item *> __children;
 
     virtual bool CompatibleChild(Item * item) const;
+
+    QVariant GetDataInternal(int role) const;
 
 protected:
 
@@ -48,12 +55,18 @@ public:
      */
     ItemType GetType() const;
 
+    bool HasData(int role = ItemRole::Data) const;
+
+    template <typename T> T GetData(int role = ItemRole::Data) const;
+
+    template <typename T> bool SetData(const T& value, int role = ItemRole::Data);
+
     /**
      * @brief Accessor.
      * @details Provides a name for display purposes.
      * @return The name to display.
      */
-    virtual std::string GetDisplayName() const = 0;
+    virtual std::string GetDisplayName() const;
 
     /**
      * @brief Accessor.
@@ -75,6 +88,18 @@ public:
      */
     bool AddChild(Item * item);
 };
+
+template<typename T>
+T Item::GetData(int role) const
+{
+    return GetDataInternal(role).value<T>();
+}
+
+template<typename T>
+bool Item::SetData(const T & value, int role)
+{
+    return set_data_internal(QVariant::fromValue(value), role);
+}
 
 }  // namespace Model
 

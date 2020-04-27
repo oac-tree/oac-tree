@@ -2,6 +2,9 @@ target_sources(Sequencer
     PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/Item.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Item.h
+        ${CMAKE_CURRENT_LIST_DIR}/ItemData.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/ItemData.h
+        ${CMAKE_CURRENT_LIST_DIR}/ItemRoles.h
         ${CMAKE_CURRENT_LIST_DIR}/ItemTypes.h
         ${CMAKE_CURRENT_LIST_DIR}/PrimitiveItems.cpp
         ${CMAKE_CURRENT_LIST_DIR}/PrimitiveItems.h
@@ -9,6 +12,8 @@ target_sources(Sequencer
         ${CMAKE_CURRENT_LIST_DIR}/ProjectItem.h
         ${CMAKE_CURRENT_LIST_DIR}/SequenceItem.cpp
         ${CMAKE_CURRENT_LIST_DIR}/SequenceItem.h
+        ${CMAKE_CURRENT_LIST_DIR}/UserTypes.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/UserTypes.h
         ${CMAKE_CURRENT_LIST_DIR}/VariableItem.cpp
         ${CMAKE_CURRENT_LIST_DIR}/VariableItem.h
 )

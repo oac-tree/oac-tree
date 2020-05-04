@@ -34,8 +34,6 @@ private:
 
     virtual bool CompatibleChild(Item * item) const;
 
-    bool SetDataInternal(const QVariant & value, int role);
-
 protected:
     ItemImpl *__impl;
 
@@ -64,6 +62,8 @@ public:
     QVariant GetDataVariant(int role = ItemRole::Data) const;
 
     template <typename T> bool SetData(const T& value, int role = ItemRole::Data);
+
+    bool SetDataInternal(const QVariant & value, int role);
 
     /**
      * @brief Accessor.

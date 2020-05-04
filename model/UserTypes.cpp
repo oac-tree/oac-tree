@@ -34,6 +34,18 @@ QVariant ToQtVariant(const QVariant & custom)
     return custom;
 }
 
+QVariant ToCustomVariant(const QVariant & standard)
+{
+    const QString string_name = "QString";
+
+    // converts variant based on QString to variant based on std::string
+    if (standard.typeName() == string_name)
+        return QVariant::fromValue(standard.toString().toStdString());
+
+    // in other cases returns unchanged variant
+    return standard;
+}
+
 }  // namespace Utils
 
 }  // namespace Model

@@ -54,7 +54,7 @@ int TreeViewModel::columnCount(const QModelIndex &) const
 QVariant TreeViewModel::data(const QModelIndex & index, int role) const
 {
     int col = index.column();
-    if (index.isValid() && role == Qt::DisplayRole)
+    if (index.isValid() && (role == Qt::DisplayRole || role == Qt::EditRole))
     {
         auto item = ItemFromIndex(index);
         switch (col)
@@ -80,12 +80,10 @@ QVariant TreeViewModel::data(const QModelIndex & index, int role) const
 
 bool TreeViewModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    int row = index.row();
     int col = index.column();
-    if (index.isValid() && row < rowCount() && role == Qt::EditRole)
+    if (index.isValid() && role == Qt::EditRole)
     {
-        auto children = __root_item->GetAllItems();
-        auto item = children[row];
+        auto item = ItemFromIndex(index);
         switch (col)
         {
         case 0:
@@ -94,15 +92,9 @@ bool TreeViewModel::setData(const QModelIndex &index, const QVariant &value, int
         }
         case 1:
         {
-            auto stringitem = dynamic_cast<Model::StringItem *>(item);
-            if (stringitem)
-            {
-                auto str = value.toString();
-                stringitem->SetData(str.toStdString());
-                emit dataChanged(index, index);
-                return true;
-            }
-            break;
+            auto custom_variant = Model::Utils::ToCustomVariant(value);
+            item->SetDataInternal(custom_variant, Model::ItemRole::Data);
+            return true;
         }
         default:
             return false;
@@ -116,7 +108,11 @@ Qt::ItemFlags TreeViewModel::flags(const QModelIndex & index) const
     int col = index.column();
     if (col == 1)
     {
-        return Qt::ItemIsEditable | QAbstractItemModel::flags(index);
+        auto item = ItemFromIndex(index);
+        if (item->HasData())
+        {
+            return Qt::ItemIsEditable | QAbstractItemModel::flags(index);
+        }
     }
     return QAbstractItemModel::flags(index);
 }

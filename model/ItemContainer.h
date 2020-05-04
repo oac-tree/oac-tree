@@ -16,11 +16,18 @@ private:
     TagInfo __tag_info;
     std::vector<Item *> __items;
 
+    bool ContainerFull() const;
     bool CanInsertItem(Item * item, int row) const;
 
 public:
     ItemContainer(TagInfo tag_info);
     ~ItemContainer();
+
+    ItemContainer(const ItemContainer &) = delete;
+    ItemContainer & operator=(const ItemContainer &) = delete;
+
+    ItemContainer(ItemContainer && other);
+    ItemContainer & operator=(ItemContainer && other);
 
     int GetSize() const;
 

@@ -1,39 +1,62 @@
 #include "ViewModel.h"
 
 #include "model/PrimitiveItems.h"
+#include "model/UserTypes.h"
+
+#include <iostream>
 
 namespace Sequencer {
 
 namespace ViewModel {
 
-TreeViewModel::TreeViewModel(Model::Item *root_item)
-    : __root_item(root_item)
+Model::Item * TreeViewModel::ItemFromIndex(const QModelIndex & index) const
 {
-
+    return index.isValid() ? static_cast<Model::Item *>(index.internalPointer()) : nullptr;
 }
+
+int TreeViewModel::RowForItem(Model::Item * item) const
+{
+    auto parent_item = item->GetParent();
+    if (!parent_item && item == __root_item)
+    {
+        return 0;
+    }
+    else
+    {
+        auto all_items = parent_item->GetAllItems();
+        for (int i=0; i<all_items.size(); ++i)
+        {
+            if (item == all_items[i])
+            {
+                return i;
+            }
+        }
+    }
+    return -1;
+}
+
+TreeViewModel::TreeViewModel(Model::Item * root_item)
+    : __root_item(root_item)
+{}
 
 int TreeViewModel::rowCount(const QModelIndex & parent) const
 {
     if (!parent.isValid())
-        return __root_item->GetTotalItemCount();
-    return 0;
+        return __root_item == nullptr ? 0 : 1;
+    return ItemFromIndex(parent)->GetTotalItemCount();
 }
 
-int TreeViewModel::columnCount(const QModelIndex & parent) const
+int TreeViewModel::columnCount(const QModelIndex &) const
 {
-    if (!parent.isValid())
-        return 2;
-    return 0;
+    return 2;
 }
 
-QVariant TreeViewModel::data(const QModelIndex &index, int role) const
+QVariant TreeViewModel::data(const QModelIndex & index, int role) const
 {
-    int row = index.row();
     int col = index.column();
-    if (index.isValid() && row < rowCount() && role == Qt::DisplayRole)
+    if (index.isValid() && role == Qt::DisplayRole)
     {
-        auto children = __root_item->GetAllItems();
-        auto item = children[row];
+        auto item = ItemFromIndex(index);
         switch (col)
         {
         case 0:
@@ -42,13 +65,14 @@ QVariant TreeViewModel::data(const QModelIndex &index, int role) const
         }
         case 1:
         {
-            auto stringitem = dynamic_cast<Model::StringItem *>(item);
-            if (stringitem)
-                return QString::fromStdString(stringitem->GetData());
-            return QString("Unknown");
+            if (item->HasData())
+            {
+                return Model::Utils::ToQtVariant(item->GetDataVariant());
+            }
+            break;
         }
         default:
-            return QVariant();
+            break;
         }
     }
     return QVariant();
@@ -112,15 +136,31 @@ QVariant TreeViewModel::headerData(int section, Qt::Orientation orientation, int
 
 QModelIndex TreeViewModel::index(int row, int column, const QModelIndex & parent) const
 {
-    if (!parent.isValid() && row < rowCount() && column < columnCount())
+    if (column < 0 || column >= columnCount(parent))
     {
-        return createIndex(row, column);
+        return QModelIndex();
+    }
+    if (!parent.isValid())
+    {
+        return createIndex(row, column, __root_item);
+    }
+    else
+    {
+        auto parent_item = ItemFromIndex(parent);
+        auto child_items = parent_item->GetAllItems();
+        return createIndex(row, column, child_items[row]);
     }
     return QModelIndex();
 }
 
-QModelIndex TreeViewModel::parent(const QModelIndex & /*index*/) const
+QModelIndex TreeViewModel::parent(const QModelIndex & index) const
 {
+    auto parent_item = ItemFromIndex(index)->GetParent();
+    if (parent_item)
+    {
+        int row = RowForItem(parent_item);
+        return createIndex(row, 0, parent_item);
+    }
     return QModelIndex();
 }
 

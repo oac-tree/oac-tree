@@ -4,21 +4,15 @@ namespace Sequencer {
 
 namespace Model {
 
+bool ItemContainer::ContainerFull() const
+{
+    return (__tag_info.GetMax() >= 0 && GetSize() >= __tag_info.GetMax());
+}
+
 bool ItemContainer::CanInsertItem(Item *item, int row) const
 {
-    if (!__tag_info.IsValidItem(item->GetType()))
-    {
-        return false;
-    }
-    if (__tag_info.GetMax() >= 0 && GetSize() >= __tag_info.GetMax())
-    {
-        return false;
-    }
-    if (row > GetSize())
-    {
-        return false;
-    }
-    return true;
+    return (__tag_info.IsValidItem(item->GetType())
+            && !ContainerFull() && row <= GetSize());
 }
 
 ItemContainer::ItemContainer(TagInfo tag_info)
@@ -31,6 +25,28 @@ ItemContainer::~ItemContainer()
     {
         delete item;
     }
+}
+
+ItemContainer::ItemContainer(ItemContainer && other)
+{
+    for (Item * item : other.__items)
+    {
+        __items.push_back(item);
+    }
+    other.__items.clear();
+}
+
+ItemContainer & ItemContainer::operator=(ItemContainer && other)
+{
+    for (Item * item : __items)
+    {
+        delete item;
+    }
+    for (Item * item : other.__items)
+    {
+        __items.push_back(item);
+    }
+    return *this;
 }
 
 int ItemContainer::GetSize() const

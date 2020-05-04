@@ -1,7 +1,7 @@
 #ifndef INSTRUCTIONITEM_H
 #define INSTRUCTIONITEM_H
 
-#include "Item.h"
+#include "CompoundItem.h"
 
 namespace Sequencer {
 
@@ -12,7 +12,7 @@ namespace Model {
  * @details ProjectItem is the root item that will contain the full
  * workspace definition, containing sequences, variables, etc.
  */
-class InstructionItem : public Item
+class InstructionItem : public CompoundItem
 {
 private:
 

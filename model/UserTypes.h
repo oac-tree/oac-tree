@@ -13,6 +13,8 @@ bool CompatibleVariantTypes(const QVariant & lval, const QVariant & rval);
 
 bool Equals(const QVariant & lval, const QVariant & rval);
 
+QVariant ToQtVariant(const QVariant& custom);
+
 }  // namespace Utils
 
 }  // namespace Model

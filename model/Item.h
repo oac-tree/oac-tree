@@ -30,9 +30,11 @@ class Item
 private:
     ItemType __item_type;
 
+    Item * __parent;
+
     virtual bool CompatibleChild(Item * item) const;
 
-    QVariant GetDataInternal(int role) const;
+    bool SetDataInternal(const QVariant & value, int role);
 
 protected:
     ItemImpl *__impl;
@@ -42,7 +44,7 @@ public:
      * @brief Constructor
      * @param item_type Typename of this Item
      */
-    Item(ItemType item_type = UndefinedType);
+    Item(ItemType item_type = BaseItemType);
 
     /**
      * @brief Virtual destructor
@@ -59,6 +61,8 @@ public:
 
     template <typename T> T GetData(int role = ItemRole::Data) const;
 
+    QVariant GetDataVariant(int role = ItemRole::Data) const;
+
     template <typename T> bool SetData(const T& value, int role = ItemRole::Data);
 
     /**
@@ -67,6 +71,24 @@ public:
      * @return The name to display.
      */
     virtual std::string GetDisplayName() const;
+
+    /**
+     * @brief Set the name to display.
+     * @param name Name to display.
+     */
+    void SetDisplayName(std::string name);
+
+    /**
+     * @brief Get the parent item.
+     * @return The parent item.
+     */
+    Item * GetParent() const;
+
+    /**
+     * @brief Set the parent item.
+     * @param Parent item to set.
+     */
+    void SetParent(Item * parent);
 
     /**
      * @brief Accessor.
@@ -131,13 +153,13 @@ public:
 template<typename T>
 T Item::GetData(int role) const
 {
-    return GetDataInternal(role).value<T>();
+    return GetDataVariant(role).value<T>();
 }
 
 template<typename T>
 bool Item::SetData(const T & value, int role)
 {
-    return set_data_internal(QVariant::fromValue(value), role);
+    return SetDataInternal(QVariant::fromValue(value), role);
 }
 
 }  // namespace Model

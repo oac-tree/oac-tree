@@ -12,8 +12,12 @@ namespace Model {
 
 using ItemType = std::string;
 
-const ItemType UndefinedType = "Undefined";
+// Generic item types
+const ItemType BaseItemType = "BaseItem";
+const ItemType CompoundType = "CompoundType";
+const ItemType PropertyType = "PropertyType";
 
+// Specific item types
 const ItemType ProjectType = "Project";
 const ItemType SequenceType = "Sequence";
 const ItemType InstructionType = "Instruction";

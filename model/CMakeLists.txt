@@ -1,5 +1,7 @@
 target_sources(Sequencer
     PRIVATE
+        ${CMAKE_CURRENT_LIST_DIR}/CompoundItem.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/CompoundItem.h
         ${CMAKE_CURRENT_LIST_DIR}/InstructionItem.cpp
         ${CMAKE_CURRENT_LIST_DIR}/InstructionItem.h
         ${CMAKE_CURRENT_LIST_DIR}/Item.cpp
@@ -14,6 +16,8 @@ target_sources(Sequencer
         ${CMAKE_CURRENT_LIST_DIR}/PrimitiveItems.h
         ${CMAKE_CURRENT_LIST_DIR}/ProjectItem.cpp
         ${CMAKE_CURRENT_LIST_DIR}/ProjectItem.h
+        ${CMAKE_CURRENT_LIST_DIR}/PropertyItem.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/PropertyItem.h
         ${CMAKE_CURRENT_LIST_DIR}/SequenceItem.cpp
         ${CMAKE_CURRENT_LIST_DIR}/SequenceItem.h
         ${CMAKE_CURRENT_LIST_DIR}/TagInfo.cpp

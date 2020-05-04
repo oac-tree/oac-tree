@@ -5,8 +5,12 @@ namespace Sequencer {
 namespace Model {
 
 InstructionItem::InstructionItem()
+    : CompoundItem(InstructionType)
 {
-    RegisterTag(TagInfo::UniversalTag(StringType));
+    SetDisplayName("CVVF call");
+    AddProperty("RPC service", "SUP::InternalCVVF");
+    AddProperty("Function name", "CVVF::SquareValue");
+    AddProperty("Timeout (s)", 5.0);
 }
 
 InstructionItem::~InstructionItem() {}

@@ -25,6 +25,10 @@ class TreeViewModel : public QAbstractItemModel
 private:
     Model::Item * __root_item;
 
+    Model::Item * ItemFromIndex(const QModelIndex & index) const;
+
+    int RowForItem(Model::Item * item) const;
+
 protected:
 
 public:
@@ -51,13 +55,6 @@ public:
     QModelIndex index(int row, int column, const QModelIndex & parent = QModelIndex()) const override;
 
     QModelIndex parent(const QModelIndex & index) const override;
-
-    /**
-     * @brief Accessor.
-     * @details Provides a name for display purposes.
-     * @return The name to display.
-     */
- //   virtual std::string GetDisplayName() const = 0;
 };
 
 }  // namespace ViewModel

@@ -34,16 +34,17 @@ bool Item::CompatibleChild(Item * /*item*/) const
     return true;
 }
 
-QVariant Item::GetDataInternal(int role) const
+bool Item::SetDataInternal(const QVariant &value, int role)
 {
-    return __impl->GetData(role);
+    return __impl->SetData(value, role);
 }
 
 Item::Item(ItemType item_type)
     : __item_type(std::move(item_type))
+    , __parent(nullptr)
     , __impl(new ItemImpl())
 {
-    __impl->SetData(QVariant::fromValue(item_type), ItemRole::Display);
+    SetDisplayName(__item_type);
 }
 
 Item::~Item()
@@ -61,9 +62,29 @@ bool Item::HasData(int role) const
     return __impl->HasData(role);
 }
 
+QVariant Item::GetDataVariant(int role) const
+{
+    return __impl->GetData(role);
+}
+
 std::string Item::GetDisplayName() const
 {
     return GetData<std::string>(ItemRole::Display);
+}
+
+void Item::SetDisplayName(std::string name)
+{
+    __impl->SetData(QVariant::fromValue(name), ItemRole::Display);
+}
+
+Item * Item::GetParent() const
+{
+    return __parent;
+}
+
+void Item::SetParent(Item * parent)
+{
+    __parent = parent;
 }
 
 int Item::GetTotalItemCount() const
@@ -96,9 +117,18 @@ Item * Item::GetItem(const std::string & tag_name, int row) const
     return __impl->GetTaggedItems()->GetItem(tag_name, row);
 }
 
-bool Item::InsertItem(Item *item, const std::string &tag_name, int row)
+bool Item::InsertItem(Item * item, const std::string &tag_name, int row)
 {
-    return __impl->GetTaggedItems()->InsertItem(item, tag_name, row);
+    if (item->GetParent())
+    {
+        return false;
+    }
+    if (__impl->GetTaggedItems()->InsertItem(item, tag_name, row))
+    {
+        item->SetParent(this);
+        return true;
+    }
+    return false;
 }
 
 ItemImpl::ItemImpl()

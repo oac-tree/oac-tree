@@ -24,6 +24,16 @@ bool Equals(const QVariant &lval, const QVariant &rval)
     return lval == rval;
 }
 
+QVariant ToQtVariant(const QVariant & custom)
+{
+    // converts variant based on std::string to variant based on QString
+    if (custom.typeName() == std::string("std::string")) {
+        return QVariant(QString::fromStdString(custom.value<std::string>()));
+    }
+    // in other cases returns unchanged variant
+    return custom;
+}
+
 }  // namespace Utils
 
 }  // namespace Model

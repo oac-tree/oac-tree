@@ -1,5 +1,5 @@
-#ifndef PROJECTITEM_H
-#define PROJECTITEM_H
+#ifndef INSTRUCTIONITEM_H
+#define INSTRUCTIONITEM_H
 
 #include "Item.h"
 
@@ -12,7 +12,7 @@ namespace Model {
  * @details ProjectItem is the root item that will contain the full
  * workspace definition, containing sequences, variables, etc.
  */
-class ProjectItem : public Item
+class InstructionItem : public Item
 {
 private:
 
@@ -22,16 +22,16 @@ public:
     /**
      * @brief Constructor
      */
-    ProjectItem();
+    InstructionItem();
 
     /**
      * @brief Pure virtual destructor
      */
-    ~ProjectItem() override;
+    ~InstructionItem() override;
 };
 
 }  // namespace Model
 
 }  // namespace Sequencer
 
-#endif // PROJECTITEM_H
+#endif // INSTRUCTIONITEM_H

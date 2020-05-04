@@ -7,6 +7,7 @@
 
 #include "ItemRoles.h"
 #include "ItemTypes.h"
+#include "TagInfo.h"
 
 namespace Sequencer {
 
@@ -27,15 +28,14 @@ class ItemImpl;
 class Item
 {
 private:
-    ItemImpl *__impl;
     ItemType __item_type;
-    std::vector<Item *> __children;
 
     virtual bool CompatibleChild(Item * item) const;
 
     QVariant GetDataInternal(int role) const;
 
 protected:
+    ItemImpl *__impl;
 
 public:
     /**
@@ -71,22 +71,61 @@ public:
     /**
      * @brief Accessor.
      * @details Retrieve the number of child items.
-     * @return Number of child items.
+     * @param tag_name Name of the tag.
+     * @return Number of child items with given tag.
      */
-    unsigned GetChildrenCount() const;
+    int GetItemCount(const std::string & tag_name) const;
 
     /**
      * @brief Accessor.
-     * @return A vector of all contained child items.
+     * @details Retrieve the number of child items.
+     * @return Number of child items.
      */
-    std::vector<Item *> GetChildren() const;
+    int GetTotalItemCount() const;
 
     /**
-     * @brief Add child item.
-     * @param item Item to add as a child.
+     * @brief Accessor.
+     * @return A vector of all contained items
+     */
+    std::vector<Item *> GetAllItems() const;
+
+    /**
+     * @brief Accessor.
+     * @param tag_name Name of the tag.
+     * @return A vector of all contained items with given tag.
+     */
+    std::vector<Item *> GetItems(const std::string & tag_name) const;
+
+    /**
+     * @brief Query presence of tag.
+     * @param tag_name Name of the tag.
+     * @return true if this item contains the specified tag.
+     */
+    bool IsTag(const std::string & tag_name) const;
+
+    /**
+     * @brief Register a tag.
+     * @param tag_info Name and multiplicity of the tag.
+     * @return true on succes
+     */
+    bool RegisterTag(const TagInfo & tag_info);
+
+    /**
+     * @brief Accessor.
+     * @param tag_name Name of the tag.
+     * @param row Row index.
+     * @return A vector of all contained items with given tag.
+     */
+    Item * GetItem(const std::string & tag_name, int row) const;
+
+    /**
+     * @brief Add item for given tag.
+     * @param item Item to add.
+     * @param tag_name Name of the tag.
+     * @row Row index.
      * @return true on success.
      */
-    bool AddChild(Item * item);
+    bool InsertItem(Item * item, const std::string & tag_name, int row=-1);
 };
 
 template<typename T>

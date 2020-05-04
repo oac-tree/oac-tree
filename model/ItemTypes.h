@@ -16,6 +16,7 @@ const ItemType UndefinedType = "Undefined";
 
 const ItemType ProjectType = "Project";
 const ItemType SequenceType = "Sequence";
+const ItemType InstructionType = "Instruction";
 const ItemType VariableType = "Variable";
 const ItemType StringType = "String";
 const ItemType Int32Type = "Int32";

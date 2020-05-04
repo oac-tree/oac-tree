@@ -17,9 +17,6 @@ namespace Model {
  */
 class SequenceItem : public Item
 {
-private:
-    std::list<Item *> __elements;
-
 public:
     /**
      * @brief Constructor
@@ -30,19 +27,6 @@ public:
      * @brief Destructor
      */
     ~SequenceItem() override;
-
-    /**
-     * @brief Add an element to the sequence.
-     * @param element Element to add.
-     * @return true on success.
-     */
-    bool AddElement(Item * element);
-
-    /**
-     * @brief Get all elements as a list.
-     * @return List of contained Items.
-     */
-    const std::list<Item *> GetElements() const;
 };
 
 }  // namespace Model

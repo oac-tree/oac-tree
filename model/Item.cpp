@@ -1,6 +1,7 @@
 #include "Item.h"
 #include "ItemData.h"
 #include "ItemRoles.h"
+#include "TaggedItems.h"
 
 #include <memory>
 
@@ -12,6 +13,7 @@ class ItemImpl
 {
 private:
     std::unique_ptr<ItemData> __data;
+    std::unique_ptr<TaggedItems> __tagged_items;
 
 public:
     ItemImpl();
@@ -23,6 +25,8 @@ public:
     QVariant GetData(int role) const;
 
     bool SetData(const QVariant & value, int role);
+
+    TaggedItems * GetTaggedItems() const;
 };
 
 bool Item::CompatibleChild(Item * /*item*/) const
@@ -36,16 +40,15 @@ QVariant Item::GetDataInternal(int role) const
 }
 
 Item::Item(ItemType item_type)
-    : __impl(new ItemImpl())
-    , __item_type(std::move(item_type))
+    : __item_type(std::move(item_type))
+    , __impl(new ItemImpl())
 {
     __impl->SetData(QVariant::fromValue(item_type), ItemRole::Display);
 }
 
 Item::~Item()
 {
-    for (auto child : __children)
-        delete child;
+    delete __impl;
 }
 
 ItemType Item::GetType() const
@@ -63,28 +66,44 @@ std::string Item::GetDisplayName() const
     return GetData<std::string>(ItemRole::Display);
 }
 
-unsigned Item::GetChildrenCount() const
+int Item::GetTotalItemCount() const
 {
-    return __children.size();
+    return __impl->GetTaggedItems()->TotalItemCount();
 }
 
-std::vector<Item *> Item::GetChildren() const
+std::vector<Item *> Item::GetAllItems() const
 {
-    return __children;
+    return __impl->GetTaggedItems()->GetAllItems();
 }
 
-bool Item::AddChild(Item * item)
+std::vector<Item *> Item::GetItems(const std::string & tag_name) const
 {
-    if (CompatibleChild(item))
-    {
-        __children.push_back(item);
-        return true;
-    }
-    return false;
+    return __impl->GetTaggedItems()->GetItems(tag_name);
+}
+
+bool Item::IsTag(const std::string &tag_name) const
+{
+    return __impl->GetTaggedItems()->IsTag(tag_name);
+}
+
+bool Item::RegisterTag(const TagInfo &tag_info)
+{
+    return __impl->GetTaggedItems()->RegisterTag(tag_info);
+}
+
+Item * Item::GetItem(const std::string & tag_name, int row) const
+{
+    return __impl->GetTaggedItems()->GetItem(tag_name, row);
+}
+
+bool Item::InsertItem(Item *item, const std::string &tag_name, int row)
+{
+    return __impl->GetTaggedItems()->InsertItem(item, tag_name, row);
 }
 
 ItemImpl::ItemImpl()
     : __data(new ItemData())
+    , __tagged_items(new TaggedItems())
 {}
 
 ItemImpl::~ItemImpl() {}
@@ -102,6 +121,11 @@ QVariant ItemImpl::GetData(int role) const
 bool ItemImpl::SetData(const QVariant &value, int role)
 {
     return __data->SetData(value, role);
+}
+
+TaggedItems * ItemImpl::GetTaggedItems() const
+{
+    return __tagged_items.get();
 }
 
 }  // namespace Model

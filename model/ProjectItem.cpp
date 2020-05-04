@@ -6,14 +6,11 @@ namespace Model {
 
 ProjectItem::ProjectItem()
     : Item(ProjectType)
-{}
+{
+    RegisterTag(TagInfo::UniversalTag(SequenceType));
+}
 
 ProjectItem::~ProjectItem() {}
-
-std::string ProjectItem::GetDisplayName() const
-{
-    return "Project root";
-}
 
 }  // namespace Model
 

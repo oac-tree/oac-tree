@@ -15,7 +15,7 @@ TreeViewModel::TreeViewModel(Model::Item *root_item)
 int TreeViewModel::rowCount(const QModelIndex & parent) const
 {
     if (!parent.isValid())
-        return __root_item->GetChildrenCount();
+        return __root_item->GetTotalItemCount();
     return 0;
 }
 
@@ -32,7 +32,7 @@ QVariant TreeViewModel::data(const QModelIndex &index, int role) const
     int col = index.column();
     if (index.isValid() && row < rowCount() && role == Qt::DisplayRole)
     {
-        auto children = __root_item->GetChildren();
+        auto children = __root_item->GetAllItems();
         auto item = children[row];
         switch (col)
         {
@@ -60,7 +60,7 @@ bool TreeViewModel::setData(const QModelIndex &index, const QVariant &value, int
     int col = index.column();
     if (index.isValid() && row < rowCount() && role == Qt::EditRole)
     {
-        auto children = __root_item->GetChildren();
+        auto children = __root_item->GetAllItems();
         auto item = children[row];
         switch (col)
         {

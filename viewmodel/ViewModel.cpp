@@ -24,7 +24,7 @@ int TreeViewModel::RowForItem(Model::Item * item) const
     else
     {
         auto all_items = parent_item->GetAllItems();
-        for (int i=0; i<all_items.size(); ++i)
+        for (int i=0; i<parent_item->GetTotalItemCount(); ++i)
         {
             if (item == all_items[i])
             {
@@ -94,6 +94,7 @@ bool TreeViewModel::setData(const QModelIndex &index, const QVariant &value, int
         {
             auto custom_variant = Model::Utils::ToCustomVariant(value);
             item->SetDataInternal(custom_variant, Model::ItemRole::Data);
+            emit dataChanged(index, index);
             return true;
         }
         default:

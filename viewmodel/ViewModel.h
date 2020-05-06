@@ -2,7 +2,6 @@
 #define VIEWMODEL_H
 
 #include <QAbstractItemModel>
-#include <string>
 
 #include "model/Item.h"
 

@@ -1,9 +1,7 @@
 #ifndef SEQUENCEITEM_H
 #define SEQUENCEITEM_H
 
-#include "Item.h"
-
-#include <list>
+#include "CompoundItem.h"
 
 namespace Sequencer {
 
@@ -15,7 +13,7 @@ namespace Model {
  * @details This Item contains a list of subitems that
  * represent instructions to execute, variable definitions, etc.
  */
-class SequenceItem : public Item
+class SequenceItem : public CompoundItem
 {
 public:
     /**

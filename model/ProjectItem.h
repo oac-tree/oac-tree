@@ -1,7 +1,7 @@
 #ifndef PROJECTITEM_H
 #define PROJECTITEM_H
 
-#include "Item.h"
+#include "CompoundItem.h"
 
 namespace Sequencer {
 
@@ -12,12 +12,8 @@ namespace Model {
  * @details ProjectItem is the root item that will contain the full
  * workspace definition, containing sequences, variables, etc.
  */
-class ProjectItem : public Item
+class ProjectItem : public CompoundItem
 {
-private:
-
-protected:
-
 public:
     /**
      * @brief Constructor

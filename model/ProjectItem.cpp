@@ -5,9 +5,10 @@ namespace Sequencer {
 namespace Model {
 
 ProjectItem::ProjectItem()
-    : Item(ProjectType)
+    : CompoundItem(ProjectType)
 {
-    RegisterTag(TagInfo::UniversalTag(SequenceType));
+    RegisterTag(TagInfo::UniversalTag(SequenceType, {SequenceType}));
+    RegisterTag(TagInfo::UniversalTag(VariableType, {VariableType}));
 }
 
 ProjectItem::~ProjectItem() {}

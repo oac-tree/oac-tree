@@ -5,9 +5,9 @@ namespace Sequencer {
 namespace Model {
 
 SequenceItem::SequenceItem()
-    : Item(SequenceType)
+    : CompoundItem(SequenceType)
 {
-    RegisterTag(TagInfo::UniversalTag(InstructionType));
+    RegisterTag(TagInfo::UniversalTag(InstructionType, {InstructionType}));
 }
 
 SequenceItem::~SequenceItem() {}

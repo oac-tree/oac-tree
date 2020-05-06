@@ -1,9 +1,6 @@
 #include "ViewModel.h"
 
-#include "model/PrimitiveItems.h"
 #include "model/UserTypes.h"
-
-#include <iostream>
 
 namespace Sequencer {
 

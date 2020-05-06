@@ -28,6 +28,7 @@ ItemContainer::~ItemContainer()
 }
 
 ItemContainer::ItemContainer(ItemContainer && other)
+    : __tag_info(std::move(other.__tag_info))
 {
     for (Item * item : other.__items)
     {
@@ -38,6 +39,7 @@ ItemContainer::ItemContainer(ItemContainer && other)
 
 ItemContainer & ItemContainer::operator=(ItemContainer && other)
 {
+    __tag_info = other.__tag_info;
     for (Item * item : __items)
     {
         delete item;

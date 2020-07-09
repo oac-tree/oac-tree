@@ -27,7 +27,7 @@ Model::Item * CreateTestModel()
     sequence_item->InsertItem(instruction_item1, Model::InstructionType);
     sequence_item->InsertItem(instruction_item2, Model::InstructionType);
     sequence_item->InsertItem(instruction_item3, Model::InstructionType);
-    bool insert_succes = root_item->InsertItem(sequence_item, Model::SequenceType);
+    root_item->InsertItem(sequence_item, Model::SequenceType);
     return root_item;
 }
 

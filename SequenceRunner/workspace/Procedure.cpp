@@ -1,0 +1,28 @@
+#include "Procedure.h"
+
+Procedure::Procedure()
+    : __root_instruction{}
+    , __workspace{}
+{}
+
+Procedure::~Procedure() = default;
+
+bool Procedure::AddVariable(Variable var)
+{
+    return __workspace->AddVariable(var);
+}
+
+std::vector<std::string> Procedure::VariableNames() const
+{
+    return __workspace->VariableNames();
+}
+
+int Procedure::GetVariableValue(std::string name)
+{
+    return __workspace->GetVariableValue(name);
+}
+
+bool Procedure::SetVariableValue(std::string name, int value)
+{
+    return __workspace->SetVariableValue(name, value);
+}

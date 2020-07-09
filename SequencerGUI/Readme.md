@@ -1,6 +1,10 @@
 # Sequencer
 
-This project is meant to support the easy creation of automation scripts.
+This project supports the creation and execution of automation scripts.
+It comprises three parts:
+* A library for executing and (de)serializing automation scripts.
+* A Qt GUI that allows a user to easily create automation scripts and that injects user interactions into the library.
+* A CLI application that can execute serialized automation scripts and injects CLI user interactions.
 
 ## Features
 

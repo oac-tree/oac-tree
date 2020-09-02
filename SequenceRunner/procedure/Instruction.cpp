@@ -2,9 +2,11 @@
 
 #include "runner/Runner.h"
 
-
-void Instruction::Preamble(Runner *)
-{}
+void Instruction::Preamble(Runner * runner)
+{
+    __status = ExecutionStatus::STARTING;
+    runner->UpdateInstructionStatus(this, __status);
+}
 
 void Instruction::Postamble(Runner * runner)
 {

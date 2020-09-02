@@ -1,19 +1,22 @@
 #ifndef RUNNER_H
 #define RUNNER_H
 
-#include "workspace/ExecutionStatus.h"
+#include "procedure/ExecutionStatus.h"
+#include "procedure/Procedure.h"
 
 class Instruction;
 
 class Runner
 {
+private:
+    Procedure * __proc;
+
 public:
     Runner();
 
-    virtual ~Runner();
+    ~Runner();
 
-    virtual void UpdateInstructionStatus(const Instruction * instruction, ExecutionStatus status) = 0;
-
+    void UpdateInstructionStatus(const Instruction * instruction, ExecutionStatus status);
 };
 
 #endif // RUNNER_H

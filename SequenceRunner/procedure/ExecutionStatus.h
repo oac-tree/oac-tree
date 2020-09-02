@@ -3,6 +3,7 @@
 
 enum class ExecutionStatus {
     UNDEFINED,
+    STARTING,
     RUNNING,
     SUCCESS,
     FAILURE

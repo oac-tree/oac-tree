@@ -15,3 +15,4 @@ endif()
 
 add_subdirectory(SequenceRunner)
 add_subdirectory(SequencerGUI)
+add_subdirectory(test)

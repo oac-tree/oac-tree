@@ -37,6 +37,11 @@ void Instruction::ExecuteSingle(Runner * runner)
     Postamble(runner);
 }
 
+ExecutionStatus Instruction::GetStatus() const
+{
+    return __status;
+}
+
 void Instruction::ResetStatus()
 {
     __status = ExecutionStatus::UNDEFINED;

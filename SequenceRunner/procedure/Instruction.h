@@ -47,6 +47,11 @@ public:
     void ExecuteSingle(Runner * runner);
 
     /**
+     * @brief Get execution status
+     */
+    ExecutionStatus GetStatus() const;
+
+    /**
      * @brief Reset execution status
      */
     void ResetStatus();

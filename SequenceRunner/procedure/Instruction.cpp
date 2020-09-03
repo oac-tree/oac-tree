@@ -4,26 +4,35 @@
 
 void Instruction::Preamble(Runner * runner)
 {
-    __status = ExecutionStatus::STARTING;
-    runner->UpdateInstructionStatus(this, __status);
+    if (__status == ExecutionStatus::UNDEFINED)
+    {
+        __status = ExecutionStatus::STARTED;
+        runner->UpdateInstructionStatus(this, __status);
+    }
 }
 
 void Instruction::Postamble(Runner * runner)
 {
-    runner->UpdateInstructionStatus(this, __status);
+    if (__status != __status_before)
+    {
+        runner->UpdateInstructionStatus(this, __status);
+    }
 }
 
 Instruction::Instruction()
     : __status{ExecutionStatus::UNDEFINED}
+    , __status_before{ExecutionStatus::UNDEFINED}
 {}
 
 Instruction::~Instruction() = default;
 
-void Instruction::Execute(Runner * runner)
+void Instruction::ExecuteSingle(Runner * runner)
 {
     Preamble(runner);
 
-    __status = ExecuteImpl(runner);
+    __status_before = __status;
+
+    __status = ExecuteSingleImpl(runner);
 
     Postamble(runner);
 }

@@ -19,9 +19,11 @@ class Instruction
 private:
     ExecutionStatus __status;
 
+    ExecutionStatus __status_before;
+
     virtual void Preamble(Runner * runner);
 
-    virtual ExecutionStatus ExecuteImpl(Runner * runner) = 0;
+    virtual ExecutionStatus ExecuteSingleImpl(Runner * runner) = 0;
 
     virtual void Postamble(Runner * runner);
 
@@ -42,7 +44,7 @@ public:
      * @param
      * @return
      */
-    void Execute(Runner * runner);
+    void ExecuteSingle(Runner * runner);
 
     /**
      * @brief Reset execution status

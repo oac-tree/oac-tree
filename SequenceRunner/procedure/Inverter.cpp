@@ -32,8 +32,10 @@ ExecutionStatus Invertor::CalculateStatus() const
     {
     case ExecutionStatus::FAILURE:
         status = ExecutionStatus::SUCCESS;
+        break;
     case ExecutionStatus::SUCCESS:
         status = ExecutionStatus::FAILURE;
+        break;
     default:
         break;
     }

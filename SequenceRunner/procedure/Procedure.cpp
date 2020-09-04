@@ -37,3 +37,8 @@ void Procedure::ExecuteSingle(UserInterface * ui)
 {
     __root_sequence->ExecuteSingle(ui, __workspace.get());
 }
+
+ExecutionStatus Procedure::GetStatus() const
+{
+    return __root_sequence->GetStatus();
+}

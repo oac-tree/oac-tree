@@ -52,6 +52,11 @@ public:
      * @brief Execute single step of procedure
      */
     void ExecuteSingle(UserInterface * ui);
+
+    /**
+     * @brief Retrieve status of root sequence
+     */
+    ExecutionStatus GetStatus() const;
 };
 
 #endif // PROCEDURE_H

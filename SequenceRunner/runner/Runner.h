@@ -20,9 +20,11 @@ public:
 
     void SetProcedure(Procedure * procedure);
 
+    void ExecuteProcedure();
+
     void ExecuteSingle();
 
-    void UpdateInstructionStatus(const Instruction * instruction);
+    bool IsFinished() const;
 };
 
 #endif // RUNNER_H

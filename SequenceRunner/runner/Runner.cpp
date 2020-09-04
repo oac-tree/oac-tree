@@ -13,6 +13,17 @@ void Runner::SetProcedure(Procedure * procedure)
     __proc = procedure;
 }
 
+void Runner::ExecuteProcedure()
+{
+    if (__proc)
+    {
+        while(!IsFinished())
+        {
+            ExecuteSingle();
+        }
+    }
+}
+
 void Runner::ExecuteSingle()
 {
     if (__proc)
@@ -21,7 +32,14 @@ void Runner::ExecuteSingle()
     }
 }
 
-void Runner::UpdateInstructionStatus(const Instruction * instruction)
+bool Runner::IsFinished() const
 {
-    auto status = instruction->GetStatus();
+    if (!__proc)
+    {
+        return true;
+    }
+
+    auto status = __proc->GetStatus();
+    return (status == ExecutionStatus::SUCCESS ||
+            status == ExecutionStatus::FAILURE);
 }

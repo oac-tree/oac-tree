@@ -1,5 +1,6 @@
 #include "SuccesNode.h"
 
+static const std::string SuccesType = "SuccesNode";
 
 ExecutionStatus SuccesNode::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
 {
@@ -9,6 +10,7 @@ ExecutionStatus SuccesNode::ExecuteSingleImpl(UserInterface * ui, Workspace * ws
 }
 
 SuccesNode::SuccesNode()
+    : Instruction(SuccesType)
 {}
 
 SuccesNode::~SuccesNode()

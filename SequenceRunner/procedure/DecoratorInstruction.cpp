@@ -1,8 +1,9 @@
 #include "DecoratorInstruction.h"
 
 
-DecoratorInstruction::DecoratorInstruction()
-    : __child{}
+DecoratorInstruction::DecoratorInstruction(std::string type)
+    : Instruction(type)
+    , __child{}
 {}
 
 DecoratorInstruction::~DecoratorInstruction()

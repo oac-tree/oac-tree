@@ -1,4 +1,5 @@
 #include "Inverter.h"
+#include "InstructionRegistry.h"
 
 
 ExecutionStatus Inverter::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
@@ -43,6 +44,7 @@ ExecutionStatus Inverter::CalculateStatus() const
 }
 
 Inverter::Inverter()
+    : DecoratorInstruction(InstructionRegistry::InverterType)
 {}
 
 Inverter::~Inverter()

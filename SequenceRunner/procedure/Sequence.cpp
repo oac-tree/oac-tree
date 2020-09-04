@@ -1,5 +1,5 @@
 #include "Sequence.h"
-
+#include "InstructionRegistry.h"
 
 ExecutionStatus Sequence::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
 {
@@ -56,6 +56,7 @@ ExecutionStatus Sequence::CalculateCompoundStatus() const
 }
 
 Sequence::Sequence()
+    : CompoundInstruction(InstructionRegistry::SequenceType)
 {}
 
 Sequence::~Sequence()

@@ -19,12 +19,29 @@ void Instruction::Postamble(UserInterface * ui)
     }
 }
 
-Instruction::Instruction()
-    : __status{ExecutionStatus::UNDEFINED}
+Instruction::Instruction(std::string type)
+    : __type{std::move(type)}
+    , __name{}
+    , __status{ExecutionStatus::UNDEFINED}
     , __status_before{ExecutionStatus::UNDEFINED}
 {}
 
 Instruction::~Instruction() = default;
+
+std::string Instruction::GetType() const
+{
+    return __type;
+}
+
+std::string Instruction::GetName() const
+{
+    return __name;
+}
+
+void Instruction::SetName(std::string name)
+{
+    __name = std::move(name);
+}
 
 void Instruction::ExecuteSingle(UserInterface * ui, Workspace * ws)
 {

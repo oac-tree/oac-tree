@@ -9,7 +9,9 @@ TestUI::~TestUI() = default;
 
 void TestUI::UpdateInstructionStatus(const Instruction * instruction)
 {
+    auto instruction_type = instruction->GetType();
     auto status = instruction->GetStatus();
 
-    std::cout << "status: " << StatusToString(status) << std::endl;
+    std::cout << "Instruction: " << instruction_type << ": ";
+    std::cout << StatusToString(status) << std::endl;
 }

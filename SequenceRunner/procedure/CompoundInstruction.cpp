@@ -1,7 +1,8 @@
 #include "CompoundInstruction.h"
 
 
-CompoundInstruction::CompoundInstruction()
+CompoundInstruction::CompoundInstruction(std::string type)
+    : Instruction(type)
 {}
 
 CompoundInstruction::~CompoundInstruction()

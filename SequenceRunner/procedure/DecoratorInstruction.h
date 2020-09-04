@@ -11,7 +11,7 @@ protected:
     std::unique_ptr<Instruction> __child;
 
 public:
-    DecoratorInstruction();
+    DecoratorInstruction(std::string type);
 
     ~DecoratorInstruction() override;
 

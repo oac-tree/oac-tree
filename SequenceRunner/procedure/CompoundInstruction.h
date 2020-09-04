@@ -11,7 +11,7 @@ protected:
     std::vector<Instruction *> __children;
 
 public:
-    CompoundInstruction();
+    CompoundInstruction(std::string type);
 
     ~CompoundInstruction() override;
 

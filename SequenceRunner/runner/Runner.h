@@ -16,6 +16,8 @@ public:
 
     ~Runner();
 
+    void SetProcedure(Procedure * procedure);
+
     void UpdateInstructionStatus(const Instruction * instruction, ExecutionStatus status);
 };
 

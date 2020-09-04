@@ -1,7 +1,7 @@
 #ifndef PROCEDURE_H
 #define PROCEDURE_H
 
-#include "Instruction.h"
+#include "Sequence.h"
 #include "Workspace.h"
 
 #include <memory>
@@ -9,7 +9,7 @@
 class Procedure
 {
 private:
-    std::unique_ptr<Instruction> __root_instruction;
+    std::unique_ptr<Sequence> __root_sequence;
     std::unique_ptr<Workspace> __workspace;
 
 public:
@@ -43,6 +43,10 @@ public:
      */
     bool SetVariableValue(std::string name, int value);
 
+    /**
+     * @brief Push Instruction at top level
+     */
+    bool PushInstruction(Instruction * instruction);
 };
 
 #endif // PROCEDURE_H

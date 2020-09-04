@@ -1,7 +1,7 @@
 #include "Procedure.h"
 
 Procedure::Procedure()
-    : __root_instruction{}
+    : __root_sequence{new Sequence()}
     , __workspace{}
 {}
 
@@ -25,4 +25,10 @@ int Procedure::GetVariableValue(std::string name)
 bool Procedure::SetVariableValue(std::string name, int value)
 {
     return __workspace->SetVariableValue(name, value);
+}
+
+bool Procedure::PushInstruction(Instruction * instruction)
+{
+    __root_sequence->PushBack(instruction);
+    return true;
 }

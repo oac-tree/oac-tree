@@ -1,5 +1,6 @@
 target_sources(SequenceRunner
     PRIVATE
+        ${CMAKE_CURRENT_LIST_DIR}/CompoundInstruction.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Instruction.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Procedure.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Sequence.cpp
@@ -7,6 +8,7 @@ target_sources(SequenceRunner
         ${CMAKE_CURRENT_LIST_DIR}/Workspace.cpp
     PUBLIC
         ${CMAKE_CURRENT_LIST_DIR}/ExecutionStatus.h
+        ${CMAKE_CURRENT_LIST_DIR}/CompoundInstruction.h
         ${CMAKE_CURRENT_LIST_DIR}/Instruction.h
         ${CMAKE_CURRENT_LIST_DIR}/Procedure.h
         ${CMAKE_CURRENT_LIST_DIR}/Sequence.h

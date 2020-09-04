@@ -1,15 +1,11 @@
 #ifndef SEQUENCE_H
 #define SEQUENCE_H
 
-#include "Instruction.h"
+#include "CompoundInstruction.h"
 
-#include <vector>
-
-class Sequence : public Instruction
+class Sequence : public CompoundInstruction
 {
 private:
-    std::vector<Instruction *> __children;
-
     ExecutionStatus ExecuteSingleImpl(Runner * runner) override;
 
     ExecutionStatus CalculateCompoundStatus() const;
@@ -18,8 +14,6 @@ public:
     Sequence();
 
     ~Sequence() override;
-
-    void PushBack(Instruction * instruction);
 };
 
 #endif // SEQUENCE_H

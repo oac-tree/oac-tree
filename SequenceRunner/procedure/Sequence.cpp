@@ -59,14 +59,4 @@ Sequence::Sequence()
 {}
 
 Sequence::~Sequence()
-{
-    for (auto instruction : __children)
-    {
-        delete instruction;
-    }
-}
-
-void Sequence::PushBack(Instruction * instruction)
-{
-    __children.push_back(instruction);
-}
+{}

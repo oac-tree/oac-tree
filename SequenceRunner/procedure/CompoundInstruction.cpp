@@ -16,4 +16,3 @@ void CompoundInstruction::PushBack(Instruction * instruction)
 {
     __children.push_back(instruction);
 }
-

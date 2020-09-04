@@ -7,7 +7,7 @@ void Instruction::Preamble(Runner * runner)
     if (__status == ExecutionStatus::UNDEFINED)
     {
         __status = ExecutionStatus::STARTED;
-        runner->UpdateInstructionStatus(this, __status);
+        runner->UpdateInstructionStatus(this);
     }
 }
 
@@ -15,7 +15,7 @@ void Instruction::Postamble(Runner * runner)
 {
     if (__status != __status_before)
     {
-        runner->UpdateInstructionStatus(this, __status);
+        runner->UpdateInstructionStatus(this);
     }
 }
 

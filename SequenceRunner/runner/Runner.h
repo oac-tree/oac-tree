@@ -18,7 +18,9 @@ public:
 
     void SetProcedure(Procedure * procedure);
 
-    void UpdateInstructionStatus(const Instruction * instruction, ExecutionStatus status);
+    void ExecuteSingle();
+
+    void UpdateInstructionStatus(const Instruction * instruction);
 };
 
 #endif // RUNNER_H

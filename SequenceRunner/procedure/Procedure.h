@@ -47,6 +47,11 @@ public:
      * @brief Push Instruction at top level
      */
     bool PushInstruction(Instruction * instruction);
+
+    /**
+     * @brief Execute single step of procedure
+     */
+    void ExecuteSingle(Runner * runner);
 };
 
 #endif // PROCEDURE_H

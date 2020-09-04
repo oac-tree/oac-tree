@@ -1,6 +1,5 @@
 #include "Runner.h"
 
-
 Runner::Runner()
     : __proc{nullptr}
 {}
@@ -13,7 +12,15 @@ void Runner::SetProcedure(Procedure * procedure)
     __proc = procedure;
 }
 
-void Runner::UpdateInstructionStatus(const Instruction * instruction, ExecutionStatus status)
+void Runner::ExecuteSingle()
 {
+    if (__proc)
+    {
+        __proc->ExecuteSingle(this);
+    }
+}
 
+void Runner::UpdateInstructionStatus(const Instruction * instruction)
+{
+    auto status = instruction->GetStatus();
 }

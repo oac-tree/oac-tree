@@ -32,3 +32,8 @@ bool Procedure::PushInstruction(Instruction * instruction)
     __root_sequence->PushBack(instruction);
     return true;
 }
+
+void Procedure::ExecuteSingle(Runner * runner)
+{
+    __root_sequence->ExecuteSingle(runner);
+}

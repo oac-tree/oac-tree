@@ -16,4 +16,5 @@ std::string StatusToString(const ExecutionStatus & status)
     case ExecutionStatus::FAILURE:
         return "Failure";
     }
+    return "Unknown status";
 }

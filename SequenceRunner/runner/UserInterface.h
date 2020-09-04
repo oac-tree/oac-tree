@@ -11,6 +11,10 @@ public:
     virtual ~UserInterface() = default;
 
     virtual void UpdateInstructionStatus(const Instruction * instruction) = 0;
+
+    virtual void StartSingleStep();
+
+    virtual void EndSingleStep();
 };
 
 #endif // USERINTERFACE_H

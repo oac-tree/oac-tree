@@ -28,7 +28,9 @@ void Runner::ExecuteSingle()
 {
     if (__proc)
     {
+        __ui->StartSingleStep();
         __proc->ExecuteSingle(__ui);
+        __ui->EndSingleStep();
     }
 }
 

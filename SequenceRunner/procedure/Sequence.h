@@ -6,7 +6,7 @@
 class Sequence : public CompoundInstruction
 {
 private:
-    ExecutionStatus ExecuteSingleImpl(Runner * runner) override;
+    ExecutionStatus ExecuteSingleImpl(UserInterface * ui, Workspace * ws) override;
 
     ExecutionStatus CalculateCompoundStatus() const;
 

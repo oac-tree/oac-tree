@@ -1,7 +1,8 @@
 #include "Runner.h"
 
-Runner::Runner()
+Runner::Runner(UserInterface * ui)
     : __proc{nullptr}
+    , __ui{ui}
 {}
 
 Runner::~Runner()
@@ -16,7 +17,7 @@ void Runner::ExecuteSingle()
 {
     if (__proc)
     {
-        __proc->ExecuteSingle(this);
+        __proc->ExecuteSingle(__ui);
     }
 }
 

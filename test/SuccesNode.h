@@ -6,7 +6,7 @@
 class SuccesNode : public Instruction
 {
 private:
-    ExecutionStatus ExecuteSingleImpl(Runner * runner) override;
+    ExecutionStatus ExecuteSingleImpl(UserInterface * ui, Workspace * ws) override;
 
 public:
     SuccesNode();

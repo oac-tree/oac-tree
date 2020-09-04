@@ -1,9 +1,10 @@
 #include "SuccesNode.h"
 
 
-ExecutionStatus SuccesNode::ExecuteSingleImpl(Runner * runner)
+ExecutionStatus SuccesNode::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
 {
-    (void)runner;
+    (void)ui;
+    (void)ws;
     return ExecutionStatus::SUCCESS;
 }
 

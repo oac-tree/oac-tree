@@ -3,7 +3,8 @@
 
 #include "ExecutionStatus.h"
 
-class Runner;
+class UserInterface;
+class Workspace;
 
 /**
  * @brief Abstract interface for all executable instructions
@@ -21,11 +22,11 @@ private:
 
     ExecutionStatus __status_before;
 
-    virtual void Preamble(Runner * runner);
+    virtual void Preamble(UserInterface * ui);
 
-    virtual ExecutionStatus ExecuteSingleImpl(Runner * runner) = 0;
+    virtual ExecutionStatus ExecuteSingleImpl(UserInterface * ui, Workspace * ws) = 0;
 
-    virtual void Postamble(Runner * runner);
+    virtual void Postamble(UserInterface * ui);
 
 public:
     /**
@@ -44,7 +45,7 @@ public:
      * @param
      * @return
      */
-    void ExecuteSingle(Runner * runner);
+    void ExecuteSingle(UserInterface * ui, Workspace * ws);
 
     /**
      * @brief Get execution status

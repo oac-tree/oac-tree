@@ -51,7 +51,7 @@ public:
     /**
      * @brief Execute single step of procedure
      */
-    void ExecuteSingle(Runner * runner);
+    void ExecuteSingle(UserInterface * ui);
 };
 
 #endif // PROCEDURE_H

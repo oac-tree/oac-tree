@@ -1,7 +1,7 @@
 #include "Inverter.h"
 
 
-ExecutionStatus Invertor::ExecuteSingleImpl(Runner *runner)
+ExecutionStatus Inverter::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
 {
     if (!__child)
     {
@@ -12,13 +12,13 @@ ExecutionStatus Invertor::ExecuteSingleImpl(Runner *runner)
     if (child_status == ExecutionStatus::UNDEFINED ||
         child_status == ExecutionStatus::STARTED)
     {
-        __child->ExecuteSingle(runner);
+        __child->ExecuteSingle(ui, ws);
     }
 
     return CalculateStatus();
 }
 
-ExecutionStatus Invertor::CalculateStatus() const
+ExecutionStatus Inverter::CalculateStatus() const
 {
     if (!__child)
     {
@@ -42,8 +42,8 @@ ExecutionStatus Invertor::CalculateStatus() const
     return status;
 }
 
-Invertor::Invertor()
+Inverter::Inverter()
 {}
 
-Invertor::~Invertor()
+Inverter::~Inverter()
 {}

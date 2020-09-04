@@ -33,7 +33,7 @@ bool Procedure::PushInstruction(Instruction * instruction)
     return true;
 }
 
-void Procedure::ExecuteSingle(Runner * runner)
+void Procedure::ExecuteSingle(UserInterface * ui)
 {
-    __root_sequence->ExecuteSingle(runner);
+    __root_sequence->ExecuteSingle(ui, __workspace.get());
 }

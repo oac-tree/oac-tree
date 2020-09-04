@@ -1,7 +1,7 @@
 #include "Sequence.h"
 
 
-ExecutionStatus Sequence::ExecuteSingleImpl(Runner * runner)
+ExecutionStatus Sequence::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
 {
     if (__children.empty())
     {
@@ -19,7 +19,7 @@ ExecutionStatus Sequence::ExecuteSingleImpl(Runner * runner)
         if (child_status == ExecutionStatus::UNDEFINED ||
             child_status == ExecutionStatus::STARTED)
         {
-            instruction->ExecuteSingle(runner);
+            instruction->ExecuteSingle(ui, ws);
 
             break;
         }

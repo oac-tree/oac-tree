@@ -1,19 +1,19 @@
-#ifndef INVERTOR_H
-#define INVERTOR_H
+#ifndef INVERTER_H
+#define INVERTER_H
 
 #include "DecoratorInstruction.h"
 
-class Invertor : public DecoratorInstruction
+class Inverter : public DecoratorInstruction
 {
 private:
-    ExecutionStatus ExecuteSingleImpl(Runner * runner) override;
+    ExecutionStatus ExecuteSingleImpl(UserInterface * ui, Workspace * ws) override;
 
     ExecutionStatus CalculateStatus() const;
 
 public:
-    Invertor();
+    Inverter();
 
-    ~Invertor() override;
+    ~Inverter() override;
 };
 
-#endif // INVERTOR_H
+#endif // INVERTER_H

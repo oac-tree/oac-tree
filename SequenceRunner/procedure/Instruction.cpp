@@ -1,21 +1,21 @@
 #include "Instruction.h"
 
-#include "runner/Runner.h"
+#include "runner/UserInterface.h"
 
-void Instruction::Preamble(Runner * runner)
+void Instruction::Preamble(UserInterface * ui)
 {
     if (__status == ExecutionStatus::UNDEFINED)
     {
         __status = ExecutionStatus::STARTED;
-        runner->UpdateInstructionStatus(this);
+        ui->UpdateInstructionStatus(this);
     }
 }
 
-void Instruction::Postamble(Runner * runner)
+void Instruction::Postamble(UserInterface * ui)
 {
     if (__status != __status_before)
     {
-        runner->UpdateInstructionStatus(this);
+        ui->UpdateInstructionStatus(this);
     }
 }
 
@@ -26,15 +26,15 @@ Instruction::Instruction()
 
 Instruction::~Instruction() = default;
 
-void Instruction::ExecuteSingle(Runner * runner)
+void Instruction::ExecuteSingle(UserInterface * ui, Workspace * ws)
 {
-    Preamble(runner);
+    Preamble(ui);
 
     __status_before = __status;
 
-    __status = ExecuteSingleImpl(runner);
+    __status = ExecuteSingleImpl(ui, ws);
 
-    Postamble(runner);
+    Postamble(ui);
 }
 
 ExecutionStatus Instruction::GetStatus() const

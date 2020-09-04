@@ -1,6 +1,8 @@
 #ifndef EXECUTIONSTATUS_H
 #define EXECUTIONSTATUS_H
 
+#include <string>
+
 enum class ExecutionStatus {
     UNDEFINED,
     STARTED,
@@ -8,5 +10,7 @@ enum class ExecutionStatus {
     SUCCESS,
     FAILURE
 };
+
+std::string StatusToString(const ExecutionStatus & status);
 
 #endif // EXECUTIONSTATUS_H

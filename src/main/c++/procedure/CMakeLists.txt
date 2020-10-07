@@ -1,4 +1,4 @@
-target_sources(SequenceRunner
+target_sources(sequencer
     PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/CompoundInstruction.cpp
         ${CMAKE_CURRENT_LIST_DIR}/DecoratorInstruction.cpp

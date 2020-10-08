@@ -24,7 +24,7 @@
     <groupId>org.iter.codac.units</groupId>
     <artifactId>sequencer</artifactId>
     <packaging>codac</packaging>
-    <version>1.0</version>
+    <version>1.0.0</version>
     <name>SUP sequencer module</name>
     <description>The engine for the SUP sequencer</description>
     <url>http://www.iter.org/</url>
@@ -76,10 +76,6 @@
                 <artifactId>maven-iter-plugin</artifactId>
                 <extensions>true</extensions>
                 <configuration>
-                    <init>
-                        <copy source="${srcpath}" target="${buildpath}" />
-                        <expand source="compile.sh" file="main/compile.sh" rpmeval="true" mvneval="true" />
-                    </init>
                     <packaging>
                         <package>
                             <!-- Library, etc. -->

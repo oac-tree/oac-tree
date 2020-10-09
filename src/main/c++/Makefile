@@ -17,28 +17,26 @@ BUILD_DIR := ./build
 
 BUILD_TYPE = Release
 
-CMAKE_FLAGS = -DCMAKE_BUILD_TYPE=$(BUILD_TYPE)
+CMAKE_FLAGS = -DCMAKE_BUILD_TYPE=$(BUILD_TYPE) -DLIBVERSION=$(LIBVERSION) -DLIBSOVERSION=$(LIBMAJOR)
 
 all: libs
 
 libs: dynamiclib staticlib
 
-dynamiclib: $(BUILD_DIR)/lib$(LIBNAME).so staticlib
+dynamiclib: $(BUILD_DIR)/$(REALNAME)
 	@mkdir -p $(LIB_DIR)
-	cp $(BUILD_DIR)/lib$(LIBNAME).so $(LIB_DIR)/$(REALNAME)
-	cd $(LIB_DIR);ln -sf $(REALNAME) lib$(LIBNAME).so
-	cd $(LIB_DIR);ln -sf $(REALNAME) $(SONAME)
+	cp -P $(BUILD_DIR)/lib$(LIBNAME).so* $(LIB_DIR)/
 
 staticlib: $(BUILD_DIR)/lib$(LIBNAME).a
 	@mkdir -p $(LIB_DIR)
 	cp $(BUILD_DIR)/lib$(LIBNAME).a $(LIB_DIR)/lib$(LIBNAME).a
 
-$(BUILD_DIR)/lib$(LIBNAME).so:
+$(BUILD_DIR)/$(REALNAME):
 	@mkdir -p $(BUILD_DIR)
 	cmake3 -B$(BUILD_DIR) -DBUILD_SHARED_LIBS=ON $(CMAKE_FLAGS)
 	$(MAKE) -C $(BUILD_DIR)
 
-$(BUILD_DIR)/lib$(LIBNAME).a: $(BUILD_DIR)/lib$(LIBNAME).so
+$(BUILD_DIR)/lib$(LIBNAME).a: $(BUILD_DIR)/$(REALNAME)
 	@mkdir -p $(BUILD_DIR)
 	cmake3 -B$(BUILD_DIR) -DBUILD_SHARED_LIBS=OFF $(CMAKE_FLAGS)
 	$(MAKE) -C $(BUILD_DIR)

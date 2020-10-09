@@ -11,6 +11,11 @@ endif()
 
 add_library(sequencer)
 
+set_target_properties(sequencer PROPERTIES
+    VERSION ${LIBVERSION}
+    SOVERSION ${LIBSOVERSION}
+)
+
 add_subdirectory(runner)
 add_subdirectory(procedure)
 

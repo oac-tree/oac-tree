@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Procedure>
+    <Sequence>
+        <SuccessNode name="First" />
+        <SuccessNode name="Second" />
+        <Inverter>
+            <SuccessNode name="Third" />
+        </Inverter>
+    </Sequence>
+</Procedure>

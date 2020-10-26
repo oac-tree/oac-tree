@@ -23,11 +23,11 @@ target_link_directories(unit-tests
 
 target_sources(unit-tests
     PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/SuccesNode.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/SuccessNode.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/TestProcedureFactory.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/TestUI.cpp
     PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/SuccesNode.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/SuccessNode.h
         ${CMAKE_CURRENT_SOURCE_DIR}/TestProcedureFactory.h
         ${CMAKE_CURRENT_SOURCE_DIR}/TestUI.h
 )

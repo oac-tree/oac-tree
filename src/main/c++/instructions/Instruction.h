@@ -1,7 +1,7 @@
 #ifndef INSTRUCTION_H
 #define INSTRUCTION_H
 
-#include "ExecutionStatus.h"
+#include "procedure/ExecutionStatus.h"
 
 class UserInterface;
 class Workspace;

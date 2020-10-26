@@ -1,11 +1,17 @@
 #ifndef PROCEDURE_H
 #define PROCEDURE_H
 
-#include "Sequence.h"
+#include "instructions/Sequence.h"
 #include "Workspace.h"
 
 #include <memory>
 
+/**
+ * @brief Procedure contains a tree of instructions
+ *
+ * @detail A Procedure object contains a full procedure
+ * and a workspace
+ */
 class Procedure
 {
 private:

@@ -1,7 +1,7 @@
 #ifndef SUCCESNODE_H
 #define SUCCESNODE_H
 
-#include "procedure/Instruction.h"
+#include "instructions/Instruction.h"
 
 class SuccesNode : public Instruction
 {

@@ -1,7 +1,7 @@
 #include "TestProcedureFactory.h"
 
 #include "SuccesNode.h"
-#include "procedure/Inverter.h"
+#include "instructions/Inverter.h"
 
 TestProcedureFactory::TestProcedureFactory() = default;
 

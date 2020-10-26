@@ -1,22 +1,12 @@
 target_sources(sequencer
     PRIVATE
-        ${CMAKE_CURRENT_LIST_DIR}/CompoundInstruction.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/DecoratorInstruction.cpp
         ${CMAKE_CURRENT_LIST_DIR}/ExecutionStatus.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Instruction.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Inverter.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Procedure.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Sequence.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Variable.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Workspace.cpp
     PUBLIC
-        ${CMAKE_CURRENT_LIST_DIR}/CompoundInstruction.h
-        ${CMAKE_CURRENT_LIST_DIR}/DecoratorInstruction.h
         ${CMAKE_CURRENT_LIST_DIR}/ExecutionStatus.h
-        ${CMAKE_CURRENT_LIST_DIR}/Instruction.h
-        ${CMAKE_CURRENT_LIST_DIR}/Inverter.h
         ${CMAKE_CURRENT_LIST_DIR}/Procedure.h
-        ${CMAKE_CURRENT_LIST_DIR}/Sequence.h
         ${CMAKE_CURRENT_LIST_DIR}/Variable.h
         ${CMAKE_CURRENT_LIST_DIR}/Workspace.h
 )

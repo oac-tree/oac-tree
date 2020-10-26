@@ -1,7 +1,7 @@
 #ifndef USERINTERFACE_H
 #define USERINTERFACE_H
 
-#include "procedure/Instruction.h"
+#include "instructions/Instruction.h"
 
 class UserInterface
 {

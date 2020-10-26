@@ -18,5 +18,6 @@ set_target_properties(sequencer PROPERTIES
 
 add_subdirectory(runner)
 add_subdirectory(procedure)
+add_subdirectory(instructions)
 
 target_include_directories (sequencer PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

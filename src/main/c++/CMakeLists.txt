@@ -16,8 +16,15 @@ set_target_properties(sequencer PROPERTIES
     SOVERSION ${LIBSOVERSION}
 )
 
+find_package(LibXml2 REQUIRED)
+
+add_subdirectory(parser)
 add_subdirectory(runner)
 add_subdirectory(procedure)
 add_subdirectory(instructions)
 
-target_include_directories (sequencer PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(sequencer
+    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
+    PRIVATE ${LIBXML2_INCLUDE_DIR}
+    )
+target_link_libraries(sequencer ${LIBXML2_LIBRARIES})

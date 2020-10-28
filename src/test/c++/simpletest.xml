@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Procedure>
-    <Sequence>
-        <SuccessNode name="First" />
-        <SuccessNode name="Second" />
-        <Inverter>
-            <SuccessNode name="Third" />
-        </Inverter>
-    </Sequence>
-</Procedure>
+<procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+           name="Trivial procedure for testing purposes"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+    <root>
+        <successNode name="First" />
+        <successNode name="Second" />
+        <inverter>
+            <successNode name="Third" />
+        </inverter>
+    </root>
+    <workspace>
+    </workspace>
+</procedure>

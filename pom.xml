@@ -84,7 +84,9 @@
                             </include>
                             <!-- Programs -->
                             <!-- Package dependencies -->
+                            <requires version="current">libxml2</requires>
                             <requires version="current" buildOnly="true">cmake3</requires>
+                            <requires version="current" buildOnly="true">libxml2-devel</requires>
                         </package>
                         <package name="devel">
                             <!-- Library, etc. -->
@@ -93,6 +95,9 @@
                                 <include>*.so</include>
                             </include>
                             <!-- Basic classes -->
+                            <include type="file" source="main/c++/instructions" target="include/sup">
+                                <include>*.h</include>
+                            </include>
                             <include type="file" source="main/c++/procedure" target="include/sup">
                                 <include>*.h</include>
                             </include>

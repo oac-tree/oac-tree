@@ -85,8 +85,10 @@
                             <!-- Programs -->
                             <!-- Package dependencies -->
                             <requires version="current">libxml2</requires>
+                            <requires codac="true">cpp-common</requires>
                             <requires version="current" buildOnly="true">cmake3</requires>
                             <requires version="current" buildOnly="true">libxml2-devel</requires>
+                            <requires codac="true" buildOnly="true">cpp-common-devel</requires>
                         </package>
                         <package name="devel">
                             <!-- Library, etc. -->
@@ -112,7 +114,6 @@
                             <include type="file" source="bin/unit-tests" target="tests/${project.artifactId}/unit-tests"/>
                             <!-- Package dependencies -->
                             <requires version="current">%{codac_rpm_prefix}-${project.artifactId}-devel</requires>
-                            <requires version="current">gtest</requires>
                             <requires version="current" buildOnly="true">gtest-devel</requires>
                         </package>
                     </packaging>

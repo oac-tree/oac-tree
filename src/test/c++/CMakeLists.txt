@@ -10,26 +10,34 @@ if(CMAKE_VERSION VERSION_LESS "3.7.0")
 endif()
 
 add_executable(unit-tests
-    main.cpp
+    # main.cpp
 )
 
-include_directories(
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../main/c++
+target_include_directories(unit-tests
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../main/c++
+        $ENV{CODAC_ROOT}/include
 )
 
 target_link_directories(unit-tests
-    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../../lib
-)
-
-target_sources(unit-tests
     PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/SuccessNode.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/TestProcedureFactory.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/TestUI.cpp
-    PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/SuccessNode.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/TestProcedureFactory.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/TestUI.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../lib
+        $ENV{CODAC_ROOT}/lib
 )
 
-target_link_libraries(unit-tests sequencer)
+# target_sources(unit-tests
+#     PRIVATE
+#         ${CMAKE_CURRENT_SOURCE_DIR}/SuccessNode.cpp
+#         ${CMAKE_CURRENT_SOURCE_DIR}/TestProcedureFactory.cpp
+#         ${CMAKE_CURRENT_SOURCE_DIR}/TestUI.cpp
+#     PUBLIC
+#         ${CMAKE_CURRENT_SOURCE_DIR}/SuccessNode.h
+#         ${CMAKE_CURRENT_SOURCE_DIR}/TestProcedureFactory.h
+#         ${CMAKE_CURRENT_SOURCE_DIR}/TestUI.h
+# )
+
+find_package(GTest REQUIRED)
+
+add_subdirectory(unit)
+
+target_link_libraries(unit-tests sequencer GTest::GTest GTest::Main ccs-common)

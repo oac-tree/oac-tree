@@ -7,18 +7,18 @@ TARGET=../../../target
 BIN_DIR := $(TARGET)/bin
 BUILD_DIR := ./build
 
-EXECUTABLE := $(BUILD_DIR)/$(PROGNAME)
+UNIT_TEST := $(BUILD_DIR)/unit/$(PROGNAME)
 
 BUILD_TYPE = Release
 CMAKE_FLAGS = -DCMAKE_BUILD_TYPE=$(BUILD_TYPE)
 
-all: executable
+all: unit-tests
 
-executable: $(EXECUTABLE)
+unit-tests: $(UNIT_TEST)
 	@mkdir -p $(BIN_DIR)
-	cp $(EXECUTABLE) $(BIN_DIR)/
+	cp $(UNIT_TEST) $(BIN_DIR)/
 
-$(EXECUTABLE):
+$(UNIT_TEST):
 	@mkdir -p $(BUILD_DIR)
 	cmake3 -B$(BUILD_DIR) $(CMAKE_FLAGS)
 	$(MAKE) -C $(BUILD_DIR)

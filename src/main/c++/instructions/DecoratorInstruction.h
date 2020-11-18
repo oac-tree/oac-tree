@@ -8,7 +8,7 @@
 class DecoratorInstruction : public Instruction
 {
 protected:
-    std::unique_ptr<Instruction> __child;
+    std::unique_ptr<Instruction> _child;
 
 public:
     DecoratorInstruction(std::string type);

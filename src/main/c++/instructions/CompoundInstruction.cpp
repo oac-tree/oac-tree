@@ -7,7 +7,7 @@ CompoundInstruction::CompoundInstruction(std::string type)
 
 CompoundInstruction::~CompoundInstruction()
 {
-    for (auto instruction : __children)
+    for (auto instruction : _children)
     {
         delete instruction;
     }
@@ -15,5 +15,5 @@ CompoundInstruction::~CompoundInstruction()
 
 void CompoundInstruction::PushBack(Instruction * instruction)
 {
-    __children.push_back(instruction);
+    _children.push_back(instruction);
 }

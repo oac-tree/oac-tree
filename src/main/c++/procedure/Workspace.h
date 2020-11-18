@@ -9,7 +9,7 @@
 class Workspace
 {
 private:
-    std::map<std::string, Variable> __var_map;
+    std::map<std::string, Variable> _var_map;
 
 public:
     /**

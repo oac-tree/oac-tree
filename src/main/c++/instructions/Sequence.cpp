@@ -3,11 +3,11 @@
 
 ExecutionStatus Sequence::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
 {
-    if (__children.empty())
+    if (_children.empty())
     {
         return ExecutionStatus::SUCCESS;
     }
-    for (auto instruction : __children)
+    for (auto instruction : _children)
     {
         auto child_status = instruction->GetStatus();
 
@@ -33,7 +33,7 @@ ExecutionStatus Sequence::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
 
 ExecutionStatus Sequence::CalculateCompoundStatus() const
 {
-    for (auto instruction : __children)
+    for (auto instruction : _children)
     {
         auto child_status = instruction->GetStatus();
 

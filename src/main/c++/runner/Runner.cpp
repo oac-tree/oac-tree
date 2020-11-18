@@ -1,8 +1,8 @@
 #include "Runner.h"
 
 Runner::Runner(UserInterface * ui)
-    : __proc{nullptr}
-    , __ui{ui}
+    : _proc{nullptr}
+    , _ui{ui}
 {}
 
 Runner::~Runner()
@@ -10,12 +10,12 @@ Runner::~Runner()
 
 void Runner::SetProcedure(Procedure * procedure)
 {
-    __proc = procedure;
+    _proc = procedure;
 }
 
 void Runner::ExecuteProcedure()
 {
-    if (__proc)
+    if (_proc)
     {
         while(!IsFinished())
         {
@@ -26,22 +26,22 @@ void Runner::ExecuteProcedure()
 
 void Runner::ExecuteSingle()
 {
-    if (__proc)
+    if (_proc)
     {
-        __ui->StartSingleStep();
-        __proc->ExecuteSingle(__ui);
-        __ui->EndSingleStep();
+        _ui->StartSingleStep();
+        _proc->ExecuteSingle(_ui);
+        _ui->EndSingleStep();
     }
 }
 
 bool Runner::IsFinished() const
 {
-    if (!__proc)
+    if (!_proc)
     {
         return true;
     }
 
-    auto status = __proc->GetStatus();
+    auto status = _proc->GetStatus();
     return (status == ExecutionStatus::SUCCESS ||
             status == ExecutionStatus::FAILURE);
 }

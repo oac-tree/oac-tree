@@ -4,16 +4,16 @@
 
 ExecutionStatus Inverter::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
 {
-    if (!__child)
+    if (!_child)
     {
         return ExecutionStatus::SUCCESS;
     }
 
-    auto child_status = __child->GetStatus();
+    auto child_status = _child->GetStatus();
     if (child_status == ExecutionStatus::UNDEFINED ||
         child_status == ExecutionStatus::STARTED)
     {
-        __child->ExecuteSingle(ui, ws);
+        _child->ExecuteSingle(ui, ws);
     }
 
     return CalculateStatus();
@@ -21,12 +21,12 @@ ExecutionStatus Inverter::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
 
 ExecutionStatus Inverter::CalculateStatus() const
 {
-    if (!__child)
+    if (!_child)
     {
         return ExecutionStatus::SUCCESS;
     }
 
-    auto child_status = __child->GetStatus();
+    auto child_status = _child->GetStatus();
     auto status = child_status;
 
     switch (child_status)

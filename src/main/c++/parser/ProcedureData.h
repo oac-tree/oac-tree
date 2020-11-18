@@ -10,8 +10,8 @@
 class ProcedureData
 {
 private:
-  std::unique_ptr<InstructionData> __root;
-  std::unique_ptr<WorkspaceData> __workspace;
+  std::unique_ptr<InstructionData> _root;
+  std::unique_ptr<WorkspaceData> _workspace;
 
 public:
   ProcedureData(InstructionData * root, WorkspaceData * ws_data);

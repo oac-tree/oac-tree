@@ -2,64 +2,79 @@
 
 #include "runner/UserInterface.h"
 
+static const std::string NAME_ATTRIBUTE = "name";
+
 void Instruction::Preamble(UserInterface * ui)
 {
-    if (__status == ExecutionStatus::UNDEFINED)
-    {
-        __status = ExecutionStatus::STARTED;
-        ui->UpdateInstructionStatus(this);
-    }
+  if (_status == ExecutionStatus::UNDEFINED)
+  {
+    _status = ExecutionStatus::STARTED;
+    ui->UpdateInstructionStatus(this);
+  }
 }
 
 void Instruction::Postamble(UserInterface * ui)
 {
-    if (__status != __status_before)
-    {
-        ui->UpdateInstructionStatus(this);
-    }
+  if (_status != _status_before)
+  {
+    ui->UpdateInstructionStatus(this);
+  }
 }
 
 Instruction::Instruction(std::string type)
-    : __type{std::move(type)}
-    , __name{}
-    , __status{ExecutionStatus::UNDEFINED}
-    , __status_before{ExecutionStatus::UNDEFINED}
+  : _type{std::move(type)}
+  , _status{ExecutionStatus::UNDEFINED}
+  , _status_before{ExecutionStatus::UNDEFINED}
 {}
 
 Instruction::~Instruction() = default;
 
 std::string Instruction::GetType() const
 {
-    return __type;
+  return _type;
 }
 
 std::string Instruction::GetName() const
 {
-    return __name;
+  return GetAttribute(NAME_ATTRIBUTE);
 }
 
 void Instruction::SetName(std::string name)
 {
-    __name = std::move(name);
+  SetAttribute(NAME_ATTRIBUTE, name);
 }
 
 void Instruction::ExecuteSingle(UserInterface * ui, Workspace * ws)
 {
-    Preamble(ui);
+  Preamble(ui);
 
-    __status_before = __status;
+  _status_before = _status;
 
-    __status = ExecuteSingleImpl(ui, ws);
+  _status = ExecuteSingleImpl(ui, ws);
 
-    Postamble(ui);
+  Postamble(ui);
 }
 
 ExecutionStatus Instruction::GetStatus() const
 {
-    return __status;
+  return _status;
 }
 
 void Instruction::ResetStatus()
 {
-    __status = ExecutionStatus::UNDEFINED;
+  _status = ExecutionStatus::UNDEFINED;
+}
+
+std::string Instruction::GetAttribute(const std::string & name) const
+{
+  if (_attributes.find(name) == _attributes.end())
+  {
+      return {};
+  }
+  return _attributes.at(name);
+}
+
+std::string Instruction::SetAttribute(const std::string & name, const std::string & value)
+{
+  _attributes[name] = value;
 }

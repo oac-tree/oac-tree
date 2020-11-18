@@ -3,25 +3,25 @@
 #include <utility>
 
 Workspace::Workspace()
-    : __var_map{}
+    : _var_map{}
 {}
 
 Workspace::~Workspace() = default;
 
 bool Workspace::AddVariable(Variable var)
 {
-    if (__var_map.find(var.GetName()) != __var_map.end())
+    if (_var_map.find(var.GetName()) != _var_map.end())
     {
         return false;
     }
-    __var_map.insert(std::map<std::string, Variable>::value_type(var.GetName(), var));
+    _var_map.insert(std::map<std::string, Variable>::value_type(var.GetName(), var));
     return true;
 }
 
 std::vector<std::string> Workspace::VariableNames() const
 {
     std::vector<std::string> result;
-    for(const auto & entry : __var_map)
+    for(const auto & entry : _var_map)
     {
         auto name = entry.first;
         result.push_back(name);
@@ -31,8 +31,8 @@ std::vector<std::string> Workspace::VariableNames() const
 
 int Workspace::GetVariableValue(std::string name)
 {
-    auto it = __var_map.find(name);
-    if (it == __var_map.end())
+    auto it = _var_map.find(name);
+    if (it == _var_map.end())
     {
         return 0;
     }
@@ -42,8 +42,8 @@ int Workspace::GetVariableValue(std::string name)
 
 bool Workspace::SetVariableValue(std::string name, int value)
 {
-    auto it = __var_map.find(name);
-    if (it == __var_map.end())
+    auto it = _var_map.find(name);
+    if (it == _var_map.end())
     {
         return false;
     }

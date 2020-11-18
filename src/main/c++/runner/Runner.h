@@ -9,9 +9,9 @@ class Instruction;
 class Runner
 {
 private:
-    Procedure * __proc;
+    Procedure * _proc;
 
-    UserInterface * __ui;
+    UserInterface * _ui;
 
 public:
     Runner(UserInterface * ui);

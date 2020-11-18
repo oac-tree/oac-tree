@@ -2,8 +2,8 @@
 
 
 Variable::Variable(std::string name)
-    : __name{std::move(name)}
-    , __value{}
+    : _name{std::move(name)}
+    , _value{}
 {}
 
 Variable::Variable(const Variable &other) = default;
@@ -12,16 +12,16 @@ Variable::~Variable() = default;
 
 std::string Variable::GetName() const
 {
-    return __name;
+    return _name;
 }
 
 int Variable::GetValue() const
 {
-    return __value;
+    return _value;
 }
 
 bool Variable::SetValue(int val)
 {
-    __value = val;
+    _value = val;
     return true;
 }

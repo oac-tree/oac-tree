@@ -1,44 +1,44 @@
 #include "Procedure.h"
 
 Procedure::Procedure()
-    : __root_sequence{new Sequence()}
-    , __workspace{}
+    : _root_sequence{new Sequence()}
+    , _workspace{}
 {}
 
 Procedure::~Procedure() = default;
 
 bool Procedure::AddVariable(Variable var)
 {
-    return __workspace->AddVariable(var);
+    return _workspace->AddVariable(var);
 }
 
 std::vector<std::string> Procedure::VariableNames() const
 {
-    return __workspace->VariableNames();
+    return _workspace->VariableNames();
 }
 
 int Procedure::GetVariableValue(std::string name)
 {
-    return __workspace->GetVariableValue(name);
+    return _workspace->GetVariableValue(name);
 }
 
 bool Procedure::SetVariableValue(std::string name, int value)
 {
-    return __workspace->SetVariableValue(name, value);
+    return _workspace->SetVariableValue(name, value);
 }
 
 bool Procedure::PushInstruction(Instruction * instruction)
 {
-    __root_sequence->PushBack(instruction);
+    _root_sequence->PushBack(instruction);
     return true;
 }
 
 void Procedure::ExecuteSingle(UserInterface * ui)
 {
-    __root_sequence->ExecuteSingle(ui, __workspace.get());
+    _root_sequence->ExecuteSingle(ui, _workspace.get());
 }
 
 ExecutionStatus Procedure::GetStatus() const
 {
-    return __root_sequence->GetStatus();
+    return _root_sequence->GetStatus();
 }

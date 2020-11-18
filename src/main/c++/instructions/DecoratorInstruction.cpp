@@ -3,7 +3,7 @@
 
 DecoratorInstruction::DecoratorInstruction(std::string type)
     : Instruction(type)
-    , __child{}
+    , _child{}
 {}
 
 DecoratorInstruction::~DecoratorInstruction()
@@ -11,5 +11,5 @@ DecoratorInstruction::~DecoratorInstruction()
 
 void DecoratorInstruction::SetInstruction(Instruction * instruction)
 {
-    __child.reset(instruction);
+    _child.reset(instruction);
 }

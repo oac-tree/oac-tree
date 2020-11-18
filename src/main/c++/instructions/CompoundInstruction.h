@@ -8,7 +8,7 @@
 class CompoundInstruction : public Instruction
 {
 protected:
-    std::vector<Instruction *> __children;
+    std::vector<Instruction *> _children;
 
 public:
     CompoundInstruction(std::string type);

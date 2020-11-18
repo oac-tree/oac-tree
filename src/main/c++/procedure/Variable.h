@@ -6,8 +6,8 @@
 class Variable
 {
 private:
-    std::string __name;
-    int __value;
+    std::string _name;
+    int _value;
 
 public:
     /**

@@ -15,8 +15,8 @@
 class Procedure
 {
 private:
-    std::unique_ptr<Sequence> __root_sequence;
-    std::unique_ptr<Workspace> __workspace;
+    std::unique_ptr<Sequence> _root_sequence;
+    std::unique_ptr<Workspace> _workspace;
 
 public:
     /**

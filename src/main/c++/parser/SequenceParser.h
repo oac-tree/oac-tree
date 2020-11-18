@@ -3,11 +3,11 @@
 
 #include <memory>
 
-#include "ProcedureData.h"
+#include "procedure/Procedure.h"
 
 namespace SequenceParser
 {
-std::unique_ptr<ProcedureData> ParseProcedureXML(const char * const filename);
+std::unique_ptr<Procedure> ParseProcedureFile(const char * const filename);
 }
 
 #endif // SEQUENCEPARSER_H

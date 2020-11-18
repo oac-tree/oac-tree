@@ -1,14 +1,16 @@
 target_sources(sequencer
     PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/Attribute.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/InstructionData.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/ProcedureData.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/SequenceParser.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/WorkspaceData.cpp
-    PUBLIC
         ${CMAKE_CURRENT_LIST_DIR}/Attribute.h
+        ${CMAKE_CURRENT_LIST_DIR}/InstructionData.cpp
         ${CMAKE_CURRENT_LIST_DIR}/InstructionData.h
+        ${CMAKE_CURRENT_LIST_DIR}/ProcedureData.cpp
         ${CMAKE_CURRENT_LIST_DIR}/ProcedureData.h
-        ${CMAKE_CURRENT_LIST_DIR}/SequenceParser.h
+        ${CMAKE_CURRENT_LIST_DIR}/SequenceParser.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/SequenceParserImpl.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/SequenceParserImpl.h
+        ${CMAKE_CURRENT_LIST_DIR}/WorkspaceData.cpp
         ${CMAKE_CURRENT_LIST_DIR}/WorkspaceData.h
+    PUBLIC
+        ${CMAKE_CURRENT_LIST_DIR}/SequenceParser.h
 )

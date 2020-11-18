@@ -6,9 +6,6 @@
 
 #include "Attribute.h"
 
-namespace SequenceParser
-{
-
 class InstructionData
 {
 private:
@@ -29,7 +26,5 @@ public:
 
   const std::vector<InstructionData> Children() const;
 };
-
-} // namespace SequenceParser
 
 #endif // INSTRUCTIONDATA_H

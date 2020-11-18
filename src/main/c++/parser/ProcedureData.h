@@ -5,9 +5,7 @@
 
 #include "InstructionData.h"
 #include "WorkspaceData.h"
-
-namespace SequenceParser
-{
+#include "procedure/Procedure.h"
 
 class ProcedureData
 {
@@ -19,8 +17,8 @@ public:
   ProcedureData(InstructionData * root, WorkspaceData * ws_data);
 
   ~ProcedureData() = default;
-};
 
-} // namespace SequenceParser
+  std::unique_ptr<Procedure> CreateProcedure() const;
+};
 
 #endif // PROCEDUREDATA_H

@@ -3,9 +3,6 @@
 
 #include <string>
 
-namespace SequenceParser
-{
-
 class Attribute
 {
 private:
@@ -20,7 +17,5 @@ public:
   const std::string Name() const;
   const std::string Value() const;
 };
-
-} // namespace SequenceParser
 
 #endif // ATTRIBUTE_H

@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "Attribute.h"
+#include "instructions/Attribute.h"
 
 class InstructionData
 {

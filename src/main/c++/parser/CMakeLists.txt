@@ -1,7 +1,5 @@
 target_sources(sequencer
     PRIVATE
-        ${CMAKE_CURRENT_LIST_DIR}/Attribute.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Attribute.h
         ${CMAKE_CURRENT_LIST_DIR}/InstructionData.cpp
         ${CMAKE_CURRENT_LIST_DIR}/InstructionData.h
         ${CMAKE_CURRENT_LIST_DIR}/ProcedureData.cpp

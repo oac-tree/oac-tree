@@ -26,5 +26,6 @@ add_subdirectory(instructions)
 target_include_directories(sequencer
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
     PRIVATE ${LIBXML2_INCLUDE_DIR}
+    PRIVATE $ENV{CODAC_ROOT}/include
     )
 target_link_libraries(sequencer ${LIBXML2_LIBRARIES})

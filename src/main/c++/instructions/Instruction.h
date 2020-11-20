@@ -1,14 +1,59 @@
-#ifndef INSTRUCTION_H
-#define INSTRUCTION_H
+/******************************************************************************
+* $HeadURL: $
+* $Id: $
+*
+* Project       : SUP - Sequencer
+*
+* Description   : Sequencer for operational procedures
+*
+* Author        : Walter Van Herck (IO)
+*
+* Copyright (c) : 2010-2020 ITER Organization,
+*                 CS 90 046
+*                 13067 St. Paul-lez-Durance Cedex
+*                 France
+*
+* This file is part of ITER CODAC software.
+* For the terms and conditions of redistribution or use of this software
+* refer to the file ITER-LICENSE.TXT located in the top level directory
+* of the distribution package.
+******************************************************************************/
+
+/**
+ * @file Instruction.h
+ * @brief Header file for Instruction interface.
+ * @date 20/11/2020
+ * @author Walter Van Herck (IO)
+ * @copyright 2010-2020 ITER Organization
+ * @details This header file contains the definition of the Instruction interface.
+ */
+
+#ifndef _SEQ_Instruction_h_
+#define _SEQ_Instruction_h_
+
+// Global header files
 
 #include <map>
 
-#include "Attribute.h"
+// Local header files
 
+#include "Attribute.h"
 #include "procedure/ExecutionStatus.h"
+
+// Constants
+
+#ifdef __cplusplus
+
+namespace sup {
+
+namespace sequencer {
+
+// Forward declarations
 
 class UserInterface;
 class Workspace;
+
+// Type definition
 
 /**
  * @brief Abstract interface for all executable instructions
@@ -21,83 +66,105 @@ class Workspace;
  */
 class Instruction
 {
-private:
-  std::string _type;
+  private:
+    std::string _type;  // typename of the instruction
 
-  ExecutionStatus _status;
+    ExecutionStatus _status;
 
-  ExecutionStatus _status_before;
+    ExecutionStatus _status_before;
 
-  std::map<std::string, std::string> _attributes;
+    std::map<std::string, std::string> _attributes;
 
-  virtual void Preamble(UserInterface * ui);
+    virtual void Preamble(UserInterface * ui);
 
-  virtual ExecutionStatus ExecuteSingleImpl(UserInterface * ui, Workspace * ws) = 0;
+    virtual ExecutionStatus ExecuteSingleImpl(UserInterface * ui, Workspace * ws) = 0;
 
-  virtual void Postamble(UserInterface * ui);
+    virtual void Postamble(UserInterface * ui);
 
-public:
-  /**
-   * @brief Constructor
-   */
-  Instruction(std::string type);
+  protected:
 
-  /**
-   * @brief Virtual destructor
-   */
-  virtual ~Instruction();
+  public:
+    /**
+     * @brief Constructor
+     * @param type The type of instruction.
+     */
+    Instruction(std::string type);
 
-  /**
-   * @brief Get instruction type
-   * @return instruction type
-   */
-  std::string GetType() const;
+    /**
+     * @brief Virtual destructor
+     */
+    virtual ~Instruction();
 
-  /**
-   * @brief Get instruction name
-   * @return instruction name
-   */
-  std::string GetName() const;
+    /**
+     * @brief Get instruction type
+     * @return instruction type
+     */
+    std::string GetType() const;
 
-  /**
-   * @brief Set instruction name
-   * @param name Name to set
-   * @return void
-   */
-  void SetName(std::string name);
+    /**
+     * @brief Get instruction name
+     * @return instruction name
+     */
+    std::string GetName() const;
 
-  /**
-   * @brief Execution method
-   * @details
-   * @param
-   * @return
-   */
-  void ExecuteSingle(UserInterface * ui, Workspace * ws);
+    /**
+     * @brief Set instruction name
+     * @param name Name to set
+     * @return void
+     */
+    void SetName(std::string name);
 
-  /**
-   * @brief Get execution status
-   */
-  ExecutionStatus GetStatus() const;
+    /**
+     * @brief Execution method
+     * @details
+     * @param
+     * @return
+     */
+    void ExecuteSingle(UserInterface * ui, Workspace * ws);
 
-  /**
-   * @brief Reset execution status
-   */
-  void ResetStatus();
+    /**
+     * @brief Get execution status
+     */
+    ExecutionStatus GetStatus() const;
 
-  /**
-   * @brief Get attribute with given name
-   *
-   * @param name Attribute name
-   */
-  std::string GetAttribute(const std::string & name) const;
+    /**
+     * @brief Reset execution status
+     */
+    void ResetStatus();
 
-  /**
-   * @brief Set attribute with given name and value
-   *
-   * @param name Attribute name
-   * @param value Attribute value
-   */
-  std::string SetAttribute(const std::string & name, const std::string & value);
+    /**
+     * @brief Get attribute with given name
+     *
+     * @param name Attribute name
+     */
+    std::string GetAttribute(const std::string & name) const;
+
+    /**
+     * @brief Set attribute with given name and value
+     *
+     * @param name Attribute name
+     * @param value Attribute value
+     */
+    std::string SetAttribute(const std::string & name, const std::string & value);
 };
 
-#endif // INSTRUCTION_H
+// Global variables
+
+// Function declarations
+
+// Function definitions
+
+} // namespace sequencer
+
+} // namespace sup
+
+extern "C" {
+#endif // __cplusplus
+
+// C API function declarations
+
+#ifdef __cplusplus
+} // extern C
+#endif // __cplusplus
+
+#endif // _SEQ_Instruction_h_

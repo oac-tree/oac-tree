@@ -10,11 +10,11 @@ class InstructionData
 {
 private:
   const std::string _type;
-  std::vector<Attribute> _attributes;
+  std::vector<sup::sequencer::Attribute> _attributes;
   std::vector<InstructionData> _children;
 
 public:
-  InstructionData();
+  InstructionData(std::string instr_type);
 
   ~InstructionData() = default;
 
@@ -22,7 +22,7 @@ public:
 
   bool AddChild(const InstructionData & child);
 
-  const std::vector<Attribute> Attributes() const;
+  const std::vector<sup::sequencer::Attribute> Attributes() const;
 
   const std::vector<InstructionData> Children() const;
 };

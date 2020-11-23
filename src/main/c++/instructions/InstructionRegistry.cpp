@@ -45,10 +45,10 @@ namespace sequencer {
 
 // Function definition
 
-InstructionRegistry & InstructionRegistry::Instance()
+InstructionRegistry & GlobalInstructionRegistry()
 {
-  static InstructionRegistry instance;
-  return instance;
+  static InstructionRegistry global_instruction_registry;
+  return global_instruction_registry;
 }
 
 bool InstructionRegistry::RegisterInstruction(std::string name, InstructionConstructor constructor)

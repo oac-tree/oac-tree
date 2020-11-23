@@ -58,11 +58,6 @@ class InstructionRegistry
 {
   private:
     /**
-     * @brief Constructor.
-     */
-    InstructionRegistry() = default;
-
-    /**
      * @brief Definition of Instruction constructor.
      */
     using InstructionConstructor = Instruction *(*)();
@@ -76,9 +71,9 @@ class InstructionRegistry
 
   public:
     /**
-     * @brief Get unique instance of registry.
+     * @brief Constructor.
      */
-    static InstructionRegistry & Instance();
+    InstructionRegistry() = default;
 
     /**
      * @brief Register an instruction.
@@ -105,6 +100,8 @@ class InstructionRegistry
 
 // Function declarations
 
+InstructionRegistry & GlobalInstructionRegistry();
+
 // Function definitions
 
 /**
@@ -119,7 +116,7 @@ template <class T>
 bool RegisterInstruction()
 {
   auto constructor = []() { return static_cast<Instruction*>(new T()); };
-  return InstructionRegistry::Instance().RegisterInstruction(T::Type, constructor);
+  return GlobalInstructionRegistry().RegisterInstruction(T::Type, constructor);
 }
 
 } // namespace sequencer

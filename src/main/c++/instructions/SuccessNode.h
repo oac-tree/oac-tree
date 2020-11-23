@@ -35,7 +35,7 @@
 
 // Local header files
 
-#include "instructions/Instruction.h"
+#include "Instruction.h"
 
 // Constants
 
@@ -51,7 +51,7 @@ namespace sequencer {
  * @brief Instruction node that always returns SUCCESS immediately.
  */
 
-class SuccessNode : public sup::sequencer::Instruction
+class SuccessNode : public Instruction
 {
   private:
     /**

@@ -26,7 +26,7 @@
 // Local header files
 
 #include "SuccessNode.h"
-#include "instructions/InstructionRegistry.h"
+#include "InstructionRegistry.h"
 
 // Constants
 

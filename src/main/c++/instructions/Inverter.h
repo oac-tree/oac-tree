@@ -70,6 +70,8 @@ class Inverter : public DecoratorInstruction
      * @brief Destructor.
      */
     ~Inverter() override;
+
+    static const std::string Type;
 };
 
 // Global variables

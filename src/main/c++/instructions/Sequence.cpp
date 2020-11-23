@@ -41,6 +41,9 @@ namespace sequencer {
 
 // Global variables
 
+const std::string Sequence::Type = "Sequence";
+static bool _SequenceRegistered = RegisterInstruction<Sequence>();
+
 // Function declaration
 
 // Function definition
@@ -100,7 +103,7 @@ ExecutionStatus Sequence::CalculateCompoundStatus() const
 }
 
 Sequence::Sequence()
-  : CompoundInstruction(InstructionRegistry::SequenceType)
+  : CompoundInstruction(Type)
 {}
 
 Sequence::~Sequence()

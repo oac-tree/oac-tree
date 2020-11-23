@@ -70,6 +70,8 @@ class Sequence : public CompoundInstruction
      * @brief Destructor.
      */
     ~Sequence() override;
+
+    static const std::string Type;
 };
 
 // Global variables

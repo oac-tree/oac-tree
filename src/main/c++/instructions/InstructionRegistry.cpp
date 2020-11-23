@@ -25,8 +25,8 @@
 
 // Local header files
 
-#include "Inverter.h"
 #include "InstructionRegistry.h"
+#include "Instruction.h"
 
 // Constants
 
@@ -41,60 +41,36 @@ namespace sequencer {
 
 // Global variables
 
-const std::string Inverter::Type = "Inverter";
-static bool _InverterRegistered = RegisterInstruction<Inverter>();
-
 // Function declaration
 
 // Function definition
 
-ExecutionStatus Inverter::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
+InstructionRegistry & InstructionRegistry::Instance()
 {
-  if (!_child)
-  {
-    return ExecutionStatus::SUCCESS;
-  }
-
-  auto child_status = _child->GetStatus();
-  if (child_status == ExecutionStatus::UNDEFINED ||
-    child_status == ExecutionStatus::STARTED)
-  {
-    _child->ExecuteSingle(ui, ws);
-  }
-
-  return CalculateStatus();
+  static InstructionRegistry instance;
+  return instance;
 }
 
-ExecutionStatus Inverter::CalculateStatus() const
+bool InstructionRegistry::RegisterInstruction(std::string name, InstructionConstructor constructor)
 {
-  if (!_child)
-  {
-    return ExecutionStatus::SUCCESS;
-  }
-
-  auto child_status = _child->GetStatus();
-  auto status = child_status;
-
-  switch (child_status)
-  {
-  case ExecutionStatus::FAILURE:
-    status = ExecutionStatus::SUCCESS;
-    break;
-  case ExecutionStatus::SUCCESS:
-    status = ExecutionStatus::FAILURE;
-    break;
-  default:
-    break;
-  }
-  return status;
+  _instruction_map[name] = constructor;
+  return true;
 }
 
-Inverter::Inverter()
-  : DecoratorInstruction(Type)
-{}
+std::unique_ptr<Instruction> InstructionRegistry::Create(std::string name)
+{
+  return std::unique_ptr<Instruction>(_instruction_map[name]());
+}
 
-Inverter::~Inverter()
-{}
+std::vector<std::string> InstructionRegistry::RegisteredInstructionNames() const
+{
+  std::vector<std::string> result;
+  for (const auto elem : _instruction_map)
+  {
+    result.push_back(elem.first);
+  }
+  return result;
+}
 
 } // namespace sequencer
 

@@ -54,6 +54,11 @@ class Instruction;
 
 // Type definition
 
+/**
+ * @brief Registry holding a mapping between Instruction names and
+ * their constructors.
+ */
+
 class InstructionRegistry
 {
   private:
@@ -111,6 +116,19 @@ InstructionRegistry & GlobalInstructionRegistry();
  * define its typename as a static std::string member 'Type'
  *
  * @code
+   // Declare Instruction with static 'Type' string
+   class MyInstruction : public Instruction
+   {
+     ...
+     static const std::string Type;
+   };
+
+   // Define the typename for the instruction
+   const std::string MyInstruction::Type = "MyInstruction";
+
+   // Register the instruction for serialization
+   static bool _MyInstructionRegistered = RegisterInstruction<MyInstruction>();
+   @endcode
  */
 template <class T>
 bool RegisterInstruction()

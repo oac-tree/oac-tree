@@ -1,6 +1,5 @@
 target_sources(sequencer
     PRIVATE
-        ${CMAKE_CURRENT_LIST_DIR}/Attribute.cpp
         ${CMAKE_CURRENT_LIST_DIR}/CompoundInstruction.cpp
         ${CMAKE_CURRENT_LIST_DIR}/DecoratorInstruction.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Instruction.cpp
@@ -8,7 +7,6 @@ target_sources(sequencer
         ${CMAKE_CURRENT_LIST_DIR}/Inverter.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Sequence.cpp
     PUBLIC
-        ${CMAKE_CURRENT_LIST_DIR}/Attribute.h
         ${CMAKE_CURRENT_LIST_DIR}/CompoundInstruction.h
         ${CMAKE_CURRENT_LIST_DIR}/DecoratorInstruction.h
         ${CMAKE_CURRENT_LIST_DIR}/Instruction.h

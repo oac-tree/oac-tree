@@ -1,30 +1,136 @@
-#ifndef INSTRUCTIONDATA_H
-#define INSTRUCTIONDATA_H
+/******************************************************************************
+* $HeadURL: $
+* $Id: $
+*
+* Project       : SUP - Sequencer
+*
+* Description   : Sequencer for operational procedures
+*
+* Author        : Walter Van Herck (IO)
+*
+* Copyright (c) : 2010-2020 ITER Organization,
+*                 CS 90 046
+*                 13067 St. Paul-lez-Durance Cedex
+*                 France
+*
+* This file is part of ITER CODAC software.
+* For the terms and conditions of redistribution or use of this software
+* refer to the file ITER-LICENSE.TXT located in the top level directory
+* of the distribution package.
+******************************************************************************/
 
+/**
+ * @file InstructionData.h
+ * @brief Header file for InstructionData class.
+ * @date 23/11/2020
+ * @author Walter Van Herck (IO)
+ * @copyright 2010-2020 ITER Organization
+ * @details This header file contains the definition of the InstructionData class.
+ */
+
+#ifndef _SEQ_InstructionData_h_
+#define _SEQ_InstructionData_h_
+
+// Global header files
+
+#include <map>
 #include <string>
 #include <vector>
 
-#include "instructions/Attribute.h"
+// Local header files
+
+// Constants
+
+// Type definition
+
+#ifdef __cplusplus
+
+namespace sup {
+
+namespace sequencer {
+
+/**
+ * @brief Data representation of an Instruction.
+ */
 
 class InstructionData
 {
-private:
-  const std::string _type;
-  std::vector<sup::sequencer::Attribute> _attributes;
-  std::vector<InstructionData> _children;
+  private:
+    const std::string _type;
+    std::map<std::string, std::string> _attributes;
+    std::vector<InstructionData> _children;
 
-public:
-  InstructionData(std::string instr_type);
+  protected:
 
-  ~InstructionData() = default;
+  public:
+    /**
+     * @brief Constructor.
+     * @param instr_type Instruction typename.
+     */
+    InstructionData(std::string instr_type);
 
-  bool AddAttribute(const std::string & att_name, const std::string & value);
+    /**
+     * @brief Destructor.
+     */
+    ~InstructionData() = default;
 
-  bool AddChild(const InstructionData & child);
+    /**
+     * @brief Indicate presence of attribute with given name.
+     *
+     * @param name Attribute name.
+     * @return true when present.
+     */
+    bool HasAttribute(const std::string & name);
 
-  const std::vector<sup::sequencer::Attribute> Attributes() const;
+    /**
+     * @brief Add attribute.
+     *
+     * @param name Attribute name.
+     * @param value Attribute value.
+     * @return true on successful adding.
+     */
+    bool AddAttribute(const std::string & name, const std::string & value);
 
-  const std::vector<InstructionData> Children() const;
+    /**
+     * @brief Add child instruction.
+     *
+     * @param child Data representation of child instruction.
+     * @return true on success.
+     */
+    bool AddChild(const InstructionData & child);
+
+    /**
+     * @brief Retrieve map of all attributes.
+     *
+     * @return Map of all attributes.
+     */
+    const std::map<std::string, std::string> & Attributes() const;
+
+    /**
+     * @brief Retrieve all child instructions.
+     *
+     * @return List of child instructions.
+     */
+    const std::vector<InstructionData> & Children() const;
 };
 
-#endif // INSTRUCTIONDATA_H
+// Global variables
+
+// Function declarations
+
+// Function definitions
+
+} // namespace sequencer
+
+} // namespace sup
+
+extern "C" {
+#endif // __cplusplus
+
+// C API function declarations
+
+#ifdef __cplusplus
+} // extern C
+#endif // __cplusplus
+
+#endif // _SEQ_InstructionData_h_

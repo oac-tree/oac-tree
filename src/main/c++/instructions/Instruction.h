@@ -37,7 +37,6 @@
 
 // Local header files
 
-#include "Attribute.h"
 #include "procedure/ExecutionStatus.h"
 
 // Constants
@@ -133,19 +132,29 @@ class Instruction
     void ResetStatus();
 
     /**
-     * @brief Get attribute with given name
+     * @brief Indicate presence of attribute with given name.
      *
-     * @param name Attribute name
+     * @param name Attribute name.
+     * @return true when present.
+     */
+    bool HasAttribute(const std::string & name) const;
+
+    /**
+     * @brief Get attribute with given name.
+     *
+     * @param name Attribute name.
+     * @return Attribute value.
      */
     std::string GetAttribute(const std::string & name) const;
 
     /**
-     * @brief Set attribute with given name and value
+     * @brief Set attribute with given name and value.
      *
-     * @param name Attribute name
-     * @param value Attribute value
+     * @param name Attribute name.
+     * @param value Attribute value.
+     * @return true when successful.
      */
-    std::string SetAttribute(const std::string & name, const std::string & value);
+    bool AddAttribute(const std::string & name, const std::string & value);
 };
 
 // Global variables

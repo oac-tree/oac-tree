@@ -84,7 +84,7 @@ std::string Instruction::GetName() const
 
 void Instruction::SetName(std::string name)
 {
-  SetAttribute(NAME_ATTRIBUTE, name);
+  AddAttribute(NAME_ATTRIBUTE, name);
 }
 
 void Instruction::ExecuteSingle(UserInterface * ui, Workspace * ws)
@@ -108,18 +108,28 @@ void Instruction::ResetStatus()
   _status = ExecutionStatus::UNDEFINED;
 }
 
+bool Instruction::HasAttribute(const std::string & name) const
+{
+  return _attributes.find(name) != _attributes.end();
+}
+
 std::string Instruction::GetAttribute(const std::string & name) const
 {
-  if (_attributes.find(name) == _attributes.end())
+  if (!HasAttribute(name))
   {
       return {};
   }
   return _attributes.at(name);
 }
 
-std::string Instruction::SetAttribute(const std::string & name, const std::string & value)
+bool Instruction::AddAttribute(const std::string & name, const std::string & value)
 {
+  if (HasAttribute(name))
+  {
+    return false;
+  }
   _attributes[name] = value;
+  return true;
 }
 
 } // namespace sequencer

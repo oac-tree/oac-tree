@@ -26,6 +26,9 @@
 // Local header files
 
 #include "InstructionData.h"
+#include "instructions/InstructionRegistry.h"
+#include "instructions/CompoundInstruction.h"
+#include "instructions/DecoratorInstruction.h"
 
 // Constants
 
@@ -41,6 +44,12 @@ namespace sequencer {
 // Global variables
 
 // Function declaration
+
+namespace
+{
+bool AddChildInstructions(Instruction *instruction,
+                          const std::vector<InstructionData> & child_data);
+} // Unnamed namespace
 
 // Function definition
 
@@ -77,6 +86,56 @@ const std::vector<InstructionData> & InstructionData::Children() const
 {
   return _children;
 }
+
+std::unique_ptr<Instruction> InstructionData::GenerateInstruction() const
+{
+  auto instr = GlobalInstructionRegistry().Create(_type);
+  if (!instr)
+  {
+    return {};
+  }
+  for (const auto & attr : _attributes)
+  {
+    instr->AddAttribute(attr.first, attr.second);
+  }
+  bool status = AddChildInstructions(instr.get(), _children);
+  if (status)
+  {
+    return instr;
+  }
+  return {};
+}
+
+namespace
+{
+bool AddChildInstructions(Instruction *instruction,
+                          const std::vector<InstructionData> & child_data)
+{
+  auto decorator = dynamic_cast<DecoratorInstruction *>(instruction);
+  if (decorator && child_data.size() == 1u)
+  {
+    decorator->SetInstruction(child_data[0].GenerateInstruction().release());
+    return true;
+  }
+
+  auto compound = dynamic_cast<CompoundInstruction *>(instruction);
+  if (compound && child_data.size() > 0)
+  {
+    for (const auto & child : child_data)
+    {
+      compound->PushBack(child.GenerateInstruction().release());
+    }
+    return true;
+  }
+  if (!decorator && !compound && child_data.size()==0)
+  {
+    // Leaf instructions don't have children, so ok.
+    return true;
+  }
+  return false;
+}
+
+} // Unnamed namespace
 
 } // namespace sequencer
 

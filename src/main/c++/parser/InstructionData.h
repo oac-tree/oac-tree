@@ -34,10 +34,13 @@
 // Global header files
 
 #include <map>
+#include <memory>
 #include <string>
 #include <vector>
 
 // Local header files
+
+#include "instructions/Instruction.h"
 
 // Constants
 
@@ -112,6 +115,15 @@ class InstructionData
      * @return List of child instructions.
      */
     const std::vector<InstructionData> & Children() const;
+
+    /**
+     * @brief Generate the Instruction object corresponding to the current data.
+     *
+     * @return Unique pointer to Instruction object.
+     * @note The generated instruction will contain all child instructions encoded
+     * in the current InstructionData.
+     */
+    std::unique_ptr<Instruction> GenerateInstruction() const;
 };
 
 // Global variables

@@ -59,7 +59,7 @@ namespace sequencer {
 class InstructionData
 {
   private:
-    const std::string _type;
+    std::string _type;
     std::map<std::string, std::string> _attributes;
     std::vector<InstructionData> _children;
 
@@ -76,6 +76,13 @@ class InstructionData
      * @brief Destructor.
      */
     ~InstructionData() = default;
+
+    /**
+     * @brief Retrieve the instruction's typename.
+     *
+     * @return Typename of instruction.
+     */
+    std::string GetType() const;
 
     /**
      * @brief Indicate presence of attribute with given name.

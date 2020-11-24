@@ -51,6 +51,12 @@ ProcedureData::ProcedureData(InstructionData * root, WorkspaceData * ws_data)
 
 std::unique_ptr<Procedure> ProcedureData::CreateProcedure() const
 {
+  auto result = std::unique_ptr<Procedure>(new Procedure());
+  if (_root && _root->GetType() == "Sequence")
+  {
+    result->SetRootInstruction(_root->GenerateInstruction().release());
+    return result;
+  }
   return {};
 }
 

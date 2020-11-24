@@ -59,6 +59,7 @@ bool InstructionRegistry::RegisterInstruction(std::string name, InstructionConst
 
 std::unique_ptr<Instruction> InstructionRegistry::Create(std::string name)
 {
+  log_info("Create instruction with name: %s", name.c_str());
   return std::unique_ptr<Instruction>(_instruction_map[name]());
 }
 

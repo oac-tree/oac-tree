@@ -46,10 +46,10 @@ namespace sequencer {
 // Function declaration
 
 static std::unique_ptr<ProcedureData> ParseProcedureNode(xmlDocPtr doc, xmlNodePtr root);
-static std::unique_ptr<InstructionData> ParseInstructionNode(xmlDocPtr doc, xmlNodePtr node,
-                                                             bool is_root=false);
+static std::unique_ptr<InstructionData> ParseInstructionNode(xmlDocPtr doc, xmlNodePtr node);
 static std::unique_ptr<WorkspaceData> ParseWorkspaceNode(xmlDocPtr doc, xmlNodePtr node);
 static bool NodeHasName(xmlNodePtr node, const char * name);
+static std::string ToString(const xmlChar * xml_name);
 
 // Function definition
 
@@ -69,7 +69,7 @@ std::unique_ptr<ProcedureData> ParseProcedureXML(const char * const filename)
     xmlFreeDoc(doc);
     return {};
   }
-  if (xmlStrcmp(root_node->name, (const xmlChar *)"procedure"))
+  if (xmlStrcmp(root_node->name, (const xmlChar *)"Procedure"))
   {
     xmlFreeDoc(doc);
     return {};
@@ -87,12 +87,12 @@ static std::unique_ptr<ProcedureData> ParseProcedureNode(xmlDocPtr doc, xmlNodeP
   xmlNodePtr cur = root->children;
   while (cur != nullptr)
   {
-    if (NodeHasName(cur, "root"))
+    if (NodeHasName(cur, "Root"))
     {
       // TODO: test for duplicate 'root' elements
       instr_data = ParseInstructionNode(doc, cur);
     }
-    else if (NodeHasName(cur, "workspace"))
+    else if (NodeHasName(cur, "Workspace"))
     {
       // TODO: test for duplicate 'workspace' elements
       ws_data = ParseWorkspaceNode(doc, cur);
@@ -113,21 +113,41 @@ static std::unique_ptr<ProcedureData> ParseProcedureNode(xmlDocPtr doc, xmlNodeP
   return {};
 }
 
-static std::unique_ptr<InstructionData> ParseInstructionNode(xmlDocPtr doc, xmlNodePtr node,
-                                                             bool is_root)
+static std::unique_ptr<InstructionData> ParseInstructionNode(xmlDocPtr doc, xmlNodePtr node)
 {
-  // std::unique_ptr<InstructionData> result(new InstructionData());
-  if (is_root)
+  auto node_name = ToString(node->name);
+  if (node_name == std::string("Root"))
   {
-    if (!NodeHasName(node, "root"))
-    {
-      // issue
-    }
+    node_name = "Sequence";
+  }
+  std::unique_ptr<InstructionData> result(new InstructionData(node_name));
 
+  // Add attributes
+  auto attribute = node->properties;
+  while (attribute != nullptr)
+  {
+    auto name = ToString(attribute->name);
+    auto xml_val = xmlGetProp(node, attribute->name);
+    auto value = ToString(xml_val);
+    xmlFree(xml_val);
+    result->AddAttribute(name, value);
+    attribute = attribute->next;
   }
 
-  return std::unique_ptr<InstructionData>(
-           new InstructionData("DummyInstruction"));
+  // Add children
+  auto child_node = node->children;
+  while (child_node != nullptr)
+  {
+    if (child_node->type == XML_ELEMENT_NODE)
+    {
+      log_info("Add child InstructionData: %s", reinterpret_cast<const char *>(child_node->name));
+      auto child_data = ParseInstructionNode(doc, child_node);
+      result->AddChild(*child_data);
+    }
+    child_node = child_node->next;
+  }
+
+  return result;
 }
 
 static std::unique_ptr<WorkspaceData> ParseWorkspaceNode(xmlDocPtr doc, xmlNodePtr node)
@@ -139,6 +159,11 @@ static std::unique_ptr<WorkspaceData> ParseWorkspaceNode(xmlDocPtr doc, xmlNodeP
 static bool NodeHasName(xmlNodePtr node, const char * name)
 {
   return (xmlStrcmp(node->name, (const xmlChar *)name) == 0);
+}
+
+static std::string ToString(const xmlChar * xml_name)
+{
+  return std::string(reinterpret_cast<const char *>(xml_name), xmlStrlen(xml_name));
 }
 
 } // namespace sequencer

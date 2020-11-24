@@ -60,7 +60,7 @@ namespace sequencer {
 class Procedure
 {
   private:
-    std::unique_ptr<Sequence> _root_sequence;
+    std::unique_ptr<Instruction> _root;
     std::unique_ptr<Workspace> _workspace;
 
   protected:
@@ -87,17 +87,24 @@ class Procedure
     std::vector<std::string> VariableNames() const;
 
     /**
-     * @brief Get variable value
+     * @brief Get variable value.
      */
     int GetVariableValue(std::string name);
 
     /**
-     * @brief Set variable value
+     * @brief Set variable value.
      */
     bool SetVariableValue(std::string name, int value);
 
     /**
-     * @brief Push Instruction at top level
+     * @brief Set the root instruction.
+     *
+     * @param instruction Root instruction to set.
+     */
+    bool SetRootInstruction(Instruction * instruction);
+
+    /**
+     * @brief Push Instruction at top level.
      */
     bool PushInstruction(Instruction * instruction);
 

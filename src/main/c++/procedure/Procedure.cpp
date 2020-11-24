@@ -45,7 +45,7 @@ namespace sequencer {
 // Function definition
 
 Procedure::Procedure()
-  : _root_sequence{new sup::sequencer::Sequence()}
+  : _root{new Sequence()}
   , _workspace{}
 {}
 
@@ -71,20 +71,30 @@ bool Procedure::SetVariableValue(std::string name, int value)
   return _workspace->SetVariableValue(name, value);
 }
 
-bool Procedure::PushInstruction(sup::sequencer::Instruction * instruction)
+bool Procedure::SetRootInstruction(Instruction * instruction)
 {
-  _root_sequence->PushBack(instruction);
-  return true;
+  _root.reset(instruction);
+}
+
+bool Procedure::PushInstruction(Instruction * instruction)
+{
+  auto sequence = dynamic_cast<Sequence *>(_root.get());
+  if (sequence)
+  {
+    sequence->PushBack(instruction);
+    return true;
+  }
+  return false;
 }
 
 void Procedure::ExecuteSingle(UserInterface * ui)
 {
-  _root_sequence->ExecuteSingle(ui, _workspace.get());
+  _root->ExecuteSingle(ui, _workspace.get());
 }
 
 ExecutionStatus Procedure::GetStatus() const
 {
-  return _root_sequence->GetStatus();
+  return _root->GetStatus();
 }
 
 } // namespace sequencer

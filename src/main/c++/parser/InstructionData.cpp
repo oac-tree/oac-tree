@@ -57,6 +57,11 @@ InstructionData::InstructionData(std::string instr_type)
   : _type{std::move(instr_type)}
 {}
 
+std::string InstructionData::GetType() const
+{
+  return _type;
+}
+
 bool InstructionData::HasAttribute(const std::string & name)
 {
   return _attributes.find(name) != _attributes.end();

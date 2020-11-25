@@ -65,8 +65,6 @@ void print_usage()
 
 int main(int argc, char * argv[])
 {
-  bool status = sup::sequencer::InitGlobalInstructionRegistry();
-
   char filepath[PATH_MAX_LENGTH] = STRING_UNDEFINED;
 
   if (argc > 1)

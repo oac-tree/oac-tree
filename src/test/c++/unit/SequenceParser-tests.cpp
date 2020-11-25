@@ -42,7 +42,7 @@ static ::ccs::log::Func_t __handler = ::ccs::log::SetStdout();
 
 static inline bool Initialise (void)
 {
-  return sup::sequencer::InitGlobalInstructionRegistry();
+  return true;
 }
 
 static inline bool Terminate (void)

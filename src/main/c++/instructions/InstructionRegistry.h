@@ -107,12 +107,44 @@ class InstructionRegistry
 
 InstructionRegistry & GlobalInstructionRegistry();
 
-bool InitGlobalInstructionRegistry();
-
 // Function definitions
 
 /**
- * @brief Template function for registering instructions.
+ * @brief Template function for registering instructions to a registry.
+ *
+ * @param registry Registry where to register the instruction.
+ *
+ * @note The registered instruction template parameter T needs to
+ * define its typename as a static std::string member 'Type'
+ *
+ * @code
+   // Declare Instruction with static 'Type' string
+   class MyInstruction : public Instruction
+   {
+     ...
+     static const std::string Type;
+   };
+
+   // Create a registry
+   InstructionRegistry my_instruction_registry
+
+   // Define the typename for the instruction
+   const std::string MyInstruction::Type = "MyInstruction";
+
+   // Register the instruction
+   static bool _MyInstructionRegistered =
+     RegisterInstruction<MyInstruction>(my_instruction_registry);
+   @endcode
+ */
+template <class T>
+bool RegisterInstruction(InstructionRegistry & registry)
+{
+  auto constructor = []() { return static_cast<Instruction*>(new T()); };
+  return registry.RegisterInstruction(T::Type, constructor);
+}
+
+/**
+ * @brief Template function for registering instructions to the global registry.
  *
  * @note The registered instruction template parameter T needs to
  * define its typename as a static std::string member 'Type'
@@ -133,11 +165,11 @@ bool InitGlobalInstructionRegistry();
    @endcode
  */
 template <class T>
-bool RegisterInstruction()
+bool RegisterGlobalInstruction()
 {
-  auto constructor = []() { return static_cast<Instruction*>(new T()); };
-  return GlobalInstructionRegistry().RegisterInstruction(T::Type, constructor);
+  return RegisterInstruction<T>(GlobalInstructionRegistry());
 }
+
 
 } // namespace sequencer
 

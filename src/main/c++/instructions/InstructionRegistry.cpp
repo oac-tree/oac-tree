@@ -21,6 +21,8 @@
 
 // Global header files
 
+#include <mutex>
+
 #include <common/log-api.h>
 
 // Local header files
@@ -44,13 +46,19 @@ namespace sequencer {
 
 // Global variables
 
+std::once_flag global_registry_initialized_flag;
+
 // Function declaration
+
+void InitInstructionRegistry(InstructionRegistry & registry);
 
 // Function definition
 
 InstructionRegistry & GlobalInstructionRegistry()
 {
   static InstructionRegistry global_instruction_registry;
+  std::call_once(global_registry_initialized_flag,
+                 InitInstructionRegistry, std::ref(global_instruction_registry));
   return global_instruction_registry;
 }
 
@@ -82,14 +90,11 @@ std::vector<std::string> InstructionRegistry::RegisteredInstructionNames() const
   return result;
 }
 
-bool InitGlobalInstructionRegistry()
+void InitInstructionRegistry(InstructionRegistry & registry)
 {
-  bool result = true;
-  result = RegisterInstruction<Inverter>() && result;
-  result = RegisterInstruction<Sequence>() && result;
-  result = RegisterInstruction<SuccessNode>() && result;
-
-  return result;
+  (void)RegisterInstruction<Inverter>(registry);
+  (void)RegisterInstruction<Sequence>(registry);
+  (void)RegisterInstruction<SuccessNode>(registry);
 }
 
 } // namespace sequencer

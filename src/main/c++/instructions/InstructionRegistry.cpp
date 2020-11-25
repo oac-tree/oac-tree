@@ -59,8 +59,14 @@ bool InstructionRegistry::RegisterInstruction(std::string name, InstructionConst
 
 std::unique_ptr<Instruction> InstructionRegistry::Create(std::string name)
 {
-  log_info("Create instruction with name: %s", name.c_str());
-  return std::unique_ptr<Instruction>(_instruction_map[name]());
+  auto entry = _instruction_map.find(name);
+  if (entry == _instruction_map.end())
+  {
+    log_error("InstructionRegistry::Create('%s') - Instruction not registered", name.c_str());
+    return {};
+  }
+  log_info("InstructionRegistry::Create('%s') - Create instruction ..", name.c_str());
+  return std::unique_ptr<Instruction>(entry->second());
 }
 
 std::vector<std::string> InstructionRegistry::RegisteredInstructionNames() const

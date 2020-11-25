@@ -107,6 +107,8 @@ class InstructionRegistry
 
 InstructionRegistry & GlobalInstructionRegistry();
 
+bool InitGlobalInstructionRegistry();
+
 // Function definitions
 
 /**

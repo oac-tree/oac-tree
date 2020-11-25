@@ -22,13 +22,17 @@
 // Global header files
 
 #include <iostream> // std::cout, etc.
+#include <memory> // std::unique_ptr
 
 #include <common/log-api.h> // CCS logging library
 #include <common/SysTools.h> // Misc. helper functions
 
 // Local header files
 
+#include "instructions/InstructionRegistry.h"
 #include "parser/SequenceParser.h"
+#include "runner/Runner.h"
+#include "CLInterface.h"
 
 // Constants
 
@@ -61,6 +65,8 @@ void print_usage()
 
 int main(int argc, char * argv[])
 {
+  bool status = sup::sequencer::InitGlobalInstructionRegistry();
+
   char filepath[PATH_MAX_LENGTH] = STRING_UNDEFINED;
 
   if (argc > 1)
@@ -105,7 +111,31 @@ int main(int argc, char * argv[])
     print_usage();
     return 0;
   }
+  if (ccs::HelperTools::StringCompare(filepath, STRING_UNDEFINED))
+  {
+    log_warning("sequencer-cli called without filename");
+    return 1;
+  }
   log_info("sequencer-cli called with filename: %s", filepath);
+
+  if (!ccs::HelperTools::Exist(filepath))
+  {
+    log_error("sequencer-cli: file not found <%s>", filepath);
+    return 1;
+  }
+
+  auto proc = sup::sequencer::ParseProcedureFile(filepath);
+  if (!proc)
+  {
+    log_error("sequencer-cli couldn't parse file <%s>", filepath);
+    return 1;
+  }
+
+  sup::sequencer::CLInterface ui;
+  auto runner = std::unique_ptr<sup::sequencer::Runner>(
+    new sup::sequencer::Runner(&ui));
+  runner->SetProcedure(proc.get());
+  runner->ExecuteProcedure();
   return 0;
 }
 

@@ -27,6 +27,7 @@
 
 // Local header files
 
+#include "instructions/InstructionRegistry.h"
 #include "parser/SequenceParser.h"
 
 // Constants
@@ -41,7 +42,7 @@ static ::ccs::log::Func_t __handler = ::ccs::log::SetStdout();
 
 static inline bool Initialise (void)
 {
-  return true;
+  return sup::sequencer::InitGlobalInstructionRegistry();
 }
 
 static inline bool Terminate (void)

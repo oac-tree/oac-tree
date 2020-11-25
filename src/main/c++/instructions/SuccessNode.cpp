@@ -26,7 +26,6 @@
 // Local header files
 
 #include "SuccessNode.h"
-#include "InstructionRegistry.h"
 
 // Constants
 
@@ -42,7 +41,6 @@ namespace sequencer {
 // Global variables
 
 const std::string SuccessNode::Type = "SuccessNode";
-static bool _SuccessNodeRegistered = RegisterInstruction<SuccessNode>();
 
 // Function declaration
 

@@ -26,7 +26,6 @@
 // Local header files
 
 #include "Sequence.h"
-#include "InstructionRegistry.h"
 
 // Constants
 
@@ -42,7 +41,6 @@ namespace sequencer {
 // Global variables
 
 const std::string Sequence::Type = "Sequence";
-static bool _SequenceRegistered = RegisterInstruction<Sequence>();
 
 // Function declaration
 

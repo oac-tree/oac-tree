@@ -21,11 +21,13 @@
 
 // Global header files
 
+#include <iostream>
+
 #include <common/log-api.h>
 
 // Local header files
 
-#include "Inverter.h"
+#include "CLInterface.h"
 
 // Constants
 
@@ -40,59 +42,32 @@ namespace sequencer {
 
 // Global variables
 
-const std::string Inverter::Type = "Inverter";
-
 // Function declaration
 
 // Function definition
 
-ExecutionStatus Inverter::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
+CLInterface::CLInterface() = default;
+
+CLInterface::~CLInterface() = default;
+
+void CLInterface::UpdateInstructionStatus(const Instruction * instruction)
 {
-  if (!_child)
-  {
-    return ExecutionStatus::SUCCESS;
-  }
+    auto instruction_type = instruction->GetType();
+    auto status = instruction->GetStatus();
 
-  auto child_status = _child->GetStatus();
-  if (child_status == ExecutionStatus::UNDEFINED ||
-    child_status == ExecutionStatus::STARTED)
-  {
-    _child->ExecuteSingle(ui, ws);
-  }
-
-  return CalculateStatus();
+    std::cout << "Instruction: " << instruction_type << ": ";
+    std::cout << StatusToString(status) << std::endl;
 }
 
-ExecutionStatus Inverter::CalculateStatus() const
+void CLInterface::StartSingleStep()
 {
-  if (!_child)
-  {
-    return ExecutionStatus::SUCCESS;
-  }
-
-  auto child_status = _child->GetStatus();
-  auto status = child_status;
-
-  switch (child_status)
-  {
-  case ExecutionStatus::FAILURE:
-    status = ExecutionStatus::SUCCESS;
-    break;
-  case ExecutionStatus::SUCCESS:
-    status = ExecutionStatus::FAILURE;
-    break;
-  default:
-    break;
-  }
-  return status;
+    std::cout << "Start single execution step" << std::endl;
 }
 
-Inverter::Inverter()
-  : DecoratorInstruction(Type)
-{}
-
-Inverter::~Inverter()
-{}
+void CLInterface::EndSingleStep()
+{
+    std::cout << "End single execution step" << std::endl;
+}
 
 } // namespace sequencer
 

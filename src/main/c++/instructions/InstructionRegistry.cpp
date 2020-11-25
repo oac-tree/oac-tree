@@ -27,6 +27,9 @@
 
 #include "InstructionRegistry.h"
 #include "Instruction.h"
+#include "Inverter.h"
+#include "Sequence.h"
+#include "SuccessNode.h"
 
 // Constants
 
@@ -76,6 +79,16 @@ std::vector<std::string> InstructionRegistry::RegisteredInstructionNames() const
   {
     result.push_back(elem.first);
   }
+  return result;
+}
+
+bool InitGlobalInstructionRegistry()
+{
+  bool result = true;
+  result = RegisterInstruction<Inverter>() && result;
+  result = RegisterInstruction<Sequence>() && result;
+  result = RegisterInstruction<SuccessNode>() && result;
+
   return result;
 }
 

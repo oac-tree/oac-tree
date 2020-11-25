@@ -16,16 +16,35 @@ set_target_properties(sequencer PROPERTIES
     SOVERSION ${LIBSOVERSION}
 )
 
+add_executable(sequencer-cli)
+
 find_package(LibXml2 REQUIRED)
 
 add_subdirectory(parser)
 add_subdirectory(runner)
 add_subdirectory(procedure)
 add_subdirectory(instructions)
+add_subdirectory(cli)
 
 target_include_directories(sequencer
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
     PRIVATE ${LIBXML2_INCLUDE_DIR}
     PRIVATE $ENV{CODAC_ROOT}/include
     )
-target_link_libraries(sequencer ${LIBXML2_LIBRARIES})
+
+target_link_directories(sequencer
+    PRIVATE $ENV{CODAC_ROOT}/lib
+    )
+
+target_link_libraries(sequencer ${LIBXML2_LIBRARIES} ccs-common)
+
+target_include_directories(sequencer-cli
+    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
+    PRIVATE $ENV{CODAC_ROOT}/include
+    )
+
+target_link_directories(sequencer-cli
+    PRIVATE $ENV{CODAC_ROOT}/lib
+)
+
+target_link_libraries(sequencer-cli sequencer ccs-common)

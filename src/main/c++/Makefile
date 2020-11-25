@@ -1,6 +1,7 @@
 .PHONY: all libs staticlib dynamiclib
 
 LIBNAME=sequencer
+CLI_NAME=sequencer-cli
 
 LIBVERSION=$(shell grep '<version>1' ../../../pom.xml | sed 's/    <version>//g' | sed 's/<\/version>//g')
 LIBMAJOR=$(shell echo $(LIBVERSION) | sed 's/\([1-9]\).\([0-9]\).\([0-9]\)/\1/g')
@@ -13,13 +14,14 @@ REALNAME=lib$(LIBNAME).so.$(LIBVERSION)
 TARGET=../../../target
 
 LIB_DIR := $(TARGET)/lib
+EXE_DIR := $(TARGET)/bin
 BUILD_DIR := ./build
 
 BUILD_TYPE = RelWithDebInfo
 
 CMAKE_FLAGS = -DCMAKE_BUILD_TYPE=$(BUILD_TYPE) -DLIBVERSION=$(LIBVERSION) -DLIBSOVERSION=$(LIBMAJOR)
 
-all: libs
+all: libs executable
 
 libs: dynamiclib staticlib
 
@@ -40,3 +42,7 @@ $(BUILD_DIR)/lib$(LIBNAME).a: $(BUILD_DIR)/$(REALNAME)
 	@mkdir -p $(BUILD_DIR)
 	cmake3 -B$(BUILD_DIR) -DBUILD_SHARED_LIBS=OFF $(CMAKE_FLAGS)
 	$(MAKE) -C $(BUILD_DIR)
+
+executable: dynamiclib
+	@mkdir -p $(EXE_DIR)
+	cp $(BUILD_DIR)/$(CLI_NAME) $(EXE_DIR)/$(CLI_NAME)

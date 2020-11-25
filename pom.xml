@@ -83,6 +83,9 @@
                                 <include>*.so.*</include>
                             </include>
                             <!-- Programs -->
+                            <include type="file" source="bin" target="bin">
+                                <include>sequencer-cli</include>
+                            </include>
                             <!-- Package dependencies -->
                             <requires version="current">libxml2</requires>
                             <requires codac="true">cpp-common</requires>
@@ -95,6 +98,10 @@
                             <include type="file" source="lib" target="lib">
                                 <include>*.a</include>
                                 <include>*.so</include>
+                            </include>
+                            <!-- Programs -->
+                            <include type="file" source="bin" target="bin">
+                                <include>sequencer-cli</include>
                             </include>
                             <!-- Basic classes -->
                             <include type="file" source="main/c++/instructions" target="include/sup">

@@ -7,7 +7,13 @@
         <SuccessNode name="First" />
         <SuccessNode name="Second" />
         <Inverter>
-            <SuccessNode name="Third" />
+            <Sequence name="Third is a Sequence">
+                <SuccessNode />
+                <SuccessNode />
+                <Inverter>
+                    <SuccessNode />
+                </Inverter>
+            </Sequence>
         </Inverter>
     </Root>
     <Workspace>

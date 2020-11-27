@@ -54,8 +54,7 @@ TEST(SequenceParser, Default) // Static initialisation
 {
   bool status = Initialise();
 
-  log_info("Parse simpletest.xml..");
-  auto proc = sup::sequencer::ParseProcedureFile("../resources/simpletest.xml");
+  auto proc = sup::sequencer::ParseProcedureFile("../resources/sequence_fail.xml");
 
   status = bool(proc);
 

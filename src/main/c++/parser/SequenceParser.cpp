@@ -47,6 +47,7 @@ namespace sequencer {
 
 std::unique_ptr<Procedure> ParseProcedureFile(const char * const filename)
 {
+  log_info("sup::sequencer::ParseProcedureFile('%s') - load file..", filename);
   auto proc_data = ParseProcedureXML(filename);
 
   if (!proc_data)

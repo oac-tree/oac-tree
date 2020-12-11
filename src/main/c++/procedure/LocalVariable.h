@@ -20,22 +20,22 @@
 ******************************************************************************/
 
 /**
- * @file Variable.h
- * @brief Header file for Variable interface.
- * @date 20/11/2020
+ * @file LocalVariable.h
+ * @brief Header file for LocalVariable class.
+ * @date 11/12/2020
  * @author Walter Van Herck (IO)
  * @copyright 2010-2020 ITER Organization
- * @details This header file contains the definition of the Variable interface.
+ * @details This header file contains the definition of the LocalVariable class.
  */
 
-#ifndef _SEQ_Variable_h_
-#define _SEQ_Variable_h_
+#ifndef _SEQ_LocalVariable_h_
+#define _SEQ_LocalVariable_h_
 
 // Global header files
 
-#include <common/AnyValue.h>
-
 // Local header files
+
+#include "Variable.h"
 
 // Constants
 
@@ -48,20 +48,29 @@ namespace sup {
 namespace sequencer {
 
 /**
- * @brief Interface for workspace variables.
+ * @brief Variable that is hosted locally in the workspace.
  */
 
-class Variable
+class LocalVariable : public Variable
 {
 private:
+  ::ccs::types::AnyValue _val;
+  bool _initialized;
 
 protected:
 
 public:
   /**
+   * @brief Constructor.
+   *
+   * @param type AnyType of underlying value.
+   */
+  LocalVariable(const ::ccs::base::SharedReference<const ccs::types::AnyType>& type);
+
+  /**
    * @brief Destructor.
    */
-  virtual ~Variable() =default;
+  ~LocalVariable() override;
 
   /**
    * @brief Get value of variable.
@@ -69,7 +78,7 @@ public:
    * @param value variable reference to contain the value.
    * @return true on success.
    */
-  virtual bool GetValue(::ccs::types::AnyValue& value) const =0;
+  bool GetValue(::ccs::types::AnyValue& value) const override;
 
   /**
    * @brief Set value of variable.
@@ -77,7 +86,7 @@ public:
    * @param value value to set.
    * @return true on success.
    */
-  virtual bool SetValue(const ::ccs::types::AnyValue& value) =0;
+  bool SetValue(const ::ccs::types::AnyValue& value) override;
 };
 
 // Global variables
@@ -99,4 +108,4 @@ extern "C" {
 } // extern C
 #endif // __cplusplus
 
-#endif // _SEQ_Variable_h_
+#endif // _SEQ_LocalVariable_h_

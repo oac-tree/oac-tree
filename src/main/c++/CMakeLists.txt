@@ -36,7 +36,7 @@ target_link_directories(sequencer
     PRIVATE $ENV{CODAC_ROOT}/lib
     )
 
-target_link_libraries(sequencer ${LIBXML2_LIBRARIES} ccs-common)
+target_link_libraries(sequencer ${LIBXML2_LIBRARIES} ccs-base ccs-types ccs-common)
 
 target_include_directories(sequencer-cli
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
@@ -47,4 +47,4 @@ target_link_directories(sequencer-cli
     PRIVATE $ENV{CODAC_ROOT}/lib
 )
 
-target_link_libraries(sequencer-cli sequencer ccs-common)
+target_link_libraries(sequencer-cli sequencer ccs-base ccs-types ccs-common)

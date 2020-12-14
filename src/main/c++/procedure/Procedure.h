@@ -77,9 +77,12 @@ class Procedure
     ~Procedure();
 
     /**
-     * @brief Add variable
+     * @brief Add variable.
+     *
+     * @param name Variable name.
+     * @param var Variable to add.
      */
-    bool AddVariable(Variable var);
+    bool AddVariable(std::string name, Variable * var);
 
     /**
      * @brief List all variable names
@@ -89,12 +92,7 @@ class Procedure
     /**
      * @brief Get variable value.
      */
-    int GetVariableValue(std::string name);
-
-    /**
-     * @brief Set variable value.
-     */
-    bool SetVariableValue(std::string name, int value);
+    bool GetVariableValue(std::string name, ::ccs::types::AnyValue& value);
 
     /**
      * @brief Set the root instruction.

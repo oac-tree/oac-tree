@@ -1,11 +1,12 @@
 target_sources(sequencer
     PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/ExecutionStatus.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/LocalVariable.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Procedure.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Variable.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Workspace.cpp
     PUBLIC
         ${CMAKE_CURRENT_LIST_DIR}/ExecutionStatus.h
+        ${CMAKE_CURRENT_LIST_DIR}/LocalVariable.h
         ${CMAKE_CURRENT_LIST_DIR}/Procedure.h
         ${CMAKE_CURRENT_LIST_DIR}/Variable.h
         ${CMAKE_CURRENT_LIST_DIR}/Workspace.h

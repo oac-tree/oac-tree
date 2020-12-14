@@ -22,6 +22,7 @@
 // Global header files
 
 #include <common/log-api.h>
+#include <algorithm>
 #include <utility>
 
 // Local header files
@@ -51,48 +52,58 @@ Workspace::Workspace()
 
 Workspace::~Workspace() = default;
 
-bool Workspace::AddVariable(Variable var)
+bool Workspace::AddVariable(std::string name, Variable * var)
 {
-  if (_var_map.find(var.GetName()) != _var_map.end())
+  if (_var_map.find(name) != _var_map.end())
   {
+    log_warning("sup::sequencer::Workspace::AddVariable('%s', var) - variable with "
+                "this name already exists!", name.c_str());
     return false;
   }
-  _var_map.insert(std::map<std::string, Variable>::value_type(var.GetName(), var));
+  log_info("sup::sequencer::Workspace::AddVariable('%s', var) - add variable "
+           "to workspace..", name.c_str());
+  _var_map[name] = var;
   return true;
 }
 
 std::vector<std::string> Workspace::VariableNames() const
 {
   std::vector<std::string> result;
-  for(const auto & entry : _var_map)
-  {
-    auto name = entry.first;
-    result.push_back(name);
-  }
+  std::transform(_var_map.begin(), _var_map.end(), std::back_inserter(result),
+                 [](const decltype(_var_map)::value_type & pair){
+                   return pair.first;
+                 });
   return result;
 }
 
-int Workspace::GetVariableValue(std::string name)
+bool Workspace::GetValue(std::string name, ::ccs::types::AnyValue& value)
 {
   auto it = _var_map.find(name);
   if (it == _var_map.end())
   {
-    return 0;
-  }
-  auto var = it->second;
-  return var.GetValue();
-}
-
-bool Workspace::SetVariableValue(std::string name, int value)
-{
-  auto it = _var_map.find(name);
-  if (it == _var_map.end())
-  {
+    log_warning("sup::sequencer::Workspace::GetValue('%s', value) - variable with "
+                "this name not in workspace!", name.c_str());
     return false;
   }
-  auto& var = it->second;
-  var.SetValue(value);
-  return true;
+  auto var = it->second;
+  log_info("sup::sequencer::Workspace::GetValue('%s', 'value') - trying to copy found "
+           "workspace variable's value to 'value'..", name.c_str());
+  return var->GetValue(value);
+}
+
+bool Workspace::SetValue(std::string name, const ::ccs::types::AnyValue& value)
+{
+  auto it = _var_map.find(name);
+  if (it == _var_map.end())
+  {
+    log_warning("sup::sequencer::Workspace::SetValue('%s', value) - variable with "
+                "this name not in workspace!", name.c_str());
+    return false;
+  }
+  auto var = it->second;
+  log_info("sup::sequencer::Workspace::SetValue('%s', 'value') - trying to copy "
+           "value' into found workspace variable's value..", name.c_str());
+  return var->SetValue(value);
 }
 
 } // namespace sequencer

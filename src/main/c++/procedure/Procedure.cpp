@@ -51,9 +51,9 @@ Procedure::Procedure()
 
 Procedure::~Procedure() = default;
 
-bool Procedure::AddVariable(Variable var)
+bool Procedure::AddVariable(std::string name, Variable * var)
 {
-  return _workspace->AddVariable(var);
+  return _workspace->AddVariable(name, var);
 }
 
 std::vector<std::string> Procedure::VariableNames() const
@@ -61,14 +61,9 @@ std::vector<std::string> Procedure::VariableNames() const
   return _workspace->VariableNames();
 }
 
-int Procedure::GetVariableValue(std::string name)
+bool Procedure::GetVariableValue(std::string name, ::ccs::types::AnyValue& value)
 {
-  return _workspace->GetVariableValue(name);
-}
-
-bool Procedure::SetVariableValue(std::string name, int value)
-{
-  return _workspace->SetVariableValue(name, value);
+  return _workspace->GetValue(name, value);
 }
 
 bool Procedure::SetRootInstruction(Instruction * instruction)

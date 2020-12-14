@@ -22,10 +22,10 @@
 /**
  * @file Workspace.h
  * @brief Header file for Workspace class.
- * @date dd/MM/YYYY
+ * @date 14/12/20
  * @author Walter Van Herck (IO)
  * @copyright 2010-2020 ITER Organization
- * @details This header file contains the definition of the _____ class.
+ * @details This header file contains the definition of the Workspace class.
  */
 
 #ifndef _SEQ_Workspace_h_
@@ -33,6 +33,7 @@
 
 // Global header files
 
+#include <common/AnyValue.h>
 #include <map>
 #include <vector>
 
@@ -57,7 +58,7 @@ namespace sequencer {
 class Workspace
 {
   private:
-    std::map<std::string, Variable> _var_map;
+    std::map<std::string, Variable *> _var_map;
 
   protected:
 
@@ -75,9 +76,10 @@ class Workspace
     /**
      * @brief Add variable.
      *
+     * @param name Variable name.
      * @param var Variable to add.
      */
-    bool AddVariable(Variable var);
+    bool AddVariable(std::string name, Variable * var);
 
     /**
      * @brief List all variable names.
@@ -89,7 +91,7 @@ class Workspace
      *
      * @param name Variable name.
      */
-    int GetVariableValue(std::string name);
+    bool GetValue(std::string name, ::ccs::types::AnyValue& value);
 
     /**
      * @brief Set variable value
@@ -97,7 +99,7 @@ class Workspace
      * @param name Variable name.
      * @param name Variable value.
      */
-    bool SetVariableValue(std::string name, int value);
+    bool SetValue(std::string name, const ::ccs::types::AnyValue& value);
 };
 
 // Global variables

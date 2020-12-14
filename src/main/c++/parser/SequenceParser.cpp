@@ -52,7 +52,7 @@ std::unique_ptr<Procedure> ParseProcedureFile(const char * const filename)
 
   if (!proc_data)
   {
-    // Parsing failed
+    log_warning("sup::sequencer::ParseProcedureFile('%s') - could not parse file!", filename);
     return {};
   }
 

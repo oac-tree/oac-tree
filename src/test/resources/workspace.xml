@@ -7,8 +7,8 @@
         <SuccessNode name="Only" />
     </Root>
     <Workspace>
-        <Local name="var1" />
-        <Local name="var2" />
-        <Local name="var3" />
+        <Local name="var1" type='{"type":"vartype1","attributes":[{"value":{"type":"uint64"}}]}' />
+        <Local name="var2" type='{"type":"vartype2","attributes":[{"value":{"type":"string"}}]}' />
+        <Local name="var3" type='{"type":"vartype3","attributes":[{"value":{"type":"bool"}}]}'/>
     </Workspace>
 </Procedure>

@@ -105,6 +105,13 @@ static std::unique_ptr<ProcedureData> ParseProcedureNode(xmlDocPtr doc, xmlNodeP
     cur = cur->next;
   }
 
+  if (ws_data)
+  {
+    auto n_vars = ws_data->GetVariableDataList().size();
+    log_info("ParseProcedureNode() - workspace parsed with %d variables",
+             n_vars);
+  }
+
   if (instr_data && ws_data)
   {
     return std::unique_ptr<ProcedureData>(

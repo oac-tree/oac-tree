@@ -22,10 +22,12 @@
 // Global header files
 
 #include <common/log-api.h>
+#include <common/AnyTypeHelper.h>
 
 // Local header files
 
 #include "VariableData.h"
+#include "procedure/LocalVariable.h"
 
 // Constants
 
@@ -83,16 +85,29 @@ const std::map<std::string, std::string> & VariableData::Attributes() const
 
 std::unique_ptr<Variable> VariableData::GenerateVariable() const
 {
-  // auto instr = GlobalInstructionRegistry().Create(_type);
-  // if (!instr)
-  // {
-  //   return {};
-  // }
-  // for (const auto & attr : _attributes)
-  // {
-  //   instr->AddAttribute(attr.first, attr.second);
-  // }
-  return {};
+  std::unique_ptr<Variable> result;
+  bool status = HasAttribute(LOCAL_VARIABLE_JSON_TYPE);
+
+  ::ccs::base::SharedReference<::ccs::types::AnyType> local_type;
+  if (status)
+  {
+    log_info("sup::sequencer::VariableData::GenerateVariable() - parsing json type info..");
+    std::string json_type = _attributes.at(LOCAL_VARIABLE_JSON_TYPE);
+    auto read = ::ccs::HelperTools::Parse(local_type, json_type.c_str());
+    status = read > 0;
+  }
+  else
+  {
+    log_warning("sup::sequencer::VariableData::GenerateVariable() - no json type info!");
+  }
+
+  if (status)
+  {
+    log_info("sup::sequencer::VariableData::GenerateVariable() - create LocalVariable..");
+    result.reset(new LocalVariable(local_type));
+  }
+
+  return result;
 }
 
 } // namespace sequencer

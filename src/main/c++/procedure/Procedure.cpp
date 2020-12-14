@@ -46,7 +46,7 @@ namespace sequencer {
 
 Procedure::Procedure()
   : _root{new Sequence()}
-  , _workspace{}
+  , _workspace{new Workspace()}
 {}
 
 Procedure::~Procedure() = default;

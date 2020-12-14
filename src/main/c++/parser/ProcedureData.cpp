@@ -51,24 +51,26 @@ ProcedureData::ProcedureData(InstructionData * root, WorkspaceData * ws_data)
 
 std::unique_ptr<Procedure> ProcedureData::CreateProcedure() const
 {
+  log_info("sup::sequencer::ProcedureData::CreateProcedure() - entering function..");
   auto result = std::unique_ptr<Procedure>(new Procedure());
   if (_root && _root->GetType() == "Sequence")
   {
     result->SetRootInstruction(_root->GenerateInstruction().release());
-    return result;
   }
   if (_workspace)
   {
+    log_info("sup::sequencer::ProcedureData::CreateProcedure() - generating workspace variables..");
     for (const auto & var_data : _workspace->GetVariableDataList())
     {
       auto name = var_data.GetName();
       if (!name.empty())
       {
-        result->AddVariable(name, var_data.GenerateVariable().release());
+        auto var = var_data.GenerateVariable();
+        result->AddVariable(name, var.release());
       }
     }
   }
-  return {};
+  return result;
 }
 
 } // namespace sequencer

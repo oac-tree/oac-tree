@@ -24,6 +24,7 @@ add_subdirectory(parser)
 add_subdirectory(runner)
 add_subdirectory(procedure)
 add_subdirectory(instructions)
+add_subdirectory(epics)
 add_subdirectory(cli)
 
 target_include_directories(sequencer
@@ -36,7 +37,7 @@ target_link_directories(sequencer
     PRIVATE $ENV{CODAC_ROOT}/lib
     )
 
-target_link_libraries(sequencer ${LIBXML2_LIBRARIES} ccs-types ccs-base ccs-common)
+target_link_libraries(sequencer ${LIBXML2_LIBRARIES} ccs-common ccs-types ccs-base ccs-ca ccs-pvxs)
 
 target_include_directories(sequencer-cli
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}

@@ -1,0 +1,30 @@
+record (bo,"SEQ-TEST:BOOL")
+{
+    field(DESC,"Some EPICSv3 record")
+    field(ONAM,"TRUE")
+    field(OSV,"NO_ALARM")
+    field(ZNAM,"FALSE")
+    field(ZSV,"NO_ALARM")
+    field(VAL,"0")
+}
+
+record (ao,"SEQ-TEST:FLOAT")
+{
+    field(DESC,"Some EPICSv3 record")
+    field(DRVH,"5.0")
+    field(DRVL,"-5.0")
+    field(VAL,"0")
+}
+
+record (stringout,"SEQ-TEST:STRING")
+{
+    field(DESC,"Some EPICSv3 record")
+}
+
+record (waveform,"SEQ-TEST:CHARRAY")
+{
+    field(DESC,"Some EPICSv3 record")
+    field(FTVL, "CHAR")
+    field(NELM, "1024")
+}
+

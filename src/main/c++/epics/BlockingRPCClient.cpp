@@ -57,9 +57,7 @@ class BlockingRPCClientNode : public Instruction
   private:
 
     /**
-     * @brief Execution always returns SUCCESS immediately.
-     *
-     * @return SUCCESS status.
+     * @brief Xxx
      */
 
     ExecutionStatus ExecuteSingleImpl (UserInterface * ui, Workspace * ws) override;
@@ -179,11 +177,11 @@ ExecutionStatus BlockingRPCClientNode::ExecuteSingleImpl (UserInterface * ui, Wo
     {
       ccs::types::char8 buffer [1024];
 
-      log_info("RPCClientNode::ExecuteSingleImpl('%s') - Received reply ..", GetName().c_str());
+      log_info("BlockingRPCClientNode::ExecuteSingleImpl('%s') - Received reply ..", GetName().c_str());
       reply.SerialiseType(buffer, 1024u);
-      log_info("RPCClientNode::ExecuteSingleImpl('%s') - .. type '%s'", GetName().c_str(), buffer);
+      log_info("BlockingRPCClientNode::ExecuteSingleImpl('%s') - .. type '%s'", GetName().c_str(), buffer);
       reply.SerialiseInstance(buffer, 1024u);
-      log_info("RPCClientNode::ExecuteSingleImpl('%s') - .. instance '%s'", GetName().c_str(), buffer);
+      log_info("BlockingRPCClientNode::ExecuteSingleImpl('%s') - .. instance '%s'", GetName().c_str(), buffer);
     }
 
   return (status ? ExecutionStatus::SUCCESS : ExecutionStatus::FAILURE);

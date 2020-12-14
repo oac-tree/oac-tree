@@ -31,6 +31,9 @@ target_include_directories(sequencer
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
     PRIVATE ${LIBXML2_INCLUDE_DIR}
     PRIVATE $ENV{CODAC_ROOT}/include
+    PRIVATE $ENV{CODAC_ROOT}/epics/include
+    PRIVATE $ENV{CODAC_ROOT}/epics/include/os/Linux
+    PRIVATE $ENV{CODAC_ROOT}/epics/include/compiler/gcc
     )
 
 target_link_directories(sequencer

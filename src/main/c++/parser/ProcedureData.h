@@ -20,12 +20,12 @@
 ******************************************************************************/
 
 /**
- * @file
- * @brief Header file for .
- * @date dd/MM/YYYY
+ * @file ProcedureData.h
+ * @brief Header file for ProcedureData class.
+ * @date 14/12/20
  * @author Walter Van Herck (IO)
  * @copyright 2010-2020 ITER Organization
- * @details This header file contains the definition of the _____ class.
+ * @details This header file contains the definition of the ProcedureData class.
  */
 
 #ifndef _SEQ_ProcedureData_h_

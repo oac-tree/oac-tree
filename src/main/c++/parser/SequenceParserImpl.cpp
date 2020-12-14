@@ -48,6 +48,7 @@ namespace sequencer {
 static std::unique_ptr<ProcedureData> ParseProcedureNode(xmlDocPtr doc, xmlNodePtr root);
 static std::unique_ptr<InstructionData> ParseInstructionNode(xmlDocPtr doc, xmlNodePtr node);
 static std::unique_ptr<WorkspaceData> ParseWorkspaceNode(xmlDocPtr doc, xmlNodePtr node);
+static std::unique_ptr<VariableData> ParseVariableNode(xmlDocPtr doc, xmlNodePtr node);
 static bool NodeHasName(xmlNodePtr node, const char * name);
 static std::string ToString(const xmlChar * xml_name);
 
@@ -152,8 +153,45 @@ static std::unique_ptr<InstructionData> ParseInstructionNode(xmlDocPtr doc, xmlN
 
 static std::unique_ptr<WorkspaceData> ParseWorkspaceNode(xmlDocPtr doc, xmlNodePtr node)
 {
-  return std::unique_ptr<WorkspaceData>(
-           new WorkspaceData());
+  std::unique_ptr<WorkspaceData> result(new WorkspaceData());
+
+  // Add child variables
+  auto child_node = node->children;
+  while (child_node != nullptr)
+  {
+    if (child_node->type == XML_ELEMENT_NODE)
+    {
+      log_info("Add workspace variable with type '%s'", reinterpret_cast<const char *>(child_node->name));
+      auto child_data = ParseVariableNode(doc, child_node);
+      log_info("Added workspace variable with type '%s' and name '%s'",
+               reinterpret_cast<const char *>(child_node->name),
+               child_data->GetName().c_str());
+      result->AddVariable(*child_data);
+    }
+    child_node = child_node->next;
+  }
+
+  return result;
+}
+
+static std::unique_ptr<VariableData> ParseVariableNode(xmlDocPtr doc, xmlNodePtr node)
+{
+  auto node_name = ToString(node->name);
+  std::unique_ptr<VariableData> result(new VariableData(node_name));
+
+  // Add attributes
+  auto attribute = node->properties;
+  while (attribute != nullptr)
+  {
+    auto name = ToString(attribute->name);
+    auto xml_val = xmlGetProp(node, attribute->name);
+    auto value = ToString(xml_val);
+    xmlFree(xml_val);
+    result->AddAttribute(name, value);
+    attribute = attribute->next;
+  }
+
+  return result;
 }
 
 static bool NodeHasName(xmlNodePtr node, const char * name)

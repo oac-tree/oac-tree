@@ -47,6 +47,16 @@ namespace sequencer {
 WorkspaceData::WorkspaceData()
 {}
 
+bool WorkspaceData::AddVariable(const VariableData & var)
+{
+  _variables.push_back(var);
+}
+
+const std::vector<VariableData> & WorkspaceData::GetVariableDataList() const
+{
+  return _variables;
+}
+
 } // namespace sequencer
 
 } // namespace sup

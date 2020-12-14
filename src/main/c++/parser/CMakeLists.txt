@@ -7,6 +7,8 @@ target_sources(sequencer
         ${CMAKE_CURRENT_LIST_DIR}/SequenceParser.cpp
         ${CMAKE_CURRENT_LIST_DIR}/SequenceParserImpl.cpp
         ${CMAKE_CURRENT_LIST_DIR}/SequenceParserImpl.h
+        ${CMAKE_CURRENT_LIST_DIR}/VariableData.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/VariableData.h
         ${CMAKE_CURRENT_LIST_DIR}/WorkspaceData.cpp
         ${CMAKE_CURRENT_LIST_DIR}/WorkspaceData.h
     PUBLIC

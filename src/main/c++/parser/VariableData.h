@@ -20,27 +20,26 @@
 ******************************************************************************/
 
 /**
- * @file InstructionData.h
- * @brief Header file for InstructionData class.
- * @date 23/11/2020
+ * @file VariableData.h
+ * @brief Header file for VariableData class.
+ * @date 14/12/2020
  * @author Walter Van Herck (IO)
  * @copyright 2010-2020 ITER Organization
- * @details This header file contains the definition of the InstructionData class.
+ * @details This header file contains the definition of the VariableData class.
  */
 
-#ifndef _SEQ_InstructionData_h_
-#define _SEQ_InstructionData_h_
+#ifndef _SEQ_VariableData_h_
+#define _SEQ_VariableData_h_
 
 // Global header files
 
 #include <map>
 #include <memory>
 #include <string>
-#include <vector>
 
 // Local header files
 
-#include "instructions/Instruction.h"
+#include "procedure/Variable.h"
 
 // Constants
 
@@ -56,33 +55,39 @@ namespace sequencer {
  * @brief Data representation of an Instruction.
  */
 
-class InstructionData
+class VariableData
 {
 private:
   std::string _type;
   std::map<std::string, std::string> _attributes;
-  std::vector<InstructionData> _children;
 
 protected:
 
 public:
   /**
    * @brief Constructor.
-   * @param instr_type Instruction typename.
+   * @param var_type Variable typename.
    */
-  InstructionData(std::string instr_type);
+  VariableData(std::string var_type);
 
   /**
    * @brief Destructor.
    */
-  ~InstructionData() = default;
+  ~VariableData() = default;
 
   /**
-   * @brief Retrieve the instruction's typename.
+   * @brief Retrieve the variable's typename.
    *
-   * @return Typename of instruction.
+   * @return Typename of variable.
    */
   std::string GetType() const;
+
+  /**
+   * @brief Retrieve the variable's name attribute.
+   *
+   * @return Name of variable.
+   */
+  std::string GetName() const;
 
   /**
    * @brief Indicate presence of attribute with given name.
@@ -90,24 +95,16 @@ public:
    * @param name Attribute name.
    * @return true when present.
    */
-  bool HasAttribute(const std::string & name);
+  bool HasAttribute(const std::string & name) const;
 
   /**
    * @brief Add attribute.
-   *WorkspaceData::
+   *
    * @param name Attribute name.
    * @param value Attribute value.
    * @return true on successful adding.
    */
   bool AddAttribute(const std::string & name, const std::string & value);
-
-  /**
-   * @brief Add child instruction.
-   *
-   * @param child Data representation of child instruction.
-   * @return true on success.
-   */
-  bool AddChild(const InstructionData &child);
 
   /**
    * @brief Retrieve map of all attributes.
@@ -117,23 +114,16 @@ public:
   const std::map<std::string, std::string> & Attributes() const;
 
   /**
-   * @brief Retrieve all child instructions.
+   * @brief Generate the Variable object corresponding to the current data.
    *
-   * @return List of child instructions.
+   * @return Unique pointer to Variable object.
    */
-  const std::vector<InstructionData> & Children() const;
-
-  /**
-   * @brief Generate the Instruction object corresponding to the current data.
-   *
-   * @return Unique pointer to Instruction object.
-   * @note The generated instruction will contain all child instructions encoded
-   * in the current InstructionData.
-   */
-  std::unique_ptr<Instruction> GenerateInstruction() const;
+  std::unique_ptr<Variable> GenerateVariable() const;
 };
 
 // Global variables
+
+static const std::string VARIABLE_NAME_ATTRIBUTE = "name";
 
 // Function declarations
 
@@ -152,4 +142,4 @@ extern "C" {
 } // extern C
 #endif // __cplusplus
 
-#endif // _SEQ_InstructionData_h_
+#endif // _SEQ_VariableData_h_

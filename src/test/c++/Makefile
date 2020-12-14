@@ -9,7 +9,7 @@ BUILD_DIR := ./build
 
 UNIT_TEST := $(BUILD_DIR)/unit/$(PROGNAME)
 
-BUILD_TYPE = Release
+BUILD_TYPE = RelWithDebInfo
 CMAKE_FLAGS = -DCMAKE_BUILD_TYPE=$(BUILD_TYPE)
 
 all: unit-tests

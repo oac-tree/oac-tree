@@ -62,3 +62,16 @@ TEST(SequenceParser, Default) // Static initialisation
 
   ASSERT_EQ(true, status);
 }
+
+TEST(SequenceParser, Workspace) // Static initialisation
+{
+  bool status = Initialise();
+
+  auto proc = sup::sequencer::ParseProcedureFile("../resources/workspace.xml");
+
+  status = bool(proc);
+
+  Terminate();
+
+  ASSERT_EQ(true, status);
+}

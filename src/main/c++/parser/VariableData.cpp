@@ -25,7 +25,7 @@
 
 // Local header files
 
-#include "ProcedureData.h"
+#include "VariableData.h"
 
 // Constants
 
@@ -44,30 +44,54 @@ namespace sequencer {
 
 // Function definition
 
-ProcedureData::ProcedureData(InstructionData * root, WorkspaceData * ws_data)
-  : _root{root}
-  , _workspace{ws_data}
+VariableData::VariableData(std::string var_type)
+  : _type{std::move(var_type)}
 {}
 
-std::unique_ptr<Procedure> ProcedureData::CreateProcedure() const
+std::string VariableData::GetType() const
 {
-  auto result = std::unique_ptr<Procedure>(new Procedure());
-  if (_root && _root->GetType() == "Sequence")
+  return _type;
+}
+
+std::string VariableData::GetName() const
+{
+  if (HasAttribute(VARIABLE_NAME_ATTRIBUTE))
   {
-    result->SetRootInstruction(_root->GenerateInstruction().release());
-    return result;
+    return _attributes.at(VARIABLE_NAME_ATTRIBUTE);
   }
-  if (_workspace)
+  return {};
+}
+
+bool VariableData::HasAttribute(const std::string &name) const
+{
+  return _attributes.find(name) != _attributes.end();
+}
+
+bool VariableData::AddAttribute(const std::string &name, const std::string &value)
+{
+  if (HasAttribute(name))
   {
-    for (const auto & var_data : _workspace->GetVariableDataList())
-    {
-      auto name = var_data.GetName();
-      if (!name.empty())
-      {
-        result->AddVariable(name, var_data.GenerateVariable().release());
-      }
-    }
+    return false;
   }
+  _attributes[name] = value;
+}
+
+const std::map<std::string, std::string> & VariableData::Attributes() const
+{
+  return _attributes;
+}
+
+std::unique_ptr<Variable> VariableData::GenerateVariable() const
+{
+  // auto instr = GlobalInstructionRegistry().Create(_type);
+  // if (!instr)
+  // {
+  //   return {};
+  // }
+  // for (const auto & attr : _attributes)
+  // {
+  //   instr->AddAttribute(attr.first, attr.second);
+  // }
   return {};
 }
 

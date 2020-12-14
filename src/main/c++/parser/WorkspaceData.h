@@ -33,7 +33,11 @@
 
 // Global header files
 
+#include <vector>
+
 // Local header files
+
+#include "VariableData.h"
 
 // Constants
 
@@ -50,20 +54,36 @@ namespace sequencer {
  */
 class WorkspaceData
 {
-  private:
+private:
+  std::vector<VariableData> _variables;
 
-  protected:
+protected:
 
-  public:
-    /**
-     * @brief Constructor.
-     */
-    WorkspaceData();
+public:
+  /**
+   * @brief Constructor.
+   */
+  WorkspaceData();
 
-    /**
-     * @brief Destructor.
-     */
-    ~WorkspaceData() = default;
+  /**
+   * @brief Destructor.
+   */
+  ~WorkspaceData() = default;
+
+  /**
+   * @brief Add child variable.
+   *
+   * @param var Data representation of child variable.
+   * @return true on success.
+   */
+  bool AddVariable(const VariableData & var);
+
+  /**
+   * @brief Retrieve list of child variable data.
+   *
+   * @return List of variable data.
+   */
+  const std::vector<VariableData> & GetVariableDataList() const;
 };
 
 // Global variables

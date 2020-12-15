@@ -4,15 +4,19 @@
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
     <Root>
+        <!-- Write as string requires extra quotes as per JSON -->
         <BlockingCAWriteNode name="put-client"
             channel="SEQ-TEST:BOOL"
-            instance="TRUE"/>
+            instance="&quot;TRUE&quot;"/>
         <BlockingCAWriteNode name="put-client"
             channel="SEQ-TEST:FLOAT"
-            instance="-1.1"/>
+            instance="&quot;-1.1&quot;"/>
         <BlockingCAWriteNode name="put-client"
             channel="SEQ-TEST:STRING"
-            instance="{&quot;value&quot;:0}"/>
+            instance="&quot;{&quot;value&quot;:0}&quot;"/>
+        <BlockingCAFetchNode name="get-client"
+            channel="SEQ-TEST:FLOAT"
+            datatype="{&quot;type&quot;:&quot;float32&quot;}"/>
     </Root>
     <Workspace>
     </Workspace>

@@ -7,8 +7,12 @@
         <SuccessNode name="Only" />
     </Root>
     <Workspace>
-        <Local name="var1" type='{"type":"vartype1","attributes":[{"value":{"type":"uint64"}}]}' />
-        <Local name="var2" type='{"type":"vartype2","attributes":[{"value":{"type":"string"}}]}' />
-        <Local name="var3" type='{"type":"vartype3","attributes":[{"value":{"type":"bool"}}]}'/>
+        <Local name="var1"
+               type='{"type":"vartype1","attributes":[{"value":{"type":"uint64"}}]}'
+               value='{"value":1729}' />
+        <Local name="var2"
+               type='{"type":"vartype2","attributes":[{"value":{"type":"string"}}]}' />
+        <Local name="var3"
+               type='{"type":"vartype3","attributes":[{"value":{"type":"bool"}}]}'/>
     </Workspace>
 </Procedure>

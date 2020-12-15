@@ -92,6 +92,7 @@ public:
 // Global variables
 
 static const std::string LOCAL_VARIABLE_JSON_TYPE="type";
+static const std::string LOCAL_VARIABLE_JSON_VALUE="value";
 
 // Function declarations
 

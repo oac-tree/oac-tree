@@ -23,6 +23,7 @@
 
 #include <common/log-api.h>
 #include <common/AnyTypeHelper.h>
+#include <common/AnyValueHelper.h>
 
 // Local header files
 
@@ -89,6 +90,7 @@ std::unique_ptr<Variable> VariableData::GenerateVariable() const
   bool status = HasAttribute(LOCAL_VARIABLE_JSON_TYPE);
 
   ::ccs::base::SharedReference<::ccs::types::AnyType> local_type;
+  std::unique_ptr<::ccs::types::AnyValue> local_value;
   if (status)
   {
     log_info("sup::sequencer::VariableData::GenerateVariable() - parsing json type info..");
@@ -104,7 +106,23 @@ std::unique_ptr<Variable> VariableData::GenerateVariable() const
   if (status)
   {
     log_info("sup::sequencer::VariableData::GenerateVariable() - create LocalVariable..");
-    result.reset(new LocalVariable(local_type));
+    ::ccs::base::SharedReference<const ::ccs::types::AnyType> const_type(local_type);
+    result.reset(new LocalVariable(const_type));
+    local_value.reset(new ::ccs::types::AnyValue(const_type));
+    status = HasAttribute(LOCAL_VARIABLE_JSON_VALUE);
+  }
+
+  if (status)
+  {
+    log_info("sup::sequencer::VariableData::GenerateVariable() - parsing json value info..");
+    std::string json_value = _attributes.at(LOCAL_VARIABLE_JSON_VALUE);
+    status = local_value->ParseInstance(json_value.c_str());
+  }
+
+  if (status)
+  {
+    log_info("sup::sequencer::VariableData::GenerateVariable() - copying parsed value..");
+    result->SetValue(*local_value);
   }
 
   return result;

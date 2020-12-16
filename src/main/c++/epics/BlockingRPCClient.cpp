@@ -2,16 +2,16 @@
 * $HeadURL: $
 * $Id: $
 *
-* Project	: CODAC Supervision and Automation (SUP) Sequencer component
+* Project       : CODAC Supervision and Automation (SUP) Sequencer component
 *
-* Description	: Instruction node implementation
+* Description   : Instruction node implementation
 *
 * Author        : Bertrand Bauvir (IO)
 *
 * Copyright (c) : 2010-2020 ITER Organization,
-*				  CS 90 046
-*				  13067 St. Paul-lez-Durance Cedex
-*				  France
+*                 CS 90 046
+*                 13067 St. Paul-lez-Durance Cedex
+*                 France
 *
 * This file is part of ITER CODAC software.
 * For the terms and conditions of redistribution or use of this software
@@ -193,6 +193,6 @@ BlockingRPCClientNode::~BlockingRPCClientNode (void) {}
 
 } // namespace sequencer
 
-} // namespace sup  
+} // namespace sup
 
 #undef LOG_ALTERN_SRC

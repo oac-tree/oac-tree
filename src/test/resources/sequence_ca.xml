@@ -7,16 +7,16 @@
         <!-- Write as string requires extra quotes as per JSON -->
         <BlockingCAWriteNode name="put-client"
             channel="SEQ-TEST:BOOL"
-            datatype="{&quot;type&quot;:&quot;string&quot;}"
-            instance="&quot;TRUE&quot;"/>
+            datatype='{"type":"string"}'
+            instance='"TRUE"'/>
         <BlockingCAWriteNode name="put-client"
             channel="SEQ-TEST:FLOAT"
-            datatype="{&quot;type&quot;:&quot;string&quot;}"
-            instance="&quot;0.5&quot;"/>
+            datatype='{"type":"string"}'
+            instance='"0.5"'/>
         <BlockingCAWriteNode name="put-client"
             channel="SEQ-TEST:STRING"
-            datatype="{&quot;type&quot;:&quot;string&quot;}"
-            instance="&quot;{&quot;value&quot;:0}&quot;"/>
+            datatype='{"type":"string"}'
+            instance='"{value:0}"'/>
         <!-- Read/Write workspace variable -->
         <BlockingCAWriteNode name="put-client"
             channel="SEQ-TEST:FLOAT"
@@ -27,11 +27,11 @@
     </Root>
     <Workspace>
         <Local name="to-write"
-               type="{&quot;type&quot;:&quot;float32&quot;}"
+               type='{"type":"float32"}'
                value="-1.1"/>
         <!-- ToDo - Re-assess need to provide default value -->
         <Local name="to-fetch"
-               type="{&quot;type&quot;:&quot;float32&quot;}"
+               type='{"type":"float32"}'
                value="0.0"/>
     </Workspace>
 </Procedure>

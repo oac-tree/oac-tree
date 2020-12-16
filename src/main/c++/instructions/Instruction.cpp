@@ -47,13 +47,28 @@ namespace sequencer {
 
 // Function definition
 
+void Instruction::InitHook()
+{}
+
 void Instruction::Preamble(UserInterface * ui)
 {
+  PreExecuteHook(ui);
   if (_status == ExecutionStatus::UNDEFINED)
   {
+    InitHook();
     _status = ExecutionStatus::STARTED;
     ui->UpdateInstructionStatus(this);
   }
+}
+
+void Instruction::PreExecuteHook(UserInterface * ui)
+{
+  (void)ui;
+}
+
+void Instruction::PostExecuteHook(UserInterface * ui)
+{
+  (void)ui;
 }
 
 void Instruction::Postamble(UserInterface * ui)
@@ -62,7 +77,11 @@ void Instruction::Postamble(UserInterface * ui)
   {
     ui->UpdateInstructionStatus(this);
   }
+  PostExecuteHook(ui);
 }
+
+void Instruction::ResetHook()
+{}
 
 Instruction::Instruction(std::string type)
   : _type{std::move(type)}
@@ -105,6 +124,7 @@ ExecutionStatus Instruction::GetStatus() const
 
 void Instruction::ResetStatus()
 {
+  ResetHook();
   _status = ExecutionStatus::UNDEFINED;
 }
 

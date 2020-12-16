@@ -88,7 +88,7 @@ ExecutionStatus Sequence::CalculateCompoundStatus() const
     }
 
     if (child_status == ExecutionStatus::UNDEFINED ||
-      child_status == ExecutionStatus::STARTED)
+        child_status == ExecutionStatus::STARTED)
     {
       return GetStatus();
     }

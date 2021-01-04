@@ -130,10 +130,9 @@ int main(int argc, char * argv[])
   }
 
   sup::sequencer::CLInterface ui;
-  auto runner = std::unique_ptr<sup::sequencer::Runner>(
-    new sup::sequencer::Runner(&ui));
-  runner->SetProcedure(proc.get());
-  runner->ExecuteProcedure();
+  sup::sequencer::Runner runner(&ui);
+  runner.SetProcedure(proc.get());
+  runner.ExecuteProcedure();
   return 0;
 }
 

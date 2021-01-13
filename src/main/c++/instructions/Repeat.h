@@ -20,16 +20,16 @@
 ******************************************************************************/
 
 /**
- * @file RepeatNode.h
- * @brief Header file for RepeatNode class.
+ * @file Repeat.h
+ * @brief Header file for Repeat instruction class.
  * @date 16/12/2020
  * @author Walter Van Herck (IO)
  * @copyright 2010-2020 ITER Organization
- * @details This header file contains the definition of the RepeatNode class.
+ * @details This header file contains the definition of the Repeat class.
  */
 
-#ifndef _SEQ_RepeatNode_h_
-#define _SEQ_RepeatNode_h_
+#ifndef _SEQ_Repeat_h_
+#define _SEQ_Repeat_h_
 
 // Global header files
 
@@ -48,10 +48,10 @@ namespace sup {
 namespace sequencer {
 
 /**
- * @brief Instruction node that repeats its child a fixed number of times while successful.
+ * @brief Instruction decorator that repeats its child a fixed number of times while successful.
  */
 
-class RepeatNode : public DecoratorInstruction
+class Repeat : public DecoratorInstruction
 {
   private:
     void InitHook() override;
@@ -79,12 +79,12 @@ class RepeatNode : public DecoratorInstruction
     /**
      * @brief Constructor.
      */
-    RepeatNode();
+    Repeat();
 
     /**
      * @brief Destructor.
      */
-    ~RepeatNode() override;
+    ~Repeat() override;
 
     static const std::string Type;
 };
@@ -108,4 +108,4 @@ extern "C" {
 } // extern C
 #endif // __cplusplus
 
-#endif // _SEQ_RepeatNode_h_
+#endif // _SEQ_Repeat_h_

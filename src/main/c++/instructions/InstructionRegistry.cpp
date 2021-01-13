@@ -30,7 +30,7 @@
 #include "InstructionRegistry.h"
 #include "Instruction.h"
 #include "Inverter.h"
-#include "RepeatNode.h"
+#include "Repeat.h"
 #include "Sequence.h"
 #include "SuccessNode.h"
 
@@ -94,7 +94,7 @@ std::vector<std::string> InstructionRegistry::RegisteredInstructionNames() const
 void InitInstructionRegistry(InstructionRegistry & registry)
 {
   (void)RegisterInstruction<Inverter>(registry);
-  (void)RegisterInstruction<RepeatNode>(registry);
+  (void)RegisterInstruction<Repeat>(registry);
   (void)RegisterInstruction<Sequence>(registry);
   (void)RegisterInstruction<SuccessNode>(registry);
 }

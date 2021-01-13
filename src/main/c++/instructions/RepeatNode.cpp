@@ -25,7 +25,7 @@
 
 // Local header files
 
-#include "RepeatNode.h"
+#include "Repeat.h"
 
 // Constants
 
@@ -40,19 +40,19 @@ namespace sequencer {
 
 // Global variables
 
-const std::string RepeatNode::Type = "RepeatNode";
+const std::string Repeat::Type = "Repeat";
 
 // Function declaration
 
 // Function definition
 
-void RepeatNode::InitHook()
+void Repeat::InitHook()
 {
   InitMaxCount();
   _count = 0;
 }
 
-ExecutionStatus RepeatNode::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
+ExecutionStatus Repeat::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
 {
   if (!_child)
   {
@@ -85,13 +85,13 @@ ExecutionStatus RepeatNode::ExecuteSingleImpl(UserInterface * ui, Workspace * ws
   return CalculateStatus();
 }
 
-void RepeatNode::ResetHook()
+void Repeat::ResetHook()
 {
   _init_ok = false;
   _count = 0;
 }
 
-void RepeatNode::InitMaxCount()
+void Repeat::InitMaxCount()
 {
   bool status = HasAttribute("maxCount");
 
@@ -108,14 +108,14 @@ void RepeatNode::InitMaxCount()
     }
     catch(const std::exception&)
     {
-      log_warning("RepeatNode::InitMaxCount() - could not parse maxCount attribute!");
+      log_warning("Repeat::InitMaxCount() - could not parse maxCount attribute!");
       status = false;
     }
   }
   _init_ok = status;
 }
 
-ExecutionStatus RepeatNode::CalculateStatus() const
+ExecutionStatus Repeat::CalculateStatus() const
 {
   auto child_status = _child->GetStatus();
 
@@ -134,11 +134,11 @@ ExecutionStatus RepeatNode::CalculateStatus() const
   return child_status;
 }
 
-RepeatNode::RepeatNode()
+Repeat::Repeat()
     : DecoratorInstruction(Type)
 {}
 
-RepeatNode::~RepeatNode()
+Repeat::~Repeat()
 {}
 
 } // namespace sequencer

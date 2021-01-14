@@ -251,14 +251,14 @@ ExecutionStatus BlockingCAWriteNode::ExecuteSingleImpl (UserInterface * ui, Work
   if (status)
     {
       log_info("BlockingCAWriteNode::ExecuteSingleImpl('%s') - Method called with channel '%s' ..", GetName().c_str(), GetAttribute("channel").c_str());
-      status = ((HasAttribute("variable") && (ws->VariableNames().end() != std::find(ws->VariableNames().begin(), ws->VariableNames().end(), GetAttribute("variable").c_str()))) || 
+      status = ((HasAttribute("variable") && (ws->VariableNames().end() != std::find(ws->VariableNames().begin(), ws->VariableNames().end(), GetAttribute("variable").c_str()))) ||
                 (HasAttribute("datatype") && HasAttribute("instance")));
     }
 
   if (status)
     {
       if (HasAttribute("variable"))
-	{
+        {
           log_info("BlockingCAWriteNode::ExecuteSingleImpl('%s') - .. using workspace variable '%s'", GetName().c_str(), GetAttribute("variable").c_str());
           status = ws->GetValue(GetAttribute("variable"), _value);
         }
@@ -301,6 +301,6 @@ BlockingCAWriteNode::~BlockingCAWriteNode (void) {}
 
 } // namespace sequencer
 
-} // namespace sup  
+} // namespace sup
 
 #undef LOG_ALTERN_SRC

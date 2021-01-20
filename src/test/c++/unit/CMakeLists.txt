@@ -5,6 +5,7 @@ target_sources(unit-tests
         ${CMAKE_CURRENT_LIST_DIR}/LogUI.cpp
         ${CMAKE_CURRENT_LIST_DIR}/SequenceParser-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/SequenceWorkspace-tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/MathExpressionNode-tests.cpp
 )
 
 target_include_directories(unit-tests
@@ -15,7 +16,7 @@ target_include_directories(unit-tests
 
 target_link_directories(unit-tests
     PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../../lib
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../../../target/lib
         $ENV{CODAC_ROOT}/lib
 )
 

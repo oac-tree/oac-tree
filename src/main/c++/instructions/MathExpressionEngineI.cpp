@@ -1,7 +1,7 @@
 /**
- * @file MathExpressionEngineExptrk.cpp
- * @brief Source file for class MathExpressionEngineExptrk
- * @date Jan 15, 2021 TODO Verify the value and format of the date
+ * @file MathExpressionEngineI.cpp
+ * @brief Source file for class MathExpressionEngineI
+ * @date Jan 18, 2021 TODO Verify the value and format of the date
  * @author ferrog TODO Verify the name and format of the author
  *
  * @copyright Copyright 2015 F4E | European Joint Undertaking for ITER and
@@ -17,7 +17,7 @@
  * or implied. See the Licence permissions and limitations under the Licence.
 
  * @details This source file contains the definition of all the methods for
- * the class MathExpressionEngineExptrk (public, protected, and private). Be aware that some 
+ * the class MathExpressionEngineI (public, protected, and private). Be aware that some 
  * methods, such as those inline could be defined on the header file, instead.
  */
 
@@ -31,14 +31,32 @@
 /*                         Project header includes                           */
 /*---------------------------------------------------------------------------*/
 
-#include "MathExpressionEngineExptrk.h"
+#include "MathExpressionEngineI.h"
 
 /*---------------------------------------------------------------------------*/
 /*                           Static definitions                              */
 /*---------------------------------------------------------------------------*/
 
+namespace sup {
+
+namespace sequencer {
 
 /*---------------------------------------------------------------------------*/
 /*                           Method definitions                              */
 /*---------------------------------------------------------------------------*/
 
+MathExpressionEngineI::MathExpressionEngineI() {
+//Auto-generated constructor stub for MathExpressionEngineI
+
+//TODO Verify if manual additions are needed here
+}
+
+MathExpressionEngineI::~MathExpressionEngineI() {
+//Auto-generated destructor stub for MathExpressionEngineI
+
+//TODO Verify if manual additions are needed here
+}
+
+}
+
+}

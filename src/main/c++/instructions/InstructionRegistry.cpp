@@ -32,6 +32,7 @@
 #include "Inverter.h"
 #include "Sequence.h"
 #include "SuccessNode.h"
+#include "MathExpressionNode.h"
 
 // Constants
 
@@ -64,7 +65,8 @@ InstructionRegistry & GlobalInstructionRegistry()
 
 bool InstructionRegistry::RegisterInstruction(std::string name, InstructionConstructor constructor)
 {
-  _instruction_map[name] = constructor;
+    log_info("InstructionRegistry::RegisterInstruction(%s) ..", name.c_str());
+    _instruction_map[name] = constructor;
   return true;
 }
 
@@ -95,6 +97,8 @@ void InitInstructionRegistry(InstructionRegistry & registry)
   (void)RegisterInstruction<Inverter>(registry);
   (void)RegisterInstruction<Sequence>(registry);
   (void)RegisterInstruction<SuccessNode>(registry);
+  (void)RegisterInstruction<MathExpressionNode>(registry);
+
 }
 
 } // namespace sequencer

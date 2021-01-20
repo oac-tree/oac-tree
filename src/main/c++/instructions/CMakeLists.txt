@@ -5,6 +5,8 @@ target_sources(sequencer
         ${CMAKE_CURRENT_LIST_DIR}/Instruction.cpp
         ${CMAKE_CURRENT_LIST_DIR}/InstructionRegistry.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Inverter.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/MathExpressionNode.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/MathExpressionEngineI.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Sequence.cpp
         ${CMAKE_CURRENT_LIST_DIR}/SuccessNode.cpp
     PUBLIC
@@ -13,6 +15,8 @@ target_sources(sequencer
         ${CMAKE_CURRENT_LIST_DIR}/Instruction.h
         ${CMAKE_CURRENT_LIST_DIR}/InstructionRegistry.h
         ${CMAKE_CURRENT_LIST_DIR}/Inverter.h
+        ${CMAKE_CURRENT_LIST_DIR}/MathExpressionNode.h
+        ${CMAKE_CURRENT_LIST_DIR}/MathExpressionEngineI.h
         ${CMAKE_CURRENT_LIST_DIR}/Sequence.h
         ${CMAKE_CURRENT_LIST_DIR}/SuccessNode.h
 )

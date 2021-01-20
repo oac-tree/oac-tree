@@ -49,17 +49,43 @@ namespace sup {
 
 namespace sequencer {
 
-class MathExpressionNode {
+/**
+ * @brief Computes a Mathematical/Logical expression on workspace variables
+ */
+class MathExpressionNode: public Instruction {
 
 private:
+
+    /**
+     * @brief Compile the expression (only at the first execution and then) executes it
+     */
     virtual ExecutionStatus ExecuteSingleImpl(UserInterface * ui, Workspace * ws);
-    static const std::string Type;
+
+    /**
+     * external engine
+     */
     MathExpressionEngineI *engine;
 
+    /**
+     * to compile the expression the first time
+     */
+    bool firstTime;
 public:
+
+    /**
+     * @brief Constructor
+     */
     MathExpressionNode();
+
+    /**
+     * @brief Destructor
+     */
     virtual ~MathExpressionNode();
 
+    /**
+     * @brief The class name
+     */
+    static const std::string Type;
 };
 // Global variables
 
@@ -80,7 +106,6 @@ extern "C" {
 } // extern C
 #endif // __cplusplus
 
-#endif // _SEQ_Sequence_h_
 /*---------------------------------------------------------------------------*/
 /*                        Inline method definitions                          */
 /*---------------------------------------------------------------------------*/

@@ -33,6 +33,7 @@
 
 // Global header files
 
+#include <mutex>
 #include <common/AnyValue.h>
 
 // Local header files
@@ -54,6 +55,11 @@ namespace sequencer {
 class Variable
 {
 private:
+  /**
+   * @brief Mutex for concurrent access of Variable.
+   */
+  mutable std::mutex _access_mutex;
+
   /**
    * @brief Get value of variable.
    *

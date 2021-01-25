@@ -48,11 +48,13 @@ Variable::~Variable() =default;
 
 bool Variable::GetValue(::ccs::types::AnyValue& value) const
 {
+  std::lock_guard<std::mutex> lock(_access_mutex);
   return GetValueImpl(value);
 }
 
 bool Variable::SetValue(const ::ccs::types::AnyValue& value)
 {
+  std::lock_guard<std::mutex> lock(_access_mutex);
   return SetValueImpl(value);
 }
 

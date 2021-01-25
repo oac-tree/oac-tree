@@ -3,6 +3,7 @@ target_sources(sequencer
         ${CMAKE_CURRENT_LIST_DIR}/ExecutionStatus.cpp
         ${CMAKE_CURRENT_LIST_DIR}/LocalVariable.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Procedure.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/Variable.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Workspace.cpp
     PUBLIC
         ${CMAKE_CURRENT_LIST_DIR}/ExecutionStatus.h

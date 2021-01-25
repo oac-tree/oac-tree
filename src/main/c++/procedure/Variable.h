@@ -54,6 +54,25 @@ namespace sequencer {
 class Variable
 {
 private:
+  /**
+   * @brief Get value of variable.
+   *
+   * @param value variable reference to contain the value.
+   * @return true on success.
+   *
+   * @note Private virtual implementation.
+   */
+  virtual bool GetValueImpl(::ccs::types::AnyValue& value) const =0;
+
+  /**
+   * @brief Set value of variable.
+   *
+   * @param value value to set.
+   * @return true on success.
+   *
+   * @note Private virtual implementation.
+   */
+  virtual bool SetValueImpl(const ::ccs::types::AnyValue& value) =0;
 
 protected:
 
@@ -61,23 +80,27 @@ public:
   /**
    * @brief Destructor.
    */
-  virtual ~Variable() =default;
+  virtual ~Variable();
 
   /**
    * @brief Get value of variable.
    *
    * @param value variable reference to contain the value.
    * @return true on success.
+   *
+   * @note Non-virtual interface.
    */
-  virtual bool GetValue(::ccs::types::AnyValue& value) const =0;
+  bool GetValue(::ccs::types::AnyValue& value) const;
 
   /**
    * @brief Set value of variable.
    *
    * @param value value to set.
    * @return true on success.
+   *
+   * @note Non-virtual interface.
    */
-  virtual bool SetValue(const ::ccs::types::AnyValue& value) =0;
+  bool SetValue(const ::ccs::types::AnyValue& value);
 };
 
 // Global variables

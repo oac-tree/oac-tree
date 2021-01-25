@@ -54,7 +54,7 @@ LocalVariable::LocalVariable(const ::ccs::base::SharedReference<const ccs::types
 
 LocalVariable::~LocalVariable() {}
 
-bool LocalVariable::GetValue(::ccs::types::AnyValue& value) const
+bool LocalVariable::GetValueImpl(::ccs::types::AnyValue& value) const
 {
   if (!_initialized)
   {
@@ -72,7 +72,7 @@ bool LocalVariable::GetValue(::ccs::types::AnyValue& value) const
   return false;
 }
 
-bool LocalVariable::SetValue(const ::ccs::types::AnyValue& value)
+bool LocalVariable::SetValueImpl(const ::ccs::types::AnyValue& value)
 {
   if (_val.GetSize() == value.GetSize())
   {

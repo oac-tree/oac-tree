@@ -50,7 +50,13 @@ Workspace::Workspace()
   : _var_map{}
 {}
 
-Workspace::~Workspace() = default;
+Workspace::~Workspace()
+{
+  for (auto & var : _var_map)
+  {
+    delete var.second;
+  }
+}
 
 bool Workspace::AddVariable(std::string name, Variable * var)
 {

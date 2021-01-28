@@ -30,6 +30,7 @@
 #include "InstructionRegistry.h"
 #include "Instruction.h"
 #include "Inverter.h"
+#include "ParallelSequence.h"
 #include "Repeat.h"
 #include "Sequence.h"
 #include "SuccessNode.h"
@@ -96,6 +97,7 @@ void InitInstructionRegistry(InstructionRegistry & registry)
   (void)RegisterInstruction<Inverter>(registry);
   (void)RegisterInstruction<Repeat>(registry);
   (void)RegisterInstruction<Sequence>(registry);
+  (void)RegisterInstruction<ParallelSequence>(registry);
   (void)RegisterInstruction<SuccessNode>(registry);
 }
 

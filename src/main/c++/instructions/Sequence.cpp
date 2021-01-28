@@ -62,7 +62,8 @@ ExecutionStatus Sequence::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
     }
 
     if (child_status == ExecutionStatus::UNDEFINED ||
-        child_status == ExecutionStatus::STARTED)
+        child_status == ExecutionStatus::STARTED ||
+        child_status == ExecutionStatus::RUNNING)
     {
       instruction->ExecuteSingle(ui, ws);
 

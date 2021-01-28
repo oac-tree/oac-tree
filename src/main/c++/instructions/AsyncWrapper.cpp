@@ -49,7 +49,8 @@ namespace sequencer {
 
 void AsyncWrapper::LaunchChild(UserInterface * ui, Workspace * ws)
 {
-  _child_result = std::async(&Instruction::ExecuteSingle, _instruction, ui, ws);
+  _child_result = std::async(std::launch::async, &Instruction::ExecuteSingle,
+                             _instruction, ui, ws);
 }
 
 bool AsyncWrapper::ChildIsRunning() const

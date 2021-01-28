@@ -23,6 +23,9 @@
 
 #include <common/log-api.h>
 
+#include <chrono>
+#include <thread>
+
 // Local header files
 
 #include "Runner.h"
@@ -64,6 +67,10 @@ void Runner::ExecuteProcedure()
     while(!IsFinished())
     {
       ExecuteSingle();
+      if (IsRunning())
+      {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+      }
     }
   }
 }
@@ -90,6 +97,16 @@ bool Runner::IsFinished() const
           status == ExecutionStatus::FAILURE);
 }
 
+bool Runner::IsRunning() const
+{
+  if (!_proc)
+  {
+    return false;
+  }
+
+  auto status = _proc->GetStatus();
+  return (status == ExecutionStatus::RUNNING);
+}
 
 } // namespace sequencer
 

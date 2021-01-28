@@ -90,6 +90,7 @@ ExecutionStatus ParallelSequence::CalculateCompoundStatus() const
       n_failure++;
     }
   }
+
   if (n_success >= _success_th)
   {
     return ExecutionStatus::SUCCESS;

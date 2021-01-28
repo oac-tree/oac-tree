@@ -23,6 +23,9 @@
 
 #include <common/log-api.h>
 
+#include <chrono>
+#include <thread>
+
 // Local header files
 
 #include "SuccessNode.h"
@@ -46,15 +49,41 @@ const std::string SuccessNode::Type = "SuccessNode";
 
 // Function definition
 
+void SuccessNode::InitHook()
+{
+  if (HasAttribute("timeout"))
+  {
+    auto timeout = GetAttribute("timeout");
+    try
+    {
+      double t = std::stod(timeout);
+      if (t > 0.0)
+      {
+        _timeout = t;
+      }
+    }
+    catch(const std::exception&)
+    {
+      log_warning("SuccessNode::InitHook() - could not parse timeout attribute!");
+    }
+  }
+}
+
 ExecutionStatus SuccessNode::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
 {
     (void)ui;
     (void)ws;
+    if (_timeout > 0.0)
+    {
+      auto mseconds = static_cast<int>(_timeout * 1000);
+      std::this_thread::sleep_for(std::chrono::milliseconds(mseconds));
+    }
     return ExecutionStatus::SUCCESS;
 }
 
 SuccessNode::SuccessNode()
     : Instruction(Type)
+    , _timeout(0.0)
 {}
 
 SuccessNode::~SuccessNode()

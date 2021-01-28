@@ -55,7 +55,17 @@ class SuccessNode : public Instruction
 {
   private:
     /**
-     * @brief Execution always returns SUCCESS immediately.
+     * @brief Timeout (in seconds)
+     */
+    double _timeout;
+
+    /**
+     * @brief Initialize optional timeout
+     */
+    virtual void InitHook();
+
+    /**
+     * @brief Execution always returns SUCCESS after an optional timeout.
      *
      * @return SUCCESS status.
      */

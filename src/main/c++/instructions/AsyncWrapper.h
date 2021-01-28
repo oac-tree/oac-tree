@@ -87,9 +87,16 @@ class AsyncWrapper
   public:
     /**
      * @brief Constructor.
-     * @param type The type of instruction.
+     * @param instruction The wrapped Instruction.
      */
     AsyncWrapper(Instruction * instruction);
+
+    /**
+     * @brief Move constructor.
+     *
+     * @note The move constructor is needed for storage in STL containers.
+     */
+    AsyncWrapper(AsyncWrapper && other);
 
     /**
      * @brief Destructor.

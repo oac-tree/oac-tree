@@ -67,6 +67,8 @@ AsyncWrapper::AsyncWrapper(Instruction * instruction)
   , _status{ExecutionStatus::UNDEFINED}
 {}
 
+AsyncWrapper::AsyncWrapper(AsyncWrapper && other) =default;
+
 AsyncWrapper::~AsyncWrapper() = default;
 
 void AsyncWrapper::Tick(UserInterface * ui, Workspace * ws)

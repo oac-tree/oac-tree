@@ -51,11 +51,11 @@ namespace sequencer {
  * @brief Enumeration for possible execution statuses.
  */
 enum class ExecutionStatus {
-    NOT_STARTED,
-    NOT_FINISHED,
-    RUNNING,
-    SUCCESS,
-    FAILURE
+    NOT_STARTED,   // Not started yet.
+    NOT_FINISHED,  // Started and waiting for next tick.
+    RUNNING,       // Started and (child) running asynchronously.
+    SUCCESS,       // Finished successfully.
+    FAILURE        // Finished unsuccessfully.
 };
 
 // Global variables

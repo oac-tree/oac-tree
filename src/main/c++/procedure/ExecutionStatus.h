@@ -51,8 +51,8 @@ namespace sequencer {
  * @brief Enumeration for possible execution statuses.
  */
 enum class ExecutionStatus {
-    UNDEFINED,
-    STARTED,
+    NOT_STARTED,
+    NOT_FINISHED,
     RUNNING,
     SUCCESS,
     FAILURE

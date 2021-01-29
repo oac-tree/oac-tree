@@ -53,10 +53,10 @@ void Instruction::InitHook()
 void Instruction::Preamble(UserInterface * ui)
 {
   PreExecuteHook(ui);
-  if (_status == ExecutionStatus::UNDEFINED)
+  if (_status == ExecutionStatus::NOT_STARTED)
   {
     InitHook();
-    _status = ExecutionStatus::STARTED;
+    _status = ExecutionStatus::NOT_FINISHED;
     ui->UpdateInstructionStatus(this);
   }
 }
@@ -85,8 +85,8 @@ void Instruction::ResetHook()
 
 Instruction::Instruction(std::string type)
   : _type{std::move(type)}
-  , _status{ExecutionStatus::UNDEFINED}
-  , _status_before{ExecutionStatus::UNDEFINED}
+  , _status{ExecutionStatus::NOT_STARTED}
+  , _status_before{ExecutionStatus::NOT_STARTED}
 {}
 
 Instruction::~Instruction() = default;
@@ -125,7 +125,7 @@ ExecutionStatus Instruction::GetStatus() const
 void Instruction::ResetStatus()
 {
   ResetHook();
-  _status = ExecutionStatus::UNDEFINED;
+  _status = ExecutionStatus::NOT_STARTED;
 }
 
 bool Instruction::HasAttribute(const std::string & name) const

@@ -124,8 +124,8 @@ ExecutionStatus Repeat::CalculateStatus() const
     return ExecutionStatus::SUCCESS;
   }
 
-  if (child_status == ExecutionStatus::UNDEFINED ||
-      child_status == ExecutionStatus::STARTED ||
+  if (child_status == ExecutionStatus::NOT_STARTED ||
+      child_status == ExecutionStatus::NOT_FINISHED ||
       child_status == ExecutionStatus::SUCCESS)
   {
     return GetStatus();

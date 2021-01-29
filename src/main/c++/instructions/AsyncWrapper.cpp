@@ -65,7 +65,7 @@ bool AsyncWrapper::ChildIsRunning() const
 
 AsyncWrapper::AsyncWrapper(Instruction * instruction)
   : _instruction{instruction}
-  , _status{ExecutionStatus::UNDEFINED}
+  , _status{ExecutionStatus::NOT_STARTED}
 {}
 
 AsyncWrapper::AsyncWrapper(AsyncWrapper && other) =default;

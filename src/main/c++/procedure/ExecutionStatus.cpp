@@ -48,9 +48,9 @@ std::string StatusToString(const ExecutionStatus & status)
 {
     switch (status)
     {
-    case ExecutionStatus::UNDEFINED:
+    case ExecutionStatus::NOT_STARTED:
         return "Undefined";
-    case ExecutionStatus::STARTED:
+    case ExecutionStatus::NOT_FINISHED:
         return "Started";
     case ExecutionStatus::RUNNING:
         return "Running";

@@ -61,8 +61,8 @@ ExecutionStatus Sequence::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
       continue;
     }
 
-    if (child_status == ExecutionStatus::UNDEFINED ||
-        child_status == ExecutionStatus::STARTED ||
+    if (child_status == ExecutionStatus::NOT_STARTED ||
+        child_status == ExecutionStatus::NOT_FINISHED ||
         child_status == ExecutionStatus::RUNNING)
     {
       instruction->ExecuteSingle(ui, ws);
@@ -88,8 +88,8 @@ ExecutionStatus Sequence::CalculateCompoundStatus() const
       continue;
     }
 
-    if (child_status == ExecutionStatus::UNDEFINED ||
-        child_status == ExecutionStatus::STARTED)
+    if (child_status == ExecutionStatus::NOT_STARTED ||
+        child_status == ExecutionStatus::NOT_FINISHED)
     {
       return GetStatus();
     }

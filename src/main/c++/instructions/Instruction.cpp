@@ -124,6 +124,11 @@ ExecutionStatus Instruction::GetStatus() const
 
 void Instruction::ResetStatus()
 {
+  if (_status == ExecutionStatus::RUNNING)
+  {
+    // log warning: instructions in RUNNING status should not receive this call!
+    return;
+  }
   ResetHook();
   _status = ExecutionStatus::NOT_STARTED;
 }

@@ -11,6 +11,8 @@ target_sources(sequencer
         ${CMAKE_CURRENT_LIST_DIR}/VariableData.h
         ${CMAKE_CURRENT_LIST_DIR}/WorkspaceData.cpp
         ${CMAKE_CURRENT_LIST_DIR}/WorkspaceData.h
+        ${CMAKE_CURRENT_LIST_DIR}/XMLData.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/XMLData.h
     PUBLIC
         ${CMAKE_CURRENT_LIST_DIR}/SequenceParser.h
 )

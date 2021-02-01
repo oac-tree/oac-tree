@@ -111,6 +111,14 @@ private:
     BasicCastI *outputCasts[14];
 
     Workspace *myWs;
+
+    void CheckForArray(std::string varName,
+                       std::vector<::ccs::types::uint32> &dimension);
+
+    bool GetVarValue(std::string varName,
+                     Workspace *workspace,
+                     ::ccs::types::AnyValue &var);
+
 public:
     MathExpressionEngineExptrk();
 
@@ -173,6 +181,108 @@ MathExpressionEngineExptrk<T>::~MathExpressionEngineExptrk() {
 }
 
 template<typename T>
+void MathExpressionEngineExptrk<T>::CheckForArray(std::string varName,
+                                                  std::vector<::ccs::types::uint32> &dimension) {
+
+    std::string::size_type prev_pos = 0;
+    std::string::size_type pos = 0;
+
+    while ((pos = varName.find('[', pos)) != std::string::npos) {
+        pos++;
+        prev_pos = pos;
+        if ((pos = varName.find(']', pos)) != std::string::npos) {
+            std::string dimStr(varName.substr(prev_pos, pos - prev_pos));
+            dimension.push_back(std::atoi(dimStr.c_str()));
+            pos++;
+            prev_pos = pos;
+        }
+        else {
+            break;
+        }
+    }
+
+}
+
+template<typename T>
+bool MathExpressionEngineExptrk<T>::GetVarValue(std::string varName,
+                                                Workspace *workspace,
+                                                ::ccs::types::AnyValue &var) {
+
+    std::string::size_type prev_pos = 0;
+    std::string::size_type pos = 0;
+    pos = varName.find('.');
+    std::string fVarNameT(varName.substr(0, pos));
+    std::string::size_type arrPos = fVarNameT.find('[');
+    std::string fVarName(fVarNameT.substr(0, arrPos));
+
+    ::ccs::types::AnyValue fullVar;
+    bool ret = workspace->GetValue(fVarName, fullVar);
+
+    std::vector < ::ccs::types::uint32 > dimension;
+    CheckForArray(fVarNameT, dimension);
+
+    ::ccs::base::SharedReference<const ::ccs::types::AnyType> myType = fullVar.GetType();
+    ccs::types::uint32 offset = 0u;
+
+    for (::ccs::types::uint32 i = 0u; (i < dimension.size()) && ret; i++) {
+        if (ret) {
+            ::ccs::base::SharedReference<const ::ccs::types::ArrayType> myArrayType = myType;
+            ret = myArrayType.IsValid();
+            if (ret) {
+                offset += myArrayType->GetElementOffset(dimension[i]);
+                myType = myArrayType->GetElementType();
+            }
+        }
+    }
+
+    if (ret && (pos != std::string::npos)) {
+        pos++;
+        prev_pos = pos;
+        ret = myType.IsValid();
+        //if not done, keep searching next field
+        //in this case the type must be compound
+        while ((pos != std::string::npos) && (ret)) {
+            pos = varName.find('.', pos);
+            std::string fieldNameT(varName.substr(prev_pos, pos - prev_pos));
+            arrPos = fVarNameT.find('[');
+            std::string fieldName(fieldNameT.substr(0, arrPos));
+            ::ccs::base::SharedReference<const ::ccs::types::CompoundType> myCompType = myType;
+            ret = myCompType.IsValid();
+            if (ret) {
+                offset += myCompType->GetAttributeOffset(fieldName.c_str());
+                myType = myCompType->GetAttributeType(fieldName.c_str());
+                ret = myType.IsValid();
+                if (ret) {
+                    dimension.clear();
+                    CheckForArray(fieldNameT, dimension);
+                    //if dimension is not empty go to browse the array
+                    for (::ccs::types::uint32 i = 0u; (i < dimension.size()) && ret; i++) {
+                        if (ret) {
+                            ::ccs::base::SharedReference<const ::ccs::types::ArrayType> myArrayType = myType;
+                            ret = myArrayType.IsValid();
+                            if (ret) {
+                                offset += myArrayType->GetElementOffset(dimension[i]);
+                                myType = myArrayType->GetElementType();
+                            }
+                        }
+                    }
+                }
+            }
+            pos++;
+            prev_pos = pos;
+        }
+        if (ret) {
+            ::ccs::types::uint8 *srcMem = reinterpret_cast<::ccs::types::uint8*>(fullVar.GetInstance());
+            var = ::ccs::types::AnyValue(myType);
+            ::ccs::types::uint32 size = myType->GetSize();
+            ::ccs::types::uint8 *dstMem = reinterpret_cast<::ccs::types::uint8*>(var.GetInstance());
+            memcpy(dstMem, &srcMem[offset], size);
+        }
+    }
+    return ret;
+}
+
+template<typename T>
 bool MathExpressionEngineExptrk<T>::Compile(const ccs::types::char8 *expressionIn,
                                             Workspace *workspace) {
 
@@ -189,7 +299,9 @@ bool MathExpressionEngineExptrk<T>::Compile(const ccs::types::char8 *expressionI
             varOutCast.resize(numberOfVars);
             for (::ccs::types::uint32 i = 0u; (i < numberOfVars) && (ret); i++) {
                 ::ccs::types::AnyValue var;
-                ret = workspace->GetValue(varNames[i], var);
+
+                ret = GetVarValue(varNames[i], workspace, var);
+
                 if (ret) {
 
                     ::ccs::base::SharedReference<const ::ccs::types::AnyType> varTypeRef = var.GetType();
@@ -246,7 +358,7 @@ bool MathExpressionEngineExptrk<T>::Compile(const ccs::types::char8 *expressionI
                         //when the output matches the variable, save the output cast
                         if (varNames[j] == symbol_list[i].first) {
                             ::ccs::types::AnyValue var;
-                            ret = workspace->GetValue(varNames[j], var);
+                            ret = GetVarValue(varNames[j], workspace, var);
                             if (ret) {
                                 ::ccs::base::SharedReference<const ::ccs::types::AnyType> varTypeRef = var.GetType();
                                 ret = varTypeRef.IsValid();

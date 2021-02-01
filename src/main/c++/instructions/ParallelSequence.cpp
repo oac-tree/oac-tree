@@ -63,8 +63,7 @@ ExecutionStatus ParallelSequence::ExecuteSingleImpl(UserInterface * ui, Workspac
   {
     auto wrapper_status = wrapper.GetStatus();
 
-    if (wrapper_status == ExecutionStatus::NOT_STARTED ||
-        wrapper_status == ExecutionStatus::RUNNING)
+    if (NeedsExecute(wrapper_status))
     {
       wrapper.Tick(ui, ws);
     }

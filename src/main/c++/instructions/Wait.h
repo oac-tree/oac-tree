@@ -20,16 +20,16 @@
 ******************************************************************************/
 
 /**
- * @file SuccessNode.h
- * @brief Header file for SuccessNode class.
+ * @file Wait.h
+ * @brief Header file for Wait class.
  * @date 23/11/2020
  * @author Walter Van Herck (IO)
  * @copyright 2010-2020 ITER Organization
- * @details This header file contains the definition of the SuccessNode class.
+ * @details This header file contains the definition of the Wait class.
  */
 
-#ifndef _SEQ_SuccessNode_h_
-#define _SEQ_SuccessNode_h_
+#ifndef _SEQ_Wait_h_
+#define _SEQ_Wait_h_
 
 // Global header files
 
@@ -48,10 +48,10 @@ namespace sup {
 namespace sequencer {
 
 /**
- * @brief Instruction node that always returns SUCCESS immediately.
+ * @brief Instruction node that returns SUCCESS after a given timeout.
  */
 
-class SuccessNode : public Instruction
+class Wait : public Instruction
 {
   private:
     /**
@@ -77,12 +77,12 @@ class SuccessNode : public Instruction
     /**
      * @brief Constructor.
      */
-    SuccessNode();
+    Wait();
 
     /**
      * @brief Destructor.
      */
-    ~SuccessNode() override;
+    ~Wait() override;
 
     static const std::string Type;
 };
@@ -106,4 +106,4 @@ extern "C" {
 } // extern C
 #endif // __cplusplus
 
-#endif // _SEQ_SuccessNode_h_
+#endif // _SEQ_Wait_h_

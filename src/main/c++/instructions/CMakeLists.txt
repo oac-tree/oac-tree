@@ -9,7 +9,7 @@ target_sources(sequencer
     ${CMAKE_CURRENT_LIST_DIR}/ParallelSequence.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Repeat.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Sequence.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/SuccessNode.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Wait.cpp
   PUBLIC
     ${CMAKE_CURRENT_LIST_DIR}/AsyncWrapper.h
     ${CMAKE_CURRENT_LIST_DIR}/CompoundInstruction.h
@@ -20,5 +20,5 @@ target_sources(sequencer
     ${CMAKE_CURRENT_LIST_DIR}/ParallelSequence.h
     ${CMAKE_CURRENT_LIST_DIR}/Repeat.h
     ${CMAKE_CURRENT_LIST_DIR}/Sequence.h
-    ${CMAKE_CURRENT_LIST_DIR}/SuccessNode.h
+    ${CMAKE_CURRENT_LIST_DIR}/Wait.h
 )

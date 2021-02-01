@@ -33,7 +33,7 @@
 #include "ParallelSequence.h"
 #include "Repeat.h"
 #include "Sequence.h"
-#include "SuccessNode.h"
+#include "Wait.h"
 
 // Constants
 
@@ -98,7 +98,7 @@ void InitInstructionRegistry(InstructionRegistry & registry)
   (void)RegisterInstruction<Repeat>(registry);
   (void)RegisterInstruction<Sequence>(registry);
   (void)RegisterInstruction<ParallelSequence>(registry);
-  (void)RegisterInstruction<SuccessNode>(registry);
+  (void)RegisterInstruction<Wait>(registry);
 }
 
 } // namespace sequencer

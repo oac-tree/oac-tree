@@ -5,9 +5,9 @@
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
     <Root>
         <ParallelSequence>
-            <SuccessNode name="One" timeout="1.0" />
-            <SuccessNode name="Two" timeout="2.0" />
-            <SuccessNode name="Three" timeout="3.0" />
+            <Wait name="One" timeout="1.0" />
+            <Wait name="Two" timeout="2.0" />
+            <Wait name="Three" timeout="3.0" />
         </ParallelSequence>
     </Root>
     <Workspace>

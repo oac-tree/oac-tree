@@ -28,7 +28,7 @@
 
 // Local header files
 
-#include "SuccessNode.h"
+#include "Wait.h"
 
 // Constants
 
@@ -43,13 +43,13 @@ namespace sequencer {
 
 // Global variables
 
-const std::string SuccessNode::Type = "SuccessNode";
+const std::string Wait::Type = "Wait";
 
 // Function declaration
 
 // Function definition
 
-void SuccessNode::InitHook()
+void Wait::InitHook()
 {
   if (HasAttribute("timeout"))
   {
@@ -64,12 +64,12 @@ void SuccessNode::InitHook()
     }
     catch(const std::exception&)
     {
-      log_warning("SuccessNode::InitHook() - could not parse timeout attribute!");
+      log_warning("Wait::InitHook() - could not parse timeout attribute!");
     }
   }
 }
 
-ExecutionStatus SuccessNode::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
+ExecutionStatus Wait::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
 {
     (void)ui;
     (void)ws;
@@ -81,12 +81,12 @@ ExecutionStatus SuccessNode::ExecuteSingleImpl(UserInterface * ui, Workspace * w
     return ExecutionStatus::SUCCESS;
 }
 
-SuccessNode::SuccessNode()
+Wait::Wait()
     : Instruction(Type)
     , _timeout(0.0)
 {}
 
-SuccessNode::~SuccessNode()
+Wait::~Wait()
 {}
 
 } // namespace sequencer

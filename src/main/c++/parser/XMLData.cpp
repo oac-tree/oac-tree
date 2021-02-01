@@ -83,6 +83,16 @@ const std::map<std::string, std::string> & XMLData::Attributes() const
   return _attributes;
 }
 
+bool XMLData::AddChild(const XMLData & child)
+{
+  _children.push_back(child);
+}
+
+const std::vector<XMLData> & XMLData::Children() const
+{
+  return _children;
+}
+
 } // namespace sequencer
 
 } // namespace sup

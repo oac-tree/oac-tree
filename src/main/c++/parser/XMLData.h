@@ -34,12 +34,10 @@
 // Global header files
 
 #include <map>
-#include <memory>
 #include <string>
+#include <vector>
 
 // Local header files
-
-#include "procedure/Variable.h"
 
 // Constants
 
@@ -60,6 +58,7 @@ class XMLData
 private:
   std::string _type;
   std::map<std::string, std::string> _attributes;
+  std::vector<XMLData> _children;
 
 protected:
 
@@ -73,7 +72,7 @@ public:
   /**
    * @brief Destructor.
    */
-  virtual ~XMLData();
+  ~XMLData();
 
   /**
    * @brief Retrieve the data's typename.
@@ -112,6 +111,21 @@ public:
    * @return Map of all attributes.
    */
   const std::map<std::string, std::string> & Attributes() const;
+
+  /**
+   * @brief Add child element data.
+   *
+   * @param child Data representation of child element.
+   * @return true on success.
+   */
+  bool AddChild(const XMLData & child);
+
+  /**
+   * @brief Retrieve all child data elements.
+   *
+   * @return List of child data elements.
+   */
+  const std::vector<XMLData> & Children() const;
 };
 
 // Global variables

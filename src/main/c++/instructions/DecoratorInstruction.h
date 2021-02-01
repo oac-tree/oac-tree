@@ -56,6 +56,7 @@ namespace sequencer {
 class DecoratorInstruction : public Instruction
 {
   private:
+    void ResetHook() override;
 
   protected:
     /**

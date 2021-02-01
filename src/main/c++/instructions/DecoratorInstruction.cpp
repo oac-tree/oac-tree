@@ -44,9 +44,17 @@ namespace sequencer {
 
 // Function definition
 
+void DecoratorInstruction::ResetHook()
+{
+  if (_child)
+  {
+    _child->ResetStatus();
+  }
+}
+
 DecoratorInstruction::DecoratorInstruction(std::string type)
-    : Instruction(type)
-    , _child{}
+  : Instruction(type)
+  , _child{}
 {}
 
 DecoratorInstruction::~DecoratorInstruction()
@@ -54,7 +62,7 @@ DecoratorInstruction::~DecoratorInstruction()
 
 void DecoratorInstruction::SetInstruction(Instruction * instruction)
 {
-    _child.reset(instruction);
+  _child.reset(instruction);
 }
 
 } // namespace sequencer

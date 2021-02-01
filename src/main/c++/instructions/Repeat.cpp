@@ -85,6 +85,10 @@ ExecutionStatus Repeat::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
 
 void Repeat::ResetHook()
 {
+  if (_child)
+  {
+    _child->ResetStatus();
+  }
   _init_ok = false;
   _count = 0;
 }

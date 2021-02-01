@@ -3,13 +3,11 @@
            name="Procedure for testing parallel sequences"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
-    <Root>
-        <ParallelSequence>
-            <Wait name="One" timeout="1.0" />
-            <Wait name="Two" timeout="2.0" />
-            <Wait name="Three" timeout="3.0" />
-        </ParallelSequence>
-    </Root>
+    <ParallelSequence>
+        <Wait name="One" timeout="1.0" />
+        <Wait name="Two" timeout="2.0" />
+        <Wait name="Three" timeout="3.0" />
+    </ParallelSequence>
     <Workspace>
     </Workspace>
 </Procedure>

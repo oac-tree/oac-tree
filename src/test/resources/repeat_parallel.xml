@@ -3,14 +3,12 @@
            name="Procedure for testing Repeat instruction with parallel sequence"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
-    <Root>
-        <Repeat maxCount="3">
-            <ParallelSequence>
-                <Wait name="One" timeout="1.0" />
-                <Wait name="Two" timeout="2.0" />
-            </ParallelSequence>
-        </Repeat>
-    </Root>
+    <Repeat maxCount="3">
+        <ParallelSequence>
+            <Wait name="One" timeout="1.0" />
+            <Wait name="Two" timeout="2.0" />
+        </ParallelSequence>
+    </Repeat>
     <Workspace>
     </Workspace>
 </Procedure>

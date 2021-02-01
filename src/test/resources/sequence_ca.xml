@@ -3,7 +3,7 @@
            name="Trivial procedure for testing purposes"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
-    <Root>
+    <Sequence>
         <!-- Write as string requires extra quotes as per JSON -->
         <BlockingCAWriteNode name="put-client"
             channel="SEQ-TEST:BOOL"
@@ -24,7 +24,7 @@
         <BlockingCAFetchNode name="get-client"
             channel="SEQ-TEST:FLOAT"
             variable="to-fetch"/>
-    </Root>
+    </Sequence>
     <Workspace>
         <Local name="to-write"
                type='{"type":"float32"}'

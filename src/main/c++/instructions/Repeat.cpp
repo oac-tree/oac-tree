@@ -74,8 +74,9 @@ ExecutionStatus Repeat::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
   _child->ExecuteSingle(ui, ws);
 
   child_status = _child->GetStatus();
-  if (child_status == ExecutionStatus::SUCCESS ||
-      child_status == ExecutionStatus::FAILURE)
+  // Don't increment count when _max_count is not strictly positive.
+  if (_max_count > 0 && (child_status == ExecutionStatus::SUCCESS ||
+                         child_status == ExecutionStatus::FAILURE))
   {
     _count++;
   }

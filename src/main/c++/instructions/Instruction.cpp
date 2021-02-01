@@ -152,6 +152,13 @@ bool Instruction::AddAttribute(const std::string & name, const std::string & val
   return true;
 }
 
+bool NeedsExecute(ExecutionStatus status)
+{
+  return (status == ExecutionStatus::NOT_STARTED ||
+          status == ExecutionStatus::NOT_FINISHED ||
+          status == ExecutionStatus::RUNNING);
+}
+
 } // namespace sequencer
 
 } // namespace sup

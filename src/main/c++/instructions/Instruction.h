@@ -169,6 +169,8 @@ class Instruction
 
 // Function declarations
 
+bool NeedsExecute(ExecutionStatus status);
+
 // Function definitions
 
 } // namespace sequencer

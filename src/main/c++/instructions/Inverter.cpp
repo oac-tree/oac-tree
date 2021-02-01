@@ -54,8 +54,7 @@ ExecutionStatus Inverter::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
   }
 
   auto child_status = _child->GetStatus();
-  if (child_status == ExecutionStatus::NOT_STARTED ||
-      child_status == ExecutionStatus::NOT_FINISHED)
+  if (NeedsExecute(child_status))
   {
     _child->ExecuteSingle(ui, ws);
   }

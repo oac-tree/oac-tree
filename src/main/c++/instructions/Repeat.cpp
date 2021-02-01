@@ -54,7 +54,7 @@ void Repeat::InitHook()
 
 ExecutionStatus Repeat::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
 {
-  if (!_child)
+  if (!_child || _max_count == 0)
   {
     return ExecutionStatus::SUCCESS;
   }
@@ -66,20 +66,18 @@ ExecutionStatus Repeat::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
 
   auto child_status = _child->GetStatus();
 
-  if (child_status == ExecutionStatus::RUNNING)
-  {
-    return ExecutionStatus::RUNNING;
-  }
-
   if (child_status == ExecutionStatus::SUCCESS)
   {
     _child->ResetStatus();
   }
 
-  if (_count < _max_count || _max_count == -1)
+  _child->ExecuteSingle(ui, ws);
+
+  child_status = _child->GetStatus();
+  if (child_status == ExecutionStatus::SUCCESS ||
+      child_status == ExecutionStatus::FAILURE)
   {
-      _child->ExecuteSingle(ui, ws);
-      _count++;
+    _count++;
   }
 
   return CalculateStatus();
@@ -119,16 +117,16 @@ ExecutionStatus Repeat::CalculateStatus() const
 {
   auto child_status = _child->GetStatus();
 
-  if (_count == _max_count && child_status == ExecutionStatus::SUCCESS)
+  if (child_status == ExecutionStatus::SUCCESS)
   {
-    return ExecutionStatus::SUCCESS;
-  }
-
-  if (child_status == ExecutionStatus::NOT_STARTED ||
-      child_status == ExecutionStatus::NOT_FINISHED ||
-      child_status == ExecutionStatus::SUCCESS)
-  {
-    return GetStatus();
+    if (_count == _max_count)
+    {
+      return ExecutionStatus::SUCCESS;
+    }
+    else
+    {
+      return ExecutionStatus::NOT_FINISHED;
+    }
   }
 
   return child_status;

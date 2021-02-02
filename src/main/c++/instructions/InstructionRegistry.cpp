@@ -33,12 +33,8 @@
 #include "ParallelSequence.h"
 #include "Repeat.h"
 #include "Sequence.h"
-<<<<<<< HEAD
-#include "SuccessNode.h"
 #include "MathExpressionNode.h"
-=======
 #include "Wait.h"
->>>>>>> refs/remotes/origin/develop
 
 // Constants
 
@@ -71,8 +67,7 @@ InstructionRegistry & GlobalInstructionRegistry()
 
 bool InstructionRegistry::RegisterInstruction(std::string name, InstructionConstructor constructor)
 {
-    log_info("InstructionRegistry::RegisterInstruction(%s) ..", name.c_str());
-    _instruction_map[name] = constructor;
+  _instruction_map[name] = constructor;
   return true;
 }
 
@@ -103,6 +98,7 @@ void InitInstructionRegistry(InstructionRegistry & registry)
   (void)RegisterInstruction<Inverter>(registry);
   (void)RegisterInstruction<Repeat>(registry);
   (void)RegisterInstruction<Sequence>(registry);
+  (void)RegisterInstruction<ParallelSequence>(registry);
   (void)RegisterInstruction<Wait>(registry);
   (void)RegisterInstruction<MathExpressionNode>(registry);
 }

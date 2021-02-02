@@ -28,7 +28,7 @@
 /*                        Standard header includes                           */
 /*---------------------------------------------------------------------------*/
 #include "common/BasicTypes.h"
-#include "Instruction.h"
+#include "instructions/Instruction.h"
 /*---------------------------------------------------------------------------*/
 /*                        Project header includes                            */
 /*---------------------------------------------------------------------------*/
@@ -44,9 +44,9 @@ namespace sequencer {
 class MathExpressionEngineI {
 public:
 
-    MathExpressionEngineI();
+    MathExpressionEngineI() = default;
 
-    virtual ~MathExpressionEngineI();
+    virtual ~MathExpressionEngineI() = default;
 
     virtual bool Compile(const ccs::types::char8 *expressionIn,
                          Workspace *workspace)=0;

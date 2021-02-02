@@ -25,7 +25,7 @@
 // Local header files
 
 #include "MathExpressionNode.h"
-#include "ThirdParty/MathExpressionEngineExptrk.h"
+#include "MathExpressionEngineProvider.h"
 // Constants
 
 #undef LOG_ALTERN_SRC
@@ -68,14 +68,21 @@ ExecutionStatus MathExpressionNode::ExecuteSingleImpl(UserInterface *ui,
     //todo not the best way to implement it: need a pre-execution stage for Instruction
     if (firstTime) {
 
-        engine = new MathExpressionEngineExptrk<ccs::types::float64>;
-        std::string expression = GetAttribute("expression");
+        engine = MathExpressionEngineProvider::Instance()->CreateNewEngine();
+        ret = (engine != NULL);
+        if (ret) {
+            std::string expression = GetAttribute("expression");
 
-        ret = engine->Compile(expression.c_str(), ws);
-        if(!ret){
-            log_info("MathExpressionNode::ExecuteSingleImpl Failed Compilation of %s", expression.c_str());
+            ret = engine->Compile(expression.c_str(), ws);
+            if (!ret) {
+                log_info("MathExpressionNode::ExecuteSingleImpl Failed Compilation of %s", expression.c_str());
+            }
+            firstTime = false;
         }
-        firstTime = false;
+        else{
+            log_error("MathExpressionEngine is NULL");
+        }
+
     }
 
     if (ret) {

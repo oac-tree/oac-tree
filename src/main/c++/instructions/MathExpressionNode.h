@@ -20,12 +20,12 @@
 ******************************************************************************/
 
 /**
- * @file Sequence.h
+ * @file MathExpressionNode.h
  * @brief Header file for MathExpressionNode class.
  * @date 15/01/2021
  * @author Giuseppe Ferro (IO)
  * @copyright 2010-2020 ITER Organization
- * @details This header file contains the definition of the Sequence class.
+ * @details This header file contains the definition of the MathExpressionNode class.
  */
 
 
@@ -110,5 +110,5 @@ extern "C" {
 /*                        Inline method definitions                          */
 /*---------------------------------------------------------------------------*/
 
-#endif /* SRC_MAIN_C___INSTRUCTIONS_MATHEXPRESSIONINSTRUCTION_H_ */
+#endif /* _SEQ_MathExpressionInstruction_h_ */
 

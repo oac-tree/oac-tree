@@ -1,28 +1,36 @@
-/**
- * @file MathExpressionEngineProvider.h
- * @brief Header file for class MathExpressionEngineProvider
- * @date Feb 2, 2021 TODO Verify the value and format of the date
- * @author ferrog TODO Verify the name and format of the author
- *
- * @copyright Copyright 2015 F4E | European Joint Undertaking for ITER and
- * the Development of Fusion Energy ('Fusion for Energy').
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
- * by the European Commission - subsequent versions of the EUPL (the "Licence")
- * You may not use this work except in compliance with the Licence.
- * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- *
- * @warning Unless required by applicable law or agreed to in writing, 
- * software distributed under the Licence is distributed on an "AS IS"
- * basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the Licence permissions and limitations under the Licence.
+/******************************************************************************
+* $HeadURL: $
+* $Id: $
+*
+* Project       : SUP - Sequencer
+*
+* Description   : Sequencer for operational procedures
+*
+* Author        : Walter Van Herck (IO)
+*
+* Copyright (c) : 2010-2020 ITER Organization,
+*                 CS 90 046
+*                 13067 St. Paul-lez-Durance Cedex
+*                 France
+*
+* This file is part of ITER CODAC software.
+* For the terms and conditions of redistribution or use of this software
+* refer to the file ITER-LICENSE.TXT located in the top level directory
+* of the distribution package.
+******************************************************************************/
 
- * @details This header file contains the declaration of the class MathExpressionEngineProvider
- * with all of its public, protected and private members. It may also include
- * definitions for inline methods which need to be visible to the compiler.
+/**
+ * @file MathExpressionEngineI.h
+ * @brief Header file for MathExpressionEngineProvider class.
+ * @date 15/01/2021
+ * @author Giuseppe Ferro (IO)
+ * @copyright 2010-2020 ITER Organization
+ * @details This header file contains the definition of the MathExpressionEngineProvider class.
  */
 
-#ifndef INSTRUCTIONS_THIRDPARTY_MATHEXPRESSIONENGINEPROVIDER_H_
-#define INSTRUCTIONS_THIRDPARTY_MATHEXPRESSIONENGINEPROVIDER_H_
+
+#ifndef _SEQ_MathExpressionEngineProvider_h_
+#define _SEQ_MathExpressionEngineProvider_h_
 
 /*---------------------------------------------------------------------------*/
 /*                        Standard header includes                           */
@@ -67,5 +75,5 @@ public:
 /*                        Inline method definitions                          */
 /*---------------------------------------------------------------------------*/
 
-#endif /* SRC_MAIN_C___INSTRUCTIONS_THIRDPARTY_MATHEXPRESSIONENGINEPROVIDER_H_ */
+#endif /* _SEQ_MathExpressionEngineProvider_h_ */
 

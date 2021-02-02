@@ -1,0 +1,111 @@
+/******************************************************************************
+* $HeadURL: $
+* $Id: $
+*
+* Project       : SUP - Sequencer
+*
+* Description   : Sequencer for operational procedures
+*
+* Author        : Walter Van Herck (IO)
+*
+* Copyright (c) : 2010-2020 ITER Organization,
+*                 CS 90 046
+*                 13067 St. Paul-lez-Durance Cedex
+*                 France
+*
+* This file is part of ITER CODAC software.
+* For the terms and conditions of redistribution or use of this software
+* refer to the file ITER-LICENSE.TXT located in the top level directory
+* of the distribution package.
+******************************************************************************/
+
+// Global header files
+
+#include <common/log-api.h>
+
+#include <chrono>
+#include <functional>
+
+// Local header files
+
+#include "AsyncWrapper.h"
+
+// Constants
+
+#undef LOG_ALTERN_SRC
+#define LOG_ALTERN_SRC "sup::sequencer"
+
+// Type definition
+
+namespace sup {
+
+namespace sequencer {
+
+// Global variables
+
+// Function declaration
+
+// Function definition
+
+void AsyncWrapper::LaunchChild(UserInterface * ui, Workspace * ws)
+{
+  _child_result = std::async(std::launch::async, &Instruction::ExecuteSingle,
+                             _instruction, ui, ws);
+}
+
+bool AsyncWrapper::ChildIsRunning() const
+{
+  if (!_child_result.valid())
+  {
+    return false;
+  }
+  auto result_status = _child_result.wait_for(std::chrono::seconds(0));
+  return result_status == std::future_status::timeout;
+}
+
+AsyncWrapper::AsyncWrapper(Instruction * instruction)
+  : _instruction{instruction}
+  , _status{ExecutionStatus::NOT_STARTED}
+{}
+
+AsyncWrapper::AsyncWrapper(AsyncWrapper && other) =default;
+
+AsyncWrapper::~AsyncWrapper() = default;
+
+void AsyncWrapper::Tick(UserInterface * ui, Workspace * ws)
+{
+  if (ChildIsRunning())
+  {
+    return;
+  }
+  auto child_status = _instruction->GetStatus();
+
+  if (child_status == ExecutionStatus::SUCCESS ||
+      child_status == ExecutionStatus::FAILURE)
+  {
+    _status = child_status;
+  }
+  else
+  {
+    LaunchChild(ui, ws);
+    _status = ExecutionStatus::RUNNING;
+  }
+  return;
+}
+
+ExecutionStatus AsyncWrapper::GetStatus() const
+{
+  return _status;
+}
+
+} // namespace sequencer
+
+} // namespace sup
+
+extern "C" {
+
+// C API function definitions
+
+} // extern C
+
+#undef LOG_ALTERN_SRC

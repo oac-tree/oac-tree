@@ -53,7 +53,7 @@ std::unique_ptr<Procedure> ProcedureData::CreateProcedure() const
 {
   log_info("sup::sequencer::ProcedureData::CreateProcedure() - entering function..");
   auto result = std::unique_ptr<Procedure>(new Procedure());
-  if (_root && _root->GetType() == "Sequence")
+  if (_root)
   {
     result->SetRootInstruction(_root->GenerateInstruction().release());
   }

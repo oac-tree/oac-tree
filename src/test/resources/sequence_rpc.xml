@@ -3,12 +3,10 @@
            name="Trivial procedure for testing purposes"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
-    <Root>
-        <BlockingRPCClientNode name="client"
-            service="rpc@service"
-            datatype="{&quot;type&quot;:&quot;rpcStruct&quot;,&quot;attributes&quot;:[{&quot;value&quot;:{&quot;type&quot;:&quot;uint64&quot;,&quot;size&quot;:8}}]}"
-            instance="{&quot;value&quot;:0}"/>
-    </Root>
+    <BlockingRPCClientNode name="client"
+        service="rpc@service"
+        datatype="{&quot;type&quot;:&quot;rpcStruct&quot;,&quot;attributes&quot;:[{&quot;value&quot;:{&quot;type&quot;:&quot;uint64&quot;,&quot;size&quot;:8}}]}"
+        instance="{&quot;value&quot;:0}"/>
     <Workspace>
     </Workspace>
 </Procedure>

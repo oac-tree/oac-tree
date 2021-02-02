@@ -44,21 +44,29 @@ namespace sequencer {
 
 // Function definition
 
+void CompoundInstruction::ResetHook()
+{
+  for (auto instruction : _children)
+  {
+    instruction->ResetStatus();
+  }
+}
+
 CompoundInstruction::CompoundInstruction(std::string type)
     : Instruction(type)
 {}
 
 CompoundInstruction::~CompoundInstruction()
 {
-    for (auto instruction : _children)
-    {
-        delete instruction;
-    }
+  for (auto instruction : _children)
+  {
+    delete instruction;
+  }
 }
 
 void CompoundInstruction::PushBack(Instruction * instruction)
 {
-    _children.push_back(instruction);
+  _children.push_back(instruction);
 }
 
 } // namespace sequencer

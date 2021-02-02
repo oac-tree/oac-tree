@@ -3,9 +3,9 @@
            name="Trivial procedure for testing purposes"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
-    <Root>
+    <Sequence>
         <CopyNode name="Copy workspace variables" input="var1" output="var2" />
-    </Root>
+    </Sequence>
     <Workspace>
         <Local name="var1"
                type='{"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}}]}'

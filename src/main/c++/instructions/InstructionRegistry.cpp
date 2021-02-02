@@ -30,9 +30,15 @@
 #include "InstructionRegistry.h"
 #include "Instruction.h"
 #include "Inverter.h"
+#include "ParallelSequence.h"
+#include "Repeat.h"
 #include "Sequence.h"
+<<<<<<< HEAD
 #include "SuccessNode.h"
 #include "MathExpressionNode.h"
+=======
+#include "Wait.h"
+>>>>>>> refs/remotes/origin/develop
 
 // Constants
 
@@ -95,10 +101,10 @@ std::vector<std::string> InstructionRegistry::RegisteredInstructionNames() const
 void InitInstructionRegistry(InstructionRegistry & registry)
 {
   (void)RegisterInstruction<Inverter>(registry);
+  (void)RegisterInstruction<Repeat>(registry);
   (void)RegisterInstruction<Sequence>(registry);
-  (void)RegisterInstruction<SuccessNode>(registry);
+  (void)RegisterInstruction<Wait>(registry);
   (void)RegisterInstruction<MathExpressionNode>(registry);
-
 }
 
 } // namespace sequencer

@@ -61,11 +61,9 @@ ExecutionStatus Sequence::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
       continue;
     }
 
-    if (child_status == ExecutionStatus::UNDEFINED ||
-        child_status == ExecutionStatus::STARTED)
+    if (NeedsExecute(child_status))
     {
       instruction->ExecuteSingle(ui, ws);
-
       break;
     }
     else
@@ -87,13 +85,14 @@ ExecutionStatus Sequence::CalculateCompoundStatus() const
       continue;
     }
 
-    if (child_status == ExecutionStatus::UNDEFINED ||
-      child_status == ExecutionStatus::STARTED)
+    if (child_status == ExecutionStatus::NOT_STARTED ||
+        child_status == ExecutionStatus::NOT_FINISHED)
     {
-      return GetStatus();
+      return ExecutionStatus::NOT_FINISHED;
     }
     else
     {
+      // Forward RUNNING and FAILURE status of child instruction.
       return child_status;
     }
   }

@@ -57,6 +57,22 @@ private:
   ::ccs::types::AnyValue _val;
   bool _initialized;
 
+    /**
+   * @brief Get value of locally hosted variable.
+   *
+   * @param value variable reference to contain the value.
+   * @return true on success.
+   */
+  bool GetValueImpl(::ccs::types::AnyValue& value) const override;
+
+  /**
+   * @brief Set value of locally hosted variable.
+   *
+   * @param value value to set.
+   * @return true on success.
+   */
+  bool SetValueImpl(const ::ccs::types::AnyValue& value) override;
+
 protected:
 
 public:
@@ -71,22 +87,6 @@ public:
    * @brief Destructor.
    */
   ~LocalVariable() override;
-
-  /**
-   * @brief Get value of variable.
-   *
-   * @param value variable reference to contain the value.
-   * @return true on success.
-   */
-  bool GetValue(::ccs::types::AnyValue& value) const override;
-
-  /**
-   * @brief Set value of variable.
-   *
-   * @param value value to set.
-   * @return true on success.
-   */
-  bool SetValue(const ::ccs::types::AnyValue& value) override;
 };
 
 // Global variables

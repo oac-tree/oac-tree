@@ -88,19 +88,28 @@ static std::unique_ptr<ProcedureData> ParseProcedureNode(xmlDocPtr doc, xmlNodeP
   xmlNodePtr cur = root->children;
   while (cur != nullptr)
   {
-    if (NodeHasName(cur, "Root"))
+    if (cur->type != XML_ELEMENT_NODE)
     {
-      // TODO: test for duplicate 'root' elements
-      instr_data = ParseInstructionNode(doc, cur);
+      cur = cur->next;
+      continue;
     }
-    else if (NodeHasName(cur, "Workspace"))
+    if (NodeHasName(cur, "Workspace"))
     {
       // TODO: test for duplicate 'workspace' elements
       ws_data = ParseWorkspaceNode(doc, cur);
     }
     else
     {
-      // Undefined child
+      // Every non workspace element of the Procedure node should be an instruction node
+      if (!instr_data)
+      {
+        instr_data = ParseInstructionNode(doc, cur);
+      }
+      else
+      {
+        log_warning("ParseProcedureNode() - multiple root instructions are (not yet) supported!");
+        return {};
+      }
     }
     cur = cur->next;
   }
@@ -124,10 +133,6 @@ static std::unique_ptr<ProcedureData> ParseProcedureNode(xmlDocPtr doc, xmlNodeP
 static std::unique_ptr<InstructionData> ParseInstructionNode(xmlDocPtr doc, xmlNodePtr node)
 {
   auto node_name = ToString(node->name);
-  if (node_name == std::string("Root"))
-  {
-    node_name = "Sequence";
-  }
   std::unique_ptr<InstructionData> result(new InstructionData(node_name));
 
   // Add attributes

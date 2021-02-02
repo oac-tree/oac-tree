@@ -56,6 +56,7 @@ namespace sequencer {
 class CompoundInstruction : public Instruction
 {
   private:
+    void ResetHook() override;
 
   protected:
     /**

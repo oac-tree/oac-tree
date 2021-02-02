@@ -1,5 +1,6 @@
 target_sources(sequencer
     PRIVATE
+        ${CMAKE_CURRENT_LIST_DIR}/AsyncWrapper.cpp
         ${CMAKE_CURRENT_LIST_DIR}/CompoundInstruction.cpp
         ${CMAKE_CURRENT_LIST_DIR}/DecoratorInstruction.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Instruction.cpp
@@ -9,7 +10,9 @@ target_sources(sequencer
         ${CMAKE_CURRENT_LIST_DIR}/MathExpressionEngineI.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Sequence.cpp
         ${CMAKE_CURRENT_LIST_DIR}/SuccessNode.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/Wait.cpp
     PUBLIC
+        ${CMAKE_CURRENT_LIST_DIR}/AsyncWrapper.cpp
         ${CMAKE_CURRENT_LIST_DIR}/CompoundInstruction.h
         ${CMAKE_CURRENT_LIST_DIR}/DecoratorInstruction.h
         ${CMAKE_CURRENT_LIST_DIR}/Instruction.h
@@ -18,5 +21,5 @@ target_sources(sequencer
         ${CMAKE_CURRENT_LIST_DIR}/MathExpressionNode.h
         ${CMAKE_CURRENT_LIST_DIR}/MathExpressionEngineI.h
         ${CMAKE_CURRENT_LIST_DIR}/Sequence.h
-        ${CMAKE_CURRENT_LIST_DIR}/SuccessNode.h
+        ${CMAKE_CURRENT_LIST_DIR}/Wait.h
 )

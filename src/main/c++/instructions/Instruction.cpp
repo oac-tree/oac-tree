@@ -47,13 +47,28 @@ namespace sequencer {
 
 // Function definition
 
+void Instruction::InitHook()
+{}
+
 void Instruction::Preamble(UserInterface * ui)
 {
-  if (_status == ExecutionStatus::UNDEFINED)
+  PreExecuteHook(ui);
+  if (_status == ExecutionStatus::NOT_STARTED)
   {
-    _status = ExecutionStatus::STARTED;
+    InitHook();
+    _status = ExecutionStatus::NOT_FINISHED;
     ui->UpdateInstructionStatus(this);
   }
+}
+
+void Instruction::PreExecuteHook(UserInterface * ui)
+{
+  (void)ui;
+}
+
+void Instruction::PostExecuteHook(UserInterface * ui)
+{
+  (void)ui;
 }
 
 void Instruction::Postamble(UserInterface * ui)
@@ -62,12 +77,16 @@ void Instruction::Postamble(UserInterface * ui)
   {
     ui->UpdateInstructionStatus(this);
   }
+  PostExecuteHook(ui);
 }
+
+void Instruction::ResetHook()
+{}
 
 Instruction::Instruction(std::string type)
   : _type{std::move(type)}
-  , _status{ExecutionStatus::UNDEFINED}
-  , _status_before{ExecutionStatus::UNDEFINED}
+  , _status{ExecutionStatus::NOT_STARTED}
+  , _status_before{ExecutionStatus::NOT_STARTED}
 {}
 
 Instruction::~Instruction() = default;
@@ -105,7 +124,13 @@ ExecutionStatus Instruction::GetStatus() const
 
 void Instruction::ResetStatus()
 {
-  _status = ExecutionStatus::UNDEFINED;
+  if (_status == ExecutionStatus::RUNNING)
+  {
+    // log warning: instructions in RUNNING status should not receive this call!
+    return;
+  }
+  ResetHook();
+  _status = ExecutionStatus::NOT_STARTED;
 }
 
 bool Instruction::HasAttribute(const std::string & name) const
@@ -130,6 +155,13 @@ bool Instruction::AddAttribute(const std::string & name, const std::string & val
   }
   _attributes[name] = value;
   return true;
+}
+
+bool NeedsExecute(ExecutionStatus status)
+{
+  return (status == ExecutionStatus::NOT_STARTED ||
+          status == ExecutionStatus::NOT_FINISHED ||
+          status == ExecutionStatus::RUNNING);
 }
 
 } // namespace sequencer

@@ -90,9 +90,17 @@ class Runner
 
     /**
      * @brief Query if procedure has finished.
+     *
      * @return True if procedure has finished.
      */
     bool IsFinished() const;
+
+    /**
+     * @brief Query if procedure is running in seperate threads.
+     *
+     * @return True if procedure has seperate threads executing.
+     */
+    bool IsRunning() const;
 };
 
 // Global variables

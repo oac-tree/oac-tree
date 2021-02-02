@@ -74,11 +74,19 @@ class Instruction
 
     std::map<std::string, std::string> _attributes;
 
-    virtual void Preamble(UserInterface * ui);
+    virtual void InitHook();
+
+    void Preamble(UserInterface * ui);
+
+    virtual void PreExecuteHook(UserInterface * ui);
 
     virtual ExecutionStatus ExecuteSingleImpl(UserInterface * ui, Workspace * ws) = 0;
 
-    virtual void Postamble(UserInterface * ui);
+    virtual void PostExecuteHook(UserInterface * ui);
+
+    void Postamble(UserInterface * ui);
+
+    virtual void ResetHook();
 
   protected:
 
@@ -160,6 +168,8 @@ class Instruction
 // Global variables
 
 // Function declarations
+
+bool NeedsExecute(ExecutionStatus status);
 
 // Function definitions
 

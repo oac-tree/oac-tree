@@ -49,23 +49,46 @@ namespace sup{
 namespace sequencer{
 
 typedef  MathExpressionEngineI* (*MathExpressionEngineIBuilderFcn) ();
-
+/**
+ * @brief Singleton implementation of a provider for the MathExpressionEngineI build constructor
+ */
 class MathExpressionEngineProvider {
 private:
 
+    /**
+     * @brief Constructor
+     */
     MathExpressionEngineProvider();
 
+    /**
+     * singleton
+     */
     static MathExpressionEngineProvider *mySelf;
 
+    /**
+     * The MathexpressionEngine registered constructor
+     */
     MathExpressionEngineIBuilderFcn regEngineCreator;
 public:
 
+    /**
+     * @brief Destructor
+     */
     virtual ~MathExpressionEngineProvider();
 
+    /**
+     * @brief Returns the singleton instance
+     */
     static MathExpressionEngineProvider *Instance();
 
+    /**
+     * @brief Registers a MathExpressionEngineI constructor
+     */
     void Register(MathExpressionEngineIBuilderFcn engineCreator);
 
+    /**
+     * @brief Returns a new instance of MathExpressionEngineI
+     */
     MathExpressionEngineI *CreateNewEngine();
 };
 

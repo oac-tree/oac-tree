@@ -41,18 +41,32 @@ namespace sup {
 
 namespace sequencer {
 
+/**
+ * @brief MathExpressionEngineI interface
+ */
 class MathExpressionEngineI {
 public:
 
+    /**
+     * @brief Constructor
+     */
     MathExpressionEngineI() = default;
 
+    /**
+     * @brief Destructor
+     */
     virtual ~MathExpressionEngineI() = default;
 
+    /**
+     * @brief Compile the expression
+     */
     virtual bool Compile(const ccs::types::char8 *expressionIn,
                          Workspace *workspace)=0;
 
+    /**
+     * @brief Execute the computation.
+     */
     virtual bool Execute()=0;
-
 };
 
 }

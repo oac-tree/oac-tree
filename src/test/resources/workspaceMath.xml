@@ -3,9 +3,9 @@
            name="Trivial procedure for testing purposes"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
-    <Root>
+    <Sequence>
         <MathExpressionNode name="MathExpressionNode" expression="c:=a+2*b+c" />
-    </Root>
+    </Sequence>
     <Workspace>
         <Local name="a"
                type='{"type":"int8"}'

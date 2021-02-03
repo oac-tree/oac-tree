@@ -1,1 +1,0 @@
-/usr/bin/c++  -O2 -g -DNDEBUG   CMakeFiles/sequencer-cli.dir/cli/CLInterface.cpp.o CMakeFiles/sequencer-cli.dir/cli/main.cpp.o  -o sequencer-cli  -L/opt/codac-6.3/lib -Wl,-rpath,/opt/codac-6.3/lib libsequencer.a -lccs-types -lccs-base -lccs-common /usr/lib64/libxml2.so -lccs-types -lccs-base -lccs-common -lccs-ca -lccs-pvxs 

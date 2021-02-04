@@ -19,20 +19,32 @@
 * of the distribution package.
 ******************************************************************************/
 
+/**
+ * @file ProcedureParser.h
+ * @brief Header file for ProcedureParser functions.
+ * @date 04/02/21
+ * @author Walter Van Herck (IO)
+ * @copyright 2010-2021 ITER Organization
+ * @details This header file contains the definition of the ProcedureParser functions.
+ */
+
+#ifndef _SEQ_ProcedureParser_h_
+#define _SEQ_ProcedureParser_h_
+
 // Global header files
 
-#include <common/log-api.h>
+#include <memory>
 
 // Local header files
 
-#include "WorkspaceData.h"
+#include "XMLData.h"
+#include "procedure/Procedure.h"
 
 // Constants
 
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
-
 // Type definition
+
+#ifdef __cplusplus
 
 namespace sup {
 
@@ -40,31 +52,23 @@ namespace sequencer {
 
 // Global variables
 
-// Function declaration
+// Function declarations
 
-// Function definition
+std::unique_ptr<Procedure> ParseProcedure(const XMLData & data);
 
-WorkspaceData::WorkspaceData()
-{}
-
-bool WorkspaceData::AddVariable(const VariableData & var)
-{
-  _variables.push_back(var);
-}
-
-const std::vector<VariableData> & WorkspaceData::GetVariableDataList() const
-{
-  return _variables;
-}
+// Function definitions
 
 } // namespace sequencer
 
 } // namespace sup
 
 extern "C" {
+#endif // __cplusplus
 
-// C API function definitions
+// C API function declarations
 
+#ifdef __cplusplus
 } // extern C
+#endif // __cplusplus
 
-#undef LOG_ALTERN_SRC
+#endif // _SEQ_ProcedureParser_h_

@@ -20,24 +20,26 @@
 ******************************************************************************/
 
 /**
- * @file WorkspaceData.h
- * @brief Header file for WorkspaceData.
- * @date 20/11/2020
+ * @file VariableParser.h
+ * @brief Header file for the VariableParser functions.
+ * @date 04/02/2021
  * @author Walter Van Herck (IO)
- * @copyright 2010-2020 ITER Organization
- * @details This header file contains the definition of the WorkspaceData class.
+ * @copyright 2010-2021 ITER Organization
+ * @details This header file contains the definition of the VariableParser functions.
  */
 
-#ifndef _SEQ_WorkspaceData_h_
-#define _SEQ_WorkspaceData_h_
+#ifndef _SEQ_VariableParser_h_
+#define _SEQ_VariableParser_h_
 
 // Global header files
 
-#include <vector>
+#include <memory>
+#include <string>
 
 // Local header files
 
-#include "VariableData.h"
+#include "procedure/Variable.h"
+#include "XMLData.h"
 
 // Constants
 
@@ -49,46 +51,16 @@ namespace sup {
 
 namespace sequencer {
 
-/**
- * @brief Data representation of a workspace.
- */
-class WorkspaceData
-{
-private:
-  std::vector<VariableData> _variables;
-
-protected:
-
-public:
-  /**
-   * @brief Constructor.
-   */
-  WorkspaceData();
-
-  /**
-   * @brief Destructor.
-   */
-  ~WorkspaceData() = default;
-
-  /**
-   * @brief Add child variable.
-   *
-   * @param var Data representation of child variable.
-   * @return true on success.
-   */
-  bool AddVariable(const VariableData & var);
-
-  /**
-   * @brief Retrieve list of child variable data.
-   *
-   * @return List of variable data.
-   */
-  const std::vector<VariableData> & GetVariableDataList() const;
-};
-
 // Global variables
 
+static const std::string VARIABLE_NAME_ATTRIBUTE = "name";
+
 // Function declarations
+
+/**
+ * @brief Parse to Variable.
+ */
+std::unique_ptr<Variable> ParseVariable(const XMLData & data);
 
 // Function definitions
 
@@ -105,4 +77,4 @@ extern "C" {
 } // extern C
 #endif // __cplusplus
 
-#endif // _SEQ_WorkspaceData_h_
+#endif // _SEQ_VariableParser_h_

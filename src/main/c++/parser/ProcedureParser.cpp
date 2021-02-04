@@ -25,7 +25,9 @@
 
 // Local header files
 
-#include "ProcedureData.h"
+#include "ProcedureParser.h"
+#include "InstructionParser.h"
+#include "VariableParser.h"
 
 // Constants
 
@@ -40,33 +42,40 @@ namespace sequencer {
 
 // Global variables
 
+static const std::string WORKSPACE_TYPE = "Workspace";
+
 // Function declaration
 
 // Function definition
 
-ProcedureData::ProcedureData(InstructionData * root, WorkspaceData * ws_data)
-  : _root{root}
-  , _workspace{ws_data}
-{}
-
-std::unique_ptr<Procedure> ProcedureData::CreateProcedure() const
+std::unique_ptr<Procedure> ParseProcedure(const XMLData & data)
 {
-  log_info("sup::sequencer::ProcedureData::CreateProcedure() - entering function..");
+  log_info("sup::sequencer::ParseProcedure() - entering function..");
   auto result = std::unique_ptr<Procedure>(new Procedure());
-  if (_root)
+
+  for (const auto &child : data.Children())
   {
-    result->SetRootInstruction(_root->GenerateInstruction().release());
-  }
-  if (_workspace)
-  {
-    log_info("sup::sequencer::ProcedureData::CreateProcedure() - generating workspace variables..");
-    for (const auto & var_data : _workspace->GetVariableDataList())
+    if (child.GetType() == WORKSPACE_TYPE)
     {
-      auto name = var_data.GetName();
-      if (!name.empty())
+      log_info("sup::sequencer::ParseProcedure() - generating workspace variables..");
+      for (const auto &var_data : child.Children())
       {
-        auto var = var_data.GenerateVariable();
-        result->AddVariable(name, var.release());
+        auto name = var_data.GetName();
+        log_info("sup::sequencer::ParseProcedure() - generate variable: '%s'", name.c_str());
+        if (!name.empty())
+        {
+          auto var = ParseVariable(var_data);
+          result->AddVariable(name, var.release());
+        }
+      }
+    }
+    // Every non workspace element of the Procedure node should be an instruction node
+    else
+    {
+      auto root_instr = ParseInstruction(child);
+      if (root_instr)
+      {
+        result->SetRootInstruction(root_instr.release());
       }
     }
   }

@@ -25,7 +25,7 @@
 
 // Local header files
 
-#include "InstructionData.h"
+#include "InstructionParser.h"
 #include "instructions/InstructionRegistry.h"
 #include "instructions/CompoundInstruction.h"
 #include "instructions/DecoratorInstruction.h"
@@ -48,95 +48,68 @@ namespace sequencer {
 namespace
 {
 bool AddChildInstructions(Instruction *instruction,
-                          const std::vector<InstructionData> & child_data);
+                          const std::vector<XMLData> & children);
 } // Unnamed namespace
 
 // Function definition
 
-InstructionData::InstructionData(std::string instr_type)
-  : _type{std::move(instr_type)}
-{}
-
-std::string InstructionData::GetType() const
+std::unique_ptr<Instruction> ParseInstruction(const XMLData & data)
 {
-  return _type;
-}
+  auto instr_type = data.GetType();
+  auto instr = GlobalInstructionRegistry().Create(instr_type);
 
-bool InstructionData::HasAttribute(const std::string & name)
-{
-  return _attributes.find(name) != _attributes.end();
-}
-
-bool InstructionData::AddAttribute(const std::string & name,
-                                   const std::string & value)
-{
-  if (HasAttribute(name))
-  {
-    return false;
-  }
-  _attributes[name] = value;
-}
-
-bool InstructionData::AddChild(const InstructionData & child)
-{
-  _children.push_back(child);
-}
-
-const std::map<std::string, std::string> & InstructionData::Attributes() const
-{
-  return _attributes;
-}
-
-const std::vector<InstructionData> & InstructionData::Children() const
-{
-  return _children;
-}
-
-std::unique_ptr<Instruction> InstructionData::GenerateInstruction() const
-{
-  auto instr = GlobalInstructionRegistry().Create(_type);
   if (!instr)
   {
+    log_warning("sup::sequencer::ParseInstruction() - couldn't parse instruction with type: '%s'",
+                instr_type.c_str());
     return {};
   }
-  for (const auto & attr : _attributes)
+  for (const auto & attr : data.Attributes())
   {
     instr->AddAttribute(attr.first, attr.second);
   }
-  bool status = AddChildInstructions(instr.get(), _children);
+  log_info("sup::sequencer::ParseInstruction() - parsing child instructions for instruction of type: '%s'",
+           instr_type.c_str());
+  bool status = AddChildInstructions(instr.get(), data.Children());
   if (status)
   {
     return instr;
   }
+  log_warning("sup::sequencer::ParseInstruction() - instruction with type: '%s' has wrong number of "
+              "child instructions: '%d'", instr->GetType().c_str(), data.Children().size());
   return {};
 }
 
 namespace
 {
 bool AddChildInstructions(Instruction *instruction,
-                          const std::vector<InstructionData> & child_data)
+                          const std::vector<XMLData> & children)
 {
   auto decorator = dynamic_cast<DecoratorInstruction *>(instruction);
-  if (decorator && child_data.size() == 1u)
+  if (decorator && children.size() == 1u)
   {
-    decorator->SetInstruction(child_data[0].GenerateInstruction().release());
+    auto child_instr = ParseInstruction(children[0]);
+    decorator->SetInstruction(child_instr.release());
     return true;
   }
 
   auto compound = dynamic_cast<CompoundInstruction *>(instruction);
-  if (compound && child_data.size() > 0)
+  if (compound && children.size() > 0)
   {
-    for (const auto & child : child_data)
+    for (const auto & child : children)
     {
-      compound->PushBack(child.GenerateInstruction().release());
+      auto child_instr = ParseInstruction(child);
+      compound->PushBack(child_instr.release());
     }
     return true;
   }
-  if (!decorator && !compound && child_data.size()==0)
+
+  if (!decorator && !compound && children.size()==0)
   {
     // Leaf instructions don't have children, so ok.
     return true;
   }
+
   return false;
 }
 

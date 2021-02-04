@@ -27,6 +27,7 @@
 
 #include "SequenceParser.h"
 #include "SequenceParserImpl.h"
+#include "ProcedureParser.h"
 
 // Constants
 
@@ -48,15 +49,20 @@ namespace sequencer {
 std::unique_ptr<Procedure> ParseProcedureFile(const char * const filename)
 {
   log_info("sup::sequencer::ParseProcedureFile('%s') - load file..", filename);
-  auto proc_data = ParseProcedureXML(filename);
+  auto data = ParseXMLData(filename);
 
-  if (!proc_data)
+  if (!data)
   {
     log_warning("sup::sequencer::ParseProcedureFile('%s') - could not parse file!", filename);
     return {};
   }
 
-  auto proc = proc_data->CreateProcedure();
+  auto proc = ParseProcedure(*data);
+
+  if (!proc)
+  {
+    log_warning("sup::sequencer::ParseProcedureFile('%s') - could not parse structure in file!", filename);
+  }
 
   return proc;
 }

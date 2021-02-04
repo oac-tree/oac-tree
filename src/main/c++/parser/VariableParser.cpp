@@ -27,7 +27,7 @@
 
 // Local header files
 
-#include "VariableData.h"
+#include "VariableParser.h"
 #include "procedure/LocalVariable.h"
 
 // Constants
@@ -47,81 +47,45 @@ namespace sequencer {
 
 // Function definition
 
-VariableData::VariableData(std::string var_type)
-  : _type{std::move(var_type)}
-{}
-
-std::string VariableData::GetType() const
-{
-  return _type;
-}
-
-std::string VariableData::GetName() const
-{
-  if (HasAttribute(VARIABLE_NAME_ATTRIBUTE))
-  {
-    return _attributes.at(VARIABLE_NAME_ATTRIBUTE);
-  }
-  return {};
-}
-
-bool VariableData::HasAttribute(const std::string &name) const
-{
-  return _attributes.find(name) != _attributes.end();
-}
-
-bool VariableData::AddAttribute(const std::string &name, const std::string &value)
-{
-  if (HasAttribute(name))
-  {
-    return false;
-  }
-  _attributes[name] = value;
-}
-
-const std::map<std::string, std::string> & VariableData::Attributes() const
-{
-  return _attributes;
-}
-
-std::unique_ptr<Variable> VariableData::GenerateVariable() const
+std::unique_ptr<Variable> ParseVariable(const XMLData & data)
 {
   std::unique_ptr<Variable> result;
-  bool status = HasAttribute(LOCAL_VARIABLE_JSON_TYPE);
+  bool status = data.HasAttribute(LOCAL_VARIABLE_JSON_TYPE);
+  auto attributes = data.Attributes();
 
   ::ccs::base::SharedReference<::ccs::types::AnyType> local_type;
   std::unique_ptr<::ccs::types::AnyValue> local_value;
   if (status)
   {
-    log_info("sup::sequencer::VariableData::GenerateVariable() - parsing json type info..");
-    std::string json_type = _attributes.at(LOCAL_VARIABLE_JSON_TYPE);
+    log_info("sup::sequencer::ParseVariable() - parsing json type info..");
+    std::string json_type = attributes.at(LOCAL_VARIABLE_JSON_TYPE);
     auto read = ::ccs::HelperTools::Parse(local_type, json_type.c_str());
     status = read > 0;
   }
   else
   {
-    log_warning("sup::sequencer::VariableData::GenerateVariable() - no json type info!");
+    log_warning("sup::sequencer::ParseVariable() - no json type info!");
   }
 
   if (status)
   {
-    log_info("sup::sequencer::VariableData::GenerateVariable() - create LocalVariable..");
+    log_info("sup::sequencer::ParseVariable() - create LocalVariable..");
     ::ccs::base::SharedReference<const ::ccs::types::AnyType> const_type(local_type);
     result.reset(new LocalVariable(const_type));
     local_value.reset(new ::ccs::types::AnyValue(const_type));
-    status = HasAttribute(LOCAL_VARIABLE_JSON_VALUE);
+    status = data.HasAttribute(LOCAL_VARIABLE_JSON_VALUE);
   }
 
   if (status)
   {
-    log_info("sup::sequencer::VariableData::GenerateVariable() - parsing json value info..");
-    std::string json_value = _attributes.at(LOCAL_VARIABLE_JSON_VALUE);
+    log_info("sup::sequencer:ParseVariable() - parsing json value info..");
+    std::string json_value = attributes.at(LOCAL_VARIABLE_JSON_VALUE);
     status = local_value->ParseInstance(json_value.c_str());
   }
 
   if (status)
   {
-    log_info("sup::sequencer::VariableData::GenerateVariable() - copying parsed value..");
+    log_info("sup::sequencer:ParseVariable() - copying parsed value..");
     result->SetValue(*local_value);
   }
 

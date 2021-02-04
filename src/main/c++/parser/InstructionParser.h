@@ -20,16 +20,16 @@
 ******************************************************************************/
 
 /**
- * @file ProcedureData.h
- * @brief Header file for ProcedureData class.
- * @date 14/12/20
+ * @file InstructionParser.h
+ * @brief Header file for InstructionParser functions.
+ * @date 04/02/2021
  * @author Walter Van Herck (IO)
- * @copyright 2010-2020 ITER Organization
- * @details This header file contains the definition of the ProcedureData class.
+ * @copyright 2010-2021 ITER Organization
+ * @details This header file contains the definition of the InstructionParser functions.
  */
 
-#ifndef _SEQ_ProcedureData_h_
-#define _SEQ_ProcedureData_h_
+#ifndef _SEQ_InstructionParser_h_
+#define _SEQ_InstructionParser_h_
 
 // Global header files
 
@@ -37,9 +37,8 @@
 
 // Local header files
 
-#include "InstructionData.h"
-#include "WorkspaceData.h"
-#include "procedure/Procedure.h"
+#include "instructions/Instruction.h"
+#include "XMLData.h"
 
 // Constants
 
@@ -51,43 +50,14 @@ namespace sup {
 
 namespace sequencer {
 
-/**
- * @brief Class providing .
- */
-
-class ProcedureData
-{
-  private:
-    std::unique_ptr<InstructionData> _root;
-    std::unique_ptr<WorkspaceData> _workspace;
-
-  protected:
-
-  public:
-    /**
-     * @brief Constructor.
-     *
-     * @param root Root instruction data.
-     * @param ws_data Workspace data.
-     */
-  ProcedureData(InstructionData * root, WorkspaceData * ws_data);
-
-    /**
-     * @brief Destructor.
-     */
-  ~ProcedureData() = default;
-
-    /**
-     * @brief Create a procedure.
-     *
-     * @return Unique pointer to procedure.
-     */
-  std::unique_ptr<Procedure> CreateProcedure() const;
-};
-
 // Global variables
 
 // Function declarations
+
+/**
+ * @brief Parse to Instruction.
+ */
+std::unique_ptr<Instruction> ParseInstruction(const XMLData & data);
 
 // Function definitions
 
@@ -104,4 +74,4 @@ extern "C" {
 } // extern C
 #endif // __cplusplus
 
-#endif // _SEQ_ProcedureData_h_
+#endif // _SEQ_InstructionParser_h_

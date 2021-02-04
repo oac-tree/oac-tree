@@ -47,7 +47,7 @@ namespace sequencer {
 
 // Function definition
 
-std::unique_ptr<Variable> ParseVariable(const XMLData & data)
+std::unique_ptr<Variable> ParseVariable(const TreeData & data)
 {
   std::unique_ptr<Variable> result;
   bool status = data.HasAttribute(LOCAL_VARIABLE_JSON_TYPE);

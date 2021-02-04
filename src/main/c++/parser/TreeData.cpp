@@ -25,7 +25,7 @@
 
 // Local header files
 
-#include "XMLData.h"
+#include "TreeData.h"
 
 // Constants
 
@@ -44,18 +44,18 @@ namespace sequencer {
 
 // Function definition
 
-XMLData::XMLData(std::string type)
+TreeData::TreeData(std::string type)
   : _type{std::move(type)}
 {}
 
-XMLData::~XMLData() = default;
+TreeData::~TreeData() = default;
 
-std::string XMLData::GetType() const
+std::string TreeData::GetType() const
 {
   return _type;
 }
 
-std::string XMLData::GetName() const
+std::string TreeData::GetName() const
 {
   if (HasAttribute(NAME_ATTRIBUTE))
   {
@@ -64,12 +64,12 @@ std::string XMLData::GetName() const
   return {};
 }
 
-bool XMLData::HasAttribute(const std::string & name) const
+bool TreeData::HasAttribute(const std::string & name) const
 {
   return _attributes.find(name) != _attributes.end();
 }
 
-bool XMLData::AddAttribute(const std::string & name, const std::string & value)
+bool TreeData::AddAttribute(const std::string & name, const std::string & value)
 {
   if (HasAttribute(name))
   {
@@ -78,17 +78,17 @@ bool XMLData::AddAttribute(const std::string & name, const std::string & value)
   _attributes[name] = value;
 }
 
-const std::map<std::string, std::string> & XMLData::Attributes() const
+const std::map<std::string, std::string> & TreeData::Attributes() const
 {
   return _attributes;
 }
 
-bool XMLData::AddChild(const XMLData & child)
+bool TreeData::AddChild(const TreeData & child)
 {
   _children.push_back(child);
 }
 
-const std::vector<XMLData> & XMLData::Children() const
+const std::vector<TreeData> & TreeData::Children() const
 {
   return _children;
 }

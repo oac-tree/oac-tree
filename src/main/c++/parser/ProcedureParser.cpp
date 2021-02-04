@@ -48,7 +48,7 @@ static const std::string WORKSPACE_TYPE = "Workspace";
 
 // Function definition
 
-std::unique_ptr<Procedure> ParseProcedure(const XMLData & data)
+std::unique_ptr<Procedure> ParseProcedure(const TreeData & data)
 {
   log_info("sup::sequencer::ParseProcedure() - entering function..");
   auto result = std::unique_ptr<Procedure>(new Procedure());

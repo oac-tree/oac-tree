@@ -39,7 +39,7 @@
 // Local header files
 
 #include "procedure/Variable.h"
-#include "XMLData.h"
+#include "TreeData.h"
 
 // Constants
 
@@ -60,7 +60,7 @@ static const std::string VARIABLE_NAME_ATTRIBUTE = "name";
 /**
  * @brief Parse to Variable.
  */
-std::unique_ptr<Variable> ParseVariable(const XMLData & data);
+std::unique_ptr<Variable> ParseVariable(const TreeData & data);
 
 // Function definitions
 

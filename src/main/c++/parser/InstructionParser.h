@@ -38,7 +38,7 @@
 // Local header files
 
 #include "instructions/Instruction.h"
-#include "XMLData.h"
+#include "TreeData.h"
 
 // Constants
 
@@ -57,7 +57,7 @@ namespace sequencer {
 /**
  * @brief Parse to Instruction.
  */
-std::unique_ptr<Instruction> ParseInstruction(const XMLData & data);
+std::unique_ptr<Instruction> ParseInstruction(const TreeData & data);
 
 // Function definitions
 

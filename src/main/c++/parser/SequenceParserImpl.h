@@ -37,7 +37,7 @@
 
 // Local header files
 
-#include "XMLData.h"
+#include "TreeData.h"
 
 // Constants
 
@@ -54,7 +54,7 @@ namespace sequencer {
 // Function declarations
 
 // std::unique_ptr<ProcedureData> ParseProcedureXML(const char * const filename);
-std::unique_ptr<XMLData> ParseXMLData(const char * const filename);
+std::unique_ptr<TreeData> ParseXMLData(const char * const filename);
 
 // Function definitions
 

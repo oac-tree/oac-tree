@@ -20,16 +20,16 @@
 ******************************************************************************/
 
 /**
- * @file XMLData.h
- * @brief Header file for XMLData class.
+ * @file TreeData.h
+ * @brief Header file for TreeData class.
  * @date 01/02/2021
  * @author Walter Van Herck (IO)
  * @copyright 2010-2021 ITER Organization
- * @details This header file contains the definition of the XMLData class.
+ * @details This header file contains the definition of the TreeData class.
  */
 
-#ifndef _SEQ_XMLData_h_
-#define _SEQ_XMLData_h_
+#ifndef _SEQ_TreeData_h_
+#define _SEQ_TreeData_h_
 
 // Global header files
 
@@ -53,12 +53,12 @@ namespace sequencer {
  * @brief Data representation of an XML tree.
  */
 
-class XMLData
+class TreeData
 {
 private:
   std::string _type;
   std::map<std::string, std::string> _attributes;
-  std::vector<XMLData> _children;
+  std::vector<TreeData> _children;
 
 protected:
 
@@ -67,12 +67,12 @@ public:
    * @brief Constructor.
    * @param type Data typename.
    */
-  XMLData(std::string type);
+  TreeData(std::string type);
 
   /**
    * @brief Destructor.
    */
-  ~XMLData();
+  ~TreeData();
 
   /**
    * @brief Retrieve the data's typename.
@@ -118,14 +118,14 @@ public:
    * @param child Data representation of child element.
    * @return true on success.
    */
-  bool AddChild(const XMLData & child);
+  bool AddChild(const TreeData & child);
 
   /**
    * @brief Retrieve all child data elements.
    *
    * @return List of child data elements.
    */
-  const std::vector<XMLData> & Children() const;
+  const std::vector<TreeData> & Children() const;
 };
 
 // Global variables
@@ -149,4 +149,4 @@ extern "C" {
 } // extern C
 #endif // __cplusplus
 
-#endif // _SEQ_XMLData_h_
+#endif // _SEQ_TreeData_h_

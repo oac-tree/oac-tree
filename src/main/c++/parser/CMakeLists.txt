@@ -1,16 +1,11 @@
 target_sources(sequencer
     PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/InstructionParser.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/InstructionParser.h
         ${CMAKE_CURRENT_LIST_DIR}/ProcedureParser.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/ProcedureParser.h
         ${CMAKE_CURRENT_LIST_DIR}/SequenceParser.cpp
         ${CMAKE_CURRENT_LIST_DIR}/SequenceParserImpl.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/SequenceParserImpl.h
         ${CMAKE_CURRENT_LIST_DIR}/VariableParser.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/VariableParser.h
-        ${CMAKE_CURRENT_LIST_DIR}/XMLData.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/XMLData.h
+        ${CMAKE_CURRENT_LIST_DIR}/TreeData.cpp
     PUBLIC
         ${CMAKE_CURRENT_LIST_DIR}/SequenceParser.h
 )

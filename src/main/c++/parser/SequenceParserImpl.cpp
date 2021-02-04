@@ -45,14 +45,14 @@ namespace sequencer {
 
 // Function declaration
 
-static std::unique_ptr<XMLData> ParseDataTree(xmlDocPtr doc, xmlNodePtr node);
+static std::unique_ptr<TreeData> ParseDataTree(xmlDocPtr doc, xmlNodePtr node);
 
 static bool NodeHasName(xmlNodePtr node, const char * name);
 static std::string ToString(const xmlChar * xml_name);
 
 // Function definition
 
-std::unique_ptr<XMLData> ParseXMLData(const char * const filename)
+std::unique_ptr<TreeData> ParseXMLData(const char * const filename)
 {
   // Read file into xmlDocPtr
   xmlDocPtr doc = xmlParseFile(filename);
@@ -81,10 +81,10 @@ std::unique_ptr<XMLData> ParseXMLData(const char * const filename)
   return data_tree;
 }
 
-static std::unique_ptr<XMLData> ParseDataTree(xmlDocPtr doc, xmlNodePtr node)
+static std::unique_ptr<TreeData> ParseDataTree(xmlDocPtr doc, xmlNodePtr node)
 {
   auto node_name = ToString(node->name);
-  std::unique_ptr<XMLData> result(new XMLData(node_name));
+  std::unique_ptr<TreeData> result(new TreeData(node_name));
 
   // Add attributes
   auto attribute = node->properties;

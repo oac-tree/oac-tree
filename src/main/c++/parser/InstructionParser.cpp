@@ -48,12 +48,12 @@ namespace sequencer {
 namespace
 {
 bool AddChildInstructions(Instruction *instruction,
-                          const std::vector<XMLData> & children);
+                          const std::vector<TreeData> & children);
 } // Unnamed namespace
 
 // Function definition
 
-std::unique_ptr<Instruction> ParseInstruction(const XMLData & data)
+std::unique_ptr<Instruction> ParseInstruction(const TreeData & data)
 {
   auto instr_type = data.GetType();
   auto instr = GlobalInstructionRegistry().Create(instr_type);
@@ -83,7 +83,7 @@ std::unique_ptr<Instruction> ParseInstruction(const XMLData & data)
 namespace
 {
 bool AddChildInstructions(Instruction *instruction,
-                          const std::vector<XMLData> & children)
+                          const std::vector<TreeData> & children)
 {
   auto decorator = dynamic_cast<DecoratorInstruction *>(instruction);
   if (decorator && children.size() == 1u)

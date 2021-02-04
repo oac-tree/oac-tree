@@ -49,6 +49,8 @@ static std::unique_ptr<ProcedureData> ParseProcedureNode(xmlDocPtr doc, xmlNodeP
 static std::unique_ptr<InstructionData> ParseInstructionNode(xmlDocPtr doc, xmlNodePtr node);
 static std::unique_ptr<WorkspaceData> ParseWorkspaceNode(xmlDocPtr doc, xmlNodePtr node);
 static std::unique_ptr<VariableData> ParseVariableNode(xmlDocPtr doc, xmlNodePtr node);
+static std::unique_ptr<XMLData> ParseDataTree(xmlDocPtr doc, xmlNodePtr node);
+
 static bool NodeHasName(xmlNodePtr node, const char * name);
 static std::string ToString(const xmlChar * xml_name);
 
@@ -79,6 +81,35 @@ std::unique_ptr<ProcedureData> ParseProcedureXML(const char * const filename)
   auto proc_data = ParseProcedureNode(doc, root_node);
   xmlFreeDoc(doc);
   return proc_data;
+}
+
+std::unique_ptr<XMLData> ParseXMLData(const char * const filename)
+{
+  // Read file into xmlDocPtr
+  xmlDocPtr doc = xmlParseFile(filename);
+  if (doc == nullptr)
+  {
+    log_warning("ParseXMLData('%s') - Couldn't parse file", filename);
+    return {};
+  }
+
+  // Check root element
+  xmlNodePtr root_node = xmlDocGetRootElement(doc);
+  if (root_node == nullptr)
+  {
+    log_warning("ParseXMLData('%s') - Couldn't retrieve root element", filename);
+    xmlFreeDoc(doc);
+    return {};
+  }
+  if (xmlStrcmp(root_node->name, (const xmlChar *)"Procedure"))
+  {
+    log_warning("ParseXMLData('%s') - Root element is not 'Procedure'", filename);
+    xmlFreeDoc(doc);
+    return {};
+  }
+  auto data_tree = ParseDataTree(doc, root_node);
+  xmlFreeDoc(doc);
+  return data_tree;
 }
 
 static std::unique_ptr<ProcedureData> ParseProcedureNode(xmlDocPtr doc, xmlNodePtr root)
@@ -201,6 +232,39 @@ static std::unique_ptr<VariableData> ParseVariableNode(xmlDocPtr doc, xmlNodePtr
     xmlFree(xml_val);
     result->AddAttribute(name, value);
     attribute = attribute->next;
+  }
+
+  return result;
+}
+
+static std::unique_ptr<XMLData> ParseDataTree(xmlDocPtr doc, xmlNodePtr node)
+{
+  auto node_name = ToString(node->name);
+  std::unique_ptr<XMLData> result(new XMLData(node_name));
+
+  // Add attributes
+  auto attribute = node->properties;
+  while (attribute != nullptr)
+  {
+    auto name = ToString(attribute->name);
+    auto xml_val = xmlGetProp(node, attribute->name);
+    auto value = ToString(xml_val);
+    xmlFree(xml_val);
+    result->AddAttribute(name, value);
+    attribute = attribute->next;
+  }
+
+  // Add children
+  auto child_node = node->children;
+  while (child_node != nullptr)
+  {
+    if (child_node->type == XML_ELEMENT_NODE)
+    {
+      log_info("Add child Data: %s", reinterpret_cast<const char *>(child_node->name));
+      auto child_data = ParseDataTree(doc, child_node);
+      result->AddChild(*child_data);
+    }
+    child_node = child_node->next;
   }
 
   return result;

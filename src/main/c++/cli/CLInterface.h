@@ -54,6 +54,7 @@ namespace sequencer {
 class CLInterface : public UserInterface
 {
   private:
+    bool _verbose;
 
   protected:
 
@@ -61,7 +62,7 @@ class CLInterface : public UserInterface
     /**
      * @brief Constructor.
      */
-    CLInterface();
+    CLInterface(bool verbose=false);
 
     /**
      * @brief Destructor.

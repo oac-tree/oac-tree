@@ -65,6 +65,7 @@ void print_usage()
 int main(int argc, char * argv[])
 {
   char filepath[PATH_MAX_LENGTH] = STRING_UNDEFINED;
+  bool verbose = false;
 
   if (argc > 1)
   {
@@ -95,6 +96,7 @@ int main(int argc, char * argv[])
         // Log to standard output
         (void)ccs::log::SetStdout();
         (void)ccs::log::SetFilter(LOG_DEBUG);
+        verbose = true;
       }
       else
       {
@@ -128,7 +130,7 @@ int main(int argc, char * argv[])
     return 1;
   }
 
-  sup::sequencer::CLInterface ui;
+  sup::sequencer::CLInterface ui(verbose);
   sup::sequencer::Runner runner(&ui);
   runner.SetProcedure(proc.get());
   runner.ExecuteProcedure();

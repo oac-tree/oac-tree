@@ -47,27 +47,35 @@ namespace sequencer {
 
 // Function definition
 
-CLInterface::CLInterface() = default;
+CLInterface::CLInterface(bool verbose)
+  : _verbose{verbose}
+{}
 
 CLInterface::~CLInterface() = default;
 
 void CLInterface::UpdateInstructionStatus(const Instruction * instruction)
 {
-    auto instruction_type = instruction->GetType();
-    auto status = instruction->GetStatus();
+  auto instruction_type = instruction->GetType();
+  auto status = instruction->GetStatus();
 
-    std::cout << "Instruction: " << instruction_type << ": ";
-    std::cout << StatusToString(status) << std::endl;
+  std::cout << "Instruction: " << instruction_type << ": ";
+  std::cout << StatusToString(status) << std::endl;
 }
 
 void CLInterface::StartSingleStep()
 {
+  if (_verbose)
+  {
     std::cout << "Start single execution step" << std::endl;
+  }
 }
 
 void CLInterface::EndSingleStep()
 {
+  if (_verbose)
+  {
     std::cout << "End single execution step" << std::endl;
+  }
 }
 
 } // namespace sequencer

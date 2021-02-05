@@ -8,6 +8,6 @@ target_sources(sequencer
 )
 
 target_include_directories(sequencer
-    PUBLIC
+    PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}
     )

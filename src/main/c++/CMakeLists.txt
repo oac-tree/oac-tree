@@ -20,6 +20,7 @@ add_executable(sequencer-cli)
 
 find_package(LibXml2 REQUIRED)
 
+add_subdirectory(include)
 add_subdirectory(parser)
 add_subdirectory(runner)
 add_subdirectory(procedure)

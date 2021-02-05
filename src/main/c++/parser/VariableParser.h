@@ -38,7 +38,7 @@
 
 // Local header files
 
-#include "procedure/Variable.h"
+#include "Variable.h"
 #include "TreeData.h"
 
 // Constants

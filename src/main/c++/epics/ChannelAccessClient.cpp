@@ -39,13 +39,13 @@
 
 // Local header files
 
-#include "procedure/ExecutionStatus.h"
+#include "ExecutionStatus.h"
 
-#include "instructions/Instruction.h"
-#include "instructions/InstructionRegistry.h"
+#include "Instruction.h"
+#include "InstructionRegistry.h"
 
-#include "procedure/Workspace.h"
-#include "procedure/Variable.h"
+#include "Workspace.h"
+#include "Variable.h"
 
 // Constants
 

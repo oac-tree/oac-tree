@@ -9,20 +9,12 @@ target_sources(sequencer
         ${CMAKE_CURRENT_LIST_DIR}/MathExpressionNode.cpp
         ${CMAKE_CURRENT_LIST_DIR}/MathExpressionEngineProvider.cpp
         ${CMAKE_CURRENT_LIST_DIR}/ParallelSequence.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Sequence.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Repeat.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/Sequence.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Wait.cpp
+    )
+
+target_include_directories(sequencer
     PUBLIC
-        ${CMAKE_CURRENT_LIST_DIR}/AsyncWrapper.h
-        ${CMAKE_CURRENT_LIST_DIR}/CompoundInstruction.h
-        ${CMAKE_CURRENT_LIST_DIR}/DecoratorInstruction.h
-        ${CMAKE_CURRENT_LIST_DIR}/Instruction.h
-        ${CMAKE_CURRENT_LIST_DIR}/InstructionRegistry.h
-        ${CMAKE_CURRENT_LIST_DIR}/Inverter.h
-        ${CMAKE_CURRENT_LIST_DIR}/MathExpressionNode.h
-        ${CMAKE_CURRENT_LIST_DIR}/MathExpressionEngineProvider.h
-        ${CMAKE_CURRENT_LIST_DIR}/ParallelSequence.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Sequence.h
-        ${CMAKE_CURRENT_LIST_DIR}/Repeat.h
-        ${CMAKE_CURRENT_LIST_DIR}/Wait.h
-)
+        ${CMAKE_CURRENT_LIST_DIR}
+    )

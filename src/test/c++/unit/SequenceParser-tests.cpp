@@ -27,8 +27,8 @@
 
 // Local header files
 
-#include "instructions/InstructionRegistry.h"
-#include "parser/SequenceParser.h"
+#include "InstructionRegistry.h"
+#include "SequenceParser.h"
 
 // Constants
 

@@ -26,7 +26,7 @@
 // Local header files
 
 #include "Instruction.h"
-#include "runner/UserInterface.h"
+#include "UserInterface.h"
 
 // Constants
 

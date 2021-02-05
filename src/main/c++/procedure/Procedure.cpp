@@ -26,6 +26,8 @@
 // Local header files
 
 #include "Procedure.h"
+#include "Sequence.h"
+#include "Workspace.h"
 
 // Constants
 

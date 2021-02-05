@@ -28,7 +28,6 @@ add_subdirectory(epics)
 add_subdirectory(cli)
 
 target_include_directories(sequencer
-    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
     PRIVATE ${LIBXML2_INCLUDE_DIR}
     PRIVATE $ENV{CODAC_ROOT}/include
     PRIVATE $ENV{CODAC_ROOT}/epics/include
@@ -37,13 +36,21 @@ target_include_directories(sequencer
     )
 
 target_link_directories(sequencer
-    PRIVATE $ENV{CODAC_ROOT}/lib
+    PUBLIC $ENV{CODAC_ROOT}/lib
     )
 
-target_link_libraries(sequencer ${LIBXML2_LIBRARIES} ccs-common ccs-types ccs-base ccs-ca ccs-pvxs)
+target_link_libraries(sequencer
+    PRIVATE
+        ${LIBXML2_LIBRARIES}
+    PUBLIC
+        ccs-common
+        ccs-types
+        ccs-base
+        ccs-ca
+        ccs-pvxs
+    )
 
 target_include_directories(sequencer-cli
-    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
     PRIVATE $ENV{CODAC_ROOT}/include
     )
 
@@ -51,4 +58,7 @@ target_link_directories(sequencer-cli
     PRIVATE $ENV{CODAC_ROOT}/lib
 )
 
-target_link_libraries(sequencer-cli sequencer ccs-types ccs-base ccs-common)
+target_link_libraries(sequencer-cli
+    PRIVATE
+        sequencer
+    )

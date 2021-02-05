@@ -5,10 +5,9 @@ target_sources(sequencer
         ${CMAKE_CURRENT_LIST_DIR}/Procedure.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Variable.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Workspace.cpp
-    PUBLIC
-        ${CMAKE_CURRENT_LIST_DIR}/ExecutionStatus.h
-        ${CMAKE_CURRENT_LIST_DIR}/LocalVariable.h
-        ${CMAKE_CURRENT_LIST_DIR}/Procedure.h
-        ${CMAKE_CURRENT_LIST_DIR}/Variable.h
-        ${CMAKE_CURRENT_LIST_DIR}/Workspace.h
 )
+
+target_include_directories(sequencer
+    PUBLIC
+        ${CMAKE_CURRENT_LIST_DIR}
+    )

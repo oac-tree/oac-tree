@@ -37,7 +37,7 @@
 
 // Local header files
 
-#include "instructions/Instruction.h"
+#include "Instruction.h"
 #include "TreeData.h"
 
 // Constants

@@ -29,9 +29,8 @@
 
 // Local header files
 
-#include "instructions/InstructionRegistry.h"
-#include "parser/SequenceParser.h"
-#include "runner/Runner.h"
+#include "SequenceParser.h"
+#include "Runner.h"
 #include "CLInterface.h"
 
 // Constants

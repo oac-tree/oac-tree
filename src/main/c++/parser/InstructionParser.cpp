@@ -26,9 +26,9 @@
 // Local header files
 
 #include "InstructionParser.h"
-#include "instructions/InstructionRegistry.h"
-#include "instructions/CompoundInstruction.h"
-#include "instructions/DecoratorInstruction.h"
+#include "InstructionRegistry.h"
+#include "CompoundInstruction.h"
+#include "DecoratorInstruction.h"
 
 // Constants
 

@@ -35,7 +35,7 @@
 
 // Local header files
 
-#include "runner/UserInterface.h"
+#include "UserInterface.h"
 
 // Constants
 

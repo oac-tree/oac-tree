@@ -28,7 +28,7 @@
 // Local header files
 
 #include "VariableParser.h"
-#include "procedure/LocalVariable.h"
+#include "LocalVariable.h"
 
 // Constants
 

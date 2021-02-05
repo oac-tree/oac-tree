@@ -33,8 +33,8 @@
 
 // Local header files
 
-#include "instructions/Instruction.h"
-#include "instructions/InstructionRegistry.h"
+#include "Instruction.h"
+#include "InstructionRegistry.h"
 
 // Constants
 

@@ -34,22 +34,30 @@
 // Global header files
 
 #include <memory>
+#include <vector>
+
+#include <common/AnyValue.h>
 
 // Local header files
 
-#include "instructions/Sequence.h"
-#include "runner/UserInterface.h"
-#include "Workspace.h"
+#include "ExecutionStatus.h"
 
 // Constants
-
-// Type definition
 
 #ifdef __cplusplus
 
 namespace sup {
 
 namespace sequencer {
+
+// Forward declarations
+
+class Instruction;
+class UserInterface;
+class Variable;
+class Workspace;
+
+// Type definition
 
 /**
  * @brief Procedure contains a tree of instructions

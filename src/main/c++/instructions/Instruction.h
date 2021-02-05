@@ -37,7 +37,7 @@
 
 // Local header files
 
-#include "procedure/ExecutionStatus.h"
+#include "ExecutionStatus.h"
 
 // Constants
 

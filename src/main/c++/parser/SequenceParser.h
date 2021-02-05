@@ -37,7 +37,7 @@
 
 // Local header files
 
-#include "procedure/Procedure.h"
+#include "Procedure.h"
 
 // Constants
 

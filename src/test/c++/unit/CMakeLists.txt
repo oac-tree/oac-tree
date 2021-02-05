@@ -10,7 +10,10 @@ target_sources(unit-tests
 
 target_include_directories(unit-tests
     PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../../main/c++
+        ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++/instructions
+        ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++/parser
+        ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++/procedure
+        ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++/runner
         $ENV{CODAC_ROOT}/include
 )
 

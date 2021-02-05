@@ -26,6 +26,7 @@
 // Local header files
 
 #include "LogUI.h"
+#include "Instruction.h"
 
 // Constants
 

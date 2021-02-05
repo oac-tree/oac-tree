@@ -28,6 +28,7 @@
 // Local header files
 
 #include "CLInterface.h"
+#include "Instruction.h"
 
 // Constants
 

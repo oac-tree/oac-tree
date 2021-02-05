@@ -35,18 +35,20 @@
 
 // Local header files
 
-#include "procedure/Procedure.h"
-#include "UserInterface.h"
-
 // Constants
-
-// Type definition
 
 #ifdef __cplusplus
 
 namespace sup {
 
 namespace sequencer {
+
+// Forward declarations
+
+class Procedure;
+class UserInterface;
+
+// Type definition
 
 /**
  * @brief Class providing .

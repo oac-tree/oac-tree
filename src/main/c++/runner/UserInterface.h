@@ -35,17 +35,19 @@
 
 // Local header files
 
-#include "instructions/Instruction.h"
-
 // Constants
-
-// Type definition
 
 #ifdef __cplusplus
 
 namespace sup {
 
 namespace sequencer {
+
+// Forward declarations
+
+class Instruction;
+
+// Type definition
 
 /**
  * @brief Interface representing user interactions.

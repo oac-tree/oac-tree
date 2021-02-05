@@ -27,8 +27,10 @@
 
 // Local header files
 
-#include "instructions/InstructionRegistry.h"
-#include "parser/SequenceParser.h"
+#include "Instruction.h"
+#include "InstructionRegistry.h"
+#include "SequenceParser.h"
+#include "Workspace.h"
 
 #include "LogUI.h"
 

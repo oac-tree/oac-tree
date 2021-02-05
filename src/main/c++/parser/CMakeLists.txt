@@ -6,6 +6,9 @@ target_sources(sequencer
         ${CMAKE_CURRENT_LIST_DIR}/SequenceParserImpl.cpp
         ${CMAKE_CURRENT_LIST_DIR}/VariableParser.cpp
         ${CMAKE_CURRENT_LIST_DIR}/TreeData.cpp
-    PUBLIC
-        ${CMAKE_CURRENT_LIST_DIR}/SequenceParser.h
 )
+
+target_include_directories(sequencer
+    PUBLIC
+        ${CMAKE_CURRENT_LIST_DIR}
+    )

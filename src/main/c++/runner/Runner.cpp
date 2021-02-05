@@ -29,6 +29,8 @@
 // Local header files
 
 #include "Runner.h"
+#include "Procedure.h"
+#include "UserInterface.h"
 
 // Constants
 

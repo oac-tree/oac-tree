@@ -27,13 +27,13 @@
 #include "common/AnyValue.h"
 #include "common/SharedReference.h"
 #include "common/AnyType.h"
-#include  "procedure/Workspace.h"
-#include  "procedure/LocalVariable.h"
 
 // Local header files
 
-#include "instructions/MathExpressionNode.h"
-#include "parser/SequenceParser.h"
+#include "Workspace.h"
+#include "LocalVariable.h"
+#include "MathExpressionNode.h"
+#include "SequenceParser.h"
 
 #include "LogUI.h"
 

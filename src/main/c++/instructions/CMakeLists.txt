@@ -18,3 +18,5 @@ target_include_directories(sequencer
     PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}
     )
+
+add_subdirectory(ThirdParty)

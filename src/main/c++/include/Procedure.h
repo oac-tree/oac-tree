@@ -151,6 +151,11 @@ class Procedure
      * @return true when successful.
      */
     bool AddAttribute(const std::string & name, const std::string & value);
+
+    /**
+     * @brief Name of attribute that defines the timeout between ticks.
+     */
+    static const std::string TICK_TIMEOUT_ATTRIBUTE_NAME;
 };
 
 // Global variables

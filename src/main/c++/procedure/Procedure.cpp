@@ -34,11 +34,13 @@
 #undef LOG_ALTERN_SRC
 #define LOG_ALTERN_SRC "sup::sequencer"
 
-// Type definition
-
 namespace sup {
 
 namespace sequencer {
+
+const std::string Procedure::TICK_TIMEOUT_ATTRIBUTE_NAME = "tickTimeout";
+
+// Type definition
 
 // Global variables
 

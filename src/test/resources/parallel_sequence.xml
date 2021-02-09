@@ -2,7 +2,8 @@
 <Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
            name="Procedure for testing parallel sequences"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd"
+           tickTimeout="0.2">
     <ParallelSequence>
         <Wait name="One" timeout="1.0" />
         <Wait name="Two" timeout="2.0" />

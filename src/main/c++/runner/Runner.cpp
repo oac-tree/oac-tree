@@ -37,15 +37,19 @@
 #undef LOG_ALTERN_SRC
 #define LOG_ALTERN_SRC "sup::sequencer"
 
+static const double DEFAULT_SLEEP_TIME = 0.1;
+
 // Type definition
+
+// Global variables
+
+// Function declaration
 
 namespace sup {
 
 namespace sequencer {
 
-// Global variables
-
-// Function declaration
+static int TickTimeoutMs(Procedure * procedure);
 
 // Function definition
 
@@ -66,12 +70,14 @@ void Runner::ExecuteProcedure()
 {
   if (_proc)
   {
+    auto sleep_time_ms = TickTimeoutMs(_proc);
+
     while(!IsFinished())
     {
       ExecuteSingle();
       if (IsRunning())
       {
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        std::this_thread::sleep_for(std::chrono::milliseconds(sleep_time_ms));
       }
     }
   }
@@ -108,6 +114,20 @@ bool Runner::IsRunning() const
 
   auto status = _proc->GetStatus();
   return (status == ExecutionStatus::RUNNING);
+}
+
+static int TickTimeoutMs(Procedure * procedure)
+{
+  if (procedure->HasAttribute(Procedure::TICK_TIMEOUT_ATTRIBUTE_NAME))
+  {
+    auto tick_timeout_str = procedure->GetAttribute(Procedure::TICK_TIMEOUT_ATTRIBUTE_NAME);
+    double tick_timeout = std::stod(tick_timeout_str);
+    if (tick_timeout > 0.001)
+    {
+      return static_cast<int>(tick_timeout * 1000);
+    }
+  }
+  return static_cast<int>(DEFAULT_SLEEP_TIME * 1000);
 }
 
 } // namespace sequencer

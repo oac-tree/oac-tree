@@ -35,6 +35,7 @@ target_link_libraries(seq-epics
         ccs-base
         ccs-ca
         ccs-pvxs
+        sequencer
     )
 
 target_compile_definitions(seq-epics

@@ -70,6 +70,16 @@ std::vector<std::string> AttributeMap::GetAttributeNames() const
   return result;
 }
 
+std::vector<std::pair<const std::string, std::string>> AttributeMap::AttributeList() const
+{
+  std::vector<std::pair<const std::string, std::string>> result;
+  for (auto & pair : _attributes)
+  {
+    result.push_back(pair);
+  }
+  return result;
+}
+
 bool AttributeMap::AddAttribute(const std::string & name, const std::string & value)
 {
   if (HasAttribute(name))

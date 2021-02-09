@@ -6,5 +6,3 @@
 * Exception safety is not everywhere managed as it should.
 * Add unit tests.
 * Investigate daemon procedures for data aggregation and summarizing (could be alternative to MARTe2)
-* Remove code duplication with attributes in Procedure, Instruction, etc.
-* Move semantics for AttributeMap and move this map from TreeData into Instruction, etc.

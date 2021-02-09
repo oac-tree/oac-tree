@@ -26,7 +26,6 @@
 // Local header files
 
 #include "Instruction.h"
-#include "AttributeMap.h"
 #include "UserInterface.h"
 
 // Constants
@@ -88,7 +87,6 @@ Instruction::Instruction(std::string type)
   : _type{std::move(type)}
   , _status{ExecutionStatus::NOT_STARTED}
   , _status_before{ExecutionStatus::NOT_STARTED}
-  , _attributes{new AttributeMap()}
 {}
 
 Instruction::~Instruction() = default;
@@ -137,17 +135,17 @@ void Instruction::ResetStatus()
 
 bool Instruction::HasAttribute(const std::string & name) const
 {
-  return _attributes->HasAttribute(name);
+  return _attributes.HasAttribute(name);
 }
 
 std::string Instruction::GetAttribute(const std::string & name) const
 {
-  return _attributes->GetAttribute(name);
+  return _attributes.GetAttribute(name);
 }
 
 bool Instruction::AddAttribute(const std::string & name, const std::string & value)
 {
-  return _attributes->AddAttribute(name, value);
+  return _attributes.AddAttribute(name, value);
 }
 
 bool NeedsExecute(ExecutionStatus status)

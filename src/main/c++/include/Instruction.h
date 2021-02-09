@@ -33,10 +33,9 @@
 
 // Global header files
 
-#include <memory>
-
 // Local header files
 
+#include "AttributeMap.h"
 #include "ExecutionStatus.h"
 
 // Constants
@@ -49,7 +48,6 @@ namespace sequencer {
 
 // Forward declarations
 
-class AttributeMap;
 class UserInterface;
 class Workspace;
 
@@ -73,7 +71,7 @@ class Instruction
 
     ExecutionStatus _status_before;
 
-    std::unique_ptr<AttributeMap> _attributes;
+    AttributeMap _attributes;
 
     virtual void InitHook();
 

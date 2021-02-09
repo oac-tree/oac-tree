@@ -98,6 +98,13 @@ class AttributeMap
     std::vector<std::string> GetAttributeNames() const;
 
     /**
+     * @brief Get list of all attribute (name, value) pairs.
+     *
+     * @return List of all attribute (name, value) pairs.
+     */
+    std::vector<std::pair<const std::string, std::string>> AttributeList() const;
+
+    /**
      * @brief Add attribute with given name and value.
      *
      * @param name Attribute name.

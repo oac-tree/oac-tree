@@ -57,30 +57,27 @@ std::string TreeData::GetType() const
 
 std::string TreeData::GetName() const
 {
-  if (HasAttribute(NAME_ATTRIBUTE))
-  {
-    return _attributes.at(NAME_ATTRIBUTE);
-  }
-  return {};
+  return GetAttribute(NAME_ATTRIBUTE);
 }
 
 bool TreeData::HasAttribute(const std::string & name) const
 {
-  return _attributes.find(name) != _attributes.end();
+  return _attributes.HasAttribute(name);
+}
+
+std::string TreeData::GetAttribute(const std::string & name) const
+{
+  return _attributes.GetAttribute(name);
 }
 
 bool TreeData::AddAttribute(const std::string & name, const std::string & value)
 {
-  if (HasAttribute(name))
-  {
-    return false;
-  }
-  _attributes[name] = value;
+  return _attributes.AddAttribute(name, value);
 }
 
-const std::map<std::string, std::string> & TreeData::Attributes() const
+std::vector<std::pair<const std::string, std::string>> TreeData::Attributes() const
 {
-  return _attributes;
+  return _attributes.AttributeList();
 }
 
 bool TreeData::AddChild(const TreeData & child)

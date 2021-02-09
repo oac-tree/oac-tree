@@ -51,14 +51,13 @@ std::unique_ptr<Variable> ParseVariable(const TreeData & data)
 {
   std::unique_ptr<Variable> result;
   bool status = data.HasAttribute(LOCAL_VARIABLE_JSON_TYPE);
-  auto attributes = data.Attributes();
 
   ::ccs::base::SharedReference<::ccs::types::AnyType> local_type;
   std::unique_ptr<::ccs::types::AnyValue> local_value;
   if (status)
   {
     log_info("sup::sequencer::ParseVariable() - parsing json type info..");
-    std::string json_type = attributes.at(LOCAL_VARIABLE_JSON_TYPE);
+    std::string json_type = data.GetAttribute(LOCAL_VARIABLE_JSON_TYPE);
     auto read = ::ccs::HelperTools::Parse(local_type, json_type.c_str());
     status = read > 0;
   }
@@ -79,7 +78,7 @@ std::unique_ptr<Variable> ParseVariable(const TreeData & data)
   if (status)
   {
     log_info("sup::sequencer:ParseVariable() - parsing json value info..");
-    std::string json_value = attributes.at(LOCAL_VARIABLE_JSON_VALUE);
+    std::string json_value = data.GetAttribute(LOCAL_VARIABLE_JSON_VALUE);
     status = local_value->ParseInstance(json_value.c_str());
   }
 

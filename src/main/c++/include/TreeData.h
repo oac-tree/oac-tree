@@ -20,28 +20,26 @@
 ******************************************************************************/
 
 /**
- * @file Procedure.h
- * @brief Header file for Procedure class.
- * @date 20/11/2020
+ * @file TreeData.h
+ * @brief Header file for TreeData class.
+ * @date 01/02/2021
  * @author Walter Van Herck (IO)
- * @copyright 2010-2020 ITER Organization
- * @details This header file contains the definition of the Procedure class.
+ * @copyright 2010-2021 ITER Organization
+ * @details This header file contains the definition of the TreeData class.
  */
 
-#ifndef _SEQ_Procedure_h_
-#define _SEQ_Procedure_h_
+#ifndef _SEQ_TreeData_h_
+#define _SEQ_TreeData_h_
 
 // Global header files
 
-#include <memory>
+#include <string>
+#include <utility>
 #include <vector>
-
-#include <common/AnyValue.h>
 
 // Local header files
 
 #include "AttributeMap.h"
-#include "ExecutionStatus.h"
 
 // Constants
 
@@ -51,83 +49,48 @@ namespace sup {
 
 namespace sequencer {
 
-// Forward declarations
-
-class Instruction;
-class UserInterface;
-class Variable;
-class Workspace;
-
 // Type definition
 
 /**
- * @brief Procedure contains a tree of instructions
- *
- * @detail A Procedure object contains a full procedure
- * and a workspace
+ * @brief Data representation of an XML tree.
  */
-class Procedure
+
+class TreeData
 {
   private:
-    std::unique_ptr<Instruction> _root;
-    std::unique_ptr<Workspace> _workspace;
-
+    std::string _type;
     AttributeMap _attributes;
+    std::vector<TreeData> _children;
 
   protected:
 
   public:
     /**
-     * @brief Constructor
+     * @brief Constructor.
+     * @param type Data typename.
      */
-    Procedure();
+    TreeData(std::string type);
 
     /**
-     * @brief Destructor
+     * @brief Destructor.
      */
-    ~Procedure();
+    ~TreeData();
 
     /**
-     * @brief Add variable.
+     * @brief Retrieve the data's typename.
      *
-     * @param name Variable name.
-     * @param var Variable to add.
+     * @return Typename of the data.
      */
-    bool AddVariable(std::string name, Variable * var);
+    std::string GetType() const;
 
     /**
-     * @brief List all variable names
-     */
-    std::vector<std::string> VariableNames() const;
-
-    /**
-     * @brief Get variable value.
-     */
-    bool GetVariableValue(std::string name, ::ccs::types::AnyValue& value);
-
-    /**
-     * @brief Set the root instruction.
+     * @brief Retrieve the data's name attribute.
      *
-     * @param instruction Root instruction to set.
+     * @return Name of the data.
      */
-    bool SetRootInstruction(Instruction * instruction);
+    std::string GetName() const;
 
     /**
-     * @brief Push Instruction at top level.
-     */
-    bool PushInstruction(Instruction * instruction);
-
-    /**
-     * @brief Execute single step of procedure
-     */
-    void ExecuteSingle(UserInterface * ui);
-
-    /**
-     * @brief Retrieve status of root sequence
-     */
-    ExecutionStatus GetStatus() const;
-
-        /**
      * @brief Indicate presence of attribute with given name.
      *
      * @param name Attribute name.
@@ -144,16 +107,40 @@ class Procedure
     std::string GetAttribute(const std::string & name) const;
 
     /**
-     * @brief Set attribute with given name and value.
+     * @brief Add attribute.
      *
      * @param name Attribute name.
      * @param value Attribute value.
-     * @return true when successful.
+     * @return true on successful adding.
      */
     bool AddAttribute(const std::string & name, const std::string & value);
+
+    /**
+     * @brief Retrieve map of all attributes.
+     *
+     * @return Map of all attributes.
+     */
+    std::vector<std::pair<const std::string, std::string>> Attributes() const;
+
+    /**
+     * @brief Add child element data.
+     *
+     * @param child Data representation of child element.
+     * @return true on success.
+     */
+    bool AddChild(const TreeData & child);
+
+    /**
+     * @brief Retrieve all child data elements.
+     *
+     * @return List of child data elements.
+     */
+    const std::vector<TreeData> & Children() const;
 };
 
 // Global variables
+
+static const std::string NAME_ATTRIBUTE = "name";
 
 // Function declarations
 
@@ -172,4 +159,4 @@ extern "C" {
 } // extern C
 #endif // __cplusplus
 
-#endif // _SEQ_Procedure_h_
+#endif // _SEQ_TreeData_h_

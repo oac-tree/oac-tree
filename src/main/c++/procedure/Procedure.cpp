@@ -26,7 +26,6 @@
 // Local header files
 
 #include "Procedure.h"
-#include "AttributeMap.h"
 #include "Sequence.h"
 #include "Workspace.h"
 
@@ -50,7 +49,6 @@ namespace sequencer {
 Procedure::Procedure()
   : _root{new Sequence()}
   , _workspace{new Workspace()}
-  , _attributes{new AttributeMap()}
 {}
 
 Procedure::~Procedure() = default;
@@ -98,17 +96,17 @@ ExecutionStatus Procedure::GetStatus() const
 
 bool Procedure::HasAttribute(const std::string & name) const
 {
-  return _attributes->HasAttribute(name);
+  return _attributes.HasAttribute(name);
 }
 
 std::string Procedure::GetAttribute(const std::string & name) const
 {
-  return _attributes->GetAttribute(name);
+  return _attributes.GetAttribute(name);
 }
 
 bool Procedure::AddAttribute(const std::string & name, const std::string & value)
 {
-  return _attributes->AddAttribute(name, value);
+  return _attributes.AddAttribute(name, value);
 }
 
 } // namespace sequencer

@@ -63,6 +63,15 @@
                 <role>developer</role>
             </roles>
         </developer>
+        <developer>
+            <id>ferrog</id>
+            <name>Giuseppe Ferro</name>
+            <organization>ITER Organisation</organization>
+            <email>giuseppe.ferro@iter.org</email>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
     </developers>
 
     <!-- configuration of how the project is built -->

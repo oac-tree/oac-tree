@@ -16,7 +16,6 @@ target_include_directories(MathExpressionEngineExptrk
         ${CMAKE_CURRENT_LIST_DIR}
         ${CMAKE_CURRENT_LIST_DIR}/../../include
         ${CMAKE_CURRENT_LIST_DIR}/../../instructions
-        ${CMAKE_CURRENT_LIST_DIR}/../../procedure
         $ENV{CODAC_ROOT}/include
     )
 

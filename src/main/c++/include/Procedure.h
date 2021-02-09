@@ -33,6 +33,7 @@
 
 // Global header files
 
+#include <map>
 #include <memory>
 #include <vector>
 
@@ -70,6 +71,8 @@ class Procedure
   private:
     std::unique_ptr<Instruction> _root;
     std::unique_ptr<Workspace> _workspace;
+
+    std::map<std::string, std::string> _attributes;
 
   protected:
 
@@ -123,6 +126,31 @@ class Procedure
      * @brief Retrieve status of root sequence
      */
     ExecutionStatus GetStatus() const;
+
+        /**
+     * @brief Indicate presence of attribute with given name.
+     *
+     * @param name Attribute name.
+     * @return true when present.
+     */
+    bool HasAttribute(const std::string & name) const;
+
+    /**
+     * @brief Get attribute with given name.
+     *
+     * @param name Attribute name.
+     * @return Attribute value.
+     */
+    std::string GetAttribute(const std::string & name) const;
+
+    /**
+     * @brief Set attribute with given name and value.
+     *
+     * @param name Attribute name.
+     * @param value Attribute value.
+     * @return true when successful.
+     */
+    bool AddAttribute(const std::string & name, const std::string & value);
 };
 
 // Global variables

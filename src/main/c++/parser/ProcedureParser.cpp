@@ -53,6 +53,13 @@ std::unique_ptr<Procedure> ParseProcedure(const TreeData & data)
   log_info("sup::sequencer::ParseProcedure() - entering function..");
   auto result = std::unique_ptr<Procedure>(new Procedure());
 
+  // Add attributes
+  for (const auto & attr : data.Attributes())
+  {
+    result->AddAttribute(attr.first, attr.second);
+  }
+
+  // Add Workspace and instruction tree
   for (const auto &child : data.Children())
   {
     if (child.GetType() == WORKSPACE_TYPE)

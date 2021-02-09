@@ -94,6 +94,30 @@ ExecutionStatus Procedure::GetStatus() const
   return _root->GetStatus();
 }
 
+bool Procedure::HasAttribute(const std::string & name) const
+{
+  return _attributes.find(name) != _attributes.end();
+}
+
+std::string Procedure::GetAttribute(const std::string & name) const
+{
+  if (!HasAttribute(name))
+  {
+      return {};
+  }
+  return _attributes.at(name);
+}
+
+bool Procedure::AddAttribute(const std::string & name, const std::string & value)
+{
+  if (HasAttribute(name))
+  {
+    return false;
+  }
+  _attributes[name] = value;
+  return true;
+}
+
 } // namespace sequencer
 
 } // namespace sup

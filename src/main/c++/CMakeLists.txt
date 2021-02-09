@@ -58,4 +58,6 @@ target_link_directories(sequencer-cli
 target_link_libraries(sequencer-cli
     PRIVATE
         sequencer
+        seq-epics
+        MathExpressionEngineExptrk
     )

@@ -33,7 +33,6 @@
 
 // Global header files
 
-#include <map>
 #include <memory>
 #include <vector>
 
@@ -53,6 +52,7 @@ namespace sequencer {
 
 // Forward declarations
 
+class AttributeMap;
 class Instruction;
 class UserInterface;
 class Variable;
@@ -72,7 +72,7 @@ class Procedure
     std::unique_ptr<Instruction> _root;
     std::unique_ptr<Workspace> _workspace;
 
-    std::map<std::string, std::string> _attributes;
+    std::unique_ptr<AttributeMap> _attributes;
 
   protected:
 

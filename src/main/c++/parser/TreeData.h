@@ -41,13 +41,15 @@
 
 // Constants
 
-// Type definition
-
 #ifdef __cplusplus
 
 namespace sup {
 
 namespace sequencer {
+
+// Forward declarations
+
+// Type definition
 
 /**
  * @brief Data representation of an XML tree.

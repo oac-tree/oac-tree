@@ -33,7 +33,7 @@
 
 // Global header files
 
-#include <map>
+#include <memory>
 
 // Local header files
 
@@ -49,6 +49,7 @@ namespace sequencer {
 
 // Forward declarations
 
+class AttributeMap;
 class UserInterface;
 class Workspace;
 
@@ -72,7 +73,7 @@ class Instruction
 
     ExecutionStatus _status_before;
 
-    std::map<std::string, std::string> _attributes;
+    std::unique_ptr<AttributeMap> _attributes;
 
     virtual void InitHook();
 

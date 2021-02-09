@@ -32,9 +32,6 @@ add_subdirectory(cli)
 target_include_directories(sequencer
     PRIVATE ${LIBXML2_INCLUDE_DIR}
     PRIVATE $ENV{CODAC_ROOT}/include
-    PRIVATE $ENV{CODAC_ROOT}/epics/include
-    PRIVATE $ENV{CODAC_ROOT}/epics/include/os/Linux
-    PRIVATE $ENV{CODAC_ROOT}/epics/include/compiler/gcc
     )
 
 target_link_directories(sequencer
@@ -48,8 +45,6 @@ target_link_libraries(sequencer
         ccs-common
         ccs-types
         ccs-base
-        ccs-ca
-        ccs-pvxs
     )
 
 target_include_directories(sequencer-cli

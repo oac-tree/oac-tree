@@ -38,6 +38,8 @@
 
 // Local header files
 
+#include "AttributeMap.h"
+
 // Constants
 
 // Type definition
@@ -54,59 +56,89 @@ namespace sequencer {
 
 class Variable
 {
-private:
-  /**
-   * @brief Mutex for concurrent access of Variable.
-   */
-  mutable std::mutex _access_mutex;
+  private:
+    /**
+     * @brief Mutex for concurrent access of Variable.
+     */
+    mutable std::mutex _access_mutex;
 
-  /**
-   * @brief Get value of variable.
-   *
-   * @param value variable reference to contain the value.
-   * @return true on success.
-   *
-   * @note Private virtual implementation.
-   */
-  virtual bool GetValueImpl(::ccs::types::AnyValue& value) const =0;
+    /**
+     * @brief List of attributes.
+     */
+    AttributeMap _attributes;
 
-  /**
-   * @brief Set value of variable.
-   *
-   * @param value value to set.
-   * @return true on success.
-   *
-   * @note Private virtual implementation.
-   */
-  virtual bool SetValueImpl(const ::ccs::types::AnyValue& value) =0;
+    /**
+     * @brief Get value of variable.
+     *
+     * @param value variable reference to contain the value.
+     * @return true on success.
+     *
+     * @note Private virtual implementation.
+     */
+    virtual bool GetValueImpl(::ccs::types::AnyValue& value) const =0;
 
-protected:
+    /**
+     * @brief Set value of variable.
+     *
+     * @param value value to set.
+     * @return true on success.
+     *
+     * @note Private virtual implementation.
+     */
+    virtual bool SetValueImpl(const ::ccs::types::AnyValue& value) =0;
 
-public:
-  /**
-   * @brief Destructor.
-   */
-  virtual ~Variable();
+  protected:
 
-  /**
-   * @brief Get value of variable.
-   *
-   * @param value variable reference to contain the value.
-   * @return true on success.
-   *
-   * @note Non-virtual interface.
-   */
-  bool GetValue(::ccs::types::AnyValue& value) const;
+  public:
+    /**
+     * @brief Destructor.
+     */
+    virtual ~Variable();
 
-  /**
-   * @brief Set value of variable.
-   *
-   * @param value value to set.
-   * @return true on success.
-   *
-   * @note Non-virtual interface.
-   */
-  bool SetValue(const ::ccs::types::AnyValue& value);
+    /**
+     * @brief Get value of variable.
+     *
+     * @param value variable reference to contain the value.
+     * @return true on success.
+     *
+     * @note Non-virtual interface.
+     */
+    bool GetValue(::ccs::types::AnyValue& value) const;
+
+    /**
+     * @brief Set value of variable.
+     *
+     * @param value value to set.
+     * @return true on success.
+     *
+     * @note Non-virtual interface.
+     */
+    bool SetValue(const ::ccs::types::AnyValue& value);
+
+    /**
+     * @brief Indicate presence of attribute with given name.
+     *
+     * @param name Attribute name.
+     * @return true when present.
+     */
+    bool HasAttribute(const std::string & name) const;
+
+    /**
+     * @brief Get attribute with given name.
+     *
+     * @param name Attribute name.
+     * @return Attribute value.
+     */
+    std::string GetAttribute(const std::string & name) const;
+
+    /**
+     * @brief Set attribute with given name and value.
+     *
+     * @param name Attribute name.
+     * @param value Attribute value.
+     * @return true when successful.
+     */
+    bool AddAttribute(const std::string & name, const std::string & value);
 };
 
 // Global variables

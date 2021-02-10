@@ -58,6 +58,21 @@ bool Variable::SetValue(const ::ccs::types::AnyValue& value)
   return SetValueImpl(value);
 }
 
+bool Variable::HasAttribute(const std::string & name) const
+{
+  return _attributes.HasAttribute(name);
+}
+
+std::string Variable::GetAttribute(const std::string & name) const
+{
+  return _attributes.GetAttribute(name);
+}
+
+bool Variable::AddAttribute(const std::string & name, const std::string & value)
+{
+  return _attributes.AddAttribute(name, value);
+}
+
 } // namespace sequencer
 
 } // namespace sup

@@ -9,6 +9,8 @@ target_sources(seq-epics
     PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/ChannelAccessClient.cpp
         ${CMAKE_CURRENT_LIST_DIR}/BlockingRPCClient.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/PVAccessMonitor.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/LogVariable.cpp
     )
 
 target_include_directories(seq-epics

@@ -4,9 +4,9 @@
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
     <Sequence>
-        <!-- Write as string requires extra quotes as per JSON -->
         <PVMonitorNode name="monitor"
             channel="CTRL-SYSM-COM-TRUNK-TSYNC"
+            timeout="10000000000"
             variable="to-write"/>
         <LogVariableNode name="log"
             variable="to-write"/>

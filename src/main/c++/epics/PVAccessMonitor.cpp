@@ -53,7 +53,12 @@ namespace sup {
 namespace sequencer {
 
 /**
- * @brief Xxx
+ * @brief PVMonitorNode class.
+ * @detail Blocking instruction which establishes a PVAccess connection and updates a
+ * workspace variable based on monitor received. Mandatory attributes are 'channel' (PV name)
+ * and 'variable' workspace variable name. The 'timeout' attribute is optional and defaulted
+ * to 5s.
+ * @todo Implement asynchronous behaviour as specialised Variable class.
  */
 
 class PVMonitorNode : public Instruction, public ccs::base::PVMonitor
@@ -66,6 +71,12 @@ class PVMonitorNode : public Instruction, public ccs::base::PVMonitor
      */
 
     ccs::types::boolean _initialised = false;
+
+    /**
+     * @brief Timeout parameter.
+     */
+
+    ccs::types::uint64 _timeout = 5000000000ul;
 
     /**
      * @brief Workspace variable copy.
@@ -106,6 +117,8 @@ class PVMonitorNode : public Instruction, public ccs::base::PVMonitor
 
 // Function declaration
 
+template <typename Type> inline Type ToInteger (const ccs::types::char8 * const buffer);
+
 bool RegisterInstruction_PVMonitor (void);
 
 // Global variables
@@ -115,6 +128,23 @@ static ccs::log::Func_t __handler = ccs::log::SetStdout();
 static bool global_pvmonitor_initialised_flag = RegisterInstruction_PVMonitor();
 
 // Function definition
+
+template <> inline ccs::types::uint64 ToInteger (const ccs::types::char8 * const buffer)
+{
+
+  ccs::types::uint64 ret = 0ul; 
+
+  bool status = (ccs::HelperTools::IsIntegerString(buffer) == true);
+
+  if (status)
+    {
+      ccs::types::char8* p = NULL_PTR_CAST(ccs::types::char8*);
+      ret = static_cast<ccs::types::uint64>(strtoul(buffer, &p, 10));
+    }
+
+  return ret;
+
+}
 
 bool RegisterInstruction_PVMonitor (void)
 {
@@ -188,14 +218,33 @@ ExecutionStatus PVMonitorNode::ExecuteSingleImpl (UserInterface * ui, Workspace 
       log_info("PVMonitorNode('%s')::ExecuteSingleImpl - .. using workspace variable '%s'", GetName().c_str(), GetAttribute("variable").c_str());
     }
 
+  if (status && HasAttribute("timeout"))
+    { // Move to HelperTools namespace
+      _timeout = ToInteger<ccs::types::uint64>(GetAttribute("timeout").c_str());
+    }
+
   if (status && (false == _initialised))
     {
-      // Instantiate implementation
-      ccs::base::PVMonitor::SetChannel(GetAttribute("channel").c_str());
-      ccs::base::PVMonitor::Initialise();
+      status = ccs::base::PVMonitor::SetChannel(GetAttribute("channel").c_str());
+    }
 
-      // This is an asynchronous node .. for now let the implementation initialise
-      (void)ccs::HelperTools::SleepFor(1000000000ul);
+  if (status && (false == _initialised))
+    { // Instantiate implementation
+      status = ccs::base::PVMonitor::Initialise();
+    }
+
+  while (status && (0ul < _timeout) && (false == _initialised))
+    {
+      (void)ccs::HelperTools::SleepFor(10000000ul);
+
+      if (10000000ul < _timeout)
+	{
+	  _timeout -= 10000000ul;
+	}
+      else
+	{
+	  _timeout = 0ul;          
+	}
     }
 
   if (status && _initialised)

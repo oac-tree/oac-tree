@@ -40,9 +40,16 @@ namespace sequencer {
 
 // Global variables
 
+const std::string LocalVariable::Type = "Local";
+
 // Function declaration
 
 // Function definition
+
+LocalVariable::LocalVariable()
+  : _val{}
+  , _initialized{false}
+{}
 
 LocalVariable::LocalVariable(const ::ccs::base::SharedReference<const ccs::types::AnyType>& type)
   : _val{type}

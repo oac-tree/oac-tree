@@ -76,6 +76,9 @@ private:
 protected:
 
 public:
+  // TODO: fix the double constructors (type parsing should be moved from VariableParser
+  // to LocalVariable)
+  LocalVariable();
   /**
    * @brief Constructor.
    *
@@ -87,6 +90,8 @@ public:
    * @brief Destructor.
    */
   ~LocalVariable() override;
+
+  static const std::string Type;
 };
 
 // Global variables

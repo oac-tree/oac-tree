@@ -25,7 +25,7 @@
 
 // Local header files
 
-#include "Sequence.h"
+#include "Fallback.h"
 
 // Constants
 
@@ -40,13 +40,13 @@ namespace sequencer {
 
 // Global variables
 
-const std::string Sequence::Type = "Sequence";
+const std::string Fallback::Type = "Fallback";
 
 // Function declaration
 
 // Function definition
 
-ExecutionStatus Sequence::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
+ExecutionStatus Fallback::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
 {
   if (_children.empty())
   {
@@ -56,7 +56,7 @@ ExecutionStatus Sequence::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
   {
     auto child_status = instruction->GetStatus();
 
-    if (child_status == ExecutionStatus::SUCCESS)
+    if (child_status == ExecutionStatus::FAILURE)
     {
       continue;
     }
@@ -68,20 +68,20 @@ ExecutionStatus Sequence::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
     }
     else
     {
-      log_warning("Sequence::ExecuteSingleImpl() - Sequence was ticked again while already failed");
+      log_warning("Fallback::ExecuteSingleImpl() - Fallback was ticked again while already successful");
       return child_status;
     }
   }
   return CalculateCompoundStatus();
 }
 
-ExecutionStatus Sequence::CalculateCompoundStatus() const
+ExecutionStatus Fallback::CalculateCompoundStatus() const
 {
   for (auto instruction : _children)
   {
     auto child_status = instruction->GetStatus();
 
-    if (child_status == ExecutionStatus::SUCCESS)
+    if (child_status == ExecutionStatus::FAILURE)
     {
       continue;
     }
@@ -93,18 +93,18 @@ ExecutionStatus Sequence::CalculateCompoundStatus() const
     }
     else
     {
-      // Forward RUNNING and FAILURE status of child instruction.
+      // Forward RUNNING and SUCCESS status of child instruction.
       return child_status;
     }
   }
-  return ExecutionStatus::SUCCESS;
+  return ExecutionStatus::FAILURE;
 }
 
-Sequence::Sequence()
+Fallback::Fallback()
   : CompoundInstruction(Type)
 {}
 
-Sequence::~Sequence()
+Fallback::~Fallback()
 {}
 
 } // namespace sequencer

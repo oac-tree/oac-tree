@@ -123,6 +123,12 @@ class BlockingPVMonitorNode : public Instruction, public PVMonitorCache
     ccs::types::uint64 _timeout = 5000000000ul;
 
     /**
+     * @brief Setup using provided attributes.
+     */
+
+    virtual bool Setup (void);
+
+    /**
      * @brief Xxx
      */
 
@@ -157,6 +163,12 @@ class PVMonitorVariable : public Variable, public PVMonitorCache
 {
 
   private:
+
+    /**
+     * @brief Setup using provided attributes.
+     */
+
+    virtual bool Setup (void);
 
   protected:
 
@@ -307,18 +319,15 @@ bool PVMonitorCache::GetValue (ccs::types::AnyValue& value) const
 
 }
 
-ExecutionStatus BlockingPVMonitorNode::ExecuteSingleImpl (UserInterface * ui, Workspace * ws)
+bool BlockingPVMonitorNode::Setup (void)
 {
 
-  (void)ui;
-  (void)ws;
-
-  bool status = (HasAttribute("channel") && HasAttribute("variable"));
+  bool status = (HasAttribute("channel") && HasAttribute("variable") && (false == PVMonitorCache::IsInitialised()));
 
   if (status)
     {
-      log_info("BlockingPVMonitorNode('%s')::ExecuteSingleImpl - Method called with channel '%s' ..", GetName().c_str(), GetAttribute("channel").c_str());
-      log_info("BlockingPVMonitorNode('%s')::ExecuteSingleImpl - .. using workspace variable '%s'", GetName().c_str(), GetAttribute("variable").c_str());
+      log_info("BlockingPVMonitorNode('%s')::Setup - Method called with channel '%s' ..", GetName().c_str(), GetAttribute("channel").c_str());
+      log_info("BlockingPVMonitorNode('%s')::Setup - .. using workspace variable '%s'", GetName().c_str(), GetAttribute("variable").c_str());
     }
 
   if (status && HasAttribute("timeout"))
@@ -326,9 +335,28 @@ ExecutionStatus BlockingPVMonitorNode::ExecuteSingleImpl (UserInterface * ui, Wo
       _timeout = ToInteger<ccs::types::uint64>(GetAttribute("timeout").c_str());
     }
 
-  if (status && (false == PVMonitorCache::IsInitialised()))
+  if (status)
     { // Instantiate implementation
       status = PVMonitorCache::SetChannel(GetAttribute("channel").c_str());
+    }
+
+  return status;
+
+}
+
+ExecutionStatus BlockingPVMonitorNode::ExecuteSingleImpl (UserInterface * ui, Workspace * ws)
+{
+
+  (void)ui;
+  (void)ws;
+
+  bool status = PVMonitorCache::IsInitialised(); // Has received monitor and valid value
+
+  // ToDo - Implementation initialisation .. should be in another phase of the application lifecycle
+
+  if (!status)
+    { // Configure and instantiate implementation
+      status = Setup();
     }
 
   ccs::types::AnyValue _value; // Placeholder
@@ -373,6 +401,22 @@ ExecutionStatus BlockingPVMonitorNode::ExecuteSingleImpl (UserInterface * ui, Wo
 
 }
 
+bool PVMonitorVariable::Setup (void)
+{
+
+  //bool status = ((false == PVMonitorCache::IsInitialised()) && Variable::HasAttribute("channel"));
+  bool status = (false == PVMonitorCache::IsInitialised());
+
+  if (status)
+    { // Instantiate implementation
+      //status = PVMonitorCache::SetChannel(GetAttribute("channel").c_str());
+      //(void)PVMonitorCache::SetChannel(GetAttribute("channel").c_str());
+    }
+
+  return status;
+
+}
+
 bool PVMonitorVariable::GetValueImpl (ccs::types::AnyValue& value) const
 {
 
@@ -380,17 +424,16 @@ bool PVMonitorVariable::GetValueImpl (ccs::types::AnyValue& value) const
 
   // ToDo - Implementation initialisation .. should be in another phase of the application lifecycle
 
-  //  if (!status && Variable::HasAttribute("channel"))
-    { // Instantiate implementation
-      //status = PVMonitorCache::SetChannel(GetAttribute("channel").c_str());
-      //(void)PVMonitorCache::SetChannel(GetAttribute("channel").c_str());
+  if (!status)
+    { // Configure and instantiate implementation
+      //(void)Setup();
     }
 
   // ToDo - MUTEX operation
 
   if (status)
     {
-      value = _value;
+      PVMonitorCache::GetValue(value);
     }
 
   return status;

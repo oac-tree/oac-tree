@@ -35,6 +35,7 @@
 #include "Sequence.h"
 #include "MathExpressionNode.h"
 #include "Wait.h"
+#include "Condition.h"
 
 // Constants
 
@@ -101,6 +102,7 @@ void InitInstructionRegistry(InstructionRegistry & registry)
   (void)RegisterInstruction<ParallelSequence>(registry);
   (void)RegisterInstruction<Wait>(registry);
   (void)RegisterInstruction<MathExpressionNode>(registry);
+  (void)RegisterInstruction<Condition>(registry);
 }
 
 } // namespace sequencer

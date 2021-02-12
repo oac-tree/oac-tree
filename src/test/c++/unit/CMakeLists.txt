@@ -6,6 +6,7 @@ target_sources(unit-tests
         ${CMAKE_CURRENT_LIST_DIR}/SequenceParser-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/SequenceWorkspace-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/MathExpressionNode-tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/Condition-tests.cpp
 )
 
 target_include_directories(unit-tests

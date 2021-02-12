@@ -2,6 +2,7 @@ target_sources(sequencer
     PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/AsyncWrapper.cpp
         ${CMAKE_CURRENT_LIST_DIR}/CompoundInstruction.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/Condition.cpp
         ${CMAKE_CURRENT_LIST_DIR}/DecoratorInstruction.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Instruction.cpp
         ${CMAKE_CURRENT_LIST_DIR}/InstructionRegistry.cpp

@@ -92,6 +92,8 @@ class PVMonitorCache : public ccs::base::PVMonitor
     bool IsInitialised (void) const;
     bool GetValue (ccs::types::AnyValue& value) const;
 
+    bool SetChannel (const ccs::types::char8 * const name);
+
     /**
      * @brief See ccs::base::PVMonitor.
      */
@@ -148,6 +150,7 @@ class BlockingPVMonitorNode : public Instruction, public PVMonitorCache
  * @brief PVMonitorVariable class.
  * @detail Workspace variable with asynchronous PVAccess monitoring. Mandatory attribute is the
  * named 'channel' (PV name) to connect to.
+ * @todo Implement access protection between PVMonitor::HandleMonitor and Variable::GetValueImpl.
  */
 
 class PVMonitorVariable : public Variable, public PVMonitorCache
@@ -271,6 +274,25 @@ void PVMonitorCache::HandleMonitor (const ccs::types::AnyValue& value)
 
 bool PVMonitorCache::IsInitialised (void) const { return _initialised; }
 
+bool PVMonitorCache::SetChannel (const ccs::types::char8 * const name)
+{
+
+  bool status = (false == _initialised);
+
+  if (status)
+    {
+      status = ccs::base::PVMonitor::SetChannel(name);
+    }
+
+  if (status)
+    { // Instantiate implementation
+      status = ccs::base::PVMonitor::Initialise();
+    }
+
+  return status;
+
+}
+
 bool PVMonitorCache::GetValue (ccs::types::AnyValue& value) const
 {
 
@@ -305,13 +327,8 @@ ExecutionStatus BlockingPVMonitorNode::ExecuteSingleImpl (UserInterface * ui, Wo
     }
 
   if (status && (false == PVMonitorCache::IsInitialised()))
-    {
-      status = ccs::base::PVMonitor::SetChannel(GetAttribute("channel").c_str());
-    }
-
-  if (status && (false == PVMonitorCache::IsInitialised()))
     { // Instantiate implementation
-      status = ccs::base::PVMonitor::Initialise();
+      status = PVMonitorCache::SetChannel(GetAttribute("channel").c_str());
     }
 
   ccs::types::AnyValue _value; // Placeholder
@@ -356,11 +373,41 @@ ExecutionStatus BlockingPVMonitorNode::ExecuteSingleImpl (UserInterface * ui, Wo
 
 }
 
+bool PVMonitorVariable::GetValueImpl (ccs::types::AnyValue& value) const
+{
+
+  bool status = PVMonitorCache::IsInitialised(); // Has received monitor and valid value
+
+  // ToDo - Implementation initialisation .. should be in another phase of the application lifecycle
+
+  //  if (!status && Variable::HasAttribute("channel"))
+    { // Instantiate implementation
+      //status = PVMonitorCache::SetChannel(GetAttribute("channel").c_str());
+      //(void)PVMonitorCache::SetChannel(GetAttribute("channel").c_str());
+    }
+
+  // ToDo - MUTEX operation
+
+  if (status)
+    {
+      value = _value;
+    }
+
+  return status;
+
+}
+
+// Unsupported
+bool PVMonitorVariable::SetValueImpl (const ccs::types::AnyValue& value) { return false; }
+
 PVMonitorCache::PVMonitorCache (void) : ccs::base::PVMonitor() {}
 PVMonitorCache::~PVMonitorCache (void) {}
 
 BlockingPVMonitorNode::BlockingPVMonitorNode (void) : Instruction("BlockingPVMonitorNode"), PVMonitorCache() {}
 BlockingPVMonitorNode::~BlockingPVMonitorNode (void) {}
+
+PVMonitorVariable::PVMonitorVariable (void) : Variable(), PVMonitorCache() {}
+PVMonitorVariable::~PVMonitorVariable (void) {}
 
 } // namespace sequencer
 

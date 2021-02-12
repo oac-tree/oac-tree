@@ -29,6 +29,7 @@
 
 #include "InstructionRegistry.h"
 #include "Instruction.h"
+#include "Fallback.h"
 #include "Inverter.h"
 #include "ParallelSequence.h"
 #include "Repeat.h"
@@ -95,6 +96,7 @@ std::vector<std::string> InstructionRegistry::RegisteredInstructionNames() const
 
 void InitInstructionRegistry(InstructionRegistry & registry)
 {
+  (void)RegisterInstruction<Fallback>(registry);
   (void)RegisterInstruction<Inverter>(registry);
   (void)RegisterInstruction<Repeat>(registry);
   (void)RegisterInstruction<Sequence>(registry);

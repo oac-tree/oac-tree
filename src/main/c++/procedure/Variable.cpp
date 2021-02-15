@@ -99,6 +99,24 @@ bool Variable::AddAttribute(const std::string & name, const std::string & value)
   return status;
 }
 
+bool Variable::AddAttributes(const std::vector<std::pair<const std::string, std::string>> & attributes)
+{
+  std::lock_guard<std::mutex> lock(_access_mutex);
+  _setup_successful = false;
+  bool status = true;
+  for (const auto & attr : attributes)
+  {
+    // Order in AND matters: add all attributes, even if previous adding failed.
+    status = _attributes.AddAttribute(attr.first, attr.second) && status;
+  }
+
+  if (status)
+  {
+    _setup_successful = Setup();
+  }
+  return status;
+}
+
 } // namespace sequencer
 
 } // namespace sup

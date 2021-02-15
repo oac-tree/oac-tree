@@ -68,6 +68,11 @@ class Variable
     AttributeMap _attributes;
 
     /**
+     * @brief Indicates if the Variable was correctly setup from its attributes.
+     */
+    bool _setup_successful;
+
+    /**
      * @brief Get value of variable.
      *
      * @param value variable reference to contain the value.
@@ -87,9 +92,23 @@ class Variable
      */
     virtual bool SetValueImpl(const ::ccs::types::AnyValue& value) =0;
 
+    /**
+     * @brief Setup the variable with the currently present attributes.
+     *
+     * @return true on success.
+     *
+     * @note May do nothing if not all required attributes are present (yet).
+     */
+    virtual bool Setup();
+
   protected:
 
   public:
+    /**
+     * @brief Constructor.
+     */
+    Variable(bool no_setup_required = false);
+
     /**
      * @brief Destructor.
      */

@@ -53,32 +53,50 @@ namespace sequencer {
 
 class LocalVariable : public Variable
 {
-private:
-  ::ccs::types::AnyValue _val;
-  bool _initialized;
+  private:
+    /**
+     * @brief Encapsulated AnyValue.
+     */
+    ::ccs::types::AnyValue _val;
 
     /**
-   * @brief Get value of locally hosted variable.
-   *
-   * @param value variable reference to contain the value.
-   * @return true on success.
-   */
-  bool GetValueImpl(::ccs::types::AnyValue& value) const override;
+     * @brief Indicates if the value was initialized.
+     */
+    bool _initialized;
 
-  /**
-   * @brief Set value of locally hosted variable.
-   *
-   * @param value value to set.
-   * @return true on success.
-   */
-  bool SetValueImpl(const ::ccs::types::AnyValue& value) override;
+    /**
+     * @brief Get value of locally hosted variable.
+     *
+     * @param value variable reference to contain the value.
+     * @return true on success.
+     */
+    bool GetValueImpl(::ccs::types::AnyValue& value) const override;
 
-protected:
+    /**
+     * @brief Set value of locally hosted variable.
+     *
+     * @param value value to set.
+     * @return true on success.
+     */
+    bool SetValueImpl(const ::ccs::types::AnyValue& value) override;
 
-public:
-  // TODO: fix the double constructors (type parsing should be moved from VariableParser
-  // to LocalVariable)
-  LocalVariable();
+    /**
+     * @brief Initialize the variable with the currently present attributes.
+     *
+     * @return true on success.
+     *
+     * @note May do nothing if not all required attributes are present (yet).
+     */
+    bool Setup() override;
+
+  protected:
+
+  public:
+    /**
+     * @brief Constructor.
+     */
+    LocalVariable();
+
   /**
    * @brief Constructor.
    *
@@ -86,18 +104,15 @@ public:
    */
   LocalVariable(const ::ccs::base::SharedReference<const ccs::types::AnyType>& type);
 
-  /**
-   * @brief Destructor.
-   */
-  ~LocalVariable() override;
+    /**
+     * @brief Destructor.
+     */
+    ~LocalVariable() override;
 
-  static const std::string Type;
+    static const std::string Type;
 };
 
 // Global variables
-
-static const std::string LOCAL_VARIABLE_JSON_TYPE="type";
-static const std::string LOCAL_VARIABLE_JSON_VALUE="value";
 
 // Function declarations
 

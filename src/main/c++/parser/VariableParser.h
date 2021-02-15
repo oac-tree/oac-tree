@@ -53,8 +53,6 @@ namespace sequencer {
 
 // Global variables
 
-static const std::string VARIABLE_NAME_ATTRIBUTE = "name";
-
 // Function declarations
 
 /**

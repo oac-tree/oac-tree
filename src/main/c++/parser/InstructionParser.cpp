@@ -64,10 +64,14 @@ std::unique_ptr<Instruction> ParseInstruction(const TreeData & data)
                 instr_type.c_str());
     return {};
   }
+
+  log_info("sup::sequencer::ParseInstruction() - parsing attributes for instruction of type: '%s'",
+           instr_type.c_str());
   for (const auto & attr : data.Attributes())
   {
     instr->AddAttribute(attr.first, attr.second);
   }
+
   log_info("sup::sequencer::ParseInstruction() - parsing child instructions for instruction of type: '%s'",
            instr_type.c_str());
   bool status = AddChildInstructions(instr.get(), data.Children());
@@ -75,6 +79,7 @@ std::unique_ptr<Instruction> ParseInstruction(const TreeData & data)
   {
     return instr;
   }
+
   log_warning("sup::sequencer::ParseInstruction() - instruction with type: '%s' has wrong number of "
               "child instructions: '%d'", instr->GetType().c_str(), data.Children().size());
   return {};

@@ -44,17 +44,36 @@ namespace sequencer {
 
 // Function definition
 
+bool Variable::Setup()
+{
+  return true;
+}
+
+Variable::Variable(bool no_setup_required)
+  : _setup_successful{no_setup_required}
+{}
+
 Variable::~Variable() =default;
 
 bool Variable::GetValue(::ccs::types::AnyValue& value) const
 {
   std::lock_guard<std::mutex> lock(_access_mutex);
+  if (!_setup_successful)
+  {
+    log_warning("Variable::GetValue() - Variable was not successfully set up..");
+    return false;
+  }
   return GetValueImpl(value);
 }
 
 bool Variable::SetValue(const ::ccs::types::AnyValue& value)
 {
   std::lock_guard<std::mutex> lock(_access_mutex);
+  if (!_setup_successful)
+  {
+    log_warning("Variable::SetValue() - Variable was not successfully set up..");
+    return false;
+  }
   return SetValueImpl(value);
 }
 
@@ -70,7 +89,14 @@ std::string Variable::GetAttribute(const std::string & name) const
 
 bool Variable::AddAttribute(const std::string & name, const std::string & value)
 {
-  return _attributes.AddAttribute(name, value);
+  std::lock_guard<std::mutex> lock(_access_mutex);
+  _setup_successful = false;
+  bool status = _attributes.AddAttribute(name, value);
+  if (status)
+  {
+    _setup_successful = Setup();
+  }
+  return status;
 }
 
 } // namespace sequencer

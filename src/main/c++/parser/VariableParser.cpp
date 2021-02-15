@@ -28,7 +28,7 @@
 // Local header files
 
 #include "VariableParser.h"
-#include "LocalVariable.h"
+#include "VariableRegistry.h"
 
 // Constants
 
@@ -49,46 +49,24 @@ namespace sequencer {
 
 std::unique_ptr<Variable> ParseVariable(const TreeData & data)
 {
-  std::unique_ptr<Variable> result;
-  bool status = data.HasAttribute(LOCAL_VARIABLE_JSON_TYPE);
+  auto var_type = data.GetType();
+  auto var = GlobalVariableRegistry().Create(var_type);
 
-  ::ccs::base::SharedReference<::ccs::types::AnyType> local_type;
-  std::unique_ptr<::ccs::types::AnyValue> local_value;
-  if (status)
+  if (!var)
   {
-    log_info("sup::sequencer::ParseVariable() - parsing json type info..");
-    std::string json_type = data.GetAttribute(LOCAL_VARIABLE_JSON_TYPE);
-    auto read = ::ccs::HelperTools::Parse(local_type, json_type.c_str());
-    status = read > 0;
-  }
-  else
-  {
-    log_warning("sup::sequencer::ParseVariable() - no json type info!");
+    log_warning("sup::sequencer::ParseVariable() - couldn't parse variable with type: '%s'",
+                var_type.c_str());
+    return {};
   }
 
-  if (status)
+  log_info("sup::sequencer::ParseVariable() - parsing attributes for variable of type: '%s'",
+           var_type.c_str());
+  for (const auto & attr : data.Attributes())
   {
-    log_info("sup::sequencer::ParseVariable() - create LocalVariable..");
-    ::ccs::base::SharedReference<const ::ccs::types::AnyType> const_type(local_type);
-    result.reset(new LocalVariable(const_type));
-    local_value.reset(new ::ccs::types::AnyValue(const_type));
-    status = data.HasAttribute(LOCAL_VARIABLE_JSON_VALUE);
+    var->AddAttribute(attr.first, attr.second);
   }
 
-  if (status)
-  {
-    log_info("sup::sequencer:ParseVariable() - parsing json value info..");
-    std::string json_value = data.GetAttribute(LOCAL_VARIABLE_JSON_VALUE);
-    status = local_value->ParseInstance(json_value.c_str());
-  }
-
-  if (status)
-  {
-    log_info("sup::sequencer:ParseVariable() - copying parsed value..");
-    result->SetValue(*local_value);
-  }
-
-  return result;
+  return var;
 }
 
 } // namespace sequencer

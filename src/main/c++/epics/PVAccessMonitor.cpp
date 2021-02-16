@@ -196,7 +196,11 @@ class PVMonitorVariable : public Variable, public PVMonitorCache
     virtual bool GetValueImpl (ccs::types::AnyValue& value) const;
     virtual bool SetValueImpl (const ccs::types::AnyValue& value);
 
+    static const std::string Type;
+
 };
+
+const std::string PVMonitorVariable::Type = "PVMonitorVariable";
 
 // Function declaration
 
@@ -215,7 +219,7 @@ static bool global_pvmonitor_initialised_flag = RegisterPVMonitor();
 template <> inline ccs::types::uint64 ToInteger (const ccs::types::char8 * const buffer)
 {
 
-  ccs::types::uint64 ret = 0ul; 
+  ccs::types::uint64 ret = 0ul;
 
   bool status = (ccs::HelperTools::IsIntegerString(buffer) == true);
 
@@ -241,7 +245,7 @@ bool RegisterPVMonitor (void)
 
   { // PVMonitor variable
     auto constructor = []() { return static_cast<Variable*>(new PVMonitorVariable ()); };
-    GlobalVariableRegistry().RegisterVariable("PVMonitorVariable", constructor);
+    GlobalVariableRegistry().RegisterVariable(PVMonitorVariable::Type, constructor);
   }
 
   return true;
@@ -381,7 +385,7 @@ ExecutionStatus BlockingPVMonitorNode::ExecuteSingleImpl (UserInterface * ui, Wo
         }
       else
         {
-          _timeout = 0ul;          
+          _timeout = 0ul;
         }
     }
 
@@ -451,7 +455,7 @@ PVMonitorCache::~PVMonitorCache (void) {}
 BlockingPVMonitorNode::BlockingPVMonitorNode (void) : Instruction("BlockingPVMonitorNode"), PVMonitorCache() {}
 BlockingPVMonitorNode::~BlockingPVMonitorNode (void) {}
 
-PVMonitorVariable::PVMonitorVariable (void) : Variable(), PVMonitorCache() {}
+PVMonitorVariable::PVMonitorVariable (void) : Variable(PVMonitorVariable::Type), PVMonitorCache() {}
 
 PVMonitorVariable::~PVMonitorVariable (void) {}
 

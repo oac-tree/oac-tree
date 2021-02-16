@@ -49,11 +49,27 @@ bool Variable::Setup()
   return true;
 }
 
-Variable::Variable(bool no_setup_required)
-  : _setup_successful{no_setup_required}
+Variable::Variable(std::string type, bool no_setup_required)
+  : _type{type}
+  , _setup_successful{no_setup_required}
 {}
 
 Variable::~Variable() =default;
+
+std::string Variable::GetType() const
+{
+  return _type;
+}
+
+std::string Variable::GetName() const
+{
+  return GetAttribute(attributes::NAME_ATTRIBUTE);
+}
+
+void Variable::SetName(std::string name)
+{
+  AddAttribute(attributes::NAME_ATTRIBUTE, name);
+}
 
 bool Variable::GetValue(::ccs::types::AnyValue& value) const
 {

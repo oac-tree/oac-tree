@@ -51,12 +51,13 @@ static const std::string LOCAL_VARIABLE_JSON_VALUE="value";
 // Function definition
 
 LocalVariable::LocalVariable()
-  : _val{}
+  : Variable(LocalVariable::Type)
+  , _val{}
   , _initialized{false}
 {}
 
 LocalVariable::LocalVariable(const ::ccs::base::SharedReference<const ccs::types::AnyType>& type)
-  : Variable(true)
+  : Variable(LocalVariable::Type, true)
   , _val{type}
   , _initialized{false}
 {

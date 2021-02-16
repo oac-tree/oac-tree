@@ -9,7 +9,7 @@ target_sources(unit-tests
 
         ${CMAKE_CURRENT_LIST_DIR}/Condition-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/FileVariable-tests.cpp
-)
+    )
 
 target_include_directories(unit-tests
     PRIVATE
@@ -19,13 +19,13 @@ target_include_directories(unit-tests
         ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++/parser
         ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++/procedure
         $ENV{CODAC_ROOT}/include
-)
+    )
 
 target_link_directories(unit-tests
     PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../../../target/lib
+        ${CMAKE_CURRENT_LIST_DIR}/../../../../target/lib
         $ENV{CODAC_ROOT}/lib
-)
+    )
 
 find_package(GTest REQUIRED)
 
@@ -36,5 +36,13 @@ if(NOT DEFINED ENV{NO_PLUGINS})
         PRIVATE
             ${CMAKE_CURRENT_LIST_DIR}/MathExpressionNode-tests.cpp
         )
-    target_link_libraries(unit-tests MathExpressionEngineExptrk)
+    target_include_directories(unit-tests
+        PRIVATE
+            ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++/plugins/MathExpression
+        )
+    target_link_directories(unit-tests
+        PRIVATE
+            ${CMAKE_CURRENT_LIST_DIR}/../../../../target/lib/plugins
+        )
+    target_link_libraries(unit-tests MathExpression)
 endif()

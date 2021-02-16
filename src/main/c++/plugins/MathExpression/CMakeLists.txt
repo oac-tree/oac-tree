@@ -25,3 +25,5 @@ target_compile_definitions(MathExpression
         exprtk_disable_caseinsensitivity
         exprtk_disable_rtl_vecops
     )
+
+install(TARGETS MathExpression DESTINATION lib/plugins)

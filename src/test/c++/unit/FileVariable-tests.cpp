@@ -20,11 +20,16 @@
  ******************************************************************************/
 
 // Global header files
+
 #include <gtest/gtest.h> // Google test framework
+
+#include <common/AnyValueHelper.h>
 
 // Local header files
 
 #include "SequenceParser.h"
+#include "Variable.h"
+#include "VariableRegistry.h"
 #include "LogUI.h"
 
 // Constants
@@ -36,7 +41,7 @@
 
 // Function definition
 
-TEST(FileVariable, Write)
+TEST(FileVariable, File_write)
 {
   auto proc = sup::sequencer::ParseProcedureFile("../resources/variable_file.xml");
 
@@ -54,7 +59,7 @@ TEST(FileVariable, Write)
       status = ccs::HelperTools::Exist("/tmp/variable.bck");
     }
 
-  ccs::types::value value; // Placeholder
+  ccs::types::AnyValue value; // Placeholder
 
   if (status)
     {
@@ -67,6 +72,51 @@ TEST(FileVariable, Write)
     }
 
   // ToDo - Test variable
+
+  ASSERT_EQ(true, status);
+}
+
+TEST(FileVariable, Setup_error)
+{
+  auto variable = sup::sequencer::GlobalVariableRegistry().Create("FileVariable");
+
+  bool status = static_cast<bool>(variable);
+
+  if (status)
+    { // Missing mandatory attribute .. Setup implicit
+      //status = (false == variable->Setup());
+      status = variable->AddAttribute("irrelevant","undefined");
+    }
+
+  ccs::types::AnyValue value; // Placeholder
+
+  if (status)
+    {
+      status = ((false == variable->GetValue(value)) &&
+                (false == static_cast<bool>(value.GetType())));
+    }
+
+  ASSERT_EQ(true, status);
+}
+
+TEST(FileVariable, File_error)
+{
+  auto variable = sup::sequencer::GlobalVariableRegistry().Create("FileVariable");
+
+  bool status = static_cast<bool>(variable);
+
+  if (status)
+    {
+      status = variable->AddAttribute("file","undefined");
+    }
+
+  ccs::types::AnyValue value; // Placeholder
+
+  if (status)
+    {
+      status = ((false == variable->GetValue(value)) &&
+                (false == static_cast<bool>(value.GetType())));
+    }
 
   ASSERT_EQ(true, status);
 }

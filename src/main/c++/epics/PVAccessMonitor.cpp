@@ -210,8 +210,6 @@ bool RegisterPVMonitor (void);
 
 // Global variables
 
-static ccs::log::Func_t __handler = ccs::log::SetStdout();
-
 static bool global_pvmonitor_initialised_flag = RegisterPVMonitor();
 
 // Function definition
@@ -235,8 +233,6 @@ template <> inline ccs::types::uint64 ToInteger (const ccs::types::char8 * const
 
 bool RegisterPVMonitor (void)
 {
-
-  log_info("RegisterPVMonitor - Entering method");
 
   { // PVMonitor instruction
     auto constructor = []() { return static_cast<Instruction*>(new BlockingPVMonitorNode ()); };

@@ -7,8 +7,6 @@
         <CopyInstruction name="copy"
             input="input"
             output="file"/>
-        <LogVariableNode name="log"
-            variable="file"/>
     </Sequence>
     <Workspace>
         <Local name="input"

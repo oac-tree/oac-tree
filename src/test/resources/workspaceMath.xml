@@ -3,8 +3,16 @@
            name="Trivial procedure for testing purposes"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+    <Declaration>
+        <ComplexCondition>
+            <Sequence>
+                <MathExpressionNode/>
+                <Condition/>
+            </Sequence>
+        </ComplexCondition>
+    </Declaration>
     <Sequence>
-        <MathExpressionNode name="MathExpressionNode" expression="c:=a+2*b+c" />
+        <ComplexCondition name="ComplexCondition" expression="c:=a+2*b+c" var_name="c" />
     </Sequence>
     <Workspace>
         <Local name="a"
@@ -14,8 +22,8 @@
                type='{"type":"uint8"}'
                value='2' />
         <Local name="c"
-               type='{"type":"uint32"}'                              
-               value='3' />
+               type='{"type":"int32"}'                              
+               value='-5' />
     </Workspace>
 </Procedure>
 

@@ -58,15 +58,21 @@ static inline bool Terminate(void) {
 
 static bool PrintProcedureWorkspace(::sup::sequencer::Procedure *procedure);
 
-static const ccs::types::char8 *expressionTable[][14] = {
-        { "c:=a+b", "{\"type\":\"uint8\"}", "8", "c", "{\"type\":\"uint8\"}", "0", "c","{\"type\":\"uint8\"}", "5", "a", "{\"type\":\"uint8\"}", "3", "b", NULL },
-        { "c:=c+1", "{\"type\":\"uint8\"}", "1", "c", "{\"type\":\"uint8\"}", "0", "c", NULL },
-        { "c:=a/b", "{\"type\":\"uint8\"}", "2", "c", "{\"type\":\"uint8\"}", "0", "c", "{\"type\":\"uint8\"}", "4", "a", "{\"type\":\"uint8\"}","2", "b", NULL },
-        { "c:=a/b", "{\"type\":\"uint8\"}", "2", "c", "{\"type\":\"uint8\"}", "0", "c", "{\"type\":\"uint8\"}", "5", "a","{\"type\":\"uint8\"}", "2", "b", NULL },
-        { "c:=a/b", "{\"type\":\"float32\"}", "2.5", "c", "{\"type\":\"float32\"}", "0", "c", "{\"type\":\"uint8\"}","5", "a", "{\"type\":\"uint8\"}", "2", "b", NULL },
-        { "c:=a.field1+b.field2", "{\"type\":\"uint8\"}", "5", "c", "{\"type\":\"uint8\"}", "0", "c", "{\"type\":\"StructuredData1\", \"attributes\":[{\"field1\":{\"type\":\"uint32\"}}]}", "{\"field1\":2}", "a","{\"type\":\"StructuredData2\", \"attributes\":[{\"field1\":{\"type\":\"float32\"}}, {\"field2\":{\"type\":\"uint16\"}}]}", "{\"field1\":20.5, \"field2\":3}", "b", NULL },
-        { "c:=a[1].field1+b.field2[2].field", "{\"type\":\"uint8\"}", "5", "c", "{\"type\":\"uint8\"}", "0", "c", "{\"type\":\"StructuredData6a\", \"multiplicity\":2, \"element\":{\"type\":\"StructuredData6Base\", \"attributes\":[{\"field1\":{\"type\":\"uint32\"}}]}}", "[{\"field1\":1}, {\"field1\":2}]", "a","{\"type\":\"StructuredData6b\", \"attributes\":[{\"field1\":{\"type\":\"float32\"}}, {\"field2\":{\"type\":\"StructuredData6c\", \"multiplicity\":3, \"element\":{\"type\":\"internalStruct\", \"attributes\":[{\"field\":{\"type\":\"uint16\"}}]}}}]}", "{\"field1\":20.5, \"field2\":[{\"field\":30}, {\"field\":20}, {\"field\":3}]}", "b", NULL },
-        { NULL } };
+static const ccs::types::char8 *expressionTable[][14] =
+        { { "c:=a+b", "{\"type\":\"uint8\"}", "8", "c", "{\"type\":\"uint8\"}", "0", "c", "{\"type\":\"uint8\"}", "5", "a", "{\"type\":\"uint8\"}", "3", "b",
+                NULL }, { "c:=c+1", "{\"type\":\"uint8\"}", "1", "c", "{\"type\":\"uint8\"}", "0", "c", NULL }, { "c:=a/b", "{\"type\":\"uint8\"}", "2", "c",
+                "{\"type\":\"uint8\"}", "0", "c", "{\"type\":\"uint8\"}", "4", "a", "{\"type\":\"uint8\"}", "2", "b", NULL }, { "c:=a/b",
+                "{\"type\":\"uint8\"}", "2", "c", "{\"type\":\"uint8\"}", "0", "c", "{\"type\":\"uint8\"}", "5", "a", "{\"type\":\"uint8\"}", "2", "b", NULL },
+                { "c:=a/b", "{\"type\":\"float32\"}", "2.5", "c", "{\"type\":\"float32\"}", "0", "c", "{\"type\":\"uint8\"}", "5", "a", "{\"type\":\"uint8\"}",
+                        "2", "b", NULL }, { "c:=a.field1+b.field2", "{\"type\":\"uint8\"}", "5", "c", "{\"type\":\"uint8\"}", "0", "c",
+                        "{\"type\":\"StructuredData1\", \"attributes\":[{\"field1\":{\"type\":\"uint32\"}}]}", "{\"field1\":2}", "a",
+                        "{\"type\":\"StructuredData2\", \"attributes\":[{\"field1\":{\"type\":\"float32\"}}, {\"field2\":{\"type\":\"uint16\"}}]}",
+                        "{\"field1\":20.5, \"field2\":3}", "b", NULL },
+                { "c:=a[1].field1+b.field2[2].field", "{\"type\":\"uint8\"}", "5", "c", "{\"type\":\"uint8\"}", "0", "c",
+                        "{\"type\":\"StructuredData6a\", \"multiplicity\":2, \"element\":{\"type\":\"StructuredData6Base\", \"attributes\":[{\"field1\":{\"type\":\"uint32\"}}]}}",
+                        "[{\"field1\":1}, {\"field1\":2}]", "a",
+                        "{\"type\":\"StructuredData6b\", \"attributes\":[{\"field1\":{\"type\":\"float32\"}}, {\"field2\":{\"type\":\"StructuredData6c\", \"multiplicity\":3, \"element\":{\"type\":\"internalStruct\", \"attributes\":[{\"field\":{\"type\":\"uint16\"}}]}}}]}",
+                        "{\"field1\":20.5, \"field2\":[{\"field\":30}, {\"field\":20}, {\"field\":3}]}", "b", NULL }, { NULL } };
 
 TEST(MathExpressionNode, Default) // Static initialisation
 {
@@ -84,7 +90,9 @@ TEST(MathExpressionNode, Default) // Static initialisation
     if (status)
     {
         LogUI ui;
-        proc->ExecuteSingle(&ui);
+        while((proc->GetStatus()!=ExecutionStatus::SUCCESS) && (proc->GetStatus()!=ExecutionStatus::FAILURE)) {
+            proc->ExecuteSingle(&ui);
+        }
         status = (proc->GetStatus() == ExecutionStatus::SUCCESS);
     }
 

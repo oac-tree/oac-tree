@@ -43,6 +43,7 @@ namespace sequencer {
 // Global variables
 
 static const std::string WORKSPACE_TYPE = "Workspace";
+static const std::string DECLARATION_TYPE = "Declaration";
 
 // Function declaration
 
@@ -60,6 +61,7 @@ std::unique_ptr<Procedure> ParseProcedure(const TreeData & data)
   }
 
   // Add Workspace and instruction tree
+  const TreeData *declarationData = NULL;
   for (const auto &child : data.Children())
   {
     if (child.GetType() == WORKSPACE_TYPE)
@@ -76,10 +78,14 @@ std::unique_ptr<Procedure> ParseProcedure(const TreeData & data)
         }
       }
     }
+    else if(child.GetType() == DECLARATION_TYPE){
+        declarationData = &child;
+    }
     // Every non workspace element of the Procedure node should be an instruction node
     else
     {
-      auto root_instr = ParseInstruction(child);
+      TreeData attributesData("Attributes");
+      auto root_instr = ParseInstruction(child, declarationData, attributesData);
       if (root_instr)
       {
         result->SetRootInstruction(root_instr.release());

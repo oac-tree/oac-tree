@@ -123,8 +123,6 @@ bool RegisterInstruction_PVMonitor (void);
 
 // Global variables
 
-static ccs::log::Func_t __handler = ccs::log::SetStdout();
-
 static bool global_pvmonitor_initialised_flag = RegisterInstruction_PVMonitor();
 
 // Function definition

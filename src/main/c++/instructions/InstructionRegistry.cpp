@@ -51,7 +51,7 @@ namespace sequencer {
 
 // Global variables
 
-std::once_flag global_registry_initialized_flag;
+std::once_flag global_instruction_registry_initialized_flag;
 
 // Function declaration
 
@@ -62,7 +62,7 @@ void InitInstructionRegistry(InstructionRegistry & registry);
 InstructionRegistry & GlobalInstructionRegistry()
 {
   static InstructionRegistry global_instruction_registry;
-  std::call_once(global_registry_initialized_flag,
+  std::call_once(global_instruction_registry_initialized_flag,
                  InitInstructionRegistry, std::ref(global_instruction_registry));
   return global_instruction_registry;
 }

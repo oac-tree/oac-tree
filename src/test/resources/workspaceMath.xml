@@ -23,7 +23,7 @@
                value='2' />
         <Local name="c"
                type='{"type":"int32"}'                              
-               value='-5' />
+               value='0' />
     </Workspace>
 </Procedure>
 

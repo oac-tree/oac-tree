@@ -26,6 +26,7 @@ add_subdirectory(parser)
 add_subdirectory(runner)
 add_subdirectory(procedure)
 add_subdirectory(instructions)
+add_subdirectory(variables)
 add_subdirectory(epics)
 add_subdirectory(cli)
 

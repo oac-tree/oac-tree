@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+           name="Trivial procedure for testing purposes"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+    <Sequence>
+        <CopyInstruction name="copy"
+            input="input"
+            output="file"/>
+        <LogVariableNode name="log"
+            variable="file"/>
+    </Sequence>
+    <Workspace>
+        <Local name="input"
+            type='{"type":"MyStruct","attributes":[{"value":{"type":"float32"}}]}'
+            value='{"value":0.0}'/>
+        <FileVariable name="file"
+            file="/tmp/variable.bck"/>
+    </Workspace>
+</Procedure>

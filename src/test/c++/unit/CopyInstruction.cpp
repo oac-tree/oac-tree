@@ -43,7 +43,7 @@ namespace sup {
 namespace sequencer {
 
 /**
- * @brief Xxx
+ * @brief Instruction copying named variable from/to workspace
  */
 
 class CopyInstruction : public Instruction
@@ -52,7 +52,7 @@ class CopyInstruction : public Instruction
   private:
 
     /**
-     * @brief Xxx
+     * @brief Copy variables identified with 'input' and 'output' attributes.
      */
 
     ExecutionStatus ExecuteSingleImpl (UserInterface * ui, Workspace * ws) override;
@@ -109,12 +109,12 @@ ExecutionStatus CopyInstruction::ExecuteSingleImpl (UserInterface * ui, Workspac
 
   if (status)
     { // Read from workspace
-      status = ws->GetValue(GetAttribute("input"), _value);
+      status = ws->GetValue(Instruction::GetAttribute("input"), _value);
     }
 
   if (status)
-    {
-      status = ws->SetValue(GetAttribute("output"), _value);
+    { // Write to workspace
+      status = ws->SetValue(Instruction::GetAttribute("output"), _value);
     }
 
   return (status ? ExecutionStatus::SUCCESS : ExecutionStatus::FAILURE);

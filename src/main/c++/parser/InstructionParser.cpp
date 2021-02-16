@@ -48,14 +48,14 @@ namespace {
 bool AddChildInstructions(Instruction *instruction,
                           const std::vector<TreeData> &children,
                           const TreeData *declarationData,
-                          TreeData &attributes);
+                          AttributeMap &attributes);
 } // Unnamed namespace
 
 // Function definition
 
 std::unique_ptr<Instruction> ParseInstruction(const TreeData &data,
                                               const TreeData *declarationData,
-                                              TreeData &attributes) {
+                                              AttributeMap &attributes) {
     auto instr_type = data.GetType();
     auto instr = GlobalInstructionRegistry().Create(instr_type);
     if (!instr) {
@@ -72,9 +72,22 @@ std::unique_ptr<Instruction> ParseInstruction(const TreeData &data,
                     }
                     log_info("sup::sequencer::ParseInstruction() - Parsing '%s' from declarations", instr_type.c_str());
                     const std::vector<TreeData> decl_children = decl_data.Children();
+                    std::unique_ptr<Instruction> decl_instr;
                     if (decl_children.size() > 0u) {
-                        return ParseInstruction(decl_children[0], declarationData, attributes);
+                        decl_instr = ParseInstruction(decl_children[0], declarationData, attributes);
+                        //eventually go back to data and add other children
+                        bool status = AddChildInstructions(decl_instr.get(), data.Children(), declarationData, attributes);
+                        if (!status) {
+                            log_error("ParseInstruction - Failed AddChildInstructions for %s", decl_type.c_str());
+                        }
                     }
+                    //remove from the stack, other nodes are not interested
+                    for (const auto &attr : data.Attributes()) {
+                        if (attributes.HasAttribute(attr.first)) {
+                            attributes.Remove(attr.first);
+                        }
+                    }
+                    return decl_instr;
                 }
             }
         }
@@ -85,7 +98,7 @@ std::unique_ptr<Instruction> ParseInstruction(const TreeData &data,
     for (const auto &attr : data.Attributes()) {
         instr->AddAttribute(attr.first, attr.second);
     }
-    for (const auto &attr : attributes.Attributes()) {
+    for (const auto &attr : attributes.AttributeList()) {
         if (!instr->HasAttribute(attr.first)) {
             instr->AddAttribute(attr.first, attr.second);
         }
@@ -105,7 +118,7 @@ namespace {
 bool AddChildInstructions(Instruction *instruction,
                           const std::vector<TreeData> &children,
                           const TreeData *declarationData,
-                          TreeData &attributes) {
+                          AttributeMap &attributes) {
     auto decorator = dynamic_cast<DecoratorInstruction*>(instruction);
     if (decorator && children.size() == 1u) {
         auto child_instr = ParseInstruction(children[0], declarationData, attributes);

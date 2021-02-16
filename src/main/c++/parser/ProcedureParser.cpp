@@ -84,7 +84,7 @@ std::unique_ptr<Procedure> ParseProcedure(const TreeData & data)
     // Every non workspace element of the Procedure node should be an instruction node
     else
     {
-      TreeData attributesData("Attributes");
+      AttributeMap attributesData;
       auto root_instr = ParseInstruction(child, declarationData, attributesData);
       if (root_instr)
       {

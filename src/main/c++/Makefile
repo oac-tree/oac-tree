@@ -31,13 +31,13 @@ dynamiclib: $(BUILD_DIR)/$(REALNAME)
 	@mkdir -p $(LIB_DIR)
 	cp -P $(BUILD_DIR)/lib$(LIBNAME).so* $(LIB_DIR)/
 	cp -P $(EPICS_INSTR_BUILD_DIR)/*.so* $(LIB_DIR)/
-	cp -P $(THIRD_PARTY_BUILD_DIR)/*.so* $(LIB_DIR)/
+	-cp -P $(THIRD_PARTY_BUILD_DIR)/*.so* $(LIB_DIR)/
 
 staticlib: $(BUILD_DIR)/lib$(LIBNAME).a
 	@mkdir -p $(LIB_DIR)
 	cp $(BUILD_DIR)/lib$(LIBNAME).a $(LIB_DIR)/
 	cp $(EPICS_INSTR_BUILD_DIR)/*.a $(LIB_DIR)/
-	cp $(THIRD_PARTY_BUILD_DIR)/*.a $(LIB_DIR)/
+	-cp $(THIRD_PARTY_BUILD_DIR)/*.a $(LIB_DIR)/
 
 $(BUILD_DIR)/$(REALNAME):
 	@mkdir -p $(BUILD_DIR)

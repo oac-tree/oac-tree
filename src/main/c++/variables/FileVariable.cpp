@@ -91,8 +91,6 @@ bool RegisterFileVariable (void);
 
 // Global variables
 
-static ccs::log::Func_t _handler = ccs::log::SetStdout();
-
 static bool global_filevariable_initialised_flag = RegisterFileVariable();
 
 // Function definition

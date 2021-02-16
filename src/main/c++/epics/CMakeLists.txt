@@ -18,6 +18,7 @@ target_include_directories(seq-epics
         ${CMAKE_CURRENT_LIST_DIR}
         ${CMAKE_CURRENT_LIST_DIR}/../include
         ${CMAKE_CURRENT_LIST_DIR}/../instructions
+        ${CMAKE_CURRENT_LIST_DIR}/../variables
         ${CMAKE_CURRENT_LIST_DIR}/../procedure
         $ENV{CODAC_ROOT}/include
 ## ChannelAccess support now through static inline wrappers requires EPICS header files

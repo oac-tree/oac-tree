@@ -81,8 +81,6 @@ bool RegisterCopyInstruction (void);
 
 // Global variables
 
-static ccs::log::Func_t _handler = ccs::log::SetStdout();
-
 static bool global_copyinstruction_initialised_flag = RegisterCopyInstruction();
 
 // Function definition

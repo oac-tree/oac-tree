@@ -18,7 +18,3 @@ target_include_directories(sequencer
     PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}
     )
-
-if(DEFINED USE_MATH_EXPR)
-    add_subdirectory(ThirdParty)
-endif()

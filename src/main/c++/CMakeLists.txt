@@ -30,6 +30,10 @@ add_subdirectory(variables)
 add_subdirectory(epics)
 add_subdirectory(cli)
 
+if(NOT DEFINED ENV{NO_PLUGINS})
+    add_subdirectory(plugins)
+endif()
+
 target_include_directories(sequencer
     PRIVATE ${LIBXML2_INCLUDE_DIR}
     PRIVATE $ENV{CODAC_ROOT}/include
@@ -61,3 +65,8 @@ target_link_libraries(sequencer-cli
         sequencer
         seq-epics
     )
+
+install(TARGETS sequencer-cli DESTINATION bin)
+install(TARGETS sequencer DESTINATION lib)
+install(DIRECTORY include/ DESTINATION include
+    FILES_MATCHING PATTERN "*.h")

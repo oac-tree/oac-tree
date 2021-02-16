@@ -42,12 +42,12 @@ staticlib: $(BUILD_DIR)/lib$(LIBNAME).a
 $(BUILD_DIR)/$(REALNAME):
 	@mkdir -p $(BUILD_DIR)
 	cmake3 -B$(BUILD_DIR) -DBUILD_SHARED_LIBS=ON $(CMAKE_FLAGS)
-	$(MAKE) -C $(BUILD_DIR)
+	cmake3 --build $(BUILD_DIR)
 
 $(BUILD_DIR)/lib$(LIBNAME).a: $(BUILD_DIR)/$(REALNAME)
 	@mkdir -p $(BUILD_DIR)
 	cmake3 -B$(BUILD_DIR) -DBUILD_SHARED_LIBS=OFF $(CMAKE_FLAGS)
-	$(MAKE) -C $(BUILD_DIR)
+	cmake3 --build $(BUILD_DIR)
 
 executable: dynamiclib
 	@mkdir -p $(EXE_DIR)

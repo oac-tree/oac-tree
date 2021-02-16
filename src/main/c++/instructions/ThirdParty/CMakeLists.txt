@@ -9,13 +9,14 @@ target_sources(MathExpressionEngineExptrk
     PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/exprtk.hpp
         ${CMAKE_CURRENT_LIST_DIR}/MathExpressionEngineExptrk.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/MathExpressionNode.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/MathExpressionEngineProvider.cpp
     )
 
 target_include_directories(MathExpressionEngineExptrk
     PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}
         ${CMAKE_CURRENT_LIST_DIR}/../../include
-        ${CMAKE_CURRENT_LIST_DIR}/../../instructions
         $ENV{CODAC_ROOT}/include
     )
 

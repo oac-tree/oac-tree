@@ -37,9 +37,12 @@
 #include "Instruction.h"
 #include "InstructionRegistry.h"
 
-#include "Workspace.h"
 #include "Variable.h"
+#include "VariableRegistry.h"
+
 #include "LocalVariable.h"
+#include "Workspace.h"
+
 
 // Constants
 
@@ -199,13 +202,13 @@ class PVMonitorVariable : public Variable, public PVMonitorCache
 
 template <typename Type> inline Type ToInteger (const ccs::types::char8 * const buffer);
 
-bool RegisterInstruction_PVMonitor (void);
+bool RegisterPVMonitor (void);
 
 // Global variables
 
 static ccs::log::Func_t __handler = ccs::log::SetStdout();
 
-static bool global_pvmonitor_initialised_flag = RegisterInstruction_PVMonitor();
+static bool global_pvmonitor_initialised_flag = RegisterPVMonitor();
 
 // Function definition
 
@@ -226,13 +229,20 @@ template <> inline ccs::types::uint64 ToInteger (const ccs::types::char8 * const
 
 }
 
-bool RegisterInstruction_PVMonitor (void)
+bool RegisterPVMonitor (void)
 {
 
-  log_info("RegisterInstruction_PVMonitor - Entering method");
+  log_info("RegisterPVMonitor - Entering method");
 
-  auto constructor = []() { return static_cast<Instruction*>(new BlockingPVMonitorNode ()); };
-  GlobalInstructionRegistry().RegisterInstruction("BlockingPVMonitorNode", constructor);
+  { // PVMonitor instruction
+    auto constructor = []() { return static_cast<Instruction*>(new BlockingPVMonitorNode ()); };
+    GlobalInstructionRegistry().RegisterInstruction("BlockingPVMonitorNode", constructor);
+  }
+
+  { // PVMonitor variable
+    auto constructor = []() { return static_cast<Variable*>(new PVMonitorVariable ()); };
+    GlobalVariableRegistry().RegisterVariable("PVMonitorVariable", constructor);
+  }
 
   return true;
 
@@ -322,11 +332,13 @@ bool PVMonitorCache::GetValue (ccs::types::AnyValue& value) const
 bool BlockingPVMonitorNode::Setup (void)
 {
 
+  log_info("BlockingPVMonitorNode('%s')::Setup - Method called ..", GetName().c_str());
+
   bool status = (HasAttribute("channel") && HasAttribute("variable") && (false == PVMonitorCache::IsInitialised()));
 
   if (status)
     {
-      log_info("BlockingPVMonitorNode('%s')::Setup - Method called with channel '%s' ..", GetName().c_str(), GetAttribute("channel").c_str());
+      log_info("BlockingPVMonitorNode('%s')::Setup - .. with channel '%s'", GetName().c_str(), GetAttribute("channel").c_str());
       log_info("BlockingPVMonitorNode('%s')::Setup - .. using workspace variable '%s'", GetName().c_str(), GetAttribute("variable").c_str());
     }
 
@@ -352,10 +364,8 @@ ExecutionStatus BlockingPVMonitorNode::ExecuteSingleImpl (UserInterface * ui, Wo
 
   bool status = PVMonitorCache::IsInitialised(); // Has received monitor and valid value
 
-  // ToDo - Implementation initialisation .. should be in another phase of the application lifecycle
-
   if (!status)
-    { // Configure and instantiate implementation
+    { // Instantiate implementation
       status = Setup();
     }
 
@@ -404,13 +414,12 @@ ExecutionStatus BlockingPVMonitorNode::ExecuteSingleImpl (UserInterface * ui, Wo
 bool PVMonitorVariable::Setup (void)
 {
 
-  //bool status = ((false == PVMonitorCache::IsInitialised()) && Variable::HasAttribute("channel"));
-  bool status = (false == PVMonitorCache::IsInitialised());
+  bool status = ((false == PVMonitorCache::IsInitialised()) && Variable::HasAttribute("channel"));
 
   if (status)
     { // Instantiate implementation
-      //status = PVMonitorCache::SetChannel(GetAttribute("channel").c_str());
-      //(void)PVMonitorCache::SetChannel(GetAttribute("channel").c_str());
+      log_info("PVMonitorVariable('%s')::Setup - Method called with '%s' channel", GetName().c_str(), GetAttribute("channel").c_str());
+      status = PVMonitorCache::SetChannel(GetAttribute("channel").c_str());
     }
 
   return status;
@@ -421,13 +430,6 @@ bool PVMonitorVariable::GetValueImpl (ccs::types::AnyValue& value) const
 {
 
   bool status = PVMonitorCache::IsInitialised(); // Has received monitor and valid value
-
-  // ToDo - Implementation initialisation .. should be in another phase of the application lifecycle
-
-  if (!status)
-    { // Configure and instantiate implementation
-      //(void)Setup();
-    }
 
   // ToDo - MUTEX operation
 
@@ -450,6 +452,7 @@ BlockingPVMonitorNode::BlockingPVMonitorNode (void) : Instruction("BlockingPVMon
 BlockingPVMonitorNode::~BlockingPVMonitorNode (void) {}
 
 PVMonitorVariable::PVMonitorVariable (void) : Variable(), PVMonitorCache() {}
+
 PVMonitorVariable::~PVMonitorVariable (void) {}
 
 } // namespace sequencer

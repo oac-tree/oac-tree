@@ -1,4 +1,4 @@
-.PHONY: all libs staticlib dynamiclib
+.PHONY: all libs staticlib dynamiclib executable
 
 LIBNAME=sequencer
 CLI_NAME=sequencer-cli

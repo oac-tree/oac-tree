@@ -54,11 +54,10 @@ target_include_directories(sequencer-cli
 
 target_link_directories(sequencer-cli
     PRIVATE $ENV{CODAC_ROOT}/lib
-)
+    )
 
 target_link_libraries(sequencer-cli
     PRIVATE
         sequencer
         seq-epics
-        MathExpressionEngineExptrk
     )

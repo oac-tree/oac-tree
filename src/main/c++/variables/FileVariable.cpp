@@ -137,7 +137,7 @@ bool FileVariable::SetValueImpl (const ccs::types::AnyValue& value)
 
 }
 
-FileVariable::FileVariable (void) : Variable() {}
+FileVariable::FileVariable (void) : Variable("FileVariable") {}
 FileVariable::~FileVariable (void) {}
 
 } // namespace sequencer

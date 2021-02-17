@@ -54,7 +54,7 @@ namespace sequencer {
 
 // Function declarations
 
-bool LoadLibrary (const std::string & name);
+bool LoadPlugin(const std::string & name);
 
 std::unique_ptr<Procedure> ParseProcedureFile(const std::string & filename);
 

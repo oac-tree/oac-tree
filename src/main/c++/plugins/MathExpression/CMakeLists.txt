@@ -16,7 +16,6 @@ target_sources(MathExpression
 target_include_directories(MathExpression
     PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}
-        ${CMAKE_CURRENT_LIST_DIR}/../../include
         $ENV{CODAC_ROOT}/include
     )
 
@@ -24,6 +23,11 @@ target_compile_definitions(MathExpression
     PRIVATE
         exprtk_disable_caseinsensitivity
         exprtk_disable_rtl_vecops
+    )
+
+target_link_libraries(MathExpression
+    PRIVATE
+        sequencer-shared
     )
 
 install(TARGETS MathExpression DESTINATION lib/plugins)

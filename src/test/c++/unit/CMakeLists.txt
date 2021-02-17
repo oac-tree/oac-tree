@@ -6,7 +6,6 @@ target_sources(unit-tests
         ${CMAKE_CURRENT_LIST_DIR}/CopyInstruction.cpp
         ${CMAKE_CURRENT_LIST_DIR}/SequenceParser-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/SequenceWorkspace-tests.cpp
-
         ${CMAKE_CURRENT_LIST_DIR}/Condition-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/FileVariable-tests.cpp
     )
@@ -44,5 +43,4 @@ if(NOT DEFINED ENV{NO_PLUGINS})
         PRIVATE
             ${CMAKE_CURRENT_LIST_DIR}/../../../../target/lib/plugins
         )
-    target_link_libraries(unit-tests MathExpression)
 endif()

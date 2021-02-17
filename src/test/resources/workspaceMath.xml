@@ -6,13 +6,13 @@
     <Declaration>
         <ComplexCondition>
             <Sequence>
-                <MathExpressionNode/>
-                <Condition/>
+                <MathExpressionNode expression="$param1"/>
+                <Condition var_name="$param2"/>
             </Sequence>
         </ComplexCondition>
     </Declaration>
     <Sequence>
-        <ComplexCondition name="ComplexCondition" expression="c:=a+2*b+c" var_name="c" />
+        <ComplexCondition name="ComplexCondition" param1="c:=a+2*b+c" param2="c" />
     </Sequence>
     <Workspace>
         <Local name="a"

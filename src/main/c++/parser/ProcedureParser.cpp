@@ -62,6 +62,13 @@ std::unique_ptr<Procedure> ParseProcedure(const TreeData & data)
 
   // Add Workspace and instruction tree
   const TreeData *declarationData = NULL;
+  //search for declaration nodes
+  for (const auto &child : data.Children())
+  {
+      if(child.GetType() == DECLARATION_TYPE){
+          declarationData = &child;
+      }
+  }
   for (const auto &child : data.Children())
   {
     if (child.GetType() == WORKSPACE_TYPE)
@@ -78,11 +85,8 @@ std::unique_ptr<Procedure> ParseProcedure(const TreeData & data)
         }
       }
     }
-    else if(child.GetType() == DECLARATION_TYPE){
-        declarationData = &child;
-    }
     // Every non workspace element of the Procedure node should be an instruction node
-    else
+    else if (child.GetType() != DECLARATION_TYPE)
     {
       AttributeMap attributesData;
       auto root_instr = ParseInstruction(child, declarationData, attributesData);

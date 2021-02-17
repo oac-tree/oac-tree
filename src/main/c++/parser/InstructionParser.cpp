@@ -96,10 +96,15 @@ std::unique_ptr<Instruction> ParseInstruction(const TreeData &data,
         return {};
     }
     for (const auto &attr : data.Attributes()) {
-        instr->AddAttribute(attr.first, attr.second);
-    }
-    for (const auto &attr : attributes.AttributeList()) {
-        if (!instr->HasAttribute(attr.first)) {
+        auto attrTag = attr.second;
+        if (attrTag[0] == '$') {
+            attrTag = attrTag.c_str() + 1;
+            if (attributes.HasAttribute(attrTag)) {
+                auto attrValue = attributes.GetAttribute(attrTag);
+                instr->AddAttribute(attr.first, attrValue);
+            }
+        }
+        else {
             instr->AddAttribute(attr.first, attr.second);
         }
     }

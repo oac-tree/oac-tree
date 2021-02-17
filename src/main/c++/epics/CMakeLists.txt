@@ -1,4 +1,4 @@
-add_library(seq-epics)
+add_library(seq-epics SHARED)
 
 set_target_properties(seq-epics PROPERTIES
     VERSION ${LIBVERSION}
@@ -16,7 +16,6 @@ target_sources(seq-epics
 target_include_directories(seq-epics
     PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}
-        ${CMAKE_CURRENT_LIST_DIR}/../include
         ${CMAKE_CURRENT_LIST_DIR}/../instructions
         ${CMAKE_CURRENT_LIST_DIR}/../variables
         ${CMAKE_CURRENT_LIST_DIR}/../procedure
@@ -38,10 +37,12 @@ target_link_libraries(seq-epics
         ccs-base
         ccs-ca
         ccs-pvxs
-        sequencer
+        sequencer-shared
     )
 
 target_compile_definitions(seq-epics
     PRIVATE
         LOG_DEBUG_ENABLE
     )
+
+install(TARGETS seq-epics DESTINATION lib)

@@ -46,14 +46,19 @@ namespace sequencer {
 
 // Function definition
 
-std::unique_ptr<Procedure> ParseProcedureFile(const char * const filename)
+bool LoadLibrary (const std::string & name)
 {
-  log_info("sup::sequencer::ParseProcedureFile('%s') - load file..", filename);
+  return true;
+}
+
+std::unique_ptr<Procedure> ParseProcedureFile(const std::string & filename)
+{
+  log_info("sup::sequencer::ParseProcedureFile('%s') - load file..", filename.c_str());
   auto data = ParseXMLData(filename);
 
   if (!data)
   {
-    log_warning("sup::sequencer::ParseProcedureFile('%s') - could not parse file!", filename);
+    log_warning("sup::sequencer::ParseProcedureFile('%s') - could not parse file!", filename.c_str());
     return {};
   }
 
@@ -61,7 +66,7 @@ std::unique_ptr<Procedure> ParseProcedureFile(const char * const filename)
 
   if (!proc)
   {
-    log_warning("sup::sequencer::ParseProcedureFile('%s') - could not parse structure in file!", filename);
+    log_warning("sup::sequencer::ParseProcedureFile('%s') - could not parse structure in file!", filename.c_str());
   }
 
   return proc;

@@ -52,13 +52,13 @@ static std::string ToString(const xmlChar * xml_name);
 
 // Function definition
 
-std::unique_ptr<TreeData> ParseXMLData(const char * const filename)
+std::unique_ptr<TreeData> ParseXMLData(const std::string & filename)
 {
   // Read file into xmlDocPtr
-  xmlDocPtr doc = xmlParseFile(filename);
+  xmlDocPtr doc = xmlParseFile(filename.c_str());
   if (doc == nullptr)
   {
-    log_warning("ParseXMLData('%s') - Couldn't parse file", filename);
+    log_warning("ParseXMLData('%s') - Couldn't parse file", filename.c_str());
     return {};
   }
 
@@ -66,13 +66,13 @@ std::unique_ptr<TreeData> ParseXMLData(const char * const filename)
   xmlNodePtr root_node = xmlDocGetRootElement(doc);
   if (root_node == nullptr)
   {
-    log_warning("ParseXMLData('%s') - Couldn't retrieve root element", filename);
+    log_warning("ParseXMLData('%s') - Couldn't retrieve root element", filename.c_str());
     xmlFreeDoc(doc);
     return {};
   }
   if (xmlStrcmp(root_node->name, (const xmlChar *)"Procedure"))
   {
-    log_warning("ParseXMLData('%s') - Root element is not 'Procedure'", filename);
+    log_warning("ParseXMLData('%s') - Root element is not 'Procedure'", filename.c_str());
     xmlFreeDoc(doc);
     return {};
   }

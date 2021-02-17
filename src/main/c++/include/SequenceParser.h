@@ -34,6 +34,7 @@
 // Global header files
 
 #include <memory>
+#include <string>
 
 // Local header files
 
@@ -53,7 +54,9 @@ namespace sequencer {
 
 // Function declarations
 
-std::unique_ptr<Procedure> ParseProcedureFile(const char * const filename);
+bool LoadLibrary (const std::string & name);
+
+std::unique_ptr<Procedure> ParseProcedureFile(const std::string & filename);
 
 // Function definitions
 

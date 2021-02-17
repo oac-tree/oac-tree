@@ -26,6 +26,8 @@
 
 #include "MathExpressionNode.h"
 #include "MathExpressionEngineProvider.h"
+#include "InstructionRegistry.h"
+
 // Constants
 
 #undef LOG_ALTERN_SRC
@@ -41,7 +43,9 @@ namespace sequencer {
 
 const std::string MathExpressionNode::Type = "MathExpressionNode";
 
-// Function declaration
+static const bool global_mathexpressionnode_registered = RegisterGlobalInstruction<MathExpressionNode>();
+
+// Function definition
 
 MathExpressionNode::MathExpressionNode() :
         Instruction(Type) {

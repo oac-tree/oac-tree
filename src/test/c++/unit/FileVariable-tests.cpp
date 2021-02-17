@@ -39,6 +39,18 @@
 
 // Type declaration
 
+// Function declaration
+
+static inline bool Terminate (void)
+{
+  bool status = false;
+  if (ccs::HelperTools::Exist("/tmp/variable.bck"))
+  {
+    status = (std::remove("/tmp/variable.bck") == 0);
+  }
+  return status;
+}
+
 // Function definition
 
 TEST(FileVariable, File_write)
@@ -70,6 +82,8 @@ TEST(FileVariable, File_write)
     {
       status = static_cast<bool>(value.GetType());
     }
+
+  Terminate();
 
   // ToDo - Test variable
 

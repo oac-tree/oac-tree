@@ -87,8 +87,12 @@
                 <configuration>
                     <packaging>
                         <package>
-                            <!-- Library, etc. -->
+                            <!-- Libraries -->
                             <include type="file" source="lib" target="lib">
+                                <include>*.so.*</include>
+                            </include>
+                            <!-- Plugins -->
+                            <include type="file" source="lib/plugins" target="lib/plugins">
                                 <include>*.so.*</include>
                             </include>
                             <!-- Programs -->
@@ -103,23 +107,21 @@
                             <requires codac="true" buildOnly="true">cpp-common-devel</requires>
                         </package>
                         <package name="devel">
-                            <!-- Library, etc. -->
+                            <!-- Libraries -->
                             <include type="file" source="lib" target="lib">
                                 <include>*.a</include>
                                 <include>*.so</include>
+                            </include>
+                            <!-- Plugins -->
+                            <include type="file" source="lib/plugins" target="lib/plugins">
+                                <include>*.so.*</include>
                             </include>
                             <!-- Programs -->
                             <include type="file" source="bin" target="bin">
                                 <include>sequencer-cli</include>
                             </include>
-                            <!-- Basic classes -->
-                            <include type="file" source="main/c++/instructions" target="include/sup">
-                                <include>*.h</include>
-                            </include>
-                            <include type="file" source="main/c++/procedure" target="include/sup">
-                                <include>*.h</include>
-                            </include>
-                            <include type="file" source="main/c++/runner" target="include/sup">
+                            <!-- Public API headers -->
+                            <include type="file" source="include" target="include/sup">
                                 <include>*.h</include>
                             </include>
                             <!-- Package dependencies -->

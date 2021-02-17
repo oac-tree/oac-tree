@@ -1,4 +1,4 @@
-.PHONY: all staticlib dynamiclib
+.PHONY: all cmake_targets
 
 LIBVERSION=$(shell grep '<version>1' ../../../pom.xml | sed 's/    <version>//g' | sed 's/<\/version>//g')
 LIBMAJOR=$(shell echo $(LIBVERSION) | sed 's/\([1-9]\).\([0-9]\).\([0-9]\)/\1/g')

@@ -1,4 +1,4 @@
-add_library(MathExpression)
+add_library(MathExpression SHARED)
 
 set_target_properties(MathExpression PROPERTIES
     VERSION ${LIBVERSION}

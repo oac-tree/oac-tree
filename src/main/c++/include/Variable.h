@@ -93,13 +93,11 @@ class Variable
     virtual bool SetValueImpl(const ::ccs::types::AnyValue& value) =0;
 
     /**
-     * @brief Setup the variable with the currently present attributes.
+     * @brief Setup value of variable.
      *
-     * @return true on success.
-     *
-     * @note May do nothing if not all required attributes are present (yet).
+     * @note Private virtual implementation.
      */
-    virtual bool Setup();
+    virtual bool SetupImpl();
 
   protected:
 
@@ -107,7 +105,7 @@ class Variable
     /**
      * @brief Constructor.
      */
-    Variable(bool no_setup_required = false);
+    Variable();
 
     /**
      * @brief Destructor.
@@ -166,6 +164,15 @@ class Variable
      * @return true when successful.
      */
     bool AddAttributes(const std::vector<std::pair<const std::string, std::string>> & attributes);
+
+    /**
+     * @brief Setup the variable with the currently present attributes.
+     *
+     * @return true on success.
+     *
+     * @note May do nothing if not all required attributes are present (yet).
+     */
+    bool Setup();
 };
 
 // Global variables

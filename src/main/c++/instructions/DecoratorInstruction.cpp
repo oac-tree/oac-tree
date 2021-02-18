@@ -65,6 +65,10 @@ void DecoratorInstruction::SetInstruction(Instruction * instruction)
   _child.reset(instruction);
 }
 
+bool DecoratorInstruction::Setup(Workspace * ws){
+    return _child->Setup(ws);
+}
+
 } // namespace sequencer
 
 } // namespace sup

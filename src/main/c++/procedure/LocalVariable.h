@@ -87,8 +87,7 @@ class LocalVariable : public Variable
      *
      * @note May do nothing if not all required attributes are present (yet).
      */
-    bool Setup() override;
-
+    bool SetupImpl() override;
   protected:
 
   public:
@@ -108,6 +107,8 @@ class LocalVariable : public Variable
      * @brief Destructor.
      */
     ~LocalVariable() override;
+
+
 
     static const std::string Type;
 };

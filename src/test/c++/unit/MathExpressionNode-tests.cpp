@@ -133,24 +133,13 @@ TEST(MathExpressionNode, Default1) // Static initialisation
         ccs::types::uint32 j=4u;
         while(expressionTable[i][j]!=NULL) {
 
-            std::unique_ptr<Variable> varX;
-            ::ccs::base::SharedReference<::ccs::types::AnyType> localType;
-            std::unique_ptr<::ccs::types::AnyValue> valX;
+            std::unique_ptr<Variable> varX(new LocalVariable);
 
-            printf("parse type %s\n", expressionTable[i][j]);
-            ::ccs::HelperTools::Parse(localType, expressionTable[i][j]);
-            ::ccs::base::SharedReference<const ::ccs::types::AnyType> constLocalType(localType);
-            varX.reset(new LocalVariable(constLocalType));
-            valX.reset(new ccs::types::AnyValue (constLocalType));
-
+            varX->AddAttribute("type", expressionTable[i][j]);
             j++;
-            printf("parse instance %s\n", expressionTable[i][j]);
-            valX->ParseInstance(expressionTable[i][j]);
-
+            varX->AddAttribute("value", expressionTable[i][j]);
             j++;
             printf("parse variable %s\n", expressionTable[i][j]);
-
-            varX->SetValue(*valX);
             proc->AddVariable(expressionTable[i][j], varX.release());
             j++;
         }
@@ -160,7 +149,7 @@ TEST(MathExpressionNode, Default1) // Static initialisation
         if (status) {
             LogUI ui;
             proc->PushInstruction(myMathNode.release());
-
+            proc->Setup();
             proc->ExecuteSingle(&ui);
             status = (proc->GetStatus() == ExecutionStatus::SUCCESS);
         }

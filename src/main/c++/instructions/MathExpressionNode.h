@@ -83,6 +83,14 @@ public:
     virtual ~MathExpressionNode();
 
     /**
+     * @brief Compiles the math expression
+     * @details
+     * @param
+     * @return
+     */
+    bool Setup(Workspace * ws) override;
+
+    /**
      * @brief The class name
      */
     static const std::string Type;

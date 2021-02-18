@@ -69,6 +69,15 @@ void CompoundInstruction::PushBack(Instruction * instruction)
   _children.push_back(instruction);
 }
 
+bool CompoundInstruction::Setup(Workspace * ws){
+    bool ret=true;
+    for (auto instruction : _children)
+    {
+      ret&=instruction->Setup(ws);
+    }
+    return ret;
+}
+
 } // namespace sequencer
 
 } // namespace sup

@@ -106,6 +106,11 @@ void Instruction::SetName(std::string name)
   AddAttribute(NAME_ATTRIBUTE, name);
 }
 
+bool Instruction::Setup(Workspace * ws){
+    return true;
+}
+
+
 void Instruction::ExecuteSingle(UserInterface * ui, Workspace * ws)
 {
   Preamble(ui);

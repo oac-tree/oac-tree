@@ -59,37 +59,34 @@ MathExpressionNode::~MathExpressionNode() {
     }
 }
 
+bool MathExpressionNode::Setup(Workspace *ws) {
+
+    engine = MathExpressionEngineProvider::Instance()->CreateNewEngine();
+    bool ret = (engine != NULL);
+    if (ret) {
+        std::string expression = GetAttribute("expression");
+
+        ret = engine->Compile(expression.c_str(), ws);
+        if (!ret) {
+            log_info("MathExpressionNode::ExecuteSingleImpl Failed Compilation of %s", expression.c_str());
+        }
+    }
+    else {
+        log_error("MathExpressionEngine is NULL");
+    }
+
+    return ret;
+
+}
+
 ExecutionStatus MathExpressionNode::ExecuteSingleImpl(UserInterface *ui,
                                                       Workspace *ws) {
 
-    bool ret = true;
     ExecutionStatus status = ExecutionStatus::SUCCESS;
 
-    //todo not the best way to implement it: need a pre-execution stage for Instruction
-    if (firstTime) {
-
-        engine = MathExpressionEngineProvider::Instance()->CreateNewEngine();
-        ret = (engine != NULL);
-        if (ret) {
-            std::string expression = GetAttribute("expression");
-
-            ret = engine->Compile(expression.c_str(), ws);
-            if (!ret) {
-                log_info("MathExpressionNode::ExecuteSingleImpl Failed Compilation of %s", expression.c_str());
-            }
-            firstTime = false;
-        }
-        else{
-            log_error("MathExpressionEngine is NULL");
-        }
-
-    }
-
-    if (ret) {
-        ret = engine->Execute();
-        if (!ret) {
-            log_info("MathExpressionNode::ExecuteSingleImpl Failed Execution");
-        }
+    bool ret = engine->Execute();
+    if (!ret) {
+        log_info("MathExpressionNode::ExecuteSingleImpl Failed Execution");
     }
     if (!ret) {
         status = ExecutionStatus::FAILURE;

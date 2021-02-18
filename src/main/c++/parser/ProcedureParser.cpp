@@ -96,6 +96,11 @@ std::unique_ptr<Procedure> ParseProcedure(const TreeData & data)
       }
     }
   }
+
+  log_error("HERE'");
+  if(!result->Setup()){
+      log_error("sup::sequencer::ParseProcedure() - Failed Procedure::Setup()'");
+  }
   return result;
 }
 

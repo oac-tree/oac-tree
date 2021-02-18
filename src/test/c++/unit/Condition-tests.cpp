@@ -110,21 +110,13 @@ TEST(Condition, Default1) // Static initialisation
         std::unique_ptr<Condition> myCondNode(new Condition);
         myCondNode->AddAttribute("var_name", conditionTable[i][0]);
 
-        ::ccs::base::SharedReference<::ccs::types::AnyType> resType;
-        printf("parse type %s\n", conditionTable[i][1]);
-        ::ccs::HelperTools::Parse(resType, conditionTable[i][1]);
+        ccs::types::AnyValue resVal;
 
-        ::ccs::base::SharedReference<const ::ccs::types::AnyType> constResType(resType);
+        std::unique_ptr<Variable> varX(new LocalVariable);
+        varX->AddAttribute("type", conditionTable[i][1]);
+        varX->AddAttribute("value", conditionTable[i][2]);
 
-        ccs::types::AnyValue resVal(constResType);
-        printf("parse instance %s\n", conditionTable[i][2]);
-
-        resVal.ParseInstance(conditionTable[i][2]);
-
-        printf("parse variable %s\n", conditionTable[i][3]);
-
-        std::unique_ptr<Variable> varX(new LocalVariable(constResType));
-        varX->SetValue(resVal);
+        varX->GetValue(resVal);
         proc->AddVariable(conditionTable[i][3], varX.release());
 
         status = PrintProcedureWorkspace(proc.get());
@@ -132,7 +124,7 @@ TEST(Condition, Default1) // Static initialisation
         if (status) {
             LogUI ui;
             proc->PushInstruction(myCondNode.release());
-
+            proc->Setup();
             proc->ExecuteSingle(&ui);
 
             ::std::string result=conditionTable[i][4];

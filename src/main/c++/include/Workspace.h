@@ -100,6 +100,11 @@ class Workspace
      * @param name Variable value.
      */
     bool SetValue(std::string name, const ::ccs::types::AnyValue& value);
+
+    /**
+     * @brief Setup
+     */
+    bool Setup();
 };
 
 // Global variables

@@ -82,6 +82,15 @@ class DecoratorInstruction : public Instruction
      * @note DecoratorInstruction takes ownership of the decorated instruction.
      */
     void SetInstruction(Instruction * instruction);
+
+    /**
+     * @brief Setup method
+     * @details
+     * @param
+     * @return
+     */
+    bool Setup(Workspace * ws) override;
+
 };
 
 // Global variables

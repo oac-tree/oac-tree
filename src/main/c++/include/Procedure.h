@@ -117,6 +117,12 @@ class Procedure
      */
     bool PushInstruction(Instruction * instruction);
 
+
+    /**
+     * @brief Setup the procedure
+     */
+    bool Setup();
+
     /**
      * @brief Execute single step of procedure
      */

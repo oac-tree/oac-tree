@@ -82,6 +82,15 @@ class CompoundInstruction : public Instruction
      * @note CompoundInstruction takes ownership of the added instruction.
      */
     void PushBack(Instruction * instruction);
+
+    /**
+     * @brief Setup method
+     * @details
+     * @param
+     * @return
+     */
+    bool Setup(Workspace * ws) override;
+
 };
 
 // Global variables

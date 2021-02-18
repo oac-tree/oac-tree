@@ -121,6 +121,14 @@ class Instruction
     void SetName(std::string name);
 
     /**
+     * @brief Setup method
+     * @details
+     * @param
+     * @return
+     */
+    virtual bool Setup(Workspace * ws);
+
+    /**
      * @brief Execution method
      * @details
      * @param

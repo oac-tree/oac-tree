@@ -40,6 +40,8 @@ namespace sup {
 
 namespace sequencer {
 
+#define TAG_INIT_CHAR '$'
+
 // Global variables
 
 // Function declaration
@@ -97,11 +99,12 @@ std::unique_ptr<Instruction> ParseInstruction(const TreeData &data,
     }
     for (const auto &attr : data.Attributes()) {
         auto attrTag = attr.second;
-        if (attrTag[0] == '$') {
+        if (attrTag[0] == TAG_INIT_CHAR) {
             attrTag = attrTag.c_str() + 1;
             if (attributes.HasAttribute(attrTag)) {
                 auto attrValue = attributes.GetAttribute(attrTag);
                 instr->AddAttribute(attr.first, attrValue);
+                break;
             }
         }
         else {

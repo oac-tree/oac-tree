@@ -56,7 +56,7 @@ LocalVariable::LocalVariable()
 {}
 
 LocalVariable::LocalVariable(const ::ccs::base::SharedReference<const ccs::types::AnyType>& type)
-  : Variable(true)
+  : Variable()
   , _val{type}
   , _initialized{false}
 {
@@ -97,7 +97,7 @@ bool LocalVariable::SetValueImpl(const ::ccs::types::AnyValue& value)
   return false;
 }
 
-bool LocalVariable::Setup()
+bool LocalVariable::SetupImpl()
 {
   bool status = HasAttribute(LOCAL_VARIABLE_JSON_TYPE);
 

@@ -98,7 +98,7 @@
                             </include>
                             <!-- Plugins -->
                             <include type="file" source="lib/plugins" target="lib/plugins">
-                                <include>*.so.*</include>
+                                <include>*.so*</include>
                             </include>
                             <include type="config" source="main/codac-${project.artifactId}.conf"
                                      target="ld.so.conf.d/codac-${project.artifactId}.conf"
@@ -123,14 +123,6 @@
                             <include type="file" source="lib" target="lib">
                                 <include>*.a</include>
                                 <include>*.so</include>
-                            </include>
-                            <!-- Plugins -->
-                            <include type="file" source="lib/plugins" target="lib/plugins">
-                                <include>*.so.*</include>
-                            </include>
-                            <!-- Programs -->
-                            <include type="file" source="bin" target="bin">
-                                <include>sequencer-cli</include>
                             </include>
                             <!-- Public API headers -->
                             <include type="file" source="include" target="include/sup">

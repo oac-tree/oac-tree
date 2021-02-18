@@ -47,14 +47,14 @@ namespace sequencer {
 
 bool LoadPlugin(const std::string & name)
 {
-  log_info("sup::sequencer::LoadPlugin('%s') - trying to load plugin ", name.c_str());
+  log_info("sup::sequencer::LoadPlugin('%s') - trying to load plugin..", name.c_str());
   bool status = ::ccs::HelperTools::LoadSharedLibrary(name.c_str());
 
   if (!status)
   {
-    log_warning("sup::sequencer::LoadPlugin('%s') - could not load plugin!", name.c_str());
+    log_warning("sup::sequencer::LoadPlugin('%s') - could not load plugin", name.c_str());
   }
-
+  log_info("sup::sequencer::LoadPlugin('%s') - successfully loaded plugin", name.c_str());
   return status;
 }
 
@@ -65,7 +65,7 @@ std::unique_ptr<Procedure> ParseProcedureFile(const std::string & filename)
 
   if (!data)
   {
-    log_warning("sup::sequencer::ParseProcedureFile('%s') - could not parse file!", filename.c_str());
+    log_warning("sup::sequencer::ParseProcedureFile('%s') - could not parse file", filename.c_str());
     return {};
   }
 

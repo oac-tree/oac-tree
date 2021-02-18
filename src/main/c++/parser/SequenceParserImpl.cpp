@@ -98,10 +98,17 @@ static std::unique_ptr<TreeData> ParseDataTree(xmlDocPtr doc, xmlNodePtr node)
     attribute = attribute->next;
   }
 
-  // Add children
+  // Add children and content
   auto child_node = node->children;
   while (child_node != nullptr)
   {
+    if (child_node->type == XML_TEXT_NODE)
+    {
+      auto xml_content = xmlNodeListGetString(doc, child_node, 1);
+      auto content = ToString(xml_content);
+      result->SetContent(content);
+      xmlFree(xml_content);
+    }
     if (child_node->type == XML_ELEMENT_NODE)
     {
       log_info("Add child Data: %s", reinterpret_cast<const char *>(child_node->name));

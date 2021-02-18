@@ -43,18 +43,12 @@ namespace sequencer {
 
 // Global variables
 
-// Function declaration
-
-static std::string ResolvePluginName(const std::string & name);
-
 // Function definition
 
 bool LoadPlugin(const std::string & name)
 {
-  auto qualified_name = ResolvePluginName(name);
-  log_info("sup::sequencer::LoadPlugin('%s') - trying to load plugin with qualified name: '%s'",
-           name.c_str(), qualified_name.c_str());
-  bool status = ::ccs::HelperTools::LoadSharedLibrary(qualified_name.c_str());
+  log_info("sup::sequencer::LoadPlugin('%s') - trying to load plugin ", name.c_str());
+  bool status = ::ccs::HelperTools::LoadSharedLibrary(name.c_str());
 
   if (!status)
   {
@@ -83,15 +77,6 @@ std::unique_ptr<Procedure> ParseProcedureFile(const std::string & filename)
   }
 
   return proc;
-}
-
-static std::string ResolvePluginName(const std::string & name)
-{
-  if (name.find('/') != std::string::npos)
-  {
-    return name;
-  }
-  return std::string("plugins/") + name;
 }
 
 } // namespace sequencer

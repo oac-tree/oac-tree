@@ -33,6 +33,7 @@
     <properties>
         <unit.type>module</unit.type>
         <integrity.level>1</integrity.level>
+        <pluginpath>lib/plugins</pluginpath>
     </properties>
 
     <!-- parent pom.xml -->
@@ -85,6 +86,10 @@
                 <artifactId>maven-iter-plugin</artifactId>
                 <extensions>true</extensions>
                 <configuration>
+                    <init>
+                        <expand source="ld.so.conf" file="main/codac-${project.artifactId}.conf"
+                                rpmeval="true" mvneval="true" />
+                    </init>
                     <packaging>
                         <package>
                             <!-- Libraries -->
@@ -95,6 +100,9 @@
                             <include type="file" source="lib/plugins" target="lib/plugins">
                                 <include>*.so.*</include>
                             </include>
+                            <include type="config" source="main/codac-${project.artifactId}.conf"
+                                     target="ld.so.conf.d/codac-${project.artifactId}.conf"
+                                     altpath="%{_sysconfdir}/ld.so.conf.d/codac-${project.artifactId}.conf" />
                             <!-- Programs -->
                             <include type="file" source="bin" target="bin">
                                 <include>sequencer-cli</include>
@@ -105,6 +113,10 @@
                             <requires version="current" buildOnly="true">cmake3</requires>
                             <requires version="current" buildOnly="true">libxml2-devel</requires>
                             <requires codac="true" buildOnly="true">cpp-common-devel</requires>
+                            <!-- RPM scriptlet -->
+                            <scriptlet type="posttrans">
+                                <![CDATA[ ldconfig ]]>
+                            </scriptlet>
                         </package>
                         <package name="devel">
                             <!-- Libraries -->

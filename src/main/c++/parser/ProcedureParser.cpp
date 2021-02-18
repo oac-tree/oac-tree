@@ -87,6 +87,7 @@ std::unique_ptr<Procedure> ParseProcedure(const TreeData & data)
           result->AddVariable(name, var.release());
         }
       }
+      continue;
     }
     // Plugins are already handled.
     if (child.GetType() == PLUGIN_ELEMENT_NAME)

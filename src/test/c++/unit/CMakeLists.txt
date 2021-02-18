@@ -29,18 +29,3 @@ target_link_directories(unit-tests
 find_package(GTest REQUIRED)
 
 target_link_libraries(unit-tests sequencer GTest::GTest GTest::Main ccs-types ccs-base ccs-common)
-
-if(NOT DEFINED ENV{NO_PLUGINS})
-    target_sources(unit-tests
-        PRIVATE
-            ${CMAKE_CURRENT_LIST_DIR}/MathExpressionNode-tests.cpp
-        )
-    target_include_directories(unit-tests
-        PRIVATE
-            ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++/plugins/MathExpression
-        )
-    target_link_directories(unit-tests
-        PRIVATE
-            ${CMAKE_CURRENT_LIST_DIR}/../../../../target/lib/plugins
-        )
-endif()

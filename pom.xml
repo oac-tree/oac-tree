@@ -97,9 +97,9 @@
                                 <include>*.so.*</include>
                             </include>
                             <!-- Plugins -->
-                            <include type="file" source="lib/plugins" target="lib/plugins">
+                            <!-- <include type="file" source="lib/plugins" target="lib/plugins">
                                 <include>*.so*</include>
-                            </include>
+                            </include> -->
                             <include type="config" source="main/codac-${project.artifactId}.conf"
                                      target="ld.so.conf.d/codac-${project.artifactId}.conf"
                                      altpath="%{_sysconfdir}/ld.so.conf.d/codac-${project.artifactId}.conf" />

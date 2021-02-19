@@ -33,6 +33,10 @@
 #undef LOG_ALTERN_SRC
 #define LOG_ALTERN_SRC "sup::sequencer"
 
+#define INCL_NODE_TYPE "IncludeNode"
+#define INCL_NODE_PATH_ATTR "path"
+#define NODE_NAME_ATTR "name"
+
 // Unnamed namespace declarations
 
 // Type definition
@@ -45,44 +49,46 @@ namespace sequencer {
 
 // Function declaration
 
-static std::unique_ptr<TreeData> ParseDataTree(xmlDocPtr doc,
-                                               xmlNodePtr node);
+static std::unique_ptr<TreeData> ParseDataTree(xmlNodePtr node);
 
 static bool NodeHasName(xmlNodePtr node,
                         const char *name);
 static std::string ToString(const xmlChar *xml_name);
 
+static std::unique_ptr<TreeData> GetNodeDataFromXml(std::string path);
+
+static std::string GetXmlNodeName(xmlNodePtr node);
+
 // Function definition
 
-std::unique_ptr<TreeData> ParseXMLData(const char *const filename) {
+std::unique_ptr<TreeData> ParseXMLData(const std::string &filename) {
     // Read file into xmlDocPtr
-    xmlDocPtr doc = xmlParseFile(filename);
+    xmlDocPtr doc = xmlParseFile(filename.c_str());
     if (doc == nullptr) {
-        log_warning("ParseXMLData('%s') - Couldn't parse file", filename);
+        log_warning("ParseXMLData('%s') - Couldn't parse file", filename.c_str());
         return {};
     }
 
     // Check root element
     xmlNodePtr root_node = xmlDocGetRootElement(doc);
     if (root_node == nullptr) {
-        log_warning("ParseXMLData('%s') - Couldn't retrieve root element", filename);
+        log_warning("ParseXMLData('%s') - Couldn't retrieve root element", filename.c_str());
         xmlFreeDoc(doc);
         return {};
     }
     if (xmlStrcmp(root_node->name, (const xmlChar*) "Procedure")) {
-        log_warning("ParseXMLData('%s') - Root element is not 'Procedure'", filename);
+        log_warning("ParseXMLData('%s') - Root element is not 'Procedure'", filename.c_str());
         xmlFreeDoc(doc);
         return {};
     }
-    auto data_tree = ParseDataTree(doc, root_node);
+    auto data_tree = ParseDataTree(root_node);
     xmlFreeDoc(doc);
     return data_tree;
 }
 
-static std::unique_ptr<TreeData> ParseDataTree(xmlDocPtr doc,
-                                               xmlNodePtr node) {
+static std::unique_ptr<TreeData> ParseDataTree(xmlNodePtr node) {
     auto node_name = ToString(node->name);
-    std::unique_ptr < TreeData > result(new TreeData(node_name));
+    std::unique_ptr<TreeData> result(new TreeData(node_name));
 
     // Add attributes
     auto attribute = node->properties;
@@ -102,39 +108,25 @@ static std::unique_ptr<TreeData> ParseDataTree(xmlDocPtr doc,
             log_info("Add child Data: %s", reinterpret_cast<const char*>(child_node->name));
 
             std::string nodeName = ToString(child_node->name);
-            if (nodeName == "IncludeNode") {
-                std::unique_ptr < TreeData > incl_data;
+            if (nodeName == INCL_NODE_TYPE) {
+                std::unique_ptr<TreeData> incl_data;
                 auto attribute = child_node->properties;
                 while (attribute != nullptr) {
                     auto attr_name = ToString(attribute->name);
 
-                    if (attr_name == "path") {
-                        auto xml_val = ToString(xmlGetProp(node, attribute->name));
-                        std::vector<ccs::types::char8> buffer(xml_val.c_str(), xml_val.c_str()+xml_val.size()+1);
-
-                        auto token = strtok(&buffer[0], ".");
-                        std::string fileName = token;
-                        fileName += ".xml";
-                        auto incl_dataT = ParseXMLData(fileName.c_str());
-
-                        TreeData *incl_data = incl_dataT.get();
-                        while (token != NULL) {
-                            token = strtok(NULL, ".");
-                            for (auto child : incl_data->Children()) {
-                                auto childName = child.GetName();
-                                if (childName == token) {
-                                    incl_data = &child;
-                                }
-                            }
+                    if (attr_name == INCL_NODE_PATH_ATTR) {
+                        auto xml_val = ToString(xmlGetProp(child_node, attribute->name));
+                        auto incl_data = GetNodeDataFromXml(xml_val);
+                        if (incl_data) {
+                            result->AddChild(*incl_data);
                         }
-                        result->AddChild(*incl_data);
+                        break;
                     }
-                    break;
                     attribute = attribute->next;
                 }
             }
-            else{
-                auto child_data = ParseDataTree(doc, child_node);
+            else {
+                auto child_data = ParseDataTree(child_node);
                 result->AddChild(*child_data);
             }
         }
@@ -144,14 +136,104 @@ static std::unique_ptr<TreeData> ParseDataTree(xmlDocPtr doc,
     return result;
 }
 
-static bool NodeHasName(xmlNodePtr node, const char * name)
-{
-  return (xmlStrcmp(node->name, (const xmlChar *)name) == 0);
+static bool NodeHasName(xmlNodePtr node,
+                        const char *name) {
+    return (xmlStrcmp(node->name, (const xmlChar*) name) == 0);
 }
 
-static std::string ToString(const xmlChar * xml_name)
-{
-  return std::string(reinterpret_cast<const char *>(xml_name), xmlStrlen(xml_name));
+static std::string ToString(const xmlChar *xml_name) {
+    return std::string(reinterpret_cast<const char*>(xml_name), xmlStrlen(xml_name));
+}
+
+static std::unique_ptr<TreeData> GetNodeDataFromXml(std::string path) {
+
+    std::vector < ccs::types::char8 > buffer(path.c_str(), path.c_str() + path.size() + 1);
+
+    std::string filename;
+
+    ::ccs::types::uint32 i=0u;
+    while((buffer[i]=='.') || buffer[i]=='/'){
+        filename += buffer[i];
+        i++;
+    }
+    auto token = strtok(&buffer[i], ".");
+    filename += token;
+    filename += ".xml";
+
+    log_info("GetNodeDataFromXml - Parse file %s", filename.c_str());
+
+    xmlDocPtr doc = xmlParseFile(filename.c_str());
+    if (doc == nullptr) {
+        log_warning("xmlParseFile('%s') - Couldn't parse file", filename.c_str());
+        return {};
+    }
+
+    // Check root element
+    xmlNodePtr node = xmlDocGetRootElement(doc);
+
+    //include the whole tree!
+    bool found = (token == NULL);
+
+    while (token != NULL) {
+        token = strtok(NULL, ".");
+        if (token != NULL) {
+            auto child_node = node->children;
+            found = false;
+            while ((child_node != nullptr) && (!found)) {
+                if (child_node->type == XML_ELEMENT_NODE) {
+                    auto nodename = GetXmlNodeName(child_node);
+                    found = (!nodename.empty());
+                    if (found) {
+                        found = (nodename == token);
+                    }
+                    if (found) {
+                        node = child_node;
+                    }
+                }
+                child_node = child_node->next;
+            }
+            //not found by name... try by type
+            child_node = node->children;
+            while ((child_node != nullptr) && (!found)) {
+                if (child_node->type == XML_ELEMENT_NODE) {
+                    auto nodename = GetXmlNodeName(child_node);
+                    auto nodetype = ToString(child_node->name);
+                    found = (nodename.empty());
+                    if (found) {
+                        found = (nodetype == token);
+                    }
+                    if (found) {
+                        node = child_node;
+                    }
+                }
+                child_node = child_node->next;
+            }
+        }
+    }
+
+    if (found) {
+        log_info("ParseDataTree - Node %s included", path.c_str());
+        return ParseDataTree(node);
+    }
+    else {
+        log_error("ParseDataTree - IncludeNode %s not found", path.c_str());
+    }
+
+    return {};
+}
+
+static std::string GetXmlNodeName(xmlNodePtr node) {
+    auto attribute = node->properties;
+    std::string ret;
+    while ((attribute != nullptr) && ret.empty()) {
+        auto name = ToString(attribute->name);
+        if (name == NODE_NAME_ATTR) {
+            auto xml_val = xmlGetProp(node, attribute->name);
+            ret = ToString(xml_val);
+        }
+        attribute = attribute->next;
+    }
+    return ret;
 }
 
 } // namespace sequencer

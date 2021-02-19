@@ -110,7 +110,7 @@ class Procedure
      *
      * @param instruction Root instruction to set.
      */
-    bool SetRootInstruction(Instruction * instruction);
+    void SetRootInstruction(Instruction * instruction);
 
     /**
      * @brief Push Instruction at top level.

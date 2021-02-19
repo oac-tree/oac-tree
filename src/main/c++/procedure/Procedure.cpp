@@ -68,7 +68,7 @@ bool Procedure::GetVariableValue(std::string name,
     return _workspace->GetValue(name, value);
 }
 
-bool Procedure::SetRootInstruction(Instruction *instruction) {
+void Procedure::SetRootInstruction(Instruction *instruction) {
     _root.reset(instruction);
 }
 
@@ -84,8 +84,6 @@ bool Procedure::PushInstruction(Instruction *instruction) {
 bool Procedure::Setup() {
 
     bool ret = true;
-    log_error("CAZZO'");
-
     if(!_workspace->Setup()){
         ret=false;
     }

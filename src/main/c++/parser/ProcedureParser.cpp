@@ -26,6 +26,7 @@
 
 #include "ProcedureParser.h"
 #include "InstructionParser.h"
+#include "SequenceParser.h"
 #include "VariableParser.h"
 
 // Constants
@@ -72,7 +73,6 @@ std::unique_ptr<Procedure> ParseProcedure(const TreeData &data) {
             log_info("sup::sequencer::ParseProcedure() - Parsing plugin information..");
             if (!ParseAndLoadPlugins(child)) {
                 log_warning("sup::sequencer::ParseProcedure() - Couldn't parse or load plugin data..");
-                return {};
             }
         }
     }
@@ -113,15 +113,14 @@ std::unique_ptr<Procedure> ParseProcedure(const TreeData &data) {
 static bool ParseAndLoadPlugins(const TreeData &child) {
     auto plugin_name = child.GetContent();
     if (plugin_name.empty()) {
-        continue;
+        return true;
     }
     log_info("sup::sequencer::ParseProcedure() - parsing plugin '%s'", plugin_name.c_str());
     bool success = LoadPlugin(plugin_name);
     if (!success) {
         log_warning("sup::sequencer::ParseProcedure() - could not load plugin '%s'", plugin_name.c_str());
-        result = false;
     }
-    return result;
+    return success;
 }
 
 } // namespace sequencer

@@ -13,6 +13,7 @@
     </Declaration>
     <Sequence>
         <ComplexCondition name="ComplexCondition" param1="c:=a+2*b+c" param2="c" />
+        <IncludeNode path="/home/ITER/ferrog/SUP/sequencer/target/test/resources/workspace.Sequence.Only"/>
     </Sequence>
     <Workspace>
         <Local name="a"

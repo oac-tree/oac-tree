@@ -40,15 +40,19 @@
 
 // Local header files
 
-// Constants
-
-// Type definition
-
 #ifdef __cplusplus
 
 namespace sup {
 
 namespace sequencer {
+
+// Constants
+
+namespace attributes {
+const std::string NAME_ATTRIBUTE = "name";
+}
+
+// Type definition
 
 /**
  * @brief Class that contains attributes and exposes a map interface.

@@ -33,8 +33,6 @@
 #undef LOG_ALTERN_SRC
 #define LOG_ALTERN_SRC "sup::sequencer"
 
-static const std::string NAME_ATTRIBUTE = "name";
-
 // Type definition
 
 namespace sup {
@@ -98,12 +96,12 @@ std::string Instruction::GetType() const
 
 std::string Instruction::GetName() const
 {
-  return GetAttribute(NAME_ATTRIBUTE);
+  return GetAttribute(attributes::NAME_ATTRIBUTE);
 }
 
 void Instruction::SetName(std::string name)
 {
-  AddAttribute(NAME_ATTRIBUTE, name);
+  AddAttribute(attributes::NAME_ATTRIBUTE, name);
 }
 
 bool Instruction::Setup(Workspace * ws){

@@ -59,6 +59,7 @@ class TreeData
 {
   private:
     std::string _type;
+    std::string _content;
     AttributeMap _attributes;
     std::vector<TreeData> _children;
 
@@ -136,6 +137,21 @@ class TreeData
      * @return List of child data elements.
      */
     const std::vector<TreeData> & Children() const;
+
+    /**
+     * @brief Set element content string.
+     *
+     * @param content Content string.
+     * @return true on success.
+     */
+    bool SetContent(std::string content);
+
+    /**
+     * @brief Retrieve element content string.
+     *
+     * @return Content string.
+     */
+    std::string GetContent() const;
 };
 
 // Global variables

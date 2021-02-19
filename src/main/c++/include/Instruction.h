@@ -65,7 +65,10 @@ class Workspace;
 class Instruction
 {
   private:
-    std::string _type;  // typename of the instruction
+    /**
+     * @brief Typename of this instruction
+     */
+    std::string _type;
 
     ExecutionStatus _status;
 

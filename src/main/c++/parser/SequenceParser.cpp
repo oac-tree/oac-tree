@@ -22,6 +22,7 @@
 // Global header files
 
 #include <common/log-api.h>
+#include <common/SysTools.h>
 
 // Local header files
 
@@ -42,18 +43,29 @@ namespace sequencer {
 
 // Global variables
 
-// Function declaration
-
 // Function definition
 
-std::unique_ptr<Procedure> ParseProcedureFile(const char * const filename)
+bool LoadPlugin(const std::string & name)
 {
-  log_info("sup::sequencer::ParseProcedureFile('%s') - load file..", filename);
+  log_info("sup::sequencer::LoadPlugin('%s') - trying to load plugin..", name.c_str());
+  bool status = ::ccs::HelperTools::LoadSharedLibrary(name.c_str());
+
+  if (!status)
+  {
+    log_warning("sup::sequencer::LoadPlugin('%s') - could not load plugin", name.c_str());
+  }
+  log_info("sup::sequencer::LoadPlugin('%s') - successfully loaded plugin", name.c_str());
+  return status;
+}
+
+std::unique_ptr<Procedure> ParseProcedureFile(const std::string & filename)
+{
+  log_info("sup::sequencer::ParseProcedureFile('%s') - load file..", filename.c_str());
   auto data = ParseXMLData(filename);
 
   if (!data)
   {
-    log_warning("sup::sequencer::ParseProcedureFile('%s') - could not parse file!", filename);
+    log_warning("sup::sequencer::ParseProcedureFile('%s') - could not parse file", filename.c_str());
     return {};
   }
 
@@ -61,7 +73,7 @@ std::unique_ptr<Procedure> ParseProcedureFile(const char * const filename)
 
   if (!proc)
   {
-    log_warning("sup::sequencer::ParseProcedureFile('%s') - could not parse structure in file!", filename);
+    log_warning("sup::sequencer::ParseProcedureFile('%s') - could not parse structure in file!", filename.c_str());
   }
 
   return proc;

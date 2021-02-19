@@ -86,8 +86,6 @@ bool RegisterInstruction_RPCClient (void);
 
 // Global variables
 
-static ccs::log::Func_t __handler = ccs::log::SetStdout();
-
 static bool global_rpcclient_initialised_flag = RegisterInstruction_RPCClient();
 
 // Function definition

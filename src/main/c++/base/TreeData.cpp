@@ -90,6 +90,16 @@ const std::vector<TreeData> & TreeData::Children() const
   return _children;
 }
 
+bool TreeData::SetContent(std::string content)
+{
+  _content = std::move(content);
+}
+
+std::string TreeData::GetContent() const
+{
+  return _content;
+}
+
 } // namespace sequencer
 
 } // namespace sup

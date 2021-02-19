@@ -152,8 +152,6 @@ bool RegisterInstruction_ChannelAccessClient (void);
 
 // Global variables
 
-static ccs::log::Func_t __handler = ccs::log::SetStdout();
-
 static bool global_caclient_initialised_flag = RegisterInstruction_ChannelAccessClient();
 
 // Function definition

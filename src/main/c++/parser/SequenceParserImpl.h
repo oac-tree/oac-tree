@@ -53,8 +53,7 @@ namespace sequencer {
 
 // Function declarations
 
-// std::unique_ptr<ProcedureData> ParseProcedureXML(const char * const filename);
-std::unique_ptr<TreeData> ParseXMLData(const char * const filename);
+std::unique_ptr<TreeData> ParseXMLData(const std::string & filename);
 
 // Function definitions
 

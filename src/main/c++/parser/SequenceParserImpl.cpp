@@ -144,13 +144,14 @@ static std::unique_ptr<TreeData> ParseDataTree(xmlDocPtr doc,
     return result;
 }
 
-static bool NodeHasName(xmlNodePtr node,
-                        const char *name) {
-    return (xmlStrcmp(node->name, (const xmlChar*) name) == 0);
+static bool NodeHasName(xmlNodePtr node, const char * name)
+{
+  return (xmlStrcmp(node->name, (const xmlChar *)name) == 0);
 }
 
-static std::string ToString(const xmlChar *xml_name) {
-    return std::string(reinterpret_cast<const char*>(xml_name), xmlStrlen(xml_name));
+static std::string ToString(const xmlChar * xml_name)
+{
+  return std::string(reinterpret_cast<const char *>(xml_name), xmlStrlen(xml_name));
 }
 
 } // namespace sequencer

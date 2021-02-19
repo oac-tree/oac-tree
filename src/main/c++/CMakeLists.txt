@@ -9,14 +9,13 @@ if(CMAKE_VERSION VERSION_LESS "3.7.0")
     set(CMAKE_INCLUDE_CURRENT_DIR ON)
 endif()
 
-add_library(sequencer)
-
-set_target_properties(sequencer PROPERTIES
-    VERSION ${LIBVERSION}
-    SOVERSION ${LIBSOVERSION}
-)
+add_library(sequencer-obj OBJECT)
+set_property(TARGET sequencer-obj PROPERTY POSITION_INDEPENDENT_CODE 1)
 
 add_executable(sequencer-cli)
+
+add_library(sequencer-shared SHARED)
+add_library(sequencer-static STATIC)
 
 find_package(LibXml2 REQUIRED)
 
@@ -26,22 +25,52 @@ add_subdirectory(parser)
 add_subdirectory(runner)
 add_subdirectory(procedure)
 add_subdirectory(instructions)
+add_subdirectory(variables)
 add_subdirectory(epics)
 add_subdirectory(cli)
 
-target_include_directories(sequencer
+if(NOT DEFINED ENV{NO_PLUGINS})
+    add_subdirectory(plugins)
+endif()
+
+target_include_directories(sequencer-obj
     PRIVATE ${LIBXML2_INCLUDE_DIR}
     PRIVATE $ENV{CODAC_ROOT}/include
     )
 
-target_link_directories(sequencer
+set_target_properties(sequencer-shared PROPERTIES
+    VERSION ${LIBVERSION}
+    SOVERSION ${LIBSOVERSION}
+    OUTPUT_NAME sequencer
+)
+
+target_link_directories(sequencer-shared
     PUBLIC $ENV{CODAC_ROOT}/lib
     )
 
-target_link_libraries(sequencer
+target_link_libraries(sequencer-shared
     PRIVATE
         ${LIBXML2_LIBRARIES}
     PUBLIC
+        sequencer-obj
+        ccs-common
+        ccs-types
+        ccs-base
+    )
+
+set_target_properties(sequencer-static PROPERTIES
+    OUTPUT_NAME sequencer
+)
+
+target_link_directories(sequencer-static
+    PUBLIC $ENV{CODAC_ROOT}/lib
+    )
+
+target_link_libraries(sequencer-static
+    PRIVATE
+        ${LIBXML2_LIBRARIES}
+    PUBLIC
+        sequencer-obj
         ccs-common
         ccs-types
         ccs-base
@@ -53,11 +82,16 @@ target_include_directories(sequencer-cli
 
 target_link_directories(sequencer-cli
     PRIVATE $ENV{CODAC_ROOT}/lib
-)
+    )
 
 target_link_libraries(sequencer-cli
     PRIVATE
-        sequencer
+        sequencer-shared
         seq-epics
-        MathExpressionEngineExptrk
     )
+
+install(TARGETS sequencer-cli DESTINATION bin)
+install(TARGETS sequencer-shared DESTINATION lib)
+install(TARGETS sequencer-static DESTINATION lib)
+install(DIRECTORY include/ DESTINATION include
+    FILES_MATCHING PATTERN "*.h")

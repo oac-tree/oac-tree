@@ -58,6 +58,11 @@ class Variable
 {
   private:
     /**
+     * @brief Typename of this variable
+     */
+    std::string _type;
+
+    /**
      * @brief Mutex for concurrent access of Variable.
      */
     mutable std::mutex _access_mutex;
@@ -104,13 +109,32 @@ class Variable
   public:
     /**
      * @brief Constructor.
-     */
-    Variable();
+     */    
+    Variable(std::string type);
 
     /**
      * @brief Destructor.
      */
     virtual ~Variable();
+
+    /**
+     * @brief Get variable type
+     * @return variable type
+     */
+    std::string GetType() const;
+
+    /**
+     * @brief Get variable name
+     * @return variable name
+     */
+    std::string GetName() const;
+
+    /**
+     * @brief Set variable name
+     * @param name Name to set
+     * @return void
+     */
+    void SetName(std::string name);
 
     /**
      * @brief Get value of variable.

@@ -30,9 +30,10 @@
 
 // Local header files
 
+#include "Instruction.h"
+#include "InstructionRegistry.h"
 #include "Workspace.h"
 #include "LocalVariable.h"
-#include "MathExpressionNode.h"
 #include "SequenceParser.h"
 
 #include "LogUI.h"
@@ -49,6 +50,7 @@ using namespace sup::sequencer;
 // Function definition
 
 static inline bool Initialise(void) {
+    sup::sequencer::LoadPlugin("../../lib/plugins/libMathExpression.so");
     return true;
 }
 
@@ -114,7 +116,7 @@ TEST(MathExpressionNode, Default1) // Static initialisation
     while((expressionTable[i][0]!=NULL) && status) {
 
         std::unique_ptr<Procedure> proc(new Procedure);
-        std::unique_ptr<MathExpressionNode> myMathNode(new MathExpressionNode);
+        auto myMathNode = GlobalInstructionRegistry().Create("MathExpressionNode");
         myMathNode->AddAttribute("expression", expressionTable[i][0]);
 
         ::ccs::base::SharedReference<::ccs::types::AnyType> resType;

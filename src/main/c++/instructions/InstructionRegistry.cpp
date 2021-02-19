@@ -34,7 +34,6 @@
 #include "ParallelSequence.h"
 #include "Repeat.h"
 #include "Sequence.h"
-#include "MathExpressionNode.h"
 #include "Wait.h"
 #include "Condition.h"
 
@@ -103,7 +102,6 @@ void InitInstructionRegistry(InstructionRegistry & registry)
   (void)RegisterInstruction<Sequence>(registry);
   (void)RegisterInstruction<ParallelSequence>(registry);
   (void)RegisterInstruction<Wait>(registry);
-  (void)RegisterInstruction<MathExpressionNode>(registry);
   (void)RegisterInstruction<Condition>(registry);
 }
 

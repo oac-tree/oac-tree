@@ -51,6 +51,15 @@ bool AddChildInstructions(Instruction *instruction,
                           const std::vector<TreeData> &children,
                           const TreeData *declarationData,
                           AttributeMap &attributes);
+
+std::unique_ptr<Instruction> GetDeclInstruction(const TreeData &data,
+                                                const TreeData *declarationData,
+                                                AttributeMap &attributes,
+                                                std::string instr_type);
+
+std::string SolveMapAttribute(AttributeMap &attributes,
+                              std::string attrTag);
+
 } // Unnamed namespace
 
 // Function definition
@@ -63,35 +72,7 @@ std::unique_ptr<Instruction> ParseInstruction(const TreeData &data,
     if (!instr) {
         if (declarationData != NULL) {
             log_info("sup::sequencer::ParseInstruction() - Checking declarations for '%s'", instr_type.c_str());
-
-            for (const auto &decl_data : declarationData->Children()) {
-                auto decl_type = decl_data.GetType();
-                if (instr_type == decl_type) {
-                    for (const auto &attr : data.Attributes()) {
-                        if (!attributes.HasAttribute(attr.first)) {
-                            attributes.AddAttribute(attr.first, attr.second);
-                        }
-                    }
-                    log_info("sup::sequencer::ParseInstruction() - Parsing '%s' from declarations", instr_type.c_str());
-                    const std::vector<TreeData> decl_children = decl_data.Children();
-                    std::unique_ptr<Instruction> decl_instr;
-                    if (decl_children.size() > 0u) {
-                        decl_instr = ParseInstruction(decl_children[0], declarationData, attributes);
-                        //eventually go back to data and add other children
-                        bool status = AddChildInstructions(decl_instr.get(), data.Children(), declarationData, attributes);
-                        if (!status) {
-                            log_error("ParseInstruction - Failed AddChildInstructions for %s", decl_type.c_str());
-                        }
-                    }
-                    //remove from the stack, other nodes are not interested
-                    for (const auto &attr : data.Attributes()) {
-                        if (attributes.HasAttribute(attr.first)) {
-                            attributes.Remove(attr.first);
-                        }
-                    }
-                    return decl_instr;
-                }
-            }
+            return GetDeclInstruction(data, declarationData, attributes, instr_type);
         }
         //if not returned
         log_warning("sup::sequencer::ParseInstruction() - couldn't parse instruction with type: '%s'", instr_type.c_str());
@@ -99,17 +80,8 @@ std::unique_ptr<Instruction> ParseInstruction(const TreeData &data,
     }
     for (const auto &attr : data.Attributes()) {
         auto attrTag = attr.second;
-        if (attrTag[0] == TAG_INIT_CHAR) {
-            attrTag = attrTag.c_str() + 1;
-            if (attributes.HasAttribute(attrTag)) {
-                auto attrValue = attributes.GetAttribute(attrTag);
-                instr->AddAttribute(attr.first, attrValue);
-                break;
-            }
-        }
-        else {
-            instr->AddAttribute(attr.first, attr.second);
-        }
+        auto attrVal = SolveMapAttribute(attributes, attrTag);
+        instr->AddAttribute(attr.first, attrVal);
     }
     log_info("sup::sequencer::ParseInstruction() - parsing child instructions for instruction of type: '%s'", instr_type.c_str());
     bool status = AddChildInstructions(instr.get(), data.Children(), declarationData, attributes);
@@ -123,6 +95,57 @@ std::unique_ptr<Instruction> ParseInstruction(const TreeData &data,
 }
 
 namespace {
+
+std::string SolveMapAttribute(AttributeMap &attributes,
+                              std::string attrTag) {
+    //be careful with cyclic remappings
+    if (attrTag[0] == TAG_INIT_CHAR) {
+        attrTag = attrTag.c_str() + 1;
+        if (attributes.HasAttribute(attrTag)) {
+            auto attrValue = attributes.GetAttribute(attrTag);
+            return SolveMapAttribute(attributes, attrValue);
+        }
+    }
+    return attrTag;
+}
+
+std::unique_ptr<Instruction> GetDeclInstruction(const TreeData &data,
+                                                const TreeData *declarationData,
+                                                AttributeMap &attributes,
+                                                std::string instr_type) {
+    std::unique_ptr<Instruction> decl_instr;
+    for (const auto &decl_data : declarationData->Children()) {
+        auto decl_type = decl_data.GetType();
+        if (instr_type == decl_type) {
+            for (const auto &attr : data.Attributes()) {
+                if (!attributes.HasAttribute(attr.first)) {
+                    attributes.AddAttribute(attr.first, attr.second);
+                }
+            }
+            log_info("sup::sequencer::GetDeclInstruction() - Parsing '%s' from declarations", instr_type.c_str());
+            const std::vector<TreeData> decl_children = decl_data.Children();
+            if (decl_children.size() > 0u) {
+                decl_instr = ParseInstruction(decl_children[0], declarationData, attributes);
+                //eventually go back to data and add other children
+                if (data.Children().size() > 0u) {
+                    bool status = AddChildInstructions(decl_instr.get(), data.Children(), declarationData, attributes);
+                    if (!status) {
+                        log_error("GetDeclInstruction - Failed AddChildInstructions for %s", decl_type.c_str());
+                    }
+                }
+            }
+            //remove from the stack, other nodes are not interested
+            for (const auto &attr : data.Attributes()) {
+                if (attributes.HasAttribute(attr.first)) {
+                    attributes.Remove(attr.first);
+                }
+            }
+            break;
+        }
+    }
+    return decl_instr;
+}
+
 bool AddChildInstructions(Instruction *instruction,
                           const std::vector<TreeData> &children,
                           const TreeData *declarationData,

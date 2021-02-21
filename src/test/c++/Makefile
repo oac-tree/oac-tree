@@ -15,6 +15,8 @@ CMAKE_FLAGS := -DCMAKE_BUILD_TYPE=$(BUILD_TYPE)
 
 ifeq ($(COVERAGE),true)
 CMAKE_FLAGS += -DCOVERAGE=true
+else
+CMAKE_FLAGS += -DCOVERAGE=false
 endif
 
 all: unit-tests

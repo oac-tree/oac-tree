@@ -16,6 +16,8 @@ CMAKE_FLAGS += -DCMAKE_INSTALL_PREFIX=$(TARGET)
 
 ifeq ($(COVERAGE),true)
 CMAKE_FLAGS += -DCOVERAGE=true
+else
+CMAKE_FLAGS += -DCOVERAGE=false
 endif
 
 all: cmake_targets

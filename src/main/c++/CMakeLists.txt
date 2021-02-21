@@ -26,7 +26,6 @@ add_subdirectory(runner)
 add_subdirectory(procedure)
 add_subdirectory(instructions)
 add_subdirectory(variables)
-add_subdirectory(epics)
 add_subdirectory(cli)
 
 if(NOT DEFINED ENV{NO_PLUGINS})
@@ -87,7 +86,6 @@ target_link_directories(sequencer-cli
 target_link_libraries(sequencer-cli
     PRIVATE
         sequencer-shared
-        seq-epics
     )
 
 install(TARGETS sequencer-cli DESTINATION bin)

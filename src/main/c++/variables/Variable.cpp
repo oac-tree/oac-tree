@@ -43,10 +43,10 @@ namespace sequencer {
 
 // Function definition
 
-Variable::Variable(std::string type) :
-        _type(type)
-        ,_setup_successful { false } {
-}
+Variable::Variable(std::string type)
+  : _type(type)
+  ,_setup_successful{false}
+{}
 
 Variable::~Variable() = default;
 
@@ -65,58 +65,65 @@ void Variable::SetName(std::string name)
   AddAttribute(attributes::NAME_ATTRIBUTE, name);
 }
 
-bool Variable::GetValue(::ccs::types::AnyValue &value) const {
-    std::lock_guard < std::mutex > lock(_access_mutex);
-    if (!_setup_successful) {
-        log_warning("Variable::GetValue() - Variable was not successfully set up..");
-        return false;
-    }
-    return GetValueImpl(value);
+bool Variable::GetValue(::ccs::types::AnyValue &value) const
+{
+  std::lock_guard < std::mutex > lock(_access_mutex);
+  if (!_setup_successful) {
+    log_warning("Variable::GetValue() - Variable was not successfully set up..");
+    return false;
+  }
+  return GetValueImpl(value);
 }
 
-bool Variable::SetValue(const ::ccs::types::AnyValue &value) {
-    std::lock_guard < std::mutex > lock(_access_mutex);
-    if (!_setup_successful) {
-        log_warning("Variable::SetValue() - Variable was not successfully set up..");
-        return false;
-    }
-    return SetValueImpl(value);
+bool Variable::SetValue(const ::ccs::types::AnyValue &value)
+{
+  std::lock_guard < std::mutex > lock(_access_mutex);
+  if (!_setup_successful) {
+    log_warning("Variable::SetValue() - Variable was not successfully set up..");
+    return false;
+  }
+  return SetValueImpl(value);
 }
 
-bool Variable::HasAttribute(const std::string &name) const {
-    return _attributes.HasAttribute(name);
+bool Variable::HasAttribute(const std::string &name) const
+{
+  return _attributes.HasAttribute(name);
 }
 
-std::string Variable::GetAttribute(const std::string &name) const {
-    return _attributes.GetAttribute(name);
+std::string Variable::GetAttribute(const std::string &name) const
+{
+  return _attributes.GetAttribute(name);
 }
 
-bool Variable::AddAttribute(const std::string &name,
-                            const std::string &value) {
-    std::lock_guard < std::mutex > lock(_access_mutex);
-    return _attributes.AddAttribute(name, value);
+bool Variable::AddAttribute(const std::string &name, const std::string &value)
+{
+  std::lock_guard < std::mutex > lock(_access_mutex);
+  return _attributes.AddAttribute(name, value);
 }
 
-bool Variable::AddAttributes(const std::vector<std::pair<const std::string, std::string>> &attributes) {
-    std::lock_guard < std::mutex > lock(_access_mutex);
-    bool status = true;
-    for (const auto &attr : attributes) {
-        // Order in AND matters: add all attributes, even if previous adding failed.
-        status = _attributes.AddAttribute(attr.first, attr.second) && status;
-    }
-    return status;
+bool Variable::AddAttributes(const std::vector<std::pair<const std::string, std::string>> &attributes)
+{
+  std::lock_guard < std::mutex > lock(_access_mutex);
+  bool status = true;
+  for (const auto &attr : attributes) {
+    // Order in AND matters: add all attributes, even if previous adding failed.
+    status = _attributes.AddAttribute(attr.first, attr.second) && status;
+  }
+  return status;
 }
 
-bool Variable::Setup() {
-    _setup_successful = SetupImpl();
-    if (_setup_successful) {
-        log_warning("Variable::Setup() - Variable successfully set up..");
-    }
-    return _setup_successful;
+bool Variable::Setup()
+{
+  _setup_successful = SetupImpl();
+  if (_setup_successful) {
+    log_warning("Variable::Setup() - Variable successfully set up..");
+  }
+  return _setup_successful;
 }
 
-bool Variable::SetupImpl() {
-    return true;
+bool Variable::SetupImpl()
+{
+  return true;
 }
 
 } // namespace sequencer

@@ -35,7 +35,6 @@
 #include <common/AnyValue.h>
 #include <common/AnyType.h>
 #include <common/log-api.h>
-#include <common/AnyValueHelper.h>
 /*---------------------------------------------------------------------------*/
 /*                           Static definitions                              */
 /*---------------------------------------------------------------------------*/
@@ -58,52 +57,25 @@ Condition::~Condition() {
 
 ExecutionStatus Condition::ExecuteSingleImpl(UserInterface *ui,
                                              Workspace *ws) {
-    std::string varName = GetAttribute("var_name");
+
     ::ccs::types::AnyValue var;
-    ::ccs::types::uint32 pos1 = varName.find('.');
-    ::ccs::types::uint32 pos2 = varName.find('[');
-
-    ::ccs::types::uint32 pos = (pos1 < pos2) ? (pos1) : (pos2);
-
-    ::ccs::types::uint32 varLen = varName.length();
-    std::string nodeName = varName;
-    std::string path;
-    if (pos < varLen) {
-        nodeName = varName.substr(0u, pos);
-        //should work
-        path = varName.substr(pos + 1u, varLen);
-    }
-    bool ret = ws->GetValue(nodeName, var);
+    std::string varName = GetAttribute("var_name");
+    bool ret = ws->GetValue(varName, var);
 
     if (ret) {
-
-        //the type is supposed to be an unsigned integer (or boolean)
-        //helper already does it!
-        bool success;
-        if (path.empty()) {
-            ::ccs::base::SharedReference <const ::ccs::types::ScalarType > varType = var.GetType();
-            ret = varType.IsValid();
-            if (ret) {
-                ::ccs::types::uint64 check = 0;
-                //var size must be less than 64 bit
-                success = (memcmp(var.GetInstance(), &check, var.GetSize()) != 0);
-            }
-            else{
-                log_error("Condition::ExecuteSingleImpl - The variable %s is not scalar", nodeName.c_str(), path.c_str());
-            }
-        }
-        else {
-            ret = ::ccs::HelperTools::GetAttributeValue(&var, path.c_str(), success);
-        }
+        ::ccs::base::SharedReference<const ::ccs::types::ScalarType> varType = var.GetType();
+        ret = varType.IsValid();
         if (ret) {
-            ret = success;
+            ::ccs::types::uint64 check = 0;
+            //var size must be less than 64 bit
+            ret = (memcmp(var.GetInstance(), &check, var.GetSize()) != 0);
         }
         else {
-            log_error("Condition::ExecuteSingleImpl - Failed GetAttributeValue(%s-%s)", nodeName.c_str(), path.c_str());
+            log_error("Condition::ExecuteSingleImpl - The variable %s is not scalar", varName.c_str());
         }
     }
     else {
-        log_error("Condition::ExecuteSingleImpl - Failed WorkSpace::GetValue(%s-%s)", nodeName.c_str());
+        log_error("Condition::ExecuteSingleImpl - Failed WorkSpace::GetValue(%s)", varName.c_str());
     }
 
     return ret ? (ExecutionStatus::SUCCESS) : (ExecutionStatus::FAILURE);

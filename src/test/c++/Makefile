@@ -10,7 +10,14 @@ BUILD_DIR := ./build
 UNIT_TEST := $(BUILD_DIR)/unit/$(PROGNAME)
 
 BUILD_TYPE = RelWithDebInfo
-CMAKE_FLAGS = -DCMAKE_BUILD_TYPE=$(BUILD_TYPE)
+
+CMAKE_FLAGS := -DCMAKE_BUILD_TYPE=$(BUILD_TYPE)
+
+ifeq ($(COVERAGE),true)
+CMAKE_FLAGS += -DCOVERAGE=true
+else
+CMAKE_FLAGS += -DCOVERAGE=false
+endif
 
 all: unit-tests
 

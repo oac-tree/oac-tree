@@ -70,8 +70,11 @@ ExecutionStatus Repeat::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
   {
     _child->ResetStatus();
   }
-
+  auto child_type=_child->GetType();
+  auto child_name= _child->GetName();
+  log_info("Repeat::ExecuteSingleImp - Executing child %s:%s", child_type.c_str(), child_name.c_str() );
   _child->ExecuteSingle(ui, ws);
+  log_info("Repeat::ExecuteSingleImp - Executed child %s:%s", child_type.c_str(), child_name.c_str() );
 
   child_status = _child->GetStatus();
   // Don't increment count when _max_count is not strictly positive.
@@ -97,6 +100,7 @@ void Repeat::ResetHook()
 void Repeat::InitMaxCount()
 {
   bool status = HasAttribute("maxCount");
+  _max_count = -1;
 
   if (status)
   {

@@ -66,6 +66,12 @@ void DecoratorInstruction::SetInstruction(Instruction * instruction)
 }
 
 bool DecoratorInstruction::Setup(Workspace * ws){
+    auto myName=GetName();
+    auto myType=GetType();
+    auto childType=_child->GetType();
+    auto childName=_child->GetName();
+    log_info("DecoratorInstruction::Setup - %s:%s Setup of %s: %s", myType.c_str(), myName.c_str(), childType.c_str(), childName.c_str());
+
     return _child->Setup(ws);
 }
 

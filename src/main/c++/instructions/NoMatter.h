@@ -41,7 +41,7 @@ class NoMatter: public DecoratorInstruction {
 
 private:
     /**
-     * @brief Execute the child a fixed number of times while successful.
+     * @brief Executes the child and never fails
      *
      * @return SUCCESS if the child returns FAILURE
      */

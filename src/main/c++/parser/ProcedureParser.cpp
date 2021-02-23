@@ -66,7 +66,10 @@ std::unique_ptr<Procedure> ParseProcedure(const TreeData &data) {
     const TreeData *declarationData = NULL;
     //search for declaration nodes
     for (const auto &child : data.Children()) {
+        auto type = child.GetType();
+
         if (child.GetType() == DECLARATION_TYPE) {
+            log_info("sup::sequencer::ParseProcedure() - Parsing declaration node..");
             declarationData = &child;
         }
         else if (child.GetType() == PLUGIN_ELEMENT_NAME) {

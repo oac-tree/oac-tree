@@ -49,10 +49,8 @@ namespace sequencer {
 
 // Function declaration
 
-static std::unique_ptr<TreeData> ParseDataTree(xmlNodePtr node);
+static std::unique_ptr<TreeData> ParseDataTree(xmlDocPtr doc, xmlNodePtr node);
 
-static bool NodeHasName(xmlNodePtr node,
-                        const char *name);
 static std::string ToString(const xmlChar *xml_name);
 
 static std::unique_ptr<TreeData> GetNodeDataFromXml(std::string path);
@@ -81,12 +79,12 @@ std::unique_ptr<TreeData> ParseXMLData(const std::string &filename) {
         xmlFreeDoc(doc);
         return {};
     }
-    auto data_tree = ParseDataTree(root_node);
+    auto data_tree = ParseDataTree(doc, root_node);
     xmlFreeDoc(doc);
     return data_tree;
 }
 
-static std::unique_ptr<TreeData> ParseDataTree(xmlNodePtr node) {
+static std::unique_ptr<TreeData> ParseDataTree(xmlDocPtr doc, xmlNodePtr node) {
     auto node_name = ToString(node->name);
     std::unique_ptr<TreeData> result(new TreeData(node_name));
 
@@ -104,6 +102,12 @@ static std::unique_ptr<TreeData> ParseDataTree(xmlNodePtr node) {
     // Add children
     auto child_node = node->children;
     while (child_node != nullptr) {
+        if (child_node->type == XML_TEXT_NODE) {
+            auto xml_content = xmlNodeListGetString(doc, child_node, 1);
+            auto content = ToString(xml_content);
+            result->SetContent(content);
+            xmlFree(xml_content);
+        }
         if (child_node->type == XML_ELEMENT_NODE) {
             log_info("Add child Data: %s", reinterpret_cast<const char*>(child_node->name));
 
@@ -126,7 +130,7 @@ static std::unique_ptr<TreeData> ParseDataTree(xmlNodePtr node) {
                 }
             }
             else {
-                auto child_data = ParseDataTree(child_node);
+                auto child_data = ParseDataTree(doc, child_node);
                 result->AddChild(*child_data);
             }
         }
@@ -136,10 +140,6 @@ static std::unique_ptr<TreeData> ParseDataTree(xmlNodePtr node) {
     return result;
 }
 
-static bool NodeHasName(xmlNodePtr node,
-                        const char *name) {
-    return (xmlStrcmp(node->name, (const xmlChar*) name) == 0);
-}
 
 static std::string ToString(const xmlChar *xml_name) {
     return std::string(reinterpret_cast<const char*>(xml_name), xmlStrlen(xml_name));
@@ -151,8 +151,8 @@ static std::unique_ptr<TreeData> GetNodeDataFromXml(std::string path) {
 
     std::string filename;
 
-    ::ccs::types::uint32 i=0u;
-    while((buffer[i]=='.') || buffer[i]=='/'){
+    ::ccs::types::uint32 i = 0u;
+    while ((buffer[i] == '.') || buffer[i] == '/') {
         filename += buffer[i];
         i++;
     }
@@ -172,7 +172,7 @@ static std::unique_ptr<TreeData> GetNodeDataFromXml(std::string path) {
     xmlNodePtr node = xmlDocGetRootElement(doc);
 
     //include the whole tree!
-    bool found = (token == NULL);
+    bool found = true;
 
     while (token != NULL) {
         token = strtok(NULL, ".");
@@ -213,7 +213,7 @@ static std::unique_ptr<TreeData> GetNodeDataFromXml(std::string path) {
 
     if (found) {
         log_info("ParseDataTree - Node %s included", path.c_str());
-        return ParseDataTree(node);
+        return ParseDataTree(doc, node);
     }
     else {
         log_error("ParseDataTree - IncludeNode %s not found", path.c_str());

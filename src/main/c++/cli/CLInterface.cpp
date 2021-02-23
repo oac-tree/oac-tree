@@ -56,9 +56,10 @@ CLInterface::~CLInterface() = default;
 void CLInterface::UpdateInstructionStatus(const Instruction * instruction)
 {
   auto instruction_type = instruction->GetType();
+  auto instruction_name = instruction->GetName();
   auto status = instruction->GetStatus();
 
-  std::cout << "Instruction: " << instruction_type << ": ";
+  std::cout << "Instruction " << instruction_type << "-" << instruction_name << ": ";
   std::cout << StatusToString(status) << std::endl;
 }
 

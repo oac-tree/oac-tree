@@ -58,16 +58,16 @@ void CLInterface::UpdateInstructionStatus(const Instruction * instruction)
   auto instruction_type = instruction->GetType();
   auto instruction_name = instruction->GetName();
   auto status = instruction->GetStatus();
+  auto status_str=StatusToString(status);
 
-  std::cout << "Instruction " << instruction_type << "-" << instruction_name << ": ";
-  std::cout << StatusToString(status) << std::endl;
+  log_info("CLInterface::Instruction %s - %s: %s", instruction_type.c_str(), instruction_name.c_str(), status_str.c_str());
 }
 
 void CLInterface::StartSingleStep()
 {
   if (_verbose)
   {
-    std::cout << "Start single execution step" << std::endl;
+    log_info("CLInterface::Start single execution step");
   }
 }
 
@@ -75,7 +75,7 @@ void CLInterface::EndSingleStep()
 {
   if (_verbose)
   {
-    std::cout << "End single execution step" << std::endl;
+    log_info("CLInterface::End single execution step");
   }
 }
 

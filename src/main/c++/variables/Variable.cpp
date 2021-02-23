@@ -44,25 +44,22 @@ namespace sequencer {
 // Function definition
 
 Variable::Variable(std::string type) :
-        _type(type)
-        ,_setup_successful { false } {
+        _type(type),
+        _setup_successful { false } {
 }
 
 Variable::~Variable() = default;
 
-std::string Variable::GetType() const
-{
-  return _type;
+std::string Variable::GetType() const {
+    return _type;
 }
 
-std::string Variable::GetName() const
-{
-  return GetAttribute(attributes::NAME_ATTRIBUTE);
+std::string Variable::GetName() const {
+    return GetAttribute(attributes::NAME_ATTRIBUTE);
 }
 
-void Variable::SetName(std::string name)
-{
-  AddAttribute(attributes::NAME_ATTRIBUTE, name);
+void Variable::SetName(std::string name) {
+    AddAttribute(attributes::NAME_ATTRIBUTE, name);
 }
 
 bool Variable::GetValue(::ccs::types::AnyValue &value) const {
@@ -77,7 +74,8 @@ bool Variable::GetValue(::ccs::types::AnyValue &value) const {
 bool Variable::SetValue(const ::ccs::types::AnyValue &value) {
     std::lock_guard < std::mutex > lock(_access_mutex);
     if (!_setup_successful) {
-        log_warning("Variable::SetValue() - Variable was not successfully set up..");
+        auto varname = GetName();
+        log_warning("Variable::SetValue() - Variable %s was not successfully set up..", varname.c_str());
         return false;
     }
     return SetValueImpl(value);
@@ -110,7 +108,8 @@ bool Variable::AddAttributes(const std::vector<std::pair<const std::string, std:
 bool Variable::Setup() {
     _setup_successful = SetupImpl();
     if (_setup_successful) {
-        log_warning("Variable::Setup() - Variable successfully set up..");
+        auto varname = GetName();
+        log_warning("Variable::Setup() - Variable %s successfully set up..", varname.c_str());
     }
     return _setup_successful;
 }

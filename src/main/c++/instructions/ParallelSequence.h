@@ -66,8 +66,6 @@ class ParallelSequence : public CompoundInstruction
 
     ExecutionStatus CalculateCompoundStatus() const;
 
-    bool InitThresholds();
-
     bool InitWrappers();
 
     std::vector<AsyncWrapper> _wrappers;
@@ -84,6 +82,8 @@ class ParallelSequence : public CompoundInstruction
      * @brief Destructor.
      */
     ~ParallelSequence() override;
+
+    bool Setup(Workspace * ws) override;
 
     static const std::string Type;
 };

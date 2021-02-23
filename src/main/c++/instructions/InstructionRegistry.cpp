@@ -36,6 +36,7 @@
 #include "Sequence.h"
 #include "Wait.h"
 #include "Condition.h"
+#include "NoMatter.h"
 
 // Constants
 
@@ -103,6 +104,7 @@ void InitInstructionRegistry(InstructionRegistry & registry)
   (void)RegisterInstruction<ParallelSequence>(registry);
   (void)RegisterInstruction<Wait>(registry);
   (void)RegisterInstruction<Condition>(registry);
+  (void)RegisterInstruction<NoMatter>(registry);
 }
 
 } // namespace sequencer

@@ -54,7 +54,9 @@ bool LoadPlugin(const std::string & name)
   {
     log_warning("sup::sequencer::LoadPlugin('%s') - could not load plugin", name.c_str());
   }
-  log_info("sup::sequencer::LoadPlugin('%s') - successfully loaded plugin", name.c_str());
+  else{
+    log_info("sup::sequencer::LoadPlugin('%s') - successfully loaded plugin", name.c_str());
+  }
   return status;
 }
 

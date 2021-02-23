@@ -92,9 +92,9 @@ std::unique_ptr<Instruction> ParseInstruction(const TreeData &data,
     }
     log_info("sup::sequencer::ParseInstruction() - parsing child instructions for instruction of type: '%s'", instr_type.c_str());
     bool status = AddChildInstructions(instr.get(), data.Children(), declarationData, attributes, appended);
-    if (appended) {
+    if (!status) {
         log_info("sup::sequencer::ParseInstruction() - parsing child appended instr for instruction of type: '%s'", instr_type.c_str());
-        status = AddChildInstructions(instr.get(), appended->Children(), declarationData, attributes, appended);
+        status = AddChildInstructions(instr.get(), appended->Children(), declarationData, attributes, NULL);
     }
     if (!status) {
         log_warning("sup::sequencer::ParseInstruction() - instruction with type: '%s' has wrong number of "

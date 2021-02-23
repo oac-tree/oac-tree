@@ -21,6 +21,7 @@
 
 // Global header files
 #include <common/log-api.h>
+#include <common/AnyValueHelper.h>
 
 // Local header files
 
@@ -65,24 +66,60 @@ void Variable::SetName(std::string name)
   AddAttribute(attributes::NAME_ATTRIBUTE, name);
 }
 
-bool Variable::GetValue(::ccs::types::AnyValue &value) const
+bool Variable::GetValue(::ccs::types::AnyValue &value, const std::string & fieldname) const
 {
   std::lock_guard < std::mutex > lock(_access_mutex);
   if (!_setup_successful) {
     log_warning("Variable::GetValue() - Variable was not successfully set up..");
     return false;
   }
-  return GetValueImpl(value);
+  if (fieldname.empty())
+  {
+    return GetValueImpl(value);
+  }
+
+  ::ccs::types::AnyValue var_copy;
+  bool status = GetValueImpl(var_copy);
+  if (status)
+  {
+    status = ::ccs::HelperTools::GetAttributeValue(&var_copy, fieldname.c_str(), value);
+  }
+  if (!status)
+  {
+    log_error("Variable::GetValue() - Failed with field name '%s'", fieldname.c_str());
+  }
+  return status;
 }
 
-bool Variable::SetValue(const ::ccs::types::AnyValue &value)
+bool Variable::SetValue(const ::ccs::types::AnyValue &value, const std::string & fieldname)
 {
   std::lock_guard < std::mutex > lock(_access_mutex);
   if (!_setup_successful) {
     log_warning("Variable::SetValue() - Variable was not successfully set up..");
     return false;
   }
-  return SetValueImpl(value);
+
+  if (fieldname.empty())
+  {
+    return SetValueImpl(value);
+  }
+
+  ::ccs::types::AnyValue var_copy;
+  bool status = GetValueImpl(var_copy);
+  if (status)
+  {
+    status = ::ccs::HelperTools::SetAttributeValue(&var_copy, fieldname.c_str(), value);
+    if (status)
+    {
+      //need to update it in the Variable
+      status = SetValueImpl(var_copy);
+    }
+  }
+  if (!status)
+  {
+    log_error("Variable::SetValue() - Failed with field name '%s'", fieldname.c_str());
+  }
+  return status;
 }
 
 bool Variable::HasAttribute(const std::string &name) const

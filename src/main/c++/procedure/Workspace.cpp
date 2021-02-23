@@ -23,7 +23,6 @@
 #include <common/log-api.h>
 #include <algorithm>
 #include <utility>
-#include <common/AnyValueHelper.h>
 
 // Local header files
 
@@ -104,26 +103,7 @@ bool Workspace::GetValue(std::string name, ::ccs::types::AnyValue &value)
   log_info("sup::sequencer::Workspace::GetValue('%s', 'value') - trying to copy found "
            "workspace variable to 'value'..",
            name.c_str());
-
-  bool status;
-  if (fieldname.empty())
-  {
-    status = var->GetValue(value);
-  }
-  else
-  {
-    ::ccs::types::AnyValue var_copy;
-    status = var->GetValue(var_copy);
-    if (status)
-    {
-      status = ::ccs::HelperTools::GetAttributeValue(&var_copy, fieldname.c_str(), value);
-    }
-  }
-  if (!status)
-  {
-    log_error("sup::sequencer::Workspace::GetValue('%s', 'value') - Failed", name.c_str());
-  }
-  return status;
+  return var->GetValue(value, fieldname);
 }
 
 bool Workspace::SetValue(std::string name, const ::ccs::types::AnyValue &value)
@@ -143,31 +123,7 @@ bool Workspace::SetValue(std::string name, const ::ccs::types::AnyValue &value)
   log_info("sup::sequencer::Workspace::SetValue('%s', 'value') - trying to copy "
            "'value' into found workspace variable..", name.c_str());
 
-  bool status;
-  if (fieldname.empty())
-  {
-    status = var->SetValue(value);
-  }
-  else
-  {
-    ::ccs::types::AnyValue var_copy;
-    status = var->GetValue(var_copy);
-    if (status)
-    {
-      status = ::ccs::HelperTools::SetAttributeValue(&var_copy, fieldname.c_str(), value);
-      if (status)
-      {
-        //need to update it in the Variable
-        status = var->SetValue(var_copy);
-      }
-    }
-  }
-
-  if (!status)
-  {
-    log_error("sup::sequencer::Workspace::SetValue('%s', 'value') - Failed", name.c_str());
-  }
-  return status;
+  return var->SetValue(value, fieldname);
 }
 
 bool Workspace::Setup()

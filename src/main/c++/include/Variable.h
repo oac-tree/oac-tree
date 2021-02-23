@@ -109,7 +109,7 @@ class Variable
   public:
     /**
      * @brief Constructor.
-     */    
+     */
     Variable(std::string type);
 
     /**
@@ -144,7 +144,7 @@ class Variable
      *
      * @note Non-virtual interface.
      */
-    bool GetValue(::ccs::types::AnyValue& value) const;
+    bool GetValue(::ccs::types::AnyValue& value, const std::string & fieldname={}) const;
 
     /**
      * @brief Set value of variable.
@@ -154,7 +154,7 @@ class Variable
      *
      * @note Non-virtual interface.
      */
-    bool SetValue(const ::ccs::types::AnyValue& value);
+    bool SetValue(const ::ccs::types::AnyValue& value, const std::string & fieldname={});
 
     /**
      * @brief Indicate presence of attribute with given name.

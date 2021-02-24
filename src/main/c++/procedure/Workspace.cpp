@@ -117,7 +117,10 @@ bool Workspace::GetValue(std::string name,
         ::ccs::types::AnyValue valT;
         ret = var->GetValue(valT);
         if (ret) {
-            ret = ::ccs::HelperTools::GetAttributeValue(&valT, path.c_str(), value);
+            ::ccs::types::AnyValue valAttributeT;
+            ret = ::ccs::HelperTools::GetAttributeValue(&valT, path.c_str(), valAttributeT);
+            //need copy constructor to create the instance instead of wrapping memory
+            value = valAttributeT;
         }
     }
     if (!ret) {
@@ -143,11 +146,11 @@ bool Workspace::SetValue(std::string name,
         path = name.substr(pos + 1u, varLen);
     }
 
-    auto it = _var_map.find(name);
+    auto it = _var_map.find(nodeName);
     if (it == _var_map.end()) {
         log_warning("sup::sequencer::Workspace::SetValue('%s', value) - variable with "
                     "this name not in workspace!",
-                    name.c_str());
+                    nodeName.c_str());
         return false;
     }
     auto var = it->second;
@@ -164,7 +167,7 @@ bool Workspace::SetValue(std::string name,
         ret = var->GetValue(valT);
         if (ret) {
             ret = ::ccs::HelperTools::SetAttributeValue(&valT, path.c_str(), value);
-            if(ret){
+            if (ret) {
                 //need to update it in the Variable
                 ret = var->SetValue(valT);
             }

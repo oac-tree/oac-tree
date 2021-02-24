@@ -225,14 +225,15 @@ ExecutionStatus BlockingCAFetchNode::ExecuteSingleImpl (UserInterface * ui, Work
     { // Write to workspace
       //status = ws->SetValue(GetAttribute("variable"), _value);
       (void)ws->SetValue(GetAttribute("variable"), _value);
-    }
-
-  if (status && ws->GetValue(GetAttribute("variable"), _value))
-    {
       ccs::types::string buffer;
       _value.SerialiseInstance(buffer, ccs::types::MaxStringLength);
       log_info("BlockingCAFetchNode::ExecuteSingleImpl('%s') - .. '%s' value in the workspace", GetName().c_str(), buffer);
+
     }
+  if(status){
+      (void)ccs::HelperTools::ChannelAccess::DetachVariable(_channel);
+      status = ccs::HelperTools::ChannelAccess::ClearContext();
+  }
 
   return (status ? ExecutionStatus::SUCCESS : ExecutionStatus::FAILURE);
 
@@ -286,7 +287,10 @@ ExecutionStatus BlockingCAWriteNode::ExecuteSingleImpl (UserInterface * ui, Work
       log_info("BlockingCAWriteNode::ExecuteSingleImpl('%s') - Write as type '%s' ..", GetName().c_str(), _value.GetType()->GetName());
       status = ccs::HelperTools::ChannelAccess::WriteVariable(_channel, ccs::HelperTools::AnyTypeToCAScalar(_value.GetType()), _value.GetInstance());
     }
-
+  if(status){
+      (void)ccs::HelperTools::ChannelAccess::DetachVariable(_channel);
+      status = ccs::HelperTools::ChannelAccess::ClearContext();
+  }
   return (status ? ExecutionStatus::SUCCESS : ExecutionStatus::FAILURE);
 
 }

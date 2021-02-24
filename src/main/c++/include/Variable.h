@@ -188,15 +188,6 @@ class Variable
      * @return true when successful.
      */
     bool AddAttributes(const std::vector<std::pair<const std::string, std::string>> & attributes);
-
-    /**
-     * @brief Setup the variable with the currently present attributes.
-     *
-     * @return true on success.
-     *
-     * @note May do nothing if not all required attributes are present (yet).
-     */
-    bool Setup();
 };
 
 // Global variables

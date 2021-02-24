@@ -46,8 +46,9 @@ namespace sequencer {
 
 Variable::Variable(std::string type)
   : _type(type)
-  ,_setup_successful{false}
-{}
+{
+  _setup_successful = SetupImpl();
+}
 
 Variable::~Variable() = default;
 
@@ -135,7 +136,9 @@ std::string Variable::GetAttribute(const std::string &name) const
 bool Variable::AddAttribute(const std::string &name, const std::string &value)
 {
   std::lock_guard < std::mutex > lock(_access_mutex);
-  return _attributes.AddAttribute(name, value);
+  bool status = _attributes.AddAttribute(name, value);
+  _setup_successful = SetupImpl();
+  return status;
 }
 
 bool Variable::AddAttributes(const std::vector<std::pair<const std::string, std::string>> &attributes)
@@ -146,16 +149,8 @@ bool Variable::AddAttributes(const std::vector<std::pair<const std::string, std:
     // Order in AND matters: add all attributes, even if previous adding failed.
     status = _attributes.AddAttribute(attr.first, attr.second) && status;
   }
-  return status;
-}
-
-bool Variable::Setup()
-{
   _setup_successful = SetupImpl();
-  if (_setup_successful) {
-    log_warning("Variable::Setup() - Variable successfully set up..");
-  }
-  return _setup_successful;
+  return status;
 }
 
 bool Variable::SetupImpl()

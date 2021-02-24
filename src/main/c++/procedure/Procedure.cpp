@@ -47,71 +47,81 @@ const std::string Procedure::TICK_TIMEOUT_ATTRIBUTE_NAME = "tickTimeout";
 
 // Function definition
 
-Procedure::Procedure() :
-        _root { new Sequence() },
-        _workspace { new Workspace() } {
-}
+Procedure::Procedure()
+  :_root{new Sequence()}
+  , _workspace{new Workspace()}
+{}
 
 Procedure::~Procedure() = default;
 
-bool Procedure::AddVariable(std::string name,
-                            Variable *var) {
-    return _workspace->AddVariable(name, var);
+bool Procedure::AddVariable(std::string name, Variable *var)
+{
+  return _workspace->AddVariable(name, var);
 }
 
-std::vector<std::string> Procedure::VariableNames() const {
-    return _workspace->VariableNames();
+std::vector<std::string> Procedure::VariableNames() const
+{
+  return _workspace->VariableNames();
 }
 
-bool Procedure::GetVariableValue(std::string name,
-                                 ::ccs::types::AnyValue &value) {
-    return _workspace->GetValue(name, value);
+bool Procedure::GetVariableValue(std::string name, ::ccs::types::AnyValue &value)
+{
+  return _workspace->GetValue(name, value);
 }
 
-void Procedure::SetRootInstruction(Instruction *instruction) {
-    _root.reset(instruction);
+void Procedure::SetRootInstruction(Instruction *instruction)
+{
+  _root.reset(instruction);
 }
 
-bool Procedure::PushInstruction(Instruction *instruction) {
-    auto sequence = dynamic_cast<Sequence*>(_root.get());
-    if (sequence) {
-        sequence->PushBack(instruction);
-        return true;
-    }
-    return false;
+bool Procedure::PushInstruction(Instruction *instruction)
+{
+  auto compound = dynamic_cast<CompoundInstruction *>(_root.get());
+  if (compound)
+  {
+    compound->PushBack(instruction);
+    return true;
+  }
+  return false;
 }
 
-bool Procedure::Setup() {
-
-    bool ret = true;
-    if(!_workspace->Setup()){
-        ret=false;
-    }
-    if(!_root->Setup(_workspace.get())){
-        ret=false;
-    }
-    return ret;
+bool Procedure::Setup()
+{
+  bool status = true;
+  if (!_root)
+  {
+    return true;
+  }
+  if (!_root->Setup(_workspace.get()))
+  {
+    status = false;
+  }
+  return status;
 }
 
-void Procedure::ExecuteSingle(UserInterface *ui) {
-    _root->ExecuteSingle(ui, _workspace.get());
+void Procedure::ExecuteSingle(UserInterface *ui)
+{
+  _root->ExecuteSingle(ui, _workspace.get());
 }
 
-ExecutionStatus Procedure::GetStatus() const {
-    return _root->GetStatus();
+ExecutionStatus Procedure::GetStatus() const
+{
+  return _root->GetStatus();
 }
 
-bool Procedure::HasAttribute(const std::string &name) const {
-    return _attributes.HasAttribute(name);
+bool Procedure::HasAttribute(const std::string &name) const
+{
+  return _attributes.HasAttribute(name);
 }
 
-std::string Procedure::GetAttribute(const std::string &name) const {
-    return _attributes.GetAttribute(name);
+std::string Procedure::GetAttribute(const std::string &name) const
+{
+  return _attributes.GetAttribute(name);
 }
 
-bool Procedure::AddAttribute(const std::string &name,
-                             const std::string &value) {
-    return _attributes.AddAttribute(name, value);
+bool Procedure::AddAttribute(const std::string &name, const std::string &value)
+{
+  return _attributes.AddAttribute(name, value);
 }
 
 } // namespace sequencer

@@ -69,7 +69,7 @@ void Variable::SetName(std::string name)
 
 bool Variable::GetValue(::ccs::types::AnyValue &value, const std::string & fieldname) const
 {
-  std::lock_guard < std::mutex > lock(_access_mutex);
+  std::lock_guard<std::mutex> lock(_access_mutex);
   if (!_setup_successful) {
     log_warning("Variable::GetValue() - Variable was not successfully set up..");
     return false;
@@ -94,7 +94,7 @@ bool Variable::GetValue(::ccs::types::AnyValue &value, const std::string & field
 
 bool Variable::SetValue(const ::ccs::types::AnyValue &value, const std::string & fieldname)
 {
-  std::lock_guard < std::mutex > lock(_access_mutex);
+  std::lock_guard<std::mutex> lock(_access_mutex);
   if (!_setup_successful) {
     log_warning("Variable::SetValue() - Variable was not successfully set up..");
     return false;
@@ -135,7 +135,7 @@ std::string Variable::GetAttribute(const std::string &name) const
 
 bool Variable::AddAttribute(const std::string &name, const std::string &value)
 {
-  std::lock_guard < std::mutex > lock(_access_mutex);
+  std::lock_guard<std::mutex> lock(_access_mutex);
   bool status = _attributes.AddAttribute(name, value);
   _setup_successful = SetupImpl();
   return status;
@@ -143,7 +143,7 @@ bool Variable::AddAttribute(const std::string &name, const std::string &value)
 
 bool Variable::AddAttributes(const std::vector<std::pair<const std::string, std::string>> &attributes)
 {
-  std::lock_guard < std::mutex > lock(_access_mutex);
+  std::lock_guard<std::mutex> lock(_access_mutex);
   bool status = true;
   for (const auto &attr : attributes) {
     // Order in AND matters: add all attributes, even if previous adding failed.

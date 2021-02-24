@@ -86,6 +86,37 @@ TEST(SequenceParser, Workspace) // Static initialisation
   ASSERT_EQ(true, status);
 }
 
+TEST(SequenceParser, ParseString) // Static initialisation
+{
+  bool status = Initialise();
+
+  auto proc = sup::sequencer::ParseProcedureString(
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
+    "           name=\"Trivial procedure for testing purposes\"\n"
+    "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+    "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
+    "    <Sequence>\n"
+    "        <Wait name=\"First\" />\n"
+    "        <Wait name=\"Second\" />\n"
+    "    </Sequence>\n"
+    "    <Workspace>\n"
+    "    </Workspace>\n"
+    "</Procedure>");
+
+  status = bool(proc);
+
+  if (status)
+  {
+    status = PrintProcedureWorkspace(proc.get());
+  }
+
+  Terminate();
+
+  ASSERT_EQ(true, status);
+}
+
+
 static bool PrintProcedureWorkspace(::sup::sequencer::Procedure * procedure)
 {
   auto var_names = procedure->VariableNames();

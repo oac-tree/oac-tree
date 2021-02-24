@@ -135,7 +135,7 @@ static std::pair<std::string, std::string> SplitToNameField(const std::string & 
   auto total_length = fullname.length();
   if (pos < total_length)
   {
-    return { fullname.substr(0u, pos), fullname.substr(pos + 1u, total_length) };
+    return { fullname.substr(0u, pos), fullname.substr(pos + 1u) };
   }
   return { fullname, {} };
 }

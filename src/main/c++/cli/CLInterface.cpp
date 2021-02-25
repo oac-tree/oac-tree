@@ -56,18 +56,17 @@ CLInterface::~CLInterface() = default;
 void CLInterface::UpdateInstructionStatus(const Instruction * instruction)
 {
   auto instruction_type = instruction->GetType();
-  auto instruction_name = instruction->GetName();
   auto status = instruction->GetStatus();
-  auto status_str=StatusToString(status);
 
-  log_info("CLInterface::Instruction %s - %s: %s", instruction_type.c_str(), instruction_name.c_str(), status_str.c_str());
+  std::cout << "Instruction: " << instruction_type << ": ";
+  std::cout << StatusToString(status) << std::endl;
 }
 
 void CLInterface::StartSingleStep()
 {
   if (_verbose)
   {
-    log_info("CLInterface::Start single execution step");
+    std::cout << "Start single execution step" << std::endl;
   }
 }
 
@@ -75,7 +74,7 @@ void CLInterface::EndSingleStep()
 {
   if (_verbose)
   {
-    log_info("CLInterface::End single execution step");
+    std::cout << "End single execution step" << std::endl;
   }
 }
 

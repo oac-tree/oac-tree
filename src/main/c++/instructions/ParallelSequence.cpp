@@ -45,10 +45,6 @@ const std::string ParallelSequence::Type = "ParallelSequence";
 
 // Function definition
 
-void ParallelSequence::InitHook() {
-    InitWrappers();
-}
-
 ExecutionStatus ParallelSequence::ExecuteSingleImpl(UserInterface *ui,
                                                     Workspace *ws) {
     if (_children.empty()) {
@@ -129,15 +125,16 @@ bool ParallelSequence::Setup(Workspace * ws) {
             }
         }
     }
+    //init wrappers
+    {
+      _wrappers.clear();
+      for (auto child : _children) {
+          _wrappers.emplace_back(child);
+      }
+    }
     return status;
 }
 
-bool ParallelSequence::InitWrappers() {
-    _wrappers.clear();
-    for (auto child : _children) {
-        _wrappers.emplace_back(child);
-    }
-}
 
 ParallelSequence::ParallelSequence() :
         CompoundInstruction(Type) {

@@ -33,10 +33,6 @@
 #undef LOG_ALTERN_SRC
 #define LOG_ALTERN_SRC "sup::sequencer"
 
-#define INCL_NODE_TYPE "IncludeNode"
-#define INCL_NODE_PATH_ATTR "path"
-#define NODE_NAME_ATTR "name"
-
 // Unnamed namespace declarations
 
 // Type definition
@@ -47,12 +43,19 @@ namespace sequencer {
 
 // Global variables
 
+static const char * INCL_NODE_TYPE = "IncludeNode";
+static const char * INCL_NODE_PATH_ATTR = "path";
+static const char * NODE_NAME_ATTR = "name";
+
 // Function declaration
 
 static std::unique_ptr<TreeData> ParseXMLDoc(xmlDocPtr doc);
 
 static std::unique_ptr<TreeData> ParseDataTree(xmlDocPtr doc, xmlNodePtr node);
 
+static bool NodeHasName(xmlNodePtr node,
+                        const char *name);
+                        
 static std::string ToString(const xmlChar *xml_name);
 
 static std::unique_ptr<TreeData> GetNodeDataFromXml(std::string path);
@@ -101,7 +104,7 @@ static std::unique_ptr<TreeData> ParseXMLDoc(xmlDocPtr doc)
 		return
 		{};
 	}
-	if (xmlStrcmp(root_node->name, (const xmlChar*) "Procedure"))
+	if (!NodeHasName(root_node, "Procedure"))
 	{
 		log_warning("ParseXMLData() - Root element is not 'Procedure'");
 		xmlFreeDoc(doc);
@@ -129,7 +132,7 @@ static std::unique_ptr<TreeData> ParseDataTree(xmlDocPtr doc, xmlNodePtr node)
 		result->AddAttribute(name, value);
 		attribute = attribute->next;
 	}
-
+	
 	// Add children
 	auto child_node = node->children;
 	while (child_node != nullptr)
@@ -144,9 +147,7 @@ static std::unique_ptr<TreeData> ParseDataTree(xmlDocPtr doc, xmlNodePtr node)
 		if (child_node->type == XML_ELEMENT_NODE)
 		{
 			log_info("Add child Data: %s", reinterpret_cast<const char*>(child_node->name));
-
-			std::string nodeName = ToString(child_node->name);
-			if (nodeName == INCL_NODE_TYPE)
+			if (NodeHasName(child_node, INCL_NODE_TYPE))
 			{
 				std::unique_ptr<TreeData> incl_data;
 				auto attribute = child_node->properties;
@@ -175,8 +176,12 @@ static std::unique_ptr<TreeData> ParseDataTree(xmlDocPtr doc, xmlNodePtr node)
 		}
 		child_node = child_node->next;
 	}
-
 	return result;
+}
+
+static bool NodeHasName(xmlNodePtr node, const char *name)
+{
+  return (xmlStrcmp(node->name, reinterpret_cast<const xmlChar *>(name)) == 0);
 }
 
 static std::string ToString(const xmlChar *xml_name)

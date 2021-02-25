@@ -99,14 +99,14 @@ static std::unique_ptr<TreeData> ParseXMLDoc(xmlDocPtr doc)
 	xmlNodePtr root_node = xmlDocGetRootElement(doc);
 	if (root_node == nullptr)
 	{
-		log_warning("ParseXMLData() - Couldn't retrieve root element");
+		log_warning("ParseXMLDoc() - Couldn't retrieve root element");
 		xmlFreeDoc(doc);
 		return
 		{};
 	}
 	if (!NodeHasName(root_node, "Procedure"))
 	{
-		log_warning("ParseXMLData() - Root element is not 'Procedure'");
+		log_warning("ParseXMLDoc() - Root element is not 'Procedure'");
 		xmlFreeDoc(doc);
 		return
 		{};

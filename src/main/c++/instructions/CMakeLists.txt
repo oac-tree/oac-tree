@@ -5,10 +5,10 @@ target_sources(sequencer-obj
         ${CMAKE_CURRENT_LIST_DIR}/Condition.cpp
         ${CMAKE_CURRENT_LIST_DIR}/DecoratorInstruction.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Fallback.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/ForceSuccess.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Instruction.cpp
         ${CMAKE_CURRENT_LIST_DIR}/InstructionRegistry.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Inverter.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/NoMatter.cpp
         ${CMAKE_CURRENT_LIST_DIR}/ParallelSequence.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Repeat.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Sequence.cpp

@@ -58,6 +58,8 @@ bool LoadPlugin(const std::string & name);
 
 std::unique_ptr<Procedure> ParseProcedureFile(const std::string & filename);
 
+std::unique_ptr<Procedure> ParseProcedureString(const std::string & xml_str);
+
 // Function definitions
 
 } // namespace sequencer

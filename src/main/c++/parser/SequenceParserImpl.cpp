@@ -49,6 +49,8 @@ namespace sequencer {
 
 // Function declaration
 
+static std::unique_ptr<TreeData> ParseXMLDoc(xmlDocPtr doc);
+
 static std::unique_ptr<TreeData> ParseDataTree(xmlDocPtr doc, xmlNodePtr node);
 
 static std::string ToString(const xmlChar *xml_name);
@@ -59,14 +61,35 @@ static std::string GetXmlNodeName(xmlNodePtr node);
 
 // Function definition
 
-std::unique_ptr<TreeData> ParseXMLData(const std::string &filename) {
-    // Read file into xmlDocPtr
-    xmlDocPtr doc = xmlParseFile(filename.c_str());
-    if (doc == nullptr) {
-        log_warning("ParseXMLData('%s') - Couldn't parse file", filename.c_str());
-        return {};
-    }
+std::unique_ptr<TreeData> ParseXMLDataFile(const std::string & filename)
+{
+  // Read file into xmlDocPtr
+  xmlDocPtr doc = xmlParseFile(filename.c_str());
+  if (doc == nullptr)
+  {
+    log_warning("ParseXMLDataFile('%s') - Couldn't parse file", filename.c_str());
+    return {};
+  }
 
+  return ParseXMLDoc(doc);
+}
+
+std::unique_ptr<TreeData> ParseXMLDataString(const std::string & xml_str)
+{
+    // Read the string into xmlDocPtr
+  xmlDocPtr doc = xmlParseDoc(reinterpret_cast<const xmlChar*>(xml_str.c_str()));
+  auto xml_head = xml_str.substr(0, 1024);
+  if (doc == nullptr)
+  {
+    log_warning("ParseXMLDataString('%s') - Couldn't parse file", xml_head.c_str());
+    return {};
+  }
+
+  return ParseXMLDoc(doc);
+}
+
+static std::unique_ptr<TreeData> ParseXMLDoc(xmlDocPtr doc)
+{
     // Check root element
     xmlNodePtr root_node = xmlDocGetRootElement(doc);
     if (root_node == nullptr) {

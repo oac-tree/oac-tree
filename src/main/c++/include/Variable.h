@@ -109,7 +109,7 @@ class Variable
   public:
     /**
      * @brief Constructor.
-     */    
+     */
     Variable(std::string type);
 
     /**
@@ -144,7 +144,7 @@ class Variable
      *
      * @note Non-virtual interface.
      */
-    bool GetValue(::ccs::types::AnyValue& value) const;
+    bool GetValue(::ccs::types::AnyValue& value, const std::string & fieldname={}) const;
 
     /**
      * @brief Set value of variable.
@@ -154,7 +154,7 @@ class Variable
      *
      * @note Non-virtual interface.
      */
-    bool SetValue(const ::ccs::types::AnyValue& value);
+    bool SetValue(const ::ccs::types::AnyValue& value, const std::string & fieldname={});
 
     /**
      * @brief Indicate presence of attribute with given name.
@@ -188,15 +188,6 @@ class Variable
      * @return true when successful.
      */
     bool AddAttributes(const std::vector<std::pair<const std::string, std::string>> & attributes);
-
-    /**
-     * @brief Setup the variable with the currently present attributes.
-     *
-     * @return true on success.
-     *
-     * @note May do nothing if not all required attributes are present (yet).
-     */
-    bool Setup();
 };
 
 // Global variables

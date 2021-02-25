@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+           name="Trivial procedure for testing purposes"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+    <Sequence>
+        <!-- Expected datatype -->
+        <CopyInstruction name="default"
+            input="input"
+            output="file"/>
+        <CopyInstruction name="value"
+            input="value"
+            output="file.value"/>
+        <!-- Should be math expression -->
+        <CopyInstruction name="severity"
+            input="severity"
+            output="file.severity"/>
+    </Sequence>
+    <Workspace>
+        <Local name="input"
+            type='{"type":"MyStruct","attributes":[{"timestamp":{"type":"uint64"}},{"value":{"type":"float32"}},{"severity":{"type":"uint32"}}]}'
+            value='{"timestamp":0,"value":0.0,"severity":0}'/>
+        <Local name="value"
+            type='{"type":"float32"}'
+            value='0.1'/>
+        <Local name="severity"
+            type='{"type":"uint32"}'
+            value='7'/>
+        <FileVariable name="file"
+            file="/tmp/variable.bck"/>
+    </Workspace>
+</Procedure>

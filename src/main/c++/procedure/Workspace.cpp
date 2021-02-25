@@ -23,7 +23,6 @@
 #include <common/log-api.h>
 #include <algorithm>
 #include <utility>
-#include <common/AnyValueHelper.h>
 
 // Local header files
 
@@ -43,6 +42,8 @@ namespace sequencer {
 // Global variables
 
 // Function declaration
+
+static std::pair<std::string, std::string> SplitToNameField(const std::string & fullname);
 
 // Function definition
 
@@ -79,115 +80,63 @@ std::vector<std::string> Workspace::VariableNames() const {
     return result;
 }
 
-bool Workspace::GetValue(std::string name,
-                         ::ccs::types::AnyValue &value) {
+bool Workspace::GetValue(std::string name, ::ccs::types::AnyValue &value)
+{
+  auto splitname = SplitToNameField(name);
+  auto varname = splitname.first;
+  auto fieldname = splitname.second;
 
-    auto pos1 = name.find('.');
-    auto pos2 = name.find('[');
+  auto it = _var_map.find(varname);
+  if (it == _var_map.end())
+  {
+    log_warning("sup::sequencer::Workspace::GetValue('%s', value) - variable with name '%s' "
+                "not in workspace!", name.c_str(), varname.c_str());
+    return false;
+  }
+  auto var = it->second;
 
-    auto pos = (pos1 < pos2) ? (pos1) : (pos2);
-
-    auto varLen = name.length();
-    auto nodeName = name;
-    std::string path;
-    if (pos < varLen) {
-        nodeName = name.substr(0u, pos);
-        //should work
-        path = name.substr(pos + 1u, varLen);
-    }
-
-    auto it = _var_map.find(nodeName);
-    if (it == _var_map.end()) {
-        log_warning("sup::sequencer::Workspace::GetValue('%s', value) - variable with "
-                    "this name not in workspace!",
-                    nodeName.c_str());
-        return false;
-    }
-    auto var = it->second;
-
-    log_info("sup::sequencer::Workspace::GetValue('%s', 'value') - trying to copy found "
-             "workspace variable's value to 'value'..",
-             name.c_str());
-
-    bool ret;
-    if (path.empty()) {
-        ret = var->GetValue(value);
-    }
-    else {
-        ::ccs::types::AnyValue valT;
-        ret = var->GetValue(valT);
-        if (ret) {
-            ::ccs::types::AnyValue valAttributeT;
-            ret = ::ccs::HelperTools::GetAttributeValue(&valT, path.c_str(), valAttributeT);
-            //need copy constructor to create the instance instead of wrapping memory
-            value = valAttributeT;
-        }
-    }
-    if (!ret) {
-        log_error("sup::sequencer::Workspace::GetValue('%s', 'value') - Failed", name.c_str());
-    }
-    return ret;
+  log_info("sup::sequencer::Workspace::GetValue('%s', 'value') - trying to copy found "
+           "workspace variable to 'value'..",
+           name.c_str());
+  return var->GetValue(value, fieldname);
 }
 
-bool Workspace::SetValue(std::string name,
-                         const ::ccs::types::AnyValue &value) {
 
-    auto pos1 = name.find('.');
-    auto pos2 = name.find('[');
+bool Workspace::SetValue(std::string name, const ::ccs::types::AnyValue &value)
+{
+  auto splitname = SplitToNameField(name);
+  auto varname = splitname.first;
+  auto fieldname = splitname.second;
 
-    auto pos = (pos1 < pos2) ? (pos1) : (pos2);
+  auto it = _var_map.find(varname);
+  if (it == _var_map.end())
+  {
+    log_warning("sup::sequencer::Workspace::SetValue('%s', value) - variable with name '%s' "
+                "not in workspace!", name.c_str(), varname.c_str());
+    return false;
+  }
+  auto var = it->second;
+  log_info("sup::sequencer::Workspace::SetValue('%s', 'value') - trying to copy "
+           "'value' into found workspace variable..", name.c_str());
 
-    auto varLen = name.length();
-    auto nodeName = name;
-    std::string path;
-    if (pos < varLen) {
-        nodeName = name.substr(0u, pos);
-        //should work
-        path = name.substr(pos + 1u, varLen);
-    }
-
-    auto it = _var_map.find(nodeName);
-    if (it == _var_map.end()) {
-        log_warning("sup::sequencer::Workspace::SetValue('%s', value) - variable with "
-                    "this name not in workspace!",
-                    nodeName.c_str());
-        return false;
-    }
-    auto var = it->second;
-    log_info("sup::sequencer::Workspace::SetValue('%s', 'value') - trying to copy "
-             "value' into found workspace variable's value..",
-             name.c_str());
-
-    bool ret;
-    if (path.empty()) {
-        ret = var->SetValue(value);
-    }
-    else {
-        ::ccs::types::AnyValue valT;
-        ret = var->GetValue(valT);
-        if (ret) {
-            ret = ::ccs::HelperTools::SetAttributeValue(&valT, path.c_str(), value);
-            if (ret) {
-                //need to update it in the Variable
-                ret = var->SetValue(valT);
-            }
-        }
-    }
-
-    if (!ret) {
-        log_error("sup::sequencer::Workspace::SetValue('%s', 'value') - Failed", name.c_str());
-    }
-    return ret;
-
+  return var->SetValue(value, fieldname);
 }
 
-bool Workspace::Setup() {
-    bool ret = true;
-    for (auto &var : _var_map) {
-        ret &= var.second->Setup();
-    }
-    return ret;
+static std::pair<std::string, std::string> SplitToNameField(const std::string & fullname)
+{
+  auto pos1 = fullname.find('.');
+  auto pos2 = fullname.find('[');
+  auto pos = std::min(pos1, pos2);
+
+  auto total_length = fullname.length();
+  if (pos < total_length)
+  {
+    return { fullname.substr(0u, pos), fullname.substr(pos + 1u) };
+  }
+  return { fullname, {} };
 }
+
+
 
 } // namespace sequencer
 

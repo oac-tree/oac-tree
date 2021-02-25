@@ -30,6 +30,7 @@
 #include "InstructionRegistry.h"
 #include "Instruction.h"
 #include "Fallback.h"
+#include "ForceSuccess.h"
 #include "Inverter.h"
 #include "ParallelSequence.h"
 #include "Repeat.h"
@@ -97,11 +98,17 @@ std::vector<std::string> InstructionRegistry::RegisteredInstructionNames() const
 
 void InitInstructionRegistry(InstructionRegistry & registry)
 {
+  // Register compound instructions:
   (void)RegisterInstruction<Fallback>(registry);
+  (void)RegisterInstruction<ParallelSequence>(registry);
+  (void)RegisterInstruction<Sequence>(registry);
+
+  // Register decorator instructions:
+  (void)RegisterInstruction<ForceSuccess>(registry);
   (void)RegisterInstruction<Inverter>(registry);
   (void)RegisterInstruction<Repeat>(registry);
-  (void)RegisterInstruction<Sequence>(registry);
-  (void)RegisterInstruction<ParallelSequence>(registry);
+
+  // Register leaf instructions:
   (void)RegisterInstruction<Wait>(registry);
   (void)RegisterInstruction<Condition>(registry);
   (void)RegisterInstruction<NoMatter>(registry);

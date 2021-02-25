@@ -20,47 +20,43 @@
 ******************************************************************************/
 
 /**
- * @file Repeat.h
- * @brief Header file for Repeat instruction class.
+ * @file ForceSuccess.h
+ * @brief Header file for ForceSuccess decorator class.
  * @date 16/12/2020
  * @author Giuseppe Ferro (IO)
  * @copyright 2010-2020 ITER Organization
- * @details This header file contains the definition of the Repeat class.
+ * @details This header file contains the definition of the ForceSuccess decorator class.
  */
 
-#ifndef _SEQ_NoMatter_h_
-#define _SEQ_NoMatter_h_
+#ifndef _SEQ_ForceSuccess_h_
+#define _SEQ_ForceSuccess_h_
 
 #include "DecoratorInstruction.h"
 
-namespace sup{
+namespace sup {
 
-namespace sequencer{
+namespace sequencer {
 
-class NoMatter: public DecoratorInstruction {
+class ForceSuccess : public DecoratorInstruction {
 
-private:
+  private:
     /**
-     * @brief Executes the child and never fails
+     * @brief Execute the child and ignore its failure.
      *
-     * @return SUCCESS if the child returns FAILURE
+     * @return SUCCESS if the child has finished (SUCCESS/FAILURE).
      */
     ExecutionStatus ExecuteSingleImpl(UserInterface * ui, Workspace * ws) override;
 
-public:
-    NoMatter();
+  public:
+    ForceSuccess();
 
-    ~NoMatter() override;
+    ~ForceSuccess() override;
 
     static const std::string Type;
 };
 
-}
-}
+}  // namespace sequencer
 
-/*---------------------------------------------------------------------------*/
-/*                        Inline method definitions                          */
-/*---------------------------------------------------------------------------*/
+}  // namespace sup
 
-#endif /* SRC_MAIN_C___INSTRUCTIONS_NOMATTER_H_ */
-
+#endif /* _SEQ_ForceSuccess_h_ */

@@ -29,13 +29,13 @@ retcode=${no_error}
 
 echo "***** Starting unit tests *****"
 
-../../../target/bin/unit-tests || retcode=${error}
+../../../target/bin/unit-tests || retcode=$?
 
 echo "***** End of unit tests *****"
 
 echo "***** Starting regression tests *****"
 
-#../../../target/bin/regression-tests || retcode=${error}
+#../../../target/bin/regression-tests || retcode=$?
 
 echo "***** End of regression tests *****"
 

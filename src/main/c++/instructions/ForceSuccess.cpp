@@ -30,38 +30,33 @@
 /*                         Project header includes                           */
 /*---------------------------------------------------------------------------*/
 
-#include "NoMatter.h"
+#include "ForceSuccess.h"
 
 
 namespace sup {
 
 namespace sequencer {
 
-const std::string NoMatter::Type = "NoMatter";
+const std::string ForceSuccess::Type = "ForceSuccess";
 
-NoMatter::NoMatter() :
-        DecoratorInstruction(Type) {
-//Auto-generated constructor stub for NoMatter
+ForceSuccess::ForceSuccess()
+  : DecoratorInstruction(Type)
+{}
 
-//TODO Verify if manual additions are needed here
+ForceSuccess::~ForceSuccess() = default;
+
+ExecutionStatus ForceSuccess::ExecuteSingleImpl(UserInterface *ui, Workspace *ws)
+{
+  _child->ExecuteSingle(ui, ws);
+  auto status = _child->GetStatus();
+
+  if (status == ExecutionStatus::FAILURE)
+  {
+    status = ExecutionStatus::SUCCESS;
+  }
+  return status;
 }
 
-NoMatter::~NoMatter() {
-//Auto-generated destructor stub for NoMatter
+}  // namespace sequencer
 
-}
-
-ExecutionStatus NoMatter::ExecuteSingleImpl(UserInterface *ui,
-                                            Workspace *ws) {
-    _child->ExecuteSingle(ui, ws);
-    auto status = _child->GetStatus();
-
-    if (status == ExecutionStatus::FAILURE) {
-        status = ExecutionStatus::SUCCESS;
-    }
-    return status;
-}
-
-}
-
-}
+}  // namespace sup

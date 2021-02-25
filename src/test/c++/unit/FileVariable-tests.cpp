@@ -6,7 +6,7 @@
  *
  * Description   : Unit test code
  *
- * Author        : Walter Van Herck (IO)
+ * Author        : B.Bauvir (IO)
  *
  * Copyright (c) : 2010-2020 ITER Organization,
  *                 CS 90 046
@@ -131,6 +131,58 @@ TEST(FileVariable, File_error)
       status = ((false == variable->GetValue(value)) &&
                 (false == static_cast<bool>(value.GetType())));
     }
+
+  ASSERT_EQ(true, status);
+}
+
+TEST(FileVariable, File_attr)
+{
+  auto proc = sup::sequencer::ParseProcedureFile("../resources/variable_attr.xml");
+
+  bool status = bool(proc);
+
+  if (status)
+    {
+      sup::sequencer::LogUI ui;
+      sup::sequencer::ExecutionStatus exec = sup::sequencer::ExecutionStatus::FAILURE;
+
+      do
+        {
+          proc->ExecuteSingle(&ui);
+          exec = proc->GetStatus();
+        }
+      while ((sup::sequencer::ExecutionStatus::SUCCESS != exec) &&
+             (sup::sequencer::ExecutionStatus::FAILURE != exec));
+
+      status = (sup::sequencer::ExecutionStatus::SUCCESS == exec);
+    }
+
+  if (status)
+    {
+      status = ccs::HelperTools::Exist("/tmp/variable.bck");
+    }
+
+  ccs::types::AnyValue value; // Placeholder
+
+  if (status)
+    {
+      status = ccs::HelperTools::ReadFromFile(&value, "/tmp/variable.bck");
+    }
+
+  if (status)
+    {
+      status = static_cast<bool>(value.GetType());
+    }
+
+  // Test variable
+  if (status)
+    {
+      status = (ccs::HelperTools::HasAttribute(&value, "severity") &&
+                (ccs::types::UnsignedInteger32 == ccs::HelperTools::GetAttributeType(&value, "severity")) &&
+                (7u == ccs::HelperTools::GetAttributeValue<ccs::types::uint32>(&value, "severity")));
+    }
+
+  Terminate();
 
   ASSERT_EQ(true, status);
 }

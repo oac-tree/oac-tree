@@ -52,78 +52,96 @@ static bool ParseAndLoadPlugins(const TreeData &data);
 
 // Function definition
 
-std::unique_ptr<Procedure> ParseProcedure(const TreeData &data) {
-    log_info("sup::sequencer::ParseProcedure() - entering function..");
+std::unique_ptr<Procedure> ParseProcedure(const TreeData &data)
+{
+	log_info("sup::sequencer::ParseProcedure() - entering function..");
 
-    auto result = std::unique_ptr < Procedure > (new Procedure());
+	auto result = std::unique_ptr < Procedure > (new Procedure());
 
-    // Add attributes
-    for (const auto &attr : data.Attributes()) {
-        result->AddAttribute(attr.first, attr.second);
-    }
+	// Add attributes
+	for (const auto &attr : data.Attributes())
+	{
+		result->AddAttribute(attr.first, attr.second);
+	}
 
-    // Add Workspace and instruction tree
-    const TreeData *declarationData = NULL;
-    //search for declaration nodes
-    for (const auto &child : data.Children()) {
-        auto type = child.GetType();
+	// Add Workspace and instruction tree
+	const TreeData *declarationData = NULL;
+	//search for declaration nodes
+	for (const auto &child : data.Children())
+	{
+		auto type = child.GetType();
 
-        if (child.GetType() == DECLARATION_TYPE) {
-            log_info("sup::sequencer::ParseProcedure() - Parsing declaration node..");
-            declarationData = &child;
-        }
-        else if (child.GetType() == PLUGIN_ELEMENT_NAME) {
-            log_info("sup::sequencer::ParseProcedure() - Parsing plugin information..");
-            if (!ParseAndLoadPlugins(child)) {
-                log_warning("sup::sequencer::ParseProcedure() - Couldn't parse or load plugin data..");
-            }
-        }
-    }
-    for (const auto &child : data.Children()) {
-        if (child.GetType() == WORKSPACE_TYPE) {
-            log_info("sup::sequencer::ParseProcedure() - generating workspace variables..");
-            for (const auto &var_data : child.Children()) {
-                auto name = var_data.GetName();
-                log_info("sup::sequencer::ParseProcedure() - generate variable: '%s'", name.c_str());
-                if (!name.empty()) {
-                    auto var = ParseVariable(var_data);
-                    result->AddVariable(name, var.release());
-                }
-            }
-        }
-        else if (child.GetType() == DECLARATION_TYPE) {
-            continue;
-        }
-        else if (child.GetType() == PLUGIN_ELEMENT_NAME) {
-            continue;
-        }
-        // Every non workspace element of the Procedure node should be an instruction node
-        else {
-            AttributeMap attributesData;
-            auto root_instr = ParseInstruction(child, declarationData, attributesData);
-            if (root_instr) {
-                result->SetRootInstruction(root_instr.release());
-            }
-        }
-    }
+		if (child.GetType() == DECLARATION_TYPE)
+		{
+			log_info("sup::sequencer::ParseProcedure() - Parsing declaration node..");
+			declarationData = &child;
+		}
+		else if (child.GetType() == PLUGIN_ELEMENT_NAME)
+		{
+			log_info("sup::sequencer::ParseProcedure() - Parsing plugin information..");
+			if (!ParseAndLoadPlugins(child))
+			{
+				log_warning("sup::sequencer::ParseProcedure() - Couldn't parse or load plugin data..");
+			}
+		}
+	}
+	for (const auto &child : data.Children())
+	{
+		if (child.GetType() == WORKSPACE_TYPE)
+		{
+			log_info("sup::sequencer::ParseProcedure() - generating workspace variables..");
+			for (const auto &var_data : child.Children())
+			{
+				auto name = var_data.GetName();
+				log_info("sup::sequencer::ParseProcedure() - generate variable: '%s'", name.c_str());
+				if (!name.empty())
+				{
+					auto var = ParseVariable(var_data);
+					result->AddVariable(name, var.release());
+				}
+			}
+		}
+		else if (child.GetType() == DECLARATION_TYPE)
+		{
+			continue;
+		}
+		else if (child.GetType() == PLUGIN_ELEMENT_NAME)
+		{
+			continue;
+		}
+		// Every non workspace element of the Procedure node should be an instruction node
+		else
+		{
+			AttributeMap attributesData;
+			auto root_instr = ParseInstruction(child, declarationData, attributesData);
+			if (root_instr)
+			{
+				result->SetRootInstruction(root_instr.release());
+			}
+		}
+	}
 
-    if (!result->Setup()) {
-        log_error("sup::sequencer::ParseProcedure() - Failed Procedure::Setup()'");
-    }
-    return result;
+	if (!result->Setup())
+	{
+		log_error("sup::sequencer::ParseProcedure() - Failed Procedure::Setup()'");
+	}
+	return result;
 }
 
-static bool ParseAndLoadPlugins(const TreeData &child) {
-    auto plugin_name = child.GetContent();
-    if (plugin_name.empty()) {
-        return true;
-    }
-    log_info("sup::sequencer::ParseProcedure() - parsing plugin '%s'", plugin_name.c_str());
-    bool success = LoadPlugin(plugin_name);
-    if (!success) {
-        log_warning("sup::sequencer::ParseProcedure() - could not load plugin '%s'", plugin_name.c_str());
-    }
-    return success;
+static bool ParseAndLoadPlugins(const TreeData &child)
+{
+	auto plugin_name = child.GetContent();
+	if (plugin_name.empty())
+	{
+		return true;
+	}
+	log_info("sup::sequencer::ParseProcedure() - parsing plugin '%s'", plugin_name.c_str());
+	bool success = LoadPlugin(plugin_name);
+	if (!success)
+	{
+		log_warning("sup::sequencer::ParseProcedure() - could not load plugin '%s'", plugin_name.c_str());
+	}
+	return success;
 }
 
 } // namespace sequencer

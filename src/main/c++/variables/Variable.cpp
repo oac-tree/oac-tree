@@ -21,6 +21,7 @@
 
 // Global header files
 #include <common/log-api.h>
+#include <common/AnyValueHelper.h>
 
 // Local header files
 
@@ -86,7 +87,6 @@ bool Variable::GetValue(::ccs::types::AnyValue &value, const std::string &fieldn
 	if (!status)
 	{
 		log_error("Variable::GetValue() - Failed with field name '%s'", fieldname.c_str());
-		f
 	}
 	return status;
 }
@@ -125,7 +125,12 @@ bool Variable::SetValue(const ::ccs::types::AnyValue &value, const std::string &
 
 bool Variable::HasAttribute(const std::string &name) const
 {
-	return _attributes.HasAttribute(name);
+  return _attributes.HasAttribute(name);
+}
+
+std::string Variable::GetAttribute(const std::string &name) const
+{
+  return _attributes.GetAttribute(name);
 }
 
 bool Variable::AddAttribute(const std::string &name, const std::string &value)

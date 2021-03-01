@@ -57,7 +57,8 @@ namespace sequencer {
 /**
  * @brief Parse to Instruction.
  */
-std::unique_ptr<Instruction> ParseInstruction(const TreeData & data, const TreeData *declarationData, AttributeMap &attributes, const TreeData *appended=NULL);
+std::unique_ptr<Instruction> ParseInstruction(const TreeData & data, const TreeData *declarationData,
+                                              AttributeMap &attributes, const TreeData *appended=NULL);
 
 // Function definitions
 

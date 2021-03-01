@@ -163,6 +163,8 @@ bool ParallelSequence::Setup(Workspace *ws)
 
 ParallelSequence::ParallelSequence()
   : CompoundInstruction(Type)
+  , _success_th{0}
+  , _failure_th{0}
 {}
 
 ParallelSequence::~ParallelSequence() = default;

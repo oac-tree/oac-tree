@@ -40,9 +40,22 @@
 
 // Type definition
 
+struct CLIParams
+{
+  bool print_usage;
+  char filepath[PATH_MAX_LENGTH];
+  bool verbose;
+  int exit_code;
+};
+
 // Global variables
 
 // Function declaration
+
+CLIParams ParseCommandLineArgs(int argc, char * argv[]);
+bool IsHelpOption(const char * option);
+bool IsFileOption(const char * option);
+bool IsVerboseOption(const char * option);
 
 // Function definition
 
@@ -64,77 +77,101 @@ void print_usage()
 
 int main(int argc, char * argv[])
 {
-  char filepath[PATH_MAX_LENGTH] = STRING_UNDEFINED;
-  bool verbose = false;
-
-  if (argc > 1)
-  {
-    for (unsigned index = 1; index < (unsigned)argc; index++)
-    {
-      if (ccs::HelperTools::StringCompare(argv[index], "-h")
-          || ccs::HelperTools::StringCompare(argv[index], "--help"))
-      {
-        // Display usage
-        print_usage();
-        return 0;
-      }
-      else if (ccs::HelperTools::StringCompare(argv[index], "-f")
-               || ccs::HelperTools::StringCompare(argv[index], "--file"))
-      {
-        // Get filename
-        if (index + 1 >= (unsigned)argc)
-        {
-          print_usage();
-          return 1;
-        }
-        ccs::HelperTools::SafeStringCopy(filepath, argv[index+1], PATH_MAX_LENGTH);
-        index += 1;
-      }
-      else if (ccs::HelperTools::StringCompare(argv[index], "-v")
-               || ccs::HelperTools::StringCompare(argv[index], "--verbose"))
-      {
-        // Log to standard output
-        (void)ccs::log::SetStdout();
-        (void)ccs::log::SetFilter(LOG_DEBUG);
-        verbose = true;
-      }
-      else
-      {
-        print_usage();
-        return 1;
-      }
-    }
-  }
-  else
+  auto params = ParseCommandLineArgs(argc, argv);
+  if (params.print_usage)
   {
     print_usage();
-    return 0;
+    return params.exit_code;
   }
-  if (ccs::HelperTools::StringCompare(filepath, STRING_UNDEFINED))
+
+  if (ccs::HelperTools::StringCompare(params.filepath, STRING_UNDEFINED))
   {
     log_warning("sequencer-cli called without filename");
     return 1;
   }
-  log_info("sequencer-cli called with filename: %s", filepath);
 
-  if (!ccs::HelperTools::Exist(filepath))
+  log_info("sequencer-cli called with filename: %s", params.filepath);
+
+  if (!ccs::HelperTools::Exist(params.filepath))
   {
-    log_error("sequencer-cli: file not found <%s>", filepath);
+    log_error("sequencer-cli: file not found <%s>", params.filepath);
     return 1;
   }
 
-  auto proc = sup::sequencer::ParseProcedureFile(filepath);
+  auto proc = sup::sequencer::ParseProcedureFile(params.filepath);
   if (!proc)
   {
-    log_error("sequencer-cli couldn't parse file <%s>", filepath);
+    log_error("sequencer-cli couldn't parse file <%s>", params.filepath);
     return 1;
   }
 
-  sup::sequencer::CLInterface ui(verbose);
+  sup::sequencer::CLInterface ui(params.verbose);
   sup::sequencer::Runner runner(&ui);
   runner.SetProcedure(proc.get());
   runner.ExecuteProcedure();
   return 0;
+}
+
+CLIParams ParseCommandLineArgs(int argc, char * argv[])
+{
+  CLIParams result = {false, STRING_UNDEFINED, false, 0};
+  if (argc <= 1)
+  {
+    result.print_usage = true;
+    return result;
+  }
+  for (unsigned index = 1; index < (unsigned)argc; index++)
+  {
+    if (IsHelpOption(argv[index]))
+    {
+      result.print_usage = true;
+    }
+    else if (IsFileOption(argv[index]))
+    {
+      // Get filename
+      if (index + 1 >= (unsigned)argc)
+      {
+        result.print_usage = true;
+        result.exit_code = 1;
+      }
+      ccs::HelperTools::SafeStringCopy(result.filepath, argv[index + 1], PATH_MAX_LENGTH);
+      index += 1;
+    }
+    else if (IsVerboseOption(argv[index]))
+    {
+      // Log to standard output
+      (void)ccs::log::SetStdout();
+      (void)ccs::log::SetFilter(LOG_DEBUG);
+      result.verbose = true;
+    }
+    else
+    {
+      result.print_usage = true;
+      result.exit_code = 1;
+    }
+  }
+  return result;
+}
+
+bool IsHelpOption(const char * option)
+{
+  bool result = ccs::HelperTools::StringCompare(option, "-h")
+             || ccs::HelperTools::StringCompare(option, "--help");
+  return result;
+}
+
+bool IsFileOption(const char * option)
+{
+  bool result = ccs::HelperTools::StringCompare(option, "-f")
+             || ccs::HelperTools::StringCompare(option, "--file");
+  return result;
+}
+
+bool IsVerboseOption(const char * option)
+{
+  bool result = ccs::HelperTools::StringCompare(option, "-v")
+             || ccs::HelperTools::StringCompare(option, "--verbose");
+  return result;
 }
 
 #undef LOG_ALTERN_SRC

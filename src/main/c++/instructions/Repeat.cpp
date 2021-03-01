@@ -138,7 +138,10 @@ ExecutionStatus Repeat::CalculateStatus() const
 }
 
 Repeat::Repeat()
-    : DecoratorInstruction(Type)
+  : DecoratorInstruction(Type)
+  , _max_count{0}
+  , _count{0}
+  , _init_ok{false}
 {}
 
 Repeat::~Repeat()

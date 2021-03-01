@@ -44,7 +44,7 @@ namespace sequencer {
 
 // Function definition
 
-Variable::Variable(std::string type)
+Variable::Variable(const std::string & type)
   : _type(type)
 {
   _setup_successful = SetupImpl();

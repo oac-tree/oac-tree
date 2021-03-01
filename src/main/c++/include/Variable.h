@@ -110,7 +110,7 @@ class Variable
     /**
      * @brief Constructor.
      */
-    Variable(std::string type);
+    Variable(const std::string & type);
 
     /**
      * @brief Destructor.

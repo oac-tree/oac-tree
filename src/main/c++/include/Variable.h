@@ -134,7 +134,7 @@ class Variable
      * @param name Name to set
      * @return void
      */
-    void SetName(std::string name);
+    void SetName(const std::string & name);
 
     /**
      * @brief Get value of variable.

@@ -81,8 +81,8 @@ void Instruction::Postamble(UserInterface * ui)
 void Instruction::ResetHook()
 {}
 
-Instruction::Instruction(std::string type)
-  : _type{std::move(type)}
+Instruction::Instruction(const std::string & type)
+  : _type{type}
   , _status{ExecutionStatus::NOT_STARTED}
   , _status_before{ExecutionStatus::NOT_STARTED}
 {}
@@ -99,7 +99,7 @@ std::string Instruction::GetName() const
   return GetAttribute(attributes::NAME_ATTRIBUTE);
 }
 
-void Instruction::SetName(std::string name)
+void Instruction::SetName(const std::string & name)
 {
   AddAttribute(attributes::NAME_ATTRIBUTE, name);
 }

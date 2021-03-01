@@ -62,7 +62,7 @@ std::string Variable::GetName() const
   return GetAttribute(attributes::NAME_ATTRIBUTE);
 }
 
-void Variable::SetName(std::string name)
+void Variable::SetName(const std::string & name)
 {
   AddAttribute(attributes::NAME_ATTRIBUTE, name);
 }

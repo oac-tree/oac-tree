@@ -44,8 +44,8 @@ namespace sequencer {
 
 // Function definition
 
-TreeData::TreeData(std::string type)
-  : _type{std::move(type)}
+TreeData::TreeData(const std::string & type)
+  : _type{type}
 {}
 
 TreeData::~TreeData() = default;

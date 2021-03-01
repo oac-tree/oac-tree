@@ -69,7 +69,7 @@ class CompoundInstruction : public Instruction
      * @brief Constructor.
      * @param type The type of instruction.
      */
-    CompoundInstruction(std::string type);
+    CompoundInstruction(const std::string & type);
 
     /**
      * @brief Destructor.

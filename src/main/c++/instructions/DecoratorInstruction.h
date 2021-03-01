@@ -69,7 +69,7 @@ class DecoratorInstruction : public Instruction
      * @brief Constructor.
      * @param type The type of instruction.
      */
-    DecoratorInstruction(std::string type);
+    DecoratorInstruction(const std::string & type);
 
     /**
      * @brief Destructor.

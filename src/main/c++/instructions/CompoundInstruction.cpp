@@ -52,7 +52,7 @@ void CompoundInstruction::ResetHook()
   }
 }
 
-CompoundInstruction::CompoundInstruction(std::string type)
+CompoundInstruction::CompoundInstruction(const std::string & type)
     : Instruction(type)
 {}
 

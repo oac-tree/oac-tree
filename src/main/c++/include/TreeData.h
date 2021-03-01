@@ -70,7 +70,7 @@ class TreeData
      * @brief Constructor.
      * @param type Data typename.
      */
-    TreeData(std::string type);
+    TreeData(const std::string & type);
 
     /**
      * @brief Destructor.

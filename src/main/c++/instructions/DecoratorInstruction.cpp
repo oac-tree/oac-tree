@@ -52,7 +52,7 @@ void DecoratorInstruction::ResetHook()
   }
 }
 
-DecoratorInstruction::DecoratorInstruction(std::string type)
+DecoratorInstruction::DecoratorInstruction(const std::string & type)
   : Instruction(type)
   , _child{}
 {}

@@ -55,6 +55,12 @@ static std::unique_ptr<TreeData> ParseXMLDoc(xmlDocPtr doc);
 
 static std::unique_ptr<TreeData> ParseDataTree(xmlDocPtr doc, xmlNodePtr node);
 
+static void AddXMLAttributes(TreeData * tree, xmlNodePtr node);
+
+static void AddXMLChildren(TreeData * tree, xmlDocPtr doc, xmlNodePtr node);
+
+static void AddXMLIncludeNode(TreeData * tree, xmlNodePtr node);
+
 static bool NodeHasName(xmlNodePtr node, const char *name);
 
 static std::string ToString(const xmlChar *xml_name);
@@ -116,7 +122,15 @@ static std::unique_ptr<TreeData> ParseDataTree(xmlDocPtr doc, xmlNodePtr node)
   auto node_name = ToString(node->name);
   std::unique_ptr<TreeData> result(new TreeData(node_name));
 
-  // Add attributes
+  AddXMLAttributes(result.get(), node);
+
+  AddXMLChildren(result.get(), doc, node);
+
+  return result;
+}
+
+static void AddXMLAttributes(TreeData * tree, xmlNodePtr node)
+{
   auto attribute = node->properties;
   while (attribute != nullptr)
   {
@@ -124,11 +138,13 @@ static std::unique_ptr<TreeData> ParseDataTree(xmlDocPtr doc, xmlNodePtr node)
     auto xml_val = xmlGetProp(node, attribute->name);
     auto value = ToString(xml_val);
     xmlFree(xml_val);
-    result->AddAttribute(name, value);
+    tree->AddAttribute(name, value);
     attribute = attribute->next;
   }
+}
 
-  // Add children
+static void AddXMLChildren(TreeData * tree, xmlDocPtr doc, xmlNodePtr node)
+{
   auto child_node = node->children;
   while (child_node != nullptr)
   {
@@ -136,42 +152,47 @@ static std::unique_ptr<TreeData> ParseDataTree(xmlDocPtr doc, xmlNodePtr node)
     {
       auto xml_content = xmlNodeListGetString(doc, child_node, 1);
       auto content = ToString(xml_content);
-      result->SetContent(content);
+      tree->SetContent(content);
       xmlFree(xml_content);
     }
-    if (child_node->type == XML_ELEMENT_NODE)
+    else if (child_node->type == XML_ELEMENT_NODE)
     {
       log_info("Add child Data: %s", reinterpret_cast<const char *>(child_node->name));
       if (NodeHasName(child_node, INCL_NODE_TYPE))
       {
-        std::unique_ptr<TreeData> incl_data;
-        auto attribute = child_node->properties;
-        while (attribute != nullptr)
-        {
-          auto attr_name = ToString(attribute->name);
-
-          if (attr_name == INCL_NODE_PATH_ATTR)
-          {
-            auto xml_val = ToString(xmlGetProp(child_node, attribute->name));
-            auto incl_data = GetNodeDataFromXml(xml_val);
-            if (incl_data)
-            {
-              result->AddChild(*incl_data);
-            }
-            break;
-          }
-          attribute = attribute->next;
-        }
+        AddXMLIncludeNode(tree, child_node);
       }
       else
       {
         auto child_data = ParseDataTree(doc, child_node);
-        result->AddChild(*child_data);
+        tree->AddChild(*child_data);
       }
     }
     child_node = child_node->next;
   }
-  return result;
+}
+
+static void AddXMLIncludeNode(TreeData * tree, xmlNodePtr node)
+{
+  auto attribute = node->properties;
+  while (attribute != nullptr)
+  {
+    auto attr_name = ToString(attribute->name);
+
+    if (attr_name == INCL_NODE_PATH_ATTR)
+    {
+      auto xml_val = xmlGetProp(node, attribute->name);
+      auto value = ToString(xml_val);
+      xmlFree(xml_val);
+      auto incl_data = GetNodeDataFromXml(value);
+      if (incl_data)
+      {
+        tree->AddChild(*incl_data);
+      }
+      break;
+    }
+    attribute = attribute->next;
+  }
 }
 
 static bool NodeHasName(xmlNodePtr node, const char *name)

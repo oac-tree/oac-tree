@@ -60,10 +60,13 @@ namespace sequencer {
 class ParallelSequence : public CompoundInstruction
 {
   private:
+    void InitHook() override;
 
     ExecutionStatus ExecuteSingleImpl(UserInterface * ui, Workspace * ws) override;
 
     ExecutionStatus CalculateCompoundStatus() const;
+
+    bool InitWrappers();
 
     std::vector<AsyncWrapper> _wrappers;
 

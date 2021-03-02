@@ -54,12 +54,6 @@ class FileVariable : public Variable
 
   private:
 
-    /**
-     * @brief Setup method handling variable attributes.
-     */
-
-    virtual bool Setup (void);
-
   protected:
 
   public:
@@ -80,32 +74,28 @@ class FileVariable : public Variable
      * @brief See sup::sequencer::Variable.
      */
 
+    virtual bool SetupImpl (void);
     virtual bool GetValueImpl (ccs::types::AnyValue& value) const;
     virtual bool SetValueImpl (const ccs::types::AnyValue& value);
+
+    /**
+     * @brief Class name for VariableRegistry.
+     */
+
+    static const std::string Type;
 
 };
 
 // Function declaration
 
-bool RegisterFileVariable (void);
-
 // Global variables
 
-static bool global_filevariable_initialised_flag = RegisterFileVariable();
+const std::string FileVariable::Type = "FileVariable";
+static bool _filevariable_initialised_flag = RegisterGlobalVariable<FileVariable>();
 
 // Function definition
 
-bool RegisterFileVariable (void)
-{
-
-  auto constructor = []() { return static_cast<Variable*>(new FileVariable ()); };
-  GlobalVariableRegistry().RegisterVariable("FileVariable", constructor);
-
-  return true;
-
-}
-
-bool FileVariable::Setup (void)
+bool FileVariable::SetupImpl (void)
 {
 
   bool status = Variable::HasAttribute("file");
@@ -137,7 +127,7 @@ bool FileVariable::SetValueImpl (const ccs::types::AnyValue& value)
 
 }
 
-FileVariable::FileVariable (void) : Variable("FileVariable") {}
+FileVariable::FileVariable (void) : Variable(FileVariable::Type) {}
 FileVariable::~FileVariable (void) {}
 
 } // namespace sequencer

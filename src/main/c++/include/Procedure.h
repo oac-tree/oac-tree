@@ -74,6 +74,9 @@ class Procedure
 
     AttributeMap _attributes;
 
+    Instruction * Root();
+    const Instruction * Root() const;
+
   protected:
 
   public:

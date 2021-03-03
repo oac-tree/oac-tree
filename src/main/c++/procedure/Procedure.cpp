@@ -47,6 +47,16 @@ const std::string Procedure::TICK_TIMEOUT_ATTRIBUTE_NAME = "tickTimeout";
 
 // Function definition
 
+Instruction * Procedure::Root()
+{
+  return _root.get();
+}
+
+const Instruction * Procedure::Root() const
+{
+  return _root.get();
+}
+
 Procedure::Procedure()
   :_root{new Sequence()}
   , _workspace{new Workspace()}
@@ -88,11 +98,11 @@ bool Procedure::PushInstruction(Instruction *instruction)
 bool Procedure::Setup()
 {
   bool status = true;
-  if (!_root)
+  if (Root() == nullptr)
   {
     return true;
   }
-  if (!_root->Setup(*this))
+  if (!Root()->Setup(*this))
   {
     status = false;
   }
@@ -101,12 +111,12 @@ bool Procedure::Setup()
 
 void Procedure::ExecuteSingle(UserInterface *ui)
 {
-  _root->ExecuteSingle(ui, _workspace.get());
+  Root()->ExecuteSingle(ui, _workspace.get());
 }
 
 ExecutionStatus Procedure::GetStatus() const
 {
-  return _root->GetStatus();
+  return Root()->GetStatus();
 }
 
 bool Procedure::HasAttribute(const std::string &name) const

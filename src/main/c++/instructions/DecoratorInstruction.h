@@ -84,13 +84,11 @@ class DecoratorInstruction : public Instruction
     void SetInstruction(Instruction * instruction);
 
     /**
-     * @brief Setup method
-     * @details
-     * @param
-     * @return
+     * @brief Setup method.
+     * @param proc Procedure containing Workspace and instruction declarations.
+     * @return true on successful instruction setup.
      */
-    bool Setup(Workspace * ws) override;
-
+    bool Setup(const Procedure & proc) override;
 };
 
 // Global variables

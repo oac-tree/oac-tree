@@ -78,12 +78,12 @@ class Procedure
 
   public:
     /**
-     * @brief Constructor
+     * @brief Constructor.
      */
     Procedure();
 
     /**
-     * @brief Destructor
+     * @brief Destructor.
      */
     ~Procedure();
 
@@ -92,16 +92,21 @@ class Procedure
      *
      * @param name Variable name.
      * @param var Variable to add.
+     * @return true on successful addition.
      */
     bool AddVariable(std::string name, Variable * var);
 
     /**
-     * @brief List all variable names
+     * @brief List all variable names.
+     *
+     * @return Variable name list.
      */
     std::vector<std::string> VariableNames() const;
 
     /**
      * @brief Get variable value.
+     *
+     * @return true on successful retrieval.
      */
     bool GetVariableValue(std::string name, ::ccs::types::AnyValue& value);
 
@@ -117,19 +122,24 @@ class Procedure
      */
     bool PushInstruction(Instruction * instruction);
 
-
     /**
-     * @brief Setup the procedure
+     * @brief Setup the procedure.
+     *
+     * @return true on successful setup.
      */
     bool Setup();
 
     /**
      * @brief Execute single step of procedure
+     *
+     * @param ui UserInterface to use for instruction input/output.
      */
     void ExecuteSingle(UserInterface * ui);
 
     /**
-     * @brief Retrieve status of root sequence
+     * @brief Retrieve status of root sequence.
+     *
+     * @return Current execution status of the root instruction.
      */
     ExecutionStatus GetStatus() const;
 

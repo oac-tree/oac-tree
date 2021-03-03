@@ -69,18 +69,20 @@ void CompoundInstruction::PushBack(Instruction * instruction)
   _children.push_back(instruction);
 }
 
-bool CompoundInstruction::Setup(Workspace * ws){
-    bool ret=true;
-    for (auto instruction : _children)
-    {
-      auto myName=GetName();
-      auto myType=GetType();
-      auto childType=instruction->GetType();
-      auto childName=instruction->GetName();
-      log_info("CompoundInstruction::Setup - %s:%s Setup of %s: %s", myType.c_str(), myName.c_str(), childType.c_str(), childName.c_str());
-      ret&=instruction->Setup(ws);
-    }
-    return ret;
+bool CompoundInstruction::Setup(const Procedure & proc)
+{
+  bool result = true;
+  for (auto instruction : _children)
+  {
+    auto myName = GetName();
+    auto myType = GetType();
+    auto childType = instruction->GetType();
+    auto childName = instruction->GetName();
+    log_info("CompoundInstruction::Setup - %s:%s Setup of %s: %s",
+             myType.c_str(), myName.c_str(), childType.c_str(), childName.c_str());
+    result = instruction->Setup(proc) && result;
+  }
+  return result;
 }
 
 } // namespace sequencer

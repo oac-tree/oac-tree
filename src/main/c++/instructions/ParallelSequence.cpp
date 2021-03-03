@@ -108,9 +108,9 @@ bool ParallelSequence::InitWrappers()
   }
 }
 
-bool ParallelSequence::Setup(Workspace *ws)
+bool ParallelSequence::Setup(const Procedure & proc)
 {
-  bool status = CompoundInstruction::Setup(ws);
+  bool status = CompoundInstruction::Setup(proc);
   if (status)
   {
     int N = static_cast<int>(_children.size());

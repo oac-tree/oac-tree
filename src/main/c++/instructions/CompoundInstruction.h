@@ -60,7 +60,7 @@ class CompoundInstruction : public Instruction
 
   protected:
     /**
-     * @brief Container for child instructions
+     * @brief Container for child instructions.
      */
     std::vector<Instruction *> _children;
 
@@ -85,12 +85,10 @@ class CompoundInstruction : public Instruction
 
     /**
      * @brief Setup method
-     * @details
-     * @param
-     * @return
+     * @param proc Procedure containing Workspace and instruction declarations.
+     * @return true on successful instruction setup.
      */
-    bool Setup(Workspace * ws) override;
-
+    bool Setup(const Procedure & proc) override;
 };
 
 // Global variables

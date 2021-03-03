@@ -83,7 +83,7 @@ class ParallelSequence : public CompoundInstruction
      */
     ~ParallelSequence() override;
 
-    bool Setup(Workspace * ws) override;
+    bool Setup(const Procedure & proc) override;
 
     static const std::string Type;
 };

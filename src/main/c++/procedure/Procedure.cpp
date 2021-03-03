@@ -92,7 +92,7 @@ bool Procedure::Setup()
   {
     return true;
   }
-  if (!_root->Setup(_workspace.get()))
+  if (!_root->Setup(*this))
   {
     status = false;
   }

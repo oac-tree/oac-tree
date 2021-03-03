@@ -48,6 +48,7 @@ namespace sequencer {
 
 // Forward declarations
 
+class Procedure;
 class UserInterface;
 class Workspace;
 
@@ -94,53 +95,51 @@ class Instruction
 
   public:
     /**
-     * @brief Constructor
+     * @brief Constructor.
      * @param type The type of instruction.
      */
     Instruction(const std::string & type);
 
     /**
-     * @brief Virtual destructor
+     * @brief Virtual destructor.
      */
     virtual ~Instruction();
 
     /**
-     * @brief Get instruction type
-     * @return instruction type
+     * @brief Get instruction type.
+     * @return instruction type.
      */
     std::string GetType() const;
 
     /**
-     * @brief Get instruction name
-     * @return instruction name
+     * @brief Get instruction name.
+     * @return instruction name.
      */
     std::string GetName() const;
 
     /**
-     * @brief Set instruction name
-     * @param name Name to set
-     * @return void
+     * @brief Set instruction name.
+     * @param name Name to set.
      */
     void SetName(const std::string & name);
 
     /**
-     * @brief Setup method
-     * @details
-     * @param
-     * @return
+     * @brief Setup method.
+     * @param proc Procedure containing Workspace and instruction declarations.
+     * @return true on successful instruction setup.
      */
-    virtual bool Setup(Workspace * ws);
+    virtual bool Setup(const Procedure & proc);
 
     /**
-     * @brief Execution method
-     * @details
-     * @param
-     * @return
+     * @brief Execution method.
+     * @param ui UserInterface to handle input/output.
+     * @param ws Workspace that contains the variables.
      */
     void ExecuteSingle(UserInterface * ui, Workspace * ws);
 
     /**
-     * @brief Get execution status
+     * @brief Get execution status.
+     * @return Execution status.
      */
     ExecutionStatus GetStatus() const;
 
@@ -179,6 +178,10 @@ class Instruction
 
 // Function declarations
 
+/**
+ * @brief Check if status corresponds to a state where execution is meaningful.
+ * @return true if execution is meaningful (not already finished).
+ */
 bool NeedsExecute(ExecutionStatus status);
 
 // Function definitions

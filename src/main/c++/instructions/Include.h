@@ -74,6 +74,8 @@ class Include : public DecoratorInstruction
      */
     ~Include() override;
 
+    bool Setup(const Procedure & proc) override;
+
     static const std::string Type;
 };
 

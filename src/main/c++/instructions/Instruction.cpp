@@ -104,10 +104,10 @@ void Instruction::SetName(const std::string & name)
   AddAttribute(attributes::NAME_ATTRIBUTE, name);
 }
 
-bool Instruction::Setup(Workspace * ws){
-    return true;
+bool Instruction::Setup(const Procedure & proc)
+{
+  return true;
 }
-
 
 void Instruction::ExecuteSingle(UserInterface * ui, Workspace * ws)
 {

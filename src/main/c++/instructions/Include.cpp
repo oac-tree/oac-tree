@@ -79,6 +79,11 @@ Include::Include()
 Include::~Include()
 {}
 
+bool Include::Setup(const Procedure & proc)
+{
+  return true;
+}
+
 } // namespace sequencer
 
 } // namespace sup

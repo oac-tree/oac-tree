@@ -8,7 +8,7 @@
         <Wait timeout="$par2" />
     </Sequence>
     <Sequence isRoot="True">
-        <Include name="Wait Sequence" ref="WaitLongEnough" par1="0.5" par2="1.0" />
-        <Include name="Wait one second" ref="WaitLongEnough.SingleWait" par1="1.0" />
+        <Include name="Wait Sequence" path="WaitLongEnough" par1="0.5" par2="1.0" />
+        <Include name="Wait one second" path="WaitLongEnough.SingleWait" par1="1.0" />
     </Sequence>
 </Procedure>

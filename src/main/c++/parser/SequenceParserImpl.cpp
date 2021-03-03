@@ -202,7 +202,7 @@ static bool NodeHasName(xmlNodePtr node, const char *name)
 
 static std::string ToString(const xmlChar *xml_name)
 {
-	return std::string(reinterpret_cast<const char*>(xml_name), xmlStrlen(xml_name));
+  return std::string(reinterpret_cast<const char*>(xml_name), xmlStrlen(xml_name));
 }
 
 static std::unique_ptr<TreeData> GetNodeDataFromXml(std::string path)

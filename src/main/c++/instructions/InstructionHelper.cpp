@@ -76,7 +76,7 @@ Instruction * CloneInstruction(const Instruction * instruction)
   return nullptr;
 }
 
-bool InitialiseVariableAttributes(Instruction & instruction, const AttributeMap * attributes)
+bool InitialiseVariableAttributes(Instruction & instruction, const AttributeMap & attributes)
 {
   return false;
 }

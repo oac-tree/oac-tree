@@ -26,11 +26,15 @@
 // Local header files
 
 #include "Include.h"
+#include "InstructionHelper.h"
+#include "Procedure.h"
 
 // Constants
 
 #undef LOG_ALTERN_SRC
 #define LOG_ALTERN_SRC "sup::sequencer"
+
+const std::string PATH_ATTRIBUTE_NAME="path";
 
 // Type definition
 
@@ -64,7 +68,29 @@ ExecutionStatus Include::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
 
 bool Include::SetupImpl(const Procedure & proc)
 {
-  return true;
+  auto instructions = proc.GetInstructions();
+  auto path = GetPath();
+  auto instr = helper::FindInstruction(instructions, path);
+  if (instr == nullptr)
+  {
+    log_warning("Include::SetupImpl(): instruction with path '%s' not found",
+                path.c_str());
+    return false;
+  }
+  std::unique_ptr<Instruction> clone(helper::CloneInstruction(instr));
+  if (helper::InitialiseVariableAttributes(*clone, GetAttributes()))
+  {
+    SetInstruction(clone.release());
+    return true;
+  }
+  log_warning("Include::SetupImpl(): instruction with path '%s' could not be ",
+              "properly initialised with the given attributes", path.c_str());
+  return false;
+}
+
+std::string Include::GetPath() const
+{
+  return GetAttribute(PATH_ATTRIBUTE_NAME);
 }
 
 ExecutionStatus Include::CalculateStatus() const

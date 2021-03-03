@@ -151,6 +151,11 @@ std::string Instruction::GetAttribute(const std::string & name) const
   return _attributes.GetAttribute(name);
 }
 
+AttributeMap Instruction::GetAttributes() const
+{
+  return _attributes;
+}
+
 bool Instruction::AddAttribute(const std::string & name, const std::string & value)
 {
   return _attributes.AddAttribute(name, value);

@@ -87,7 +87,7 @@ Instruction * CloneInstruction(const Instruction * instruction);
  * @param instructions List of attributes to use for initialisation.
  * @return true on successful initialisation of variable attributes.
  */
-bool InitialiseVariableAttributes(Instruction & instruction, const AttributeMap * attributes);
+bool InitialiseVariableAttributes(Instruction & instruction, const AttributeMap & attributes);
 
 // Function definitions
 

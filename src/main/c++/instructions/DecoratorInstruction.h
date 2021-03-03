@@ -74,6 +74,7 @@ class DecoratorInstruction : public Instruction
   public:
     /**
      * @brief Constructor.
+     *
      * @param type The type of instruction.
      */
     DecoratorInstruction(const std::string & type);
@@ -84,7 +85,15 @@ class DecoratorInstruction : public Instruction
     ~DecoratorInstruction() override;
 
     /**
+     * @brief Get the decorated child instruction.
+     *
+     * @return Pointer to decorated instruction.
+     */
+    const Instruction * ChildInstruction() const;
+
+    /**
      * @brief Set the decorated child instruction.
+     *
      * @param instruction Pointer to decorated instruction.
      * @note DecoratorInstruction takes ownership of the decorated instruction.
      */

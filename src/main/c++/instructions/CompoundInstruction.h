@@ -84,7 +84,15 @@ class CompoundInstruction : public Instruction
     ~CompoundInstruction() override;
 
     /**
+     * @brief Get list of child instructions.
+     *
+     * @return List of child instructions.
+     */
+    std::vector<const Instruction *> ChildInstructions() const;
+
+    /**
      * @brief Add child instruction.
+     *
      * @param instruction Pointer to instruction.
      * @note CompoundInstruction takes ownership of the added instruction.
      */

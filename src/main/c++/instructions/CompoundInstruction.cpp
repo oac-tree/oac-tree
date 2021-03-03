@@ -80,6 +80,16 @@ CompoundInstruction::~CompoundInstruction()
   }
 }
 
+std::vector<const Instruction *> CompoundInstruction::ChildInstructions() const
+{
+  std::vector<const Instruction *> result;
+  for (auto instr : _children)
+  {
+    result.push_back(instr);
+  }
+  return result;
+}
+
 void CompoundInstruction::PushBack(Instruction * instruction)
 {
   _children.push_back(instruction);

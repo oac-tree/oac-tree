@@ -26,6 +26,8 @@
 // Local header files
 
 #include "InstructionHelper.h"
+#include "CompoundInstruction.h"
+#include "DecoratorInstruction.h"
 
 // Constants
 
@@ -52,6 +54,22 @@ const Instruction * FindInstruction(const std::vector<const Instruction *> & ins
   return nullptr;
 }
 
+std::vector<const Instruction *> GetChildInstructions(const Instruction * instruction)
+{
+  auto compound = dynamic_cast<const CompoundInstruction *>(instruction);
+  if (compound)
+  {
+    return compound->ChildInstructions();
+  }
+
+  std::vector<const Instruction *> result;
+  auto decorator = dynamic_cast<const DecoratorInstruction *>(instruction);
+  if (decorator)
+  {
+    result.push_back(decorator->ChildInstruction());
+  }
+  return result;
+}
 
 Instruction * CloneInstruction(const Instruction * instruction)
 {

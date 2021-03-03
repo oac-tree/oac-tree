@@ -64,6 +64,11 @@ DecoratorInstruction::DecoratorInstruction(const std::string & type)
 DecoratorInstruction::~DecoratorInstruction()
 {}
 
+const Instruction * DecoratorInstruction::ChildInstruction() const
+{
+  return _child.get();
+}
+
 void DecoratorInstruction::SetInstruction(Instruction * instruction)
 {
   _child.reset(instruction);

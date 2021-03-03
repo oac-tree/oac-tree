@@ -74,9 +74,6 @@ class Procedure
 
     AttributeMap _attributes;
 
-    Instruction * Root();
-    const Instruction * Root() const;
-
   protected:
 
   public:
@@ -89,6 +86,39 @@ class Procedure
      * @brief Destructor.
      */
     ~Procedure();
+
+    /**
+     * @brief Get root instruction.
+     *
+     * @return Root instruction.
+     */
+    Instruction * RootInstrunction();
+
+    /**
+     * @brief Get root instruction (const version).
+     *
+     * @return Root instruction.
+     */
+    const Instruction * RootInstrunction() const;
+
+    /**
+     * @brief Get top-level instructions.
+     *
+     * @return List of top-level instructions.
+     */
+    std::vector<const Instruction *> GetInstructions() const;
+
+    /**
+     * @brief Set the root instruction.
+     *
+     * @param instruction Root instruction to set.
+     */
+    void SetRootInstruction(Instruction * instruction);
+
+    /**
+     * @brief Push Instruction at top level.
+     */
+    bool PushInstruction(Instruction * instruction);
 
     /**
      * @brief Add variable.
@@ -111,19 +141,7 @@ class Procedure
      *
      * @return true on successful retrieval.
      */
-    bool GetVariableValue(std::string name, ::ccs::types::AnyValue& value);
-
-    /**
-     * @brief Set the root instruction.
-     *
-     * @param instruction Root instruction to set.
-     */
-    void SetRootInstruction(Instruction * instruction);
-
-    /**
-     * @brief Push Instruction at top level.
-     */
-    bool PushInstruction(Instruction * instruction);
+    bool GetVariableValue(std::string name, ::ccs::types::AnyValue & value);
 
     /**
      * @brief Setup the procedure.

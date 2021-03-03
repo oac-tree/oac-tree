@@ -47,13 +47,20 @@ const std::string Procedure::TICK_TIMEOUT_ATTRIBUTE_NAME = "tickTimeout";
 
 // Function definition
 
-Instruction * Procedure::Root()
+Procedure::Procedure()
+  : _instructions{}
+  , _workspace{new Workspace()}
+{}
+
+Procedure::~Procedure() = default;
+
+Instruction * Procedure::RootInstrunction()
 {
   // Scott Meyers' solution for avoiding code duplication:
-  return const_cast<Instruction *>(static_cast<const Procedure &>(*this).Root());
+  return const_cast<Instruction *>(static_cast<const Procedure &>(*this).RootInstrunction());
 }
 
-const Instruction * Procedure::Root() const
+const Instruction * Procedure::RootInstrunction() const
 {
   if (_instructions.size() == 0)
   {
@@ -62,12 +69,36 @@ const Instruction * Procedure::Root() const
   return _instructions[0].get();
 }
 
-Procedure::Procedure()
-  : _instructions{}
-  , _workspace{new Workspace()}
-{}
+std::vector<const Instruction *> Procedure::GetInstructions() const
+{
+  std::vector<const Instruction *> result;
+  for (auto & instr : _instructions)
+  {
+    result.push_back(instr.get());
+  }
+  return result;
+}
 
-Procedure::~Procedure() = default;
+void Procedure::SetRootInstruction(Instruction * instruction)
+{
+  _instructions.clear();
+  _instructions.emplace_back(instruction);
+}
+
+bool Procedure::PushInstruction(Instruction * instruction)
+{
+  if (RootInstrunction() == nullptr)
+  {
+    _instructions.emplace_back(new Sequence{});
+  }
+  auto compound = dynamic_cast<CompoundInstruction *>(RootInstrunction());
+  if (compound)
+  {
+    compound->PushBack(instruction);
+    return true;
+  }
+  return false;
+}
 
 bool Procedure::AddVariable(std::string name, Variable * var)
 {
@@ -84,52 +115,31 @@ bool Procedure::GetVariableValue(std::string name, ::ccs::types::AnyValue & valu
   return _workspace->GetValue(name, value);
 }
 
-void Procedure::SetRootInstruction(Instruction * instruction)
-{
-  _instructions.clear();
-  _instructions.emplace_back(instruction);
-}
-
-bool Procedure::PushInstruction(Instruction * instruction)
-{
-  if (Root() == nullptr)
-  {
-    _instructions.emplace_back(new Sequence{});
-  }
-  auto compound = dynamic_cast<CompoundInstruction *>(Root());
-  if (compound)
-  {
-    compound->PushBack(instruction);
-    return true;
-  }
-  return false;
-}
-
 bool Procedure::Setup()
 {
-  if (Root() == nullptr)
+  if (RootInstrunction() == nullptr)
   {
     return true;
   }
-  return Root()->Setup(*this);
+  return RootInstrunction()->Setup(*this);
 }
 
 void Procedure::ExecuteSingle(UserInterface * ui)
 {
-  if (Root() == nullptr)
+  if (RootInstrunction() == nullptr)
   {
     return;
   }
-  Root()->ExecuteSingle(ui, _workspace.get());
+  RootInstrunction()->ExecuteSingle(ui, _workspace.get());
 }
 
 ExecutionStatus Procedure::GetStatus() const
 {
-  if (Root() == nullptr)
+  if (RootInstrunction() == nullptr)
   {
     return ExecutionStatus::NOT_STARTED;
   }
-  return Root()->GetStatus();
+  return RootInstrunction()->GetStatus();
 }
 
 bool Procedure::HasAttribute(const std::string & name) const

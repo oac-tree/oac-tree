@@ -54,6 +54,14 @@ class FileVariable : public Variable
 
   private:
 
+    /**
+     * @brief See sup::sequencer::Variable.
+     */
+
+    bool SetupImpl (void) override;
+    bool GetValueImpl (ccs::types::AnyValue& value) const override;
+    bool SetValueImpl (const ccs::types::AnyValue& value) override;
+
   protected:
 
   public:
@@ -69,14 +77,6 @@ class FileVariable : public Variable
      */
 
     ~FileVariable (void) override;
-
-    /**
-     * @brief See sup::sequencer::Variable.
-     */
-
-    virtual bool SetupImpl (void);
-    virtual bool GetValueImpl (ccs::types::AnyValue& value) const;
-    virtual bool SetValueImpl (const ccs::types::AnyValue& value);
 
     /**
      * @brief Class name for VariableRegistry.

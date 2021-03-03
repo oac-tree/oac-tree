@@ -81,6 +81,11 @@ void Instruction::Postamble(UserInterface * ui)
 void Instruction::ResetHook()
 {}
 
+bool Instruction::SetupImpl(const Procedure & proc)
+{
+  return true;
+}
+
 Instruction::Instruction(const std::string & type)
   : _type{type}
   , _status{ExecutionStatus::NOT_STARTED}
@@ -106,7 +111,7 @@ void Instruction::SetName(const std::string & name)
 
 bool Instruction::Setup(const Procedure & proc)
 {
-  return true;
+  return SetupImpl(proc);
 }
 
 void Instruction::ExecuteSingle(UserInterface * ui, Workspace * ws)

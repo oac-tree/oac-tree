@@ -59,6 +59,13 @@ class Include : public DecoratorInstruction
   private:
     ExecutionStatus ExecuteSingleImpl(UserInterface * ui, Workspace * ws) override;
 
+    /**
+     * @brief Setup implementation.
+     * @param proc Procedure containing Workspace and instruction declarations.
+     * @return true on successful instruction setup.
+     */
+    bool SetupImpl(const Procedure & proc) override;
+
     ExecutionStatus CalculateStatus() const;
 
   protected:
@@ -73,8 +80,6 @@ class Include : public DecoratorInstruction
      * @brief Destructor.
      */
     ~Include() override;
-
-    bool Setup(const Procedure & proc) override;
 
     static const std::string Type;
 };

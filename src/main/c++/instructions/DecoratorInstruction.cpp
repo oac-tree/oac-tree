@@ -52,6 +52,10 @@ void DecoratorInstruction::ResetHook()
   }
 }
 
+bool DecoratorInstruction::SetupImpl(const Procedure & proc){
+    return _child->Setup(proc);
+}
+
 DecoratorInstruction::DecoratorInstruction(const std::string & type)
   : Instruction(type)
   , _child{}
@@ -63,10 +67,6 @@ DecoratorInstruction::~DecoratorInstruction()
 void DecoratorInstruction::SetInstruction(Instruction * instruction)
 {
   _child.reset(instruction);
-}
-
-bool DecoratorInstruction::Setup(const Procedure & proc){
-    return _child->Setup(proc);
 }
 
 } // namespace sequencer

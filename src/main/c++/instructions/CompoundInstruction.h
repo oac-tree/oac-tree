@@ -58,6 +58,13 @@ class CompoundInstruction : public Instruction
   private:
     void ResetHook() override;
 
+    /**
+     * @brief Setup implementation.
+     * @param proc Procedure containing Workspace and instruction declarations.
+     * @return true on successful instruction setup.
+     */
+    bool SetupImpl(const Procedure & proc) override;
+
   protected:
     /**
      * @brief Container for child instructions.
@@ -82,13 +89,6 @@ class CompoundInstruction : public Instruction
      * @note CompoundInstruction takes ownership of the added instruction.
      */
     void PushBack(Instruction * instruction);
-
-    /**
-     * @brief Setup method
-     * @param proc Procedure containing Workspace and instruction declarations.
-     * @return true on successful instruction setup.
-     */
-    bool Setup(const Procedure & proc) override;
 };
 
 // Global variables

@@ -62,6 +62,11 @@ ExecutionStatus Include::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
   return CalculateStatus();
 }
 
+bool Include::SetupImpl(const Procedure & proc)
+{
+  return true;
+}
+
 ExecutionStatus Include::CalculateStatus() const
 {
   if (!_child)
@@ -78,11 +83,6 @@ Include::Include()
 
 Include::~Include()
 {}
-
-bool Include::Setup(const Procedure & proc)
-{
-  return true;
-}
 
 } // namespace sequencer
 

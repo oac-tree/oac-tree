@@ -91,6 +91,13 @@ class Instruction
 
     virtual void ResetHook();
 
+    /**
+     * @brief Setup implementation.
+     * @param proc Procedure containing Workspace and instruction declarations.
+     * @return true on successful instruction setup.
+     */
+    virtual bool SetupImpl(const Procedure & proc);
+
   protected:
 
   public:
@@ -128,7 +135,7 @@ class Instruction
      * @param proc Procedure containing Workspace and instruction declarations.
      * @return true on successful instruction setup.
      */
-    virtual bool Setup(const Procedure & proc);
+    bool Setup(const Procedure & proc);
 
     /**
      * @brief Execution method.

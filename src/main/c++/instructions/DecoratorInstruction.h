@@ -58,6 +58,13 @@ class DecoratorInstruction : public Instruction
   private:
     void ResetHook() override;
 
+    /**
+     * @brief Setup implementation.
+     * @param proc Procedure containing Workspace and instruction declarations.
+     * @return true on successful instruction setup.
+     */
+    bool SetupImpl(const Procedure & proc) override;
+
   protected:
     /**
      * @brief Decorated instruction
@@ -82,13 +89,6 @@ class DecoratorInstruction : public Instruction
      * @note DecoratorInstruction takes ownership of the decorated instruction.
      */
     void SetInstruction(Instruction * instruction);
-
-    /**
-     * @brief Setup method.
-     * @param proc Procedure containing Workspace and instruction declarations.
-     * @return true on successful instruction setup.
-     */
-    bool Setup(const Procedure & proc) override;
 };
 
 // Global variables

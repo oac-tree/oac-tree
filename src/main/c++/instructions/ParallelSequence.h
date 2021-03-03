@@ -64,6 +64,13 @@ class ParallelSequence : public CompoundInstruction
 
     ExecutionStatus ExecuteSingleImpl(UserInterface * ui, Workspace * ws) override;
 
+    /**
+     * @brief Setup implementation.
+     * @param proc Procedure containing Workspace and instruction declarations.
+     * @return true on successful instruction setup.
+     */
+    bool SetupImpl(const Procedure & proc) override;
+
     ExecutionStatus CalculateCompoundStatus() const;
 
     bool InitWrappers();
@@ -82,8 +89,6 @@ class ParallelSequence : public CompoundInstruction
      * @brief Destructor.
      */
     ~ParallelSequence() override;
-
-    bool Setup(const Procedure & proc) override;
 
     static const std::string Type;
 };

@@ -9,3 +9,5 @@
 * Provide enhanced interface to Workspace: allow get/set specific fields/substructures of the variable.
 * Provide user input instruction and way to distinguish procedures that need user input.
 * Add doxygen to many methods.
+* Variable::AddAttributes: use AttributeMap as argument instead of awkward vector of pairs.
+* Implement helper::InitialiseVariableAttributes.

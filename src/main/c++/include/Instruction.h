@@ -186,6 +186,14 @@ class Instruction
      * @return true when successful.
      */
     bool AddAttribute(const std::string & name, const std::string & value);
+
+    /**
+     * @brief Set all attributes from given map.
+     *
+     * @param attributes Map of attributes to set.
+     * @return true when successful.
+     */
+    bool AddAttributes(const AttributeMap & attributes);
 };
 
 // Global variables

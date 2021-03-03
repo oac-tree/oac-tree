@@ -26,6 +26,7 @@
 // Local header files
 
 #include "InstructionHelper.h"
+#include "InstructionRegistry.h"
 #include "CompoundInstruction.h"
 #include "DecoratorInstruction.h"
 
@@ -44,14 +45,38 @@ namespace helper {
 
 // Global variables
 
+const char PATH_DELIMITER='.';
+
 // Function declaration
+
+namespace {
+
+std::pair<std::string, std::string> StripPath(const std::string & path);
+bool CloneChildInstructions(Instruction * clone, const Instruction * source);
+bool AddClonedChildInstruction(Instruction * instr, const Instruction * child);
+
+} // Unnamed namespace
 
 // Function definition
 
 const Instruction * FindInstruction(const std::vector<const Instruction *> & instructions,
                                     const std::string & name_path)
 {
-  return nullptr;
+  const Instruction * result = nullptr;
+  auto names = StripPath(name_path);
+  for (auto inst : instructions)
+  {
+    if (inst->GetName() == names.first)
+    {
+      result = inst;
+      break;
+    }
+  }
+  if (result == nullptr || names.second.empty())
+  {
+    return result;
+  }
+  return FindInstruction(GetChildInstructions(result), names.second);
 }
 
 std::vector<const Instruction *> GetChildInstructions(const Instruction * instruction)
@@ -73,13 +98,72 @@ std::vector<const Instruction *> GetChildInstructions(const Instruction * instru
 
 Instruction * CloneInstruction(const Instruction * instruction)
 {
-  return nullptr;
+  if (instruction == nullptr)
+  {
+    return nullptr;
+  }
+  auto type = instruction->GetType();
+  auto result = GlobalInstructionRegistry().Create(type);
+  if (!result)
+  {
+    return nullptr;
+  }
+  result->AddAttributes(instruction->GetAttributes());
+  CloneChildInstructions(result.get(), instruction);
+  return result.release();
 }
 
 bool InitialiseVariableAttributes(Instruction & instruction, const AttributeMap & attributes)
 {
   return false;
 }
+
+namespace {
+
+std::pair<std::string, std::string> StripPath(const std::string & path)
+{
+  std::pair<std::string, std::string> result;
+  std::size_t delim_pos = path.find(PATH_DELIMITER);
+  result.first = path.substr(0, delim_pos);
+  if (delim_pos != std::string::npos)
+  {
+    result.second = path.substr(delim_pos);
+  }
+  return result;
+}
+
+bool CloneChildInstructions(Instruction * clone, const Instruction * source)
+{
+  bool result = true;
+  if (clone == nullptr || source == nullptr)
+  {
+    return false;
+  }
+  for (auto child : GetChildInstructions(source))
+  {
+    result = AddClonedChildInstruction(clone, child) && result;
+  }
+  return result;
+}
+
+bool AddClonedChildInstruction(Instruction * instr, const Instruction * child)
+{
+  auto compound = dynamic_cast<CompoundInstruction *>(instr);
+  if (compound)
+  {
+    compound->PushBack(CloneInstruction(child));
+    return true;
+  }
+  auto decorator = dynamic_cast<DecoratorInstruction *>(instr);
+  if (decorator)
+  {
+    decorator->SetInstruction(CloneInstruction(child));
+    return true;
+  }
+  return false;
+}
+
+} // Unnamed namespace
 
 } // namespace helper
 

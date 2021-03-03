@@ -161,6 +161,17 @@ bool Instruction::AddAttribute(const std::string & name, const std::string & val
   return _attributes.AddAttribute(name, value);
 }
 
+bool Instruction::AddAttributes(const AttributeMap & attributes)
+{
+  bool result = true;
+  for (const auto & name : attributes.GetAttributeNames())
+  {
+    auto value = attributes.GetAttribute(name);
+    result = AddAttribute(name, value) && result;
+  }
+  return result;
+}
+
 bool NeedsExecute(ExecutionStatus status)
 {
   return (status == ExecutionStatus::NOT_STARTED ||

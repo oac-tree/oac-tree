@@ -69,7 +69,7 @@ class Workspace;
 class Procedure
 {
   private:
-    std::unique_ptr<Instruction> _root;
+    std::vector<std::unique_ptr<Instruction>> _instructions;
     std::unique_ptr<Workspace> _workspace;
 
     AttributeMap _attributes;

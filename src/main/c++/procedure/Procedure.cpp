@@ -49,22 +49,27 @@ const std::string Procedure::TICK_TIMEOUT_ATTRIBUTE_NAME = "tickTimeout";
 
 Instruction * Procedure::Root()
 {
-  return _root.get();
+  // Scott Meyers' solution for avoiding code duplication:
+  return const_cast<Instruction *>(static_cast<const Procedure &>(*this).Root());
 }
 
 const Instruction * Procedure::Root() const
 {
-  return _root.get();
+  if (_instructions.size() == 0)
+  {
+    return nullptr;
+  }
+  return _instructions[0].get();
 }
 
 Procedure::Procedure()
-  :_root{new Sequence()}
+  : _instructions{}
   , _workspace{new Workspace()}
 {}
 
 Procedure::~Procedure() = default;
 
-bool Procedure::AddVariable(std::string name, Variable *var)
+bool Procedure::AddVariable(std::string name, Variable * var)
 {
   return _workspace->AddVariable(name, var);
 }
@@ -74,19 +79,24 @@ std::vector<std::string> Procedure::VariableNames() const
   return _workspace->VariableNames();
 }
 
-bool Procedure::GetVariableValue(std::string name, ::ccs::types::AnyValue &value)
+bool Procedure::GetVariableValue(std::string name, ::ccs::types::AnyValue & value)
 {
   return _workspace->GetValue(name, value);
 }
 
-void Procedure::SetRootInstruction(Instruction *instruction)
+void Procedure::SetRootInstruction(Instruction * instruction)
 {
-  _root.reset(instruction);
+  _instructions.clear();
+  _instructions.emplace_back(instruction);
 }
 
-bool Procedure::PushInstruction(Instruction *instruction)
+bool Procedure::PushInstruction(Instruction * instruction)
 {
-  auto compound = dynamic_cast<CompoundInstruction *>(_root.get());
+  if (Root() == nullptr)
+  {
+    _instructions.emplace_back(new Sequence{});
+  }
+  auto compound = dynamic_cast<CompoundInstruction *>(Root());
   if (compound)
   {
     compound->PushBack(instruction);
@@ -97,39 +107,42 @@ bool Procedure::PushInstruction(Instruction *instruction)
 
 bool Procedure::Setup()
 {
-  bool status = true;
   if (Root() == nullptr)
   {
     return true;
   }
-  if (!Root()->Setup(*this))
-  {
-    status = false;
-  }
-  return status;
+  return Root()->Setup(*this);
 }
 
-void Procedure::ExecuteSingle(UserInterface *ui)
+void Procedure::ExecuteSingle(UserInterface * ui)
 {
+  if (Root() == nullptr)
+  {
+    return;
+  }
   Root()->ExecuteSingle(ui, _workspace.get());
 }
 
 ExecutionStatus Procedure::GetStatus() const
 {
+  if (Root() == nullptr)
+  {
+    return ExecutionStatus::NOT_STARTED;
+  }
   return Root()->GetStatus();
 }
 
-bool Procedure::HasAttribute(const std::string &name) const
+bool Procedure::HasAttribute(const std::string & name) const
 {
   return _attributes.HasAttribute(name);
 }
 
-std::string Procedure::GetAttribute(const std::string &name) const
+std::string Procedure::GetAttribute(const std::string & name) const
 {
   return _attributes.GetAttribute(name);
 }
 
-bool Procedure::AddAttribute(const std::string &name, const std::string &value)
+bool Procedure::AddAttribute(const std::string & name, const std::string & value)
 {
   return _attributes.AddAttribute(name, value);
 }

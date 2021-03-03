@@ -31,6 +31,7 @@
 #include "Instruction.h"
 #include "Fallback.h"
 #include "ForceSuccess.h"
+#include "Include.h"
 #include "Inverter.h"
 #include "ParallelSequence.h"
 #include "Repeat.h"
@@ -104,6 +105,7 @@ void InitInstructionRegistry(InstructionRegistry & registry)
 
   // Register decorator instructions:
   (void)RegisterInstruction<ForceSuccess>(registry);
+  (void)RegisterInstruction<Include>(registry);
   (void)RegisterInstruction<Inverter>(registry);
   (void)RegisterInstruction<Repeat>(registry);
 

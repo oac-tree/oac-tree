@@ -8,6 +8,7 @@ target_sources(sequencer-obj
         ${CMAKE_CURRENT_LIST_DIR}/ForceSuccess.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Include.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Instruction.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/InstructionHelper.cpp
         ${CMAKE_CURRENT_LIST_DIR}/InstructionRegistry.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Inverter.cpp
         ${CMAKE_CURRENT_LIST_DIR}/ParallelSequence.cpp

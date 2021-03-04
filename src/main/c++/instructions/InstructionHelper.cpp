@@ -37,25 +37,27 @@
 
 // Type definition
 
-namespace sup {
-
-namespace sequencer {
-
-namespace helper {
-
 // Global variables
 
-const char PATH_DELIMITER='.';
+static const char PATH_DELIMITER='.';
 
 // Function declaration
 
 namespace {
 
 std::pair<std::string, std::string> StripPath(const std::string & path);
-bool CloneChildInstructions(Instruction * clone, const Instruction * source);
-bool AddClonedChildInstruction(Instruction * instr, const Instruction * child);
+bool CloneChildInstructions(sup::sequencer::Instruction * clone,
+                            const sup::sequencer::Instruction * source);
+bool AddClonedChildInstruction(sup::sequencer::Instruction * instr,
+                               const sup::sequencer::Instruction * child);
 
 } // Unnamed namespace
+
+namespace sup {
+
+namespace sequencer {
+
+namespace InstructionHelper {
 
 // Function definition
 
@@ -108,6 +110,12 @@ bool InitialiseVariableAttributes(Instruction & instruction, const AttributeMap 
   return result;
 }
 
+} // namespace InstructionHelper
+
+} // namespace sequencer
+
+} // namespace sup
+
 namespace {
 
 std::pair<std::string, std::string> StripPath(const std::string & path)
@@ -122,7 +130,8 @@ std::pair<std::string, std::string> StripPath(const std::string & path)
   return result;
 }
 
-bool CloneChildInstructions(Instruction * clone, const Instruction * source)
+bool CloneChildInstructions(sup::sequencer::Instruction * clone,
+                            const sup::sequencer::Instruction * source)
 {
   bool result = true;
   if (clone == nullptr || source == nullptr)
@@ -136,30 +145,25 @@ bool CloneChildInstructions(Instruction * clone, const Instruction * source)
   return result;
 }
 
-bool AddClonedChildInstruction(Instruction * instr, const Instruction * child)
+bool AddClonedChildInstruction(sup::sequencer::Instruction * instr,
+                               const sup::sequencer::Instruction * child)
 {
-  auto compound = dynamic_cast<CompoundInstruction *>(instr);
+  auto compound = dynamic_cast<sup::sequencer::CompoundInstruction *>(instr);
   if (compound)
   {
-    compound->PushBack(CloneInstruction(child));
+    compound->PushBack(sup::sequencer::InstructionHelper::CloneInstruction(child));
     return true;
   }
-  auto decorator = dynamic_cast<DecoratorInstruction *>(instr);
+  auto decorator = dynamic_cast<sup::sequencer::DecoratorInstruction *>(instr);
   if (decorator)
   {
-    decorator->SetInstruction(CloneInstruction(child));
+    decorator->SetInstruction(sup::sequencer::InstructionHelper::CloneInstruction(child));
     return true;
   }
   return false;
 }
 
 } // Unnamed namespace
-
-} // namespace helper
-
-} // namespace sequencer
-
-} // namespace sup
 
 extern "C" {
 

@@ -70,15 +70,15 @@ bool Include::SetupImpl(const Procedure & proc)
 {
   auto instructions = proc.GetInstructions();
   auto path = GetPath();
-  auto instr = helper::FindInstruction(instructions, path);
+  auto instr = InstructionHelper::FindInstruction(instructions, path);
   if (instr == nullptr)
   {
     log_warning("Include::SetupImpl(): instruction with path '%s' not found",
                 path.c_str());
     return false;
   }
-  std::unique_ptr<Instruction> clone(helper::CloneInstruction(instr));
-  if (helper::InitialiseVariableAttributes(*clone, GetAttributes()))
+  std::unique_ptr<Instruction> clone(InstructionHelper::CloneInstruction(instr));
+  if (InstructionHelper::InitialiseVariableAttributes(*clone, GetAttributes()))
   {
     SetInstruction(clone.release());
     return true;

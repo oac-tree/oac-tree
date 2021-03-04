@@ -47,7 +47,7 @@ namespace sup {
 
 namespace sequencer {
 
-namespace helper {
+namespace InstructionHelper {
 
 // Global variables
 
@@ -83,7 +83,7 @@ bool InitialiseVariableAttributes(Instruction & instruction, const AttributeMap 
 
 // Function definitions
 
-} // namespace helper
+} // namespace InstructionHelper
 
 } // namespace sequencer
 

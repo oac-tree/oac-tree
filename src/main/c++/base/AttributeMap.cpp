@@ -21,6 +21,8 @@
 
 // Global header files
 
+#include <common/log-api.h>
+
 // Local header files
 
 #include "AttributeMap.h"
@@ -43,6 +45,8 @@ namespace sup {
 namespace sequencer {
 
 // Global variables
+
+static const char VAR_ATTRIBUTE_CHAR='#';
 
 // Function declaration
 
@@ -112,8 +116,10 @@ bool AttributeMap::InitialiseVariableAttributes(const AttributeMap & source)
   for (auto attr_name : GetAttributeNames())
   {
     auto attr_value = GetAttribute(attr_name);
-    if (StartsWith(attr_value, '$'))
+    if (StartsWith(attr_value, VAR_ATTRIBUTE_CHAR))
     {
+      log_info("AttributeMap::InitialiseVariableAttributes() - attr_name('%s'), "
+               "attr_value('%s')", attr_name.c_str(), attr_value.c_str());
       auto var_name = attr_value.substr(1);
       if (!source.HasAttribute(var_name))
       {
@@ -121,6 +127,8 @@ bool AttributeMap::InitialiseVariableAttributes(const AttributeMap & source)
         continue;
       }
       auto var_value = source.GetAttribute(var_name);
+      log_info("AttributeMap::InitialiseVariableAttributes() - set attr_name('%s') "
+               "to '%s'", attr_name.c_str(), var_value.c_str());
       _attributes[attr_name] = var_value;
     }
   }

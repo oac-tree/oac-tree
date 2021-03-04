@@ -66,6 +66,8 @@ const Instruction * FindInstruction(const std::vector<const Instruction *> & ins
 {
   const Instruction * result = nullptr;
   auto names = StripPath(name_path);
+  log_info("sup::sequencer::InstructionHelper::FindInstruction(): checking "
+             "names ('%s','%s')..", names.first.c_str(), names.second.c_str());
   for (auto inst : instructions)
   {
     if (inst->GetName() == names.first)
@@ -74,10 +76,14 @@ const Instruction * FindInstruction(const std::vector<const Instruction *> & ins
       break;
     }
   }
-  if (result == nullptr || names.second.empty())
+  if (result == nullptr)
   {
-    log_warning("sup::sequencer::helper::FindInstruction(): could not "
+    log_warning("sup::sequencer::InstructionHelper::FindInstruction(): could not "
                 "find instruction with name_path '%s'", name_path.c_str());
+    return result;
+  }
+  if (names.second.empty())
+  {
     return result;
   }
   return FindInstruction(result->ChildInstructions(), names.second);
@@ -125,7 +131,7 @@ std::pair<std::string, std::string> StripPath(const std::string & path)
   result.first = path.substr(0, delim_pos);
   if (delim_pos != std::string::npos)
   {
-    result.second = path.substr(delim_pos);
+    result.second = path.substr(delim_pos + 1);
   }
   return result;
 }

@@ -25,6 +25,7 @@
 // Local header files
 
 #include "InstructionParser.h"
+#include "Include.h"
 #include "InstructionRegistry.h"
 #include "CompoundInstruction.h"
 #include "DecoratorInstruction.h"
@@ -172,6 +173,12 @@ bool AddChildInstructions(Instruction *instruction, const std::vector<TreeData> 
   auto decorator = dynamic_cast<DecoratorInstruction *>(instruction);
   auto instr_name = instruction->GetName();
   auto instr_type = instruction->GetType();
+
+  // Ignore Include instruction:
+  if (instr_type == Include::Type)
+  {
+    return true;
+  }
   log_info("AddChildInstructions() - (%s:%s)", instr_name.c_str(), instr_type.c_str());
 
   if (decorator && children.size() == 1u)

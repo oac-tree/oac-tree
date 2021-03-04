@@ -21,6 +21,7 @@
 
 // Global header files
 #include <common/log-api.h>
+#include <algorithm>
 
 // Local header files
 
@@ -43,7 +44,15 @@ const std::string Procedure::TICK_TIMEOUT_ATTRIBUTE_NAME = "tickTimeout";
 
 // Global variables
 
+static const std::string IS_ROOT_ATTRIBUTE="isRoot";
+static const std::vector<std::string> TRUE_LIST = {
+    "True", "true", "TRUE",
+    "Yes", "yes", "YES"
+};
+
 // Function declaration
+
+static bool HasRootAttributeSet(const Instruction & instruction);
 
 // Function definition
 
@@ -66,7 +75,18 @@ const Instruction * Procedure::RootInstrunction() const
   {
     return nullptr;
   }
-  return _instructions[0].get();
+  if (_instructions.size() == 1)
+  {
+    return _instructions[0].get();
+  }
+  for (auto & instr : _instructions)
+  {
+    if (HasRootAttributeSet(*instr))
+    {
+      return instr.get();
+    }
+  }
+  return nullptr;
 }
 
 std::vector<const Instruction *> Procedure::GetInstructions() const
@@ -79,25 +99,14 @@ std::vector<const Instruction *> Procedure::GetInstructions() const
   return result;
 }
 
-void Procedure::SetRootInstruction(Instruction * instruction)
-{
-  _instructions.clear();
-  _instructions.emplace_back(instruction);
-}
-
 bool Procedure::PushInstruction(Instruction * instruction)
 {
-  if (RootInstrunction() == nullptr)
+  if (instruction == nullptr)
   {
-    _instructions.emplace_back(new Sequence{});
+    return false;
   }
-  auto compound = dynamic_cast<CompoundInstruction *>(RootInstrunction());
-  if (compound)
-  {
-    compound->PushBack(instruction);
-    return true;
-  }
-  return false;
+  _instructions.emplace_back(instruction);
+  return true;
 }
 
 bool Procedure::AddVariable(std::string name, Variable * var)
@@ -155,6 +164,17 @@ std::string Procedure::GetAttribute(const std::string & name) const
 bool Procedure::AddAttribute(const std::string & name, const std::string & value)
 {
   return _attributes.AddAttribute(name, value);
+}
+
+static bool HasRootAttributeSet(const Instruction & instruction)
+{
+  if (!instruction.HasAttribute(IS_ROOT_ATTRIBUTE))
+  {
+    return false;
+  }
+  auto attr_val = instruction.GetAttribute(IS_ROOT_ATTRIBUTE);
+  auto it = std::find(TRUE_LIST.begin(), TRUE_LIST.end(), attr_val);
+  return it != TRUE_LIST.end();
 }
 
 } // namespace sequencer

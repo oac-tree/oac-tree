@@ -109,13 +109,6 @@ class Procedure
     std::vector<const Instruction *> GetInstructions() const;
 
     /**
-     * @brief Set the root instruction.
-     *
-     * @param instruction Root instruction to set.
-     */
-    void SetRootInstruction(Instruction * instruction);
-
-    /**
      * @brief Push Instruction at top level.
      */
     bool PushInstruction(Instruction * instruction);

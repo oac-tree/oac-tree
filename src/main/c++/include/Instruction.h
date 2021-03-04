@@ -98,6 +98,13 @@ class Instruction
      */
     virtual bool SetupImpl(const Procedure & proc);
 
+    /**
+     * @brief Get list of child instructions implementation (const version).
+     *
+     * @return List of child instructions.
+     */
+    virtual std::vector<const Instruction *> ChildInstructionsImpl() const;
+
   protected:
 
   public:
@@ -194,6 +201,28 @@ class Instruction
      * @return true when successful.
      */
     bool AddAttributes(const AttributeMap & attributes);
+
+    /**
+     * @brief Initialise variable attributes with values from attribute map.
+     *
+     * @param source Map containing variable name - value pairs.
+     * @return true when all variable attributes were initialised.
+     */
+    bool InitialiseVariableAttributes(const AttributeMap & source);
+
+    /**
+     * @brief Get list of child instructions.
+     *
+     * @return List of child instructions.
+     */
+    std::vector<Instruction *> ChildInstructions();
+
+    /**
+     * @brief Get list of child instructions (const version).
+     *
+     * @return List of child instructions.
+     */
+    std::vector<const Instruction *> ChildInstructions() const;
 };
 
 // Global variables

@@ -32,6 +32,12 @@
 
 // Type definition
 
+namespace {
+
+bool StartsWith(const std::string & str, char c);
+
+}
+
 namespace sup {
 
 namespace sequencer {
@@ -100,9 +106,43 @@ bool AttributeMap::Remove(const std::string & name)
   return _attributes.erase(name) > 0;
 }
 
+bool AttributeMap::InitialiseVariableAttributes(const AttributeMap & source)
+{
+  bool result = true;
+  for (auto attr_name : GetAttributeNames())
+  {
+    auto attr_value = GetAttribute(attr_name);
+    if (StartsWith(attr_value, '$'))
+    {
+      auto var_name = attr_value.substr(1);
+      if (!source.HasAttribute(var_name))
+      {
+        result = false;
+        continue;
+      }
+      auto var_value = source.GetAttribute(var_name);
+      _attributes[attr_name] = var_value;
+    }
+  }
+  return result;
+}
+
 } // namespace sequencer
 
 } // namespace sup
+
+namespace {
+
+bool StartsWith(const std::string & str, char c)
+{
+  if (str.size() == 0)
+  {
+    return false;
+  }
+  return str[0] == c;
+}
+
+}
 
 extern "C" {
 

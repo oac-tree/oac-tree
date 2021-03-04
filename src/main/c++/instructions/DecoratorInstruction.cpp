@@ -56,6 +56,16 @@ bool DecoratorInstruction::SetupImpl(const Procedure & proc){
     return _child->Setup(proc);
 }
 
+std::vector<const Instruction *> DecoratorInstruction::ChildInstructionsImpl() const
+{
+  std::vector<const Instruction *> result;
+  if (_child)
+  {
+    result.push_back(_child.get());
+  }
+  return result;
+}
+
 DecoratorInstruction::DecoratorInstruction(const std::string & type)
   : Instruction(type)
   , _child{}
@@ -63,11 +73,6 @@ DecoratorInstruction::DecoratorInstruction(const std::string & type)
 
 DecoratorInstruction::~DecoratorInstruction()
 {}
-
-const Instruction * DecoratorInstruction::ChildInstruction() const
-{
-  return _child.get();
-}
 
 void DecoratorInstruction::SetInstruction(Instruction * instruction)
 {

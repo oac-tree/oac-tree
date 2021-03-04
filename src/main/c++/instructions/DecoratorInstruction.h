@@ -65,6 +65,13 @@ class DecoratorInstruction : public Instruction
      */
     bool SetupImpl(const Procedure & proc) override;
 
+    /**
+     * @brief Get list of child instructions implementation (const version).
+     *
+     * @return List of child instructions.
+     */
+    std::vector<const Instruction *> ChildInstructionsImpl() const override;
+
   protected:
     /**
      * @brief Decorated instruction
@@ -83,13 +90,6 @@ class DecoratorInstruction : public Instruction
      * @brief Destructor.
      */
     ~DecoratorInstruction() override;
-
-    /**
-     * @brief Get the decorated child instruction.
-     *
-     * @return Pointer to decorated instruction.
-     */
-    const Instruction * ChildInstruction() const;
 
     /**
      * @brief Set the decorated child instruction.

@@ -68,6 +68,16 @@ bool CompoundInstruction::SetupImpl(const Procedure & proc)
   return result;
 }
 
+std::vector<const Instruction *> CompoundInstruction::ChildInstructionsImpl() const
+{
+  std::vector<const Instruction *> result;
+  for (auto instr : _children)
+  {
+    result.push_back(instr);
+  }
+  return result;
+}
+
 CompoundInstruction::CompoundInstruction(const std::string & type)
     : Instruction(type)
 {}
@@ -78,16 +88,6 @@ CompoundInstruction::~CompoundInstruction()
   {
     delete instruction;
   }
-}
-
-std::vector<const Instruction *> CompoundInstruction::ChildInstructions() const
-{
-  std::vector<const Instruction *> result;
-  for (auto instr : _children)
-  {
-    result.push_back(instr);
-  }
-  return result;
 }
 
 void CompoundInstruction::PushBack(Instruction * instruction)

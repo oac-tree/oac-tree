@@ -64,14 +64,6 @@ const Instruction * FindInstruction(const std::vector<const Instruction *> & ins
                                     const std::string & name_path);
 
 /**
- * @brief Get a list of direct child instructions from an instruction.
- *
- * @param instruction Instruction to query.
- * @return List of child instructions.
- */
-std::vector<const Instruction *> GetChildInstructions(const Instruction * instruction);
-
-/**
  * @brief Clone an instruction, including its descendents.
  *
  * @param instruction Instruction to clone.

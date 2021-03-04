@@ -86,6 +86,11 @@ bool Instruction::SetupImpl(const Procedure & proc)
   return true;
 }
 
+std::vector<const Instruction *> Instruction::ChildInstructionsImpl() const
+{
+  return {};
+}
+
 Instruction::Instruction(const std::string & type)
   : _type{type}
   , _status{ExecutionStatus::NOT_STARTED}
@@ -171,6 +176,27 @@ bool Instruction::AddAttributes(const AttributeMap & attributes)
   }
   return result;
 }
+
+bool Instruction::InitialiseVariableAttributes(const AttributeMap & source)
+{
+  return _attributes.InitialiseVariableAttributes(source);
+}
+
+std::vector<Instruction *> Instruction::ChildInstructions()
+{
+  std::vector<Instruction *> result;
+  for (auto instr : static_cast<const Instruction &>(*this).ChildInstructions())
+  {
+    result.push_back(const_cast<Instruction *>(instr));
+  }
+  return result;
+}
+
+std::vector<const Instruction *> Instruction::ChildInstructions() const
+{
+  return ChildInstructionsImpl();
+}
+
 
 bool NeedsExecute(ExecutionStatus status)
 {

@@ -74,26 +74,11 @@ const Instruction * FindInstruction(const std::vector<const Instruction *> & ins
   }
   if (result == nullptr || names.second.empty())
   {
+    log_warning("sup::sequencer::helper::FindInstruction(): could not "
+                "find instruction with name_path '%s'", name_path.c_str());
     return result;
   }
-  return FindInstruction(GetChildInstructions(result), names.second);
-}
-
-std::vector<const Instruction *> GetChildInstructions(const Instruction * instruction)
-{
-  auto compound = dynamic_cast<const CompoundInstruction *>(instruction);
-  if (compound)
-  {
-    return compound->ChildInstructions();
-  }
-
-  std::vector<const Instruction *> result;
-  auto decorator = dynamic_cast<const DecoratorInstruction *>(instruction);
-  if (decorator)
-  {
-    result.push_back(decorator->ChildInstruction());
-  }
-  return result;
+  return FindInstruction(result->ChildInstructions(), names.second);
 }
 
 Instruction * CloneInstruction(const Instruction * instruction)
@@ -115,7 +100,12 @@ Instruction * CloneInstruction(const Instruction * instruction)
 
 bool InitialiseVariableAttributes(Instruction & instruction, const AttributeMap & attributes)
 {
-  return false;
+  bool result = instruction.InitialiseVariableAttributes(attributes);
+  for (auto child : instruction.ChildInstructions())
+  {
+    result = InitialiseVariableAttributes(*child, attributes) && result;
+  }
+  return result;
 }
 
 namespace {
@@ -139,7 +129,7 @@ bool CloneChildInstructions(Instruction * clone, const Instruction * source)
   {
     return false;
   }
-  for (auto child : GetChildInstructions(source))
+  for (auto child : source->ChildInstructions())
   {
     result = AddClonedChildInstruction(clone, child) && result;
   }

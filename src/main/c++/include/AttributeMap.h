@@ -130,6 +130,14 @@ class AttributeMap
      * @return true when attribute was found and removed.
      */
     bool Remove(const std::string & name);
+
+    /**
+     * @brief Initialise variable attributes with values from other map.
+     *
+     * @param source Map containing variable name - value pairs.
+     * @return true when all variable attributes were initialised.
+     */
+    bool InitialiseVariableAttributes(const AttributeMap & source);
 };
 
 // Global variables

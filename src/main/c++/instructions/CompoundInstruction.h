@@ -65,6 +65,13 @@ class CompoundInstruction : public Instruction
      */
     bool SetupImpl(const Procedure & proc) override;
 
+    /**
+     * @brief Get list of child instructions implementation (const version).
+     *
+     * @return List of child instructions.
+     */
+    std::vector<const Instruction *> ChildInstructionsImpl() const override;
+
   protected:
     /**
      * @brief Container for child instructions.
@@ -82,13 +89,6 @@ class CompoundInstruction : public Instruction
      * @brief Destructor.
      */
     ~CompoundInstruction() override;
-
-    /**
-     * @brief Get list of child instructions.
-     *
-     * @return List of child instructions.
-     */
-    std::vector<const Instruction *> ChildInstructions() const;
 
     /**
      * @brief Add child instruction.

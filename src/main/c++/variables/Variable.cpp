@@ -123,17 +123,17 @@ bool Variable::SetValue(const ::ccs::types::AnyValue &value, const std::string &
   return status;
 }
 
-bool Variable::HasAttribute(const std::string &name) const
+bool Variable::HasAttribute(const std::string & name) const
 {
   return _attributes.HasAttribute(name);
 }
 
-std::string Variable::GetAttribute(const std::string &name) const
+std::string Variable::GetAttribute(const std::string & name) const
 {
   return _attributes.GetAttribute(name);
 }
 
-bool Variable::AddAttribute(const std::string &name, const std::string &value)
+bool Variable::AddAttribute(const std::string & name, const std::string & value)
 {
   std::lock_guard<std::mutex> lock(_access_mutex);
   bool status = _attributes.AddAttribute(name, value);
@@ -141,11 +141,11 @@ bool Variable::AddAttribute(const std::string &name, const std::string &value)
   return status;
 }
 
-bool Variable::AddAttributes(const std::vector<std::pair<const std::string, std::string>> &attributes)
+bool Variable::AddAttributes(const AttributeMap & attributes)
 {
   std::lock_guard<std::mutex> lock(_access_mutex);
   bool status = true;
-  for (const auto &attr : attributes) {
+  for (auto & attr : attributes) {
     // Order in AND matters: add all attributes, even if previous adding failed.
     status = _attributes.AddAttribute(attr.first, attr.second) && status;
   }

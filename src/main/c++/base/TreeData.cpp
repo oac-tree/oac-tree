@@ -75,9 +75,9 @@ bool TreeData::AddAttribute(const std::string & name, const std::string & value)
   return _attributes.AddAttribute(name, value);
 }
 
-std::vector<std::pair<const std::string, std::string>> TreeData::Attributes() const
+const AttributeMap & TreeData::Attributes() const
 {
-  return _attributes.AttributeList();
+  return _attributes;
 }
 
 bool TreeData::AddChild(const TreeData & child)

@@ -187,7 +187,7 @@ class Variable
      * @param attributes Attribute list.
      * @return true when successful.
      */
-    bool AddAttributes(const std::vector<std::pair<const std::string, std::string>> & attributes);
+    bool AddAttributes(const AttributeMap & attributes);
 };
 
 // Global variables

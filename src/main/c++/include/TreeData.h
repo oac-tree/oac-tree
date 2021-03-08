@@ -121,7 +121,7 @@ class TreeData
      *
      * @return Map of all attributes.
      */
-    std::vector<std::pair<const std::string, std::string>> Attributes() const;
+    const AttributeMap & Attributes() const;
 
     /**
      * @brief Add child element data.

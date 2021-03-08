@@ -64,7 +64,8 @@ class AttributeMap
     /**
      * @brief Implementation of the map of attributes.
      */
-    std::map<std::string, std::string> _attributes;
+    using map_type = std::map<std::string, std::string>;
+    map_type _attributes;
 
   protected:
 
@@ -78,6 +79,16 @@ class AttributeMap
      * @brief Destructor.
      */
     ~AttributeMap();
+
+    /**
+     * @brief Iterator forwarding.
+     */
+    using iterator = map_type::iterator;
+    using const_iterator = map_type::const_iterator;
+    iterator begin() { return _attributes.begin(); }
+    iterator end() { return _attributes.end(); }
+    const_iterator begin() const { return _attributes.begin(); }
+    const_iterator end() const { return _attributes.end(); }
 
     /**
      * @brief Indicate presence of attribute with given name.

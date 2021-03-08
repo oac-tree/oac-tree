@@ -82,7 +82,7 @@ bool Include::SetupImpl(const Procedure & proc)
   {
     log_info("Include::SetupImpl(): variable attributes successfully set");
     SetInstruction(clone.release());
-    return true;
+    return _child->Setup(proc);
   }
   log_warning("Include::SetupImpl(): instruction with path '%s' could not be ",
               "properly initialised with the given attributes", path.c_str());

@@ -23,6 +23,7 @@
 
 #include <iostream> // std::cout, etc.
 #include <memory> // std::unique_ptr
+#include <string> // std::string
 
 #include <common/log-api.h> // CCS logging library
 #include <common/SysTools.h> // Misc. helper functions
@@ -53,6 +54,7 @@ struct CLIParams
 // Function declaration
 
 CLIParams ParseCommandLineArgs(int argc, char * argv[]);
+std::string GetFileDirectory(const std::string & filename);
 bool IsHelpOption(const char * option);
 bool IsFileOption(const char * option);
 bool IsVerboseOption(const char * option);
@@ -104,6 +106,7 @@ int main(int argc, char * argv[])
     log_error("sequencer-cli couldn't parse file <%s>", params.filepath);
     return 1;
   }
+  proc->SetCurrentDirectory(GetFileDirectory(params.filepath));
 
   sup::sequencer::CLInterface ui(params.verbose);
   sup::sequencer::Runner runner(&ui);
@@ -151,6 +154,16 @@ CLIParams ParseCommandLineArgs(int argc, char * argv[])
     }
   }
   return result;
+}
+
+std::string GetFileDirectory(const std::string & filename)
+{
+  auto pos = filename.find_last_of("/");
+  if (pos == std::string::npos)
+  {
+    return {};
+  }
+  return filename.substr(0, pos);
 }
 
 bool IsHelpOption(const char * option)

@@ -76,8 +76,22 @@ class Procedure
 
     AttributeMap _attributes;
 
+    // Directory of current procedure (if loaded from file).
+    std::string _current_directory;
+
     // Cache for other procedures loaded from files and to be used by include nodes.
     mutable std::map<std::string, std::unique_ptr<Procedure>> _procedure_cache;
+
+    /**
+     * @brief Get an absolute file path from the given filename.
+     *
+     * @param filename Filename of a procedure file.
+     * @return Full pathname of the file.
+     *
+     * @details If the given pathname is a relative pathname, the current directory of this
+     * procedure is prepended.
+     */
+    std::string GetFullPathname(const std::string & filename) const;
 
     /**
      * @brief Load a procedure from file or cache.
@@ -117,6 +131,14 @@ class Procedure
      * @return Root instruction.
      */
     Instruction * RootInstrunction();
+
+    /**
+     * @brief Set directory of current procedure (if loaded from file).
+     *
+     * @param directory Directory of current procedure.
+     * @details This directory is used for external includes with relative pathnames.
+     */
+    void SetCurrentDirectory(const std::string & directory);
 
     /**
      * @brief Get root instruction (const version).

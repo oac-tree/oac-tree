@@ -57,6 +57,20 @@ static bool HasRootAttributeSet(const Instruction & instruction);
 
 // Function definition
 
+std::string Procedure::GetFullPathname(const std::string & filename) const
+{
+  if (filename.empty())
+  {
+    log_warning("Procedure::GetFullPathname() - empty filename as argument");
+    return {};
+  }
+  if (filename.front() == '/')
+  {
+    return filename;
+  }
+  return _current_directory + filename;
+}
+
 const std::unique_ptr<Procedure> & Procedure::LoadProcedure(const std::string & filename) const
 {
   if (_procedure_cache.find(filename) == _procedure_cache.end())
@@ -87,6 +101,23 @@ Procedure::Procedure()
 {}
 
 Procedure::~Procedure() = default;
+
+void Procedure::SetCurrentDirectory(const std::string & directory)
+{
+  if (directory.empty())
+  {
+    log_warning("Procedure::SetCurrentDirectory() - trying to set empty directory name..");
+    return;
+  }
+  if (directory.back() == '/')
+  {
+    _current_directory = directory;
+  }
+  else
+  {
+    _current_directory = directory + "/";
+  }
+}
 
 Instruction * Procedure::RootInstrunction()
 {
@@ -126,7 +157,7 @@ std::vector<const Instruction *> Procedure::GetInstructions(const std::string & 
   }
   else
   {
-    const auto & loaded_proc = LoadProcedure(filename);
+    const auto & loaded_proc = LoadProcedure(GetFullPathname(filename));
     if (loaded_proc)
     {
       return loaded_proc->GetInstructions();
@@ -167,6 +198,7 @@ bool Procedure::Setup()
   {
     return true;
   }
+  ClearProcedureCache();
   return RootInstrunction()->Setup(*this);
 }
 

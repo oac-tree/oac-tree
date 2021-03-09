@@ -49,6 +49,9 @@ const std::string Include::Type = "Include";
 
 // Function declaration
 
+static std::string GetFullPathname(const std::string & filename,
+                                   const std::string & current_directory);
+
 // Function definition
 
 ExecutionStatus Include::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
@@ -97,12 +100,13 @@ ExecutionStatus Include::CalculateStatus() const
 
 bool Include::SetupImpl(const Procedure & proc)
 {
-  std::string filename;
+  std::string full_filename;
   if (HasAttribute(FILE_ATTRIBUTE_NAME))
   {
-    filename = GetAttribute(FILE_ATTRIBUTE_NAME);
+    auto filename = GetAttribute(FILE_ATTRIBUTE_NAME);
+    full_filename = GetFullPathname(filename, _current_directory);
   }
-  auto instructions = proc.GetInstructions(filename);
+  auto instructions = proc.GetInstructions(full_filename);
   auto path = GetPath();
   auto instr = InstructionHelper::FindInstruction(instructions, path);
   if (instr == nullptr)
@@ -129,6 +133,30 @@ Include::Include()
 
 Include::~Include()
 {}
+
+void Include::SetCurrentDirectory(const std::string & directory)
+{
+  _current_directory = directory;
+}
+
+static std::string GetFullPathname(const std::string & filename,
+                                   const std::string & current_directory)
+{
+  log_info("GetFullPathname(%s, %s) - entering function..",
+           filename.c_str(), current_directory.c_str());
+  if (filename.empty())
+  {
+    log_warning("GetFullPathname() - empty filename as argument");
+    return {};
+  }
+  if (filename.front() == '/')
+  {
+    return filename;
+  }
+  return current_directory + filename;
+}
+
+
 
 } // namespace sequencer
 

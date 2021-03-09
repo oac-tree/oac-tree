@@ -106,6 +106,12 @@ int main(int argc, char * argv[])
     return 1;
   }
 
+  if (!proc->Setup())
+  {
+    log_error("sequencer-cli couldn't setup the parsed procedure from file: <%s>", params.filepath);
+    return 1;
+  }
+
   sup::sequencer::CLInterface ui(params.verbose);
   sup::sequencer::Runner runner(&ui);
   runner.SetProcedure(proc.get());

@@ -57,6 +57,9 @@ namespace sequencer {
 class Include : public DecoratorInstruction
 {
   private:
+    // Directory of original file for this instruction (if loaded from file).
+    std::string _current_directory;
+
     ExecutionStatus ExecuteSingleImpl(UserInterface * ui, Workspace * ws) override;
 
     bool PostInitialiseVariables(const AttributeMap & source) override;
@@ -85,6 +88,14 @@ class Include : public DecoratorInstruction
      * @brief Destructor.
      */
     ~Include() override;
+
+    /**
+     * @brief Set directory of origin of this include instruction (if loaded from file).
+     *
+     * @param directory Directory of original file for this instruction.
+     * @details This directory is used for external includes with relative pathnames.
+     */
+    void SetCurrentDirectory(const std::string & directory);
 
     static const std::string Type;
 };

@@ -83,26 +83,15 @@ class Procedure
     mutable std::map<std::string, std::unique_ptr<Procedure>> _procedure_cache;
 
     /**
-     * @brief Get an absolute file path from the given filename.
-     *
-     * @param filename Filename of a procedure file.
-     * @return Full pathname of the file.
-     *
-     * @details If the given pathname is a relative pathname, the current directory of this
-     * procedure is prepended.
-     */
-    std::string GetFullPathname(const std::string & filename) const;
-
-    /**
      * @brief Load a procedure from file or cache.
      *
      * @param filename Filename of the procedure file.
-     * @return Reference to the procedure.
+     * @return Pointer to the procedure or nullptr in case of failure to load the procedure.
      *
-     * @details This method returns only a reference to a unique pointer. The Procedure
+     * @details This method returns a pointer to a const Procedure. The Procedure itself
      * is owned by the cache.
      */
-    const std::unique_ptr<Procedure> & LoadProcedure(const std::string & filename) const;
+    const Procedure * LoadProcedure(const std::string & filename) const;
 
     /**
      * @brief Clear the cached procedures.
@@ -139,6 +128,14 @@ class Procedure
      * @details This directory is used for external includes with relative pathnames.
      */
     void SetCurrentDirectory(const std::string & directory);
+
+    /**
+     * @brief Get directory of current procedure (if loaded from file).
+     *
+     * @return Directory of current procedure.
+     * @details This directory is used for external includes with relative pathnames.
+     */
+    std::string GetCurrentDirectory() const;
 
     /**
      * @brief Get root instruction (const version).

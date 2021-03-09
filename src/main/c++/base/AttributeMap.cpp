@@ -46,7 +46,7 @@ namespace sequencer {
 
 // Global variables
 
-static const char VAR_ATTRIBUTE_CHAR='#';
+static const char VAR_ATTRIBUTE_CHAR='$';
 
 // Function declaration
 

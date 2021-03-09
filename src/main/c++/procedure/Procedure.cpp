@@ -57,23 +57,7 @@ static bool HasRootAttributeSet(const Instruction & instruction);
 
 // Function definition
 
-std::string Procedure::GetFullPathname(const std::string & filename) const
-{
-  log_info("Procedure::GetFullPathname - filename '%s', current dir '%s'",
-           filename.c_str(), _current_directory.c_str());
-  if (filename.empty())
-  {
-    log_warning("Procedure::GetFullPathname() - empty filename as argument");
-    return {};
-  }
-  if (filename.front() == '/')
-  {
-    return filename;
-  }
-  return _current_directory + filename;
-}
-
-const std::unique_ptr<Procedure> & Procedure::LoadProcedure(const std::string & filename) const
+const Procedure * Procedure::LoadProcedure(const std::string & filename) const
 {
   if (_procedure_cache.find(filename) == _procedure_cache.end())
   {
@@ -87,9 +71,9 @@ const std::unique_ptr<Procedure> & Procedure::LoadProcedure(const std::string & 
   if (_procedure_cache.find(filename) == _procedure_cache.end())
   {
     log_warning("Procedure::LoadProcedure('%s') - Could not load procedure from file..", filename.c_str());
-    return {};
+    return nullptr;
   }
-  return _procedure_cache[filename];
+  return _procedure_cache[filename].get();
 }
 
 void Procedure::ClearProcedureCache() const
@@ -119,6 +103,11 @@ void Procedure::SetCurrentDirectory(const std::string & directory)
   {
     _current_directory = directory + "/";
   }
+}
+
+std::string Procedure::GetCurrentDirectory() const
+{
+  return _current_directory;
 }
 
 Instruction * Procedure::RootInstrunction()
@@ -159,7 +148,7 @@ std::vector<const Instruction *> Procedure::GetInstructions(const std::string & 
   }
   else
   {
-    const auto & loaded_proc = LoadProcedure(GetFullPathname(filename));
+    auto loaded_proc = LoadProcedure(filename);
     if (loaded_proc)
     {
       return loaded_proc->GetInstructions();

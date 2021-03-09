@@ -3,10 +3,10 @@
            name="Procedure for testing local Include instruction"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
-    <Wait name="SingleWait" timeout="#wait" />
+    <Wait name="SingleWait" timeout="$wait" />
     <Sequence name="WaitLongEnough">
-        <Include name="FirstWait" path="SingleWait" wait="#par1" />
-        <Wait timeout="#par2" />
+        <Include name="FirstWait" path="SingleWait" wait="$par1" />
+        <Wait timeout="$par2" />
     </Sequence>
     <Sequence isRoot="True">
         <Include name="Wait Sequence" path="WaitLongEnough" par1="0.5" par2="1.0" />

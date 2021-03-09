@@ -4,11 +4,11 @@
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
     <Sequence name="MyWait">
-        <Wait timeout="#par1" />
-        <Wait timeout="#par1" />
+        <Wait timeout="$par1" />
+        <Wait timeout="$par1" />
     </Sequence>
     <Sequence isRoot="True">
-        <Include name="Local Wait Sequence" path="MyWait" par1="0.5" par2="1.0" />
+        <Include name="Local Wait Sequence" path="MyWait" par1="1.0" />
         <Include name="External Wait" path="Parallel Wait" file="parallel_sequence.xml" />
     </Sequence>
 </Procedure>

@@ -56,9 +56,11 @@ namespace sequencer {
 
 /**
  * @brief Parse to Instruction.
+ *
+ * @note If more than just the directory needs to be passed as a setting from the procedure,
+ * this argument needs to be replaced by a container.
  */
-std::unique_ptr<Instruction> ParseInstruction(const TreeData & data, const TreeData *declarationData,
-                                              AttributeMap &attributes, const TreeData *appended=NULL);
+std::unique_ptr<Instruction> ParseInstruction(const TreeData & data, const std::string & directory);
 
 // Function definitions
 

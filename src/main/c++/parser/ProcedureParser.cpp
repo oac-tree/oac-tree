@@ -42,8 +42,7 @@ namespace sequencer {
 
 // Global variables
 
-static const std::string WORKSPACE_TYPE = "Workspace";
-static const std::string DECLARATION_TYPE = "Declaration";
+static const std::string WORKSPACE_ELEMENT_NAME = "Workspace";
 static const std::string PLUGIN_ELEMENT_NAME = "Plugin";
 
 // Function declaration
@@ -73,16 +72,10 @@ std::unique_ptr<Procedure> ParseProcedure(const TreeData & data, const std::stri
     result->AddAttribute(attr.first, attr.second);
   }
 
-  // Add Workspace and instruction tree
-  const TreeData *declarationData = NULL;
-  //search for declaration nodes
+  // Load plugins first
   for (const auto &child : data.Children())
   {
-    if (child.GetType() == DECLARATION_TYPE)
-    {
-      declarationData = &child;
-    }
-    else if (child.GetType() == PLUGIN_ELEMENT_NAME)
+    if (child.GetType() == PLUGIN_ELEMENT_NAME)
     {
       log_info("sup::sequencer::ParseProcedure() - Parsing plugin information..");
       if (!ParseAndLoadPlugins(child))
@@ -93,7 +86,7 @@ std::unique_ptr<Procedure> ParseProcedure(const TreeData & data, const std::stri
   }
   for (const auto &child : data.Children())
   {
-    if (child.GetType() == WORKSPACE_TYPE)
+    if (child.GetType() == WORKSPACE_ELEMENT_NAME)
     {
       log_info("sup::sequencer::ParseProcedure() - generating workspace variables..");
       for (const auto &var_data : child.Children())
@@ -107,10 +100,6 @@ std::unique_ptr<Procedure> ParseProcedure(const TreeData & data, const std::stri
         }
       }
     }
-    else if (child.GetType() == DECLARATION_TYPE)
-    {
-      continue;
-    }
     else if (child.GetType() == PLUGIN_ELEMENT_NAME)
     {
       continue;
@@ -118,18 +107,12 @@ std::unique_ptr<Procedure> ParseProcedure(const TreeData & data, const std::stri
     // Every non workspace element of the Procedure node should be an instruction node
     else
     {
-      AttributeMap attributesData;
-      auto root_instr = ParseInstruction(child, declarationData, attributesData);
+      auto root_instr = ParseInstruction(child, result->GetCurrentDirectory());
       if (root_instr)
       {
         result->PushInstruction(root_instr.release());
       }
     }
-  }
-
-  if (!result->Setup())
-  {
-    log_error("sup::sequencer::ParseProcedure() - Failed Procedure::Setup()'");
   }
   return result;
 }

@@ -139,6 +139,11 @@ void Include::SetCurrentDirectory(const std::string & directory)
   _current_directory = directory;
 }
 
+std::string Include::GetCurrentDirectory() const
+{
+  return _current_directory;
+}
+
 static std::string GetFullPathname(const std::string & filename,
                                    const std::string & current_directory)
 {

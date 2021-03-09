@@ -26,6 +26,7 @@
 // Local header files
 
 #include "InstructionHelper.h"
+#include "Include.h"
 #include "InstructionRegistry.h"
 #include "CompoundInstruction.h"
 #include "DecoratorInstruction.h"
@@ -100,6 +101,15 @@ Instruction * CloneInstruction(const Instruction * instruction)
   if (!result)
   {
     return nullptr;
+  }
+  auto include = dynamic_cast<Include *>(result.get());
+  if (include)
+  {
+    auto other = dynamic_cast<const Include *>(instruction);
+    if (other)
+    {
+      include->SetCurrentDirectory(other->GetCurrentDirectory());
+    }
   }
   result->AddAttributes(instruction->GetAttributes());
   CloneChildInstructions(result.get(), instruction);

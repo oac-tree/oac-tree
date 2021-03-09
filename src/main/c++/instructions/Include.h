@@ -97,6 +97,14 @@ class Include : public DecoratorInstruction
      */
     void SetCurrentDirectory(const std::string & directory);
 
+    /**
+     * @brief Get directory of origin of this include instruction (if loaded from file).
+     *
+     * @return Directory of original file for this instruction.
+     * @details This directory is used for external includes with relative pathnames.
+     */
+    std::string GetCurrentDirectory() const;
+
     static const std::string Type;
 };
 

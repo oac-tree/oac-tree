@@ -54,7 +54,7 @@ namespace sequencer {
 
 // Function declarations
 
-std::unique_ptr<Procedure> ParseProcedure(const TreeData & data);
+std::unique_ptr<Procedure> ParseProcedure(const TreeData & data, const std::string & filename = {});
 
 // Function definitions
 

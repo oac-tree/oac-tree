@@ -52,10 +52,6 @@ void DecoratorInstruction::ResetHook()
   }
 }
 
-bool DecoratorInstruction::SetupImpl(const Procedure & proc){
-    return _child->Setup(proc);
-}
-
 std::vector<const Instruction *> DecoratorInstruction::ChildInstructionsImpl() const
 {
   std::vector<const Instruction *> result;
@@ -64,6 +60,10 @@ std::vector<const Instruction *> DecoratorInstruction::ChildInstructionsImpl() c
     result.push_back(_child.get());
   }
   return result;
+}
+
+bool DecoratorInstruction::SetupImpl(const Procedure & proc){
+    return _child->Setup(proc);
 }
 
 DecoratorInstruction::DecoratorInstruction(const std::string & type)

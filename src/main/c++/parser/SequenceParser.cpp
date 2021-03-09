@@ -72,7 +72,7 @@ std::unique_ptr<Procedure> ParseProcedureFile(const std::string & filename)
     return {};
   }
 
-  auto proc = ParseProcedure(*data);
+  auto proc = ParseProcedure(*data, filename);
 
   if (!proc)
   {

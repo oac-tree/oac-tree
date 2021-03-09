@@ -59,6 +59,8 @@ static bool HasRootAttributeSet(const Instruction & instruction);
 
 std::string Procedure::GetFullPathname(const std::string & filename) const
 {
+  log_info("Procedure::GetFullPathname - filename '%s', current dir '%s'",
+           filename.c_str(), _current_directory.c_str());
   if (filename.empty())
   {
     log_warning("Procedure::GetFullPathname() - empty filename as argument");

@@ -59,13 +59,6 @@ class DecoratorInstruction : public Instruction
     void ResetHook() override;
 
     /**
-     * @brief Setup implementation.
-     * @param proc Procedure containing Workspace and instruction declarations.
-     * @return true on successful instruction setup.
-     */
-    bool SetupImpl(const Procedure & proc) override;
-
-    /**
      * @brief Get list of child instructions implementation (const version).
      *
      * @return List of child instructions.
@@ -77,6 +70,14 @@ class DecoratorInstruction : public Instruction
      * @brief Decorated instruction
      */
     std::unique_ptr<Instruction> _child;
+
+    /**
+     * @brief Setup implementation.
+     *
+     * @param proc Procedure containing Workspace and instruction declarations.
+     * @return true on successful instruction setup.
+     */
+    bool SetupImpl(const Procedure & proc) override;
 
   public:
     /**

@@ -64,13 +64,6 @@ class ParallelSequence : public CompoundInstruction
 
     ExecutionStatus ExecuteSingleImpl(UserInterface * ui, Workspace * ws) override;
 
-    /**
-     * @brief Setup implementation.
-     * @param proc Procedure containing Workspace and instruction declarations.
-     * @return true on successful instruction setup.
-     */
-    bool SetupImpl(const Procedure & proc) override;
-
     ExecutionStatus CalculateCompoundStatus() const;
 
     bool InitWrappers();
@@ -78,6 +71,15 @@ class ParallelSequence : public CompoundInstruction
     std::vector<AsyncWrapper> _wrappers;
 
     int _success_th, _failure_th;
+
+  protected:
+    /**
+     * @brief Setup implementation.
+     *
+     * @param proc Procedure containing Workspace and instruction declarations.
+     * @return true on successful instruction setup.
+     */
+    bool SetupImpl(const Procedure & proc) override;
 
   public:
     /**

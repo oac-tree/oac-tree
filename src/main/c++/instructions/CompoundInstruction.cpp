@@ -52,6 +52,16 @@ void CompoundInstruction::ResetHook()
   }
 }
 
+std::vector<const Instruction *> CompoundInstruction::ChildInstructionsImpl() const
+{
+  std::vector<const Instruction *> result;
+  for (auto instr : _children)
+  {
+    result.push_back(instr);
+  }
+  return result;
+}
+
 bool CompoundInstruction::SetupImpl(const Procedure & proc)
 {
   bool result = true;
@@ -64,16 +74,6 @@ bool CompoundInstruction::SetupImpl(const Procedure & proc)
     log_info("CompoundInstruction::Setup - %s:%s Setup of %s: %s",
              myType.c_str(), myName.c_str(), childType.c_str(), childName.c_str());
     result = instruction->Setup(proc) && result;
-  }
-  return result;
-}
-
-std::vector<const Instruction *> CompoundInstruction::ChildInstructionsImpl() const
-{
-  std::vector<const Instruction *> result;
-  for (auto instr : _children)
-  {
-    result.push_back(instr);
   }
   return result;
 }

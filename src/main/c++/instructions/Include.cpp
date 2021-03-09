@@ -67,34 +67,6 @@ ExecutionStatus Include::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
   return CalculateStatus();
 }
 
-bool Include::SetupImpl(const Procedure & proc)
-{
-  std::string filename;
-  if (HasAttribute(FILE_ATTRIBUTE_NAME))
-  {
-    filename = GetAttribute(FILE_ATTRIBUTE_NAME);
-  }
-  auto instructions = proc.GetInstructions(filename);
-  auto path = GetPath();
-  auto instr = InstructionHelper::FindInstruction(instructions, path);
-  if (instr == nullptr)
-  {
-    log_warning("Include::SetupImpl(): instruction with path '%s' not found",
-                path.c_str());
-    return false;
-  }
-  std::unique_ptr<Instruction> clone(InstructionHelper::CloneInstruction(instr));
-  if (InstructionHelper::InitialiseVariableAttributes(*clone, GetAttributes()))
-  {
-    log_info("Include::SetupImpl(): variable attributes successfully set");
-    SetInstruction(clone.release());
-    return _child->Setup(proc);
-  }
-  log_warning("Include::SetupImpl(): instruction with path '%s' could not be "
-              "properly initialised with the given attributes", path.c_str());
-  return false;
-}
-
 bool Include::PostInitialiseVariables(const AttributeMap & source)
 {
   bool result = true;
@@ -121,6 +93,34 @@ ExecutionStatus Include::CalculateStatus() const
   }
 
   return _child->GetStatus();
+}
+
+bool Include::SetupImpl(const Procedure & proc)
+{
+  std::string filename;
+  if (HasAttribute(FILE_ATTRIBUTE_NAME))
+  {
+    filename = GetAttribute(FILE_ATTRIBUTE_NAME);
+  }
+  auto instructions = proc.GetInstructions(filename);
+  auto path = GetPath();
+  auto instr = InstructionHelper::FindInstruction(instructions, path);
+  if (instr == nullptr)
+  {
+    log_warning("Include::SetupImpl(): instruction with path '%s' not found",
+                path.c_str());
+    return false;
+  }
+  std::unique_ptr<Instruction> clone(InstructionHelper::CloneInstruction(instr));
+  if (InstructionHelper::InitialiseVariableAttributes(*clone, GetAttributes()))
+  {
+    log_info("Include::SetupImpl(): variable attributes successfully set");
+    SetInstruction(clone.release());
+    return _child->Setup(proc);
+  }
+  log_warning("Include::SetupImpl(): instruction with path '%s' could not be "
+              "properly initialised with the given attributes", path.c_str());
+  return false;
 }
 
 Include::Include()

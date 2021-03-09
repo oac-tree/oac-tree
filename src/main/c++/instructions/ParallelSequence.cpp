@@ -69,9 +69,39 @@ ExecutionStatus ParallelSequence::ExecuteSingleImpl(UserInterface *ui, Workspace
   return CalculateCompoundStatus();
 }
 
+ExecutionStatus ParallelSequence::CalculateCompoundStatus() const
+{
+  int n_success = 0;
+  int n_failure = 0;
+
+  for (const auto &wrapper : _wrappers)
+  {
+    auto wrapper_status = wrapper.GetStatus();
+
+    if (wrapper_status == ExecutionStatus::SUCCESS)
+    {
+      n_success++;
+    }
+    if (wrapper_status == ExecutionStatus::FAILURE)
+    {
+      n_failure++;
+    }
+  }
+
+  if (n_success >= _success_th)
+  {
+    return ExecutionStatus::SUCCESS;
+  }
+  if (n_failure >= _failure_th)
+  {
+    return ExecutionStatus::FAILURE;
+  }
+  return ExecutionStatus::RUNNING;
+}
+
 bool ParallelSequence::SetupImpl(const Procedure & proc)
 {
-  bool status = CompoundInstruction::Setup(proc);
+  bool status = CompoundInstruction::SetupImpl(proc);
   if (status)
   {
     int N = static_cast<int>(_children.size());
@@ -120,36 +150,6 @@ bool ParallelSequence::SetupImpl(const Procedure & proc)
     }
   }
   return status;
-}
-
-ExecutionStatus ParallelSequence::CalculateCompoundStatus() const
-{
-  int n_success = 0;
-  int n_failure = 0;
-
-  for (const auto &wrapper : _wrappers)
-  {
-    auto wrapper_status = wrapper.GetStatus();
-
-    if (wrapper_status == ExecutionStatus::SUCCESS)
-    {
-      n_success++;
-    }
-    if (wrapper_status == ExecutionStatus::FAILURE)
-    {
-      n_failure++;
-    }
-  }
-
-  if (n_success >= _success_th)
-  {
-    return ExecutionStatus::SUCCESS;
-  }
-  if (n_failure >= _failure_th)
-  {
-    return ExecutionStatus::FAILURE;
-  }
-  return ExecutionStatus::RUNNING;
 }
 
 bool ParallelSequence::InitWrappers()

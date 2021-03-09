@@ -81,11 +81,6 @@ void Instruction::Postamble(UserInterface * ui)
 void Instruction::ResetHook()
 {}
 
-bool Instruction::SetupImpl(const Procedure & proc)
-{
-  return true;
-}
-
 bool Instruction::PostInitialiseVariables(const AttributeMap & source)
 {
   return true;
@@ -94,6 +89,11 @@ bool Instruction::PostInitialiseVariables(const AttributeMap & source)
 std::vector<const Instruction *> Instruction::ChildInstructionsImpl() const
 {
   return {};
+}
+
+bool Instruction::SetupImpl(const Procedure & proc)
+{
+  return true;
 }
 
 Instruction::Instruction(const std::string & type)

@@ -92,13 +92,6 @@ class Instruction
     virtual void ResetHook();
 
     /**
-     * @brief Setup implementation.
-     * @param proc Procedure containing Workspace and instruction declarations.
-     * @return true on successful instruction setup.
-     */
-    virtual bool SetupImpl(const Procedure & proc);
-
-    /**
      * @brief Private hook that is called after variable initialisation.
      *
      * @return true on succes.
@@ -116,6 +109,14 @@ class Instruction
     virtual std::vector<const Instruction *> ChildInstructionsImpl() const;
 
   protected:
+
+    /**
+     * @brief Setup implementation.
+     *
+     * @param proc Procedure containing Workspace and instruction declarations.
+     * @return true on successful instruction setup.
+     */
+    virtual bool SetupImpl(const Procedure & proc);
 
   public:
     /**

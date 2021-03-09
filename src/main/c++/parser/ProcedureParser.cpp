@@ -48,15 +48,24 @@ static const std::string PLUGIN_ELEMENT_NAME = "Plugin";
 
 // Function declaration
 
+static std::string GetFileDirectory(const std::string & filename);
 static bool ParseAndLoadPlugins(const TreeData & data);
 
 // Function definition
 
-std::unique_ptr<Procedure> ParseProcedure(const TreeData & data)
+std::unique_ptr<Procedure> ParseProcedure(const TreeData & data, const std::string & filename)
 {
   log_info("sup::sequencer::ParseProcedure() - entering function..");
 
   auto result = std::unique_ptr<Procedure>(new Procedure());
+
+  // Add current directory if filename not empty
+  if (!filename.empty())
+  {
+    auto file_directory = GetFileDirectory(filename);
+    log_info("ParseProcedure() - setting current directory to '%s'", file_directory.c_str());
+    result->SetCurrentDirectory(file_directory);
+  }
 
   // Add attributes
   for (const auto & attr : data.Attributes())
@@ -123,6 +132,16 @@ std::unique_ptr<Procedure> ParseProcedure(const TreeData & data)
     log_error("sup::sequencer::ParseProcedure() - Failed Procedure::Setup()'");
   }
   return result;
+}
+
+static std::string GetFileDirectory(const std::string & filename)
+{
+  auto pos = filename.find_last_of("/");
+  if (pos == std::string::npos)
+  {
+    return {};
+  }
+  return filename.substr(0, pos);
 }
 
 static bool ParseAndLoadPlugins(const TreeData &child) {

@@ -59,13 +59,6 @@ class Include : public DecoratorInstruction
   private:
     ExecutionStatus ExecuteSingleImpl(UserInterface * ui, Workspace * ws) override;
 
-    /**
-     * @brief Setup implementation.
-     * @param proc Procedure containing Workspace and instruction declarations.
-     * @return true on successful instruction setup.
-     */
-    bool SetupImpl(const Procedure & proc) override;
-
     bool PostInitialiseVariables(const AttributeMap & source) override;
 
     std::string GetPath() const;
@@ -73,6 +66,14 @@ class Include : public DecoratorInstruction
     ExecutionStatus CalculateStatus() const;
 
   protected:
+
+    /**
+     * @brief Setup implementation.
+     *
+     * @param proc Procedure containing Workspace and instruction declarations.
+     * @return true on successful instruction setup.
+     */
+    bool SetupImpl(const Procedure & proc) override;
 
   public:
     /**

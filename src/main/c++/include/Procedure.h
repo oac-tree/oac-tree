@@ -33,7 +33,9 @@
 
 // Global header files
 
+#include <map>
 #include <memory>
+#include <string>
 #include <vector>
 
 #include <common/AnyValue.h>
@@ -74,6 +76,28 @@ class Procedure
 
     AttributeMap _attributes;
 
+    // Cache for other procedures loaded from files and to be used by include nodes.
+    mutable std::map<std::string, std::unique_ptr<Procedure>> _procedure_cache;
+
+    /**
+     * @brief Load a procedure from file or cache.
+     *
+     * @param filename Filename of the procedure file.
+     * @return Reference to the procedure.
+     *
+     * @details This method returns only a reference to a unique pointer. The Procedure
+     * is owned by the cache.
+     */
+    const std::unique_ptr<Procedure> & LoadProcedure(const std::string & filename) const;
+
+    /**
+     * @brief Clear the cached procedures.
+     *
+     * @details This method needs to be called anytime there is a possibility of changes
+     * to the loaded files on disk.
+     */
+    void ClearProcedureCache() const;
+
   protected:
 
   public:
@@ -102,11 +126,15 @@ class Procedure
     const Instruction * RootInstrunction() const;
 
     /**
-     * @brief Get top-level instructions.
+     * @brief Get top-level instructions (from other procedure file if requested).
      *
+     * @param filename Optional filename for external loading of instructions.
      * @return List of top-level instructions.
+     * @details If the filename argument is not empty, this method will first look into the
+     * procedure cache to see if this file was already loaded. If not, it will load it into the
+     * cache and then return its top-level instructions.
      */
-    std::vector<const Instruction *> GetInstructions() const;
+    std::vector<const Instruction *> GetInstructions(const std::string & filename = {}) const;
 
     /**
      * @brief Push Instruction at top level.

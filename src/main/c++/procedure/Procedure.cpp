@@ -27,6 +27,7 @@
 
 #include "Procedure.h"
 #include "Sequence.h"
+#include "SequenceParser.h"
 #include "Workspace.h"
 
 // Constants
@@ -55,6 +56,30 @@ static const std::vector<std::string> TRUE_LIST = {
 static bool HasRootAttributeSet(const Instruction & instruction);
 
 // Function definition
+
+const std::unique_ptr<Procedure> & Procedure::LoadProcedure(const std::string & filename) const
+{
+  if (_procedure_cache.find(filename) == _procedure_cache.end())
+  {
+    log_info("Procedure::LoadProcedure('%s') - Loading procedure from file..", filename.c_str());
+    auto loaded_proc = ParseProcedureFile(filename);
+    if (loaded_proc)
+    {
+      _procedure_cache[filename] = std::move(loaded_proc);
+    }
+  }
+  if (_procedure_cache.find(filename) == _procedure_cache.end())
+  {
+    log_warning("Procedure::LoadProcedure('%s') - Could not load procedure from file..", filename.c_str());
+    return {};
+  }
+  return _procedure_cache[filename];
+}
+
+void Procedure::ClearProcedureCache() const
+{
+  _procedure_cache.clear();
+}
 
 Procedure::Procedure()
   : _instructions{}
@@ -89,12 +114,24 @@ const Instruction * Procedure::RootInstrunction() const
   return nullptr;
 }
 
-std::vector<const Instruction *> Procedure::GetInstructions() const
+std::vector<const Instruction *> Procedure::GetInstructions(const std::string & filename) const
 {
   std::vector<const Instruction *> result;
-  for (auto & instr : _instructions)
+  if (filename.empty())
   {
-    result.push_back(instr.get());
+    for (auto & instr : _instructions)
+    {
+      result.push_back(instr.get());
+    }
+  }
+  else
+  {
+    const auto & loaded_proc = LoadProcedure(filename);
+    if (loaded_proc)
+    {
+      return loaded_proc->GetInstructions();
+    }
+    log_warning("Procedure::GetInstructions('%s') - finding instructions failed..", filename.c_str());
   }
   return result;
 }

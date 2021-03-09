@@ -34,7 +34,8 @@
 #undef LOG_ALTERN_SRC
 #define LOG_ALTERN_SRC "sup::sequencer"
 
-const std::string PATH_ATTRIBUTE_NAME="path";
+static const std::string PATH_ATTRIBUTE_NAME="path";
+static const std::string FILE_ATTRIBUTE_NAME="file";
 
 // Type definition
 
@@ -68,7 +69,12 @@ ExecutionStatus Include::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
 
 bool Include::SetupImpl(const Procedure & proc)
 {
-  auto instructions = proc.GetInstructions();
+  std::string filename;
+  if (HasAttribute(FILE_ATTRIBUTE_NAME))
+  {
+    filename = GetAttribute(FILE_ATTRIBUTE_NAME);
+  }
+  auto instructions = proc.GetInstructions(filename);
   auto path = GetPath();
   auto instr = InstructionHelper::FindInstruction(instructions, path);
   if (instr == nullptr)

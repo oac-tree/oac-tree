@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
-           name="Procedure for testing local IncludeNode"
+           name="Procedure for testing local Include instruction"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+    <Wait name="SingleWait" timeout="#wait" />
     <Sequence name="WaitLongEnough">
-        <Wait name="SingleWait" timeout="#par1" />
+        <Include name="FirstWait" path="SingleWait" wait="#par1" />
         <Wait timeout="#par2" />
     </Sequence>
     <Sequence isRoot="True">
         <Include name="Wait Sequence" path="WaitLongEnough" par1="0.5" par2="1.0" />
-        <Include name="Wait one second" path="WaitLongEnough.SingleWait" par1="1.0" />
+        <Include name="Wait one second" path="WaitLongEnough.FirstWait" par1="1.0" />
     </Sequence>
 </Procedure>

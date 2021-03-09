@@ -90,9 +90,22 @@ bool Include::SetupImpl(const Procedure & proc)
     SetInstruction(clone.release());
     return _child->Setup(proc);
   }
-  log_warning("Include::SetupImpl(): instruction with path '%s' could not be ",
+  log_warning("Include::SetupImpl(): instruction with path '%s' could not be "
               "properly initialised with the given attributes", path.c_str());
   return false;
+}
+
+bool Include::PostInitialiseVariables(const AttributeMap & source)
+{
+  bool result = true;
+  for (auto & attr : source)
+  {
+    if (!HasAttribute(attr.first))
+    {
+      result = AddAttribute(attr.first, attr.second) && result;
+    }
+  }
+  return result;
 }
 
 std::string Include::GetPath() const

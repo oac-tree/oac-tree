@@ -86,6 +86,11 @@ bool Instruction::SetupImpl(const Procedure & proc)
   return true;
 }
 
+bool Instruction::PostInitialiseVariables(const AttributeMap & source)
+{
+  return true;
+}
+
 std::vector<const Instruction *> Instruction::ChildInstructionsImpl() const
 {
   return {};
@@ -179,7 +184,9 @@ bool Instruction::AddAttributes(const AttributeMap & attributes)
 
 bool Instruction::InitialiseVariableAttributes(const AttributeMap & source)
 {
-  return _attributes.InitialiseVariableAttributes(source);
+  bool status = _attributes.InitialiseVariableAttributes(source) &&
+                PostInitialiseVariables(source);
+  return status;
 }
 
 std::vector<Instruction *> Instruction::ChildInstructions()

@@ -99,6 +99,16 @@ class Instruction
     virtual bool SetupImpl(const Procedure & proc);
 
     /**
+     * @brief Private hook that is called after variable initialisation.
+     *
+     * @return true on succes.
+     *
+     * @details Mainly used to propagate attributes to nested instructions.
+     * Default implementation returns true.
+     */
+    virtual bool PostInitialiseVariables(const AttributeMap & source);
+
+    /**
      * @brief Get list of child instructions implementation (const version).
      *
      * @return List of child instructions.

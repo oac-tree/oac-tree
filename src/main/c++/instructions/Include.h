@@ -66,6 +66,8 @@ class Include : public DecoratorInstruction
      */
     bool SetupImpl(const Procedure & proc) override;
 
+    bool PostInitialiseVariables(const AttributeMap & source) override;
+
     std::string GetPath() const;
 
     ExecutionStatus CalculateStatus() const;

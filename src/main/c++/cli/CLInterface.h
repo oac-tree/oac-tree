@@ -33,6 +33,8 @@
 
 // Global header files
 
+#include <mutex>  // mutex for concurrent callbacks
+
 // Local header files
 
 #include "UserInterface.h"
@@ -54,6 +56,7 @@ namespace sequencer {
 class CLInterface : public UserInterface
 {
   private:
+    std::mutex _mutex;
     bool _verbose;
 
   protected:

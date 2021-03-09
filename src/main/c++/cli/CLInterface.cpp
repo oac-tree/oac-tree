@@ -55,10 +55,12 @@ CLInterface::~CLInterface() = default;
 
 void CLInterface::UpdateInstructionStatus(const Instruction * instruction)
 {
+  std::lock_guard<std::mutex> lock(_mutex);
   auto instruction_type = instruction->GetType();
+  auto instruction_name = instruction->GetName();
   auto status = instruction->GetStatus();
 
-  std::cout << "Instruction: " << instruction_type << ": ";
+  std::cout << "Instruction: (" << instruction_type << ":" << instruction_name << ") : ";
   std::cout << StatusToString(status) << std::endl;
 }
 
@@ -66,6 +68,7 @@ void CLInterface::StartSingleStep()
 {
   if (_verbose)
   {
+    std::lock_guard<std::mutex> lock(_mutex);
     std::cout << "Start single execution step" << std::endl;
   }
 }
@@ -74,6 +77,7 @@ void CLInterface::EndSingleStep()
 {
   if (_verbose)
   {
+    std::lock_guard<std::mutex> lock(_mutex);
     std::cout << "End single execution step" << std::endl;
   }
 }

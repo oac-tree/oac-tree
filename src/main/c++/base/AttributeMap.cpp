@@ -56,6 +56,12 @@ AttributeMap::AttributeMap() = default;
 
 AttributeMap::~AttributeMap() = default;
 
+AttributeMap::AttributeMap(const AttributeMap &) = default;
+AttributeMap::AttributeMap(AttributeMap &&) = default;
+
+AttributeMap & AttributeMap::operator=(const AttributeMap &) = default;
+AttributeMap & AttributeMap::operator=(AttributeMap &&) = default;
+
 size_t AttributeMap::GetNumberOfAttributes() const
 {
   return _attributes.size();

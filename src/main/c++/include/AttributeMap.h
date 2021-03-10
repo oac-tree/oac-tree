@@ -81,6 +81,18 @@ class AttributeMap
     ~AttributeMap();
 
     /**
+     * @brief Copy/move Constructor.
+     */
+    AttributeMap(const AttributeMap & other);
+    AttributeMap(AttributeMap && other);
+
+    /**
+     * @brief Copy/move Assignment.
+     */
+    AttributeMap & operator=(const AttributeMap & other);
+    AttributeMap & operator=(AttributeMap && other);
+
+    /**
      * @brief Iterator forwarding.
      */
     using iterator = map_type::iterator;

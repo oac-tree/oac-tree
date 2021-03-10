@@ -22,6 +22,7 @@
 // Global header files
 
 #include <common/log-api.h>
+#include <type_traits>
 
 // Local header files
 
@@ -43,6 +44,16 @@ bool StartsWith(const std::string & str, char c);
 namespace sup {
 
 namespace sequencer {
+
+// Static assertion
+static_assert(std::is_same<AttributeMap::map_type::iterator::value_type,
+                           std::pair<const std::string, std::string>>::value,
+              "Exposed iterator must point to std::pair<const std::string, "
+              "std::string>");
+static_assert(std::is_same<AttributeMap::map_type::const_iterator::value_type,
+                           std::pair<const std::string, std::string>>::value,
+              "Exposed const_iterator must point to std::pair<const std::string, "
+              "std::string>");
 
 // Global variables
 

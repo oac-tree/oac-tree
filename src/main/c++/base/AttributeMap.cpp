@@ -56,6 +56,11 @@ AttributeMap::AttributeMap() = default;
 
 AttributeMap::~AttributeMap() = default;
 
+size_t AttributeMap::GetNumberOfAttributes() const
+{
+  return _attributes.size();
+}
+
 bool AttributeMap::HasAttribute(const std::string & name) const
 {
   return _attributes.find(name) != _attributes.end();
@@ -76,16 +81,6 @@ std::vector<std::string> AttributeMap::GetAttributeNames() const
   for (auto & pair : _attributes)
   {
     result.push_back(pair.first);
-  }
-  return result;
-}
-
-std::vector<std::pair<const std::string, std::string>> AttributeMap::AttributeList() const
-{
-  std::vector<std::pair<const std::string, std::string>> result;
-  for (auto & pair : _attributes)
-  {
-    result.push_back(pair);
   }
   return result;
 }

@@ -91,6 +91,13 @@ class AttributeMap
     const_iterator end() const { return _attributes.end(); }
 
     /**
+     * @brief Get Number of attributes in map.
+     *
+     * @return Number of attributes in map.
+     */
+    size_t GetNumberOfAttributes() const;
+
+    /**
      * @brief Indicate presence of attribute with given name.
      *
      * @param name Attribute name.
@@ -112,13 +119,6 @@ class AttributeMap
      * @return List of all Attribute names.
      */
     std::vector<std::string> GetAttributeNames() const;
-
-    /**
-     * @brief Get list of all attribute (name, value) pairs.
-     *
-     * @return List of all attribute (name, value) pairs.
-     */
-    std::vector<std::pair<const std::string, std::string>> AttributeList() const;
 
     /**
      * @brief Add attribute with given name and value.

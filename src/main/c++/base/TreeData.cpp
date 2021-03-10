@@ -57,7 +57,17 @@ std::string TreeData::GetType() const
 
 std::string TreeData::GetName() const
 {
-  return GetAttribute(NAME_ATTRIBUTE);
+  return GetAttribute(attributes::NAME_ATTRIBUTE);
+}
+
+void TreeData::SetName(const std::string & name)
+{
+  return SetAttribute(attributes::NAME_ATTRIBUTE, name);
+}
+
+size_t TreeData::GetNumberOfAttributes() const
+{
+  return _attributes.GetNumberOfAttributes();
 }
 
 bool TreeData::HasAttribute(const std::string & name) const
@@ -70,14 +80,29 @@ std::string TreeData::GetAttribute(const std::string & name) const
   return _attributes.GetAttribute(name);
 }
 
+const AttributeMap & TreeData::Attributes() const
+{
+  return _attributes;
+}
+
 bool TreeData::AddAttribute(const std::string & name, const std::string & value)
 {
   return _attributes.AddAttribute(name, value);
 }
 
-const AttributeMap & TreeData::Attributes() const
+void TreeData::SetAttribute(const std::string & name, const std::string & value)
 {
-  return _attributes;
+  return _attributes.SetAttribute(name, value);
+}
+
+bool TreeData::RemoveAttribute(const std::string & name)
+{
+  return _attributes.Remove(name);
+}
+
+size_t TreeData::GetNumberOfChildren() const
+{
+  return _children.size();
 }
 
 bool TreeData::AddChild(const TreeData & child)
@@ -90,9 +115,9 @@ const std::vector<TreeData> & TreeData::Children() const
   return _children;
 }
 
-bool TreeData::SetContent(std::string content)
+void TreeData::SetContent(const std::string & content)
 {
-  _content = std::move(content);
+  _content = content;
 }
 
 std::string TreeData::GetContent() const

@@ -95,6 +95,11 @@ bool AttributeMap::AddAttribute(const std::string & name, const std::string & va
   return true;
 }
 
+void AttributeMap::SetAttribute(const std::string & name, const std::string & value)
+{
+  _attributes[name] = value;
+}
+
 void AttributeMap::Clear()
 {
   _attributes.clear();

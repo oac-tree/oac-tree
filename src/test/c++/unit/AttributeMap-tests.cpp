@@ -80,6 +80,7 @@ TEST_F(AttributeMapTest, DefaultConstructed)
 
 TEST_F(AttributeMapTest, AddAttribute)
 {
+  // Add a name attribute
   EXPECT_EQ(attr_map_0.GetNumberOfAttributes(), 0);
   EXPECT_FALSE(attr_map_0.HasAttribute(attributes::NAME_ATTRIBUTE));
   EXPECT_TRUE(attr_map_0.AddAttribute(attributes::NAME_ATTRIBUTE, NAME_VALUE));
@@ -98,6 +99,7 @@ TEST_F(AttributeMapTest, AddAttribute)
   }
   EXPECT_EQ(n, 1);
 
+  // Add a description attribute
   EXPECT_FALSE(attr_map_0.HasAttribute(DESCRIPTION_ATTRIBUTE));
   EXPECT_TRUE(attr_map_0.AddAttribute(DESCRIPTION_ATTRIBUTE, DESCRIPTION_VALUE));
   EXPECT_TRUE(attr_map_0.HasAttribute(attributes::NAME_ATTRIBUTE));
@@ -116,6 +118,7 @@ TEST_F(AttributeMapTest, AddAttribute)
   }
   EXPECT_EQ(n, 2);
 
+  // Try to overwrite the description attribute by using AddAttribute (should fail)
   std::string new_description = "New description";
   EXPECT_FALSE(attr_map_0.AddAttribute(DESCRIPTION_ATTRIBUTE, new_description));
   EXPECT_EQ(attr_map_0.GetAttribute(attributes::NAME_ATTRIBUTE), NAME_VALUE);
@@ -131,6 +134,46 @@ TEST_F(AttributeMapTest, AddAttribute)
     ++n;
   }
   EXPECT_EQ(n, 2);
+}
+
+TEST_F(AttributeMapTest, SetAttribute)
+{
+  // Set a name attribute
+  EXPECT_EQ(attr_map_0.GetNumberOfAttributes(), 0);
+  EXPECT_FALSE(attr_map_0.HasAttribute(attributes::NAME_ATTRIBUTE));
+  attr_map_0.SetAttribute(attributes::NAME_ATTRIBUTE, NAME_VALUE);
+  EXPECT_TRUE(attr_map_0.HasAttribute(attributes::NAME_ATTRIBUTE));
+  EXPECT_EQ(attr_map_0.GetAttribute(attributes::NAME_ATTRIBUTE), NAME_VALUE);
+  EXPECT_EQ(attr_map_0.GetNumberOfAttributes(), 1);
+  auto attr_names = attr_map_0.GetAttributeNames();
+  EXPECT_EQ(attr_names.size(), 1);
+  EXPECT_NE(std::find(attr_names.begin(), attr_names.end(), attributes::NAME_ATTRIBUTE), attr_names.end());
+  int n = 0;
+  for (auto attr : attr_map_0)
+  {
+    EXPECT_EQ(attr.first, attributes::NAME_ATTRIBUTE);
+    EXPECT_EQ(attr.second, NAME_VALUE);
+    ++n;
+  }
+  EXPECT_EQ(n, 1);
+
+  // Try to overwrite the description attribute by using SetAttribute (should succeed)
+  std::string overwrite_val = "Overwritten";
+  attr_map_0.SetAttribute(attributes::NAME_ATTRIBUTE, overwrite_val);
+  EXPECT_TRUE(attr_map_0.HasAttribute(attributes::NAME_ATTRIBUTE));
+  EXPECT_EQ(attr_map_0.GetAttribute(attributes::NAME_ATTRIBUTE), overwrite_val);
+  EXPECT_EQ(attr_map_0.GetNumberOfAttributes(), 1);
+  attr_names = attr_map_0.GetAttributeNames();
+  EXPECT_EQ(attr_names.size(), 1);
+  EXPECT_NE(std::find(attr_names.begin(), attr_names.end(), attributes::NAME_ATTRIBUTE), attr_names.end());
+  n = 0;
+  for (auto attr : attr_map_0)
+  {
+    EXPECT_EQ(attr.first, attributes::NAME_ATTRIBUTE);
+    EXPECT_EQ(attr.second, overwrite_val);
+    ++n;
+  }
+  EXPECT_EQ(n, 1);
 }
 
 TEST_F(AttributeMapTest, Remove)

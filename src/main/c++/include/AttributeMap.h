@@ -91,7 +91,7 @@ class AttributeMap
     const_iterator end() const { return _attributes.end(); }
 
     /**
-     * @brief Get Number of attributes in map.
+     * @brief Get number of attributes in map.
      *
      * @return Number of attributes in map.
      */
@@ -126,8 +126,19 @@ class AttributeMap
      * @param name Attribute name.
      * @param value Attribute value.
      * @return true when successful.
+     * @details This method will not try to overwrite an existing attribute. It returns
+     * false if the attribute with the given name already exists.
      */
     bool AddAttribute(const std::string & name, const std::string & value);
+
+    /**
+     * @brief Set attribute with given name and value.
+     *
+     * @param name Attribute name.
+     * @param value Attribute value.
+     * @details This method will overwrite an existing attribute or create a new one.
+     */
+    void SetAttribute(const std::string & name, const std::string & value);
 
     /**
      * @brief Clear all attributes.

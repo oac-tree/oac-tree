@@ -111,8 +111,11 @@ sup::sequencer::ExecutionStatus CopyInstruction::ExecuteSingleImpl (sup::sequenc
 
 }
 
-CopyInstruction::CopyInstruction (void) : sup::sequencer::Instruction("CopyInstruction") {}
-CopyInstruction::~CopyInstruction (void) {}
+CopyInstruction::CopyInstruction (void) : sup::sequencer::Instruction(CopyInstruction::Type) {}
+CopyInstruction::~CopyInstruction (void)
+{
+  log_info("CopyInstruction::~CopyInstruction called");
+}
 
 TEST(ParallelSequence, Procedure_sequence)
 {
@@ -182,7 +185,8 @@ TEST(ParallelSequence, Procedure_parallel)
   bool status = true;
 
   try
-    {
+    { // Must live as long as procedure .. and not only during execution
+      sup::sequencer::LogUI ui;
       auto proc = sup::sequencer::ParseProcedureString(
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
@@ -190,7 +194,7 @@ TEST(ParallelSequence, Procedure_parallel)
         "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
         "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
         "    <Repeat maxCount=\"10\">\n"
-        "        <ParallelSequence>\n"
+        "        <ParallelSequence name=\"parallel\">\n"
         "            <Wait name=\"wait\" timeout=\"0.1\"/>\n"
         "            <Wait name=\"again\" timeout=\"0.1\"/>\n"
         "        </ParallelSequence>\n"
@@ -208,7 +212,6 @@ TEST(ParallelSequence, Procedure_parallel)
 
       if (status)
         {
-          sup::sequencer::LogUI ui;
           sup::sequencer::ExecutionStatus exec = sup::sequencer::ExecutionStatus::FAILURE;
 
           do
@@ -244,7 +247,8 @@ TEST(ParallelSequence, WithBuiltinCode)
   bool status = true;
 
   try
-    {
+    { // Must live as long as procedure .. and not only during execution
+      sup::sequencer::LogUI ui;
       auto proc = sup::sequencer::ParseProcedureString(
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
@@ -252,9 +256,9 @@ TEST(ParallelSequence, WithBuiltinCode)
         "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
         "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
         "    <Repeat maxCount=\"10\">\n"
-        "        <ParallelSequence>\n"
+        "        <ParallelSequence name=\"parallel\">\n"
         "            <Wait name=\"wait\" timeout=\"0.1\"/>\n"
-        "            <CopyInstruction name=\"copy\" input=\"input\" output=\"output\"/>\n"
+        "            <Copy name=\"copy\" input=\"input\" output=\"output\"/>\n"
         "            <Wait name=\"again\" timeout=\"0.1\"/>\n"
         "        </ParallelSequence>\n"
         "    </Repeat>\n"
@@ -271,7 +275,6 @@ TEST(ParallelSequence, WithBuiltinCode)
 
       if (status)
         {
-          sup::sequencer::LogUI ui;
           sup::sequencer::ExecutionStatus exec = sup::sequencer::ExecutionStatus::FAILURE;
 
           do
@@ -307,7 +310,8 @@ TEST(ParallelSequence, WithUserCode)
   bool status = sup::sequencer::RegisterGlobalInstruction<CopyInstruction>();
 
   try
-    {
+    { // Must live as long as procedure .. and not only during execution
+      sup::sequencer::LogUI ui;
       auto proc = sup::sequencer::ParseProcedureString(
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
@@ -315,9 +319,9 @@ TEST(ParallelSequence, WithUserCode)
         "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
         "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
         "    <Repeat maxCount=\"10\">\n"
-        "        <ParallelSequence>\n"
+        "        <ParallelSequence name=\"parallel\">\n"
         "            <Wait name=\"wait\" timeout=\"0.1\"/>\n"
-        "            <Copy name=\"copy\" input=\"input\" output=\"output\"/>\n"
+        "            <CopyInstruction name=\"copy\" input=\"input\" output=\"output\"/>\n"
         "            <Wait name=\"again\" timeout=\"0.1\"/>\n"
         "        </ParallelSequence>\n"
         "    </Repeat>\n"
@@ -334,7 +338,6 @@ TEST(ParallelSequence, WithUserCode)
 
       if (status)
         {
-          sup::sequencer::LogUI ui;
           sup::sequencer::ExecutionStatus exec = sup::sequencer::ExecutionStatus::FAILURE;
 
           do

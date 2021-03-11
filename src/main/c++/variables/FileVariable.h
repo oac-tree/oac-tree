@@ -2,11 +2,11 @@
 * $HeadURL: $
 * $Id: $
 *
-* Project       : SUP - Sequencer
+* Project       : CODAC Supervision and Automation (SUP) Sequencer component
 *
-* Description   : Sequencer for operational procedures
+* Description   : File-based variable implementation
 *
-* Author        : Walter Van Herck (IO)
+* Author        : Bertrand Bauvir (IO)
 *
 * Copyright (c) : 2010-2020 ITER Organization,
 *                 CS 90 046
@@ -20,16 +20,16 @@
 ******************************************************************************/
 
 /**
- * @file LocalVariable.h
- * @brief Header file for LocalVariable class.
+ * @file FileVariable.h
+ * @brief Header file for FileVariable class.
  * @date 11/12/2020
- * @author Walter Van Herck (IO)
+ * @author Bertrand Bauvir (IO)
  * @copyright 2010-2020 ITER Organization
- * @details This header file contains the definition of the LocalVariable class.
+ * @details This header file contains the definition of the FileVariable class.
  */
 
-#ifndef _SEQ_LocalVariable_h_
-#define _SEQ_LocalVariable_h_
+#ifndef _SEQ_FileVariable_h_
+#define _SEQ_FileVariable_h_
 
 // Global header files
 
@@ -48,22 +48,12 @@ namespace sup {
 namespace sequencer {
 
 /**
- * @brief Variable that is hosted locally in the workspace.
+ * @brief FileVariable class.
+ * @details Variable with file-based backend.
  */
-
-class LocalVariable : public Variable
+class FileVariable : public Variable
 {
   private:
-    /**
-     * @brief Encapsulated AnyValue.
-     */
-    ::ccs::types::AnyValue _val;
-
-    /**
-     * @brief Indicates if the value was initialized.
-     */
-    bool _initialized;
-
     /**
      * @brief See sup::sequencer::Variable.
      */
@@ -76,19 +66,12 @@ class LocalVariable : public Variable
     /**
      * @brief Constructor.
      */
-    LocalVariable();
-
-    /**
-     * @brief Constructor.
-     *
-     * @param type AnyType of underlying value.
-     */
-    LocalVariable(const ::ccs::base::SharedReference<const ccs::types::AnyType>& type);
+    FileVariable (void);
 
     /**
      * @brief Destructor.
      */
-    ~LocalVariable() override;
+    ~FileVariable (void) override;
 
     /**
      * @brief Class name for VariableRegistry.
@@ -98,9 +81,9 @@ class LocalVariable : public Variable
 
 // Global variables
 
-// Function declarations
+// Function declaration
 
-// Function definitions
+// Function definition
 
 } // namespace sequencer
 
@@ -115,4 +98,4 @@ extern "C" {
 } // extern C
 #endif // __cplusplus
 
-#endif // _SEQ_LocalVariable_h_
+#endif // _SEQ_FileVariable_h_

@@ -86,7 +86,12 @@ Procedure::Procedure()
   , _workspace{new Workspace()}
 {}
 
-Procedure::~Procedure() = default;
+Procedure::~Procedure()
+{
+  // Explicit order ..
+  _instructions.clear();
+  _workspace.reset();
+}
 
 void Procedure::SetCurrentDirectory(const std::string & directory)
 {

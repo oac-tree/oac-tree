@@ -45,12 +45,12 @@ namespace sequencer {
 
 // Function declaration
 
-namespace {
-
-bool AddChildInstructions(Instruction * instruction, const std::vector<TreeData> & children,
-                          const std::string & directory);
-
-} // Unnamed namespace
+static bool AddChildInstructions(Instruction * instruction, const std::vector<TreeData> & children,
+                                 const std::string & directory);
+static bool AddChildrenToDecorator(DecoratorInstruction * decorator, const std::vector<TreeData> & children,
+                                   const std::string & directory);
+static bool AddChildrenToCompound(CompoundInstruction * compound, const std::vector<TreeData> & children,
+                                  const std::string & directory);
 
 // Function definition
 
@@ -80,10 +80,8 @@ std::unique_ptr<Instruction> ParseInstruction(const TreeData & data, const std::
   return instr;
 }
 
-namespace {
-
-bool AddChildInstructions(Instruction * instruction, const std::vector<TreeData> & children,
-                          const std::string & directory)
+static bool AddChildInstructions(Instruction * instruction, const std::vector<TreeData> & children,
+                                 const std::string & directory)
 {
   auto instr_name = instruction->GetName();
   auto instr_type = instruction->GetType();
@@ -97,37 +95,23 @@ bool AddChildInstructions(Instruction * instruction, const std::vector<TreeData>
   }
 
   auto decorator = dynamic_cast<DecoratorInstruction *>(instruction);
-  if (decorator && children.size() == 1u)
+  if (decorator)
   {
     log_info("AddChildInstructions() - (%s:%s)", instr_type.c_str(), instr_name.c_str());
-    auto child_instr = ParseInstruction(children[0], directory);
-    if (child_instr)
-    {
-      auto child_type = child_instr->GetType();
-      log_info("AddChildInstructions() - calling Decorator->SetInstruction(%s)", child_type.c_str());
-      decorator->SetInstruction(child_instr.release());
-      return true;
-    }
+    return AddChildrenToDecorator(decorator, children, directory);
   }
 
   auto compound = dynamic_cast<CompoundInstruction *>(instruction);
-  if (compound && children.size() > 0)
+  if (compound)
   {
     log_info("AddChildInstructions() - (%s:%s)", instr_type.c_str(), instr_name.c_str());
-    for (const auto &child : children)
+    if (AddChildrenToCompound(compound, children, directory))
     {
-      auto child_instr = ParseInstruction(child, directory);
-      if (child_instr)
-      {
-        auto child_type = child_instr->GetType();
-        log_info("AddChildInstructions() - calling Compound->PushBack(%s)", child_type.c_str());
-        compound->PushBack(child_instr.release());
-        continue;
-      }
-      log_warning("AddChildInstructions() - could not parse child instruction of (%s:%s)",
-                  instr_type.c_str(), instr_name.c_str());
+      return true;
     }
-    return true;
+    log_warning("AddChildInstructions() - could not parse child instruction of (%s:%s)",
+                instr_type.c_str(), instr_name.c_str());
+    return false;
   }
   if (!decorator && !compound && children.size() == 0)
   {
@@ -138,7 +122,45 @@ bool AddChildInstructions(Instruction * instruction, const std::vector<TreeData>
   return false;
 }
 
-} // Unnamed namespace
+static bool AddChildrenToDecorator(DecoratorInstruction * decorator, const std::vector<TreeData> & children,
+                                   const std::string & directory)
+{
+  if (children.size() == 1u)
+  {
+    auto child_instr = ParseInstruction(children[0], directory);
+    if (child_instr)
+    {
+      auto child_type = child_instr->GetType();
+      log_info("AddChildrenToDecorator() - calling Decorator->SetInstruction(%s)", child_type.c_str());
+      decorator->SetInstruction(child_instr.release());
+      return true;
+    }
+  }
+  return false;
+}
+
+static bool AddChildrenToCompound(CompoundInstruction * compound, const std::vector<TreeData> & children,
+                                  const std::string & directory)
+{
+  if (children.size() > 0)
+  {
+    bool result = true;
+    for (auto & child : children)
+    {
+      auto child_instr = ParseInstruction(child, directory);
+      if (child_instr)
+      {
+        auto child_type = child_instr->GetType();
+        log_info("AddChildrenToCompound() - calling Compound->PushBack(%s)", child_type.c_str());
+        compound->PushBack(child_instr.release());
+        continue;
+      }
+      result = false;
+    }
+    return result;
+  }
+  return false;
+}
 
 } // namespace sequencer
 

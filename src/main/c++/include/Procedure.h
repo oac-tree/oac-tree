@@ -230,6 +230,14 @@ class Procedure
     bool AddAttribute(const std::string & name, const std::string & value);
 
     /**
+     * @brief Add all attributes from a given map.
+     *
+     * @param attributes Attribute map.
+     * @return true when successful.
+     */
+    bool AddAttributes(const AttributeMap & attributes);
+
+    /**
      * @brief Name of attribute that defines the timeout between ticks.
      */
     static const std::string TICK_TIMEOUT_ATTRIBUTE_NAME;

@@ -231,6 +231,16 @@ bool Procedure::AddAttribute(const std::string & name, const std::string & value
   return _attributes.AddAttribute(name, value);
 }
 
+bool Procedure::AddAttributes(const AttributeMap & attributes)
+{
+  bool result = true;
+  for (auto & attr : attributes)
+  {
+    result = AddAttribute(attr.first, attr.second) && result;
+  }
+  return result;
+}
+
 static bool HasRootAttributeSet(const Instruction & instruction)
 {
   if (!instruction.HasAttribute(IS_ROOT_ATTRIBUTE))

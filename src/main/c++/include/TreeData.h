@@ -78,6 +78,24 @@ class TreeData
     ~TreeData();
 
     /**
+     * @brief Copy/move Constructor.
+     */
+    TreeData(const TreeData & other);
+    TreeData(TreeData && other);
+
+    /**
+     * @brief Copy/move Assignment.
+     */
+    TreeData & operator=(const TreeData & other);
+    TreeData & operator=(TreeData && other);
+
+    /**
+     * @brief Comparison operators.
+     */
+    bool operator==(const TreeData & other) const;
+    bool operator!=(const TreeData & other) const;
+
+    /**
      * @brief Retrieve the data's typename.
      *
      * @return Typename of the data.

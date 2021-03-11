@@ -78,6 +78,64 @@ TEST_F(AttributeMapTest, DefaultConstructed)
   EXPECT_EQ(n, 0);
 }
 
+TEST_F(AttributeMapTest, CopyConstructed)
+{
+  AttributeMap attr_map = attr_map_1;
+  EXPECT_EQ(attr_map, attr_map_1);
+  EXPECT_FALSE(attr_map != attr_map_1);
+  EXPECT_EQ(attr_map.GetNumberOfAttributes(), attr_map_1.GetNumberOfAttributes());
+
+  for (auto attr : attr_map_1)
+  {
+    EXPECT_TRUE(attr_map.HasAttribute(attr.first));
+    EXPECT_EQ(attr_map.GetAttribute(attr.first), attr.second);
+  }
+}
+
+TEST_F(AttributeMapTest, MoveConstructed)
+{
+  AttributeMap tmp_map = attr_map_1;  // make copy first to allow comparison later on
+  AttributeMap attr_map = std::move(tmp_map);
+  EXPECT_EQ(attr_map, attr_map_1);
+  EXPECT_FALSE(attr_map != attr_map_1);
+  EXPECT_EQ(attr_map.GetNumberOfAttributes(), attr_map_1.GetNumberOfAttributes());
+
+  for (auto attr : attr_map_1)
+  {
+    EXPECT_TRUE(attr_map.HasAttribute(attr.first));
+    EXPECT_EQ(attr_map.GetAttribute(attr.first), attr.second);
+  }
+}
+
+TEST_F(AttributeMapTest, CopyAssigned)
+{
+  attr_map_0 = attr_map_1;
+  EXPECT_EQ(attr_map_0, attr_map_1);
+  EXPECT_FALSE(attr_map_0 != attr_map_1);
+  EXPECT_EQ(attr_map_0.GetNumberOfAttributes(), attr_map_1.GetNumberOfAttributes());
+
+  for (auto attr : attr_map_1)
+  {
+    EXPECT_TRUE(attr_map_0.HasAttribute(attr.first));
+    EXPECT_EQ(attr_map_0.GetAttribute(attr.first), attr.second);
+  }
+}
+
+TEST_F(AttributeMapTest, MoveAssigned)
+{
+  AttributeMap tmp_map = attr_map_1;  // make copy first to allow comparison later on
+  attr_map_0 = std::move(tmp_map);
+  EXPECT_EQ(attr_map_0, attr_map_1);
+  EXPECT_FALSE(attr_map_0 != attr_map_1);
+  EXPECT_EQ(attr_map_0.GetNumberOfAttributes(), attr_map_1.GetNumberOfAttributes());
+
+  for (auto attr : attr_map_1)
+  {
+    EXPECT_TRUE(attr_map_0.HasAttribute(attr.first));
+    EXPECT_EQ(attr_map_0.GetAttribute(attr.first), attr.second);
+  }
+}
+
 TEST_F(AttributeMapTest, AddAttribute)
 {
   // Add a name attribute

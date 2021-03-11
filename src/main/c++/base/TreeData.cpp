@@ -50,6 +50,24 @@ TreeData::TreeData(const std::string & type)
 
 TreeData::~TreeData() = default;
 
+TreeData::TreeData(const TreeData & other) = default;
+TreeData::TreeData(TreeData && other) = default;
+
+TreeData & TreeData::operator=(const TreeData & other) = default;
+TreeData & TreeData::operator=(TreeData && other) = default;
+
+bool TreeData::operator==(const TreeData & other) const
+{
+  bool result = (_type == other._type) && (_content == other._content) &&
+                (_attributes == other._attributes) && (_children == other._children);
+  return result;
+}
+
+bool TreeData::operator!=(const TreeData & other) const
+{
+  return !this->operator==(other);
+}
+
 std::string TreeData::GetType() const
 {
   return _type;

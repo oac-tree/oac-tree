@@ -73,6 +73,15 @@ AttributeMap::AttributeMap(AttributeMap &&) = default;
 AttributeMap & AttributeMap::operator=(const AttributeMap &) = default;
 AttributeMap & AttributeMap::operator=(AttributeMap &&) = default;
 
+bool AttributeMap::operator==(const AttributeMap & other) const
+{
+  return _attributes == other._attributes;
+}
+bool AttributeMap::operator!=(const AttributeMap & other) const
+{
+  return !this->operator==(other);
+}
+
 size_t AttributeMap::GetNumberOfAttributes() const
 {
   return _attributes.size();

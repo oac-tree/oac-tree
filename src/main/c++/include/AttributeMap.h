@@ -93,6 +93,12 @@ class AttributeMap
     AttributeMap & operator=(AttributeMap && other);
 
     /**
+     * @brief Comparison operators.
+     */
+    bool operator==(const AttributeMap & other) const;
+    bool operator!=(const AttributeMap & other) const;
+
+    /**
      * @brief Iterator forwarding.
      */
     using iterator = map_type::iterator;

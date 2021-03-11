@@ -43,6 +43,7 @@ class TreeDataTest : public ::testing::Test {
     virtual ~TreeDataTest();
 
     TreeData data;
+    TreeData parent;
     TreeData child_0;
     TreeData child_1;
 };
@@ -90,6 +91,76 @@ TEST_F(TreeDataTest, Constructed)
     ++n;
   }
   EXPECT_EQ(n, 0);
+}
+
+TEST_F(TreeDataTest, CopyConstructed)
+{
+  TreeData data_copy = parent;
+  EXPECT_EQ(data_copy, parent);
+  EXPECT_FALSE(data_copy != parent);
+  EXPECT_EQ(data_copy.GetType(), parent.GetType());
+  EXPECT_EQ(data_copy.GetContent(), parent.GetContent());
+  EXPECT_EQ(data_copy.GetNumberOfAttributes(), parent.GetNumberOfAttributes());
+  EXPECT_EQ(data_copy.GetNumberOfChildren(), parent.GetNumberOfChildren());
+
+  for (auto attr : parent.Attributes())
+  {
+    EXPECT_TRUE(data_copy.HasAttribute(attr.first));
+    EXPECT_EQ(data_copy.GetAttribute(attr.first), attr.second);
+  }
+}
+
+TEST_F(TreeDataTest, MoveConstructed)
+{
+  TreeData tmp_data = parent;  // make copy first to allow comparison later on
+  TreeData data_target = std::move(tmp_data);
+  EXPECT_EQ(data_target, parent);
+  EXPECT_FALSE(data_target != parent);
+  EXPECT_EQ(data_target.GetType(), parent.GetType());
+  EXPECT_EQ(data_target.GetContent(), parent.GetContent());
+  EXPECT_EQ(data_target.GetNumberOfAttributes(), parent.GetNumberOfAttributes());
+  EXPECT_EQ(data_target.GetNumberOfChildren(), parent.GetNumberOfChildren());
+
+  for (auto attr : parent.Attributes())
+  {
+    EXPECT_TRUE(data_target.HasAttribute(attr.first));
+    EXPECT_EQ(data_target.GetAttribute(attr.first), attr.second);
+  }
+}
+
+TEST_F(TreeDataTest, CopyAssigned)
+{
+  data = parent;
+  EXPECT_EQ(data, parent);
+  EXPECT_FALSE(data != parent);
+  EXPECT_EQ(data.GetType(), parent.GetType());
+  EXPECT_EQ(data.GetContent(), parent.GetContent());
+  EXPECT_EQ(data.GetNumberOfAttributes(), parent.GetNumberOfAttributes());
+  EXPECT_EQ(data.GetNumberOfChildren(), parent.GetNumberOfChildren());
+
+  for (auto attr : parent.Attributes())
+  {
+    EXPECT_TRUE(data.HasAttribute(attr.first));
+    EXPECT_EQ(data.GetAttribute(attr.first), attr.second);
+  }
+}
+
+TEST_F(TreeDataTest, MoveAssigned)
+{
+  TreeData tmp_data = parent;  // make copy first to allow comparison later on
+  data = std::move(tmp_data);
+  EXPECT_EQ(data, parent);
+  EXPECT_FALSE(data != parent);
+  EXPECT_EQ(data.GetType(), parent.GetType());
+  EXPECT_EQ(data.GetContent(), parent.GetContent());
+  EXPECT_EQ(data.GetNumberOfAttributes(), parent.GetNumberOfAttributes());
+  EXPECT_EQ(data.GetNumberOfChildren(), parent.GetNumberOfChildren());
+
+  for (auto attr : parent.Attributes())
+  {
+    EXPECT_TRUE(data.HasAttribute(attr.first));
+    EXPECT_EQ(data.GetAttribute(attr.first), attr.second);
+  }
 }
 
 TEST_F(TreeDataTest, SetName)
@@ -297,11 +368,14 @@ TEST_F(TreeDataTest, SetContent)
 
 TreeDataTest::TreeDataTest()
   : data{TREE_TYPE}
+  , parent{TREE_TYPE}
   , child_0{CHILD0_TYPE}
   , child_1{CHILD1_TYPE}
 {
   child_0.SetName(CHILD0_NAME);
   child_0.AddAttribute(ATTR_NAME_1, ATTR_VALUE_1);
+  parent.AddChild(child_0);
+  parent.AddChild(child_1);
 }
 
 TreeDataTest::~TreeDataTest() = default;

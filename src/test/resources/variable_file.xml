@@ -4,7 +4,7 @@
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
     <Sequence>
-        <CopyInstruction name="copy"
+        <Copy name="copy"
             input="input"
             output="file"/>
     </Sequence>

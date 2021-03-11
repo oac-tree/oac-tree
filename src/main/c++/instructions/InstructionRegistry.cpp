@@ -38,6 +38,7 @@
 #include "Sequence.h"
 #include "Wait.h"
 #include "Condition.h"
+#include "Copy.h"
 
 // Constants
 
@@ -112,6 +113,7 @@ void InitInstructionRegistry(InstructionRegistry & registry)
   // Register leaf instructions:
   (void)RegisterInstruction<Wait>(registry);
   (void)RegisterInstruction<Condition>(registry);
+  (void)RegisterInstruction<Copy>(registry);
 }
 
 } // namespace sequencer

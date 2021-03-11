@@ -5,14 +5,14 @@
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
     <Sequence>
         <!-- Expected datatype -->
-        <CopyInstruction name="default"
+        <Copy name="default"
             input="input"
             output="file"/>
-        <CopyInstruction name="value"
+        <Copy name="value"
             input="value"
             output="file.value"/>
         <!-- Should be math expression -->
-        <CopyInstruction name="severity"
+        <Copy name="severity"
             input="severity"
             output="file.severity"/>
     </Sequence>

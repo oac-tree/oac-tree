@@ -21,15 +21,14 @@
 
 // Global header files
 
-#include <new> // std::nothrow, etc.
-
 // Local header files
 
 #include "Instruction.h"
 #include "InstructionRegistry.h"
 
 #include "Workspace.h"
-#include "Variable.h"
+
+#include "Copy.h"
 
 // Constants
 
@@ -42,60 +41,15 @@ namespace sup {
 
 namespace sequencer {
 
-/**
- * @brief Instruction copying named variable from/to workspace
- */
-
-class CopyInstruction : public Instruction
-{
-
-  private:
-
-    /**
-     * @brief Copy variables identified with 'input' and 'output' attributes.
-     */
-
-    ExecutionStatus ExecuteSingleImpl (UserInterface * ui, Workspace * ws) override;
-
-  protected:
-
-  public:
-
-    /**
-     * @brief Constructor.
-     */
-
-    CopyInstruction (void);
-
-    /**
-     * @brief Destructor.
-     */
-
-    ~CopyInstruction (void) override;
-
-};
-
 // Function declaration
-
-bool RegisterCopyInstruction (void);
 
 // Global variables
 
-static bool global_copyinstruction_initialised_flag = RegisterCopyInstruction();
+const std::string Copy::Type = "Copy";
 
 // Function definition
 
-bool RegisterCopyInstruction (void)
-{
-
-  auto constructor = []() { return static_cast<Instruction*>(new CopyInstruction ()); };
-  GlobalInstructionRegistry().RegisterInstruction("CopyInstruction", constructor);
-
-  return true;
-
-}
-
-ExecutionStatus CopyInstruction::ExecuteSingleImpl (UserInterface * ui, Workspace * ws)
+ExecutionStatus Copy::ExecuteSingleImpl (UserInterface * ui, Workspace * ws)
 {
 
   (void)ui;
@@ -119,8 +73,8 @@ ExecutionStatus CopyInstruction::ExecuteSingleImpl (UserInterface * ui, Workspac
 
 }
 
-CopyInstruction::CopyInstruction (void) : Instruction("CopyInstruction") {}
-CopyInstruction::~CopyInstruction (void) {}
+Copy::Copy (void) : Instruction(Copy::Type) {}
+Copy::~Copy (void) {}
 
 } // namespace sequencer
 

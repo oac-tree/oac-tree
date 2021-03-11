@@ -29,7 +29,7 @@ retcode=${no_error}
 
 echo "***** Starting unit tests *****"
 
-../../../target/bin/unit-tests --gtest_filter=-ParallelSequence.WithUserCode || retcode=$?
+../../../target/bin/unit-tests || retcode=$?
 
 echo "***** End of unit tests *****"
 

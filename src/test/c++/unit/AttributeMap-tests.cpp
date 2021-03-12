@@ -35,6 +35,7 @@
 #define LOG_ALTERN_SRC "sup::sequencer"
 
 // Type definition
+
 using namespace sup::sequencer;
 
 class AttributeMapTest : public ::testing::Test {

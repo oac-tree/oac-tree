@@ -186,9 +186,8 @@ class TreeData
      * @brief Add child element data.
      *
      * @param child Data representation of child element.
-     * @return true on success.
      */
-    bool AddChild(const TreeData & child);
+    void AddChild(const TreeData & child);
 
     /**
      * @brief Retrieve all child data elements.

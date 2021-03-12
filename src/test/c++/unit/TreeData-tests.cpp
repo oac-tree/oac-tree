@@ -307,7 +307,7 @@ TEST_F(TreeDataTest, AddChild)
   // Add a first child
   EXPECT_EQ(data.GetNumberOfAttributes(), 0);
   EXPECT_EQ(data.GetNumberOfChildren(), 0);
-  EXPECT_TRUE(data.AddChild(child_0));
+  data.AddChild(child_0);
   EXPECT_EQ(data.GetNumberOfAttributes(), 0);
   EXPECT_EQ(data.GetNumberOfChildren(), 1);
   auto children = data.Children();
@@ -326,7 +326,7 @@ TEST_F(TreeDataTest, AddChild)
   EXPECT_EQ(n, 1);
 
   // Add a second child
-  EXPECT_TRUE(data.AddChild(child_1));
+  data.AddChild(child_1);
   EXPECT_EQ(data.GetNumberOfAttributes(), 0);
   EXPECT_EQ(data.GetNumberOfChildren(), 2);
   children = data.Children();

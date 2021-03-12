@@ -49,6 +49,12 @@ namespace sequencer {
 
 /**
  * @brief Variable that is hosted locally in the workspace.
+ *
+ * @details A LocalVariable with only a type attribute (no value attribute) will
+ * allocate an AnyValue, but subsequent GetValue calls will return false until an
+ * explicit successful SetValue occurs. The rationale is that it does not make sense to
+ * query an zero-initialized value and that this allows for triggering instruction
+ * execution on availability of a workspace variable.
  */
 
 class LocalVariable : public Variable
@@ -70,6 +76,7 @@ class LocalVariable : public Variable
     bool GetValueImpl(::ccs::types::AnyValue& value) const override;
     bool SetValueImpl(const ::ccs::types::AnyValue& value) override;
     bool SetupImpl() override;
+
   protected:
 
   public:
@@ -77,13 +84,6 @@ class LocalVariable : public Variable
      * @brief Constructor.
      */
     LocalVariable();
-
-    /**
-     * @brief Constructor.
-     *
-     * @param type AnyType of underlying value.
-     */
-    LocalVariable(const ::ccs::base::SharedReference<const ccs::types::AnyType>& type);
 
     /**
      * @brief Destructor.
@@ -94,6 +94,12 @@ class LocalVariable : public Variable
      * @brief Class name for VariableRegistry.
      */
     static const std::string Type;
+
+    /**
+     * @brief Defined attribute names.
+     */
+    static const std::string JSON_TYPE;
+    static const std::string JSON_VALUE;
 };
 
 // Global variables

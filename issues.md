@@ -11,3 +11,4 @@
 * Add doxygen to many methods.
 * Automatically load plugins in plugin folder.
 * Make child instructions private in decorator and compound.
+* Clearly distinguish between InitHook() and SetupImpl() and document.

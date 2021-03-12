@@ -123,7 +123,7 @@ size_t TreeData::GetNumberOfChildren() const
   return _children.size();
 }
 
-bool TreeData::AddChild(const TreeData & child)
+void TreeData::AddChild(const TreeData & child)
 {
   _children.push_back(child);
 }

@@ -248,6 +248,9 @@ class Instruction
      * @brief Reset execution status
      * @details This method call blocks until the termination of all descendant instructions
      * running in a separate thread. Destruction of this instruction is safe afterwards.
+     * @note This method should only be called on instruction objects that are not currently
+     * executing. This is taken care of by waiting for child termination before calling their
+     * Instruction::Reset() method.
      */
     void Reset();
 

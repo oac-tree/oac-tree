@@ -53,7 +53,6 @@ void Instruction::Preamble(UserInterface * ui)
   PreExecuteHook(ui);
   if (_status == ExecutionStatus::NOT_STARTED)
   {
-    _halt_requested.store(false);
     InitHook();
     _status = ExecutionStatus::NOT_FINISHED;
     ui->UpdateInstructionStatus(this);
@@ -131,12 +130,13 @@ bool Instruction::Setup(const Procedure & proc)
 
 void Instruction::ExecuteSingle(UserInterface * ui, Workspace * ws)
 {
+  if (_halt_requested.load())
+  {
+    return;  // Do not start execution if a halt request was detected.
+  }
   Preamble(ui);
-
   _status_before = _status;
-
   _status = ExecuteSingleImpl(ui, ws);
-
   Postamble(ui);
 }
 
@@ -154,6 +154,7 @@ ExecutionStatus Instruction::GetStatus() const
 void Instruction::Reset()
 {
   ResetHook();
+  _halt_requested.store(false);
   _status = ExecutionStatus::NOT_STARTED;
 }
 

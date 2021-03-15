@@ -45,20 +45,36 @@ namespace sequencer {
 
 const std::string Wait::Type = "Wait";
 
+static const int MAX_BLOCKING_TIME_MS = 100;
+
 // Function declaration
 
 // Function definition
 
 ExecutionStatus Wait::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
 {
-    (void)ui;
-    (void)ws;
-    if (_timeout > 0.0)
+  (void)ui;
+  (void)ws;
+  if (_timeout > 0.0)
+  {
+    auto mseconds = static_cast<int>(_timeout * 1000);
+    auto nr_loops = mseconds / MAX_BLOCKING_TIME_MS;
+    auto remaining_ms = mseconds % MAX_BLOCKING_TIME_MS;
+    for (int i = 0; i < nr_loops; ++i)
     {
-      auto mseconds = static_cast<int>(_timeout * 1000);
-      std::this_thread::sleep_for(std::chrono::milliseconds(mseconds));
+      if (_halt_requested.load())
+      {
+        return ExecutionStatus::FAILURE;
+      }
+      std::this_thread::sleep_for(std::chrono::milliseconds(MAX_BLOCKING_TIME_MS));
     }
-    return ExecutionStatus::SUCCESS;
+    if (_halt_requested.load())
+    {
+      return ExecutionStatus::FAILURE;
+    }
+    std::this_thread::sleep_for(std::chrono::milliseconds(remaining_ms));
+  }
+  return ExecutionStatus::SUCCESS;
 }
 
 bool Wait::SetupImpl(const Procedure & proc)

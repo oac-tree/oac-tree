@@ -12,3 +12,4 @@
 * Automatically load plugins in plugin folder.
 * Make child instructions private in decorator and compound.
 * Clearly distinguish between InitHook() and SetupImpl() and document.
+* Halt instruction tree in Procedure destructor

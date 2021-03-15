@@ -39,42 +39,36 @@
 #undef LOG_ALTERN_SRC
 #define LOG_ALTERN_SRC "unit-test"
 
-// Type declaration
+// Type definition
 
-class CopyInstruction : public sup::sequencer::Instruction
+using namespace sup::sequencer;
+
+class CopyInstruction : public Instruction
 {
-
   private:
-
     /**
      * @brief See sup::sequencer::Instruction.
      * @details Copy variables identified with 'input' and 'output' attributes.
      */
-
-    sup::sequencer::ExecutionStatus ExecuteSingleImpl (sup::sequencer::UserInterface * ui, sup::sequencer::Workspace * ws) override;
+    ExecutionStatus ExecuteSingleImpl (UserInterface * ui, Workspace * ws) override;
 
   protected:
 
   public:
-
     /**
      * @brief Constructor.
      */
-
     CopyInstruction (void);
 
     /**
      * @brief Destructor.
      */
-
     ~CopyInstruction (void) override;
 
     /**
      * @brief Class name for InstructionRegistry.
      */
-
     static const std::string Type;
-
 };
 
 // Function declaration
@@ -85,30 +79,102 @@ const std::string CopyInstruction::Type = "CopyInstruction";
 
 static ccs::log::Func_t _log_handler = ccs::log::SetStdout();
 
+static const std::string ProcedureSequenceString =
+R"RAW(<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+           name="Trivial procedure for testing purposes"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+    <Repeat maxCount="10">
+        <Sequence>
+            <Wait name="wait" timeout="0.1"/>
+            <Wait name="again" timeout="0.1"/>
+        </Sequence>
+    </Repeat>
+    <Workspace>
+        <Local name="input" type='{"type":"string"}' value='"undefined"'/>
+        <Local name="output" type='{"type":"string"}' value='"denifednu"'/>
+    </Workspace>
+</Procedure>
+)RAW";
+
+static const std::string ProcedureParallelString =
+R"RAW(<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+           name="Trivial procedure for testing purposes"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+    <Repeat maxCount="10">
+        <ParallelSequence name="parallel">
+            <Wait name="wait" timeout="0.1"/>
+            <Wait name="again" timeout="0.1"/>
+        </ParallelSequence>
+    </Repeat>
+    <Workspace>
+        <Local name="input" type='{"type":"string"}' value='"undefined"'/>
+        <Local name="output" type='{"type":"string"}' value='"denifednu"'/>
+    </Workspace>
+</Procedure>
+)RAW";
+
+static const std::string ProcedureParallelBuiltinString =
+R"RAW(<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+           name="Trivial procedure for testing purposes"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+    <Repeat maxCount="10">
+        <ParallelSequence name="parallel">
+            <Wait name="wait" timeout="0.1"/>
+            <Copy name="copy" input="input" output="output"/>
+            <Wait name="again" timeout="0.1"/>
+        </ParallelSequence>
+    </Repeat>
+    <Workspace>
+        <Local name="input" type='{"type":"string"}' value='"undefined"'/>
+        <Local name="output" type='{"type":"string"}' value='"denifednu"'/>
+    </Workspace>
+</Procedure>
+)RAW";
+
+static const std::string ProcedureParallelUserCodeString =
+R"RAW(<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+           name="Trivial procedure for testing purposes"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+    <Repeat maxCount="10">
+        <ParallelSequence name="parallel">
+            <Wait name="wait" timeout="0.1"/>
+            <CopyInstruction name="copy" input="input" output="output"/>
+            <Wait name="again" timeout="0.1"/>
+        </ParallelSequence>
+    </Repeat>
+    <Workspace>
+        <Local name="input" type='{"type":"string"}' value='"undefined"'/>
+        <Local name="output" type='{"type":"string"}' value='"denifednu"'/>
+    </Workspace>
+</Procedure>
+)RAW";
+
 // Function definition
 
-sup::sequencer::ExecutionStatus CopyInstruction::ExecuteSingleImpl (sup::sequencer::UserInterface * ui, sup::sequencer::Workspace * ws)
+ExecutionStatus CopyInstruction::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
 {
-
   (void)ui;
   (void)ws;
 
-  bool status = (sup::sequencer::Instruction::HasAttribute("input") && sup::sequencer::Instruction::HasAttribute("output"));
-
+  bool status = (HasAttribute("input") && HasAttribute("output"));
   ccs::types::AnyValue _value;
-
   if (status)
-    { // Read from workspace
-      status = ws->GetValue(sup::sequencer::Instruction::GetAttribute("input"), _value);
-    }
-
+  { // Read from workspace
+    status = ws->GetValue(GetAttribute("input"), _value);
+  }
   if (status)
-    { // Write to workspace
-      status = ws->SetValue(sup::sequencer::Instruction::GetAttribute("output"), _value);
-    }
-
-  return (status ? sup::sequencer::ExecutionStatus::SUCCESS : sup::sequencer::ExecutionStatus::FAILURE);
-
+  { // Write to workspace
+    status = ws->SetValue(GetAttribute("output"), _value);
+  }
+  return (status ? ExecutionStatus::SUCCESS : ExecutionStatus::FAILURE);
 }
 
 CopyInstruction::CopyInstruction (void) : sup::sequencer::Instruction(CopyInstruction::Type) {}
@@ -119,252 +185,169 @@ CopyInstruction::~CopyInstruction (void)
 
 TEST(ParallelSequence, Procedure_sequence)
 {
-
   bool status = true;
-
   try
+  {
+    auto proc = sup::sequencer::ParseProcedureString(ProcedureSequenceString);
+    if (status)
     {
-      auto proc = sup::sequencer::ParseProcedureString(
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-        "           name=\"Trivial procedure for testing purposes\"\n"
-        "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-        "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-        "    <Repeat maxCount=\"10\">\n"
-        "        <Sequence>\n"
-        "            <Wait name=\"wait\" timeout=\"0.1\"/>\n"
-        "            <Wait name=\"again\" timeout=\"0.1\"/>\n"
-        "        </Sequence>\n"
-        "    </Repeat>\n"
-        "    <Workspace>\n"
-        "        <Local name=\"input\" type='{\"type\":\"string\"}' value='\"undefined\"'/>\n"
-        "        <Local name=\"output\" type='{\"type\":\"string\"}' value='\"denifednu\"'/>\n"
-        "    </Workspace>\n"
-        "</Procedure>");
-
-      if (status)
-        {
-          status = static_cast<bool>(proc);
-        }
-
-      if (status)
-        {
-          sup::sequencer::LogUI ui;
-          sup::sequencer::ExecutionStatus exec = sup::sequencer::ExecutionStatus::FAILURE;
-
-          do
-            {
-              (void)ccs::HelperTools::SleepFor(10000000ul); // Let system breathe
-              proc->ExecuteSingle(&ui);
-              exec = proc->GetStatus();
-            }
-          while ((sup::sequencer::ExecutionStatus::SUCCESS != exec) &&
-                 (sup::sequencer::ExecutionStatus::FAILURE != exec));
-
-          status = (sup::sequencer::ExecutionStatus::SUCCESS == exec);
-        }
+      status = static_cast<bool>(proc);
     }
-  catch (const std::exception& e)
-    { // Exception caught
-      log_error("TEST(ParallelSequence, Procedure_sequence) - .. '%s' exception caught", e.what());
-      status = false;
+    if (status)
+    {
+      status = proc->Setup();
     }
+    if (status)
+    {
+      sup::sequencer::LogUI ui;
+      sup::sequencer::ExecutionStatus exec = sup::sequencer::ExecutionStatus::FAILURE;
+      do
+      {
+        (void)ccs::HelperTools::SleepFor(10000000ul); // Let system breathe
+        proc->ExecuteSingle(&ui);
+        exec = proc->GetStatus();
+      } while ((sup::sequencer::ExecutionStatus::SUCCESS != exec) &&
+               (sup::sequencer::ExecutionStatus::FAILURE != exec));
+      status = (sup::sequencer::ExecutionStatus::SUCCESS == exec);
+    }
+  }
+  catch (const std::exception &e)
+  { // Exception caught
+    log_error("TEST(ParallelSequence, Procedure_sequence) - .. '%s' exception caught", e.what());
+    status = false;
+  }
   catch (...)
-    { // Exception caught
-      log_error("TEST(ParallelSequence, Procedure_sequence) - .. unknown exception caught");
-      status = false;
-    }
-
+  { // Exception caught
+    log_error("TEST(ParallelSequence, Procedure_sequence) - .. unknown exception caught");
+    status = false;
+  }
   ASSERT_EQ(true, status);
-
 }
 
 TEST(ParallelSequence, Procedure_parallel)
 {
-
   bool status = true;
-
   try
-    { // Must live as long as procedure .. and not only during execution
+  {
+    auto proc = sup::sequencer::ParseProcedureString(ProcedureParallelString);
+    if (status)
+    {
+      status = static_cast<bool>(proc);
+    }
+    if (status)
+    {
+      status = proc->Setup();
+    }
+    if (status)
+    {
       sup::sequencer::LogUI ui;
-      auto proc = sup::sequencer::ParseProcedureString(
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-        "           name=\"Trivial procedure for testing purposes\"\n"
-        "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-        "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-        "    <Repeat maxCount=\"10\">\n"
-        "        <ParallelSequence name=\"parallel\">\n"
-        "            <Wait name=\"wait\" timeout=\"0.1\"/>\n"
-        "            <Wait name=\"again\" timeout=\"0.1\"/>\n"
-        "        </ParallelSequence>\n"
-        "    </Repeat>\n"
-        "    <Workspace>\n"
-        "        <Local name=\"input\" type='{\"type\":\"string\"}' value='\"undefined\"'/>\n"
-        "        <Local name=\"output\" type='{\"type\":\"string\"}' value='\"denifednu\"'/>\n"
-        "    </Workspace>\n"
-        "</Procedure>");
-
-      if (status)
-        {
-          status = static_cast<bool>(proc);
-        }
-
-      if (status)
-        {
-          sup::sequencer::ExecutionStatus exec = sup::sequencer::ExecutionStatus::FAILURE;
-
-          do
-            {
-              (void)ccs::HelperTools::SleepFor(10000000ul); // Let system breathe
-              proc->ExecuteSingle(&ui);
-              exec = proc->GetStatus();
-            }
-          while ((sup::sequencer::ExecutionStatus::SUCCESS != exec) &&
-                 (sup::sequencer::ExecutionStatus::FAILURE != exec));
-
-          status = (sup::sequencer::ExecutionStatus::SUCCESS == exec);
-        }
+      sup::sequencer::ExecutionStatus exec = sup::sequencer::ExecutionStatus::FAILURE;
+      do
+      {
+        (void)ccs::HelperTools::SleepFor(10000000ul); // Let system breathe
+        proc->ExecuteSingle(&ui);
+        exec = proc->GetStatus();
+      } while ((sup::sequencer::ExecutionStatus::SUCCESS != exec) &&
+               (sup::sequencer::ExecutionStatus::FAILURE != exec));
+      status = (sup::sequencer::ExecutionStatus::SUCCESS == exec);
+      proc->Reset(); // Wait for thread termination before calling destructor of UI
     }
-  catch (const std::exception& e)
-    { // Exception caught
-      log_error("TEST(ParallelSequence, Procedure_parallel) - .. '%s' exception caught", e.what());
-      status = false;
-    }
+  }
+  catch (const std::exception &e)
+  { // Exception caught
+    log_error("TEST(ParallelSequence, Procedure_parallel) - .. '%s' exception caught", e.what());
+    status = false;
+  }
   catch (...)
-    { // Exception caught
-      log_error("TEST(ParallelSequence, Procedure_parallel) - .. unknown exception caught");
-      status = false;
-    }
-
+  { // Exception caught
+    log_error("TEST(ParallelSequence, Procedure_parallel) - .. unknown exception caught");
+    status = false;
+  }
   ASSERT_EQ(true, status);
-
 }
 // Issue during the tear-down process
 TEST(ParallelSequence, WithBuiltinCode)
 {
-
   bool status = true;
-
   try
-    { // Must live as long as procedure .. and not only during execution
+  {
+    auto proc = sup::sequencer::ParseProcedureString(ProcedureParallelBuiltinString);
+    if (status)
+    {
+      status = static_cast<bool>(proc);
+    }
+    if (status)
+    {
+      status = proc->Setup();
+    }
+    if (status)
+    {
       sup::sequencer::LogUI ui;
-      auto proc = sup::sequencer::ParseProcedureString(
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-        "           name=\"Trivial procedure for testing purposes\"\n"
-        "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-        "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-        "    <Repeat maxCount=\"10\">\n"
-        "        <ParallelSequence name=\"parallel\">\n"
-        "            <Wait name=\"wait\" timeout=\"0.1\"/>\n"
-        "            <Copy name=\"copy\" input=\"input\" output=\"output\"/>\n"
-        "            <Wait name=\"again\" timeout=\"0.1\"/>\n"
-        "        </ParallelSequence>\n"
-        "    </Repeat>\n"
-        "    <Workspace>\n"
-        "        <Local name=\"input\" type='{\"type\":\"string\"}' value='\"undefined\"'/>\n"
-        "        <Local name=\"output\" type='{\"type\":\"string\"}' value='\"denifednu\"'/>\n"
-        "    </Workspace>\n"
-        "</Procedure>");
-
-      if (status)
-        {
-          status = static_cast<bool>(proc);
-        }
-
-      if (status)
-        {
-          sup::sequencer::ExecutionStatus exec = sup::sequencer::ExecutionStatus::FAILURE;
-
-          do
-            {
-              (void)ccs::HelperTools::SleepFor(10000000ul); // Let system breathe
-              proc->ExecuteSingle(&ui);
-              exec = proc->GetStatus();
-            }
-          while ((sup::sequencer::ExecutionStatus::SUCCESS != exec) &&
-                 (sup::sequencer::ExecutionStatus::FAILURE != exec));
-
-          status = (sup::sequencer::ExecutionStatus::SUCCESS == exec);
-        }
+      sup::sequencer::ExecutionStatus exec = sup::sequencer::ExecutionStatus::FAILURE;
+      do
+      {
+        (void)ccs::HelperTools::SleepFor(10000000ul); // Let system breathe
+        proc->ExecuteSingle(&ui);
+        exec = proc->GetStatus();
+      } while ((sup::sequencer::ExecutionStatus::SUCCESS != exec) &&
+               (sup::sequencer::ExecutionStatus::FAILURE != exec));
+      status = (sup::sequencer::ExecutionStatus::SUCCESS == exec);
+      proc->Reset(); // Wait for thread termination before calling destructor of UI
     }
-  catch (const std::exception& e)
-    { // Exception caught
-      log_error("TEST(ParallelSequence, Procedure_parallel) - .. '%s' exception caught", e.what());
-      status = false;
-    }
+  }
+  catch (const std::exception &e)
+  { // Exception caught
+    log_error("TEST(ParallelSequence, Procedure_parallel) - .. '%s' exception caught", e.what());
+    status = false;
+  }
   catch (...)
-    { // Exception caught
-      log_error("TEST(ParallelSequence, Procedure_parallel) - .. unknown exception caught");
-      status = false;
-    }
-
+  { // Exception caught
+    log_error("TEST(ParallelSequence, Procedure_parallel) - .. unknown exception caught");
+    status = false;
+  }
   ASSERT_EQ(true, status);
-
 }
 // Issue during the tear-down process
 TEST(ParallelSequence, WithUserCode)
 {
-
   bool status = sup::sequencer::RegisterGlobalInstruction<CopyInstruction>();
-
   try
-    { // Must live as long as procedure .. and not only during execution
+  {
+    auto proc = sup::sequencer::ParseProcedureString(ProcedureParallelUserCodeString);
+    if (status)
+    {
+      status = static_cast<bool>(proc);
+    }
+    if (status)
+    {
+      status = proc->Setup();
+    }
+    if (status)
+    {
       sup::sequencer::LogUI ui;
-      auto proc = sup::sequencer::ParseProcedureString(
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-        "           name=\"Trivial procedure for testing purposes\"\n"
-        "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-        "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-        "    <Repeat maxCount=\"10\">\n"
-        "        <ParallelSequence name=\"parallel\">\n"
-        "            <Wait name=\"wait\" timeout=\"0.1\"/>\n"
-        "            <CopyInstruction name=\"copy\" input=\"input\" output=\"output\"/>\n"
-        "            <Wait name=\"again\" timeout=\"0.1\"/>\n"
-        "        </ParallelSequence>\n"
-        "    </Repeat>\n"
-        "    <Workspace>\n"
-        "        <Local name=\"input\" type='{\"type\":\"string\"}' value='\"undefined\"'/>\n"
-        "        <Local name=\"output\" type='{\"type\":\"string\"}' value='\"denifednu\"'/>\n"
-        "    </Workspace>\n"
-        "</Procedure>");
-
-      if (status)
-        {
-          status = static_cast<bool>(proc);
-        }
-
-      if (status)
-        {
-          sup::sequencer::ExecutionStatus exec = sup::sequencer::ExecutionStatus::FAILURE;
-
-          do
-            {
-              (void)ccs::HelperTools::SleepFor(10000000ul); // Let system breathe
-              proc->ExecuteSingle(&ui);
-              exec = proc->GetStatus();
-            }
-          while ((sup::sequencer::ExecutionStatus::SUCCESS != exec) &&
-                 (sup::sequencer::ExecutionStatus::FAILURE != exec));
-
-          status = (sup::sequencer::ExecutionStatus::SUCCESS == exec);
-        }
+      sup::sequencer::ExecutionStatus exec = sup::sequencer::ExecutionStatus::FAILURE;
+      do
+      {
+        (void)ccs::HelperTools::SleepFor(10000000ul); // Let system breathe
+        proc->ExecuteSingle(&ui);
+        exec = proc->GetStatus();
+      } while ((sup::sequencer::ExecutionStatus::SUCCESS != exec) &&
+               (sup::sequencer::ExecutionStatus::FAILURE != exec));
+      status = (sup::sequencer::ExecutionStatus::SUCCESS == exec);
+      proc->Reset(); // Wait for thread termination before calling destructor of UI
     }
-  catch (const std::exception& e)
-    { // Exception caught
-      log_error("TEST(ParallelSequence, Procedure_parallel) - .. '%s' exception caught", e.what());
-      status = false;
-    }
+  }
+  catch (const std::exception &e)
+  { // Exception caught
+    log_error("TEST(ParallelSequence, Procedure_parallel) - .. '%s' exception caught", e.what());
+    status = false;
+  }
   catch (...)
-    { // Exception caught
-      log_error("TEST(ParallelSequence, Procedure_parallel) - .. unknown exception caught");
-      status = false;
-    }
-
+  { // Exception caught
+    log_error("TEST(ParallelSequence, Procedure_parallel) - .. unknown exception caught");
+    status = false;
+  }
   ASSERT_EQ(true, status);
-
 }
 
 #undef LOG_ALTERN_SRC

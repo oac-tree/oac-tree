@@ -79,27 +79,84 @@ class Instruction
 
     AttributeMap _attributes;
 
+    /**
+     * @brief Private hook that is called at the start of the first ExecuteSingle call.
+     *
+     * @details This hook is meant to establish a correct starting state (e.g. reset internal
+     * counters) and will be called every time the instruction is executed afresh, i.e. restarted
+     * from scratch. See Instruction::SetupImpl(const Procedure & proc) for establishing correct
+     * configuration state of the instruction.
+     * @note Default implementation is empty.
+     */
     virtual void InitHook();
 
+    /**
+     * @brief Private method that is always called before delegating further execution to the
+     * private virutal Instruction::ExecuteSingleImple(UserInterface * ui, Workspace * ws).
+     *
+     * @details This method first calls the virtual private Instruction::PreExecuteHook(UserInterface * ui).
+     * If the instruction was not yet executed (or reset through a call to Instruction::Reset()),
+     * it clears the halt requested atomic, calls Instruction::InitHook(), changes the status to
+     * ExecutionStatus::NOT_FINISHED and finally informs the user interface of a status change.
+     */
     void Preamble(UserInterface * ui);
 
+    /**
+     * @brief Private hook that is always called at the start of each execution request.
+     *
+     * @details See Instruction::Preamble(UserInterface * ui) for more details.
+     * @note Default implementation is empty.
+     */
     virtual void PreExecuteHook(UserInterface * ui);
 
+    /**
+     * @brief Private implementation of the execute action.
+     *
+     * @details Pure virtual: this method contains the action(s) to be taken during execution.
+     */
     virtual ExecutionStatus ExecuteSingleImpl(UserInterface * ui, Workspace * ws) = 0;
 
+    /**
+     * @brief Private hook that is always called at the end of each execution request.
+     *
+     * @details See Instruction::Postamble(UserInterface * ui) for more details.
+     * @note Default implementation is empty.
+     */
     virtual void PostExecuteHook(UserInterface * ui);
 
+    /**
+     * @brief Private method that is always called the delegated execution to the
+     * private virutal Instruction::ExecuteSingleImple(UserInterface * ui, Workspace * ws).
+     *
+     * @details This method first checks if the instruction's status was changed as a consequence
+     * of the call to Instruction::ExecuteSingleImple(UserInterface * ui, Workspace * ws). If so,
+     * it informs the user interface of this status change. Afterwards, it calls the virtual
+     * private Instruction::PostExecuteHook(UserInterface * ui).
+     */
     void Postamble(UserInterface * ui);
 
+    /**
+     * @brief Private hook that is always called during a call to Instruction::Reset().
+     *
+     * @details This hook can be used to ensure that all descendant child instructions running
+     * in a separate thread have finished execution. It is also used to propagate the call to
+     * Instruction::Reset() to all child instructions.
+     * @note Default implementation is empty.
+     */
     virtual void ResetHook();
 
+    /**
+     * @brief Hook called during Instruction::Halt().
+     *
+     * @details This hook is meant to propagate the call to Instruction::Halt() to
+     * the instructions's child instructions.
+     */
     virtual void HaltImpl();
 
     /**
      * @brief Private hook that is called after variable initialisation.
      *
      * @return true on succes.
-     *
      * @details Mainly used to propagate attributes to nested instructions.
      * Default implementation returns true.
      */
@@ -114,7 +171,7 @@ class Instruction
 
   protected:
     /**
-     * @brief Setup implementation.
+     * @brief Atomic flag that indicates if a request was made to halt the instruction.
      */
      std::atomic_bool _halt_requested;
 
@@ -123,6 +180,9 @@ class Instruction
      *
      * @param proc Procedure containing Workspace and instruction declarations.
      * @return true on successful instruction setup.
+     * @details Successful completion of this instruction means that the instruction
+     * was able to configure itself from its attributes and (possibly) data from the Procedure.
+     * This method is called from the Instruction::Setup(const Procedure & proc) method.
      */
     virtual bool SetupImpl(const Procedure & proc);
 
@@ -146,7 +206,7 @@ class Instruction
 
     /**
      * @brief Get instruction name.
-     * @return instruction name.
+     * @return instruction name (or empty string when name was not found).
      */
     std::string GetName() const;
 
@@ -172,7 +232,9 @@ class Instruction
 
     /**
      * @brief Halt execution.
-     * @details Only meaningful for asynchronously running instructions.
+     * @details Only meaningful when the instruction is running asynchronously.
+     * This method only sets an atomic boolean member variable. It is up to implementations
+     * of the Instruction to check this variable regularly to prevent long blocking.
      */
     void Halt();
 
@@ -184,6 +246,8 @@ class Instruction
 
     /**
      * @brief Reset execution status
+     * @details This method call blocks until the termination of all descendant instructions
+     * running in a separate thread. Destruction of this instruction is safe afterwards.
      */
     void Reset();
 

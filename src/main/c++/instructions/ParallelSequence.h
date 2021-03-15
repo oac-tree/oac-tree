@@ -66,6 +66,7 @@ class ParallelSequence : public CompoundInstruction
     void InitHook() override;
     ExecutionStatus ExecuteSingleImpl(UserInterface * ui, Workspace * ws) override;
     void ResetHook() override;
+    bool SetupImpl(const Procedure & proc) override;
 
     /**
      * @brief Calculate this instruction's status from the status of its child instructions.
@@ -83,13 +84,6 @@ class ParallelSequence : public CompoundInstruction
     int _success_th, _failure_th;
 
   protected:
-    /**
-     * @brief Setup implementation.
-     *
-     * @param proc Procedure containing Workspace and instruction declarations.
-     * @return true on successful instruction setup.
-     */
-    bool SetupImpl(const Procedure & proc) override;
 
   public:
     /**

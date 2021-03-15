@@ -63,6 +63,13 @@ class Include : public DecoratorInstruction
     ExecutionStatus ExecuteSingleImpl(UserInterface * ui, Workspace * ws) override;
     bool PostInitialiseVariables(const AttributeMap & source) override;
 
+    /**
+     * @brief See sup::sequencer::Instruction.
+     *
+     * @details Tries to load and copy an instruction tree as its child.
+     */
+    bool SetupImpl(const Procedure & proc) override;
+
     // Directory of original file for this instruction (if loaded from file).
     std::string _current_directory;
 
@@ -71,13 +78,6 @@ class Include : public DecoratorInstruction
     ExecutionStatus CalculateStatus() const;
 
   protected:
-
-    /**
-     * @brief See sup::sequencer::Instruction.
-     *
-     * @details Tries to load and copy an instruction tree as its child.
-     */
-    bool SetupImpl(const Procedure & proc) override;
 
   public:
     /**

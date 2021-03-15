@@ -56,15 +56,15 @@ static std::string GetFullPathname(const std::string & filename,
 
 ExecutionStatus Include::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
 {
-  if (!_child)
+  if (!HasChild())
   {
     return ExecutionStatus::SUCCESS;
   }
 
-  auto child_status = _child->GetStatus();
+  auto child_status = GetChildStatus();
   if (NeedsExecute(child_status))
   {
-    _child->ExecuteSingle(ui, ws);
+    ExecuteChild(ui, ws);
   }
 
   return CalculateStatus();
@@ -81,21 +81,6 @@ bool Include::PostInitialiseVariables(const AttributeMap & source)
     }
   }
   return result;
-}
-
-std::string Include::GetPath() const
-{
-  return GetAttribute(PATH_ATTRIBUTE_NAME);
-}
-
-ExecutionStatus Include::CalculateStatus() const
-{
-  if (!_child)
-  {
-    return ExecutionStatus::SUCCESS;
-  }
-
-  return _child->GetStatus();
 }
 
 bool Include::SetupImpl(const Procedure & proc)
@@ -120,11 +105,25 @@ bool Include::SetupImpl(const Procedure & proc)
   {
     log_info("Include::SetupImpl(): variable attributes successfully set");
     SetInstruction(clone.release());
-    return _child->Setup(proc);
+    return SetupChild(proc);
   }
   log_warning("Include::SetupImpl(): instruction with path '%s' could not be "
               "properly initialised with the given attributes", path.c_str());
   return false;
+}
+
+std::string Include::GetPath() const
+{
+  return GetAttribute(PATH_ATTRIBUTE_NAME);
+}
+
+ExecutionStatus Include::CalculateStatus() const
+{
+  if (!HasChild())
+  {
+    return ExecutionStatus::SUCCESS;
+  }
+  return GetChildStatus();
 }
 
 Include::Include()
@@ -160,8 +159,6 @@ static std::string GetFullPathname(const std::string & filename,
   }
   return current_directory + filename;
 }
-
-
 
 } // namespace sequencer
 

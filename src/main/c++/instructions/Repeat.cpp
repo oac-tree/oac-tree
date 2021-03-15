@@ -53,21 +53,21 @@ void Repeat::InitHook()
 
 ExecutionStatus Repeat::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
 {
-  if (!_child || _max_count == 0)
+  if (!HasChild()|| _max_count == 0)
   {
     return ExecutionStatus::SUCCESS;
   }
 
-  auto child_status = _child->GetStatus();
+  auto child_status = GetChildStatus();
 
   if (child_status == ExecutionStatus::SUCCESS)
   {
-    _child->Reset();
+    ResetChild();
   }
 
-  _child->ExecuteSingle(ui, ws);
+  ExecuteChild(ui, ws);
 
-  child_status = _child->GetStatus();
+  child_status = GetChildStatus();
   // Don't increment count when _max_count is not strictly positive.
   if (_max_count > 0 && (child_status == ExecutionStatus::SUCCESS ||
                          child_status == ExecutionStatus::FAILURE))
@@ -76,25 +76,6 @@ ExecutionStatus Repeat::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
   }
 
   return CalculateStatus();
-}
-
-ExecutionStatus Repeat::CalculateStatus() const
-{
-  auto child_status = _child->GetStatus();
-
-  if (child_status == ExecutionStatus::SUCCESS)
-  {
-    if (_count == _max_count)
-    {
-      return ExecutionStatus::SUCCESS;
-    }
-    else
-    {
-      return ExecutionStatus::NOT_FINISHED;
-    }
-  }
-
-  return child_status;
 }
 
 bool Repeat::SetupImpl(const Procedure & proc)
@@ -117,7 +98,26 @@ bool Repeat::SetupImpl(const Procedure & proc)
       status = false;
     }
   }
-  return DecoratorInstruction::SetupImpl(proc) && status;
+  return SetupChild(proc) && status;
+}
+
+ExecutionStatus Repeat::CalculateStatus() const
+{
+  auto child_status = GetChildStatus();
+
+  if (child_status == ExecutionStatus::SUCCESS)
+  {
+    if (_count == _max_count)
+    {
+      return ExecutionStatus::SUCCESS;
+    }
+    else
+    {
+      return ExecutionStatus::NOT_FINISHED;
+    }
+  }
+
+  return child_status;
 }
 
 Repeat::Repeat()

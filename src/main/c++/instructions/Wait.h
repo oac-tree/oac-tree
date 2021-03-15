@@ -62,15 +62,16 @@ class Wait : public Instruction
     ExecutionStatus ExecuteSingleImpl(UserInterface * ui, Workspace * ws) override;
 
     /**
+     * @brief See sup::sequencer::Instruction.
+     */
+    bool SetupImpl(const Procedure & proc) override;
+
+    /**
      * @brief Timeout (in seconds)
      */
     double _timeout;
 
   protected:
-    /**
-     * @brief See sup::sequencer::Instruction.
-     */
-    bool SetupImpl(const Procedure & proc) override;
 
   public:
     /**

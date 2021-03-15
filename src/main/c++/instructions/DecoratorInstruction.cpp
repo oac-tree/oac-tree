@@ -46,18 +46,12 @@ namespace sequencer {
 
 void DecoratorInstruction::ResetHook()
 {
-  if (_child)
-  {
-    _child->Reset();
-  }
+  ResetChild();
 }
 
 void DecoratorInstruction::HaltImpl()
 {
-  if (_child)
-  {
-    _child->Halt();
-  }
+  HaltChild();
 }
 
 std::vector<const Instruction *> DecoratorInstruction::ChildInstructionsImpl() const
@@ -72,13 +66,56 @@ std::vector<const Instruction *> DecoratorInstruction::ChildInstructionsImpl() c
 
 bool DecoratorInstruction::SetupImpl(const Procedure & proc)
 {
-  log_info("DecoratorInstruction::Setup - entering function..");
+  return SetupChild(proc);
+}
+
+bool DecoratorInstruction::SetupChild(const Procedure & proc)
+{
+  log_info("DecoratorInstruction::SetupChild - entering function..");
   bool status = true;
   if (_child)
   {
     status = _child->Setup(proc);
   }
   return status;
+}
+
+bool DecoratorInstruction::HasChild() const
+{
+  return static_cast<bool>(_child);
+}
+
+ExecutionStatus DecoratorInstruction::GetChildStatus() const
+{
+  if (_child)
+  {
+    return _child->GetStatus();
+  }
+  return ExecutionStatus::NOT_STARTED;
+}
+
+void DecoratorInstruction::ExecuteChild(UserInterface *ui, Workspace *ws)
+{
+  if (_child)
+  {
+    _child->ExecuteSingle(ui, ws);
+  }
+}
+
+void DecoratorInstruction::ResetChild()
+{
+  if (_child)
+  {
+    _child->Reset();
+  }
+}
+
+void DecoratorInstruction::HaltChild()
+{
+  if (_child)
+  {
+    _child->Halt();
+  }
 }
 
 DecoratorInstruction::DecoratorInstruction(const std::string & type)

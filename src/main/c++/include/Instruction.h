@@ -169,12 +169,6 @@ class Instruction
      */
     virtual std::vector<const Instruction *> ChildInstructionsImpl() const;
 
-  protected:
-    /**
-     * @brief Atomic flag that indicates if a request was made to halt the instruction.
-     */
-     std::atomic_bool _halt_requested;
-
     /**
      * @brief Setup implementation.
      *
@@ -185,6 +179,12 @@ class Instruction
      * This method is called from the Instruction::Setup(const Procedure & proc) method.
      */
     virtual bool SetupImpl(const Procedure & proc);
+
+  protected:
+    /**
+     * @brief Atomic flag that indicates if a request was made to halt the instruction.
+     */
+     std::atomic_bool _halt_requested;
 
   public:
     /**

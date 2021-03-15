@@ -48,11 +48,11 @@ const std::string Sequence::Type = "Sequence";
 
 ExecutionStatus Sequence::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
 {
-  if (_children.empty())
+  if (!HasChildren())
   {
     return ExecutionStatus::SUCCESS;
   }
-  for (auto instruction : _children)
+  for (auto instruction : ChildInstructions())
   {
     auto child_status = instruction->GetStatus();
 
@@ -77,7 +77,7 @@ ExecutionStatus Sequence::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
 
 ExecutionStatus Sequence::CalculateCompoundStatus() const
 {
-  for (auto instruction : _children)
+  for (auto instruction : ChildInstructions())
   {
     auto child_status = instruction->GetStatus();
 

@@ -46,18 +46,12 @@ namespace sequencer {
 
 void CompoundInstruction::ResetHook()
 {
-  for (auto instruction : _children)
-  {
-    instruction->Reset();
-  }
+  ResetChildren();
 }
 
 void CompoundInstruction::HaltImpl()
 {
-  for (auto instruction : _children)
-  {
-    instruction->Halt();
-  }
+  HaltChildren();
 }
 
 std::vector<const Instruction *> CompoundInstruction::ChildInstructionsImpl() const
@@ -72,13 +66,39 @@ std::vector<const Instruction *> CompoundInstruction::ChildInstructionsImpl() co
 
 bool CompoundInstruction::SetupImpl(const Procedure & proc)
 {
-  log_info("CompoundInstruction::Setup - entering function..");
+  return SetupChildren(proc);
+}
+
+bool CompoundInstruction::SetupChildren(const Procedure & proc)
+{
+  log_info("CompoundInstruction::SetupChildren - entering function..");
   bool result = true;
   for (auto instruction : _children)
   {
     result = instruction->Setup(proc) && result;
   }
   return result;
+}
+
+bool CompoundInstruction::HasChildren() const
+{
+  return !_children.empty();
+}
+
+void CompoundInstruction::ResetChildren()
+{
+  for (auto instruction : _children)
+  {
+    instruction->Reset();
+  }
+}
+
+void CompoundInstruction::HaltChildren()
+{
+  for (auto instruction : _children)
+  {
+    instruction->Halt();
+  }
 }
 
 CompoundInstruction::CompoundInstruction(const std::string & type)

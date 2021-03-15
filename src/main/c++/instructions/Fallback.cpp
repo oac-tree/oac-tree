@@ -48,11 +48,11 @@ const std::string Fallback::Type = "Fallback";
 
 ExecutionStatus Fallback::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
 {
-  if (_children.empty())
+  if (!HasChildren())
   {
     return ExecutionStatus::SUCCESS;
   }
-  for (auto instruction : _children)
+  for (auto instruction : ChildInstructions())
   {
     auto child_status = instruction->GetStatus();
 
@@ -77,7 +77,7 @@ ExecutionStatus Fallback::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
 
 ExecutionStatus Fallback::CalculateCompoundStatus() const
 {
-  for (auto instruction : _children)
+  for (auto instruction : ChildInstructions())
   {
     auto child_status = instruction->GetStatus();
 

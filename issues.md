@@ -1,6 +1,5 @@
 # Issues
 
-* Properly handle reset: check also setup method to verify correct configuration of instructions (attributes).
 * Exception safety is not everywhere managed as it should.
 * Add unit tests.
 * Investigate daemon procedures for data aggregation and summarizing (could be alternative to MARTe2)
@@ -9,6 +8,5 @@
 * Provide user input instruction and way to distinguish procedures that need user input.
 * Add doxygen to many methods.
 * Automatically load plugins in plugin folder.
-* Make child instructions private in decorator and compound.
-* Clearly distinguish between InitHook() and SetupImpl() and document.
 * Add field get/set tests to LocalVariable-tests.
+* Make Instruction implementations final (also Variable?)

@@ -62,17 +62,46 @@ class DecoratorInstruction : public Instruction
     void ResetHook() override;
     void HaltImpl() override;
     std::vector<const Instruction *> ChildInstructionsImpl() const override;
-
-  protected:
-    /**
-     * @brief See sup::sequencer::Instruction.
-     */
     bool SetupImpl(const Procedure & proc) override;
 
     /**
      * @brief Decorated instruction.
      */
     std::unique_ptr<Instruction> _child;
+
+  protected:
+    /**
+     * @brief Call Instruction::Setup(const Procedure & proc) on child instruction
+     * and return result.
+     */
+    bool SetupChild(const Procedure & proc);
+
+    /**
+     * @brief Check if this decorator has a child.
+     *
+     * @return true when it has a child, false otherwise.
+     */
+    bool HasChild() const;
+
+    /**
+     * @brief Call Instruction::Reset() on the child instruction.
+     */
+    ExecutionStatus GetChildStatus() const;
+
+    /**
+     * @brief Call Instruction::ExecuteSingle() on the child instruction.
+     */
+    void ExecuteChild(UserInterface *ui, Workspace *ws);
+
+    /**
+     * @brief Call Instruction::Reset() on the child instruction.
+     */
+    void ResetChild();
+
+    /**
+     * @brief Call Instruction::Halt() on the child instruction.
+     */
+    void HaltChild();
 
   public:
     /**

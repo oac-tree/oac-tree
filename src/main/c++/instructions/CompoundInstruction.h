@@ -62,17 +62,36 @@ class CompoundInstruction : public Instruction
     void ResetHook() override;
     void HaltImpl() override;
     std::vector<const Instruction *> ChildInstructionsImpl() const override;
-
-  protected:
-    /**
-     * @brief See sup::sequencer::Instruction.
-     */
     bool SetupImpl(const Procedure & proc) override;
 
     /**
      * @brief Container for child instructions.
      */
     std::vector<Instruction *> _children;
+
+  protected:
+    /**
+     * @brief Call Instruction::Setup(const Procedure & proc) on all child instructions
+     * and aggregate result.
+     */
+    bool SetupChildren(const Procedure & proc);
+
+    /**
+     * @brief Check if this compound instruction has child instructions.
+     *
+     * @return true when it has chil instructions, false otherwise.
+     */
+    bool HasChildren() const;
+
+    /**
+     * @brief Call Instruction::Reset() on all child instructions.
+     */
+    void ResetChildren();
+
+    /**
+     * @brief Call Instruction::Halt() on all child instructions.
+     */
+    void HaltChildren();
 
   public:
     /**

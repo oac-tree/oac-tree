@@ -68,6 +68,11 @@ class Repeat : public DecoratorInstruction
     ExecutionStatus ExecuteSingleImpl(UserInterface * ui, Workspace * ws) override;
 
     /**
+     * @brief See sup::sequencer::Instruction.
+     */
+    bool SetupImpl(const Procedure & proc) override;
+
+    /**
      * @brief Calculate this instruction's status from the status of its child instruction
      * and the number of successful executions of the child instruction.
      */
@@ -78,11 +83,6 @@ class Repeat : public DecoratorInstruction
     bool _init_ok;
 
   protected:
-    /**
-     * @brief See sup::sequencer::Instruction.
-     */
-    bool SetupImpl(const Procedure & proc) override;
-
   public:
     /**
      * @brief Constructor.

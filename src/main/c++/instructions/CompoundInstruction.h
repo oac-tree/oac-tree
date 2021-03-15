@@ -56,34 +56,28 @@ namespace sequencer {
 class CompoundInstruction : public Instruction
 {
   private:
-    void ResetHook() override;
-
-    void HaltImpl() override;
-
     /**
-     * @brief Get list of child instructions implementation (const version).
-     *
-     * @return List of child instructions.
+     * @brief See sup::sequencer::Instruction.
      */
+    void ResetHook() override;
+    void HaltImpl() override;
     std::vector<const Instruction *> ChildInstructionsImpl() const override;
 
   protected:
+    /**
+     * @brief See sup::sequencer::Instruction.
+     */
+    bool SetupImpl(const Procedure & proc) override;
+
     /**
      * @brief Container for child instructions.
      */
     std::vector<Instruction *> _children;
 
-    /**
-     * @brief Setup implementation.
-     *
-     * @param proc Procedure containing Workspace and instruction declarations.
-     * @return true on successful instruction setup.
-     */
-    bool SetupImpl(const Procedure & proc) override;
-
   public:
     /**
      * @brief Constructor.
+     *
      * @param type The type of instruction.
      */
     CompoundInstruction(const std::string & type);

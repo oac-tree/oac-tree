@@ -51,13 +51,22 @@ namespace sequencer {
  * @brief Compound instruction representing a list of alternative actions.
  *
  * @note Fallback keeps on executing its children until one
- * returns successfully. Sequence fails when all children fail.
+ * returns successfully. The fallback sequence fails when all children fail.
  */
 class Fallback : public CompoundInstruction
 {
   private:
+    /**
+     * @brief See sup::sequencer::Instruction.
+     *
+     * @details Execute the child instructions in order until one succeeds (SUCCESS)
+     * or all fail (FAILURE).
+     */
     ExecutionStatus ExecuteSingleImpl(UserInterface * ui, Workspace * ws) override;
 
+    /**
+     * @brief Calculate this instruction's status from the status of its child instructions.
+     */
     ExecutionStatus CalculateCompoundStatus() const;
 
   public:
@@ -71,6 +80,9 @@ class Fallback : public CompoundInstruction
      */
     ~Fallback() override;
 
+    /**
+     * @brief The instruction's typename.
+     */
     static const std::string Type;
 };
 

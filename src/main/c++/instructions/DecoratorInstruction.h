@@ -56,30 +56,23 @@ namespace sequencer {
 class DecoratorInstruction : public Instruction
 {
   private:
-    void ResetHook() override;
-
-    void HaltImpl() override;
-
     /**
-     * @brief Get list of child instructions implementation (const version).
-     *
-     * @return List of child instructions.
+     * @brief See sup::sequencer::Instruction.
      */
+    void ResetHook() override;
+    void HaltImpl() override;
     std::vector<const Instruction *> ChildInstructionsImpl() const override;
 
   protected:
     /**
-     * @brief Decorated instruction
-     */
-    std::unique_ptr<Instruction> _child;
-
-    /**
-     * @brief Setup implementation.
-     *
-     * @param proc Procedure containing Workspace and instruction declarations.
-     * @return true on successful instruction setup.
+     * @brief See sup::sequencer::Instruction.
      */
     bool SetupImpl(const Procedure & proc) override;
+
+    /**
+     * @brief Decorated instruction.
+     */
+    std::unique_ptr<Instruction> _child;
 
   public:
     /**

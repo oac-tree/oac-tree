@@ -52,13 +52,14 @@ namespace sequencer {
 /**
  * @brief Checks a boolean workspace variable.
  */
-class Condition: public Instruction {
+class Condition : public Instruction
+{
   private:
     /**
-     * @brief Checks a boolean workspace variable.
+     * @brief See sup::sequencer::Instruction.
      *
-     * @return SUCCESS if the variable is true, FAILURE if the variable is false.
-     * @details If the variable is not boolean, it will check if the value is different than 0.
+     * @details Returns SUCCESS if the variable is true and FAILURE otherwise. If the variable
+     * is not boolean, it will check if the value is different than 0
      */
     virtual ExecutionStatus ExecuteSingleImpl(UserInterface * ui, Workspace * ws);
 
@@ -74,7 +75,7 @@ class Condition: public Instruction {
     virtual ~Condition();
 
     /**
-     * @brief The class name.
+     * @brief The instruction's typename.
      */
     static const std::string Type;
 };

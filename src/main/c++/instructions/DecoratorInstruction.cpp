@@ -70,8 +70,15 @@ std::vector<const Instruction *> DecoratorInstruction::ChildInstructionsImpl() c
   return result;
 }
 
-bool DecoratorInstruction::SetupImpl(const Procedure & proc){
-    return _child->Setup(proc);
+bool DecoratorInstruction::SetupImpl(const Procedure & proc)
+{
+  log_info("DecoratorInstruction::Setup - entering function..");
+  bool status = true;
+  if (_child)
+  {
+    status = _child->Setup(proc);
+  }
+  return status;
 }
 
 DecoratorInstruction::DecoratorInstruction(const std::string & type)

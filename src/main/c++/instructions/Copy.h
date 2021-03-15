@@ -48,41 +48,33 @@ namespace sequencer {
 /**
  * @brief Instruction copying named variable from/to workspace
  */
-
 class Copy : public Instruction
 {
-
   private:
-
     /**
      * @brief See sup::sequencer::Instruction.
+     *
      * @details Copy variables identified with 'input' and 'output' attributes.
      */
-
     ExecutionStatus ExecuteSingleImpl (UserInterface * ui, Workspace * ws) override;
 
   protected:
 
   public:
-
     /**
      * @brief Constructor.
      */
-
     Copy (void);
 
     /**
      * @brief Destructor.
      */
-
     ~Copy (void) override;
 
     /**
-     * @brief Class name for InstructionRegistry.
+     * @brief The instruction's typename.
      */
-
     static const std::string Type;
-
 };
 
 // Global variables

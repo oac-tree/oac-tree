@@ -55,23 +55,22 @@ class Wait : public Instruction
 {
   private:
     /**
+     * @brief See sup::sequencer::Instruction.
+     *
+     * @details Execution always returns SUCCESS after an optional timeout.
+     */
+    ExecutionStatus ExecuteSingleImpl(UserInterface * ui, Workspace * ws) override;
+
+    /**
      * @brief Timeout (in seconds)
      */
     double _timeout;
 
-    /**
-     * @brief Initialize optional timeout
-     */
-    virtual void InitHook();
-
-    /**
-     * @brief Execution always returns SUCCESS after an optional timeout.
-     *
-     * @return SUCCESS status.
-     */
-    ExecutionStatus ExecuteSingleImpl(UserInterface * ui, Workspace * ws) override;
-
   protected:
+    /**
+     * @brief See sup::sequencer::Instruction.
+     */
+    bool SetupImpl(const Procedure & proc) override;
 
   public:
     /**
@@ -84,6 +83,9 @@ class Wait : public Instruction
      */
     ~Wait() override;
 
+    /**
+     * @brief The instruction's typename.
+     */
     static const std::string Type;
 };
 

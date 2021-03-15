@@ -49,7 +49,19 @@ const std::string Wait::Type = "Wait";
 
 // Function definition
 
-void Wait::InitHook()
+ExecutionStatus Wait::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
+{
+    (void)ui;
+    (void)ws;
+    if (_timeout > 0.0)
+    {
+      auto mseconds = static_cast<int>(_timeout * 1000);
+      std::this_thread::sleep_for(std::chrono::milliseconds(mseconds));
+    }
+    return ExecutionStatus::SUCCESS;
+}
+
+bool Wait::SetupImpl(const Procedure & proc)
 {
   if (HasAttribute("timeout"))
   {
@@ -67,18 +79,7 @@ void Wait::InitHook()
       log_warning("Wait::InitHook() - could not parse timeout attribute!");
     }
   }
-}
-
-ExecutionStatus Wait::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
-{
-    (void)ui;
-    (void)ws;
-    if (_timeout > 0.0)
-    {
-      auto mseconds = static_cast<int>(_timeout * 1000);
-      std::this_thread::sleep_for(std::chrono::milliseconds(mseconds));
-    }
-    return ExecutionStatus::SUCCESS;
+  return true; // if timeout was not specified, Wait immediately returns SUCCESS.
 }
 
 Wait::Wait()

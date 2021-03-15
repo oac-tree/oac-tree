@@ -51,18 +51,20 @@ namespace sequencer {
  * @brief Decorator that includes an instruction tree by reference.
  *
  * @details The reference can point to an instruction tree in the same definition
- * file or to one defined in a separate file.
+ * file or to one defined in a separate file ('file' attribute).
  */
 
 class Include : public DecoratorInstruction
 {
   private:
+    /**
+     * @brief See sup::sequencer::Instruction.
+     */
+    ExecutionStatus ExecuteSingleImpl(UserInterface * ui, Workspace * ws) override;
+    bool PostInitialiseVariables(const AttributeMap & source) override;
+
     // Directory of original file for this instruction (if loaded from file).
     std::string _current_directory;
-
-    ExecutionStatus ExecuteSingleImpl(UserInterface * ui, Workspace * ws) override;
-
-    bool PostInitialiseVariables(const AttributeMap & source) override;
 
     std::string GetPath() const;
 
@@ -71,10 +73,9 @@ class Include : public DecoratorInstruction
   protected:
 
     /**
-     * @brief Setup implementation.
+     * @brief See sup::sequencer::Instruction.
      *
-     * @param proc Procedure containing Workspace and instruction declarations.
-     * @return true on successful instruction setup.
+     * @details Tries to load and copy an instruction tree as its child.
      */
     bool SetupImpl(const Procedure & proc) override;
 
@@ -105,6 +106,9 @@ class Include : public DecoratorInstruction
      */
     std::string GetCurrentDirectory() const;
 
+    /**
+     * @brief The instruction's typename.
+     */
     static const std::string Type;
 };
 

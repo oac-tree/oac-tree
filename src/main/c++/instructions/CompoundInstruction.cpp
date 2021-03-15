@@ -72,15 +72,10 @@ std::vector<const Instruction *> CompoundInstruction::ChildInstructionsImpl() co
 
 bool CompoundInstruction::SetupImpl(const Procedure & proc)
 {
+  log_info("CompoundInstruction::Setup - entering function..");
   bool result = true;
   for (auto instruction : _children)
   {
-    auto myName = GetName();
-    auto myType = GetType();
-    auto childType = instruction->GetType();
-    auto childName = instruction->GetName();
-    log_info("CompoundInstruction::Setup - %s:%s Setup of %s: %s",
-             myType.c_str(), myName.c_str(), childType.c_str(), childName.c_str());
     result = instruction->Setup(proc) && result;
   }
   return result;

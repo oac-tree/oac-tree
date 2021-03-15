@@ -64,6 +64,8 @@ class ParallelSequence : public CompoundInstruction
 
     ExecutionStatus ExecuteSingleImpl(UserInterface * ui, Workspace * ws) override;
 
+    void ResetHook() override;
+
     ExecutionStatus CalculateCompoundStatus() const;
 
     bool InitWrappers();

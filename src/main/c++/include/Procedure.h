@@ -191,11 +191,18 @@ class Procedure
     bool Setup();
 
     /**
-     * @brief Execute single step of procedure
+     * @brief Execute single step of procedure.
      *
      * @param ui UserInterface to use for instruction input/output.
      */
     void ExecuteSingle(UserInterface * ui);
+
+    /**
+     * @brief Reset procedure.
+     *
+     * @details This method request a halt and blocks until all asynchronous instructions are finished.
+     */
+    void Reset();
 
     /**
      * @brief Retrieve status of root sequence.

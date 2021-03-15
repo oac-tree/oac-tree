@@ -58,6 +58,8 @@ class CompoundInstruction : public Instruction
   private:
     void ResetHook() override;
 
+    void HaltImpl() override;
+
     /**
      * @brief Get list of child instructions implementation (const version).
      *

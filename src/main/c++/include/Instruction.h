@@ -33,6 +33,8 @@
 
 // Global header files
 
+#include <atomic>
+
 // Local header files
 
 #include "AttributeMap.h"
@@ -91,6 +93,8 @@ class Instruction
 
     virtual void ResetHook();
 
+    virtual void HaltImpl();
+
     /**
      * @brief Private hook that is called after variable initialisation.
      *
@@ -109,6 +113,10 @@ class Instruction
     virtual std::vector<const Instruction *> ChildInstructionsImpl() const;
 
   protected:
+    /**
+     * @brief Setup implementation.
+     */
+     std::atomic_bool _halt_requested;
 
     /**
      * @brief Setup implementation.
@@ -163,6 +171,12 @@ class Instruction
     void ExecuteSingle(UserInterface * ui, Workspace * ws);
 
     /**
+     * @brief Halt execution.
+     * @details Only meaningful for asynchronously running instructions.
+     */
+    void Halt();
+
+    /**
      * @brief Get execution status.
      * @return Execution status.
      */
@@ -171,7 +185,7 @@ class Instruction
     /**
      * @brief Reset execution status
      */
-    void ResetStatus();
+    void Reset();
 
     /**
      * @brief Indicate presence of attribute with given name.

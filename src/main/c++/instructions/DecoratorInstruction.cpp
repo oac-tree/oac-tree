@@ -48,7 +48,15 @@ void DecoratorInstruction::ResetHook()
 {
   if (_child)
   {
-    _child->ResetStatus();
+    _child->Reset();
+  }
+}
+
+void DecoratorInstruction::HaltImpl()
+{
+  if (_child)
+  {
+    _child->Halt();
   }
 }
 

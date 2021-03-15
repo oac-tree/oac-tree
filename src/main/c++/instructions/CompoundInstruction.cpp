@@ -48,7 +48,15 @@ void CompoundInstruction::ResetHook()
 {
   for (auto instruction : _children)
   {
-    instruction->ResetStatus();
+    instruction->Reset();
+  }
+}
+
+void CompoundInstruction::HaltImpl()
+{
+  for (auto instruction : _children)
+  {
+    instruction->Halt();
   }
 }
 

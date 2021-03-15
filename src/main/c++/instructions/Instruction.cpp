@@ -53,6 +53,7 @@ void Instruction::Preamble(UserInterface * ui)
   PreExecuteHook(ui);
   if (_status == ExecutionStatus::NOT_STARTED)
   {
+    _halt_requested.store(false);
     InitHook();
     _status = ExecutionStatus::NOT_FINISHED;
     ui->UpdateInstructionStatus(this);
@@ -81,6 +82,9 @@ void Instruction::Postamble(UserInterface * ui)
 void Instruction::ResetHook()
 {}
 
+void Instruction::HaltImpl()
+{}
+
 bool Instruction::PostInitialiseVariables(const AttributeMap & source)
 {
   return true;
@@ -100,6 +104,7 @@ Instruction::Instruction(const std::string & type)
   : _type{type}
   , _status{ExecutionStatus::NOT_STARTED}
   , _status_before{ExecutionStatus::NOT_STARTED}
+  , _halt_requested{false}
 {}
 
 Instruction::~Instruction() = default;
@@ -135,18 +140,19 @@ void Instruction::ExecuteSingle(UserInterface * ui, Workspace * ws)
   Postamble(ui);
 }
 
+void Instruction::Halt()
+{
+  _halt_requested.store(true);
+  HaltImpl();
+}
+
 ExecutionStatus Instruction::GetStatus() const
 {
   return _status;
 }
 
-void Instruction::ResetStatus()
+void Instruction::Reset()
 {
-  if (_status == ExecutionStatus::RUNNING)
-  {
-    // log warning: instructions in RUNNING status should not receive this call!
-    return;
-  }
   ResetHook();
   _status = ExecutionStatus::NOT_STARTED;
 }

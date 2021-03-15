@@ -116,6 +116,7 @@ int main(int argc, char * argv[])
   sup::sequencer::Runner runner(&ui);
   runner.SetProcedure(proc.get());
   runner.ExecuteProcedure();
+  proc->Reset();
   return 0;
 }
 

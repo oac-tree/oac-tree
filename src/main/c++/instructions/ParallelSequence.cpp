@@ -66,7 +66,28 @@ ExecutionStatus ParallelSequence::ExecuteSingleImpl(UserInterface *ui, Workspace
       wrapper.Tick(ui, ws);
     }
   }
-  return CalculateCompoundStatus();
+  auto status = CalculateCompoundStatus();
+  if (status != ExecutionStatus::RUNNING)
+  {
+    Halt();
+  }
+  return status;
+}
+
+void ParallelSequence::ResetHook()
+{
+  // call Halt when there are descendents running
+  if (GetStatus() == ExecutionStatus::RUNNING)
+  {
+    Halt();
+  }
+  // wait for child threads to terminate
+  _wrappers.clear();
+  // call reset on running ones (some may contain asynchronously running children)
+  for (auto instruction : _children)
+  {
+    instruction->Reset();
+  }
 }
 
 ExecutionStatus ParallelSequence::CalculateCompoundStatus() const

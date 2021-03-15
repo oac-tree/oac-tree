@@ -88,9 +88,8 @@ Procedure::Procedure()
 
 Procedure::~Procedure()
 {
-  // Explicit order ..
-  _instructions.clear();
-  _workspace.reset();
+  // Wait for termination of instructions first:
+  Reset();
 }
 
 void Procedure::SetCurrentDirectory(const std::string & directory)
@@ -205,6 +204,15 @@ void Procedure::ExecuteSingle(UserInterface * ui)
     return;
   }
   RootInstrunction()->ExecuteSingle(ui, _workspace.get());
+}
+
+void Procedure::Reset()
+{
+  if (RootInstrunction() == nullptr)
+  {
+    return;
+  }
+  RootInstrunction()->Reset();
 }
 
 ExecutionStatus Procedure::GetStatus() const

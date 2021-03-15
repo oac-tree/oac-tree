@@ -4,7 +4,6 @@ target_sources(unit-tests
     PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/LogUI.cpp
         ${CMAKE_CURRENT_LIST_DIR}/ParallelSequence-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/CopyInstruction.cpp
         ${CMAKE_CURRENT_LIST_DIR}/AttributeMap-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Condition-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/FileVariable-tests.cpp

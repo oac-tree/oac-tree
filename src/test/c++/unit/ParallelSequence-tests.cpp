@@ -105,8 +105,8 @@ R"RAW(<?xml version="1.0" encoding="UTF-8"?>
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
     <Repeat maxCount="10">
-        <ParallelSequence name="parallel">
-            <Wait name="wait" timeout="0.1"/>
+        <ParallelSequence name="parallel" successThreshold="1">
+            <Wait name="wait" timeout="1.0"/>
             <Wait name="again" timeout="0.1"/>
         </ParallelSequence>
     </Repeat>
@@ -124,10 +124,10 @@ R"RAW(<?xml version="1.0" encoding="UTF-8"?>
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
     <Repeat maxCount="10">
-        <ParallelSequence name="parallel">
-            <Wait name="wait" timeout="0.1"/>
+        <ParallelSequence name="parallel" successThreshold="1">
+            <Wait name="wait" timeout="1.0"/>
             <Copy name="copy" input="input" output="output"/>
-            <Wait name="again" timeout="0.1"/>
+            <Wait name="again" timeout="1.0"/>
         </ParallelSequence>
     </Repeat>
     <Workspace>
@@ -144,10 +144,10 @@ R"RAW(<?xml version="1.0" encoding="UTF-8"?>
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
     <Repeat maxCount="10">
-        <ParallelSequence name="parallel">
-            <Wait name="wait" timeout="0.1"/>
+        <ParallelSequence name="parallel" successThreshold="1">
+            <Wait name="wait" timeout="1.0"/>
             <CopyInstruction name="copy" input="input" output="output"/>
-            <Wait name="again" timeout="0.1"/>
+            <Wait name="again" timeout="1.0"/>
         </ParallelSequence>
     </Repeat>
     <Workspace>

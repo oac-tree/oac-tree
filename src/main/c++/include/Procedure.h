@@ -118,13 +118,6 @@ class Procedure
     ~Procedure();
 
     /**
-     * @brief Get root instruction.
-     *
-     * @return Root instruction.
-     */
-    Instruction * RootInstrunction();
-
-    /**
      * @brief Set directory of current procedure (if loaded from file).
      *
      * @param directory Directory of current procedure.
@@ -139,6 +132,13 @@ class Procedure
      * @details This directory is used for external includes with relative pathnames.
      */
     std::string GetCurrentDirectory() const;
+
+    /**
+     * @brief Get root instruction.
+     *
+     * @return Root instruction.
+     */
+    Instruction * RootInstrunction();
 
     /**
      * @brief Get root instruction (const version).
@@ -184,7 +184,7 @@ class Procedure
      *
      * @return true on successful retrieval.
      */
-    bool GetVariableValue(std::string name, ::ccs::types::AnyValue & value);
+    bool GetVariableValue(std::string name, ::ccs::types::AnyValue & value) const;
 
     /**
      * @brief Setup the procedure.

@@ -182,7 +182,7 @@ std::vector<std::string> Procedure::VariableNames() const
   return _workspace->VariableNames();
 }
 
-bool Procedure::GetVariableValue(std::string name, ::ccs::types::AnyValue & value)
+bool Procedure::GetVariableValue(std::string name, ::ccs::types::AnyValue & value) const
 {
   return _workspace->GetValue(name, value);
 }

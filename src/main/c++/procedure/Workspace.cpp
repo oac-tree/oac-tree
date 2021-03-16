@@ -85,7 +85,7 @@ std::vector<std::string> Workspace::VariableNames() const
   return result;
 }
 
-bool Workspace::GetValue(std::string name, ::ccs::types::AnyValue &value)
+bool Workspace::GetValue(std::string name, ::ccs::types::AnyValue &value) const
 {
   auto splitname = SplitToNameField(name);
   auto varname = splitname.first;

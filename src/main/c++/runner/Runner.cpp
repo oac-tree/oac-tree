@@ -29,6 +29,7 @@
 // Local header files
 
 #include "Runner.h"
+#include "Constants.h"
 #include "Procedure.h"
 #include "UserInterface.h"
 
@@ -36,8 +37,6 @@
 
 #undef LOG_ALTERN_SRC
 #define LOG_ALTERN_SRC "sup::sequencer"
-
-static const double DEFAULT_SLEEP_TIME = 0.1;
 
 // Type definition
 
@@ -127,7 +126,7 @@ static int TickTimeoutMs(Procedure * procedure)
       return static_cast<int>(tick_timeout * 1000);
     }
   }
-  return static_cast<int>(DEFAULT_SLEEP_TIME * 1000);
+  return DefaultSettings::DEFAULT_SLEEP_TIME_MS;
 }
 
 } // namespace sequencer

@@ -19,67 +19,80 @@
  * of the distribution package.
  ******************************************************************************/
 
-#define DLL_API
+// Global header files
 
-/*---------------------------------------------------------------------------*/
-/*                         Standard header includes                          */
-/*---------------------------------------------------------------------------*/
-
-/*---------------------------------------------------------------------------*/
-/*                         Project header includes                           */
-/*---------------------------------------------------------------------------*/
-
-#include "Condition.h"
-#include "Workspace.h"
 #include <common/BasicTypes.h>
 #include <common/AnyValue.h>
 #include <common/AnyType.h>
 #include <common/log-api.h>
-/*---------------------------------------------------------------------------*/
-/*                           Static definitions                              */
-/*---------------------------------------------------------------------------*/
-/*---------------------------------------------------------------------------*/
-/*                           Method definitions                              */
-/*---------------------------------------------------------------------------*/
+
+// Local header files
+
+#include "Condition.h"
+#include "Workspace.h"
+
+// Constants
+
+#undef LOG_ALTERN_SRC
+#define LOG_ALTERN_SRC "sup::sequencer"
+
+// Type definition
 
 namespace sup {
 
 namespace sequencer {
 
+// Global variables
+
 const std::string Condition::Type = "Condition";
 
-Condition::Condition() :
-        Instruction(Type) {
-}
+// Function declaration
 
-Condition::~Condition() {
-}
+// Function definition
 
-ExecutionStatus Condition::ExecuteSingleImpl(UserInterface *ui,
-                                             Workspace *ws) {
+Condition::Condition()
+  : Instruction(Type)
+{}
 
+Condition::~Condition()
+{}
+
+ExecutionStatus Condition::ExecuteSingleImpl(UserInterface *ui, Workspace *ws)
+{
     ::ccs::types::AnyValue var;
     std::string varName = GetAttribute("var_name");
     bool ret = ws->GetValue(varName, var);
 
-    if (ret) {
+    if (ret)
+    {
         ::ccs::base::SharedReference<const ::ccs::types::ScalarType> varType = var.GetType();
         ret = varType.IsValid();
-        if (ret) {
+        if (ret)
+        {
             ::ccs::types::uint64 check = 0;
             //var size must be less than 64 bit
             ret = (memcmp(var.GetInstance(), &check, var.GetSize()) != 0);
         }
-        else {
+        else
+        {
             log_error("Condition::ExecuteSingleImpl - The variable %s is not scalar", varName.c_str());
         }
     }
-    else {
+    else
+    {
         log_error("Condition::ExecuteSingleImpl - Failed WorkSpace::GetValue(%s)", varName.c_str());
     }
-
     return ret ? (ExecutionStatus::SUCCESS) : (ExecutionStatus::FAILURE);
 }
 
-}
-}
+} // namespace sequencer
+
+} // namespace sup
+
+extern "C" {
+
+// C API function definitions
+
+} // extern C
+
+#undef LOG_ALTERN_SRC

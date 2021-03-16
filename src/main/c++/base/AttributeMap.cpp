@@ -27,6 +27,7 @@
 // Local header files
 
 #include "AttributeMap.h"
+#include "Constants.h"
 
 // Constants
 
@@ -56,8 +57,6 @@ static_assert(std::is_same<AttributeMap::map_type::const_iterator::value_type,
               "std::string>");
 
 // Global variables
-
-static const char VAR_ATTRIBUTE_CHAR='$';
 
 // Function declaration
 
@@ -142,7 +141,7 @@ bool AttributeMap::InitialiseVariableAttributes(const AttributeMap & source)
   for (auto attr_name : GetAttributeNames())
   {
     auto attr_value = GetAttribute(attr_name);
-    if (StartsWith(attr_value, VAR_ATTRIBUTE_CHAR))
+    if (StartsWith(attr_value, DefaultSettings::VAR_ATTRIBUTE_CHAR))
     {
       log_info("AttributeMap::InitialiseVariableAttributes() - attr_name('%s'), "
                "attr_value('%s')", attr_name.c_str(), attr_value.c_str());

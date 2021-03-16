@@ -26,6 +26,7 @@
 // Local header files
 
 #include "InstructionHelper.h"
+#include "Constants.h"
 #include "Include.h"
 #include "InstructionRegistry.h"
 #include "CompoundInstruction.h"
@@ -39,8 +40,6 @@
 // Type definition
 
 // Global variables
-
-static const char PATH_DELIMITER='.';
 
 // Function declaration
 
@@ -137,7 +136,7 @@ namespace {
 std::pair<std::string, std::string> StripPath(const std::string & path)
 {
   std::pair<std::string, std::string> result;
-  std::size_t delim_pos = path.find(PATH_DELIMITER);
+  std::size_t delim_pos = path.find(sup::sequencer::DefaultSettings::PATH_DELIMITER);
   result.first = path.substr(0, delim_pos);
   if (delim_pos != std::string::npos)
   {

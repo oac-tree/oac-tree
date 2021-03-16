@@ -29,6 +29,7 @@
 // Local header files
 
 #include "Wait.h"
+#include "Constants.h"
 
 // Constants
 
@@ -45,8 +46,6 @@ namespace sequencer {
 
 const std::string Wait::Type = "Wait";
 
-static const int MAX_BLOCKING_TIME_MS = 100;
-
 // Function declaration
 
 // Function definition
@@ -58,15 +57,15 @@ ExecutionStatus Wait::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
   if (_timeout > 0.0)
   {
     auto mseconds = static_cast<int>(_timeout * 1000);
-    auto nr_loops = mseconds / MAX_BLOCKING_TIME_MS;
-    auto remaining_ms = mseconds % MAX_BLOCKING_TIME_MS;
+    auto nr_loops = mseconds / DefaultSettings::MAX_BLOCKING_TIME_MS;
+    auto remaining_ms = mseconds % DefaultSettings::MAX_BLOCKING_TIME_MS;
     for (int i = 0; i < nr_loops; ++i)
     {
       if (_halt_requested.load())
       {
         return ExecutionStatus::FAILURE;
       }
-      std::this_thread::sleep_for(std::chrono::milliseconds(MAX_BLOCKING_TIME_MS));
+      std::this_thread::sleep_for(std::chrono::milliseconds(DefaultSettings::MAX_BLOCKING_TIME_MS));
     }
     if (_halt_requested.load())
     {
@@ -99,8 +98,8 @@ bool Wait::SetupImpl(const Procedure & proc)
 }
 
 Wait::Wait()
-    : Instruction(Type)
-    , _timeout(0.0)
+  : Instruction(Type)
+  , _timeout(0.0)
 {}
 
 Wait::~Wait()

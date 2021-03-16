@@ -56,7 +56,13 @@ namespace sequencer {
 class CLInterface : public UserInterface
 {
   private:
-    std::mutex _mutex;
+    /**
+     * @brief See sup::sequencer::UserInterface.
+     */
+    void UpdateInstructionStatusImpl(const Instruction * instruction) override;
+    void StartSingleStepImpl() override;
+    void EndSingleStepImpl() override;
+
     bool _verbose;
 
   protected:
@@ -71,22 +77,6 @@ class CLInterface : public UserInterface
      * @brief Destructor.
      */
     ~CLInterface() override;
-
-    /**
-     * @brief Hook when an instruction updates its status.
-     * @param instruction Instruction whose status is updated.
-     */
-    void UpdateInstructionStatus(const Instruction * instruction) override;
-
-    /**
-     * @brief Hook called before executing a single step in the procedure.
-     */
-    void StartSingleStep() override;
-
-    /**
-     * @brief Hook called after executing a single step in the procedure.
-     */
-    void EndSingleStep() override;
 };
 
 // Global variables

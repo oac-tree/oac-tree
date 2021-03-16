@@ -54,6 +54,12 @@ namespace sequencer {
 class LogUI : public UserInterface
 {
   private:
+    /**
+     * @brief See sup::sequencer::UserInterface.
+     */
+    void UpdateInstructionStatusImpl(const Instruction * instruction) override;
+    void StartSingleStepImpl() override;
+    void EndSingleStepImpl() override;
 
   protected:
 
@@ -67,22 +73,6 @@ class LogUI : public UserInterface
      * @brief Destructor.
      */
     ~LogUI() override;
-
-    /**
-     * @brief Hook when an instruction updates its status.
-     * @param instruction Instruction whose status is updated.
-     */
-    void UpdateInstructionStatus(const Instruction * instruction) override;
-
-    /**
-     * @brief Hook called before executing a single step in the procedure.
-     */
-    void StartSingleStep() override;
-
-    /**
-     * @brief Hook called after executing a single step in the procedure.
-     */
-    void EndSingleStep() override;
 };
 
 // Global variables

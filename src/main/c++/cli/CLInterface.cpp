@@ -47,15 +47,8 @@ namespace sequencer {
 
 // Function definition
 
-CLInterface::CLInterface(bool verbose)
-  : _verbose{verbose}
-{}
-
-CLInterface::~CLInterface() = default;
-
-void CLInterface::UpdateInstructionStatus(const Instruction * instruction)
+void CLInterface::UpdateInstructionStatusImpl(const Instruction * instruction)
 {
-  std::lock_guard<std::mutex> lock(_mutex);
   auto instruction_type = instruction->GetType();
   auto instruction_name = instruction->GetName();
   auto status = instruction->GetStatus();
@@ -64,23 +57,27 @@ void CLInterface::UpdateInstructionStatus(const Instruction * instruction)
   std::cout << StatusToString(status) << std::endl;
 }
 
-void CLInterface::StartSingleStep()
+void CLInterface::StartSingleStepImpl()
 {
   if (_verbose)
   {
-    std::lock_guard<std::mutex> lock(_mutex);
     std::cout << "Start single execution step" << std::endl;
   }
 }
 
-void CLInterface::EndSingleStep()
+void CLInterface::EndSingleStepImpl()
 {
   if (_verbose)
   {
-    std::lock_guard<std::mutex> lock(_mutex);
     std::cout << "End single execution step" << std::endl;
   }
 }
+
+CLInterface::CLInterface(bool verbose)
+  : _verbose{verbose}
+{}
+
+CLInterface::~CLInterface() = default;
 
 } // namespace sequencer
 

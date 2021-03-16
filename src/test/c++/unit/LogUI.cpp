@@ -45,11 +45,7 @@ namespace sequencer {
 
 // Function definition
 
-LogUI::LogUI() = default;
-
-LogUI::~LogUI() = default;
-
-void LogUI::UpdateInstructionStatus(const Instruction * instruction)
+void LogUI::UpdateInstructionStatusImpl(const Instruction * instruction)
 {
     auto instruction_type = instruction->GetType();
     auto status = StatusToString(instruction->GetStatus());
@@ -59,15 +55,19 @@ void LogUI::UpdateInstructionStatus(const Instruction * instruction)
 
 }
 
-void LogUI::StartSingleStep()
+void LogUI::StartSingleStepImpl()
 {
     log_info("Start single execution step");
 }
 
-void LogUI::EndSingleStep()
+void LogUI::EndSingleStepImpl()
 {
     log_info("End single execution step");
 }
+
+LogUI::LogUI() = default;
+
+LogUI::~LogUI() = default;
 
 } // namespace sequencer
 

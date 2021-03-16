@@ -139,6 +139,7 @@
                             <!-- Package dependencies -->
                             <requires version="current">%{codac_rpm_prefix}-${project.artifactId}-devel</requires>
                             <requires version="current" buildOnly="true">gtest-devel</requires>
+                            <requires version="current" buildOnly="true">gmock-devel</requires>
                         </package>
                     </packaging>
                 </configuration>

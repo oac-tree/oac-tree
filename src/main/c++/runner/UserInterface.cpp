@@ -44,9 +44,29 @@ namespace sequencer {
 
 // Function definition
 
-void UserInterface::StartSingleStep() {}
+void UserInterface::StartSingleStepImpl()
+{}
 
-void UserInterface::EndSingleStep() {}
+void UserInterface::EndSingleStepImpl()
+{}
+
+void UserInterface::UpdateInstructionStatus(const Instruction * instruction)
+{
+  std::lock_guard<std::mutex> lock(_ui_mutex);
+  UpdateInstructionStatusImpl(instruction);
+}
+
+void UserInterface::StartSingleStep()
+{
+  std::lock_guard<std::mutex> lock(_ui_mutex);
+  StartSingleStepImpl();
+}
+
+void UserInterface::EndSingleStep()
+{
+  std::lock_guard<std::mutex> lock(_ui_mutex);
+  EndSingleStepImpl();
+}
 
 } // namespace sequencer
 

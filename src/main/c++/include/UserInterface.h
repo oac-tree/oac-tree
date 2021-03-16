@@ -33,6 +33,8 @@
 
 // Global header files
 
+#include <mutex>
+
 // Local header files
 
 // Constants
@@ -55,6 +57,32 @@ class Instruction;
 class UserInterface
 {
   private:
+    /**
+     * @brief Private pure virtual implementation of
+     * UserInterface::UpdateInstructionStatus(const Instruction * instruction).
+     */
+    virtual void UpdateInstructionStatusImpl(const Instruction * instruction) = 0;
+
+    /**
+     * @brief Private virtual implementation of
+     * UserInterface::StartSingleStep().
+     *
+     * @note Default implementation is empty.
+     */
+    virtual void StartSingleStepImpl();
+
+    /**
+     * @brief Private virtual implementation of
+     * UserInterface::EndSingleStep().
+     *
+     * @note Default implementation is empty.
+     */
+    virtual void EndSingleStepImpl();
+
+    /**
+     * @brief Mutex for concurrent access of UserInterface.
+     */
+    mutable std::mutex _ui_mutex;
 
   protected:
 
@@ -73,18 +101,23 @@ class UserInterface
      * @brief Method called when instruction's execution status changes.
      *
      * @param instruction Instruction that has new execution status.
+     * @note Non-Virtual Interface.
      */
-    virtual void UpdateInstructionStatus(const Instruction * instruction) = 0;
+    void UpdateInstructionStatus(const Instruction * instruction);
 
     /**
      * @brief Method called before stepping into an instruction.
+     *
+     * @note Non-Virtual Interface.
      */
-    virtual void StartSingleStep();
+    void StartSingleStep();
 
     /**
      * @brief Method called after executing an instruction.
+     *
+     * @note Non-Virtual Interface.
      */
-    virtual void EndSingleStep();
+    void EndSingleStep();
 };
 
 // Global variables

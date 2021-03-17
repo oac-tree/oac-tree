@@ -30,8 +30,9 @@
 /*                         Project header includes                           */
 /*---------------------------------------------------------------------------*/
 
-#include "Selector.h"
+#include "Choice.h"
 #include "Workspace.h"
+#include "Procedure.h"
 
 /*---------------------------------------------------------------------------*/
 /*                           Static definitions                              */
@@ -44,29 +45,29 @@ namespace sequencer {
 /*                           Method definitions                              */
 /*---------------------------------------------------------------------------*/
 
-const std::string Selector::Type = "Selector";
+const std::string Choice::Type = "Choice";
 
-Selector::Selector() :
+Choice::Choice() :
         CompoundInstruction(Type) {
     numberOfElements = 1u;
     elementSize = 0u;
     isMask = false;
 }
 
-Selector::~Selector() {
-//Auto-generated destructor stub for Selector
+Choice::~Choice() {
+//Auto-generated destructor stub for Choice
 
 //TODO Verify if manual additions are needed here
 }
 
-bool Selector::Setup(Workspace *ws) {
-    bool ret = CompoundInstruction::Setup(ws);
+bool Choice::SetupImpl(const Procedure &proc) {
+    bool ret = CompoundInstruction::Setup(proc);
     if (ret) {
         ret = HasAttribute("var_name");
         if (ret) {
             varName = GetAttribute("var_name");
             ::ccs::types::AnyValue _val;
-            ret = ws->GetValue(varName, _val);
+            ret = proc.GetVariableValue(varName, _val);
             if (ret) {
                 elementSize = _val.GetSize();
                 isMask = HasAttribute("is_mask");
@@ -83,22 +84,22 @@ bool Selector::Setup(Workspace *ws) {
                     //they must be arrays of uint32 or positive int32
                     ret = (elementSize <= 4u);
                     if (!ret) {
-                        log_error("Selector::Setup - element size must be <= 4");
+                        log_error("Choice::Setup - element size must be <= 4");
                     }
                 }
             }
         }
         else {
-            log_error("Selector::Setup - No attribute var_name found");
+            log_error("Choice::Setup - No attribute var_name found");
         }
 
-        log_info("Selector::Setup - With var_name=%s numberOfElements=%u elementSize=%u isMask=%u", varName.c_str(), numberOfElements, elementSize, isMask);
+        log_info("Choice::Setup - With var_name=%s numberOfElements=%u elementSize=%u isMask=%u", varName.c_str(), numberOfElements, elementSize, isMask);
     }
     return ret;
 }
 
-ExecutionStatus Selector::ExecuteSingleImpl(UserInterface *ui,
-                                            Workspace *ws) {
+ExecutionStatus Choice::ExecuteSingleImpl(UserInterface *ui,
+                                          Workspace *ws) {
     ExecutionStatus child_status = ExecutionStatus::SUCCESS;
     ::ccs::types::AnyValue _val;
     ws->GetValue(varName, _val);
@@ -106,17 +107,17 @@ ExecutionStatus Selector::ExecuteSingleImpl(UserInterface *ui,
 
     if (isMask) {
         ::ccs::types::uint32 nElems = (elementSize * sizeof(::ccs::types::uint64));
-        log_info("Selector::ExecuteSingleImpl - isMask nElems=%d", nElems);
+        log_info("Choice::ExecuteSingleImpl - isMask nElems=%d", nElems);
         bool exit = false;
         //generic...can consider very big elements
         while ((nElems > 0u) && (!exit)) {
             ::ccs::types::uint32 remained = (nElems > 64u) ? (64u) : (nElems);
             ::ccs::types::uint64 value = 0u;
             memcpy(&value, valPtr, (remained / 8u));
-            log_info("Selector::ExecuteSingleImpl - isMask value=%d", value);
+            log_info("Choice::ExecuteSingleImpl - isMask value=%d", value);
 
             for (::ccs::types::uint32 i = 0u; (i < remained) && (!exit); i++) {
-                log_info("Selector::ExecuteSingleImpl - Considering bit %d of %d", i, remained);
+                log_info("Choice::ExecuteSingleImpl - Considering bit %d of %d", i, remained);
                 if (((value >> i) & (0x1u))) {
                     child_status = ExecuteChild(i, ui, ws);
                     //continue only if success
@@ -148,24 +149,23 @@ ExecutionStatus Selector::ExecuteSingleImpl(UserInterface *ui,
     return child_status;
 }
 
-ExecutionStatus Selector::ExecuteChild(::ccs::types::uint32 idx,
-                                       UserInterface *ui,
-                                       Workspace *ws) {
+ExecutionStatus Choice::ExecuteChild(::ccs::types::uint32 idx,
+                                     UserInterface *ui,
+                                     Workspace *ws) {
     ExecutionStatus child_status = ExecutionStatus::SUCCESS;
-
-    if (idx < _children.size()) {
-        child_status = _children[idx]->GetStatus();
+    if (idx < ChildInstructions().size()) {
+        child_status = ChildInstructions()[idx]->GetStatus();
 
         if (NeedsExecute(child_status)) {
-            auto childName = _children[idx]->GetName();
-            log_info("Selector::ExecuteChild - Executing child[%u]=%s", idx, childName.c_str());
+            auto childName = ChildInstructions()[idx]->GetName();
+            log_info("Choice::ExecuteChild - Executing child[%u]=%s", idx, childName.c_str());
 
-            _children[idx]->ExecuteSingle(ui, ws);
+            ChildInstructions()[idx]->ExecuteSingle(ui, ws);
             child_status = ExecutionStatus::NOT_FINISHED;
         }
     }
     else {
-        log_warning("Status Selector::ExecuteSingleImpl - child[%u] not executed because exceeding children size (%u)", idx, _children.size());
+        log_warning("Status Choice::ExecuteSingleImpl - child[%u] not executed because exceeding children size (%u)", idx, ChildInstructions().size());
     }
     return child_status;
 }

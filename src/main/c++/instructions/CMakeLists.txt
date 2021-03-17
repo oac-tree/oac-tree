@@ -14,7 +14,7 @@ target_sources(sequencer-obj
         ${CMAKE_CURRENT_LIST_DIR}/Inverter.cpp
         ${CMAKE_CURRENT_LIST_DIR}/ParallelSequence.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Repeat.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Selector.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/Choice.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Sequence.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Wait.cpp
     )

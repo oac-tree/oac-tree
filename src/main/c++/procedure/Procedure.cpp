@@ -92,26 +92,14 @@ Procedure::~Procedure()
   Reset();
 }
 
-void Procedure::SetCurrentDirectory(const std::string & directory)
+void Procedure::SetFilename(const std::string & filename)
 {
-  if (directory.empty())
-  {
-    log_warning("Procedure::SetCurrentDirectory() - trying to set empty directory name..");
-    return;
-  }
-  if (directory.back() == '/')
-  {
-    _current_directory = directory;
-  }
-  else
-  {
-    _current_directory = directory + "/";
-  }
+  _filename = filename;
 }
 
-std::string Procedure::GetCurrentDirectory() const
+std::string Procedure::GetFilename() const
 {
-  return _current_directory;
+  return _filename;
 }
 
 Instruction * Procedure::RootInstrunction()
@@ -143,7 +131,7 @@ const Instruction * Procedure::RootInstrunction() const
 std::vector<const Instruction *> Procedure::GetInstructions(const std::string & filename) const
 {
   std::vector<const Instruction *> result;
-  if (filename.empty())
+  if (filename.empty() || filename == GetFilename())
   {
     for (auto & instr : _instructions)
     {

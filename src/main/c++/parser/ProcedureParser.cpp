@@ -47,8 +47,6 @@ static const std::string PLUGIN_ELEMENT_NAME = "Plugin";
 
 // Function declaration
 
-static void SetProcedureDirectory(Procedure * procedure, const std::string & filename);
-static std::string GetFileDirectory(const std::string & filename);
 static bool ParseAndLoadPlugins(const TreeData & data);
 static bool ParseAndLoadPlugin(const TreeData & child);
 static bool AddWorkspaceVariables(Procedure * procedure, const TreeData & ws_data);
@@ -62,8 +60,8 @@ std::unique_ptr<Procedure> ParseProcedure(const TreeData & data, const std::stri
 
   auto result = std::unique_ptr<Procedure>(new Procedure());
 
-  // Add current directory
-  SetProcedureDirectory(result.get(), filename);
+  // Add current filename
+  result->SetFilename(filename);
 
   // Load plugins first
   ParseAndLoadPlugins(data);
@@ -89,26 +87,6 @@ std::unique_ptr<Procedure> ParseProcedure(const TreeData & data, const std::stri
     }
   }
   return result;
-}
-
-static void SetProcedureDirectory(Procedure * procedure, const std::string & filename)
-{
-  if (!filename.empty())
-  {
-    auto file_directory = GetFileDirectory(filename);
-    log_info("SetProcedureDirectory() - setting current directory to '%s'", file_directory.c_str());
-    procedure->SetCurrentDirectory(file_directory);
-  }
-}
-
-static std::string GetFileDirectory(const std::string & filename)
-{
-  auto pos = filename.find_last_of("/");
-  if (pos == std::string::npos)
-  {
-    return {};
-  }
-  return filename.substr(0, pos);
 }
 
 static bool ParseAndLoadPlugins(const TreeData & data)
@@ -164,7 +142,7 @@ static bool AddWorkspaceVariables(Procedure * procedure, const TreeData & ws_dat
 
 static bool ParseAndAddInstruction(Procedure * procedure, const TreeData & instr_data)
 {
-  auto instr = ParseInstruction(instr_data, procedure->GetCurrentDirectory());
+  auto instr = ParseInstruction(instr_data, procedure->GetFilename());
   if (instr)
   {
     return procedure->PushInstruction(instr.release());

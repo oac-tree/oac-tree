@@ -62,13 +62,16 @@ static const std::string TREE_TYPE = "TestData";
 using ::testing::InSequence;
 using ::testing::_;
 
+MATCHER_P(HasExecutionStatus, expected, "") { return arg->GetStatus() == expected; }
+
 TEST_F(UserInterfaceTest, Constructed)
 {
   auto wait = GlobalInstructionRegistry().Create("Wait");
+  EXPECT_THAT(wait, HasExecutionStatus(ExecutionStatus::NOT_STARTED));
   {
     InSequence seq;
-    EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(wait.get()));
-    EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(wait.get()));
+    EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::NOT_FINISHED)));
+    EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::SUCCESS)));
   }
   wait->ExecuteSingle(&mock_ui, &empty_ws);
 }

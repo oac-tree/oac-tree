@@ -52,7 +52,6 @@ namespace sequencer {
 /**
  * @brief Mock UserInterface class for unit testing.
  */
-
 class MockUserInterface : public UserInterface
 {
   public:

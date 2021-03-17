@@ -147,6 +147,31 @@ bool ParserFunctionT(::ccs::types::AnyValue &value, const std::string &str)
   return true;
 }
 
+template <>
+bool ParserFunctionT<::ccs::types::boolean>(::ccs::types::AnyValue &value, const std::string &str)
+{
+  std::istringstream istr(str);
+  ::ccs::types::boolean val;
+  istr >> std::boolalpha >> val;
+  if (istr.fail())
+  {
+    log_warning("ParseStringToScalarAnyvalue() - could not parse ('%s') in type ('%s)",
+                str.c_str(), value.GetType()->GetName());
+    return false;
+  }
+  value = val;
+  return true;
+}
+
+template <>
+bool ParserFunctionT<::ccs::types::string>(::ccs::types::AnyValue &value, const std::string &str)
+{
+  ::ccs::types::string buffer;
+  ::ccs::HelperTools::SafeStringCopy(buffer, str.c_str(), 64);
+  value = buffer;
+  return true;
+}
+
 static std::map<std::string, ParseFunction> CreateParserMap()
 {
   std::map<std::string, ParseFunction> parser_map;
@@ -161,6 +186,7 @@ static std::map<std::string, ParseFunction> CreateParserMap()
   parser_map["uint64"] = ParserFunctionT<::ccs::types::uint64>;
   parser_map["float32"] = ParserFunctionT<::ccs::types::float32>;
   parser_map["float64"] = ParserFunctionT<::ccs::types::float64>;
+  parser_map["string"] = ParserFunctionT<::ccs::types::string>;
   return parser_map;
 }
 
@@ -175,13 +201,6 @@ ParseStringToScalarAnyvalue(::ccs::types::AnyValue &value, const std::string &st
 {
   std::string type_name = value.GetType()->GetName();
 
-  if (type_name == "string")
-  {
-    ::ccs::types::string buffer;
-    ::ccs::HelperTools::SafeStringCopy(buffer, str.c_str(), 64);
-    value = buffer;
-    return true;
-  }
   auto & parser_map = GetParserMap();
   if (parser_map.find(type_name) == parser_map.end())
   {

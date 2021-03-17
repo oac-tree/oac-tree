@@ -23,6 +23,8 @@
 
 #include <iostream>
 #include <sstream>
+#include <map>
+#include <memory>
 
 #include <common/AnyValueHelper.h>
 #include <common/log-api.h>
@@ -127,8 +129,10 @@ CLInterface::~CLInterface() = default;
 
 } // namespace sup
 
-template<typename T>
-bool ParseStringTo(::ccs::types::AnyValue & value, const std::string & str)
+using ParseFunction = bool (*)(::ccs::types::AnyValue & value, const std::string & str);
+
+template <typename T>
+bool ParserFunctionT(::ccs::types::AnyValue &value, const std::string &str)
 {
   std::istringstream istr(str);
   T val;
@@ -143,65 +147,48 @@ bool ParseStringTo(::ccs::types::AnyValue & value, const std::string & str)
   return true;
 }
 
-static bool ParseStringToScalarAnyvalue(::ccs::types::AnyValue & value, const std::string & str)
+static std::map<std::string, ParseFunction> CreateParserMap()
+{
+  std::map<std::string, ParseFunction> parser_map;
+  parser_map["bool"] = ParserFunctionT<::ccs::types::boolean>;
+  parser_map["char8"] = ParserFunctionT<::ccs::types::char8>;
+  parser_map["int8"] = ParserFunctionT<::ccs::types::int8>;
+  parser_map["uint8"] = ParserFunctionT<::ccs::types::uint8>;
+  parser_map["int16"] = ParserFunctionT<::ccs::types::int16>;
+  parser_map["uint16"] = ParserFunctionT<::ccs::types::uint16>;
+  parser_map["int32"] = ParserFunctionT<::ccs::types::int32>;
+  parser_map["uint32"] = ParserFunctionT<::ccs::types::uint32>;
+  parser_map["uint64"] = ParserFunctionT<::ccs::types::uint64>;
+  parser_map["float32"] = ParserFunctionT<::ccs::types::float32>;
+  parser_map["float64"] = ParserFunctionT<::ccs::types::float64>;
+  return parser_map;
+}
+
+static std::map<std::string, ParseFunction> & GetParserMap()
+{
+  static std::map<std::string, ParseFunction> parser_map = CreateParserMap();
+  return parser_map;
+}
+
+static bool
+ParseStringToScalarAnyvalue(::ccs::types::AnyValue &value, const std::string &str)
 {
   std::string type_name = value.GetType()->GetName();
-  if (type_name == "bool")
-  {
-    return ParseStringTo<::ccs::types::boolean>(value, str);
-  }
-  else if (type_name == "char8")
-  {
-    return ParseStringTo<::ccs::types::char8>(value, str);
-  }
-  else if (type_name == "int8")
-  {
-    return ParseStringTo<::ccs::types::int8>(value, str);
-  }
-  else if (type_name == "uint8")
-  {
-    return ParseStringTo<::ccs::types::uint8>(value, str);
-  }
-  else if (type_name == "int16")
-  {
-    return ParseStringTo<::ccs::types::int16>(value, str);
-  }
-  else if (type_name == "uint16")
-  {
-    return ParseStringTo<::ccs::types::uint16>(value, str);
-  }
-  else if (type_name == "int32")
-  {
-    return ParseStringTo<::ccs::types::int32>(value, str);
-  }
-  else if (type_name == "uint32")
-  {
-    return ParseStringTo<::ccs::types::uint32>(value, str);
-  }
-  else if (type_name == "int64")
-  {
-    return ParseStringTo<::ccs::types::int64>(value, str);
-  }
-  else if (type_name == "uint64")
-  {
-    return ParseStringTo<::ccs::types::uint64>(value, str);
-  }
-  else if (type_name == "float32")
-  {
-    return ParseStringTo<::ccs::types::float32>(value, str);
-  }
-  else if (type_name == "float64")
-  {
-    return ParseStringTo<::ccs::types::float64>(value, str);
-  }
-  else if (type_name == "string")
+
+  if (type_name == "string")
   {
     ::ccs::types::string buffer;
     ::ccs::HelperTools::SafeStringCopy(buffer, str.c_str(), 64);
     value = buffer;
     return true;
   }
-  return false;
+  auto & parser_map = GetParserMap();
+  if (parser_map.find(type_name) == parser_map.end())
+  {
+    return false;
+  }
+  auto parse_function = parser_map[type_name];
+  return parse_function(value, str);
 }
 
 extern "C" {

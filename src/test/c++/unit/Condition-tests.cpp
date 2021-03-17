@@ -35,6 +35,7 @@
 #include "Condition.h"
 #include "SequenceParser.h"
 
+#include "UnitTestHelper.h"
 #include "LogUI.h"
 
 // Constants
@@ -166,6 +167,107 @@ static bool PrintProcedureWorkspace(::sup::sequencer::Procedure *procedure) {
         }
     }
     return true;
+}
+
+TEST(Condition, NonScalarVariable_success)
+{
+
+  sup::sequencer::LogUI ui;
+  auto proc = sup::sequencer::ParseProcedureString(
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
+    "           name=\"Trivial procedure for testing purposes\"\n"
+    "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+    "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
+    "    <Repeat maxCount=\"10\">\n"
+    "        <Condition name=\"struct\" var_name=\"struct.timestamp\"/>\n"
+    "    </Repeat>\n"
+    "    <Workspace>\n"
+    "        <Local name=\"struct\"\n"
+    "               type='{\"type\":\"sup::test::MyType/v1.0\",\"attributes\":[{\"timestamp\":{\"type\":\"uint64\"}}]}'\n"
+    "               value='{\"timestamp\":1}'/>"
+    "    </Workspace>\n"
+    "</Procedure>");
+
+  bool status = TryAndExecute(proc, &ui);
+
+  ASSERT_EQ(true, status);
+
+}
+
+TEST(Condition, NonScalarVariable_failure)
+{
+
+  sup::sequencer::LogUI ui;
+  auto proc = sup::sequencer::ParseProcedureString(
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
+    "           name=\"Trivial procedure for testing purposes\"\n"
+    "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+    "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
+    "    <Repeat maxCount=\"10\">\n"
+    "        <Condition name=\"struct\" var_name=\"struct\"/>\n"
+    "    </Repeat>\n"
+    "    <Workspace>\n"
+    "        <Local name=\"struct\"\n"
+    "               type='{\"type\":\"sup::test::MyType/v1.0\",\"attributes\":[{\"timestamp\":{\"type\":\"uint64\"}}]}'\n"
+    "               value='{\"timestamp\":1}'/>"
+    "    </Workspace>\n"
+    "</Procedure>");
+
+  bool status = TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE);
+
+  ASSERT_EQ(true, status);
+
+}
+
+TEST(Condition, NoSuchVariable_name)
+{
+
+  sup::sequencer::LogUI ui;
+  auto proc = sup::sequencer::ParseProcedureString(
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
+    "           name=\"Trivial procedure for testing purposes\"\n"
+    "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+    "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
+    "    <Repeat maxCount=\"10\">\n"
+    "        <Condition name=\"struct\" var_name=\"undefined\"/>\n"
+    "    </Repeat>\n"
+    "    <Workspace>\n"
+    "    </Workspace>\n"
+    "</Procedure>");
+
+  bool status = TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE);
+
+  ASSERT_EQ(true, status);
+
+}
+
+TEST(Condition, NoSuchVariable_attr)
+{
+
+  sup::sequencer::LogUI ui;
+  auto proc = sup::sequencer::ParseProcedureString(
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
+    "           name=\"Trivial procedure for testing purposes\"\n"
+    "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+    "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
+    "    <Repeat maxCount=\"10\">\n"
+    "        <Condition name=\"struct\" var_name=\"struct.array[0].node\"/>\n"
+    "    </Repeat>\n"
+    "    <Workspace>\n"
+    "        <Local name=\"struct\"\n"
+    "               type='{\"type\":\"sup::test::MyType/v1.0\",\"attributes\":[{\"timestamp\":{\"type\":\"uint64\"}}]}'\n"
+    "               value='{\"timestamp\":1}'/>"
+    "    </Workspace>\n"
+    "</Procedure>");
+
+  bool status = TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE);
+
+  ASSERT_EQ(true, status);
+
 }
 
 #undef LOG_ALTERN_SRC

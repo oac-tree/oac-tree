@@ -8,7 +8,7 @@
 *
 * Author        : Walter Van Herck (IO)
 *
-* Copyright (c) : 2010-2020 ITER Organization,
+* Copyright (c) : 2010-2021 ITER Organization,
 *                 CS 90 046
 *                 13067 St. Paul-lez-Durance Cedex
 *                 France
@@ -37,6 +37,10 @@
 
 // Local header files
 
+#include "ExecutionStatus.h"
+#include "Procedure.h"
+#include "UserInterface.h"
+
 // Constants
 
 // Type definition
@@ -52,8 +56,39 @@ namespace UnitTestHelper {
 // Function declarations
 
 std::string GetFullTestFilePath(const std::string & filename);
+static inline bool TryAndExecute (std::unique_ptr<sup::sequencer::Procedure>& proc, sup::sequencer::UserInterface * const ui, const sup::sequencer::ExecutionStatus& expect = sup::sequencer::ExecutionStatus::SUCCESS);
 
 // Function definitions
+
+static inline bool TryAndExecute (std::unique_ptr<sup::sequencer::Procedure>& proc, sup::sequencer::UserInterface * const ui, const sup::sequencer::ExecutionStatus& expect)
+{
+
+  bool status = static_cast<bool>(proc);
+
+  if (status)
+    { // Setup procedure
+      status = proc->Setup();
+    }
+
+  if (status)
+    {
+      sup::sequencer::ExecutionStatus exec = sup::sequencer::ExecutionStatus::FAILURE;
+
+      do
+        {
+          (void)ccs::HelperTools::SleepFor(100000000ul); // Let system breathe
+          proc->ExecuteSingle(ui);
+          exec = proc->GetStatus();
+        }
+      while ((sup::sequencer::ExecutionStatus::SUCCESS != exec) &&
+             (sup::sequencer::ExecutionStatus::FAILURE != exec));
+
+      status = (expect == exec);
+    }
+
+  return status;
+
+}
 
 } // namespace UnitTestHelper
 

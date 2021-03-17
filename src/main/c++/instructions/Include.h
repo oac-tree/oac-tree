@@ -70,12 +70,16 @@ class Include : public DecoratorInstruction
      */
     bool SetupImpl(const Procedure & proc) override;
 
-    // Directory of original file for this instruction (if loaded from file).
-    std::string _current_directory;
-
     std::string GetPath() const;
 
     ExecutionStatus CalculateStatus() const;
+
+    /**
+     * @brief Name of file from which this include instruction was loaded (if loaded form file).
+     *
+     * @note This filename may include the relative or absolute paths.
+     */
+    std::string _filename;
 
   protected:
 
@@ -91,20 +95,20 @@ class Include : public DecoratorInstruction
     ~Include() override;
 
     /**
-     * @brief Set directory of origin of this include instruction (if loaded from file).
+     * @brief Set the filename of this include instruction (if loaded from file).
      *
-     * @param directory Directory of original file for this instruction.
-     * @details This directory is used for external includes with relative pathnames.
+     * @param filename Filename of this include instruction.
+     * @details This filename is used for external includes with relative pathnames.
      */
-    void SetCurrentDirectory(const std::string & directory);
+    void SetFilename(const std::string & filename);
 
     /**
-     * @brief Get directory of origin of this include instruction (if loaded from file).
+     * @brief Get the filename of this include instruction (if loaded from file).
      *
-     * @return Directory of original file for this instruction.
-     * @details This directory is used for external includes with relative pathnames.
+     * @return Filename of this include instruction.
+     * @details This filename is used for external includes with relative pathnames.
      */
-    std::string GetCurrentDirectory() const;
+    std::string GetFilename() const;
 
     /**
      * @brief The instruction's typename.

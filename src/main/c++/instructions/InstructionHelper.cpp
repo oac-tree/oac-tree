@@ -107,7 +107,7 @@ Instruction * CloneInstruction(const Instruction * instruction)
     auto other = dynamic_cast<const Include *>(instruction);
     if (other)
     {
-      include->SetCurrentDirectory(other->GetCurrentDirectory());
+      include->SetFilename(other->GetFilename());
     }
   }
   result->AddAttributes(instruction->GetAttributes());

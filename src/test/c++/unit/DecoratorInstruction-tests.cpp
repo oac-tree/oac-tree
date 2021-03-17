@@ -33,7 +33,6 @@
 // Local header files
 
 #include "UnitTestHelper.h"
-#include "LogUI.h"
 
 #include "DecoratorInstruction.h"
 

@@ -33,6 +33,7 @@
 // Local header files
 
 #include "UnitTestHelper.h"
+#include "LogUI.h"
 
 #include "DecoratorInstruction.h"
 
@@ -187,6 +188,5 @@ TEST(DecoratorInstruction, BaseClass_halt)
   ASSERT_EQ(true, status);
 
 }
-
 
 #undef LOG_ALTERN_SRC

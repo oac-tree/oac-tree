@@ -12,7 +12,6 @@
 
 ## UserInterface
 
-* Since the UserInterface is a shared object, make it threadsafe.
 * Provide input for scalar types (with enum passed) and a complex input type (from json?).
 * Provide non-virtual API for all scalar types, dispatching to a private virtual.
 * Start/EndSingleStep may require const Instruction pointer too.

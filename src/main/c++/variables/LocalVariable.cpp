@@ -59,20 +59,25 @@ LocalVariable::~LocalVariable() {}
 
 bool LocalVariable::GetValueImpl(::ccs::types::AnyValue& value) const
 {
+  bool result = true;
   if (!_initialized)
   {
     log_warning("sup::sequencer::LocalVariable::GetValue() - not initialized..");
-    return false;
+    result = false;
   }
 
   if (!value.GetType() || value.GetSize() == _val.GetSize())
   {
     log_info("sup::sequencer::LocalVariable::GetValue() - copying value..");
     value = _val;
-    return true;
   }
-  log_warning("sup::sequencer::LocalVariable::GetValue() - incompatible types..");
-  return false;
+  else
+  {
+    log_warning("sup::sequencer::LocalVariable::GetValue() - incompatible types..");
+    result = false;
+  }
+
+  return result;
 }
 
 bool LocalVariable::SetValueImpl(const ::ccs::types::AnyValue& value)

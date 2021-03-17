@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+           name="Trivial procedure for testing purposes"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+    <Sequence>
+        <Input output="var1" description="Proceed?" />
+        <Input output="var2" description="Your name" />
+        <Input output="var3" description="ID number" />
+    </Sequence>
+    <Workspace>
+        <Local name="var1"
+               type='{"type":"bool"}' />
+        <Local name="var2"
+               type='{"type":"string"}' />
+        <Local name="var3"
+               type='{"type":"uint64"}'/>
+    </Workspace>
+</Procedure>

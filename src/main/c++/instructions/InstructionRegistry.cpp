@@ -32,6 +32,7 @@
 #include "Fallback.h"
 #include "ForceSuccess.h"
 #include "Include.h"
+#include "Input.h"
 #include "Inverter.h"
 #include "ParallelSequence.h"
 #include "Repeat.h"
@@ -112,10 +113,11 @@ void InitInstructionRegistry(InstructionRegistry & registry)
   (void)RegisterInstruction<Repeat>(registry);
 
   // Register leaf instructions:
-  (void)RegisterInstruction<Wait>(registry);
+  (void)RegisterInstruction<Choice>(registry);
   (void)RegisterInstruction<Condition>(registry);
   (void)RegisterInstruction<Copy>(registry);
-  (void)RegisterInstruction<Choice>(registry);
+  (void)RegisterInstruction<Input>(registry);
+  (void)RegisterInstruction<Wait>(registry);
 }
 
 } // namespace sequencer

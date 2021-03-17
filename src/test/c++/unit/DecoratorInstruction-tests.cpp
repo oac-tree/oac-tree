@@ -32,6 +32,7 @@
 
 // Local header files
 
+#include "UnitTestHelper.h"
 #include "LogUI.h"
 
 #include "DecoratorInstruction.h"
@@ -45,43 +46,11 @@
 
 // Function declaration
 
-static inline bool TryAndExecute (std::unique_ptr<sup::sequencer::Procedure>& proc, sup::sequencer::UserInterface * const ui, const sup::sequencer::ExecutionStatus& expect = sup::sequencer::ExecutionStatus::SUCCESS);
-
 // Global variables
 
 static ccs::log::Func_t _log_handler = ccs::log::SetStdout();
 
 // Function definition
-
-static inline bool TryAndExecute (std::unique_ptr<sup::sequencer::Procedure>& proc, sup::sequencer::UserInterface * const ui, const sup::sequencer::ExecutionStatus& expect)
-{
-
-  bool status = static_cast<bool>(proc);
-
-  if (status)
-    { // Setup procedure
-      status = proc->Setup();
-    }
-
-  if (status)
-    {
-      sup::sequencer::ExecutionStatus exec = sup::sequencer::ExecutionStatus::FAILURE;
-
-      do
-        {
-          (void)ccs::HelperTools::SleepFor(100000000ul); // Let system breathe
-          proc->ExecuteSingle(ui);
-          exec = proc->GetStatus();
-        }
-      while ((sup::sequencer::ExecutionStatus::SUCCESS != exec) &&
-             (sup::sequencer::ExecutionStatus::FAILURE != exec));
-
-      status = (expect == exec);
-    }
-
-  return status;
-
-}
 
 // ToDo - Should implement test-specific instruction class to verify if called multiple times, or called by the ForceSuccess, etc.
 //        Need for this a wait to get a reference to the instruction in the procedure.

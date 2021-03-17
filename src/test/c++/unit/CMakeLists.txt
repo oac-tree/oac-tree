@@ -6,6 +6,7 @@ target_sources(unit-tests
         ${CMAKE_CURRENT_LIST_DIR}/ParallelSequence-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/AttributeMap-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Condition-tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/DecoratorInstruction-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/FileVariable-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/LocalVariable-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/SequenceParser-tests.cpp

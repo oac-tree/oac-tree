@@ -61,7 +61,7 @@ Choice::~Choice() {
 }
 
 bool Choice::SetupImpl(const Procedure &proc) {
-    bool ret = CompoundInstruction::Setup(proc);
+    bool ret = SetupChildren(proc);
     if (ret) {
         ret = HasAttribute("var_name");
         if (ret) {

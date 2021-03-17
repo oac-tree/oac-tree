@@ -12,6 +12,7 @@ target_sources(unit-tests
         ${CMAKE_CURRENT_LIST_DIR}/SequenceWorkspace-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/TreeData-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/VariableRegistry-tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/Choice-tests.cpp
     )
 
 target_include_directories(unit-tests

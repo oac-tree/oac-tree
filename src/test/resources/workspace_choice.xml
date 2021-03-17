@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+           name="Trivial procedure for testing purposes"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+    <Choice var_name="sel">
+        <CopyNode name="zero" input="a" output="res" />
+        <CopyNode name="one" input="b" output="res" />
+        <CopyNode name="two" input="c" output="res" />
+    </Choice>
+    <Workspace>
+        <Local name="res"
+               type='{"type":"int8"}'
+               value='0' />
+        <Local name="a"
+               type='{"type":"int8"}'
+               value='1' />
+        <Local name="b"
+               type='{"type":"int8"}'
+               value='2' />
+        <Local name="c"
+               type='{"type":"int8"}'
+               value='3' />
+    </Workspace>    
+</Procedure>

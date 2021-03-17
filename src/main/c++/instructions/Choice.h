@@ -35,6 +35,8 @@
 /*                        Standard header includes                           */
 /*---------------------------------------------------------------------------*/
 #include <common/BasicTypes.h>
+#include <common/AnyValue.h>
+
 /*---------------------------------------------------------------------------*/
 /*                        Project header includes                            */
 /*---------------------------------------------------------------------------*/
@@ -64,6 +66,23 @@ private:
     ExecutionStatus ExecuteChild(::ccs::types::uint32 idx,
                                  UserInterface *ui,
                                  Workspace *ws);
+
+    bool CheckIfSelectorArray(const ::ccs::types::AnyValue &_val);
+
+    bool CheckSelectorType(const Procedure &proc);
+
+    ExecutionStatus ExecuteBitChild(const ::ccs::types::uint64 value,
+                         const ::ccs::types::uint32 remained,
+                         UserInterface *ui,
+                         Workspace *ws);
+
+    ExecutionStatus ExecuteMaskSelector(::ccs::types::uint8 *valPtr,
+                             UserInterface *ui,
+                             Workspace *ws);
+
+    ExecutionStatus ExecuteArraySelector(::ccs::types::uint8 *valPtr,
+                              UserInterface *ui,
+                              Workspace *ws);
 
     bool SetupImpl(const Procedure &proc) override;
 

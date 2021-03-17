@@ -44,6 +44,17 @@ namespace sequencer {
 
 // Function definition
 
+bool UserInterface::GetUserValueImpl(::ccs::types::AnyValue & value, const std::string & description)
+{
+  return false;
+}
+
+int UserInterface::GetUserChoiceImpl(const std::vector<std::string> & choices,
+                                     const std::string & description)
+{
+  return -1;
+}
+
 void UserInterface::StartSingleStepImpl()
 {}
 
@@ -54,6 +65,19 @@ void UserInterface::UpdateInstructionStatus(const Instruction * instruction)
 {
   std::lock_guard<std::mutex> lock(_ui_mutex);
   UpdateInstructionStatusImpl(instruction);
+}
+
+bool UserInterface::GetUserValue(::ccs::types::AnyValue & value, const std::string & description)
+{
+  std::lock_guard<std::mutex> lock(_ui_mutex);
+  return GetUserValueImpl(value, description);
+}
+
+int UserInterface::GetUserChoice(const std::vector<std::string> & choices,
+                                 const std::string & description)
+{
+  std::lock_guard<std::mutex> lock(_ui_mutex);
+  return GetUserChoiceImpl(choices, description);
 }
 
 void UserInterface::StartSingleStep()

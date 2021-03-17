@@ -34,6 +34,9 @@
 // Global header files
 
 #include <mutex>
+#include <string>
+#include <vector>
+#include <common/AnyValue.h>
 
 // Local header files
 
@@ -62,6 +65,22 @@ class UserInterface
      * UserInterface::UpdateInstructionStatus(const Instruction * instruction).
      */
     virtual void UpdateInstructionStatusImpl(const Instruction * instruction) = 0;
+
+    /**
+     * @brief Private virtual implementation of
+     * UserInterface::GetUserValue(AnyValue & value, const std::string & description).
+     *
+     * @note Default implementation returns false.
+     */
+    virtual bool GetUserValueImpl(::ccs::types::AnyValue & value, const std::string & description);
+
+    /**
+     * @brief Private virtual implementation of
+     * UserInterface::GetUserChoice(const std::vector<std::string> & choices, const std::string & description).
+     *
+     * @note Default implementation returns -1.
+     */
+    virtual int GetUserChoiceImpl(const std::vector<std::string> & choices, const std::string & description);
 
     /**
      * @brief Private virtual implementation of
@@ -104,6 +123,26 @@ class UserInterface
      * @note Non-Virtual Interface.
      */
     void UpdateInstructionStatus(const Instruction * instruction);
+
+    /**
+     * @brief Method to request the user to input a value.
+     *
+     * @param value Value to be filled in.
+     * @param description Optional description of the value.
+     * @return true on successful retrieval of a value, false otherwise.
+     * @note Non-Virtual Interface.
+     */
+    bool GetUserValue(::ccs::types::AnyValue & value, const std::string & description = {});
+
+    /**
+     * @brief Method to request the user to choose one of the given options.
+     *
+     * @param choices List of options to choose from.
+     * @param description Optional description.
+     * @return index of the choice (zero-based) or -1 on failure.
+     * @note Non-Virtual Interface.
+     */
+    int GetUserChoice(const std::vector<std::string> & choices, const std::string & description = {});
 
     /**
      * @brief Method called before stepping into an instruction.

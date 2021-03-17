@@ -42,9 +42,8 @@ namespace sequencer {
 // Global variables
 
 const std::string LocalVariable::Type = "Local";
-
-static const std::string LOCAL_VARIABLE_JSON_TYPE="type";
-static const std::string LOCAL_VARIABLE_JSON_VALUE="value";
+const std::string LocalVariable::JSON_TYPE="type";
+const std::string LocalVariable::JSON_VALUE="value";
 
 // Function declaration
 
@@ -55,15 +54,6 @@ LocalVariable::LocalVariable()
   , _val{}
   , _initialized{false}
 {}
-
-LocalVariable::LocalVariable(const ::ccs::base::SharedReference<const ccs::types::AnyType>& type)
-  : Variable(LocalVariable::Type)
-  , _val{type}
-  , _initialized{false}
-{
-  log_info("sup::sequencer::LocalVariable::LocalVariable('%s') - create LocalVariable..",
-           type->GetName());
-}
 
 LocalVariable::~LocalVariable() {}
 
@@ -100,14 +90,14 @@ bool LocalVariable::SetValueImpl(const ::ccs::types::AnyValue& value)
 
 bool LocalVariable::SetupImpl()
 {
-  bool status = HasAttribute(LOCAL_VARIABLE_JSON_TYPE);
+  bool status = HasAttribute(JSON_TYPE);
 
   ::ccs::base::SharedReference<::ccs::types::AnyType> local_type;
   std::unique_ptr<::ccs::types::AnyValue> local_value;
   if (status)
   {
     log_info("LocalVariable::Setup() - parsing json type info..");
-    std::string json_type = GetAttribute(LOCAL_VARIABLE_JSON_TYPE);
+    std::string json_type = GetAttribute(JSON_TYPE);
     auto read = ::ccs::HelperTools::Parse(local_type, json_type.c_str());
     status = read > 0;
   }
@@ -124,10 +114,10 @@ bool LocalVariable::SetupImpl()
     local_value.reset(new ::ccs::types::AnyValue(const_type));
   }
 
-  if (status && HasAttribute(LOCAL_VARIABLE_JSON_VALUE))
+  if (status && HasAttribute(JSON_VALUE))
   {
     log_info("LocalVariable::Setup() - parsing json value info..");
-    std::string json_value = GetAttribute(LOCAL_VARIABLE_JSON_VALUE);
+    std::string json_value = GetAttribute(JSON_VALUE);
     status = local_value->ParseInstance(json_value.c_str());
     if (status)
     {

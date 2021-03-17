@@ -51,7 +51,7 @@ class UserInterface;
 // Type definition
 
 /**
- * @brief Class providing .
+ * @brief Class that aggregates a Procedure and a UserInterface.
  */
 class Runner
 {

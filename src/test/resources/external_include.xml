@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+           name="Procedure for testing local IncludeNode"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+    <Sequence name="MyWait">
+        <Wait timeout="$par1" />
+        <Wait timeout="$par1" />
+    </Sequence>
+    <Sequence isRoot="True">
+        <Include name="Local Wait Sequence" path="MyWait" par1="1.0" />
+        <Include name="External Wait" path="Parallel Wait" file="parallel_sequence.xml" />
+    </Sequence>
+</Procedure>

@@ -25,6 +25,7 @@
 // Local header files
 
 #include "InstructionParser.h"
+#include "Include.h"
 #include "InstructionRegistry.h"
 #include "CompoundInstruction.h"
 #include "DecoratorInstruction.h"
@@ -40,58 +41,36 @@ namespace sup {
 
 namespace sequencer {
 
-#define TAG_INIT_CHAR '$'
-
 // Global variables
 
 // Function declaration
 
-namespace {
-
-bool AddChildInstructions(Instruction *instruction, const std::vector<TreeData> &children,
-                          const TreeData *declarationData, AttributeMap &attributes,
-                          const TreeData *appended);
-
-std::unique_ptr<Instruction> GetDeclInstruction(const TreeData &data, const TreeData *declarationData,
-                                                AttributeMap &attributes, std::string instr_type,
-                                                const TreeData *appended);
-
-std::string
-SolveMapAttribute(AttributeMap &attributes, std::string attrTag);
-
-} // Unnamed namespace
+static bool AddChildInstructions(Instruction * instruction, const std::vector<TreeData> & children,
+                                 const std::string & directory);
+static bool AddChildrenToDecorator(DecoratorInstruction * decorator, const std::vector<TreeData> & children,
+                                   const std::string & directory);
+static bool AddChildrenToCompound(CompoundInstruction * compound, const std::vector<TreeData> & children,
+                                  const std::string & directory);
 
 // Function definition
 
-std::unique_ptr<Instruction> ParseInstruction(const TreeData &data, const TreeData *declarationData,
-                                              AttributeMap &attributes, const TreeData *appended)
+std::unique_ptr<Instruction> ParseInstruction(const TreeData & data, const std::string & directory)
 {
   auto instr_type = data.GetType();
   auto instr = GlobalInstructionRegistry().Create(instr_type);
   if (!instr)
   {
-    if (declarationData != NULL)
-    {
-      log_info("sup::sequencer::ParseInstruction() - Checking declarations for '%s'", instr_type.c_str());
-      return GetDeclInstruction(data, declarationData, attributes, instr_type, appended);
-    }
-    //if not returned
-    log_warning("sup::sequencer::ParseInstruction() - couldn't parse instruction with type: '%s'", instr_type.c_str());
+    log_warning("sup::sequencer::ParseInstruction() - couldn't parse instruction with type: '%s'",
+                instr_type.c_str());
     return {};
   }
-  for (const auto &attr : data.Attributes())
+  for (auto & attr : data.Attributes())
   {
-    auto attrTag = attr.second;
-    auto attrVal = SolveMapAttribute(attributes, attrTag);
-    instr->AddAttribute(attr.first, attrVal);
+    instr->AddAttribute(attr.first, attr.second);
   }
-  log_info("sup::sequencer::ParseInstruction() - parsing child instructions for instruction of type: '%s'", instr_type.c_str());
-  bool status = AddChildInstructions(instr.get(), data.Children(), declarationData, attributes, appended);
-  if (!status)
-  {
-    log_info("sup::sequencer::ParseInstruction() - parsing child appended instr for instruction of type: '%s'", instr_type.c_str());
-    status = AddChildInstructions(instr.get(), appended->Children(), declarationData, attributes, NULL);
-  }
+  log_info("sup::sequencer::ParseInstruction() - "
+           "parsing child instructions for instruction of type: '%s'", instr_type.c_str());
+  bool status = AddChildInstructions(instr.get(), data.Children(), directory);
   if (!status)
   {
     log_warning("sup::sequencer::ParseInstruction() - instruction with type: '%s' has wrong number of "
@@ -101,104 +80,38 @@ std::unique_ptr<Instruction> ParseInstruction(const TreeData &data, const TreeDa
   return instr;
 }
 
-namespace {
-
-std::string SolveMapAttribute(AttributeMap &attributes, std::string attrTag)
+static bool AddChildInstructions(Instruction * instruction, const std::vector<TreeData> & children,
+                                 const std::string & directory)
 {
-  //be careful with cyclic remappings
-  if (attrTag[0] == TAG_INIT_CHAR)
-  {
-    attrTag = attrTag.c_str() + 1;
-    if (attributes.HasAttribute(attrTag))
-    {
-      auto attrValue = attributes.GetAttribute(attrTag);
-      return SolveMapAttribute(attributes, attrValue);
-    }
-  }
-  return attrTag;
-}
-
-std::unique_ptr<Instruction> GetDeclInstruction(const TreeData &data, const TreeData *declarationData,
-                                                AttributeMap &attributes, std::string instr_type,
-                                                const TreeData *appended)
-{
-  std::unique_ptr<Instruction> decl_instr;
-  for (const auto &decl_data : declarationData->Children())
-  {
-    auto decl_type = decl_data.GetType();
-    if (instr_type == decl_type)
-    {
-      for (const auto &attr : data.Attributes())
-      {
-        if (!attributes.HasAttribute(attr.first))
-        {
-          attributes.AddAttribute(attr.first, attr.second);
-        }
-      }
-      log_info("sup::sequencer::GetDeclInstruction() - Parsing '%s' from declarations", instr_type.c_str());
-      const std::vector<TreeData> decl_children = decl_data.Children();
-      if (decl_children.size() > 0u)
-      {
-        //eventually go back to data and add other children
-        bool setAppended = (appended == NULL);
-        if (setAppended)
-        {
-          appended = &data;
-        }
-        decl_instr = ParseInstruction(decl_children[0], declarationData, attributes, appended);
-        if (setAppended)
-        {
-          appended = NULL;
-        }
-      }
-      //remove from the stack, other nodes are not interested
-      for (const auto &attr : data.Attributes())
-      {
-        if (attributes.HasAttribute(attr.first))
-        {
-          attributes.Remove(attr.first);
-        }
-      }
-      break;
-    }
-  }
-  return decl_instr;
-}
-
-bool AddChildInstructions(Instruction *instruction, const std::vector<TreeData> &children,
-                          const TreeData *declarationData, AttributeMap &attributes,
-                          const TreeData *appended)
-{
-  auto decorator = dynamic_cast<DecoratorInstruction *>(instruction);
   auto instr_name = instruction->GetName();
   auto instr_type = instruction->GetType();
-  log_info("AddChildInstructions() - (%s:%s)", instr_name.c_str(), instr_type.c_str());
 
-  if (decorator && children.size() == 1u)
+  // Only set source directory for Include instruction:
+  auto include = dynamic_cast<Include *>(instruction);
+  if (include)
   {
-    log_info("AddChildInstructions() - to (%s:%s)", instr_type.c_str(), instr_name.c_str());
-    auto child_instr = ParseInstruction(children[0], declarationData, attributes, appended);
-    auto child_name = child_instr->GetName();
-    auto child_type = child_instr->GetType();
-
-    log_info("AddChildInstructions() - Decorator->SetInstruction(%s:%s)", child_name.c_str(), child_type.c_str());
-    decorator->SetInstruction(child_instr.release());
+    include->SetCurrentDirectory(directory);
     return true;
   }
-  auto compound = dynamic_cast<CompoundInstruction *>(instruction);
-  if (compound && children.size() > 0)
-  {
-    for (const auto &child : children)
-    {
-      log_info("AddChildInstructions() - to (%s:%s)", instr_type.c_str(), instr_name.c_str());
-      auto child_instr = ParseInstruction(child, declarationData, attributes, appended);
-      auto child_name = child_instr->GetName();
-      auto child_type = child_instr->GetType();
-      log_info("AddChildInstructions() - Compound->PushBack(%s:%s)", child_name.c_str(), child_type.c_str());
 
-      compound->PushBack(child_instr.release());
+  auto decorator = dynamic_cast<DecoratorInstruction *>(instruction);
+  if (decorator)
+  {
+    log_info("AddChildInstructions() - (%s:%s)", instr_type.c_str(), instr_name.c_str());
+    return AddChildrenToDecorator(decorator, children, directory);
+  }
+
+  auto compound = dynamic_cast<CompoundInstruction *>(instruction);
+  if (compound)
+  {
+    log_info("AddChildInstructions() - (%s:%s)", instr_type.c_str(), instr_name.c_str());
+    if (AddChildrenToCompound(compound, children, directory))
+    {
+      return true;
     }
-    return true;
+    log_warning("AddChildInstructions() - could not parse child instruction of (%s:%s)",
+                instr_type.c_str(), instr_name.c_str());
+    return false;
   }
   if (!decorator && !compound && children.size() == 0)
   {
@@ -209,7 +122,45 @@ bool AddChildInstructions(Instruction *instruction, const std::vector<TreeData> 
   return false;
 }
 
-} // Unnamed namespace
+static bool AddChildrenToDecorator(DecoratorInstruction * decorator, const std::vector<TreeData> & children,
+                                   const std::string & directory)
+{
+  if (children.size() == 1u)
+  {
+    auto child_instr = ParseInstruction(children[0], directory);
+    if (child_instr)
+    {
+      auto child_type = child_instr->GetType();
+      log_info("AddChildrenToDecorator() - calling Decorator->SetInstruction(%s)", child_type.c_str());
+      decorator->SetInstruction(child_instr.release());
+      return true;
+    }
+  }
+  return false;
+}
+
+static bool AddChildrenToCompound(CompoundInstruction * compound, const std::vector<TreeData> & children,
+                                  const std::string & directory)
+{
+  if (children.size() > 0)
+  {
+    bool result = true;
+    for (auto & child : children)
+    {
+      auto child_instr = ParseInstruction(child, directory);
+      if (child_instr)
+      {
+        auto child_type = child_instr->GetType();
+        log_info("AddChildrenToCompound() - calling Compound->PushBack(%s)", child_type.c_str());
+        compound->PushBack(child_instr.release());
+        continue;
+      }
+      result = false;
+    }
+    return result;
+  }
+  return false;
+}
 
 } // namespace sequencer
 

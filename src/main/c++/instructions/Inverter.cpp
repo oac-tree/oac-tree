@@ -48,15 +48,15 @@ const std::string Inverter::Type = "Inverter";
 
 ExecutionStatus Inverter::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
 {
-  if (!_child)
+  if (!HasChild())
   {
     return ExecutionStatus::SUCCESS;
   }
 
-  auto child_status = _child->GetStatus();
+  auto child_status = GetChildStatus();
   if (NeedsExecute(child_status))
   {
-    _child->ExecuteSingle(ui, ws);
+    ExecuteChild(ui, ws);
   }
 
   return CalculateStatus();
@@ -64,12 +64,12 @@ ExecutionStatus Inverter::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
 
 ExecutionStatus Inverter::CalculateStatus() const
 {
-  if (!_child)
+  if (!HasChild())
   {
     return ExecutionStatus::SUCCESS;
   }
 
-  auto child_status = _child->GetStatus();
+  auto child_status = GetChildStatus();
   auto status = child_status;
 
   switch (child_status)

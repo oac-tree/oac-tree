@@ -19,21 +19,31 @@
 * of the distribution package.
 ******************************************************************************/
 
+// Global header files
 
-/*---------------------------------------------------------------------------*/
-/*                         Standard header includes                          */
-/*---------------------------------------------------------------------------*/
 #include <common/log-api.h>
-/*---------------------------------------------------------------------------*/
-/*                         Project header includes                           */
-/*---------------------------------------------------------------------------*/
+
+// Local header files
 
 #include "ForceSuccess.h"
 
 
+// Constants
+
+#undef LOG_ALTERN_SRC
+#define LOG_ALTERN_SRC "sup::sequencer"
+
+// Type definition
+
 namespace sup {
 
 namespace sequencer {
+
+// Global variables
+
+// Function declaration
+
+// Function definition
 
 const std::string ForceSuccess::Type = "ForceSuccess";
 
@@ -45,8 +55,12 @@ ForceSuccess::~ForceSuccess() = default;
 
 ExecutionStatus ForceSuccess::ExecuteSingleImpl(UserInterface *ui, Workspace *ws)
 {
-  _child->ExecuteSingle(ui, ws);
-  auto status = _child->GetStatus();
+  if (!HasChild())
+  {
+    return ExecutionStatus::SUCCESS;
+  }
+  ExecuteChild(ui, ws);
+  auto status = GetChildStatus();
 
   if (status == ExecutionStatus::FAILURE)
   {
@@ -58,3 +72,11 @@ ExecutionStatus ForceSuccess::ExecuteSingleImpl(UserInterface *ui, Workspace *ws
 }  // namespace sequencer
 
 }  // namespace sup
+
+extern "C" {
+
+// C API function definitions
+
+} // extern C
+
+#undef LOG_ALTERN_SRC

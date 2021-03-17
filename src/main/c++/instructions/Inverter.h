@@ -50,12 +50,20 @@ namespace sequencer {
 /**
  * @brief Decorator that inverts the execution status of its child.
  */
-
 class Inverter : public DecoratorInstruction
 {
   private:
+    /**
+     * @brief See sup::sequencer::Instruction.
+     *
+     * @details Inverts the execution status of its child instruction, interchanging
+     * SUCCESS and FAILURE.
+     */
     ExecutionStatus ExecuteSingleImpl(UserInterface * ui, Workspace * ws) override;
 
+    /**
+     * @brief Calculate this instruction's status from the status of its child instruction.
+     */
     ExecutionStatus CalculateStatus() const;
 
   protected:
@@ -71,6 +79,9 @@ class Inverter : public DecoratorInstruction
      */
     ~Inverter() override;
 
+    /**
+     * @brief The instruction's typename.
+     */
     static const std::string Type;
 };
 

@@ -29,6 +29,7 @@
 // Local header files
 
 #include "Wait.h"
+#include "Constants.h"
 
 // Constants
 
@@ -49,7 +50,33 @@ const std::string Wait::Type = "Wait";
 
 // Function definition
 
-void Wait::InitHook()
+ExecutionStatus Wait::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
+{
+  (void)ui;
+  (void)ws;
+  if (_timeout > 0.0)
+  {
+    auto mseconds = static_cast<int>(_timeout * 1000);
+    auto nr_loops = mseconds / DefaultSettings::MAX_BLOCKING_TIME_MS;
+    auto remaining_ms = mseconds % DefaultSettings::MAX_BLOCKING_TIME_MS;
+    for (int i = 0; i < nr_loops; ++i)
+    {
+      if (_halt_requested.load())
+      {
+        return ExecutionStatus::FAILURE;
+      }
+      std::this_thread::sleep_for(std::chrono::milliseconds(DefaultSettings::MAX_BLOCKING_TIME_MS));
+    }
+    if (_halt_requested.load())
+    {
+      return ExecutionStatus::FAILURE;
+    }
+    std::this_thread::sleep_for(std::chrono::milliseconds(remaining_ms));
+  }
+  return ExecutionStatus::SUCCESS;
+}
+
+bool Wait::SetupImpl(const Procedure & proc)
 {
   if (HasAttribute("timeout"))
   {
@@ -67,23 +94,12 @@ void Wait::InitHook()
       log_warning("Wait::InitHook() - could not parse timeout attribute!");
     }
   }
-}
-
-ExecutionStatus Wait::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
-{
-    (void)ui;
-    (void)ws;
-    if (_timeout > 0.0)
-    {
-      auto mseconds = static_cast<int>(_timeout * 1000);
-      std::this_thread::sleep_for(std::chrono::milliseconds(mseconds));
-    }
-    return ExecutionStatus::SUCCESS;
+  return true; // if timeout was not specified, Wait immediately returns SUCCESS.
 }
 
 Wait::Wait()
-    : Instruction(Type)
-    , _timeout(0.0)
+  : Instruction(Type)
+  , _timeout(0.0)
 {}
 
 Wait::~Wait()

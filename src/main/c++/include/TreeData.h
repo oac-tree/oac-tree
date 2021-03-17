@@ -70,12 +70,30 @@ class TreeData
      * @brief Constructor.
      * @param type Data typename.
      */
-    TreeData(std::string type);
+    TreeData(const std::string & type);
 
     /**
      * @brief Destructor.
      */
     ~TreeData();
+
+    /**
+     * @brief Copy/move Constructor.
+     */
+    TreeData(const TreeData & other);
+    TreeData(TreeData && other);
+
+    /**
+     * @brief Copy/move Assignment.
+     */
+    TreeData & operator=(const TreeData & other);
+    TreeData & operator=(TreeData && other);
+
+    /**
+     * @brief Comparison operators.
+     */
+    bool operator==(const TreeData & other) const;
+    bool operator!=(const TreeData & other) const;
 
     /**
      * @brief Retrieve the data's typename.
@@ -90,6 +108,21 @@ class TreeData
      * @return Name of the data.
      */
     std::string GetName() const;
+
+    /**
+     * @brief Set the data's name attribute.
+     *
+     * @param name Name of the data.
+     * @details Overwrites if a name already existed.
+     */
+    void SetName(const std::string & name);
+
+    /**
+     * @brief Get number of attributes.
+     *
+     * @return Number of attributes.
+     */
+    size_t GetNumberOfAttributes() const;
 
     /**
      * @brief Indicate presence of attribute with given name.
@@ -108,28 +141,53 @@ class TreeData
     std::string GetAttribute(const std::string & name) const;
 
     /**
-     * @brief Add attribute.
-     *
-     * @param name Attribute name.
-     * @param value Attribute value.
-     * @return true on successful adding.
-     */
-    bool AddAttribute(const std::string & name, const std::string & value);
-
-    /**
      * @brief Retrieve map of all attributes.
      *
      * @return Map of all attributes.
      */
-    std::vector<std::pair<const std::string, std::string>> Attributes() const;
+    const AttributeMap & Attributes() const;
+
+    /**
+     * @brief Add attribute with given name and value.
+     *
+     * @param name Attribute name.
+     * @param value Attribute value.
+     * @return true on successful adding.
+     * @details This method will not try to overwrite an existing attribute. It returns
+     * false if the attribute with the given name already exists.
+     */
+    bool AddAttribute(const std::string & name, const std::string & value);
+
+    /**
+     * @brief Set attribute with given name and value.
+     *
+     * @param name Attribute name.
+     * @param value Attribute value.
+     * @details This method will overwrite an existing attribute or create a new one.
+     */
+    void SetAttribute(const std::string & name, const std::string & value);
+
+    /**
+     * @brief Remove attribute with given name.
+     *
+     * @param name Name of attribute to remove.
+     * @return true when attribute was found and removed.
+     */
+    bool RemoveAttribute(const std::string & name);
+
+    /**
+     * @brief Get number of children.
+     *
+     * @return Number of children.
+     */
+    size_t GetNumberOfChildren() const;
 
     /**
      * @brief Add child element data.
      *
      * @param child Data representation of child element.
-     * @return true on success.
      */
-    bool AddChild(const TreeData & child);
+    void AddChild(const TreeData & child);
 
     /**
      * @brief Retrieve all child data elements.
@@ -142,9 +200,9 @@ class TreeData
      * @brief Set element content string.
      *
      * @param content Content string.
-     * @return true on success.
+     * @details Overwrites if already present.
      */
-    bool SetContent(std::string content);
+    void SetContent(const std::string & content);
 
     /**
      * @brief Retrieve element content string.
@@ -155,8 +213,6 @@ class TreeData
 };
 
 // Global variables
-
-static const std::string NAME_ATTRIBUTE = "name";
 
 // Function declarations
 

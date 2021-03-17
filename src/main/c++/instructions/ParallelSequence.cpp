@@ -52,7 +52,7 @@ void ParallelSequence::InitHook()
 
 ExecutionStatus ParallelSequence::ExecuteSingleImpl(UserInterface *ui, Workspace *ws)
 {
-  if (_children.empty())
+  if (!HasChildren())
   {
     return ExecutionStatus::SUCCESS;
   }
@@ -66,54 +66,33 @@ ExecutionStatus ParallelSequence::ExecuteSingleImpl(UserInterface *ui, Workspace
       wrapper.Tick(ui, ws);
     }
   }
-  return CalculateCompoundStatus();
+  auto status = CalculateCompoundStatus();
+  if (status != ExecutionStatus::RUNNING)
+  {
+    Halt();
+  }
+  return status;
 }
 
-ExecutionStatus ParallelSequence::CalculateCompoundStatus() const
+void ParallelSequence::ResetHook()
 {
-  int n_success = 0;
-  int n_failure = 0;
-
-  for (const auto &wrapper : _wrappers)
+  // call Halt when there are descendents running
+  if (GetStatus() == ExecutionStatus::RUNNING)
   {
-    auto wrapper_status = wrapper.GetStatus();
-
-    if (wrapper_status == ExecutionStatus::SUCCESS)
-    {
-      n_success++;
-    }
-    if (wrapper_status == ExecutionStatus::FAILURE)
-    {
-      n_failure++;
-    }
+    Halt();
   }
-
-  if (n_success >= _success_th)
-  {
-    return ExecutionStatus::SUCCESS;
-  }
-  if (n_failure >= _failure_th)
-  {
-    return ExecutionStatus::FAILURE;
-  }
-  return ExecutionStatus::RUNNING;
-}
-
-bool ParallelSequence::InitWrappers()
-{
+  // wait for child threads to terminate
   _wrappers.clear();
-  for (auto child : _children)
-  {
-    _wrappers.emplace_back(child);
-  }
+  // call reset on child instructions
+  ResetChildren();
 }
 
-bool ParallelSequence::Setup(Workspace *ws)
+bool ParallelSequence::SetupImpl(const Procedure & proc)
 {
-  bool status = CompoundInstruction::Setup(ws);
+  bool status = SetupChildren(proc);
   if (status)
   {
-    int N = static_cast<int>(_children.size());
+    int N = static_cast<int>(ChildInstructions().size());
 
     // default values for thresholds:
     _success_th = N;
@@ -161,8 +140,49 @@ bool ParallelSequence::Setup(Workspace *ws)
   return status;
 }
 
+ExecutionStatus ParallelSequence::CalculateCompoundStatus() const
+{
+  int n_success = 0;
+  int n_failure = 0;
+
+  for (const auto &wrapper : _wrappers)
+  {
+    auto wrapper_status = wrapper.GetStatus();
+
+    if (wrapper_status == ExecutionStatus::SUCCESS)
+    {
+      n_success++;
+    }
+    if (wrapper_status == ExecutionStatus::FAILURE)
+    {
+      n_failure++;
+    }
+  }
+
+  if (n_success >= _success_th)
+  {
+    return ExecutionStatus::SUCCESS;
+  }
+  if (n_failure >= _failure_th)
+  {
+    return ExecutionStatus::FAILURE;
+  }
+  return ExecutionStatus::RUNNING;
+}
+
+bool ParallelSequence::InitWrappers()
+{
+  _wrappers.clear();
+  for (auto child : ChildInstructions())
+  {
+    _wrappers.emplace_back(child);
+  }
+}
+
 ParallelSequence::ParallelSequence()
   : CompoundInstruction(Type)
+  , _success_th{0}
+  , _failure_th{0}
 {}
 
 ParallelSequence::~ParallelSequence() = default;

@@ -56,20 +56,50 @@ namespace sequencer {
 class CompoundInstruction : public Instruction
 {
   private:
+    /**
+     * @brief See sup::sequencer::Instruction.
+     */
     void ResetHook() override;
+    void HaltImpl() override;
+    std::vector<const Instruction *> ChildInstructionsImpl() const override;
+    bool SetupImpl(const Procedure & proc) override;
+
+    /**
+     * @brief Container for child instructions.
+     */
+    std::vector<Instruction *> _children;
 
   protected:
     /**
-     * @brief Container for child instructions
+     * @brief Call Instruction::Setup(const Procedure & proc) on all child instructions
+     * and aggregate result.
      */
-    std::vector<Instruction *> _children;
+    bool SetupChildren(const Procedure & proc);
+
+    /**
+     * @brief Check if this compound instruction has child instructions.
+     *
+     * @return true when it has chil instructions, false otherwise.
+     */
+    bool HasChildren() const;
+
+    /**
+     * @brief Call Instruction::Reset() on all child instructions.
+     */
+    void ResetChildren();
+
+    /**
+     * @brief Call Instruction::Halt() on all child instructions.
+     */
+    void HaltChildren();
 
   public:
     /**
      * @brief Constructor.
+     *
      * @param type The type of instruction.
      */
-    CompoundInstruction(std::string type);
+    CompoundInstruction(const std::string & type);
 
     /**
      * @brief Destructor.
@@ -78,19 +108,11 @@ class CompoundInstruction : public Instruction
 
     /**
      * @brief Add child instruction.
+     *
      * @param instruction Pointer to instruction.
      * @note CompoundInstruction takes ownership of the added instruction.
      */
     void PushBack(Instruction * instruction);
-
-    /**
-     * @brief Setup method
-     * @details
-     * @param
-     * @return
-     */
-    bool Setup(Workspace * ws) override;
-
 };
 
 // Global variables

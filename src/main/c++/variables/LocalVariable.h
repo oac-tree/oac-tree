@@ -49,6 +49,12 @@ namespace sequencer {
 
 /**
  * @brief Variable that is hosted locally in the workspace.
+ *
+ * @details A LocalVariable with only a type attribute (no value attribute) will
+ * allocate an AnyValue, but subsequent GetValue calls will return false until an
+ * explicit successful SetValue occurs. The rationale is that it does not make sense to
+ * query an zero-initialized value and that this allows for triggering instruction
+ * execution on availability of a workspace variable.
  */
 
 class LocalVariable : public Variable
@@ -65,29 +71,12 @@ class LocalVariable : public Variable
     bool _initialized;
 
     /**
-     * @brief Get value of locally hosted variable.
-     *
-     * @param value variable reference to contain the value.
-     * @return true on success.
+     * @brief See sup::sequencer::Variable.
      */
     bool GetValueImpl(::ccs::types::AnyValue& value) const override;
-
-    /**
-     * @brief Set value of locally hosted variable.
-     *
-     * @param value value to set.
-     * @return true on success.
-     */
     bool SetValueImpl(const ::ccs::types::AnyValue& value) override;
-
-    /**
-     * @brief Initialize the variable with the currently present attributes.
-     *
-     * @return true on success.
-     *
-     * @note May do nothing if not all required attributes are present (yet).
-     */
     bool SetupImpl() override;
+
   protected:
 
   public:
@@ -96,21 +85,21 @@ class LocalVariable : public Variable
      */
     LocalVariable();
 
-  /**
-   * @brief Constructor.
-   *
-   * @param type AnyType of underlying value.
-   */
-  LocalVariable(const ::ccs::base::SharedReference<const ccs::types::AnyType>& type);
-
     /**
      * @brief Destructor.
      */
     ~LocalVariable() override;
 
-
-
+    /**
+     * @brief Class name for VariableRegistry.
+     */
     static const std::string Type;
+
+    /**
+     * @brief Defined attribute names.
+     */
+    static const std::string JSON_TYPE;
+    static const std::string JSON_VALUE;
 };
 
 // Global variables

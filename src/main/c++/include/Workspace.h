@@ -91,7 +91,7 @@ class Workspace
      *
      * @param name Variable name.
      */
-    bool GetValue(std::string name, ::ccs::types::AnyValue& value);
+    bool GetValue(std::string name, ::ccs::types::AnyValue& value) const;
 
     /**
      * @brief Set variable value

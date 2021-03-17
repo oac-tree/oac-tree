@@ -48,32 +48,26 @@ const std::string Repeat::Type = "Repeat";
 
 void Repeat::InitHook()
 {
-  InitMaxCount();
   _count = 0;
 }
 
 ExecutionStatus Repeat::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
 {
-  if (!_child || _max_count == 0)
+  if (!HasChild()|| _max_count == 0)
   {
     return ExecutionStatus::SUCCESS;
   }
 
-  if (!_init_ok)
-  {
-    return ExecutionStatus::FAILURE;
-  }
-
-  auto child_status = _child->GetStatus();
+  auto child_status = GetChildStatus();
 
   if (child_status == ExecutionStatus::SUCCESS)
   {
-    _child->ResetStatus();
+    ResetChild();
   }
 
-  _child->ExecuteSingle(ui, ws);
+  ExecuteChild(ui, ws);
 
-  child_status = _child->GetStatus();
+  child_status = GetChildStatus();
   // Don't increment count when _max_count is not strictly positive.
   if (_max_count > 0 && (child_status == ExecutionStatus::SUCCESS ||
                          child_status == ExecutionStatus::FAILURE))
@@ -84,20 +78,9 @@ ExecutionStatus Repeat::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
   return CalculateStatus();
 }
 
-void Repeat::ResetHook()
-{
-  if (_child)
-  {
-    _child->ResetStatus();
-  }
-  _init_ok = false;
-  _count = 0;
-}
-
-void Repeat::InitMaxCount()
+bool Repeat::SetupImpl(const Procedure & proc)
 {
   bool status = HasAttribute("maxCount");
-
   if (status)
   {
     auto max_str = GetAttribute("maxCount");
@@ -115,12 +98,12 @@ void Repeat::InitMaxCount()
       status = false;
     }
   }
-  _init_ok = status;
+  return SetupChild(proc) && status;
 }
 
 ExecutionStatus Repeat::CalculateStatus() const
 {
-  auto child_status = _child->GetStatus();
+  auto child_status = GetChildStatus();
 
   if (child_status == ExecutionStatus::SUCCESS)
   {
@@ -138,7 +121,10 @@ ExecutionStatus Repeat::CalculateStatus() const
 }
 
 Repeat::Repeat()
-    : DecoratorInstruction(Type)
+  : DecoratorInstruction(Type)
+  , _max_count{0}
+  , _count{0}
+  , _init_ok{false}
 {}
 
 Repeat::~Repeat()

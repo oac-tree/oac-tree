@@ -46,13 +46,62 @@ namespace sequencer {
 
 void CompoundInstruction::ResetHook()
 {
+  ResetChildren();
+}
+
+void CompoundInstruction::HaltImpl()
+{
+  HaltChildren();
+}
+
+std::vector<const Instruction *> CompoundInstruction::ChildInstructionsImpl() const
+{
+  std::vector<const Instruction *> result;
+  for (auto instr : _children)
+  {
+    result.push_back(instr);
+  }
+  return result;
+}
+
+bool CompoundInstruction::SetupImpl(const Procedure & proc)
+{
+  return SetupChildren(proc);
+}
+
+bool CompoundInstruction::SetupChildren(const Procedure & proc)
+{
+  log_info("CompoundInstruction::SetupChildren - entering function..");
+  bool result = true;
   for (auto instruction : _children)
   {
-    instruction->ResetStatus();
+    result = instruction->Setup(proc) && result;
+  }
+  return result;
+}
+
+bool CompoundInstruction::HasChildren() const
+{
+  return !_children.empty();
+}
+
+void CompoundInstruction::ResetChildren()
+{
+  for (auto instruction : _children)
+  {
+    instruction->Reset();
   }
 }
 
-CompoundInstruction::CompoundInstruction(std::string type)
+void CompoundInstruction::HaltChildren()
+{
+  for (auto instruction : _children)
+  {
+    instruction->Halt();
+  }
+}
+
+CompoundInstruction::CompoundInstruction(const std::string & type)
     : Instruction(type)
 {}
 
@@ -67,20 +116,6 @@ CompoundInstruction::~CompoundInstruction()
 void CompoundInstruction::PushBack(Instruction * instruction)
 {
   _children.push_back(instruction);
-}
-
-bool CompoundInstruction::Setup(Workspace * ws){
-    bool ret=true;
-    for (auto instruction : _children)
-    {
-      auto myName=GetName();
-      auto myType=GetType();
-      auto childType=instruction->GetType();
-      auto childName=instruction->GetName();
-      log_info("CompoundInstruction::Setup - %s:%s Setup of %s: %s", myType.c_str(), myName.c_str(), childType.c_str(), childName.c_str());
-      ret&=instruction->Setup(ws);
-    }
-    return ret;
 }
 
 } // namespace sequencer

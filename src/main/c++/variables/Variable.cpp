@@ -44,7 +44,7 @@ namespace sequencer {
 
 // Function definition
 
-Variable::Variable(std::string type)
+Variable::Variable(const std::string & type)
   : _type(type)
 {
   _setup_successful = SetupImpl();
@@ -62,7 +62,7 @@ std::string Variable::GetName() const
   return GetAttribute(attributes::NAME_ATTRIBUTE);
 }
 
-void Variable::SetName(std::string name)
+void Variable::SetName(const std::string & name)
 {
   AddAttribute(attributes::NAME_ATTRIBUTE, name);
 }
@@ -123,17 +123,17 @@ bool Variable::SetValue(const ::ccs::types::AnyValue &value, const std::string &
   return status;
 }
 
-bool Variable::HasAttribute(const std::string &name) const
+bool Variable::HasAttribute(const std::string & name) const
 {
   return _attributes.HasAttribute(name);
 }
 
-std::string Variable::GetAttribute(const std::string &name) const
+std::string Variable::GetAttribute(const std::string & name) const
 {
   return _attributes.GetAttribute(name);
 }
 
-bool Variable::AddAttribute(const std::string &name, const std::string &value)
+bool Variable::AddAttribute(const std::string & name, const std::string & value)
 {
   std::lock_guard<std::mutex> lock(_access_mutex);
   bool status = _attributes.AddAttribute(name, value);
@@ -141,11 +141,11 @@ bool Variable::AddAttribute(const std::string &name, const std::string &value)
   return status;
 }
 
-bool Variable::AddAttributes(const std::vector<std::pair<const std::string, std::string>> &attributes)
+bool Variable::AddAttributes(const AttributeMap & attributes)
 {
   std::lock_guard<std::mutex> lock(_access_mutex);
   bool status = true;
-  for (const auto &attr : attributes) {
+  for (auto & attr : attributes) {
     // Order in AND matters: add all attributes, even if previous adding failed.
     status = _attributes.AddAttribute(attr.first, attr.second) && status;
   }

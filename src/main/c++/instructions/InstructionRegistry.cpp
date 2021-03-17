@@ -31,13 +31,14 @@
 #include "Instruction.h"
 #include "Fallback.h"
 #include "ForceSuccess.h"
+#include "Include.h"
 #include "Inverter.h"
 #include "ParallelSequence.h"
 #include "Repeat.h"
 #include "Sequence.h"
 #include "Wait.h"
 #include "Condition.h"
-#include "Selector.h"
+#include "Copy.h"
 
 // Constants
 
@@ -105,14 +106,14 @@ void InitInstructionRegistry(InstructionRegistry & registry)
 
   // Register decorator instructions:
   (void)RegisterInstruction<ForceSuccess>(registry);
+  (void)RegisterInstruction<Include>(registry);
   (void)RegisterInstruction<Inverter>(registry);
   (void)RegisterInstruction<Repeat>(registry);
 
   // Register leaf instructions:
   (void)RegisterInstruction<Wait>(registry);
   (void)RegisterInstruction<Condition>(registry);
-  (void)RegisterInstruction<Selector>(registry);
-
+  (void)RegisterInstruction<Copy>(registry);
 }
 
 } // namespace sequencer

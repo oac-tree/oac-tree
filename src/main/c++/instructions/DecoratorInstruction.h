@@ -56,20 +56,60 @@ namespace sequencer {
 class DecoratorInstruction : public Instruction
 {
   private:
+    /**
+     * @brief See sup::sequencer::Instruction.
+     */
     void ResetHook() override;
+    void HaltImpl() override;
+    std::vector<const Instruction *> ChildInstructionsImpl() const override;
+    bool SetupImpl(const Procedure & proc) override;
+
+    /**
+     * @brief Decorated instruction.
+     */
+    std::unique_ptr<Instruction> _child;
 
   protected:
     /**
-     * @brief Decorated instruction
+     * @brief Call Instruction::Setup(const Procedure & proc) on child instruction
+     * and return result.
      */
-    std::unique_ptr<Instruction> _child;
+    bool SetupChild(const Procedure & proc);
+
+    /**
+     * @brief Check if this decorator has a child.
+     *
+     * @return true when it has a child, false otherwise.
+     */
+    bool HasChild() const;
+
+    /**
+     * @brief Call Instruction::Reset() on the child instruction.
+     */
+    ExecutionStatus GetChildStatus() const;
+
+    /**
+     * @brief Call Instruction::ExecuteSingle() on the child instruction.
+     */
+    void ExecuteChild(UserInterface *ui, Workspace *ws);
+
+    /**
+     * @brief Call Instruction::Reset() on the child instruction.
+     */
+    void ResetChild();
+
+    /**
+     * @brief Call Instruction::Halt() on the child instruction.
+     */
+    void HaltChild();
 
   public:
     /**
      * @brief Constructor.
+     *
      * @param type The type of instruction.
      */
-    DecoratorInstruction(std::string type);
+    DecoratorInstruction(const std::string & type);
 
     /**
      * @brief Destructor.
@@ -78,19 +118,11 @@ class DecoratorInstruction : public Instruction
 
     /**
      * @brief Set the decorated child instruction.
+     *
      * @param instruction Pointer to decorated instruction.
      * @note DecoratorInstruction takes ownership of the decorated instruction.
      */
     void SetInstruction(Instruction * instruction);
-
-    /**
-     * @brief Setup method
-     * @details
-     * @param
-     * @return
-     */
-    bool Setup(Workspace * ws) override;
-
 };
 
 // Global variables

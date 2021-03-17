@@ -64,7 +64,8 @@ class AttributeMap
     /**
      * @brief Implementation of the map of attributes.
      */
-    std::map<std::string, std::string> _attributes;
+    using map_type = std::map<std::string, std::string>;
+    map_type _attributes;
 
   protected:
 
@@ -78,6 +79,41 @@ class AttributeMap
      * @brief Destructor.
      */
     ~AttributeMap();
+
+    /**
+     * @brief Copy/move Constructor.
+     */
+    AttributeMap(const AttributeMap & other);
+    AttributeMap(AttributeMap && other);
+
+    /**
+     * @brief Copy/move Assignment.
+     */
+    AttributeMap & operator=(const AttributeMap & other);
+    AttributeMap & operator=(AttributeMap && other);
+
+    /**
+     * @brief Comparison operators.
+     */
+    bool operator==(const AttributeMap & other) const;
+    bool operator!=(const AttributeMap & other) const;
+
+    /**
+     * @brief Iterator forwarding.
+     */
+    using iterator = map_type::iterator;
+    using const_iterator = map_type::const_iterator;
+    iterator begin() { return _attributes.begin(); }
+    iterator end() { return _attributes.end(); }
+    const_iterator begin() const { return _attributes.begin(); }
+    const_iterator end() const { return _attributes.end(); }
+
+    /**
+     * @brief Get number of attributes in map.
+     *
+     * @return Number of attributes in map.
+     */
+    size_t GetNumberOfAttributes() const;
 
     /**
      * @brief Indicate presence of attribute with given name.
@@ -103,20 +139,24 @@ class AttributeMap
     std::vector<std::string> GetAttributeNames() const;
 
     /**
-     * @brief Get list of all attribute (name, value) pairs.
-     *
-     * @return List of all attribute (name, value) pairs.
-     */
-    std::vector<std::pair<const std::string, std::string>> AttributeList() const;
-
-    /**
      * @brief Add attribute with given name and value.
      *
      * @param name Attribute name.
      * @param value Attribute value.
      * @return true when successful.
+     * @details This method will not try to overwrite an existing attribute. It returns
+     * false if the attribute with the given name already exists.
      */
     bool AddAttribute(const std::string & name, const std::string & value);
+
+    /**
+     * @brief Set attribute with given name and value.
+     *
+     * @param name Attribute name.
+     * @param value Attribute value.
+     * @details This method will overwrite an existing attribute or create a new one.
+     */
+    void SetAttribute(const std::string & name, const std::string & value);
 
     /**
      * @brief Clear all attributes.
@@ -130,6 +170,14 @@ class AttributeMap
      * @return true when attribute was found and removed.
      */
     bool Remove(const std::string & name);
+
+    /**
+     * @brief Initialise variable attributes with values from other map.
+     *
+     * @param source Map containing variable name - value pairs.
+     * @return true when all variable attributes were initialised.
+     */
+    bool InitialiseVariableAttributes(const AttributeMap & source);
 };
 
 // Global variables

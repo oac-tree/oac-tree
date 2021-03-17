@@ -31,61 +31,67 @@
 #ifndef _SEQ_Condition_h_
 #define _SEQ_Condition_h_
 
-/*---------------------------------------------------------------------------*/
-/*                        Standard header includes                           */
-/*---------------------------------------------------------------------------*/
+// Global header files
 
-/*---------------------------------------------------------------------------*/
-/*                        Project header includes                            */
-/*---------------------------------------------------------------------------*/
+// Local header files
+
 #include "Instruction.h"
-/*---------------------------------------------------------------------------*/
-/*                           Class declaration                               */
-/*---------------------------------------------------------------------------*/
 
-namespace sup{
+// Constants
 
-namespace sequencer{
+#ifdef __cplusplus
+
+namespace sup {
+
+namespace sequencer {
+
+// Forward declarations
+
+// Type definition
 
 /**
- * @brief Checks a boolean workspace variable
+ * @brief Checks a boolean workspace variable.
  */
-class Condition: public Instruction {
-
-private:
-
+class Condition : public Instruction
+{
+  private:
     /**
-     * @brief Checks a boolean workspace variable
-     * @details If the variable is not boolean, it will check if the value is different than 0
-     * @return SUCCESS if the variable is true, FAILURE if the variable is false
+     * @brief See sup::sequencer::Instruction.
+     *
+     * @details Returns SUCCESS if the variable is true and FAILURE otherwise. If the variable
+     * is not boolean, it will check if the value is different than 0
      */
     virtual ExecutionStatus ExecuteSingleImpl(UserInterface * ui, Workspace * ws);
 
-
-public:
-
+  public:
     /**
-     * @brief Constructor
+     * @brief Constructor.
      */
     Condition();
 
     /**
-     * @brief Destructor
+     * @brief Destructor.
      */
     virtual ~Condition();
 
     /**
-     * @brief The class name
+     * @brief The instruction's typename.
      */
     static const std::string Type;
-
 };
 
-}
-}
-/*---------------------------------------------------------------------------*/
-/*                        Inline method definitions                          */
-/*---------------------------------------------------------------------------*/
+}  // namespace sequencer
 
-#endif /* SRC_MAIN_C___INSTRUCTIONS_CONDITION_H_ */
+}  // namespace sup
+
+extern "C" {
+#endif // __cplusplus
+
+// C API function declarations
+
+#ifdef __cplusplus
+} // extern C
+#endif // __cplusplus
+
+#endif // _SEQ_Condition_h_
 

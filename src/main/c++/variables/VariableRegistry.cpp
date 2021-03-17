@@ -29,6 +29,7 @@
 
 #include "VariableRegistry.h"
 #include "Variable.h"
+#include "FileVariable.h"
 #include "LocalVariable.h"
 
 // Constants
@@ -91,6 +92,7 @@ std::vector<std::string> VariableRegistry::RegisteredVariableNames() const
 void InitVariableRegistry(VariableRegistry & registry)
 {
   (void)RegisterVariable<LocalVariable>(registry);
+  (void)RegisterVariable<FileVariable>(registry);
 }
 
 } // namespace sequencer

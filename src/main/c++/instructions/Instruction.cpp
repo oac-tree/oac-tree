@@ -81,10 +81,29 @@ void Instruction::Postamble(UserInterface * ui)
 void Instruction::ResetHook()
 {}
 
-Instruction::Instruction(std::string type)
-  : _type{std::move(type)}
+void Instruction::HaltImpl()
+{}
+
+bool Instruction::PostInitialiseVariables(const AttributeMap & source)
+{
+  return true;
+}
+
+std::vector<const Instruction *> Instruction::ChildInstructionsImpl() const
+{
+  return {};
+}
+
+bool Instruction::SetupImpl(const Procedure & proc)
+{
+  return true;
+}
+
+Instruction::Instruction(const std::string & type)
+  : _type{type}
   , _status{ExecutionStatus::NOT_STARTED}
   , _status_before{ExecutionStatus::NOT_STARTED}
+  , _halt_requested{false}
 {}
 
 Instruction::~Instruction() = default;
@@ -99,25 +118,32 @@ std::string Instruction::GetName() const
   return GetAttribute(attributes::NAME_ATTRIBUTE);
 }
 
-void Instruction::SetName(std::string name)
+void Instruction::SetName(const std::string & name)
 {
   AddAttribute(attributes::NAME_ATTRIBUTE, name);
 }
 
-bool Instruction::Setup(Workspace * ws){
-    return true;
+bool Instruction::Setup(const Procedure & proc)
+{
+  return SetupImpl(proc);
 }
-
 
 void Instruction::ExecuteSingle(UserInterface * ui, Workspace * ws)
 {
+  if (_halt_requested.load())
+  {
+    return;  // Do not start execution if a halt request was detected.
+  }
   Preamble(ui);
-
   _status_before = _status;
-
   _status = ExecuteSingleImpl(ui, ws);
-
   Postamble(ui);
+}
+
+void Instruction::Halt()
+{
+  _halt_requested.store(true);
+  HaltImpl();
 }
 
 ExecutionStatus Instruction::GetStatus() const
@@ -125,14 +151,10 @@ ExecutionStatus Instruction::GetStatus() const
   return _status;
 }
 
-void Instruction::ResetStatus()
+void Instruction::Reset()
 {
-  if (_status == ExecutionStatus::RUNNING)
-  {
-    // log warning: instructions in RUNNING status should not receive this call!
-    return;
-  }
   ResetHook();
+  _halt_requested.store(false);
   _status = ExecutionStatus::NOT_STARTED;
 }
 
@@ -146,10 +168,49 @@ std::string Instruction::GetAttribute(const std::string & name) const
   return _attributes.GetAttribute(name);
 }
 
+AttributeMap Instruction::GetAttributes() const
+{
+  return _attributes;
+}
+
 bool Instruction::AddAttribute(const std::string & name, const std::string & value)
 {
   return _attributes.AddAttribute(name, value);
 }
+
+bool Instruction::AddAttributes(const AttributeMap & attributes)
+{
+  bool result = true;
+  for (const auto & name : attributes.GetAttributeNames())
+  {
+    auto value = attributes.GetAttribute(name);
+    result = AddAttribute(name, value) && result;
+  }
+  return result;
+}
+
+bool Instruction::InitialiseVariableAttributes(const AttributeMap & source)
+{
+  bool status = _attributes.InitialiseVariableAttributes(source) &&
+                PostInitialiseVariables(source);
+  return status;
+}
+
+std::vector<Instruction *> Instruction::ChildInstructions()
+{
+  std::vector<Instruction *> result;
+  for (auto instr : static_cast<const Instruction &>(*this).ChildInstructions())
+  {
+    result.push_back(const_cast<Instruction *>(instr));
+  }
+  return result;
+}
+
+std::vector<const Instruction *> Instruction::ChildInstructions() const
+{
+  return ChildInstructionsImpl();
+}
+
 
 bool NeedsExecute(ExecutionStatus status)
 {

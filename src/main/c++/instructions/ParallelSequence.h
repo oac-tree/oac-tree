@@ -60,17 +60,30 @@ namespace sequencer {
 class ParallelSequence : public CompoundInstruction
 {
   private:
+    /**
+     * @brief See sup::sequencer::Instruction.
+     */
     void InitHook() override;
-
     ExecutionStatus ExecuteSingleImpl(UserInterface * ui, Workspace * ws) override;
+    void ResetHook() override;
+    bool SetupImpl(const Procedure & proc) override;
 
+    /**
+     * @brief Calculate this instruction's status from the status of its child instructions.
+     */
     ExecutionStatus CalculateCompoundStatus() const;
 
+    /**
+     * @brief Initialize synchronous wrappers that encapsulate the asynchronous execution
+     * of each child instruction.
+     */
     bool InitWrappers();
 
     std::vector<AsyncWrapper> _wrappers;
 
     int _success_th, _failure_th;
+
+  protected:
 
   public:
     /**
@@ -83,8 +96,9 @@ class ParallelSequence : public CompoundInstruction
      */
     ~ParallelSequence() override;
 
-    bool Setup(Workspace * ws) override;
-
+    /**
+     * @brief The instruction's typename.
+     */
     static const std::string Type;
 };
 

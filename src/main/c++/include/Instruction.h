@@ -33,6 +33,8 @@
 
 // Global header files
 
+#include <atomic>
+
 // Local header files
 
 #include "AttributeMap.h"
@@ -48,6 +50,7 @@ namespace sequencer {
 
 // Forward declarations
 
+class Procedure;
 class UserInterface;
 class Workspace;
 
@@ -76,78 +79,180 @@ class Instruction
 
     AttributeMap _attributes;
 
+    /**
+     * @brief Private hook that is called at the start of the first ExecuteSingle call.
+     *
+     * @details This hook is meant to establish a correct starting state (e.g. reset internal
+     * counters) and will be called every time the instruction is executed afresh, i.e. restarted
+     * from scratch. See Instruction::SetupImpl(const Procedure & proc) for establishing correct
+     * configuration state of the instruction.
+     * @note Default implementation is empty.
+     */
     virtual void InitHook();
 
+    /**
+     * @brief Private method that is always called before delegating further execution to the
+     * private virutal Instruction::ExecuteSingleImple(UserInterface * ui, Workspace * ws).
+     *
+     * @details This method first calls the virtual private Instruction::PreExecuteHook(UserInterface * ui).
+     * If the instruction was not yet executed (or reset through a call to Instruction::Reset()),
+     * it clears the halt requested atomic, calls Instruction::InitHook(), changes the status to
+     * ExecutionStatus::NOT_FINISHED and finally informs the user interface of a status change.
+     */
     void Preamble(UserInterface * ui);
 
+    /**
+     * @brief Private hook that is always called at the start of each execution request.
+     *
+     * @details See Instruction::Preamble(UserInterface * ui) for more details.
+     * @note Default implementation is empty.
+     */
     virtual void PreExecuteHook(UserInterface * ui);
 
+    /**
+     * @brief Private implementation of the execute action.
+     *
+     * @details Pure virtual: this method contains the action(s) to be taken during execution.
+     */
     virtual ExecutionStatus ExecuteSingleImpl(UserInterface * ui, Workspace * ws) = 0;
 
+    /**
+     * @brief Private hook that is always called at the end of each execution request.
+     *
+     * @details See Instruction::Postamble(UserInterface * ui) for more details.
+     * @note Default implementation is empty.
+     */
     virtual void PostExecuteHook(UserInterface * ui);
 
+    /**
+     * @brief Private method that is always called the delegated execution to the
+     * private virutal Instruction::ExecuteSingleImple(UserInterface * ui, Workspace * ws).
+     *
+     * @details This method first checks if the instruction's status was changed as a consequence
+     * of the call to Instruction::ExecuteSingleImple(UserInterface * ui, Workspace * ws). If so,
+     * it informs the user interface of this status change. Afterwards, it calls the virtual
+     * private Instruction::PostExecuteHook(UserInterface * ui).
+     */
     void Postamble(UserInterface * ui);
 
+    /**
+     * @brief Private hook that is always called during a call to Instruction::Reset().
+     *
+     * @details This hook can be used to ensure that all descendant child instructions running
+     * in a separate thread have finished execution. It is also used to propagate the call to
+     * Instruction::Reset() to all child instructions.
+     * @note Default implementation is empty.
+     */
     virtual void ResetHook();
 
+    /**
+     * @brief Hook called during Instruction::Halt().
+     *
+     * @details This hook is meant to propagate the call to Instruction::Halt() to
+     * the instructions's child instructions.
+     */
+    virtual void HaltImpl();
+
+    /**
+     * @brief Private hook that is called after variable initialisation.
+     *
+     * @return true on succes.
+     * @details Mainly used to propagate attributes to nested instructions.
+     * Default implementation returns true.
+     */
+    virtual bool PostInitialiseVariables(const AttributeMap & source);
+
+    /**
+     * @brief Get list of child instructions implementation (const version).
+     *
+     * @return List of child instructions.
+     */
+    virtual std::vector<const Instruction *> ChildInstructionsImpl() const;
+
+    /**
+     * @brief Setup implementation.
+     *
+     * @param proc Procedure containing Workspace and instruction declarations.
+     * @return true on successful instruction setup.
+     * @details Successful completion of this instruction means that the instruction
+     * was able to configure itself from its attributes and (possibly) data from the Procedure.
+     * This method is called from the Instruction::Setup(const Procedure & proc) method.
+     */
+    virtual bool SetupImpl(const Procedure & proc);
+
   protected:
+    /**
+     * @brief Atomic flag that indicates if a request was made to halt the instruction.
+     */
+     std::atomic_bool _halt_requested;
 
   public:
     /**
-     * @brief Constructor
+     * @brief Constructor.
      * @param type The type of instruction.
      */
-    Instruction(std::string type);
+    Instruction(const std::string & type);
 
     /**
-     * @brief Virtual destructor
+     * @brief Virtual destructor.
      */
     virtual ~Instruction();
 
     /**
-     * @brief Get instruction type
-     * @return instruction type
+     * @brief Get instruction type.
+     * @return instruction type.
      */
     std::string GetType() const;
 
     /**
-     * @brief Get instruction name
-     * @return instruction name
+     * @brief Get instruction name.
+     * @return instruction name (or empty string when name was not found).
      */
     std::string GetName() const;
 
     /**
-     * @brief Set instruction name
-     * @param name Name to set
-     * @return void
+     * @brief Set instruction name.
+     * @param name Name to set.
      */
-    void SetName(std::string name);
+    void SetName(const std::string & name);
 
     /**
-     * @brief Setup method
-     * @details
-     * @param
-     * @return
+     * @brief Setup method.
+     * @param proc Procedure containing Workspace and instruction declarations.
+     * @return true on successful instruction setup.
      */
-    virtual bool Setup(Workspace * ws);
+    bool Setup(const Procedure & proc);
 
     /**
-     * @brief Execution method
-     * @details
-     * @param
-     * @return
+     * @brief Execution method.
+     * @param ui UserInterface to handle input/output.
+     * @param ws Workspace that contains the variables.
      */
     void ExecuteSingle(UserInterface * ui, Workspace * ws);
 
     /**
-     * @brief Get execution status
+     * @brief Halt execution.
+     * @details Only meaningful when the instruction is running asynchronously.
+     * This method only sets an atomic boolean member variable. It is up to implementations
+     * of the Instruction to check this variable regularly to prevent long blocking.
+     */
+    void Halt();
+
+    /**
+     * @brief Get execution status.
+     * @return Execution status.
      */
     ExecutionStatus GetStatus() const;
 
     /**
      * @brief Reset execution status
+     * @details This method call blocks until the termination of all descendant instructions
+     * running in a separate thread. Destruction of this instruction is safe afterwards.
+     * @note This method should only be called on instruction objects that are not currently
+     * executing. This is taken care of by waiting for child termination before calling their
+     * Instruction::Reset() method.
      */
-    void ResetStatus();
+    void Reset();
 
     /**
      * @brief Indicate presence of attribute with given name.
@@ -166,6 +271,13 @@ class Instruction
     std::string GetAttribute(const std::string & name) const;
 
     /**
+     * @brief Get all attributes.
+     *
+     * @return Map containing all attributes.
+     */
+    AttributeMap GetAttributes() const;
+
+    /**
      * @brief Set attribute with given name and value.
      *
      * @param name Attribute name.
@@ -173,12 +285,46 @@ class Instruction
      * @return true when successful.
      */
     bool AddAttribute(const std::string & name, const std::string & value);
+
+    /**
+     * @brief Set all attributes from given map.
+     *
+     * @param attributes Map of attributes to set.
+     * @return true when successful.
+     */
+    bool AddAttributes(const AttributeMap & attributes);
+
+    /**
+     * @brief Initialise variable attributes with values from attribute map.
+     *
+     * @param source Map containing variable name - value pairs.
+     * @return true when all variable attributes were initialised.
+     */
+    bool InitialiseVariableAttributes(const AttributeMap & source);
+
+    /**
+     * @brief Get list of child instructions.
+     *
+     * @return List of child instructions.
+     */
+    std::vector<Instruction *> ChildInstructions();
+
+    /**
+     * @brief Get list of child instructions (const version).
+     *
+     * @return List of child instructions.
+     */
+    std::vector<const Instruction *> ChildInstructions() const;
 };
 
 // Global variables
 
 // Function declarations
 
+/**
+ * @brief Check if status corresponds to a state where execution is meaningful.
+ * @return true if execution is meaningful (not already finished).
+ */
 bool NeedsExecute(ExecutionStatus status);
 
 // Function definitions

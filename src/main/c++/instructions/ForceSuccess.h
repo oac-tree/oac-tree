@@ -41,17 +41,27 @@ class ForceSuccess : public DecoratorInstruction {
 
   private:
     /**
-     * @brief Execute the child and ignore its failure.
+     * @brief See sup::sequencer::Instruction.
      *
-     * @return SUCCESS if the child has finished (SUCCESS/FAILURE).
+     * @details Ignore a child's failure and return SUCCESS if the child has
+     * finished (SUCCESS/FAILURE).
      */
     ExecutionStatus ExecuteSingleImpl(UserInterface * ui, Workspace * ws) override;
 
   public:
+    /**
+     * @brief Constructor.
+     */
     ForceSuccess();
 
+    /**
+     * @brief Destructor.
+     */
     ~ForceSuccess() override;
 
+    /**
+     * @brief The instruction's typename.
+     */
     static const std::string Type;
 };
 

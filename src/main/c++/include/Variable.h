@@ -110,7 +110,7 @@ class Variable
     /**
      * @brief Constructor.
      */
-    Variable(std::string type);
+    Variable(const std::string & type);
 
     /**
      * @brief Destructor.
@@ -134,7 +134,7 @@ class Variable
      * @param name Name to set
      * @return void
      */
-    void SetName(std::string name);
+    void SetName(const std::string & name);
 
     /**
      * @brief Get value of variable.
@@ -187,7 +187,7 @@ class Variable
      * @param attributes Attribute list.
      * @return true when successful.
      */
-    bool AddAttributes(const std::vector<std::pair<const std::string, std::string>> & attributes);
+    bool AddAttributes(const AttributeMap & attributes);
 };
 
 // Global variables

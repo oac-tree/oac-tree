@@ -33,7 +33,9 @@
 
 // Global header files
 
+#include <map>
 #include <memory>
+#include <string>
 #include <vector>
 
 #include <common/AnyValue.h>
@@ -63,73 +65,152 @@ class Workspace;
 /**
  * @brief Procedure contains a tree of instructions
  *
- * @detail A Procedure object contains a full procedure
- * and a workspace
+ * @details A Procedure object contains a full instruction tree and a workspace
+ * @note The client of the Procedure, i.e. the object responsible for its creation and
+ * destruction, needs to ensure that the Procedure is correctly set up before executing it (by
+ * calling the Setup method on it). Likewise, the client needs to call Reset on the Procedure
+ * before destroying the UserInterface class. Reset will block until all threads have terminated.
  */
 class Procedure
 {
   private:
-    std::unique_ptr<Instruction> _root;
+    std::vector<std::unique_ptr<Instruction>> _instructions;
     std::unique_ptr<Workspace> _workspace;
 
     AttributeMap _attributes;
+
+    // Directory of current procedure (if loaded from file).
+    std::string _current_directory;
+
+    // Cache for other procedures loaded from files and to be used by include nodes.
+    mutable std::map<std::string, std::unique_ptr<Procedure>> _procedure_cache;
+
+    /**
+     * @brief Load a procedure from file or cache.
+     *
+     * @param filename Filename of the procedure file.
+     * @return Pointer to the procedure or nullptr in case of failure to load the procedure.
+     *
+     * @details This method returns a pointer to a const Procedure. The Procedure itself
+     * is owned by the cache.
+     */
+    const Procedure * LoadProcedure(const std::string & filename) const;
+
+    /**
+     * @brief Clear the cached procedures.
+     *
+     * @details This method needs to be called anytime there is a possibility of changes
+     * to the loaded files on disk.
+     */
+    void ClearProcedureCache() const;
 
   protected:
 
   public:
     /**
-     * @brief Constructor
+     * @brief Constructor.
      */
     Procedure();
 
     /**
-     * @brief Destructor
+     * @brief Destructor.
      */
     ~Procedure();
 
     /**
-     * @brief Add variable.
+     * @brief Set directory of current procedure (if loaded from file).
      *
-     * @param name Variable name.
-     * @param var Variable to add.
+     * @param directory Directory of current procedure.
+     * @details This directory is used for external includes with relative pathnames.
      */
-    bool AddVariable(std::string name, Variable * var);
+    void SetCurrentDirectory(const std::string & directory);
 
     /**
-     * @brief List all variable names
-     */
-    std::vector<std::string> VariableNames() const;
-
-    /**
-     * @brief Get variable value.
-     */
-    bool GetVariableValue(std::string name, ::ccs::types::AnyValue& value);
-
-    /**
-     * @brief Set the root instruction.
+     * @brief Get directory of current procedure (if loaded from file).
      *
-     * @param instruction Root instruction to set.
+     * @return Directory of current procedure.
+     * @details This directory is used for external includes with relative pathnames.
      */
-    void SetRootInstruction(Instruction * instruction);
+    std::string GetCurrentDirectory() const;
+
+    /**
+     * @brief Get root instruction.
+     *
+     * @return Root instruction.
+     */
+    Instruction * RootInstrunction();
+
+    /**
+     * @brief Get root instruction (const version).
+     *
+     * @return Root instruction.
+     */
+    const Instruction * RootInstrunction() const;
+
+    /**
+     * @brief Get top-level instructions (from other procedure file if requested).
+     *
+     * @param filename Optional filename for external loading of instructions.
+     * @return List of top-level instructions.
+     * @details If the filename argument is not empty, this method will first look into the
+     * procedure cache to see if this file was already loaded. If not, it will load it into the
+     * cache and then return its top-level instructions.
+     */
+    std::vector<const Instruction *> GetInstructions(const std::string & filename = {}) const;
 
     /**
      * @brief Push Instruction at top level.
      */
     bool PushInstruction(Instruction * instruction);
 
+    /**
+     * @brief Add variable.
+     *
+     * @param name Variable name.
+     * @param var Variable to add.
+     * @return true on successful addition.
+     */
+    bool AddVariable(std::string name, Variable * var);
 
     /**
-     * @brief Setup the procedure
+     * @brief List all variable names.
+     *
+     * @return Variable name list.
+     */
+    std::vector<std::string> VariableNames() const;
+
+    /**
+     * @brief Get variable value.
+     *
+     * @return true on successful retrieval.
+     */
+    bool GetVariableValue(std::string name, ::ccs::types::AnyValue & value) const;
+
+    /**
+     * @brief Setup the procedure.
+     *
+     * @return true on successful setup.
      */
     bool Setup();
 
     /**
-     * @brief Execute single step of procedure
+     * @brief Execute single step of procedure.
+     *
+     * @param ui UserInterface to use for instruction input/output.
      */
     void ExecuteSingle(UserInterface * ui);
 
     /**
-     * @brief Retrieve status of root sequence
+     * @brief Reset procedure.
+     *
+     * @details This method request a halt and blocks until all asynchronous instructions are finished.
+     */
+    void Reset();
+
+    /**
+     * @brief Retrieve status of root sequence.
+     *
+     * @return Current execution status of the root instruction.
      */
     ExecutionStatus GetStatus() const;
 
@@ -157,6 +238,14 @@ class Procedure
      * @return true when successful.
      */
     bool AddAttribute(const std::string & name, const std::string & value);
+
+    /**
+     * @brief Add all attributes from a given map.
+     *
+     * @param attributes Attribute map.
+     * @return true when successful.
+     */
+    bool AddAttributes(const AttributeMap & attributes);
 
     /**
      * @brief Name of attribute that defines the timeout between ticks.

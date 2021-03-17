@@ -55,28 +55,56 @@ CLInterface::~CLInterface() = default;
 
 void CLInterface::UpdateInstructionStatus(const Instruction *instruction)
 {
+<<<<<<< HEAD
 	auto instruction_type = instruction->GetType();
 	auto instruction_name = instruction->GetName();
 	auto status = instruction->GetStatus();
+=======
+  std::lock_guard<std::mutex> lock(_mutex);
+  auto instruction_type = instruction->GetType();
+  auto instruction_name = instruction->GetName();
+  auto status = instruction->GetStatus();
+>>>>>>> refs/remotes/origin/develop
 
+<<<<<<< HEAD
 	std::cout << "Instruction: " << instruction_type << "-" << instruction_name << ": ";
 	std::cout << StatusToString(status) << std::endl;
+=======
+  std::cout << "Instruction: (" << instruction_type << ":" << instruction_name << ") : ";
+  std::cout << StatusToString(status) << std::endl;
+>>>>>>> refs/remotes/origin/develop
 }
 
 void CLInterface::StartSingleStep()
 {
+<<<<<<< HEAD
 	if (_verbose)
 	{
 		std::cout << "Start single execution step" << std::endl;
 	}
+=======
+  if (_verbose)
+  {
+    std::lock_guard<std::mutex> lock(_mutex);
+    std::cout << "Start single execution step" << std::endl;
+  }
+>>>>>>> refs/remotes/origin/develop
 }
 
 void CLInterface::EndSingleStep()
 {
+<<<<<<< HEAD
 	if (_verbose)
 	{
 		std::cout << "End single execution step" << std::endl;
 	}
+=======
+  if (_verbose)
+  {
+    std::lock_guard<std::mutex> lock(_mutex);
+    std::cout << "End single execution step" << std::endl;
+  }
+>>>>>>> refs/remotes/origin/develop
 }
 
 } // namespace sequencer

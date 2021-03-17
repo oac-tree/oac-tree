@@ -51,13 +51,22 @@ namespace sequencer {
  * @brief Compound instruction representing a sequence.
  *
  * @note Sequence keeps on executing its children as long as they
- * return successfully. Sequence fails when a child fails.
+ * return successfully. Sequence fails as soon as a child fails.
  */
 class Sequence : public CompoundInstruction
 {
   private:
+    /**
+     * @brief See sup::sequencer::Instruction.
+     *
+     * @details Execute the child instructions in order until one fails (FAILURE)
+     * or all succeed (SUCCESS).
+     */
     ExecutionStatus ExecuteSingleImpl(UserInterface * ui, Workspace * ws) override;
 
+    /**
+     * @brief Calculate this instruction's status from the status of its child instructions.
+     */
     ExecutionStatus CalculateCompoundStatus() const;
 
   public:
@@ -71,6 +80,9 @@ class Sequence : public CompoundInstruction
      */
     ~Sequence() override;
 
+    /**
+     * @brief The instruction's typename.
+     */
     static const std::string Type;
 };
 

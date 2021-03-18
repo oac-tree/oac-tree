@@ -28,19 +28,20 @@
 // Local header files
 
 #include "InstructionRegistry.h"
-#include "Instruction.h"
+#include "Choice.h"
+#include "Condition.h"
+#include "Copy.h"
 #include "Fallback.h"
 #include "ForceSuccess.h"
 #include "Include.h"
 #include "Input.h"
+#include "Instruction.h"
 #include "Inverter.h"
 #include "ParallelSequence.h"
 #include "Repeat.h"
 #include "Sequence.h"
+#include "UserChoice.h"
 #include "Wait.h"
-#include "Condition.h"
-#include "Copy.h"
-#include "Choice.h"
 
 // Constants
 
@@ -105,6 +106,7 @@ void InitInstructionRegistry(InstructionRegistry & registry)
   (void)RegisterInstruction<Fallback>(registry);
   (void)RegisterInstruction<ParallelSequence>(registry);
   (void)RegisterInstruction<Sequence>(registry);
+  (void)RegisterInstruction<UserChoice>(registry);
 
   // Register decorator instructions:
   (void)RegisterInstruction<ForceSuccess>(registry);

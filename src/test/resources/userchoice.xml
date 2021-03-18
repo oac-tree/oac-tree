@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+           name="Procedure for testing user choices"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+    <UserChoice description="Select how long to wait">
+        <Wait name="Don't wait" timeout="0.0"/>
+        <Wait name="Wait one second" timeout="1.0"/>
+        <Wait name="Wait two seconds" timeout="2.0"/>
+        <Wait name="Wait three seconds" timeout="3.0"/>
+        <Wait name="Wait four seconds" timeout="4.0"/>
+        <Wait name="Wait five seconds" timeout="5.0"/>
+        <Wait name="Wait six seconds" timeout="6.0"/>
+        <Wait name="Wait seven seconds" timeout="7.0"/>
+        <Wait name="Wait eight seconds" timeout="8.0"/>
+        <Wait name="Wait nine seconds" timeout="9.0"/>
+        <Wait name="Wait ten seconds" timeout="10.0"/>
+    </UserChoice>
+    <Workspace>
+    </Workspace>
+</Procedure>

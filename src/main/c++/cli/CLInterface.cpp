@@ -86,7 +86,12 @@ bool CLInterface::GetUserValueImpl(::ccs::types::AnyValue & value, const std::st
 int CLInterface::GetUserChoiceImpl(const std::vector<std::string> & choices,
                                    const std::string & description)
 {
-  std::cout << "Select one of the following options (" << description << "):" << std::endl;
+  std::string message = description;
+  if (message.empty())
+  {
+    message = "Select one of the following options:";
+  }
+  std::cout << message << std::endl;
   for (int i=0; i<choices.size(); ++i)
   {
     std::cout << i << ": " << choices[i] << std::endl;
@@ -101,7 +106,6 @@ int CLInterface::GetUserChoiceImpl(const std::vector<std::string> & choices,
   std::cout << choices[input] << " selected" << std::endl;
   return input;
 }
-
 
 void CLInterface::StartSingleStepImpl()
 {

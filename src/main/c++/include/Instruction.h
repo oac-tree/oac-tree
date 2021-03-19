@@ -249,7 +249,8 @@ class Instruction
      * @brief Halt execution.
      * @details Only meaningful when the instruction is running asynchronously.
      * This method only sets an atomic boolean member variable. It is up to implementations
-     * of the Instruction to check this variable regularly to prevent long blocking.
+     * of the Instruction to check this variable regularly to prevent long blocking. It is
+     * expected that an instruction will fail if it is interrupted (status: FAILURE).
      */
     void Halt();
 

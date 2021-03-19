@@ -161,8 +161,8 @@ ExecutionStatus Instruction::GetStatus() const
 void Instruction::Reset()
 {
   ResetHook();
-  _halt_requested.store(false);
   SetStatus(ExecutionStatus::NOT_STARTED);
+  _halt_requested.store(false);
 }
 
 bool Instruction::HasAttribute(const std::string & name) const

@@ -45,16 +45,22 @@ namespace sequencer {
 
 // Function definition
 
+void Instruction::SetStatus(ExecutionStatus status)
+{
+  std::lock_guard<std::mutex> lock(_status_mutex);
+  _status = status;
+}
+
 void Instruction::InitHook()
 {}
 
 void Instruction::Preamble(UserInterface * ui)
 {
   PreExecuteHook(ui);
-  if (_status == ExecutionStatus::NOT_STARTED)
+  if (GetStatus() == ExecutionStatus::NOT_STARTED)
   {
     InitHook();
-    _status = ExecutionStatus::NOT_FINISHED;
+    SetStatus(ExecutionStatus::NOT_FINISHED);
     ui->UpdateInstructionStatus(this);
   }
 }
@@ -71,7 +77,7 @@ void Instruction::PostExecuteHook(UserInterface * ui)
 
 void Instruction::Postamble(UserInterface * ui)
 {
-  if (_status != _status_before)
+  if (GetStatus() != _status_before)
   {
     ui->UpdateInstructionStatus(this);
   }
@@ -135,8 +141,8 @@ void Instruction::ExecuteSingle(UserInterface * ui, Workspace * ws)
     return;  // Do not start execution if a halt request was detected.
   }
   Preamble(ui);
-  _status_before = _status;
-  _status = ExecuteSingleImpl(ui, ws);
+  _status_before = GetStatus();
+  SetStatus(ExecuteSingleImpl(ui, ws));
   Postamble(ui);
 }
 
@@ -148,6 +154,7 @@ void Instruction::Halt()
 
 ExecutionStatus Instruction::GetStatus() const
 {
+  std::lock_guard<std::mutex> lock(_status_mutex);
   return _status;
 }
 
@@ -155,7 +162,7 @@ void Instruction::Reset()
 {
   ResetHook();
   _halt_requested.store(false);
-  _status = ExecutionStatus::NOT_STARTED;
+  SetStatus(ExecutionStatus::NOT_STARTED);
 }
 
 bool Instruction::HasAttribute(const std::string & name) const

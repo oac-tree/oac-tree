@@ -9,9 +9,8 @@
 * Add doxygen to many methods.
 * Automatically load plugins in plugin folder.
 * Add field get/set tests to LocalVariable-tests.
+* Start/EndSingleStep may require const Instruction pointer too: this is connected to the procedure having an interface to request the next instruction to be executed, which will also be something useful in the GUI.
 
 ## UserInterface
 
-* Provide input for scalar types (with enum passed) and a complex input type (from json?).
-* Provide non-virtual API for all scalar types, dispatching to a private virtual.
-* Start/EndSingleStep may require const Instruction pointer too.
+* Provide input for complex type (from json?).

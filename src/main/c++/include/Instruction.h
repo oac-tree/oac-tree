@@ -34,6 +34,7 @@
 // Global header files
 
 #include <atomic>
+#include <mutex>
 
 // Local header files
 
@@ -71,13 +72,27 @@ class Instruction
     /**
      * @brief Typename of this instruction
      */
-    std::string _type;
+    const std::string _type;
 
     ExecutionStatus _status;
 
     ExecutionStatus _status_before;
 
     AttributeMap _attributes;
+
+    /**
+     * @brief Mutex for thread safe access to the Instruction's execution status.
+     *
+     * @note Only locked for Get/SetStatus to prevent deadlock.
+     */
+    mutable std::mutex _status_mutex;
+
+    /**
+     * @brief Set the Instruction's execution status.
+     *
+     * @note Provided for thread safety.
+     */
+    void SetStatus(ExecutionStatus status);
 
     /**
      * @brief Private hook that is called at the start of the first ExecuteSingle call.

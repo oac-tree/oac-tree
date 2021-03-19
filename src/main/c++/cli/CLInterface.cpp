@@ -151,6 +151,10 @@ bool ParserFunctionT(::ccs::types::AnyValue &value, const std::string &str)
   return true;
 }
 
+/**
+ * @todo Extend possible input values: currently only 'true' or 'false'. Possible alternatives
+ * are integers (zero is false), case insensitive true/false, yes/no, etc.
+ */
 template <>
 bool ParserFunctionT<::ccs::types::boolean>(::ccs::types::AnyValue &value, const std::string &str)
 {

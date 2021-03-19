@@ -14,3 +14,4 @@
 ## UserInterface
 
 * Provide input for complex type (from json?).
+* Improve asynchronous handling of user input: if two user input instructions are executed concurrently, one will block until the other one finishes (mutex on UserInterface). This might lead to ParallelSequence to have reached final conditions (success or failure threshold reached), but still blocking for the second user input instruction. The wait for the mutex on the UserInterface could be smarter and also check if Halt() was not called in the meantime.

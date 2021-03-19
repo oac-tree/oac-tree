@@ -60,9 +60,16 @@ static const int DEFAULT_SLEEP_TIME_MS = 100;
  * @brief Default value (in ms) for the maximum time an instruction should block.
  *
  * @note Implementers of instructions are responsible for using this value as a guideline.
- * See the Wait instruction for an example.
  */
 static const int MAX_BLOCKING_TIME_MS = 100;
+
+/**
+ * @brief Desired accuracy (in ms) for instructions containing time related functions.
+ *
+ * @note This value should not be considered as a strict requirement but rather as
+ * a guideline.
+ */
+static const int TIMING_ACCURACY_MS = 50;
 
 /**
  * @brief When used as the first character of an attribute's value, this character

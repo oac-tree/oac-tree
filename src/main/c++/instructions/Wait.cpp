@@ -22,8 +22,10 @@
 // Global header files
 
 #include <common/log-api.h>
+#include <common/TimeTools.h>
 
 #include <chrono>
+#include <cmath>
 #include <thread>
 
 // Local header files
@@ -48,30 +50,27 @@ const std::string Wait::Type = "Wait";
 
 // Function declaration
 
+static unsigned long ToNanoSeconds(double sec);
+
 // Function definition
+
+void Wait::InitHook()
+{
+  unsigned long _now = ::ccs::HelperTools::GetCurrentTime();
+  _finish = _now + _timeout;
+}
 
 ExecutionStatus Wait::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
 {
   (void)ui;
   (void)ws;
-  if (_timeout > 0.0)
+  while (!_halt_requested.load() && _finish > ::ccs::HelperTools::GetCurrentTime())
   {
-    auto mseconds = static_cast<int>(_timeout * 1000);
-    auto nr_loops = mseconds / DefaultSettings::MAX_BLOCKING_TIME_MS;
-    auto remaining_ms = mseconds % DefaultSettings::MAX_BLOCKING_TIME_MS;
-    for (int i = 0; i < nr_loops; ++i)
-    {
-      if (_halt_requested.load())
-      {
-        return ExecutionStatus::FAILURE;
-      }
-      std::this_thread::sleep_for(std::chrono::milliseconds(DefaultSettings::MAX_BLOCKING_TIME_MS));
-    }
-    if (_halt_requested.load())
-    {
-      return ExecutionStatus::FAILURE;
-    }
-    std::this_thread::sleep_for(std::chrono::milliseconds(remaining_ms));
+    std::this_thread::sleep_for(std::chrono::milliseconds(DefaultSettings::TIMING_ACCURACY_MS));
+  }
+  if (_halt_requested.load())
+  {
+    return ExecutionStatus::FAILURE;
   }
   return ExecutionStatus::SUCCESS;
 }
@@ -84,10 +83,7 @@ bool Wait::SetupImpl(const Procedure & proc)
     try
     {
       double t = std::stod(timeout);
-      if (t > 0.0)
-      {
-        _timeout = t;
-      }
+      _timeout = ToNanoSeconds(t);
     }
     catch(const std::exception&)
     {
@@ -99,11 +95,20 @@ bool Wait::SetupImpl(const Procedure & proc)
 
 Wait::Wait()
   : Instruction(Type)
-  , _timeout(0.0)
+  , _timeout(0)
 {}
 
 Wait::~Wait()
 {}
+
+static unsigned long ToNanoSeconds(double sec)
+{
+  if (sec > 0.0)
+  {
+    return static_cast<unsigned long>(std::lround(sec * 1e9));
+  }
+  return 0;
+}
 
 } // namespace sequencer
 

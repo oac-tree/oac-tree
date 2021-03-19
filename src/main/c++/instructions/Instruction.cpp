@@ -218,7 +218,6 @@ std::vector<const Instruction *> Instruction::ChildInstructions() const
   return ChildInstructionsImpl();
 }
 
-
 bool NeedsExecute(ExecutionStatus status)
 {
   return (status == ExecutionStatus::NOT_STARTED ||

@@ -41,6 +41,9 @@ namespace sequencer {
 
 const std::string ParallelSequence::Type = "ParallelSequence";
 
+static const std::string SUCCESS_THRESHOLD_ATTRIBUTE = "successThreshold";
+static const std::string FAILURE_THRESHOLD_ATTRIBUTE = "failureThreshold";
+
 // Function declaration
 
 // Function definition
@@ -99,9 +102,9 @@ bool ParallelSequence::SetupImpl(const Procedure & proc)
     _failure_th = 1;
 
     bool success_th_from_attributes = false;
-    if (HasAttribute("successThreshold"))
+    if (HasAttribute(SUCCESS_THRESHOLD_ATTRIBUTE))
     {
-      auto success_th = GetAttribute("successThreshold");
+      auto success_th = GetAttribute(SUCCESS_THRESHOLD_ATTRIBUTE);
       try
       {
         _success_th = std::stoi(success_th);
@@ -114,9 +117,9 @@ bool ParallelSequence::SetupImpl(const Procedure & proc)
       }
     }
 
-    if (HasAttribute("failureThreshold"))
+    if (HasAttribute(FAILURE_THRESHOLD_ATTRIBUTE))
     {
-      auto failure_th = GetAttribute("failureThreshold");
+      auto failure_th = GetAttribute(FAILURE_THRESHOLD_ATTRIBUTE);
       try
       {
         int th = std::stoi(failure_th);

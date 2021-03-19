@@ -56,6 +56,11 @@ class Wait : public Instruction
   private:
     /**
      * @brief See sup::sequencer::Instruction.
+     */
+    void InitHook() override;
+
+    /**
+     * @brief See sup::sequencer::Instruction.
      *
      * @details Execution always returns SUCCESS after an optional timeout.
      */
@@ -67,9 +72,14 @@ class Wait : public Instruction
     bool SetupImpl(const Procedure & proc) override;
 
     /**
-     * @brief Timeout (in seconds)
+     * @brief Timeout (in nanoseconds).
      */
-    double _timeout;
+    unsigned long _timeout;
+
+    /**
+     * @brief End of wait in absolute time.
+     */
+    unsigned long _finish;
 
   protected:
 

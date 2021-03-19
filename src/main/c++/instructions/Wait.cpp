@@ -96,6 +96,7 @@ bool Wait::SetupImpl(const Procedure & proc)
 Wait::Wait()
   : Instruction(Type)
   , _timeout(0)
+  , _finish(0)
 {}
 
 Wait::~Wait()

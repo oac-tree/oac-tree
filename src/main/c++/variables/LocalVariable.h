@@ -66,11 +66,6 @@ class LocalVariable : public Variable
     ::ccs::types::AnyValue _val;
 
     /**
-     * @brief Indicates if the value was initialized.
-     */
-    bool _initialized;
-
-    /**
      * @brief See sup::sequencer::Variable.
      */
     bool GetValueImpl(::ccs::types::AnyValue& value) const override;

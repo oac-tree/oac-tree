@@ -95,8 +95,8 @@ TEST_F(LocalVariableTest, DefaultConstructed)
   ::ccs::types::AnyValue any_value;
   EXPECT_FALSE(empty_var.GetValue(any_value));
 
-  // Test SetValue
-  EXPECT_FALSE(empty_var.SetValue(any_value));
+  // Test SetValue: should pass even if both are unitialized.
+  EXPECT_TRUE(empty_var.SetValue(any_value));
 }
 
 TEST_F(LocalVariableTest, AddAttribute)
@@ -125,7 +125,8 @@ TEST_F(LocalVariableTest, AddAttributesPartial)
   EXPECT_EQ(empty_var.GetName(), EMPTY_VAR_NAME);
   EXPECT_EQ(empty_var.GetName(), empty_var.GetAttribute(attributes::NAME_ATTRIBUTE));
   EXPECT_EQ(empty_var.GetAttribute(LocalVariable::JSON_TYPE), UINT64_TYPE);
-  EXPECT_FALSE(empty_var.GetValue(any_value));
+  EXPECT_TRUE(empty_var.GetValue(any_value));  // zero initialized
+  EXPECT_EQ(any_value, static_cast<::ccs::types::uint64>(0));
   ::ccs::types::AnyValue val(::ccs::types::UnsignedInteger64);
   ::ccs::types::uint64 val_n = 5555ul;
   val = val_n;

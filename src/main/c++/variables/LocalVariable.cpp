@@ -52,41 +52,37 @@ const std::string LocalVariable::JSON_VALUE="value";
 LocalVariable::LocalVariable()
   : Variable(LocalVariable::Type)
   , _val{}
-  , _initialized{false}
 {}
 
 LocalVariable::~LocalVariable() {}
 
 bool LocalVariable::GetValueImpl(::ccs::types::AnyValue& value) const
 {
-  bool result = true;
-  if (!_initialized)
+  if (!_val.GetType())
   {
     log_warning("sup::sequencer::LocalVariable::GetValue() - not initialized..");
-    result = false;
+    return false;
   }
 
   if (!value.GetType() || value.GetSize() == _val.GetSize())
   {
-    log_info("sup::sequencer::LocalVariable::GetValue() - copying value..");
+    log_debug("sup::sequencer::LocalVariable::GetValue() - copying value..");
     value = _val;
   }
   else
   {
     log_warning("sup::sequencer::LocalVariable::GetValue() - incompatible types..");
-    result = false;
+    return false;
   }
-
-  return result;
+  return true;
 }
 
-bool LocalVariable::SetValueImpl(const ::ccs::types::AnyValue& value)
+bool LocalVariable::SetValueImpl(const ::ccs::types::AnyValue & value)
 {
-  if (_val.GetSize() == value.GetSize())
+  if (!_val.GetType() || _val.GetSize() == value.GetSize())
   {
-    log_info("sup::sequencer::LocalVariable::SetValue() - copying value..");
+    log_debug("sup::sequencer::LocalVariable::SetValue() - copying value..");
     _val = value;
-    _initialized = true;
     return true;
   }
   log_warning("sup::sequencer::LocalVariable::SetValue() - incompatible types..");
@@ -101,19 +97,20 @@ bool LocalVariable::SetupImpl()
   std::unique_ptr<::ccs::types::AnyValue> local_value;
   if (status)
   {
-    log_info("LocalVariable::Setup() - parsing json type info..");
+    log_debug("LocalVariable::Setup() - parsing json type info..");
     std::string json_type = GetAttribute(JSON_TYPE);
     auto read = ::ccs::HelperTools::Parse(local_type, json_type.c_str());
     status = read > 0;
   }
   else
   {
-    log_warning("LocalVariable::Setup() - no json type info!");
+    log_debug("LocalVariable::Setup() - no json type info..");
+    return true;
   }
 
   if (status)
   {
-    log_info("LocalVariable::Setup() - create local AnyValue");
+    log_debug("LocalVariable::Setup() - create local AnyValue");
     ::ccs::base::SharedReference<const ::ccs::types::AnyType> const_type(local_type);
     _val = ::ccs::types::AnyValue(const_type);
     local_value.reset(new ::ccs::types::AnyValue(const_type));
@@ -121,17 +118,17 @@ bool LocalVariable::SetupImpl()
 
   if (status && HasAttribute(JSON_VALUE))
   {
-    log_info("LocalVariable::Setup() - parsing json value info..");
+    log_debug("LocalVariable::Setup() - parsing json value info..");
     std::string json_value = GetAttribute(JSON_VALUE);
     status = local_value->ParseInstance(json_value.c_str());
     if (status)
     {
-      log_info("LocalVariable::Setup() - copying parsed value..");
+      log_debug("LocalVariable::Setup() - copying parsed value..");
       status = SetValueImpl(*local_value);
     }
   }
 
-  return status;
+  return status;  // empty AnyValue is allowed for setting.
 }
 
 } // namespace sequencer

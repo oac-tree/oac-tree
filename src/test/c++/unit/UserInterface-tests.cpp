@@ -40,14 +40,23 @@
 // Type definition
 using namespace sup::sequencer;
 
+class EmptyUserInterface : public UserInterface
+{
+  private:
+    void UpdateInstructionStatusImpl(const Instruction * instruction) override {};
+};
+
 class UserInterfaceTest : public ::testing::Test {
   protected:
     UserInterfaceTest();
     virtual ~UserInterfaceTest();
 
     MockUserInterface mock_ui;
+    EmptyUserInterface empty_ui;
     Workspace empty_ws;
+    std::unique_ptr<Instruction> wait;
 };
+
 
 // Function declaration
 
@@ -61,10 +70,80 @@ static const std::string TREE_TYPE = "TestData";
 
 using ::testing::InSequence;
 using ::testing::_;
+using ::testing::Return;
 
-TEST_F(UserInterfaceTest, Constructed)
+TEST_F(UserInterfaceTest, UpdateInstructionStatusDispatch)
 {
-  auto wait = GlobalInstructionRegistry().Create("Wait");
+  EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::NOT_STARTED)));
+  mock_ui.UpdateInstructionStatus(wait.get());
+}
+
+TEST_F(UserInterfaceTest, GetUserValueDispatch)
+{
+  ::ccs::types::AnyValue val;
+  std::string description = "TestGetUserValue";
+  EXPECT_CALL(mock_ui, GetUserValueImpl(_, description)).Times(2)
+                                                        .WillOnce(Return(false))
+                                                        .WillOnce(Return(true));
+  EXPECT_FALSE(mock_ui.GetUserValue(val, description));
+  EXPECT_TRUE(mock_ui.GetUserValue(val, description));
+}
+
+TEST_F(UserInterfaceTest, GetUserChoiceDispatch)
+{
+  std::vector<std::string> choices = { "yes", "no" };
+  std::string description = "TestGetUserChoice";
+  EXPECT_CALL(mock_ui, GetUserChoiceImpl(choices, description)).Times(2)
+                                                               .WillOnce(Return(-1))
+                                                               .WillOnce(Return(0));
+  EXPECT_EQ(mock_ui.GetUserChoice(choices, description), -1);
+  EXPECT_EQ(mock_ui.GetUserChoice(choices, description), 0);
+}
+
+TEST_F(UserInterfaceTest, StartSingleStepDispatch)
+{
+  EXPECT_CALL(mock_ui, StartSingleStepImpl()).Times(3);
+  EXPECT_NO_THROW(mock_ui.StartSingleStep());
+  EXPECT_NO_THROW(mock_ui.StartSingleStep());
+  EXPECT_NO_THROW(mock_ui.StartSingleStep());
+}
+
+TEST_F(UserInterfaceTest, EndSingleStepDispatch)
+{
+  EXPECT_CALL(mock_ui, EndSingleStepImpl()).Times(5);
+  EXPECT_NO_THROW(mock_ui.EndSingleStep());
+  EXPECT_NO_THROW(mock_ui.EndSingleStep());
+  EXPECT_NO_THROW(mock_ui.EndSingleStep());
+  EXPECT_NO_THROW(mock_ui.EndSingleStep());
+  EXPECT_NO_THROW(mock_ui.EndSingleStep());
+}
+
+TEST_F(UserInterfaceTest, GetUserValueDefault)
+{
+  ::ccs::types::AnyValue val;
+  std::string description;
+  EXPECT_FALSE(empty_ui.GetUserValue(val, description));
+}
+
+TEST_F(UserInterfaceTest, GetUserChoiceDefault)
+{
+  std::vector<std::string> choices;
+  std::string description;
+  EXPECT_EQ(empty_ui.GetUserChoice(choices, description), -1);
+}
+
+TEST_F(UserInterfaceTest, StartSingleStepDefault)
+{
+  EXPECT_NO_THROW(empty_ui.StartSingleStep());
+}
+
+TEST_F(UserInterfaceTest, EndSingleStepDefault)
+{
+  EXPECT_NO_THROW(empty_ui.EndSingleStep());
+}
+
+TEST_F(UserInterfaceTest, InstructionExecution)
+{
   EXPECT_THAT(wait, HasExecutionStatus(ExecutionStatus::NOT_STARTED));
   {
     InSequence seq;
@@ -76,7 +155,9 @@ TEST_F(UserInterfaceTest, Constructed)
 
 UserInterfaceTest::UserInterfaceTest()
   : mock_ui{}
+  , empty_ui{}
   , empty_ws{}
+  , wait{GlobalInstructionRegistry().Create("Wait")}
 {
 }
 

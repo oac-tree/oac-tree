@@ -38,6 +38,7 @@
 // Local header files
 
 #include "UserInterface.h"
+#include "Instruction.h"
 
 // Constants
 
@@ -59,6 +60,8 @@ class MockUserInterface : public UserInterface
     MOCK_METHOD0(StartSingleStepImpl, void());
     MOCK_METHOD0(EndSingleStepImpl, void());
 };
+
+MATCHER_P(HasExecutionStatus, expected, "") { return arg->GetStatus() == expected; }
 
 // Global variables
 

@@ -62,8 +62,6 @@ static const std::string TREE_TYPE = "TestData";
 using ::testing::InSequence;
 using ::testing::_;
 
-MATCHER_P(HasExecutionStatus, expected, "") { return arg->GetStatus() == expected; }
-
 TEST_F(UserInterfaceTest, Constructed)
 {
   auto wait = GlobalInstructionRegistry().Create("Wait");

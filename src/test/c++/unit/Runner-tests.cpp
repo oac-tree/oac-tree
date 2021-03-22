@@ -1,0 +1,230 @@
+/******************************************************************************
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP Sequencer
+ *
+ * Description   : Unit test code
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2020 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
+
+// Global header files
+
+#include <gtest/gtest.h> // Google test framework
+#include <common/log-api.h> // Syslog wrapper routines
+#include <chrono>
+#include <thread>
+
+// Local header files
+
+#include "Runner.h"
+#include "MockUserInterface.h"
+#include "SequenceParser.h"
+
+// Constants
+
+#undef LOG_ALTERN_SRC
+#define LOG_ALTERN_SRC "sup::sequencer"
+
+// Type definition
+
+using namespace sup::sequencer;
+
+class RunnerTest : public ::testing::Test
+{
+  protected:
+    RunnerTest();
+    virtual ~RunnerTest();
+
+    MockUserInterface mock_ui;
+    std::unique_ptr<Procedure> async_proc;
+    std::unique_ptr<Procedure> sync_proc;
+};
+
+// Function declaration
+
+// Global variables
+
+static ::ccs::log::Func_t __handler = ::ccs::log::SetStdout();
+
+static const std::string AsyncProcedureString =
+R"RAW(<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+           name="Asynchronous procedure for testing purposes"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+    <Sequence name="Main Sequence">
+        <Wait name="Immediate Success"/>
+        <ParallelSequence name="Parallel Wait" successThreshold="1">
+            <Wait name="One" timeout="1.0"/>
+            <Wait name="Two" timeout="2.0"/>
+        </ParallelSequence>
+    </Sequence>
+</Procedure>
+)RAW";
+
+static const std::string SyncProcedureString =
+R"RAW(<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+           name="Synchronous procedure for testing purposes"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd"
+           tickTimeout="0.05">
+    <Sequence name="Main Sequence">
+        <Wait name="Immediate Success"/>
+        <Inverter name="Invert success">
+            <Wait name="Fail after delay" timeout="0.2"/>
+        </Inverter>
+        <Wait name="Will never be called"/>
+    </Sequence>
+</Procedure>
+)RAW";
+
+// Function definition
+
+using ::testing::AtLeast;
+using ::testing::_;
+using ::testing::InSequence;
+
+TEST_F(RunnerTest, NoProcedure)
+{
+  // Test constructed
+  Runner runner(&mock_ui);
+  EXPECT_TRUE(runner.IsFinished());  // empty procedure is finished by default
+  EXPECT_FALSE(runner.IsRunning());
+  EXPECT_NO_THROW(runner.ExecuteProcedure());
+  EXPECT_TRUE(runner.IsFinished());
+  EXPECT_FALSE(runner.IsRunning());
+  EXPECT_NO_THROW(runner.ExecuteSingle());
+  EXPECT_TRUE(runner.IsFinished());
+  EXPECT_FALSE(runner.IsRunning());
+}
+
+TEST_F(RunnerTest, ExecuteSingle)
+{
+  // Set Expectations on mock UserInterface calls
+  EXPECT_CALL(mock_ui, StartSingleStepImpl()).Times(AtLeast(3));
+  EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(_)).Times(AtLeast(12));
+  EXPECT_CALL(mock_ui, EndSingleStepImpl()).Times(AtLeast(3));
+
+  // Test preconditions
+  Runner runner(&mock_ui);
+  EXPECT_TRUE(runner.IsFinished());  // empty procedure is finished by default
+  EXPECT_FALSE(runner.IsRunning());
+
+  // Set procedure and test conditions again
+  EXPECT_NO_THROW(async_proc->Setup());
+  EXPECT_NO_THROW(runner.SetProcedure(async_proc.get()));
+  EXPECT_FALSE(runner.IsFinished());
+  EXPECT_FALSE(runner.IsRunning());
+
+  // Execute single synchronous instruction
+  EXPECT_NO_THROW(runner.ExecuteSingle());
+  EXPECT_FALSE(runner.IsFinished());
+  EXPECT_FALSE(runner.IsRunning());
+
+  // Execute parallel sequence
+  EXPECT_NO_THROW(runner.ExecuteSingle());
+  EXPECT_FALSE(runner.IsFinished());
+  EXPECT_TRUE(runner.IsRunning());
+
+  // Wait for non-running state and test if finished
+  while (runner.IsRunning())
+  {
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    EXPECT_NO_THROW(runner.ExecuteSingle());
+  }
+  EXPECT_TRUE(runner.IsFinished());
+  EXPECT_FALSE(runner.IsRunning());
+}
+
+TEST_F(RunnerTest, ExecuteProcedure)
+{
+  // Set Expectations on mock UserInterface calls
+  EXPECT_CALL(mock_ui, StartSingleStepImpl()).Times(AtLeast(3));
+  EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(_)).Times(AtLeast(12));
+  EXPECT_CALL(mock_ui, EndSingleStepImpl()).Times(AtLeast(3));
+
+  // Test preconditions
+  Runner runner(&mock_ui);
+  EXPECT_TRUE(runner.IsFinished());  // empty procedure is finished by default
+  EXPECT_FALSE(runner.IsRunning());
+
+  // Set procedure and test conditions again
+  EXPECT_NO_THROW(async_proc->Setup());
+  EXPECT_NO_THROW(runner.SetProcedure(async_proc.get()));
+  EXPECT_FALSE(runner.IsFinished());
+  EXPECT_FALSE(runner.IsRunning());
+
+  // Execute whole procedure
+  EXPECT_NO_THROW(runner.ExecuteProcedure());
+  EXPECT_TRUE(runner.IsFinished());
+  EXPECT_FALSE(runner.IsRunning());
+}
+
+TEST_F(RunnerTest, UICalls)
+{
+  // Set Expectations on mock UserInterface calls
+  {
+    InSequence seq;
+    EXPECT_CALL(mock_ui, StartSingleStepImpl());
+    EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::NOT_FINISHED)));
+    EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::NOT_FINISHED)));
+    EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::SUCCESS)));
+    EXPECT_CALL(mock_ui, EndSingleStepImpl());
+    EXPECT_CALL(mock_ui, StartSingleStepImpl());
+    EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::NOT_FINISHED)));
+    EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::NOT_FINISHED)));
+    EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::SUCCESS)));
+    EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::FAILURE)));
+    EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::FAILURE)));
+    EXPECT_CALL(mock_ui, EndSingleStepImpl());
+  }
+
+  // Test preconditions
+  Runner runner(&mock_ui);
+  EXPECT_TRUE(runner.IsFinished());  // empty procedure is finished by default
+  EXPECT_FALSE(runner.IsRunning());
+
+  // Set procedure and test conditions again
+  EXPECT_NO_THROW(sync_proc->Setup());
+  EXPECT_NO_THROW(runner.SetProcedure(sync_proc.get()));
+  EXPECT_FALSE(runner.IsFinished());
+  EXPECT_FALSE(runner.IsRunning());
+
+  // Execute whole procedure
+  EXPECT_NO_THROW(runner.ExecuteProcedure());
+  EXPECT_TRUE(runner.IsFinished());
+  EXPECT_FALSE(runner.IsRunning());
+}
+
+RunnerTest::RunnerTest()
+ : mock_ui{}
+ , async_proc{sup::sequencer::ParseProcedureString(AsyncProcedureString)}
+ , sync_proc{sup::sequencer::ParseProcedureString(SyncProcedureString)}
+{}
+
+RunnerTest::~RunnerTest()
+{
+  if (async_proc)
+  {
+    async_proc->Reset();
+  }
+  if (sync_proc)
+  {
+    sync_proc->Reset();
+  }
+}
+
+#undef LOG_ALTERN_SRC

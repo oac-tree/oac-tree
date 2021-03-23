@@ -2,6 +2,7 @@ add_executable(unit-tests)
 
 target_sources(unit-tests
     PRIVATE
+        ${CMAKE_CURRENT_LIST_DIR}/CounterInstruction.cpp
         ${CMAKE_CURRENT_LIST_DIR}/LogUI.cpp
         ${CMAKE_CURRENT_LIST_DIR}/UnitTestHelper.cpp
         ${CMAKE_CURRENT_LIST_DIR}/AttributeMap-tests.cpp

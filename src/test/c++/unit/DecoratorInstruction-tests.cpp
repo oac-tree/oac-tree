@@ -104,6 +104,58 @@ TEST(DecoratorInstruction, ChildInstructions)
 
 }
 
+TEST(DecoratorInstruction, ForceSuccess_success)
+{
+
+  sup::sequencer::LogUI ui;
+  auto proc = sup::sequencer::ParseProcedureString(
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
+    "           name=\"Trivial procedure for testing purposes\"\n"
+    "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+    "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
+    "    <Repeat maxCount=\"10\">\n"
+    "        <ForceSuccess name=\"success\">\n"
+    "            <Wait name=\"wait\" timeout=\"0.1\"/>\n"
+    "        </ForceSuccess>\n"
+    "    </Repeat>\n"
+    "    <Workspace>\n"
+    "    </Workspace>\n"
+    "</Procedure>");
+
+  bool status = TryAndExecute(proc, &ui);
+
+  ASSERT_EQ(true, status);
+
+}
+
+TEST(DecoratorInstruction, ForceSuccess_failure)
+{
+
+  sup::sequencer::LogUI ui;
+  auto proc = sup::sequencer::ParseProcedureString(
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
+    "           name=\"Trivial procedure for testing purposes\"\n"
+    "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+    "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
+    "    <Repeat maxCount=\"10\">\n"
+    "        <ForceSuccess name=\"success\">\n"
+    "            <Inverter name=\"failure\">\n"
+    "                <Wait name=\"wait\" timeout=\"0.1\"/>\n"
+    "            </Inverter>\n"
+    "        </ForceSuccess>\n"
+    "    </Repeat>\n"
+    "    <Workspace>\n"
+    "    </Workspace>\n"
+    "</Procedure>");
+
+  bool status = TryAndExecute(proc, &ui);
+
+  ASSERT_EQ(true, status);
+
+}
+
 TEST(DecoratorInstruction, Inverter_success)
 {
 
@@ -156,7 +208,7 @@ TEST(DecoratorInstruction, Inverter_failure)
 
 }
 
-TEST(DecoratorInstruction, ForceSuccess_success)
+TEST(DecoratorInstruction, Repeat_success)
 {
 
   sup::sequencer::LogUI ui;
@@ -167,9 +219,7 @@ TEST(DecoratorInstruction, ForceSuccess_success)
     "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
     "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
     "    <Repeat maxCount=\"10\">\n"
-    "        <ForceSuccess name=\"success\">\n"
-    "            <Wait name=\"wait\" timeout=\"0.1\"/>\n"
-    "        </ForceSuccess>\n"
+    "        <Wait name=\"wait\" timeout=\"0.1\"/>\n"
     "    </Repeat>\n"
     "    <Workspace>\n"
     "    </Workspace>\n"
@@ -181,7 +231,7 @@ TEST(DecoratorInstruction, ForceSuccess_success)
 
 }
 
-TEST(DecoratorInstruction, ForceSuccess_failure)
+TEST(DecoratorInstruction, Repeat_failure)
 {
 
   sup::sequencer::LogUI ui;
@@ -191,18 +241,14 @@ TEST(DecoratorInstruction, ForceSuccess_failure)
     "           name=\"Trivial procedure for testing purposes\"\n"
     "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
     "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-    "    <Repeat maxCount=\"10\">\n"
-    "        <ForceSuccess name=\"success\">\n"
-    "            <Inverter name=\"failure\">\n"
-    "                <Wait name=\"wait\" timeout=\"0.1\"/>\n"
-    "            </Inverter>\n"
-    "        </ForceSuccess>\n"
+    "    <Repeat maxCount=\"undefined\">\n"
+    "        <Wait name=\"wait\" timeout=\"0.1\"/>\n"
     "    </Repeat>\n"
     "    <Workspace>\n"
     "    </Workspace>\n"
     "</Procedure>");
 
-  bool status = TryAndExecute(proc, &ui);
+  bool status = (false == TryAndExecute(proc, &ui)); // Expect failure on Setup
 
   ASSERT_EQ(true, status);
 

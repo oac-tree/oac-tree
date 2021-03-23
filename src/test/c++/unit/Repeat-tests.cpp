@@ -36,6 +36,7 @@
 
 #include "UnitTestHelper.h"
 #include "LogUI.h"
+#include "CounterInstruction.h"
 
 #include "InstructionRegistry.h"
 #include "DecoratorInstruction.h"
@@ -86,7 +87,8 @@ TEST(Repeat, Procedure_success)
 
   if (status)
     {
-      status = (1u == sup::sequencer::CounterInstruction::GetCount());
+      log_info("TEST(Repeat, Procedure_success) - Count is '%u'", sup::sequencer::CounterInstruction::GetCount());
+      status = (10u == sup::sequencer::CounterInstruction::GetCount());
     }
 
   ASSERT_EQ(true, status);
@@ -116,7 +118,8 @@ TEST(Repeat, Procedure_failure)
 
   if (status)
     {
-      status = (10u == sup::sequencer::CounterInstruction::GetCount());
+      log_info("TEST(Repeat, Procedure_failure) - Count is '%u'", sup::sequencer::CounterInstruction::GetCount());
+      status = (1u == sup::sequencer::CounterInstruction::GetCount());
     }
 
   ASSERT_EQ(true, status);

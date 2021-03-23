@@ -53,13 +53,30 @@ namespace sequencer {
 const std::string CounterInstruction::Type = "Counter";
 ccs::types::uint32 CounterInstruction::counter = 0u;
 
-static bool _initialise_instruction = sup::sequencer::RegisterGlobalInstruction<CounterInstruction>();
+static bool _initialise_instruction = RegisterGlobalInstruction<CounterInstruction>();
 
 // Function definition
 
 ccs::types::uint32 CounterInstruction::GetCount (void) { return counter; }
-sup::sequencer::ExecutionStatus CounterInstruction::ExecuteSingleImpl (sup::sequencer::UserInterface * ui, sup::sequencer::Workspace * ws) { counter++; return sup::sequencer::ExecutionStatus::SUCCESS; }
-CounterInstruction::CounterInstruction() : sup::sequencer::Instruction(CounterInstruction::Type) { counter = 0u; }
+
+ExecutionStatus CounterInstruction::ExecuteSingleImpl (sup::sequencer::UserInterface * ui, sup::sequencer::Workspace * ws)
+{ 
+
+  if (Instruction::HasAttribute("incr"))
+    {
+      ccs::types::uint32 incr = ccs::HelperTools::ToInteger(Instruction::GetAttribute("incr").c_str());
+      counter += incr;
+    }
+  else
+    {
+      counter++; 
+    }
+
+  return ExecutionStatus::SUCCESS; 
+
+}
+
+CounterInstruction::CounterInstruction() : Instruction(CounterInstruction::Type) { counter = 0u; }
 CounterInstruction::~CounterInstruction() { counter = 0u; }
 
 } // namespace sequencer

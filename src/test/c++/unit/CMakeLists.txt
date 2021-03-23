@@ -13,10 +13,12 @@ target_sources(unit-tests
         ${CMAKE_CURRENT_LIST_DIR}/ExecutionStatus-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Fallback-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/FileVariable-tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/Include-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/InstructionRegistry-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/LocalVariable-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/ParallelSequence-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Procedure-tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/Repeat-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Runner-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/SequenceParser-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/SequenceWorkspace-tests.cpp

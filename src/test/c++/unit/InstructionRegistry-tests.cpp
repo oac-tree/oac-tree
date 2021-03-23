@@ -34,9 +34,6 @@
 
 // Local header files
 
-#include "UnitTestHelper.h"
-#include "LogUI.h"
-
 #include "InstructionRegistry.h"
 
 // Constants
@@ -97,11 +94,11 @@ TestInstruction::~TestInstruction() {}
 TEST(InstructionRegistry, Register_success)
 {
 
-  sup::sequencer::InstructionRegistry registry = sup::sequencer::GlobalInstructionRegistry();
   bool status = sup::sequencer::RegisterGlobalInstruction<TestInstruction>();
 
   if (status)
     {
+      sup::sequencer::InstructionRegistry registry = sup::sequencer::GlobalInstructionRegistry();
       status = (registry.RegisteredInstructionNames().end() != std::find(registry.RegisteredInstructionNames().begin(), registry.RegisteredInstructionNames().end(), TestInstruction::Type));
     }
 

@@ -34,6 +34,7 @@
 
 #include "UnitTestHelper.h"
 #include "LogUI.h"
+#include "CounterInstruction.h"
 
 // Constants
 
@@ -42,58 +43,13 @@
 
 // Type declaration
 
-class CounterInstruction : public sup::sequencer::Instruction
-{
-
-  private:
-
-    /**
-     * @brief See sup::sequencer::Instruction.
-     */
-
-    sup::sequencer::ExecutionStatus ExecuteSingleImpl (sup::sequencer::UserInterface * ui, sup::sequencer::Workspace * ws) override;
-
-  protected:
-
-  public:
-
-    /**
-     * @brief Constructor.
-     */
-
-    CounterInstruction (void);
-
-    /**
-     * @brief Destructor.
-     */
-
-    ~CounterInstruction (void) override;
-
-    /**
-     * @brief Class name for InstructionRegistry.
-     */
-
-    static const std::string Type;
-
-    static ccs::types::uint32 counter;
-
-};
-
 // Function declaration
 
 // Global variables
 
-const std::string CounterInstruction::Type = "Counter";
-ccs::types::uint32 CounterInstruction::counter = 0u;
-
 static ccs::log::Func_t _log_handler = ccs::log::SetStdout();
-static bool _initialise_instruction = sup::sequencer::RegisterGlobalInstruction<CounterInstruction>();
 
 // Function definition
-
-sup::sequencer::ExecutionStatus CounterInstruction::ExecuteSingleImpl (sup::sequencer::UserInterface * ui, sup::sequencer::Workspace * ws) { counter++; return sup::sequencer::ExecutionStatus::SUCCESS; }
-CounterInstruction::CounterInstruction() : sup::sequencer::Instruction(CounterInstruction::Type) { counter = 0u; }
-CounterInstruction::~CounterInstruction() { counter = 0u; }
 
 // ToDo - Should implement test-specific instruction class to verify if called multiple times, or called by the ForceSuccess, etc.
 //        Need for this a wait to get a reference to the instruction in the procedure.
@@ -124,7 +80,7 @@ TEST(Fallback, Procedure_first)
 
   if (status)
     {
-      status = (1u == CounterInstruction::counter);
+      status = (1u == sup::sequencer::CounterInstruction::GetCount());
     }
 
   ASSERT_EQ(true, status);
@@ -157,7 +113,7 @@ TEST(Fallback, Procedure_alternative)
 
   if (status)
     {
-      status = (2u == CounterInstruction::counter);
+      status = (2u == sup::sequencer::CounterInstruction::GetCount());
     }
 
   ASSERT_EQ(true, status);
@@ -190,7 +146,7 @@ TEST(Fallback, Procedure_failure)
 
   if (status)
     {
-      status = (2u == CounterInstruction::counter);
+      status = (2u == sup::sequencer::CounterInstruction::GetCount());
     }
 
   ASSERT_EQ(true, status);

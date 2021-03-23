@@ -23,6 +23,8 @@
 
 TEST_SCRIPT_DIR=`dirname $0`
 
+export TEST_RESOURCES_PATH=../resources
+
 no_error=0
 error=1
 retcode=${no_error}

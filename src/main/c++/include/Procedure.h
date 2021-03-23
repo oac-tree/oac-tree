@@ -164,6 +164,10 @@ class Procedure
 
     /**
      * @brief Push Instruction at top level.
+     *
+     * @note Procedure takes ownership of the instruction and will take care of its timely
+     * destruction. This implies that the client code should NEVER push the same
+     * instruction more than once.
      */
     bool PushInstruction(Instruction * instruction);
 
@@ -173,6 +177,8 @@ class Procedure
      * @param name Variable name.
      * @param var Variable to add.
      * @return true on successful addition.
+     * @note Procedure, or rather its underlying Workspace, takes ownership of the
+     * variable and will take care of its timely destruction.
      */
     bool AddVariable(std::string name, Variable * var);
 

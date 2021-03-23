@@ -154,6 +154,7 @@ bool Procedure::PushInstruction(Instruction * instruction)
 {
   if (instruction == nullptr)
   {
+    log_warning("Procedure::PushInstruction() - trying to add null pointer");
     return false;
   }
   _instructions.emplace_back(instruction);

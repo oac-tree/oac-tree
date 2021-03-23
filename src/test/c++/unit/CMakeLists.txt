@@ -3,6 +3,7 @@ add_executable(unit-tests)
 target_sources(unit-tests
     PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/LogUI.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/UnitTestHelper.cpp
         ${CMAKE_CURRENT_LIST_DIR}/AttributeMap-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Choice-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Condition-tests.cpp
@@ -10,6 +11,7 @@ target_sources(unit-tests
         ${CMAKE_CURRENT_LIST_DIR}/FileVariable-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/LocalVariable-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/ParallelSequence-tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/Procedure-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Runner-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/SequenceParser-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/SequenceWorkspace-tests.cpp

@@ -22,6 +22,7 @@
 // Global header files
 
 #include <common/log-api.h>
+#include <common/SysTools.h>
 #include <libxml/parser.h>
 #include <stdio.h>
 #include <string.h>
@@ -66,6 +67,11 @@ static std::string ToString(const xmlChar *xml_name);
 std::unique_ptr<TreeData> ParseXMLDataFile(const std::string &filename)
 {
   // Read file into xmlDocPtr
+  if (!::ccs::HelperTools::Exist(filename.c_str()))
+  {
+    log_warning("ParseXMLDataFile('%s') - file not found", filename.c_str());
+    return {};
+  }
   xmlDocPtr doc = xmlParseFile(filename.c_str());
   if (doc == nullptr)
   {

@@ -21,6 +21,8 @@
 
 // Global header files
 
+#include <algorithm> // std::find
+
 #include <gtest/gtest.h> // Google test framework
 
 #include <common/BasicTypes.h>
@@ -35,6 +37,7 @@
 #include "UnitTestHelper.h"
 #include "LogUI.h"
 
+#include "InstructionRegistry.h"
 #include "DecoratorInstruction.h"
 
 // Constants
@@ -54,6 +57,52 @@ static ccs::log::Func_t _log_handler = ccs::log::SetStdout();
 
 // ToDo - Should implement test-specific instruction class to verify if called multiple times, or called by the ForceSuccess, etc.
 //        Need for this a wait to get a reference to the instruction in the procedure.
+
+TEST(DecoratorInstruction, ChildInstructions)
+{
+
+  sup::sequencer::InstructionRegistry registry = sup::sequencer::GlobalInstructionRegistry();
+  bool status = (registry.RegisteredInstructionNames().end() != std::find(registry.RegisteredInstructionNames().begin(), registry.RegisteredInstructionNames().end(), "ForceSuccess"));
+
+  std::unique_ptr<sup::sequencer::Instruction> decor;
+
+  sup::sequencer::DecoratorInstruction* ref = NULL_PTR_CAST(sup::sequencer::DecoratorInstruction*);
+
+  if (status)
+    {
+      decor = sup::sequencer::GlobalInstructionRegistry().Create("ForceSuccess");
+      status = static_cast<bool>(decor);
+    }
+
+  if (status)
+    {
+      ref = dynamic_cast<sup::sequencer::DecoratorInstruction*>(decor.get());
+      status = (NULL_PTR_CAST(sup::sequencer::DecoratorInstruction*) != ref);
+    }
+
+  if (status)
+    { // HasChild is protected
+      status = (true == decor->ChildInstructions().empty());
+    }
+
+  std::unique_ptr<sup::sequencer::Instruction> child;
+
+  if (status)
+    {
+      child = sup::sequencer::GlobalInstructionRegistry().Create("Wait");
+      status = static_cast<bool>(child);
+    }
+
+  if (status)
+    {
+      //ref->SetInstruction(child.get());
+      ref->SetInstruction(child.release());
+      status = (false == decor->ChildInstructions().empty());
+    }
+
+  ASSERT_EQ(true, status);
+
+}
 
 TEST(DecoratorInstruction, Inverter_success)
 {

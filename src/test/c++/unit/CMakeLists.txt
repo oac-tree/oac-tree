@@ -11,6 +11,7 @@ target_sources(unit-tests
         ${CMAKE_CURRENT_LIST_DIR}/DecoratorInstruction-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/ExecutionStatus-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/FileVariable-tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/InstructionRegistry-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/LocalVariable-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/ParallelSequence-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Procedure-tests.cpp

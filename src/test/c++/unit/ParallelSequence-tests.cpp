@@ -21,6 +21,8 @@
 
 // Global header files
 
+#include <algorithm> // std::find
+
 #include <gtest/gtest.h> // Google test framework
 
 #include <SequenceParser.h>
@@ -29,6 +31,8 @@
 
 #include "Instruction.h"
 #include "InstructionRegistry.h"
+
+#include "CompoundInstruction.h"
 
 #include "Workspace.h"
 
@@ -293,26 +297,63 @@ TEST(ParallelSequence, WithUserCode)
   ASSERT_EQ(true, status);
 }
 
-TEST(ParallelSequence, Procedure_thresholds)
+TEST(ParallelSequence, SetupImpl_thresholds)
 {
-  bool status = true;
-  try
-  {
-    sup::sequencer::LogUI ui;
-    auto proc = sup::sequencer::ParseProcedureString(ProcedureThresholdsString);
 
-    status = (false == sup::sequencer::TryAndExecute(proc, &ui));
-  }
-  catch (const std::exception &e)
-  { // Exception caught
-    log_error("TEST(ParallelSequence, Procedure_thresholds) - .. '%s' exception caught", e.what());
-    status = false;
-  }
-  catch (...)
-  { // Exception caught
-    log_error("TEST(ParallelSequence, Procedure_thresholds) - .. unknown exception caught");
-    status = false;
-  }
+  sup::sequencer::InstructionRegistry registry = sup::sequencer::GlobalInstructionRegistry();
+  bool status = (registry.RegisteredInstructionNames().end() != std::find(registry.RegisteredInstructionNames().begin(), registry.RegisteredInstructionNames().end(), "ParallelSequence"));
+
+  std::unique_ptr<sup::sequencer::Instruction> parallel;
+
+  sup::sequencer::CompoundInstruction* ref = NULL_PTR_CAST(sup::sequencer::CompoundInstruction*);
+
+  if (status)
+    {
+      parallel = sup::sequencer::GlobalInstructionRegistry().Create("ParallelSequence");
+      status = static_cast<bool>(parallel);
+    }
+
+  if (status)
+    {
+      ref = dynamic_cast<sup::sequencer::CompoundInstruction*>(parallel.get());
+      status = (NULL_PTR_CAST(sup::sequencer::CompoundInstruction*) != ref);
+    }
+
+  if (status)
+    { // HasChild is protected
+      status = (true == parallel->ChildInstructions().empty());
+    }
+
+  if (status)
+    {
+      status = (parallel->AddAttribute("successThreshold","undefined") && parallel->AddAttribute("failureThreshold","undefined"));
+    }
+
+  std::unique_ptr<sup::sequencer::Instruction> child;
+
+  if (status)
+    {
+      child = sup::sequencer::GlobalInstructionRegistry().Create("Wait");
+      status = static_cast<bool>(child);
+    }
+
+  if (status)
+    {
+      status = child->AddAttribute("timeout","1.0");
+    }
+
+  if (status)
+    {
+      ref->PushBack(child.release());
+      status = (false == parallel->ChildInstructions().empty());
+    }
+
+  if (status)
+    {
+      sup::sequencer::Procedure proc;
+      status = (false == parallel->Setup(proc));
+    }
+
   ASSERT_EQ(true, status);
 }
 

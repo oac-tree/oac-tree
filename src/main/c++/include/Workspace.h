@@ -35,6 +35,7 @@
 
 #include <common/AnyValue.h>
 #include <map>
+#include <set>
 #include <vector>
 
 // Local header files
@@ -58,7 +59,15 @@ namespace sequencer {
 class Workspace
 {
   private:
+    /**
+     * @brief Map from Variable names to Variable pointers.
+     */
     std::map<std::string, Variable *> _var_map;
+
+    /**
+     * @brief Set of Variable pointers to check uniqueness and facilitate cleanup.
+     */
+    std::set<Variable *> _var_pointers;
 
   protected:
 

@@ -49,13 +49,14 @@ static std::pair<std::string, std::string> SplitToNameField(const std::string & 
 
 Workspace::Workspace()
   : _var_map{}
+  , _var_pointers{}
 {}
 
 Workspace::~Workspace()
 {
-  for (auto &var : _var_map)
+  for (auto var : _var_pointers)
   {
-    delete var.second;
+    delete var;
   }
 }
 
@@ -64,15 +65,22 @@ bool Workspace::AddVariable(std::string name, Variable *var)
   if (_var_map.find(name) != _var_map.end())
   {
     log_warning("sup::sequencer::Workspace::AddVariable('%s', var) - variable with "
-                "this name already exists!",
-                name.c_str());
+                "this name already exists!", name.c_str());
     return false;
   }
-  log_info("sup::sequencer::Workspace::AddVariable('%s', var) - add variable "
-           "to workspace..",
-           name.c_str());
-  _var_map[name] = var;
-  return true;
+  auto result = _var_pointers.insert(var);
+  if (result.second)
+  {
+    log_info("sup::sequencer::Workspace::AddVariable('%s', var) - add variable "
+           "to workspace..", name.c_str());
+    _var_map[name] = var;
+  }
+  else
+  {
+    log_warning("sup::sequencer::Workspace::AddVariable('%s', var) - variable with "
+                "same address already added!", name.c_str());
+  }
+  return result.second;
 }
 
 std::vector<std::string> Workspace::VariableNames() const

@@ -81,6 +81,8 @@ static inline bool TryAndExecute (std::unique_ptr<sup::sequencer::Procedure>& pr
              (sup::sequencer::ExecutionStatus::FAILURE != exec));
 
       status = (expect == exec);
+
+      proc->Reset(); // Wait for thread termination before calling destructor of UI
     }
 
   return status;

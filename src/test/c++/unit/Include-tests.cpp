@@ -31,7 +31,6 @@
 
 #include "UnitTestHelper.h"
 #include "LogUI.h"
-#include "CounterInstruction.h"
 
 // Constants
 
@@ -123,14 +122,39 @@ TEST(Include, Procedure_undefined)
     "           name=\"Trivial procedure for testing purposes\"\n"
     "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
     "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-    "    <Repeat isRoot=\"true\" maxCount=\"10\">\n"
+    "    <Sequence isRoot=\"true\">\n"
     "        <Include name=\"undefined\" path=\"undefined\"/>\n"
-    "    </Repeat>\n"
+    "        <Include name=\"undefined\" file=\"undefined\"/>\n"
+    "        <Include name=\"undefined\" path=\"undefined\" file=\"undefined\"/>\n"
+    "    </Sequence>\n"
     "    <Workspace>\n"
     "    </Workspace>\n"
     "</Procedure>");
 
   bool status = (false == sup::UnitTestHelper::TryAndExecute(proc, &ui));
+
+  ASSERT_EQ(true, status);
+
+}
+
+TEST(Include, Procedure_extern)
+{
+
+  sup::sequencer::LogUI ui;
+  auto proc = sup::sequencer::ParseProcedureString(
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
+    "           name=\"Trivial procedure for testing purposes\"\n"
+    "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+    "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
+    "    <Repeat isRoot=\"true\" maxCount=\"10\">\n"
+    "        <Include name=\"Waits\" path=\"Parallel Wait\" file=\"../resources/parallel_sequence.xml\"/>\n"
+    "    </Repeat>\n"
+    "    <Workspace>\n"
+    "    </Workspace>\n"
+    "</Procedure>");
+
+  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
 
   ASSERT_EQ(true, status);
 

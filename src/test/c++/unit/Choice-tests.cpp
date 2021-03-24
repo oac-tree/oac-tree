@@ -38,6 +38,8 @@
 
 #include "LogUI.h"
 
+#include "UnitTestHelper.h"
+
 // Constants
 
 #undef LOG_ALTERN_SRC
@@ -109,6 +111,103 @@ TEST(Choice, Default) // Static initialisation
     Terminate();
 
     ASSERT_EQ(true, status);
+}
+
+TEST(Choice, BitMask_success)
+{
+
+  sup::UnitTestHelper::MockUI ui;
+  auto proc = sup::sequencer::ParseProcedureString(
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
+    "           name=\"Trivial procedure for testing purposes\"\n"
+    "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+    "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
+    "    <Choice is_mask=\"true\" var_name=\"choice\">\n"
+    "        <Counter/>\n"
+    "        <Counter incr=\"2\"/>\n"
+    "        <Wait timeout=\"0.1\"/>\n"
+    "        <Inverter>\n"
+    "            <Counter/>\n"
+    "        </Inverter>\n"
+    "    </Choice>\n"
+    "    <Workspace>\n"
+    "        <Local name=\"choice\" type='{\"type\":\"uint32\"}' value=\"7\"/>\n"
+    "    </Workspace>\n"
+    "</Procedure>");
+
+  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
+
+  // Instructions called
+
+  if (status)
+    {
+      status = (3u == sup::UnitTestHelper::CounterInstruction::GetCount());
+    }
+
+  // Instruction called and return failure
+
+  ASSERT_EQ(true, status);
+
+}
+
+TEST(Choice, BitMask_failure)
+{
+
+  sup::UnitTestHelper::MockUI ui;
+  auto proc = sup::sequencer::ParseProcedureString(
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
+    "           name=\"Trivial procedure for testing purposes\"\n"
+    "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+    "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
+    "    <Choice is_mask=\"true\" var_name=\"choice\">\n"
+    "        <Counter/>\n"
+    "        <Counter incr=\"2\"/>\n"
+    "        <Wait timeout=\"0.1\"/>\n"
+    "        <Inverter>\n"
+    "            <Counter/>\n"
+    "        </Inverter>\n"
+    "    </Choice>\n"
+    "    <Workspace>\n"
+    "        <Local name=\"choice\" type='{\"type\":\"uint32\"}' value=\"14\"/>\n"
+    "    </Workspace>\n"
+    "</Procedure>");
+
+  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE);
+
+  // Instruction called and return failure
+
+  if (status)
+    {
+      status = (3u == sup::UnitTestHelper::CounterInstruction::GetCount());
+    }
+
+  ASSERT_EQ(true, status);
+
+}
+
+TEST(Choice, NoSuchVariable)
+{
+
+  sup::UnitTestHelper::MockUI ui;
+  auto proc = sup::sequencer::ParseProcedureString(
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
+    "           name=\"Trivial procedure for testing purposes\"\n"
+    "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+    "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
+    "    <Choice var_name=\"undefined\">\n"
+    "        <Counter/>\n"
+    "        <Wait timeout=\"0.1\"/>\n"
+    "    </Choice>\n"
+    "    <Workspace/>\n"
+    "</Procedure>");
+
+  bool status = (false == sup::UnitTestHelper::TryAndExecute(proc, &ui)); // Expect failure in Setup
+
+  ASSERT_EQ(true, status);
+
 }
 
 static bool PrintProcedureWorkspace(::sup::sequencer::Procedure *procedure) {

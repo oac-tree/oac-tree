@@ -38,8 +38,10 @@
 // Local header files
 
 #include "ExecutionStatus.h"
+#include "Instruction.h"
 #include "Procedure.h"
 #include "UserInterface.h"
+#include "Workspace.h"
 
 // Constants
 
@@ -50,6 +52,85 @@
 namespace sup {
 
 namespace UnitTestHelper {
+
+/**
+ * @brief Obvious.
+ */
+
+class CounterInstruction : public sup::sequencer::Instruction
+{
+
+  private:
+
+    /**
+     * @brief See sup::sequencer::Instruction.
+     */
+
+    sup::sequencer::ExecutionStatus ExecuteSingleImpl (sup::sequencer::UserInterface * ui, sup::sequencer::Workspace * ws) override;
+
+  protected:
+
+  public:
+
+    /**
+     * @brief Constructor.
+     */
+
+    CounterInstruction (void);
+
+    /**
+     * @brief Destructor.
+     */
+
+    ~CounterInstruction (void) override;
+
+    /**
+     * @brief Class name for InstructionRegistry.
+     */
+
+    static const std::string Type;
+
+    static ccs::types::uint32 counter;
+    static ccs::types::uint32 GetCount (void);
+
+};
+
+/**
+ * @brief Obvious.
+ */
+
+class MockUI : public sup::sequencer::UserInterface
+{
+
+  private:
+
+    bool _status = false;
+    int _choice = -1;
+    ::ccs::types::AnyValue _value;
+    ::ccs::base::SharedReference<const ::ccs::types::AnyType> _type;
+
+    /**
+     * @brief See sup::sequencer::UserInterface.
+     */
+
+    virtual void UpdateInstructionStatusImpl (const sup::sequencer::Instruction * instruction);
+    virtual bool GetUserValueImpl (::ccs::types::AnyValue & value, const std::string & description);
+    virtual int GetUserChoiceImpl (const std::vector<std::string> & choices, const std::string & description);
+
+  protected:
+
+  public:
+
+    ::ccs::base::SharedReference<const ::ccs::types::AnyType> GetType (void) const;
+
+    void SetChoice (int choice);
+    void SetStatus (bool status);
+    void SetValue (::ccs::types::AnyValue & value);
+
+    MockUI (void);
+    virtual ~MockUI (void);
+
+};
 
 // Global variables
 

@@ -2,7 +2,6 @@ add_executable(unit-tests)
 
 target_sources(unit-tests
     PRIVATE
-        ${CMAKE_CURRENT_LIST_DIR}/CounterInstruction.cpp
         ${CMAKE_CURRENT_LIST_DIR}/LogUI.cpp
         ${CMAKE_CURRENT_LIST_DIR}/UnitTestHelper.cpp
         ${CMAKE_CURRENT_LIST_DIR}/AttributeMap-tests.cpp
@@ -14,6 +13,7 @@ target_sources(unit-tests
         ${CMAKE_CURRENT_LIST_DIR}/Fallback-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/FileVariable-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Include-tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/Input-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/InstructionRegistry-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/LocalVariable-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/ParallelSequence-tests.cpp
@@ -23,6 +23,7 @@ target_sources(unit-tests
         ${CMAKE_CURRENT_LIST_DIR}/SequenceParser-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/SequenceWorkspace-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/TreeData-tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/UserChoice-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/UserInterface-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/VariableRegistry-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Workspace-tests.cpp

@@ -87,8 +87,8 @@ TEST(Repeat, Procedure_success)
 
   if (status)
     {
-      log_info("TEST(Repeat, Procedure_success) - Count is '%u'", sup::sequencer::CounterInstruction::GetCount());
-      status = (10u == sup::sequencer::CounterInstruction::GetCount());
+      log_info("TEST(Repeat, Procedure_success) - Count is '%u'", sup::UnitTestHelper::CounterInstruction::GetCount());
+      status = (10u == sup::UnitTestHelper::CounterInstruction::GetCount());
     }
 
   ASSERT_EQ(true, status);
@@ -118,8 +118,8 @@ TEST(Repeat, Procedure_failure)
 
   if (status)
     {
-      log_info("TEST(Repeat, Procedure_failure) - Count is '%u'", sup::sequencer::CounterInstruction::GetCount());
-      status = (1u == sup::sequencer::CounterInstruction::GetCount());
+      log_info("TEST(Repeat, Procedure_failure) - Count is '%u'", sup::UnitTestHelper::CounterInstruction::GetCount());
+      status = (1u == sup::UnitTestHelper::CounterInstruction::GetCount());
     }
 
   ASSERT_EQ(true, status);
@@ -147,7 +147,7 @@ TEST(Repeat, Procedure_attribute)
 
   if (status)
     {
-      status = (0u == sup::sequencer::CounterInstruction::GetCount());
+      status = (0u == sup::UnitTestHelper::CounterInstruction::GetCount());
     }
 
   ASSERT_EQ(true, status);

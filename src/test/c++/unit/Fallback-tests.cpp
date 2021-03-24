@@ -80,7 +80,7 @@ TEST(Fallback, Procedure_first)
 
   if (status)
     {
-      status = (1u == sup::sequencer::CounterInstruction::GetCount());
+      status = (1u == sup::UnitTestHelper::CounterInstruction::GetCount());
     }
 
   ASSERT_EQ(true, status);
@@ -113,7 +113,7 @@ TEST(Fallback, Procedure_alternative)
 
   if (status)
     {
-      status = (2u == sup::sequencer::CounterInstruction::GetCount());
+      status = (2u == sup::UnitTestHelper::CounterInstruction::GetCount());
     }
 
   ASSERT_EQ(true, status);
@@ -146,7 +146,7 @@ TEST(Fallback, Procedure_failure)
 
   if (status)
     {
-      status = (2u == sup::sequencer::CounterInstruction::GetCount());
+      status = (2u == sup::UnitTestHelper::CounterInstruction::GetCount());
     }
 
   ASSERT_EQ(true, status);

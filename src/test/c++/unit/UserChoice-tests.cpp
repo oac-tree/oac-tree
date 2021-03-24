@@ -46,7 +46,7 @@ static ccs::log::Func_t _log_handler = ccs::log::SetStdout();
 
 // Function definition
 
-TEST(UserChoice, GetUserChoice_success)
+TEST(UserChoice, GetUserChoice)
 {
 
   sup::UnitTestHelper::MockUI ui;

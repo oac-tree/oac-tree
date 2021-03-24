@@ -29,17 +29,12 @@
 
 #include <SequenceParser.h>
 
-#include <Instruction.h>
-#include <InstructionRegistry.h>
-
 // Local header files
+
+#include "InstructionRegistry.h"
 
 #include "UnitTestHelper.h"
 #include "LogUI.h"
-#include "CounterInstruction.h"
-
-#include "InstructionRegistry.h"
-#include "DecoratorInstruction.h"
 
 // Constants
 

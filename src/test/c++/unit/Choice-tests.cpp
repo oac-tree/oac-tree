@@ -210,6 +210,29 @@ TEST(Choice, NoSuchVariable)
 
 }
 
+TEST(Choice, NoAttribute)
+{
+
+  sup::UnitTestHelper::MockUI ui;
+  auto proc = sup::sequencer::ParseProcedureString(
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
+    "           name=\"Trivial procedure for testing purposes\"\n"
+    "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+    "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
+    "    <Choice>\n"
+    "        <Counter/>\n"
+    "        <Wait timeout=\"0.1\"/>\n"
+    "    </Choice>\n"
+    "    <Workspace/>\n"
+    "</Procedure>");
+
+  bool status = (false == sup::UnitTestHelper::TryAndExecute(proc, &ui)); // Expect failure in Setup
+
+  ASSERT_EQ(true, status);
+
+}
+
 static bool PrintProcedureWorkspace(::sup::sequencer::Procedure *procedure) {
     auto var_names = procedure->VariableNames();
     ::ccs::types::char8 val_string[1024];

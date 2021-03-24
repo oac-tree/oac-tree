@@ -83,7 +83,7 @@ TEST(Repeat, Procedure_success)
     "    </Workspace>\n"
     "</Procedure>");
 
-  bool status = TryAndExecute(proc, &ui);
+  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
 
   if (status)
     {
@@ -114,7 +114,7 @@ TEST(Repeat, Procedure_failure)
     "    </Workspace>\n"
     "</Procedure>");
 
-  bool status = TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE);
+  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE);
 
   if (status)
     {
@@ -143,7 +143,7 @@ TEST(Repeat, Procedure_attribute)
     "    </Workspace>\n"
     "</Procedure>");
 
-  bool status = (false == TryAndExecute(proc, &ui)); // Expect failure during Setup
+  bool status = (false == sup::UnitTestHelper::TryAndExecute(proc, &ui)); // Expect failure during Setup
 
   if (status)
     {

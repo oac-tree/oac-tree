@@ -213,7 +213,7 @@ TEST(ParallelSequence, Procedure_sequence)
     sup::sequencer::LogUI ui;
     auto proc = sup::sequencer::ParseProcedureString(ProcedureSequenceString);
 
-    status = sup::sequencer::TryAndExecute(proc, &ui);
+    status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
   }
   catch (const std::exception &e)
   { // Exception caught
@@ -236,7 +236,7 @@ TEST(ParallelSequence, Procedure_parallel)
     sup::sequencer::LogUI ui;
     auto proc = sup::sequencer::ParseProcedureString(ProcedureParallelString);
 
-    status = sup::sequencer::TryAndExecute(proc, &ui);
+    status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
   }
   catch (const std::exception &e)
   { // Exception caught
@@ -259,7 +259,7 @@ TEST(ParallelSequence, WithBuiltinCode)
     sup::sequencer::LogUI ui;
     auto proc = sup::sequencer::ParseProcedureString(ProcedureParallelBuiltinString);
 
-    status = sup::sequencer::TryAndExecute(proc, &ui);
+    status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
   }
   catch (const std::exception &e)
   { // Exception caught
@@ -282,7 +282,7 @@ TEST(ParallelSequence, WithUserCode)
     sup::sequencer::LogUI ui;
     auto proc = sup::sequencer::ParseProcedureString(ProcedureParallelUserCodeString);
 
-    status = sup::sequencer::TryAndExecute(proc, &ui);
+    status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
   }
   catch (const std::exception &e)
   { // Exception caught

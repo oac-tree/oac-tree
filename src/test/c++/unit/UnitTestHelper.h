@@ -47,7 +47,7 @@
 
 namespace sup {
 
-namespace sequencer {
+namespace UnitTestHelper {
 
 // Global variables
 
@@ -89,7 +89,7 @@ static inline bool TryAndExecute (std::unique_ptr<sup::sequencer::Procedure>& pr
 
 }
 
-} // namespace sequencer
+} // namespace UnitTestHelper
 
 } // namespace sup
 

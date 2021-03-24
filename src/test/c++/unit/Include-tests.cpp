@@ -27,9 +27,6 @@
 
 #include <SequenceParser.h>
 
-#include <Instruction.h>
-#include <InstructionRegistry.h>
-
 // Local header files
 
 #include "UnitTestHelper.h"
@@ -76,8 +73,8 @@ TEST(Include, Procedure_local)
 
   if (status)
     {
-      log_info("TEST(Include, Procedure_local) - Count is '%u'", sup::sequencer::CounterInstruction::GetCount());
-      status = (20u == sup::sequencer::CounterInstruction::GetCount());
+      log_info("TEST(Include, Procedure_local) - Count is '%u'", sup::UnitTestHelper::CounterInstruction::GetCount());
+      status = (20u == sup::UnitTestHelper::CounterInstruction::GetCount());
     }
 
   ASSERT_EQ(true, status);
@@ -108,8 +105,8 @@ TEST(Include, Procedure_param)
 
   if (status)
     {
-      log_info("TEST(Include, Procedure_param) - Count is '%u'", sup::sequencer::CounterInstruction::GetCount());
-      status = (20u == sup::sequencer::CounterInstruction::GetCount());
+      log_info("TEST(Include, Procedure_param) - Count is '%u'", sup::UnitTestHelper::CounterInstruction::GetCount());
+      status = (20u == sup::UnitTestHelper::CounterInstruction::GetCount());
     }
 
   ASSERT_EQ(true, status);

@@ -22,6 +22,7 @@
 // Global header files
 #include <common/log-api.h>
 #include <algorithm>
+#include <memory>
 #include <utility>
 
 // Local header files
@@ -62,6 +63,7 @@ Workspace::~Workspace()
 
 bool Workspace::AddVariable(std::string name, Variable *var)
 {
+  std::unique_ptr<Variable> var_owned(var); // take ownership immediately
   if (_var_map.find(name) != _var_map.end())
   {
     log_warning("sup::sequencer::Workspace::AddVariable('%s', var) - variable with "
@@ -73,10 +75,11 @@ bool Workspace::AddVariable(std::string name, Variable *var)
   {
     log_info("sup::sequencer::Workspace::AddVariable('%s', var) - add variable "
            "to workspace..", name.c_str());
-    _var_map[name] = var;
+    _var_map[name] = var_owned.release();
   }
   else
   {
+    var_owned.release(); // variable is already owned
     log_warning("sup::sequencer::Workspace::AddVariable('%s', var) - variable with "
                 "same address already added!", name.c_str());
   }

@@ -18,6 +18,7 @@ target_sources(unit-tests
         ${CMAKE_CURRENT_LIST_DIR}/TreeData-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/UserInterface-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/VariableRegistry-tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/Workspace-tests.cpp
     )
 
 target_include_directories(unit-tests

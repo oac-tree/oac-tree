@@ -81,6 +81,12 @@ bool Variable::GetValue(::ccs::types::AnyValue &value, const std::string & field
 
   ::ccs::types::AnyValue var_copy;
   bool status = GetValueImpl(var_copy);
+
+  if (status)
+  {
+    auto attr_size = ::ccs::HelperTools::GetAttributeSize(var_copy.GetType(), fieldname.c_str());
+    status = (!value.GetType() || value.GetSize() == attr_size);
+  }
   if (status)
   {
     status = ::ccs::HelperTools::GetAttributeValue(&var_copy, fieldname.c_str(), value);

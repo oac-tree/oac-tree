@@ -76,7 +76,7 @@ TEST(Fallback, Procedure_first)
     "    </Workspace>\n"
     "</Procedure>");
 
-  bool status = TryAndExecute(proc, &ui);
+  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
 
   if (status)
     {
@@ -109,7 +109,7 @@ TEST(Fallback, Procedure_alternative)
     "    </Workspace>\n"
     "</Procedure>");
 
-  bool status = TryAndExecute(proc, &ui);
+  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
 
   if (status)
     {
@@ -142,7 +142,7 @@ TEST(Fallback, Procedure_failure)
     "    </Workspace>\n"
     "</Procedure>");
 
-  bool status = TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE);
+  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE);
 
   if (status)
     {

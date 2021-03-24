@@ -72,7 +72,7 @@ TEST(Include, Procedure_local)
     "    </Workspace>\n"
     "</Procedure>");
 
-  bool status = TryAndExecute(proc, &ui);
+  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
 
   if (status)
     {
@@ -104,7 +104,7 @@ TEST(Include, Procedure_param)
     "    </Workspace>\n"
     "</Procedure>");
 
-  bool status = TryAndExecute(proc, &ui);
+  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
 
   if (status)
     {
@@ -133,7 +133,7 @@ TEST(Include, Procedure_undefined)
     "    </Workspace>\n"
     "</Procedure>");
 
-  bool status = (false == TryAndExecute(proc, &ui));
+  bool status = (false == sup::UnitTestHelper::TryAndExecute(proc, &ui));
 
   ASSERT_EQ(true, status);
 

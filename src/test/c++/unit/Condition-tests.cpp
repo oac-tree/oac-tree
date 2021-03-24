@@ -189,7 +189,7 @@ TEST(Condition, NonScalarVariable_success)
     "    </Workspace>\n"
     "</Procedure>");
 
-  bool status = TryAndExecute(proc, &ui);
+  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
 
   ASSERT_EQ(true, status);
 
@@ -215,7 +215,7 @@ TEST(Condition, NonScalarVariable_failure)
     "    </Workspace>\n"
     "</Procedure>");
 
-  bool status = TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE);
+  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE);
 
   ASSERT_EQ(true, status);
 
@@ -238,7 +238,7 @@ TEST(Condition, NoSuchVariable_name)
     "    </Workspace>\n"
     "</Procedure>");
 
-  bool status = TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE);
+  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE);
 
   ASSERT_EQ(true, status);
 
@@ -264,7 +264,7 @@ TEST(Condition, NoSuchVariable_attr)
     "    </Workspace>\n"
     "</Procedure>");
 
-  bool status = TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE);
+  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE);
 
   ASSERT_EQ(true, status);
 

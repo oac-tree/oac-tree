@@ -123,7 +123,7 @@ TEST(DecoratorInstruction, ForceSuccess_success)
     "    </Workspace>\n"
     "</Procedure>");
 
-  bool status = TryAndExecute(proc, &ui);
+  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
 
   ASSERT_EQ(true, status);
 
@@ -150,7 +150,7 @@ TEST(DecoratorInstruction, ForceSuccess_failure)
     "    </Workspace>\n"
     "</Procedure>");
 
-  bool status = TryAndExecute(proc, &ui);
+  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
 
   ASSERT_EQ(true, status);
 
@@ -177,7 +177,7 @@ TEST(DecoratorInstruction, Inverter_success)
     "    </Workspace>\n"
     "</Procedure>");
 
-  bool status = TryAndExecute(proc, &ui);
+  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
 
   ASSERT_EQ(true, status);
 
@@ -202,7 +202,7 @@ TEST(DecoratorInstruction, Inverter_failure)
     "    </Workspace>\n"
     "</Procedure>");
 
-  bool status = TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE);
+  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE);
 
   ASSERT_EQ(true, status);
 
@@ -232,7 +232,7 @@ TEST(DecoratorInstruction, BaseClass_halt)
     "    </Workspace>\n"
     "</Procedure>");
 
-  bool status = TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE);
+  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE);
 
   ASSERT_EQ(true, status);
 

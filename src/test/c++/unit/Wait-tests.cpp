@@ -95,7 +95,7 @@ TEST(Wait, SetupImpl_throw)
     "    <Workspace/>\n"
     "</Procedure>");
 
-  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui)); // Should have expect failure in Setup but the exception does not cause SetupImpl to fail ..
+  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui); // Should have expect failure in Setup but the exception does not cause SetupImpl to fail ..
 
   ASSERT_EQ(true, status);
 

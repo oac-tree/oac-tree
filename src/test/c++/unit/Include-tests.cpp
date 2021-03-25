@@ -192,4 +192,16 @@ TEST(Include, Procedure_extern)
 
 }
 
+TEST(Include, Procedure_nested)
+{ // Just call for now the XML part of resources
+
+  sup::sequencer::LogUI ui;
+  auto proc = sup::sequencer::ParseProcedureFile("../resources/recursive_include.xml");
+
+  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
+
+  ASSERT_EQ(true, status);
+
+}
+
 #undef LOG_ALTERN_SRC

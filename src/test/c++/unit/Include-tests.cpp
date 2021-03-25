@@ -112,6 +112,38 @@ TEST(Include, Procedure_param)
 
 }
 
+TEST(Include, Procedure_decorator)
+{
+
+  sup::sequencer::LogUI ui;
+  auto proc = sup::sequencer::ParseProcedureString(
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
+    "           name=\"Trivial procedure for testing purposes\"\n"
+    "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+    "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
+    "    <ForceSuccess name=\"CountParamWithDecorator\">\n"
+    "        <Counter incr=\"$incr\"/>\n"
+    "    </ForceSuccess>\n"
+    "    <Repeat isRoot=\"true\" maxCount=\"10\">\n"
+    "        <Include name=\"Counts\" path=\"CountParamWithDecorator\" incr=\"2\"/>\n"
+    "    </Repeat>\n"
+    "    <Workspace>\n"
+    "    </Workspace>\n"
+    "</Procedure>");
+
+  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
+
+  if (status)
+    {
+      log_info("TEST(Include, Procedure_param) - Count is '%u'", sup::UnitTestHelper::CounterInstruction::GetCount());
+      status = (20u == sup::UnitTestHelper::CounterInstruction::GetCount());
+    }
+
+  ASSERT_EQ(true, status);
+
+}
+
 TEST(Include, Procedure_undefined)
 {
 

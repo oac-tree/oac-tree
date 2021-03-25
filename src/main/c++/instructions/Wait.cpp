@@ -87,7 +87,7 @@ bool Wait::SetupImpl(const Procedure & proc)
     }
     catch(const std::exception&)
     {
-      log_warning("Wait::InitHook() - could not parse timeout attribute!");
+      log_warning("Wait::SetupImpl() - could not parse timeout attribute!");
     }
   }
   return true; // if timeout was not specified, Wait immediately returns SUCCESS.

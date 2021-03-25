@@ -26,6 +26,7 @@ target_sources(unit-tests
         ${CMAKE_CURRENT_LIST_DIR}/UserChoice-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/UserInterface-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/VariableRegistry-tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/Wait-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Workspace-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++/cli/CLInterface.cpp
     )

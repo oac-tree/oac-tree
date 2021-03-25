@@ -45,6 +45,8 @@ namespace sup {
 
 namespace UnitTestHelper {
 
+// Function declaration
+
 // Global variables
 
 static const char * ENV_TEST_RESOURCES_PATH_NAME = "TEST_RESOURCES_PATH";

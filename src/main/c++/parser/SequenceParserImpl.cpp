@@ -46,8 +46,6 @@ namespace sequencer {
 
 // Global variables
 
-static const char * PROCEDURE_ELEMENT_NAME = "Procedure";
-
 // Function declaration
 
 static std::unique_ptr<TreeData> ParseXMLDoc(xmlDocPtr doc);
@@ -57,8 +55,6 @@ static std::unique_ptr<TreeData> ParseDataTree(xmlDocPtr doc, xmlNodePtr node);
 static void AddXMLAttributes(TreeData * tree, xmlNodePtr node);
 
 static void AddXMLChildren(TreeData * tree, xmlDocPtr doc, xmlNodePtr node);
-
-static bool NodeHasName(xmlNodePtr node, const char *name);
 
 static std::string ToString(const xmlChar *xml_name);
 
@@ -101,12 +97,6 @@ static std::unique_ptr<TreeData> ParseXMLDoc(xmlDocPtr doc)
   if (root_node == nullptr)
   {
     log_warning("ParseXMLDoc() - Couldn't retrieve root element");
-    xmlFreeDoc(doc);
-    return {};
-  }
-  if (!NodeHasName(root_node, PROCEDURE_ELEMENT_NAME))
-  {
-    log_warning("ParseXMLDoc() - Root element is not 'Procedure'");
     xmlFreeDoc(doc);
     return {};
   }
@@ -161,11 +151,6 @@ static void AddXMLChildren(TreeData * tree, xmlDocPtr doc, xmlNodePtr node)
     }
     child_node = child_node->next;
   }
-}
-
-static bool NodeHasName(xmlNodePtr node, const char *name)
-{
-  return (xmlStrcmp(node->name, reinterpret_cast<const xmlChar *>(name)) == 0);
 }
 
 static std::string ToString(const xmlChar *xml_name)

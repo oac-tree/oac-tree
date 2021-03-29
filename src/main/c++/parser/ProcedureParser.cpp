@@ -42,6 +42,7 @@ namespace sequencer {
 
 // Global variables
 
+static const std::string PROCEDURE_ELEMENT_NAME = "Procedure";
 static const std::string WORKSPACE_ELEMENT_NAME = "Workspace";
 static const std::string PLUGIN_ELEMENT_NAME = "Plugin";
 
@@ -49,6 +50,7 @@ static const std::string PLUGIN_ELEMENT_NAME = "Plugin";
 
 static bool ParseAndLoadPlugins(const TreeData & data);
 static bool ParseAndLoadPlugin(const TreeData & child);
+static bool ParseProcedureChildren(Procedure * procedure, const TreeData & data);
 static bool AddWorkspaceVariables(Procedure * procedure, const TreeData & ws_data);
 static bool ParseAndAddInstruction(Procedure * procedure, const TreeData & instr_data);
 
@@ -58,35 +60,34 @@ std::unique_ptr<Procedure> ParseProcedure(const TreeData & data, const std::stri
 {
   log_info("sup::sequencer::ParseProcedure() - entering function..");
 
+  if (data.GetType() != PROCEDURE_ELEMENT_NAME)
+  {
+    log_warning("sup::sequencer::ParseProcedure() - incorrect root element type: '%s'",
+                data.GetType().c_str());
+    return {};
+  }
+
   auto result = std::unique_ptr<Procedure>(new Procedure());
 
   // Add current filename
   result->SetFilename(filename);
 
   // Load plugins first
-  ParseAndLoadPlugins(data);
+  bool status = ParseAndLoadPlugins(data);
 
   // Add attributes
   result->AddAttributes(data.Attributes());
 
   // Parse child elements
-  for (auto & child : data.Children())
+  if (status)
   {
-    if (child.GetType() == WORKSPACE_ELEMENT_NAME)
-    {
-      AddWorkspaceVariables(result.get(), child);
-    }
-    else if (child.GetType() == PLUGIN_ELEMENT_NAME)
-    {
-      continue;  // Plugins were already handled.
-    }
-    else
-    {
-      // Every non workspace element of the Procedure node should be an instruction node
-      ParseAndAddInstruction(result.get(), child);
-    }
+    status = ParseProcedureChildren(result.get(), data);
   }
-  return result;
+  if (status)
+  {
+    return result;
+  }
+  return {};
 }
 
 static bool ParseAndLoadPlugins(const TreeData & data)
@@ -123,6 +124,28 @@ static bool ParseAndLoadPlugin(const TreeData & child)
   return success;
 }
 
+static bool ParseProcedureChildren(Procedure * procedure, const TreeData & data)
+{
+  bool status = true;
+  for (auto it = data.Children().begin(); status && it != data.Children().end(); ++it)
+  {
+    if (it->GetType() == WORKSPACE_ELEMENT_NAME)
+    {
+      status = AddWorkspaceVariables(procedure, *it);
+    }
+    else if (it->GetType() == PLUGIN_ELEMENT_NAME)
+    {
+      continue;  // Plugins were already handled.
+    }
+    else
+    {
+      // Every non workspace element of the Procedure node should be an instruction node
+      status = ParseAndAddInstruction(procedure, *it);
+    }
+  }
+  return status;
+}
+
 static bool AddWorkspaceVariables(Procedure * procedure, const TreeData & ws_data)
 {
   bool result = true;
@@ -134,6 +157,10 @@ static bool AddWorkspaceVariables(Procedure * procedure, const TreeData & ws_dat
     if (!name.empty())
     {
       auto var = ParseVariable(var_data);
+      if(!var)
+      {
+        return false;
+      }
       result = procedure->AddVariable(name, var.release()) && result;
     }
   }

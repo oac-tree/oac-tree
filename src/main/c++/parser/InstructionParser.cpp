@@ -73,9 +73,9 @@ std::unique_ptr<Instruction> ParseInstruction(const TreeData & data, const std::
   bool status = AddChildInstructions(instr.get(), data.Children(), filename);
   if (!status)
   {
-    log_warning("sup::sequencer::ParseInstruction() - instruction with type: '%s' has wrong number of "
-                "child instructions: '%d'",
-                instr->GetType().c_str(), data.Children().size());
+    log_warning("sup::sequencer::ParseInstruction() - instruction with type: '%s' parsing child "
+                "instructions failed..", instr->GetType().c_str());
+    return {};
   }
   return instr;
 }

@@ -25,13 +25,13 @@
 #include <common/log-api.h> // Syslog wrapper routines
 #include <common/CompoundType.h>
 #include <common/StringTools.h>
-#include <iostream>
 #include <memory>
 #include <sstream>
 
 // Local header files
 
 #include "CLInterface.h"
+#include "StdRedirectors.h"
 #include "Instruction.h"
 #include "InstructionRegistry.h"
 
@@ -53,26 +53,6 @@ class CLInterfaceTest : public ::testing::Test
     CLInterface cli;
     CLInterface cli_verbose;
     std::unique_ptr<Instruction> wait;
-};
-
-class CinRedirector
-{
-  private:
-    std::streambuf * cin_buf;
-
-  public:
-    CinRedirector(std::istream & input_stream);
-    ~CinRedirector();
-};
-
-class CoutRedirector
-{
-  private:
-    std::streambuf * cout_buf;
-
-  public:
-    CoutRedirector(std::ostream & output_stream);
-    ~CoutRedirector();
 };
 
 // Function declaration
@@ -198,27 +178,5 @@ CLInterfaceTest::CLInterfaceTest()
 
 CLInterfaceTest::~CLInterfaceTest()
 {}
-
-CinRedirector::CinRedirector(std::istream & input_stream)
-  : cin_buf{std::cin.rdbuf()}
-{
-  std::cin.rdbuf(input_stream.rdbuf());
-}
-
-CinRedirector::~CinRedirector()
-{
-  std::cin.rdbuf(cin_buf);
-}
-
-CoutRedirector::CoutRedirector(std::ostream & output_stream)
-  : cout_buf{std::cout.rdbuf()}
-{
-  std::cout.rdbuf(output_stream.rdbuf());
-}
-
-CoutRedirector::~CoutRedirector()
-{
-  std::cout.rdbuf(cout_buf);
-}
 
 #undef LOG_ALTERN_SRC

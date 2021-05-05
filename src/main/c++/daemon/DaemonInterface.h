@@ -8,7 +8,7 @@
 *
 * Author        : Walter Van Herck (IO)
 *
-* Copyright (c) : 2010-2020 ITER Organization,
+* Copyright (c) : 2010-2021 ITER Organization,
 *                 CS 90 046
 *                 13067 St. Paul-lez-Durance Cedex
 *                 France
@@ -20,16 +20,16 @@
 ******************************************************************************/
 
 /**
- * @file CLInterface.h
- * @brief Header file for CLInterface class.
- * @date 25/11/20
+ * @file DaemonInterface.h
+ * @brief Header file for DaemonInterface class.
+ * @date 05/05/21
  * @author Walter Van Herck (IO)
- * @copyright 2010-2020 ITER Organization
- * @details This header file contains the definition of the CLInterface class.
+ * @copyright 2010-2021 ITER Organization
+ * @details This header file contains the definition of the DaemonInterface class.
  */
 
-#ifndef _SEQ_CLInterface_h_
-#define _SEQ_CLInterface_h_
+#ifndef _SEQ_DaemonInterface_h_
+#define _SEQ_DaemonInterface_h_
 
 // Global header files
 
@@ -48,10 +48,10 @@ namespace sup {
 namespace sequencer {
 
 /**
- * @brief Class implementing a command line user interface for the Sequencer.
+ * @brief Class implementing a write-only user interface for the Sequencer daemon procedures.
  */
 
-class CLInterface : public UserInterface
+class DaemonInterface : public UserInterface
 {
   private:
     /**
@@ -64,7 +64,7 @@ class CLInterface : public UserInterface
     void StartSingleStepImpl() override;
     void EndSingleStepImpl() override;
 
-    bool _verbose;
+    bool _log_enabled;
 
   protected:
 
@@ -72,12 +72,12 @@ class CLInterface : public UserInterface
     /**
      * @brief Constructor.
      */
-    CLInterface(bool verbose=false);
+    DaemonInterface(bool log_enabled=false);
 
     /**
      * @brief Destructor.
      */
-    ~CLInterface() override;
+    ~DaemonInterface() override;
 };
 
 // Global variables
@@ -99,4 +99,4 @@ extern "C" {
 } // extern C
 #endif // __cplusplus
 
-#endif // _SEQ_CLInterface_h_
+#endif // _SEQ_DaemonInterface_h_

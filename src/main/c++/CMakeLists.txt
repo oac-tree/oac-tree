@@ -18,6 +18,8 @@ set_property(TARGET sequencer-obj PROPERTY POSITION_INDEPENDENT_CODE 1)
 
 add_executable(sequencer-cli)
 
+add_executable(sequencer-daemon)
+
 add_library(sequencer-shared SHARED)
 add_library(sequencer-static STATIC)
 
@@ -31,6 +33,7 @@ add_subdirectory(procedure)
 add_subdirectory(instructions)
 add_subdirectory(variables)
 add_subdirectory(cli)
+add_subdirectory(daemon)
 
 if(NOT DEFINED ENV{NO_PLUGINS})
     add_subdirectory(plugins)
@@ -92,7 +95,21 @@ target_link_libraries(sequencer-cli
         sequencer-shared
     )
 
+target_include_directories(sequencer-daemon
+    PRIVATE $ENV{CODAC_ROOT}/include
+    )
+
+target_link_directories(sequencer-daemon
+    PRIVATE $ENV{CODAC_ROOT}/lib
+    )
+
+target_link_libraries(sequencer-daemon
+    PRIVATE
+        sequencer-shared
+    )
+
 install(TARGETS sequencer-cli DESTINATION bin)
+install(TARGETS sequencer-daemon DESTINATION bin)
 install(TARGETS sequencer-shared DESTINATION lib)
 install(TARGETS sequencer-static DESTINATION lib)
 install(DIRECTORY include/ DESTINATION include

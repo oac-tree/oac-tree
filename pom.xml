@@ -35,7 +35,7 @@
         <integrity.level>1</integrity.level>
         <pluginpath>lib/plugins</pluginpath>
         <cppcheck.args>--enable=all --suppress=missingInclude --inline-suppr</cppcheck.args>
-        <sonar.exclusions>src/main/c++/cli/main.cpp, src/test/**</sonar.exclusions>
+        <sonar.exclusions>src/main/c++/cli/main.cpp, src/main/c++/daemon/main.cpp, src/test/**</sonar.exclusions>
     </properties>
 
     <!-- parent pom.xml -->

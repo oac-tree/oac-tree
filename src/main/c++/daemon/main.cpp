@@ -22,8 +22,6 @@
 // Global header files
 
 #include <iostream> // std::cout, etc.
-#include <memory> // std::unique_ptr
-#include <string> // std::string
 
 #include <common/log-api.h> // CCS logging library
 #include <common/SysTools.h> // Misc. helper functions

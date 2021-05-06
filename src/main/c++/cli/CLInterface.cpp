@@ -24,7 +24,6 @@
 #include <iostream>
 #include <sstream>
 #include <map>
-#include <memory>
 
 #include <common/AnyValueHelper.h>
 #include <common/log-api.h>

@@ -31,6 +31,7 @@
 #include "Choice.h"
 #include "Condition.h"
 #include "Copy.h"
+#include "Equals.h"
 #include "Fallback.h"
 #include "ForceSuccess.h"
 #include "Include.h"
@@ -118,6 +119,7 @@ void InitInstructionRegistry(InstructionRegistry & registry)
   (void)RegisterInstruction<Choice>(registry);
   (void)RegisterInstruction<Condition>(registry);
   (void)RegisterInstruction<Copy>(registry);
+  (void)RegisterInstruction<Equals>(registry);
   (void)RegisterInstruction<Input>(registry);
   (void)RegisterInstruction<Wait>(registry);
 }

@@ -108,6 +108,7 @@
                             <!-- Programs -->
                             <include type="file" source="bin" target="bin">
                                 <include>sequencer-cli</include>
+                                <include>sequencer-daemon</include>
                             </include>
                             <!-- Package dependencies -->
                             <requires version="current">libxml2</requires>

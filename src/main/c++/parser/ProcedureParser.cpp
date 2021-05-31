@@ -21,6 +21,7 @@
 
 // Global header files
 #include <common/log-api.h>
+#include <common/AnyTypeDatabase.h>
 
 // Local header files
 
@@ -45,11 +46,15 @@ namespace sequencer {
 static const std::string PROCEDURE_ELEMENT_NAME = "Procedure";
 static const std::string WORKSPACE_ELEMENT_NAME = "Workspace";
 static const std::string PLUGIN_ELEMENT_NAME = "Plugin";
+static const std::string REGISTERTYPE_ELEMENT_NAME = "RegisterType";
+static const std::string JSONTYPE_ATTRIBUTE_NAME = "jsontype";
 
 // Function declaration
 
 static bool ParseAndLoadPlugins(const TreeData & data);
 static bool ParseAndLoadPlugin(const TreeData & child);
+static bool ParseTypeRegistration(const TreeData & data);
+static bool RegisterTypeInformation(const TreeData & child);
 static bool ParseProcedureChildren(Procedure * procedure, const TreeData & data);
 static bool AddWorkspaceVariables(Procedure * procedure, const TreeData & ws_data);
 static bool ParseAndAddInstruction(Procedure * procedure, const TreeData & instr_data);
@@ -74,6 +79,12 @@ std::unique_ptr<Procedure> ParseProcedure(const TreeData & data, const std::stri
 
   // Load plugins first
   bool status = ParseAndLoadPlugins(data);
+
+  // Parse type registration
+  if (status)
+  {
+    status = ParseTypeRegistration(data);
+  }
 
   // Add attributes
   result->AddAttributes(data.Attributes());
@@ -122,6 +133,36 @@ static bool ParseAndLoadPlugin(const TreeData & child)
     log_warning("ParseAndLoadPlugin() - could not load plugin '%s'", plugin_name.c_str());
   }
   return success;
+}
+
+static bool ParseTypeRegistration(const TreeData & data)
+{
+  bool result = true;
+  for (const auto & child : data.Children())
+  {
+    if (child.GetType() == REGISTERTYPE_ELEMENT_NAME)
+    {
+      log_info("ParseTypeRegistration() - Parsing type registration..");
+      if (!RegisterTypeInformation(child))
+      {
+        log_warning("ParseTypeRegistration() - Couldn't parse type registration..");
+        result = false;
+      }
+    }
+  }
+  return result;
+}
+
+static bool RegisterTypeInformation(const TreeData & child)
+{
+  bool status = child.HasAttribute(JSONTYPE_ATTRIBUTE_NAME);
+  if (status)
+  {
+    log_info("RegisterTypeInformation() - function called with json type '%s' ..",
+             child.GetAttribute(JSONTYPE_ATTRIBUTE_NAME).c_str());
+    status = ::ccs::base::GlobalTypeDatabase::Register(child.GetAttribute(JSONTYPE_ATTRIBUTE_NAME).c_str());
+  }
+  return status;
 }
 
 static bool ParseProcedureChildren(Procedure * procedure, const TreeData & data)

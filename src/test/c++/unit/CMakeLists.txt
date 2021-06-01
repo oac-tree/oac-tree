@@ -23,6 +23,7 @@ target_sources(unit-tests
         ${CMAKE_CURRENT_LIST_DIR}/Procedure-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Repeat-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Runner-tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/RegisterType-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/SequenceParser-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/SequenceWorkspace-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/TreeData-tests.cpp

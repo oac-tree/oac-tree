@@ -7,7 +7,8 @@
     <RegisterType jsontype='{"type":"ranges_uint32","multiplicity":3,"element":{"type":"range_uint32"}}'/>
     <Sequence>
         <Copy name="Copy range variables" input="var1" output="var2" />
-        <Copy name="Copy ranges variables" input="var3" output="file" />
+        <Copy name="Copy ranges variables" input="var3" output="var4" />
+        <Copy name="Copy ranges to file" input="var4" output="file" />
     </Sequence>
     <Workspace>
         <Local name="var1" type='{"type":"range_uint32"}'
@@ -16,6 +17,6 @@
         <Local name="var3" type='{"type":"ranges_uint32"}'
                value='[{"min":0,"max":10},{"min":10,"max":20},{"min":20,"max":40}]' />
         <Local name="var4" type='{"type":"ranges_uint32"}' />
-        <FileVariable name="file" file="range_uint32.bck"/>
+        <FileVariable name="file" file="ranges_uint32.bck"/>
     </Workspace>
 </Procedure>

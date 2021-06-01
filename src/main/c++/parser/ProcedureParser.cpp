@@ -170,11 +170,12 @@ static bool ParseProcedureChildren(Procedure * procedure, const TreeData & data)
   bool status = true;
   for (auto it = data.Children().begin(); status && it != data.Children().end(); ++it)
   {
-    if (it->GetType() == WORKSPACE_ELEMENT_NAME)
+    auto element_type = it->GetType();
+    if (element_type == WORKSPACE_ELEMENT_NAME)
     {
       status = AddWorkspaceVariables(procedure, *it);
     }
-    else if (it->GetType() == PLUGIN_ELEMENT_NAME)
+    else if (element_type == PLUGIN_ELEMENT_NAME || element_type == REGISTERTYPE_ELEMENT_NAME)
     {
       continue;  // Plugins were already handled.
     }

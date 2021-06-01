@@ -4,7 +4,7 @@
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
     <Sequence>
-        <CopyNode name="Copy workspace variables" input="var1" output="var2" />
+        <Copy name="Copy workspace variables" input="var1" output="var2" />
     </Sequence>
     <Workspace>
         <Local name="var1"

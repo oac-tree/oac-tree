@@ -8,7 +8,7 @@
     </libraries>
     <Sequence>
         <Wait name="Test" />
-        <CopyNode name="Copy workspace variables" input="var1" output="var2" />
+        <Copy name="Copy workspace variables" input="var1" output="var2" />
     </Sequence>
     <Workspace>
         <Local name="var1"

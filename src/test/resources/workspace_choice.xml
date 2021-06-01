@@ -4,9 +4,9 @@
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
     <Choice var_name="sel">
-        <CopyNode name="zero" input="a" output="res" />
-        <CopyNode name="one" input="b" output="res" />
-        <CopyNode name="two" input="c" output="res" />
+        <Copy name="zero" input="a" output="res" />
+        <Copy name="one" input="b" output="res" />
+        <Copy name="two" input="c" output="res" />
     </Choice>
     <Workspace>
         <Local name="res"
@@ -21,5 +21,5 @@
         <Local name="c"
                type='{"type":"int8"}'
                value='3' />
-    </Workspace>    
+    </Workspace>
 </Procedure>

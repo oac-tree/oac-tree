@@ -21,7 +21,7 @@
 
 // Global header files
 
-#include <gtest/gtest.h> // Google test framework
+#include <gtest/gtest.h>
 
 #include <SequenceParser.h>
 
@@ -75,13 +75,69 @@ R"RAW(<?xml version="1.0" encoding="UTF-8"?>
            name="Failing RegisterType procedure for testing purposes"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
-    <RegisterType jsontype='{"type":"ranges_uint32","multiplicity":3,"element":{"type":"undefined_type"}}'/>
+    <RegisterType jsontype='{"type":"fail_ranges_uint32","multiplicity":3,"element":{"type":"undefined_type"}}'/>
 </Procedure>
+)RAW";
+
+static const std::string RegisterTypeFromFileProcedureString =
+R"RAW(<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+           name="RegisterType procedure for testing purposes"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+    <RegisterType jsonfile="/tmp/range_uint16.json"/>
+    <RegisterType jsontype='{"type":"ranges_uint16","multiplicity":3,"element":{"type":"range_uint16"}}'/>
+    <Sequence>
+        <Copy name="Copy range variables" input="var1" output="var2" />
+        <Copy name="Copy ranges variables" input="var3" output="var4" />
+    </Sequence>
+    <Workspace>
+        <Local name="var1" type='{"type":"range_uint16"}'
+               value='{"min":0,"max":10}' />
+        <Local name="var2" type='{"type":"range_uint16"}' />
+        <Local name="var3" type='{"type":"ranges_uint16"}'
+               value='[{"min":0,"max":10},{"min":10,"max":20},{"min":20,"max":40}]' />
+        <Local name="var4" type='{"type":"ranges_uint16"}' />
+    </Workspace>
+</Procedure>
+)RAW";
+
+static const std::string FailedRegisterTypeFromFileProcedureString =
+R"RAW(<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+           name="Failing RegisterType procedure for testing purposes"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+    <RegisterType jsonfile="does_not_exist.json"/>
+</Procedure>
+)RAW";
+
+static const std::string JSON_FILE_NAME = "/tmp/range_uint16.json";
+
+static const std::string JSONRangeRepresentation =
+R"RAW(
+{
+    "type": "range_uint16",
+    "attributes": [
+        {
+            "min":
+            {
+                "type": "uint16"
+            }
+        },
+        {
+            "max":
+            {
+                "type": "uint16"
+            }
+        }
+    ]
+}
 )RAW";
 
 // Function definition
 
-TEST(Equals, RegisterType_success)
+TEST(RegisterType, string_success)
 {
   sup::sequencer::LogUI ui;
   auto proc = sup::sequencer::ParseProcedureString(RegisterTypeProcedureString);
@@ -90,11 +146,26 @@ TEST(Equals, RegisterType_success)
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
 }
 
-TEST(Equals, RegisterType_failed)
+TEST(RegisterType, string_failed)
 {
-  sup::sequencer::LogUI ui;
   auto proc = sup::sequencer::ParseProcedureString(FailedRegisterTypeProcedureString);
-  ASSERT_FALSE(static_cast<bool>(proc));
+  EXPECT_FALSE(static_cast<bool>(proc));
+}
+
+TEST(RegisterType, file_success)
+{
+  sup::UnitTestHelper::TemporaryTestFile json_file(JSON_FILE_NAME, JSONRangeRepresentation);
+  sup::sequencer::LogUI ui;
+  auto proc = sup::sequencer::ParseProcedureString(RegisterTypeFromFileProcedureString);
+  ASSERT_TRUE(static_cast<bool>(proc));
+
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+}
+
+TEST(RegisterType, file_failed)
+{
+  auto proc = sup::sequencer::ParseProcedureString(FailedRegisterTypeFromFileProcedureString);
+  EXPECT_FALSE(static_cast<bool>(proc));
 }
 
 #undef LOG_ALTERN_SRC

@@ -132,6 +132,16 @@ class MockUI : public sup::sequencer::UserInterface
 
 };
 
+class TemporaryTestFile
+{
+  private:
+    std::string filename;
+
+  public:
+    TemporaryTestFile(std::string filename, std::string contents);
+    ~TemporaryTestFile();
+};
+
 // Global variables
 
 // Function declarations

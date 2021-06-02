@@ -3,7 +3,7 @@
            name="Trivial procedure for testing purposes"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
-    <RegisterType jsontype='{"type":"range_uint32","attributes":[{"min":{"type":"uint32"}},{"max":{"type":"uint32"}}]}'/>
+    <RegisterType jsonfile="range_uint32.json"/>
     <RegisterType jsontype='{"type":"ranges_uint32","multiplicity":3,"element":{"type":"range_uint32"}}'/>
     <Sequence>
         <Copy name="Copy range variables" input="var1" output="var2" />

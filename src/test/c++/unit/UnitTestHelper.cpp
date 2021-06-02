@@ -21,6 +21,7 @@
 
 // Global header files
 
+#include <cstdio>
 #include <common/SysTools.h>
 #include <common/log-api.h>
 
@@ -61,7 +62,7 @@ static bool _initialise_instruction = sup::sequencer::RegisterGlobalInstruction<
 ccs::types::uint32 CounterInstruction::GetCount (void) { return counter; }
 
 sup::sequencer::ExecutionStatus CounterInstruction::ExecuteSingleImpl (sup::sequencer::UserInterface * ui, sup::sequencer::Workspace * ws)
-{ 
+{
 
   if (sup::sequencer::Instruction::HasAttribute("incr"))
     {
@@ -70,10 +71,10 @@ sup::sequencer::ExecutionStatus CounterInstruction::ExecuteSingleImpl (sup::sequ
     }
   else
     {
-      counter++; 
+      counter++;
     }
 
-  return sup::sequencer::ExecutionStatus::SUCCESS; 
+  return sup::sequencer::ExecutionStatus::SUCCESS;
 
 }
 
@@ -84,7 +85,7 @@ void MockUI::UpdateInstructionStatusImpl (const sup::sequencer::Instruction * in
 int MockUI::GetUserChoiceImpl (const std::vector<std::string> & choices, const std::string & description)
 {
   log_info("TestUI::GetUserChoiceImpl - Description '%s'", description.c_str());
-  return _choice; 
+  return _choice;
 }
 
 bool MockUI::GetUserValueImpl (::ccs::types::AnyValue & value, const std::string & description)
@@ -103,6 +104,18 @@ void MockUI::SetValue (::ccs::types::AnyValue & value) { _value = value; }
 
 MockUI::MockUI (void) {}
 MockUI::~MockUI (void) {}
+
+TemporaryTestFile::TemporaryTestFile(std::string filename_, std::string contents)
+  : filename{filename_}
+{
+  std::ofstream file_out(filename);
+  file_out.write(contents.c_str(), contents.size());
+}
+
+TemporaryTestFile::~TemporaryTestFile()
+{
+  std::remove(filename.c_str());
+}
 
 std::string GetFullTestFilePath(const std::string & filename)
 {

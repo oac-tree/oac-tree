@@ -20,6 +20,8 @@
  ******************************************************************************/
 
 // Global header files
+#include <fstream>
+#include <sstream>
 #include <common/log-api.h>
 #include <common/AnyTypeDatabase.h>
 
@@ -48,13 +50,14 @@ static const std::string WORKSPACE_ELEMENT_NAME = "Workspace";
 static const std::string PLUGIN_ELEMENT_NAME = "Plugin";
 static const std::string REGISTERTYPE_ELEMENT_NAME = "RegisterType";
 static const std::string JSONTYPE_ATTRIBUTE_NAME = "jsontype";
+static const std::string JSONFILE_ATTRIBUTE_NAME = "jsonfile";
 
 // Function declaration
 
-static bool ParseAndLoadPlugins(const TreeData & data);
+static std::string ReadJSONFile(const std::string & filename);
+static bool ParsePreamble(const TreeData & data, const std::string & filename);
 static bool ParseAndLoadPlugin(const TreeData & child);
-static bool ParseTypeRegistration(const TreeData & data);
-static bool RegisterTypeInformation(const TreeData & child);
+static bool RegisterTypeInformation(const TreeData & child, const std::string & filename);
 static bool ParseProcedureChildren(Procedure * procedure, const TreeData & data);
 static bool AddWorkspaceVariables(Procedure * procedure, const TreeData & ws_data);
 static bool ParseAndAddInstruction(Procedure * procedure, const TreeData & instr_data);
@@ -77,14 +80,8 @@ std::unique_ptr<Procedure> ParseProcedure(const TreeData & data, const std::stri
   // Add current filename
   result->SetFilename(filename);
 
-  // Load plugins first
-  bool status = ParseAndLoadPlugins(data);
-
-  // Parse type registration
-  if (status)
-  {
-    status = ParseTypeRegistration(data);
-  }
+  // Load plugins and register types first
+  bool status = ParsePreamble(data, filename);
 
   // Add attributes
   result->AddAttributes(data.Attributes());
@@ -127,17 +124,40 @@ std::string GetFileDirectory(const std::string & filename)
   return filename.substr(0, pos + 1);
 }
 
-static bool ParseAndLoadPlugins(const TreeData & data)
+static std::string ReadJSONFile(const std::string & filename)
+{
+  if (!::ccs::HelperTools::Exist(filename.c_str()))
+  {
+    log_warning("ReadJSONFile('%s') - file not found", filename.c_str());
+    return {};
+  }
+  std::ifstream ifstr(filename);
+  std::string result;
+  while (!ifstr.eof())
+  {
+    std::string tmp;
+    ifstr >> tmp;
+    result.append(tmp);
+  }
+  return result;
+}
+
+static bool ParsePreamble(const TreeData & data, const std::string & filename)
 {
   bool result = true;
   for (const auto & child : data.Children())
   {
     if (child.GetType() == PLUGIN_ELEMENT_NAME)
     {
-      log_info("ParseAndLoadPlugins() - Parsing plugin information..");
       if (!ParseAndLoadPlugin(child))
       {
-        log_warning("ParseAndLoadPlugins() - Couldn't parse or load plugin data..");
+        result = false;
+      }
+    }
+    else if (child.GetType() == REGISTERTYPE_ELEMENT_NAME)
+    {
+      if (!RegisterTypeInformation(child, filename))
+      {
         result = false;
       }
     }
@@ -161,32 +181,28 @@ static bool ParseAndLoadPlugin(const TreeData & child)
   return success;
 }
 
-static bool ParseTypeRegistration(const TreeData & data)
+static bool RegisterTypeInformation(const TreeData & child, const std::string & filename)
 {
-  bool result = true;
-  for (const auto & child : data.Children())
-  {
-    if (child.GetType() == REGISTERTYPE_ELEMENT_NAME)
-    {
-      log_info("ParseTypeRegistration() - Parsing type registration..");
-      if (!RegisterTypeInformation(child))
-      {
-        log_warning("ParseTypeRegistration() - Couldn't parse type registration..");
-        result = false;
-      }
-    }
-  }
-  return result;
-}
-
-static bool RegisterTypeInformation(const TreeData & child)
-{
-  bool status = child.HasAttribute(JSONTYPE_ATTRIBUTE_NAME);
-  if (status)
+  bool status = true;
+  if (child.HasAttribute(JSONTYPE_ATTRIBUTE_NAME))
   {
     log_info("RegisterTypeInformation() - function called with json type '%s' ..",
              child.GetAttribute(JSONTYPE_ATTRIBUTE_NAME).c_str());
     status = ::ccs::base::GlobalTypeDatabase::Register(child.GetAttribute(JSONTYPE_ATTRIBUTE_NAME).c_str());
+  }
+  else if (child.HasAttribute(JSONFILE_ATTRIBUTE_NAME))
+  {
+    log_info("RegisterTypeInformation() - function called with json file '%s' ..",
+             child.GetAttribute(JSONFILE_ATTRIBUTE_NAME).c_str());
+    std::string jsonfile = GetFullPathName(GetFileDirectory(filename), child.GetAttribute(JSONFILE_ATTRIBUTE_NAME));
+    auto type_string = ReadJSONFile(jsonfile);
+    log_info("RegisterTypeInformation() - json file '%s', type string '%s' ..",
+             jsonfile.c_str(), type_string.c_str());
+    status = ::ccs::base::GlobalTypeDatabase::Register(type_string.c_str());
+  }
+  if (!status)
+  {
+    log_warning("RegisterTypeInformation() - could not register type");
   }
   return status;
 }

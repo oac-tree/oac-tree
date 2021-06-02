@@ -1,0 +1,17 @@
+{
+    "type": "range_uint32",
+    "attributes": [
+        {
+            "min":
+            {
+                "type": "uint32"
+            }
+        },
+        {
+            "max":
+            {
+                "type": "uint32"
+            }
+        }
+    ]
+}

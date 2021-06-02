@@ -101,6 +101,32 @@ std::unique_ptr<Procedure> ParseProcedure(const TreeData & data, const std::stri
   return {};
 }
 
+std::string GetFullPathName(const std::string & directory, const std::string & filename)
+{
+  log_info("sup::sequencer::GetFullPathName(%s, %s) - entering function..",
+           directory.c_str(), filename.c_str());
+  if (filename.empty())
+  {
+    log_warning("sup::sequencer::GetFullPathName() - empty filename as argument");
+    return {};
+  }
+  if (filename.front() == '/')
+  {
+    return filename;
+  }
+  return directory + filename;
+}
+
+std::string GetFileDirectory(const std::string & filename)
+{
+  auto pos = filename.find_last_of("/");
+  if (pos == std::string::npos)
+  {
+    return {};
+  }
+  return filename.substr(0, pos + 1);
+}
+
 static bool ParseAndLoadPlugins(const TreeData & data)
 {
   bool result = true;

@@ -83,7 +83,6 @@ R"RAW(<?xml version="1.0" encoding="UTF-8"?>
 
 TEST(Equals, RegisterType_success)
 {
-
   sup::sequencer::LogUI ui;
   auto proc = sup::sequencer::ParseProcedureString(RegisterTypeProcedureString);
   ASSERT_TRUE(static_cast<bool>(proc));
@@ -93,7 +92,6 @@ TEST(Equals, RegisterType_success)
 
 TEST(Equals, RegisterType_failed)
 {
-
   sup::sequencer::LogUI ui;
   auto proc = sup::sequencer::ParseProcedureString(FailedRegisterTypeProcedureString);
   ASSERT_FALSE(static_cast<bool>(proc));

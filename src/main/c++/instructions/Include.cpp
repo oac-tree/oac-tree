@@ -28,6 +28,7 @@
 #include "Include.h"
 #include "InstructionHelper.h"
 #include "Procedure.h"
+#include "ProcedureParser.h"
 
 // Constants
 
@@ -48,9 +49,6 @@ namespace sequencer {
 const std::string Include::Type = "Include";
 
 // Function declaration
-
-static std::string GetFullPathName(const std::string & directory, const std::string & filename);
-static std::string GetFileDirectory(const std::string & filename);
 
 // Function definition
 
@@ -141,32 +139,6 @@ void Include::SetFilename(const std::string & filename)
 std::string Include::GetFilename() const
 {
   return _filename;
-}
-
-static std::string GetFullPathName(const std::string & directory, const std::string & filename)
-{
-  log_info("GetFullPathName(%s, %s) - entering function..",
-           directory.c_str(), filename.c_str());
-  if (filename.empty())
-  {
-    log_warning("GetFullPathName() - empty filename as argument");
-    return {};
-  }
-  if (filename.front() == '/')
-  {
-    return filename;
-  }
-  return directory + filename;
-}
-
-static std::string GetFileDirectory(const std::string & filename)
-{
-  auto pos = filename.find_last_of("/");
-  if (pos == std::string::npos)
-  {
-    return {};
-  }
-  return filename.substr(0, pos + 1);
 }
 
 } // namespace sequencer

@@ -25,7 +25,6 @@
 #include <algorithm>
 
 #include <common/log-api.h> // CCS logging library
-#include <common/SysTools.h> // Misc. helper functions
 
 // Local header files
 
@@ -55,11 +54,8 @@ int GetVerbosityLevel(const std::vector<std::string>& arguments);
 
 // Function definition
 
-void print_usage()
+void print_usage(const std::string& prog_name)
 {
-  char prog_name[STRING_MAX_LENGTH] = STRING_UNDEFINED;
-  ccs::HelperTools::GetProcessName(prog_name);
-
   std::cout << "Usage: " << prog_name << " <options>" << std::endl;
   std::cout << "Options: -h|--help: Print usage." << std::endl;
   std::cout << "         -f|--file <filename>: Load, parse and execute <filename>." << std::endl;
@@ -78,7 +74,7 @@ int main(int argc, char * argv[])
   log_info("sequencer-cli called with filename: %s", filename.c_str());
 
   if (HasHelpOption(arguments) || filename.empty()) {
-    print_usage();
+    print_usage(arguments.at(0));
     return 0;
   }
 
@@ -136,7 +132,7 @@ std::string GetFileName(const std::vector<std::string>& arguments)
     return filename.find_first_of("-") == 0 ? "" : filename;
 }
 
-//! Returns requested verbosity level
+//! Returns requested verbosity level.
 
 int GetVerbosityLevel(const std::vector<std::string>& arguments)
 {

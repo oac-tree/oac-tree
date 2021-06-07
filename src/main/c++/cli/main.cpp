@@ -38,24 +38,20 @@
 #undef LOG_ALTERN_SRC
 #define LOG_ALTERN_SRC "sup::sequencer"
 
-// Type definition
+namespace {
+enum VerbosityLevels { kSilent, kMinimal, kInfo };
+} // namespace
 
-struct CLIParams
-{
-  bool print_usage;
-  char filepath[PATH_MAX_LENGTH];
-  bool verbose;
-  int exit_code;
-};
+// Type definition
 
 // Global variables
 
 // Function declaration
 
-CLIParams ParseCommandLineArgs(int argc, char * argv[]);
 bool IsVerboseOption(const char * option);
 bool HasHelpOption(const std::vector<std::string>& arguments);
 std::string GetFileName(const std::vector<std::string>& arguments);
+int GetVerbosityLevel(const std::vector<std::string>& arguments);
 
 // Function definition
 
@@ -79,15 +75,12 @@ int main(int argc, char * argv[])
   std::for_each(argv, argv + argc, [&](const char* c_str) { arguments.push_back(c_str); });
 
   auto filename = GetFileName(arguments);
+  log_info("sequencer-cli called with filename: %s", filename.c_str());
 
   if (HasHelpOption(arguments) || filename.empty()) {
     print_usage();
     return 0;
   }
-
-  auto params = ParseCommandLineArgs(argc, argv);
-
-  log_info("sequencer-cli called with filename: %s", filename.c_str());
 
   if (!ccs::HelperTools::Exist(filename.c_str()))
   {
@@ -108,7 +101,13 @@ int main(int argc, char * argv[])
     return 1;
   }
 
-  sup::sequencer::CLInterface ui(params.verbose);
+  auto verbosity = GetVerbosityLevel(arguments);
+  if (verbosity) {
+    (void)ccs::log::SetStdout();
+    (void)ccs::log::SetFilter(LOG_DEBUG);
+  }
+
+  sup::sequencer::CLInterface ui(verbosity);
   sup::sequencer::Runner runner(&ui);
   runner.SetProcedure(proc.get());
   runner.ExecuteProcedure();
@@ -116,37 +115,15 @@ int main(int argc, char * argv[])
   return 0;
 }
 
-CLIParams ParseCommandLineArgs(int argc, char * argv[])
-{
-  CLIParams result = {false, STRING_UNDEFINED, false, 0};
-  if (argc <= 1)
-  {
-    result.print_usage = true;
-    return result;
-  }
-  for (unsigned index = 1; index < (unsigned)argc; index++)
-  {
-    if (IsVerboseOption(argv[index]))
-    {
-      // Log to standard output
-      (void)ccs::log::SetStdout();
-      (void)ccs::log::SetFilter(LOG_DEBUG);
-      result.verbose = true;
-    }
-    else
-    {
-      result.print_usage = true;
-      result.exit_code = 1;
-    }
-  }
-  return result;
-}
+//! Returns true if -h or --help option is present.
 
 bool HasHelpOption(const std::vector<std::string>& arguments)
 {
   auto on_argument = [](const std::string& str) { return str == "--help" || str == "-h"; };
   return std::find_if(arguments.begin(), arguments.end(), on_argument) != arguments.end();
 }
+
+//! Returns filename, which is the parameter after --file or -f option.
 
 std::string GetFileName(const std::vector<std::string>& arguments)
 {
@@ -159,11 +136,17 @@ std::string GetFileName(const std::vector<std::string>& arguments)
     return filename.find_first_of("-") == 0 ? "" : filename;
 }
 
-bool IsVerboseOption(const char * option)
+//! Returns requested verbosity level
+
+int GetVerbosityLevel(const std::vector<std::string>& arguments)
 {
-  bool result = ccs::HelperTools::StringCompare(option, "-v")
-             || ccs::HelperTools::StringCompare(option, "--verbose");
-  return result;
+    static std::map<std::string, int> verbosity_map = {
+        {"-v", kMinimal}, {"--verbose", kMinimal}, {"-vv", kInfo}};
+
+    int result = kSilent;
+    auto on_argument = [&result](const std::string& str) { result = verbosity_map[str]; };
+    std::for_each(arguments.begin(), arguments.end(), on_argument);
+    return result;
 }
 
 #undef LOG_ALTERN_SRC

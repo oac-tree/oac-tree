@@ -22,6 +22,7 @@
 // Global header files
 
 #include <iostream> // std::cout, etc.
+#include <algorithm>
 
 #include <common/log-api.h> // CCS logging library
 #include <common/SysTools.h> // Misc. helper functions
@@ -52,9 +53,9 @@ struct CLIParams
 // Function declaration
 
 CLIParams ParseCommandLineArgs(int argc, char * argv[]);
-bool IsHelpOption(const char * option);
-bool IsFileOption(const char * option);
 bool IsVerboseOption(const char * option);
+bool HasHelpOption(const std::vector<std::string>& arguments);
+std::string GetFileName(const std::vector<std::string>& arguments);
 
 // Function definition
 
@@ -70,43 +71,40 @@ void print_usage()
   std::cout << std::endl;
   std::cout << "The program loads <filename>, parses it into an executable behaviour tree and executes it." << std::endl;
   std::cout << std::endl;
-
-  return;
 }
 
 int main(int argc, char * argv[])
 {
-  auto params = ParseCommandLineArgs(argc, argv);
-  if (params.print_usage)
-  {
+  std::vector<std::string> arguments;
+  std::for_each(argv, argv + argc, [&](const char* c_str) { arguments.push_back(c_str); });
+
+  auto filename = GetFileName(arguments);
+
+  if (HasHelpOption(arguments) || filename.empty()) {
     print_usage();
-    return params.exit_code;
+    return 0;
   }
 
-  if (ccs::HelperTools::StringCompare(params.filepath, STRING_UNDEFINED))
+  auto params = ParseCommandLineArgs(argc, argv);
+
+  log_info("sequencer-cli called with filename: %s", filename.c_str());
+
+  if (!ccs::HelperTools::Exist(filename.c_str()))
   {
-    log_warning("sequencer-cli called without filename");
+    log_error("sequencer-cli: file not found <%s>", filename.c_str());
     return 1;
   }
 
-  log_info("sequencer-cli called with filename: %s", params.filepath);
-
-  if (!ccs::HelperTools::Exist(params.filepath))
-  {
-    log_error("sequencer-cli: file not found <%s>", params.filepath);
-    return 1;
-  }
-
-  auto proc = sup::sequencer::ParseProcedureFile(params.filepath);
+  auto proc = sup::sequencer::ParseProcedureFile(filename.c_str());
   if (!proc)
   {
-    log_error("sequencer-cli couldn't parse file <%s>", params.filepath);
+    log_error("sequencer-cli couldn't parse file <%s>", filename.c_str());
     return 1;
   }
 
   if (!proc->Setup())
   {
-    log_error("sequencer-cli couldn't setup the parsed procedure from file: <%s>", params.filepath);
+    log_error("sequencer-cli couldn't setup the parsed procedure from file: <%s>", filename.c_str());
     return 1;
   }
 
@@ -128,22 +126,7 @@ CLIParams ParseCommandLineArgs(int argc, char * argv[])
   }
   for (unsigned index = 1; index < (unsigned)argc; index++)
   {
-    if (IsHelpOption(argv[index]))
-    {
-      result.print_usage = true;
-    }
-    else if (IsFileOption(argv[index]))
-    {
-      // Get filename
-      if (index + 1 >= (unsigned)argc)
-      {
-        result.print_usage = true;
-        result.exit_code = 1;
-      }
-      ccs::HelperTools::SafeStringCopy(result.filepath, argv[index + 1], PATH_MAX_LENGTH);
-      index += 1;
-    }
-    else if (IsVerboseOption(argv[index]))
+    if (IsVerboseOption(argv[index]))
     {
       // Log to standard output
       (void)ccs::log::SetStdout();
@@ -159,18 +142,21 @@ CLIParams ParseCommandLineArgs(int argc, char * argv[])
   return result;
 }
 
-bool IsHelpOption(const char * option)
+bool HasHelpOption(const std::vector<std::string>& arguments)
 {
-  bool result = ccs::HelperTools::StringCompare(option, "-h")
-             || ccs::HelperTools::StringCompare(option, "--help");
-  return result;
+  auto on_argument = [](const std::string& str) { return str == "--help" || str == "-h"; };
+  return std::find_if(arguments.begin(), arguments.end(), on_argument) != arguments.end();
 }
 
-bool IsFileOption(const char * option)
+std::string GetFileName(const std::vector<std::string>& arguments)
 {
-  bool result = ccs::HelperTools::StringCompare(option, "-f")
-             || ccs::HelperTools::StringCompare(option, "--file");
-  return result;
+    // find position of file argument
+    auto on_argument = [](const std::string& str) { return str == "--file" || str == "-f"; };
+    auto it = std::find_if(arguments.begin(), arguments.end(), on_argument);
+
+    // taking the next after as a file name
+    std::string filename = std::next(it) < arguments.end() ? *std::next(it) : "";
+    return filename.find_first_of("-") == 0 ? "" : filename;
 }
 
 bool IsVerboseOption(const char * option)

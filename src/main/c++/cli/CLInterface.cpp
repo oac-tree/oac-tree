@@ -58,8 +58,11 @@ void CLInterface::UpdateInstructionStatusImpl(const Instruction * instruction)
   auto instruction_name = instruction->GetName();
   auto status = instruction->GetStatus();
 
-  std::cout << "Instruction: (" << instruction_type << ":" << instruction_name << ") : ";
-  std::cout << StatusToString(status) << std::endl;
+  if (_verbose) 
+  {
+    std::cout << "Instruction: (" << instruction_type << ":" << instruction_name << ") : ";
+    std::cout << StatusToString(status) << std::endl;
+  }
 }
 
 bool CLInterface::GetUserValueImpl(::ccs::types::AnyValue & value, const std::string & description)

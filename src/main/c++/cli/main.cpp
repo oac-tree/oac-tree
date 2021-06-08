@@ -98,12 +98,12 @@ int main(int argc, char * argv[])
   }
 
   auto verbosity = GetVerbosityLevel(arguments);
-  if (verbosity) {
+  if (verbosity > 0) {
     (void)ccs::log::SetStdout();
-    (void)ccs::log::SetFilter(LOG_DEBUG);
+    (void)ccs::log::SetFilter(verbosity == kMinimal ? LOG_WARNING : LOG_DEBUG);
   }
 
-  sup::sequencer::CLInterface ui(verbosity);
+  sup::sequencer::CLInterface ui(verbosity > 0);
   sup::sequencer::Runner runner(&ui);
   runner.SetProcedure(proc.get());
   runner.ExecuteProcedure();

@@ -78,6 +78,17 @@ TEST_F(UserInterfaceTest, UpdateInstructionStatusDispatch)
   mock_ui.UpdateInstructionStatus(wait.get());
 }
 
+TEST_F(UserInterfaceTest, PutValueDispatch)
+{
+  ::ccs::types::AnyValue val;
+  std::string description = "TestPutValue";
+  EXPECT_CALL(mock_ui, PutValueImpl(_, description)).Times(2)
+                                                        .WillOnce(Return(false))
+                                                        .WillOnce(Return(true));
+  EXPECT_FALSE(mock_ui.PutValue(val, description));
+  EXPECT_TRUE(mock_ui.PutValue(val, description));
+}
+
 TEST_F(UserInterfaceTest, GetUserValueDispatch)
 {
   ::ccs::types::AnyValue val;
@@ -116,6 +127,13 @@ TEST_F(UserInterfaceTest, EndSingleStepDispatch)
   EXPECT_NO_THROW(mock_ui.EndSingleStep());
   EXPECT_NO_THROW(mock_ui.EndSingleStep());
   EXPECT_NO_THROW(mock_ui.EndSingleStep());
+}
+
+TEST_F(UserInterfaceTest, PutValueDefault)
+{
+  ::ccs::types::AnyValue val;
+  std::string description;
+  EXPECT_FALSE(empty_ui.PutValue(val, description));
 }
 
 TEST_F(UserInterfaceTest, GetUserValueDefault)

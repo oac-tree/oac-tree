@@ -68,6 +68,14 @@ class UserInterface
 
     /**
      * @brief Private virtual implementation of
+     * UserInterface::PutValue(const AnyValue & value, const std::string & description).
+     *
+     * @note Default implementation returns false.
+     */
+    virtual bool PutValueImpl(const ::ccs::types::AnyValue & value, const std::string & description);
+
+    /**
+     * @brief Private virtual implementation of
      * UserInterface::GetUserValue(AnyValue & value, const std::string & description).
      *
      * @note Default implementation returns false.
@@ -123,6 +131,16 @@ class UserInterface
      * @note Non-Virtual Interface.
      */
     void UpdateInstructionStatus(const Instruction * instruction);
+
+    /**
+     * @brief Method to put the value.
+     *
+     * @param value Value to put into UI.
+     * @param description Optional description of the value.
+     * @return true on successful retrieval of a value, false otherwise.
+     * @note Non-Virtual Interface.
+     */
+    bool PutValue(const ::ccs::types::AnyValue & value, const std::string & description = {});
 
     /**
      * @brief Method to request the user to input a value.

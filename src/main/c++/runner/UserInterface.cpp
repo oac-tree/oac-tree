@@ -44,6 +44,11 @@ namespace sequencer {
 
 // Function definition
 
+bool UserInterface::PutValueImpl(const ::ccs::types::AnyValue & value, const std::string & description)
+{
+  return false;
+}
+
 bool UserInterface::GetUserValueImpl(::ccs::types::AnyValue & value, const std::string & description)
 {
   return false;
@@ -65,6 +70,12 @@ void UserInterface::UpdateInstructionStatus(const Instruction * instruction)
 {
   std::lock_guard<std::mutex> lock(_ui_mutex);
   UpdateInstructionStatusImpl(instruction);
+}
+
+bool UserInterface::PutValue(const ::ccs::types::AnyValue & value, const std::string & description)
+{
+  std::lock_guard<std::mutex> lock(_ui_mutex);
+  return PutValueImpl(value, description);
 }
 
 bool UserInterface::GetUserValue(::ccs::types::AnyValue & value, const std::string & description)

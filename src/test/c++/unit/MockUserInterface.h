@@ -57,6 +57,8 @@ class MockUserInterface : public UserInterface
 {
   public:
     MOCK_METHOD1(UpdateInstructionStatusImpl, void(const Instruction *));
+    MOCK_METHOD2(PutValueImpl, bool(const ::ccs::types::AnyValue & value,
+                                        const std::string & description));
     MOCK_METHOD2(GetUserValueImpl, bool(::ccs::types::AnyValue & value,
                                         const std::string & description));
     MOCK_METHOD2(GetUserChoiceImpl, int(const std::vector<std::string> & choices,

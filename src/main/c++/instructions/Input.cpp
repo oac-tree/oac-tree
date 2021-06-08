@@ -23,9 +23,6 @@
 
 #include <common/log-api.h>
 
-#include <chrono>
-#include <thread>
-
 // Local header files
 
 #include "Input.h"

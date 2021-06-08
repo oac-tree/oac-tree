@@ -85,6 +85,8 @@ TEST_F(UserInterfaceTest, PutValueDispatch)
   EXPECT_CALL(mock_ui, PutValueImpl(_, description)).Times(2)
                                                         .WillOnce(Return(false))
                                                         .WillOnce(Return(true));
+  EXPECT_CALL(mock_ui, GetUserValueImpl(_, _)).Times(0);
+  EXPECT_CALL(mock_ui, GetUserChoiceImpl(_, _)).Times(0);
   EXPECT_FALSE(mock_ui.PutValue(val, description));
   EXPECT_TRUE(mock_ui.PutValue(val, description));
 }
@@ -93,9 +95,11 @@ TEST_F(UserInterfaceTest, GetUserValueDispatch)
 {
   ::ccs::types::AnyValue val;
   std::string description = "TestGetUserValue";
+  EXPECT_CALL(mock_ui, PutValueImpl(_, _)).Times(0);
   EXPECT_CALL(mock_ui, GetUserValueImpl(_, description)).Times(2)
                                                         .WillOnce(Return(false))
                                                         .WillOnce(Return(true));
+  EXPECT_CALL(mock_ui, GetUserChoiceImpl(_, _)).Times(0);
   EXPECT_FALSE(mock_ui.GetUserValue(val, description));
   EXPECT_TRUE(mock_ui.GetUserValue(val, description));
 }
@@ -104,6 +108,8 @@ TEST_F(UserInterfaceTest, GetUserChoiceDispatch)
 {
   std::vector<std::string> choices = { "yes", "no" };
   std::string description = "TestGetUserChoice";
+  EXPECT_CALL(mock_ui, PutValueImpl(_, _)).Times(0);
+  EXPECT_CALL(mock_ui, GetUserValueImpl(_, _)).Times(0);
   EXPECT_CALL(mock_ui, GetUserChoiceImpl(choices, description)).Times(2)
                                                                .WillOnce(Return(-1))
                                                                .WillOnce(Return(0));

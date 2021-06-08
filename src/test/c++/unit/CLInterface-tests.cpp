@@ -69,9 +69,7 @@ TEST_F(CLInterfaceTest, UpdateInstructionStatus)
   CoutRedirector redirect(output);
   EXPECT_TRUE(output.str().empty());
   cli.UpdateInstructionStatus(wait.get());
-  auto logged = output.str();
-  EXPECT_FALSE(logged.empty());
-  EXPECT_NE(logged.find(StatusToString(ExecutionStatus::NOT_STARTED)), std::string::npos);
+  EXPECT_TRUE(output.str().empty());
 }
 
 TEST_F(CLInterfaceTest, StartSingleStep)

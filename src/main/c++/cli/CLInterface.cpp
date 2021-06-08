@@ -65,6 +65,22 @@ void CLInterface::UpdateInstructionStatusImpl(const Instruction * instruction)
   }
 }
 
+bool CLInterface::PutValueImpl(const ::ccs::types::AnyValue & value, const std::string & description)
+{
+  std::cout << description << " (" << value.GetType()->GetName() << "): ";
+  ccs::types::char8 buffer [4096] = STRING_UNDEFINED;
+  auto result = ccs::HelperTools::SerialiseToJSONStream(&value, buffer, 4096u);
+  if (result)
+  {
+    std::cout << buffer << "\n";
+  }
+  else 
+  {
+    log_warning("CLInterface::PutValueImpl() could not serialize the value");
+  }
+  return result;
+}
+
 bool CLInterface::GetUserValueImpl(::ccs::types::AnyValue & value, const std::string & description)
 {
   if (! ::ccs::HelperTools::Is<::ccs::types::ScalarType>(&value))

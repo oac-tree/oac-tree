@@ -38,6 +38,7 @@
 #include "Input.h"
 #include "Instruction.h"
 #include "Inverter.h"
+#include "Output.h"
 #include "ParallelSequence.h"
 #include "Repeat.h"
 #include "Sequence.h"
@@ -121,6 +122,7 @@ void InitInstructionRegistry(InstructionRegistry & registry)
   (void)RegisterInstruction<Copy>(registry);
   (void)RegisterInstruction<Equals>(registry);
   (void)RegisterInstruction<Input>(registry);
+  (void)RegisterInstruction<Output>(registry);
   (void)RegisterInstruction<Wait>(registry);
 }
 

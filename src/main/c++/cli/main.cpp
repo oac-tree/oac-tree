@@ -84,6 +84,12 @@ int main(int argc, char * argv[])
     return 1;
   }
 
+  auto verbosity = GetVerbosityLevel(arguments);
+  if (verbosity > 0) {
+    (void)ccs::log::SetStdout();
+    (void)ccs::log::SetFilter(verbosity == kMinimal ? LOG_NOTICE : LOG_DEBUG);
+  }
+
   auto proc = sup::sequencer::ParseProcedureFile(filename.c_str());
   if (!proc)
   {
@@ -95,12 +101,6 @@ int main(int argc, char * argv[])
   {
     log_error("sequencer-cli couldn't setup the parsed procedure from file: <%s>", filename.c_str());
     return 1;
-  }
-
-  auto verbosity = GetVerbosityLevel(arguments);
-  if (verbosity > 0) {
-    (void)ccs::log::SetStdout();
-    (void)ccs::log::SetFilter(verbosity == kMinimal ? LOG_NOTICE : LOG_DEBUG);
   }
 
   sup::sequencer::CLInterface ui(verbosity > 0);

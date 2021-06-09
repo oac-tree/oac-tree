@@ -71,12 +71,12 @@ int main(int argc, char * argv[])
   std::for_each(argv, argv + argc, [&](const char* c_str) { arguments.push_back(c_str); });
 
   auto filename = GetFileName(arguments);
-  log_info("sequencer-cli called with filename: %s", filename.c_str());
 
   if (HasHelpOption(arguments) || filename.empty()) {
     print_usage(arguments.at(0));
     return 0;
   }
+  log_info("sequencer-cli called with filename: %s", filename.c_str());
 
   if (!ccs::HelperTools::Exist(filename.c_str()))
   {

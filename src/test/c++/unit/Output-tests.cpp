@@ -51,20 +51,20 @@ std::string CreateProcedureString(const std::string& body) {
 } // namespace
 
 //! Testing Output instruction.
-
 class OutputTest : public ::testing::Test {
 public:
 
   //! Test interface which accepts values from the workspace.
   class TestInterface : public ::sup::sequencer::UserInterface {
   public:
-    TestInterface() : m_value(ccs::types::UnsignedInteger32){
-      m_value = static_cast<ccs::types::uint32>(0u);
+    TestInterface(unsigned par) : m_value(ccs::types::UnsignedInteger32){
+      m_value = static_cast<ccs::types::uint32>(par);
     }
 
     bool PutValueImpl(const ::ccs::types::AnyValue &value,
                       const std::string &description) override {
       m_value = value;
+      return true;
     }
 
     bool GetUserValueImpl (::ccs::types::AnyValue &, const std::string&) override {
@@ -94,9 +94,10 @@ TEST_F(OutputTest, PutInteger) {
 
   const auto procedure_string = CreateProcedureString(procedure_body);
 
-  TestInterface ui;
+  const unsigned expected{22};
+  TestInterface ui{expected};
   // initial state
-  EXPECT_EQ(static_cast<ccs::types::uint32>(ui.m_value), static_cast<ccs::types::uint32>(22));
+  EXPECT_EQ(static_cast<ccs::types::uint32>(ui.m_value), static_cast<ccs::types::uint32>(expected));
 
   auto proc = sup::sequencer::ParseProcedureString(procedure_string);
   ASSERT_TRUE(proc.get() != nullptr);

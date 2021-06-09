@@ -139,9 +139,12 @@ int GetVerbosityLevel(const std::vector<std::string>& arguments)
     static std::map<std::string, int> verbosity_map = {
         {"-v", kMinimal}, {"--verbose", kMinimal}, {"-vv", kInfo}};
 
-    int result = kSilent;
-    auto on_argument = [&result](const std::string& str) { result = verbosity_map[str]; };
-    std::for_each(arguments.begin(), arguments.end(), on_argument);
+    // find position of file argument
+    auto on_argument = [](const std::string& str) {
+        return str == "-v" || str == "--verbose" || str == "-vv"; };
+    auto it = std::find_if(arguments.begin(), arguments.end(), on_argument);
+
+    int result = it < arguments.end() ? verbosity_map[*it] : kSilent;
     return result;
 }
 

@@ -53,7 +53,7 @@ void DaemonInterface::UpdateInstructionStatusImpl(const Instruction * instructio
     auto instruction_name = instruction->GetName();
     auto status = instruction->GetStatus();
 
-    log_debug("Instruction: (%s:%s) : %s", instruction_type.c_str(), instruction_name.c_str(),
+    log_info("Instruction: (%s:%s) : %s", instruction_type.c_str(), instruction_name.c_str(),
                                           StatusToString(status).c_str());
   }
 }
@@ -74,7 +74,7 @@ void DaemonInterface::StartSingleStepImpl()
 {
   if (_log_enabled)
   {
-    log_debug("Start single execution step");
+    log_info("Start single execution step");
   }
 }
 
@@ -82,7 +82,7 @@ void DaemonInterface::EndSingleStepImpl()
 {
   if (_log_enabled)
   {
-    log_debug("End single execution step");
+    log_info("End single execution step");
   }
 }
 

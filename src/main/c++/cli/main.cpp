@@ -60,6 +60,7 @@ void print_usage(const std::string& prog_name)
   std::cout << "Options: -h|--help: Print usage." << std::endl;
   std::cout << "         -f|--file <filename>: Load, parse and execute <filename>." << std::endl;
   std::cout << "         -v|--verbose: Log to standard output." << std::endl;
+  std::cout << "         -vv : Maximum logging verbosity" << std::endl;
   std::cout << std::endl;
   std::cout << "The program loads <filename>, parses it into an executable behaviour tree and executes it." << std::endl;
   std::cout << std::endl;

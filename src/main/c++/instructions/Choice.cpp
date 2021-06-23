@@ -104,7 +104,7 @@ bool Choice::SetupImpl(const Procedure &proc) {
             log_error("Choice::Setup - No attribute var_name found");
         }
 
-        log_info("Choice::Setup - With var_name=%s numberOfElements=%u elementSize=%u isMask=%u", varName.c_str(), numberOfElements, elementSize, isMask);
+        log_debug("Choice::Setup - With var_name=%s numberOfElements=%u elementSize=%u isMask=%u", varName.c_str(), numberOfElements, elementSize, isMask);
     }
     return ret;
 }
@@ -117,7 +117,7 @@ ExecutionStatus Choice::ExecuteBitChild(const ::ccs::types::uint64 value,
 
     bool exit = false;
     for (::ccs::types::uint32 i = 0u; (i < remained) && (!exit); i++) {
-        log_info("Choice::ExecuteSingleImpl - Considering bit %d of %d", i, remained);
+        log_debug("Choice::ExecuteSingleImpl - Considering bit %d of %d", i, remained);
         if (((value >> i) & (0x1u))) {
             child_status = ExecuteChild(i, ui, ws);
             //continue only if success
@@ -134,14 +134,14 @@ ExecutionStatus Choice::ExecuteMaskSelector(::ccs::types::uint8 *valPtr,
     ExecutionStatus child_status = ExecutionStatus::SUCCESS;
 
     ::ccs::types::uint32 nElems = (elementSize * sizeof(::ccs::types::uint64));
-    log_info("Choice::ExecuteSingleImpl - isMask nElems=%d", nElems);
+    log_debug("Choice::ExecuteSingleImpl - isMask nElems=%d", nElems);
     bool exit = false;
     //generic...can consider very big elements
     while ((nElems > 0u) && (!exit)) {
         ::ccs::types::uint32 remained = (nElems > 64u) ? (64u) : (nElems);
         ::ccs::types::uint64 value = 0u;
         memcpy(&value, valPtr, (remained / 8u));
-        log_info("Choice::ExecuteSingleImpl - isMask value=%d", value);
+        log_debug("Choice::ExecuteSingleImpl - isMask value=%d", value);
         child_status = ExecuteBitChild(value, remained, ui, ws);
         exit = (child_status != ExecutionStatus::SUCCESS);
         nElems -= remained;
@@ -197,7 +197,7 @@ ExecutionStatus Choice::ExecuteChild(::ccs::types::uint32 idx,
 
         if (NeedsExecute(child_status)) {
             auto childName = ChildInstructions()[idx]->GetName();
-            log_info("Choice::ExecuteChild - Executing child[%u]=%s", idx, childName.c_str());
+            log_debug("Choice::ExecuteChild - Executing child[%u]=%s", idx, childName.c_str());
 
             ChildInstructions()[idx]->ExecuteSingle(ui, ws);
             child_status = ExecutionStatus::NOT_FINISHED;

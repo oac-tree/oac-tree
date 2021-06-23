@@ -82,7 +82,7 @@ TEST(Repeat, Procedure_success)
 
   if (status)
     {
-      log_info("TEST(Repeat, Procedure_success) - Count is '%u'", sup::UnitTestHelper::CounterInstruction::GetCount());
+      log_debug("TEST(Repeat, Procedure_success) - Count is '%u'", sup::UnitTestHelper::CounterInstruction::GetCount());
       status = (10u == sup::UnitTestHelper::CounterInstruction::GetCount());
     }
 
@@ -113,7 +113,7 @@ TEST(Repeat, Procedure_failure)
 
   if (status)
     {
-      log_info("TEST(Repeat, Procedure_failure) - Count is '%u'", sup::UnitTestHelper::CounterInstruction::GetCount());
+      log_debug("TEST(Repeat, Procedure_failure) - Count is '%u'", sup::UnitTestHelper::CounterInstruction::GetCount());
       status = (1u == sup::UnitTestHelper::CounterInstruction::GetCount());
     }
 

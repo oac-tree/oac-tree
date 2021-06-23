@@ -47,7 +47,7 @@ namespace sequencer {
 
 bool LoadPlugin(const std::string & name)
 {
-  log_info("sup::sequencer::LoadPlugin('%s') - trying to load plugin..", name.c_str());
+  log_debug("sup::sequencer::LoadPlugin('%s') - trying to load plugin..", name.c_str());
   bool status = ::ccs::HelperTools::LoadSharedLibrary(name.c_str());
 
   if (!status)
@@ -56,14 +56,14 @@ bool LoadPlugin(const std::string & name)
   }
   else
   {
-    log_info("sup::sequencer::LoadPlugin('%s') - successfully loaded plugin", name.c_str());
+    log_debug("sup::sequencer::LoadPlugin('%s') - successfully loaded plugin", name.c_str());
   }
   return status;
 }
 
 std::unique_ptr<Procedure> ParseProcedureFile(const std::string & filename)
 {
-  log_info("sup::sequencer::ParseProcedureFile('%s') - load file..", filename.c_str());
+  log_debug("sup::sequencer::ParseProcedureFile('%s') - load file..", filename.c_str());
   auto data = ParseXMLDataFile(filename);
 
   if (!data)
@@ -85,7 +85,7 @@ std::unique_ptr<Procedure> ParseProcedureFile(const std::string & filename)
 std::unique_ptr<Procedure> ParseProcedureString(const std::string & xml_str)
 {
   auto xml_head = xml_str.substr(0, 1024);
-  log_info("sup::sequencer::ParseProcedureString('%s') - parsing string..", xml_head.c_str());
+  log_debug("sup::sequencer::ParseProcedureString('%s') - parsing string..", xml_head.c_str());
   auto data = ParseXMLDataString(xml_str);
 
   if (!data)

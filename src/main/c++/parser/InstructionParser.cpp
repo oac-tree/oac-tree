@@ -68,7 +68,7 @@ std::unique_ptr<Instruction> ParseInstruction(const TreeData & data, const std::
   {
     instr->AddAttribute(attr.first, attr.second);
   }
-  log_info("sup::sequencer::ParseInstruction() - "
+  log_debug("sup::sequencer::ParseInstruction() - "
            "parsing child instructions for instruction of type: '%s'", instr_type.c_str());
   bool status = AddChildInstructions(instr.get(), data.Children(), filename);
   if (!status)
@@ -97,14 +97,14 @@ static bool AddChildInstructions(Instruction * instruction, const std::vector<Tr
   auto decorator = dynamic_cast<DecoratorInstruction *>(instruction);
   if (decorator)
   {
-    log_info("AddChildInstructions() - (%s:%s)", instr_type.c_str(), instr_name.c_str());
+    log_debug("AddChildInstructions() - (%s:%s)", instr_type.c_str(), instr_name.c_str());
     return AddChildrenToDecorator(decorator, children, filename);
   }
 
   auto compound = dynamic_cast<CompoundInstruction *>(instruction);
   if (compound)
   {
-    log_info("AddChildInstructions() - (%s:%s)", instr_type.c_str(), instr_name.c_str());
+    log_debug("AddChildInstructions() - (%s:%s)", instr_type.c_str(), instr_name.c_str());
     if (AddChildrenToCompound(compound, children, filename))
     {
       return true;
@@ -131,7 +131,7 @@ static bool AddChildrenToDecorator(DecoratorInstruction * decorator, const std::
     if (child_instr)
     {
       auto child_type = child_instr->GetType();
-      log_info("AddChildrenToDecorator() - calling Decorator->SetInstruction(%s)", child_type.c_str());
+      log_debug("AddChildrenToDecorator() - calling Decorator->SetInstruction(%s)", child_type.c_str());
       decorator->SetInstruction(child_instr.release());
       return true;
     }
@@ -151,7 +151,7 @@ static bool AddChildrenToCompound(CompoundInstruction * compound, const std::vec
       if (child_instr)
       {
         auto child_type = child_instr->GetType();
-        log_info("AddChildrenToCompound() - calling Compound->PushBack(%s)", child_type.c_str());
+        log_debug("AddChildrenToCompound() - calling Compound->PushBack(%s)", child_type.c_str());
         compound->PushBack(child_instr.release());
         continue;
       }

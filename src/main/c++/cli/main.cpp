@@ -76,7 +76,7 @@ int main(int argc, char * argv[])
     print_usage(arguments.at(0));
     return 0;
   }
-  log_info("sequencer-cli called with filename: %s", filename.c_str());
+  log_debug("sequencer-cli called with filename: %s", filename.c_str());
 
   if (!ccs::HelperTools::Exist(filename.c_str()))
   {

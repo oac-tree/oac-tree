@@ -89,7 +89,7 @@ int main(int argc, char * argv[])
     return 1;
   }
 
-  log_info("sequencer-daemon called with filename: %s", params.filepath);
+  log_debug("sequencer-daemon called with filename: %s", params.filepath);
 
   if (!ccs::HelperTools::Exist(params.filepath))
   {

@@ -59,7 +59,7 @@ std::unique_ptr<Variable> ParseVariable(const TreeData & data)
     return {};
   }
 
-  log_info("sup::sequencer::ParseVariable() - parsing attributes for variable of type: '%s'",
+  log_debug("sup::sequencer::ParseVariable() - parsing attributes for variable of type: '%s'",
            var_type.c_str());
   var->AddAttributes(data.Attributes());
 

@@ -73,7 +73,7 @@ bool Workspace::AddVariable(std::string name, Variable *var)
   auto result = _var_pointers.insert(var);
   if (result.second)
   {
-    log_info("sup::sequencer::Workspace::AddVariable('%s', var) - add variable "
+    log_debug("sup::sequencer::Workspace::AddVariable('%s', var) - add variable "
            "to workspace..", name.c_str());
     _var_map[name] = var_owned.release();
   }
@@ -111,7 +111,7 @@ bool Workspace::GetValue(std::string name, ::ccs::types::AnyValue &value) const
   }
   auto var = it->second;
 
-  log_info("sup::sequencer::Workspace::GetValue('%s', 'value') - trying to copy found "
+  log_debug("sup::sequencer::Workspace::GetValue('%s', 'value') - trying to copy found "
            "workspace variable to 'value'..",
            name.c_str());
   return var->GetValue(value, fieldname);
@@ -131,7 +131,7 @@ bool Workspace::SetValue(std::string name, const ::ccs::types::AnyValue &value)
     return false;
   }
   auto var = it->second;
-  log_info("sup::sequencer::Workspace::SetValue('%s', 'value') - trying to copy "
+  log_debug("sup::sequencer::Workspace::SetValue('%s', 'value') - trying to copy "
            "'value' into found workspace variable..", name.c_str());
 
   return var->SetValue(value, fieldname);

@@ -122,7 +122,7 @@ ExecutionStatus CopyNode::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
   if (status)
   {
     std::string var_input = GetAttribute("input");
-    log_info("CopyNode::ExecuteSingleImpl() - read input variable '%s'",
+    log_debug("CopyNode::ExecuteSingleImpl() - read input variable '%s'",
              var_input.c_str());
     status = ws->GetValue(var_input, val);
   }
@@ -135,7 +135,7 @@ ExecutionStatus CopyNode::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
   if (status)
   {
     std::string var_output = GetAttribute("output");
-    log_info("CopyNode::ExecuteSingleImpl() - write output variable '%s'",
+    log_debug("CopyNode::ExecuteSingleImpl() - write output variable '%s'",
              var_output.c_str());
     status = ws->SetValue(var_output, val);
   }
@@ -159,11 +159,11 @@ static bool PrintProcedureWorkspace(::sup::sequencer::Procedure * procedure)
     if (var_initialized)
     {
       val.SerialiseInstance(val_string, 1024);
-      log_info("Variable '%s', with value\n  %s", var_name.c_str(), val_string);
+      log_debug("Variable '%s', with value\n  %s", var_name.c_str(), val_string);
     }
     else
     {
-      log_info("Variable '%s' uninitialized", var_name.c_str());
+      log_debug("Variable '%s' uninitialized", var_name.c_str());
     }
   }
   return true;

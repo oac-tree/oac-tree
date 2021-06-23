@@ -84,13 +84,13 @@ CounterInstruction::~CounterInstruction() { counter = 0u; }
 void MockUI::UpdateInstructionStatusImpl (const sup::sequencer::Instruction * instruction) {}
 int MockUI::GetUserChoiceImpl (const std::vector<std::string> & choices, const std::string & description)
 {
-  log_info("TestUI::GetUserChoiceImpl - Description '%s'", description.c_str());
+  log_debug("TestUI::GetUserChoiceImpl - Description '%s'", description.c_str());
   return _choice;
 }
 
 bool MockUI::GetUserValueImpl (::ccs::types::AnyValue & value, const std::string & description)
 {
-  log_info("TestUI::GetUserValueImpl - Description '%s'", description.c_str());
+  log_debug("TestUI::GetUserValueImpl - Description '%s'", description.c_str());
   _type = value.GetType();
   value = _value;
   return _status;

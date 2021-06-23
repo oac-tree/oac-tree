@@ -50,19 +50,19 @@ void LogUI::UpdateInstructionStatusImpl(const Instruction * instruction)
     auto instruction_type = instruction->GetType();
     auto status = StatusToString(instruction->GetStatus());
 
-    log_info("Instruction '%s', status '%s'",
+    log_debug("Instruction '%s', status '%s'",
              instruction_type.c_str(), status.c_str());
 
 }
 
 void LogUI::StartSingleStepImpl()
 {
-    log_info("Start single execution step");
+    log_debug("Start single execution step");
 }
 
 void LogUI::EndSingleStepImpl()
 {
-    log_info("End single execution step");
+    log_debug("End single execution step");
 }
 
 LogUI::LogUI() = default;

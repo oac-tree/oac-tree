@@ -72,7 +72,7 @@ TEST(Include, Procedure_local)
 
   if (status)
     {
-      log_info("TEST(Include, Procedure_local) - Count is '%u'", sup::UnitTestHelper::CounterInstruction::GetCount());
+      log_debug("TEST(Include, Procedure_local) - Count is '%u'", sup::UnitTestHelper::CounterInstruction::GetCount());
       status = (20u == sup::UnitTestHelper::CounterInstruction::GetCount());
     }
 
@@ -104,7 +104,7 @@ TEST(Include, Procedure_param)
 
   if (status)
     {
-      log_info("TEST(Include, Procedure_param) - Count is '%u'", sup::UnitTestHelper::CounterInstruction::GetCount());
+      log_debug("TEST(Include, Procedure_param) - Count is '%u'", sup::UnitTestHelper::CounterInstruction::GetCount());
       status = (20u == sup::UnitTestHelper::CounterInstruction::GetCount());
     }
 
@@ -136,7 +136,7 @@ TEST(Include, Procedure_decorator)
 
   if (status)
     {
-      log_info("TEST(Include, Procedure_param) - Count is '%u'", sup::UnitTestHelper::CounterInstruction::GetCount());
+      log_debug("TEST(Include, Procedure_param) - Count is '%u'", sup::UnitTestHelper::CounterInstruction::GetCount());
       status = (20u == sup::UnitTestHelper::CounterInstruction::GetCount());
     }
 

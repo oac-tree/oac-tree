@@ -202,7 +202,7 @@ ExecutionStatus CopyInstruction::ExecuteSingleImpl(UserInterface * ui, Workspace
 CopyInstruction::CopyInstruction (void) : sup::sequencer::Instruction(CopyInstruction::Type) {}
 CopyInstruction::~CopyInstruction (void)
 {
-  log_info("CopyInstruction::~CopyInstruction called");
+  log_debug("CopyInstruction::~CopyInstruction called");
 }
 
 TEST(ParallelSequence, Procedure_sequence)

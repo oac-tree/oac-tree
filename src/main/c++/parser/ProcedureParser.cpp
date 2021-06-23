@@ -66,7 +66,7 @@ static bool ParseAndAddInstruction(Procedure * procedure, const TreeData & instr
 
 std::unique_ptr<Procedure> ParseProcedure(const TreeData & data, const std::string & filename)
 {
-  log_info("sup::sequencer::ParseProcedure() - entering function..");
+  log_debug("sup::sequencer::ParseProcedure() - entering function..");
 
   if (data.GetType() != PROCEDURE_ELEMENT_NAME)
   {
@@ -100,7 +100,7 @@ std::unique_ptr<Procedure> ParseProcedure(const TreeData & data, const std::stri
 
 std::string GetFullPathName(const std::string & directory, const std::string & filename)
 {
-  log_info("sup::sequencer::GetFullPathName(%s, %s) - entering function..",
+  log_debug("sup::sequencer::GetFullPathName(%s, %s) - entering function..",
            directory.c_str(), filename.c_str());
   if (filename.empty())
   {
@@ -172,7 +172,7 @@ static bool ParseAndLoadPlugin(const TreeData & child)
   {
     return true;
   }
-  log_info("ParseAndLoadPlugin() - parsing plugin '%s'", plugin_name.c_str());
+  log_debug("ParseAndLoadPlugin() - parsing plugin '%s'", plugin_name.c_str());
   bool success = LoadPlugin(plugin_name);
   if (!success)
   {
@@ -186,17 +186,17 @@ static bool RegisterTypeInformation(const TreeData & child, const std::string & 
   bool status = true;
   if (child.HasAttribute(JSONTYPE_ATTRIBUTE_NAME))
   {
-    log_info("RegisterTypeInformation() - function called with json type '%s' ..",
+    log_debug("RegisterTypeInformation() - function called with json type '%s' ..",
              child.GetAttribute(JSONTYPE_ATTRIBUTE_NAME).c_str());
     status = ::ccs::base::GlobalTypeDatabase::Register(child.GetAttribute(JSONTYPE_ATTRIBUTE_NAME).c_str());
   }
   else if (child.HasAttribute(JSONFILE_ATTRIBUTE_NAME))
   {
-    log_info("RegisterTypeInformation() - function called with json file '%s' ..",
+    log_debug("RegisterTypeInformation() - function called with json file '%s' ..",
              child.GetAttribute(JSONFILE_ATTRIBUTE_NAME).c_str());
     std::string jsonfile = GetFullPathName(GetFileDirectory(filename), child.GetAttribute(JSONFILE_ATTRIBUTE_NAME));
     auto type_string = ReadJSONFile(jsonfile);
-    log_info("RegisterTypeInformation() - json file '%s', type string '%s' ..",
+    log_debug("RegisterTypeInformation() - json file '%s', type string '%s' ..",
              jsonfile.c_str(), type_string.c_str());
     status = ::ccs::base::GlobalTypeDatabase::Register(type_string.c_str());
   }
@@ -233,11 +233,11 @@ static bool ParseProcedureChildren(Procedure * procedure, const TreeData & data)
 static bool AddWorkspaceVariables(Procedure * procedure, const TreeData & ws_data)
 {
   bool result = true;
-  log_info("AddWorkspaceVariables() - generating workspace variables..");
+  log_debug("AddWorkspaceVariables() - generating workspace variables..");
   for (auto &var_data : ws_data.Children())
   {
     auto name = var_data.GetName();
-    log_info("AddWorkspaceVariables() - generate variable: '%s'", name.c_str());
+    log_debug("AddWorkspaceVariables() - generate variable: '%s'", name.c_str());
     if (!name.empty())
     {
       auto var = ParseVariable(var_data);

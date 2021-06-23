@@ -66,7 +66,7 @@ const Instruction * FindInstruction(const std::vector<const Instruction *> & ins
 {
   const Instruction * result = nullptr;
   auto names = StripPath(name_path);
-  log_info("sup::sequencer::InstructionHelper::FindInstruction(): checking "
+  log_debug("sup::sequencer::InstructionHelper::FindInstruction(): checking "
              "names ('%s','%s')..", names.first.c_str(), names.second.c_str());
   for (auto inst : instructions)
   {

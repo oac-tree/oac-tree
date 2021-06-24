@@ -98,8 +98,7 @@ UserChoice::UserChoice()
   : CompoundInstruction(Type)
 {}
 
-UserChoice::~UserChoice()
-{}
+UserChoice::~UserChoice() = default;
 
 } // namespace sequencer
 

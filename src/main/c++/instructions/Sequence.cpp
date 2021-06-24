@@ -104,8 +104,7 @@ Sequence::Sequence()
   : CompoundInstruction(Type)
 {}
 
-Sequence::~Sequence()
-{}
+Sequence::~Sequence() = default;
 
 } // namespace sequencer
 

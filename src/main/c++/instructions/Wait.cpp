@@ -75,7 +75,7 @@ ExecutionStatus Wait::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
   return ExecutionStatus::SUCCESS;
 }
 
-bool Wait::SetupImpl(const Procedure & proc)
+bool Wait::SetupImpl(const Procedure & /*proc*/)
 {
   if (HasAttribute("timeout"))
   {
@@ -99,8 +99,7 @@ Wait::Wait()
   , _finish(0)
 {}
 
-Wait::~Wait()
-{}
+Wait::~Wait() = default;
 
 static unsigned long ToNanoSeconds(double sec)
 {

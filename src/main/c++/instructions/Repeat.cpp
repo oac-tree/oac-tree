@@ -127,8 +127,7 @@ Repeat::Repeat()
   , _init_ok{false}
 {}
 
-Repeat::~Repeat()
-{}
+Repeat::~Repeat() = default;
 
 } // namespace sequencer
 

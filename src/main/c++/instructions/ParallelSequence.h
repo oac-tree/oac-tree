@@ -77,7 +77,7 @@ class ParallelSequence : public CompoundInstruction
      * @brief Initialize synchronous wrappers that encapsulate the asynchronous execution
      * of each child instruction.
      */
-    bool InitWrappers();
+    void InitWrappers();
 
     std::vector<AsyncWrapper> _wrappers;
 

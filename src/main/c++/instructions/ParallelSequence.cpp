@@ -173,7 +173,7 @@ ExecutionStatus ParallelSequence::CalculateCompoundStatus() const
   return ExecutionStatus::RUNNING;
 }
 
-bool ParallelSequence::InitWrappers()
+void ParallelSequence::InitWrappers()
 {
   _wrappers.clear();
   for (auto child : ChildInstructions())

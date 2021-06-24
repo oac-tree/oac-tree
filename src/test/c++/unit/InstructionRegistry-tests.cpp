@@ -32,6 +32,8 @@
 #include <Instruction.h>
 #include <InstructionRegistry.h>
 
+#include <common/log-api.h>
+
 // Local header files
 
 #include "InstructionRegistry.h"

@@ -23,7 +23,7 @@
 
 #include <gtest/gtest.h> // Google test framework
 
-#include <common/log-api.h> // Syslog wrapper routines
+#include <common/AnyValue.h>
 
 // Local header files
 
@@ -128,11 +128,11 @@ static bool PrintProcedureWorkspace(::sup::sequencer::Procedure * procedure)
     if (var_initialized)
     {
       val.SerialiseInstance(val_string, 1024);
-      log_debug("Variable '%s', with value\n  %s", var_name.c_str(), val_string);
+      log_info("Variable '%s', with value\n  %s", var_name.c_str(), val_string);
     }
     else
     {
-      log_debug("Variable '%s' uninitialized", var_name.c_str());
+      log_info("Variable '%s' uninitialized", var_name.c_str());
     }
   }
   return true;

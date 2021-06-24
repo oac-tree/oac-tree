@@ -38,12 +38,18 @@
 #include <string>
 #include <vector>
 
-#include <common/AnyValue.h>
-
 // Local header files
 
 #include "AttributeMap.h"
 #include "ExecutionStatus.h"
+
+namespace ccs
+{
+namespace types
+{
+class AnyValue;
+}
+}
 
 // Constants
 

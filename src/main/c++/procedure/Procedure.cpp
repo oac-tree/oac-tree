@@ -23,6 +23,8 @@
 #include <common/log-api.h>
 #include <algorithm>
 
+#include <common/AnyValue.h>
+
 // Local header files
 
 #include "Procedure.h"

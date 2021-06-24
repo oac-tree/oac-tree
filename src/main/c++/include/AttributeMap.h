@@ -60,11 +60,13 @@ const std::string NAME_ATTRIBUTE = "name";
 
 class AttributeMap
 {
+  public:
+    using map_type = std::map<std::string, std::string>;
+
   private:
     /**
      * @brief Implementation of the map of attributes.
      */
-    using map_type = std::map<std::string, std::string>;
     map_type _attributes;
 
   protected:

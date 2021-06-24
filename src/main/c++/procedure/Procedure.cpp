@@ -82,8 +82,7 @@ void Procedure::ClearProcedureCache() const
 }
 
 Procedure::Procedure()
-  : _instructions{}
-  , _workspace{new Workspace()}
+  : _workspace{new Workspace}
 {}
 
 Procedure::~Procedure()
@@ -110,7 +109,7 @@ Instruction * Procedure::RootInstrunction()
 
 const Instruction * Procedure::RootInstrunction() const
 {
-  if (_instructions.size() == 0)
+  if (_instructions.empty())
   {
     return nullptr;
   }

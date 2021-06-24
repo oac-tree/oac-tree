@@ -116,7 +116,7 @@ std::string GetFullPathName(const std::string & directory, const std::string & f
 
 std::string GetFileDirectory(const std::string & filename)
 {
-  auto pos = filename.find_last_of("/");
+  auto pos = filename.find_last_of('/');
   if (pos == std::string::npos)
   {
     return {};

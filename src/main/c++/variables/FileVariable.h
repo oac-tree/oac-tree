@@ -66,12 +66,12 @@ class FileVariable : public Variable
     /**
      * @brief Constructor.
      */
-    FileVariable (void);
+    FileVariable ();
 
     /**
      * @brief Destructor.
      */
-    ~FileVariable (void) override;
+    ~FileVariable () override;
 
     /**
      * @brief Class name for VariableRegistry.

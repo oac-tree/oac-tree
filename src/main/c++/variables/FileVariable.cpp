@@ -68,8 +68,8 @@ bool FileVariable::SetValueImpl (const ::ccs::types::AnyValue& value)
   return status;
 }
 
-FileVariable::FileVariable (void) : Variable(FileVariable::Type) {}
-FileVariable::~FileVariable (void) {}
+FileVariable::FileVariable () : Variable(FileVariable::Type) {}
+FileVariable::~FileVariable () = default;
 
 } // namespace sequencer
 

@@ -57,8 +57,7 @@ Runner::Runner(UserInterface * ui)
   , _ui{ui}
 {}
 
-Runner::~Runner()
-{}
+Runner::~Runner() = default;
 
 void Runner::SetProcedure(Procedure * procedure)
 {

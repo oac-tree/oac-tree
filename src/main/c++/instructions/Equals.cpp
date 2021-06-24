@@ -85,7 +85,7 @@ ExecutionStatus Equals::ExecuteSingleImpl (UserInterface * ui, Workspace * ws)
 }
 
 Equals::Equals() : Instruction(Equals::Type) {}
-Equals::~Equals() {}
+Equals::~Equals() = default;
 
 } // namespace sequencer
 

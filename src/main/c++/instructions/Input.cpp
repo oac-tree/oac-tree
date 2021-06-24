@@ -81,8 +81,7 @@ Input::Input()
   : Instruction(Type)
 {}
 
-Input::~Input()
-{}
+Input::~Input() = default;
 
 } // namespace sequencer
 

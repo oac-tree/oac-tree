@@ -90,8 +90,7 @@ Inverter::Inverter()
   : DecoratorInstruction(Type)
 {}
 
-Inverter::~Inverter()
-{}
+Inverter::~Inverter() = default;
 
 } // namespace sequencer
 

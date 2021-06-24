@@ -128,8 +128,7 @@ Include::Include()
   : DecoratorInstruction(Type)
 {}
 
-Include::~Include()
-{}
+Include::~Include() = default;
 
 void Include::SetFilename(const std::string & filename)
 {

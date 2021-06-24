@@ -123,8 +123,7 @@ DecoratorInstruction::DecoratorInstruction(const std::string & type)
   , _child{}
 {}
 
-DecoratorInstruction::~DecoratorInstruction()
-{}
+DecoratorInstruction::~DecoratorInstruction() = default;
 
 void DecoratorInstruction::SetInstruction(Instruction * instruction)
 {

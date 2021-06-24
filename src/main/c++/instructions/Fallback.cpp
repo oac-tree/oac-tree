@@ -104,8 +104,7 @@ Fallback::Fallback()
   : CompoundInstruction(Type)
 {}
 
-Fallback::~Fallback()
-{}
+Fallback::~Fallback() = default;
 
 } // namespace sequencer
 

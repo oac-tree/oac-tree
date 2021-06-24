@@ -95,7 +95,7 @@ std::unique_ptr<Instruction> InstructionRegistry::Create(std::string name)
 std::vector<std::string> InstructionRegistry::RegisteredInstructionNames() const
 {
   std::vector<std::string> result;
-  for (const auto elem : _instruction_map)
+  for (const auto& elem : _instruction_map)
   {
     result.push_back(elem.first);
   }

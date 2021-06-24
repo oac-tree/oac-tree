@@ -138,7 +138,7 @@ bool AttributeMap::Remove(const std::string & name)
 bool AttributeMap::InitialiseVariableAttributes(const AttributeMap & source)
 {
   bool result = true;
-  for (auto attr_name : GetAttributeNames())
+  for (const auto& attr_name : GetAttributeNames())
   {
     auto attr_value = GetAttribute(attr_name);
     if (StartsWith(attr_value, DefaultSettings::VAR_ATTRIBUTE_CHAR))
@@ -168,7 +168,7 @@ namespace {
 
 bool StartsWith(const std::string & str, char c)
 {
-  if (str.size() == 0)
+  if (str.empty())
   {
     return false;
   }

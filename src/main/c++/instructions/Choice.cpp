@@ -177,7 +177,7 @@ ExecutionStatus Choice::ExecuteSingleImpl(UserInterface *ui,
     ExecutionStatus child_status = ExecutionStatus::SUCCESS;
     ::ccs::types::AnyValue _val;
     ws->GetValue(varName, _val);
-    ::ccs::types::uint8 *valPtr = reinterpret_cast<::ccs::types::uint8*>(_val.GetInstance());
+    auto valPtr = reinterpret_cast<::ccs::types::uint8*>(_val.GetInstance());
 
     if (isMask) {
         child_status = ExecuteMaskSelector(valPtr, ui, ws);

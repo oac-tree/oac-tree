@@ -73,8 +73,8 @@ ExecutionStatus Copy::ExecuteSingleImpl (UserInterface * ui, Workspace * ws)
 
 }
 
-Copy::Copy (void) : Instruction(Copy::Type) {}
-Copy::~Copy (void) {}
+Copy::Copy () : Instruction(Copy::Type) {}
+Copy::~Copy () = default;
 
 } // namespace sequencer
 

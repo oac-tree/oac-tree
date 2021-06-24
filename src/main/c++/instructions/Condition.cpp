@@ -54,10 +54,9 @@ Condition::Condition()
   : Instruction(Type)
 {}
 
-Condition::~Condition()
-{}
+Condition::~Condition() = default;
 
-ExecutionStatus Condition::ExecuteSingleImpl(UserInterface *ui, Workspace *ws)
+ExecutionStatus Condition::ExecuteSingleImpl(UserInterface */*ui*/, Workspace *ws)
 {
     ::ccs::types::AnyValue var;
     std::string varName = GetAttribute("var_name");

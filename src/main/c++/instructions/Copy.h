@@ -64,12 +64,12 @@ class Copy : public Instruction
     /**
      * @brief Constructor.
      */
-    Copy (void);
+    Copy ();
 
     /**
      * @brief Destructor.
      */
-    ~Copy (void) override;
+    ~Copy () override;
 
     /**
      * @brief The instruction's typename.

@@ -90,7 +90,6 @@ void AsyncWrapper::Tick(UserInterface * ui, Workspace * ws)
     LaunchChild(ui, ws);
     _status = ExecutionStatus::RUNNING;
   }
-  return;
 }
 
 ExecutionStatus AsyncWrapper::GetStatus() const

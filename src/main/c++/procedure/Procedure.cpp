@@ -82,7 +82,7 @@ void Procedure::ClearProcedureCache() const
 }
 
 Procedure::Procedure()
-  : _workspace{new Workspace}
+  : _workspace{new Workspace()}
 {}
 
 Procedure::~Procedure()

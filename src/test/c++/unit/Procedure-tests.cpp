@@ -35,6 +35,7 @@
 #include "SequenceParser.h"
 #include "UnitTestHelper.h"
 #include "Variable.h"
+#include "Wait.h"
 #include "VariableRegistry.h"
 
 // Constants
@@ -135,6 +136,57 @@ TEST_F(ProcedureTest, DefaultConstructed)
   EXPECT_EQ(variables.size(), 2);
   EXPECT_NE(std::find(variables.begin(), variables.end(), var1_name), variables.end());
   EXPECT_NE(std::find(variables.begin(), variables.end(), var2_name), variables.end());
+}
+
+TEST_F(ProcedureTest, InsertInstruction)
+{
+  Procedure procedure;
+
+  // inserting children one after another
+  auto child0 = new Wait;
+  EXPECT_TRUE(procedure.InsertInstruction(child0, 0));
+  EXPECT_EQ(procedure.GetInstructions().size(), 1);
+
+  auto child1 = new Wait;
+  EXPECT_TRUE(procedure.InsertInstruction(child1, 1));
+  EXPECT_EQ(procedure.GetInstructions().size(), 2);
+
+  // inserting child in between
+  auto child2 = new Wait;
+  EXPECT_TRUE(procedure.InsertInstruction(child2, 1));
+  EXPECT_EQ(procedure.GetInstructions().size(), 3);
+
+  EXPECT_EQ(procedure.GetInstructions(), std::vector<const Instruction*>({child0, child2, child1}));
+
+  // wrong insert index
+  Wait child3;
+  EXPECT_FALSE(procedure.InsertInstruction(&child3, -1));
+  EXPECT_FALSE(procedure.InsertInstruction(&child3, 4));
+}
+
+TEST_F(ProcedureTest, TakeMiddleChild)
+{
+  Procedure procedure;
+
+  // inserting 4 children
+  auto child0 = new Wait;
+  procedure.InsertInstruction(child0, 0);
+  auto child1 = new Wait;
+  procedure.InsertInstruction(child1, 1);
+  auto child2 = new Wait;
+  procedure.InsertInstruction(child2, 2);
+  auto child3 = new Wait;
+  procedure.InsertInstruction(child3, 3);
+
+  // taking middle child
+  auto child1_taken = procedure.TakeInstruction(1);
+  EXPECT_EQ(child1, child1_taken);
+  EXPECT_EQ(procedure.GetInstructions().size(), 3);
+  EXPECT_EQ(procedure.GetInstructions(), std::vector<const Instruction*>({child0, child2, child3}));
+  delete child1_taken;
+
+  // attempt to take non-existing one
+  EXPECT_TRUE(procedure.TakeInstruction(3) == nullptr);
 }
 
 TEST_F(ProcedureTest, ConstructedFromString)

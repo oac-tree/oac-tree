@@ -162,6 +162,25 @@ bool Procedure::PushInstruction(Instruction * instruction)
   return true;
 }
 
+bool Procedure::InsertInstruction(Instruction *instruction, int index)
+{
+  if (index < 0 || index > _instructions.size())
+    return false;
+  _instructions.emplace(std::next(_instructions.begin(), index), instruction);
+  return true;
+}
+
+Instruction *Procedure::TakeInstruction(int index)
+{
+  if (index < 0 || index >= _instructions.size())
+    return nullptr;
+
+  auto it = std::next(_instructions.begin(), index);
+  auto retval = std::move(*it);
+  _instructions.erase(it);
+  return retval.release();
+}
+
 bool Procedure::AddVariable(std::string name, Variable * var)
 {
   return _workspace->AddVariable(name, var);

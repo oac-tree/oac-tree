@@ -178,6 +178,22 @@ class Procedure
     bool PushInstruction(Instruction * instruction);
 
     /**
+     * @brief Inserts Instruction at the specified position.
+     *
+     * @param Position in the vector where instruction is inserted.
+     * @note Procedure takes ownership of the instruction.
+     */
+    bool InsertInstruction(Instruction * instruction, int index);
+
+    /**
+     * @brief Removes Instruction from the specified position.
+     *
+     * @param Position in the vector from where instruction is removed.
+     * @note Ownership is handed to the user.
+     */
+    Instruction* TakeInstruction(int index);
+
+    /**
      * @brief Add variable.
      *
      * @param name Variable name.

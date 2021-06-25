@@ -110,6 +110,11 @@ bool Instruction::InsertInstructionImpl(Instruction *, int)
   return false;
 }
 
+Instruction *Instruction::TakeInstructionImpl(int)
+{
+  return nullptr;
+}
+
 bool Instruction::SetupImpl(const Procedure & proc)
 {
   return true;
@@ -236,6 +241,11 @@ std::vector<const Instruction *> Instruction::ChildInstructions() const
 bool Instruction::InsertInstruction(Instruction *child, int index)
 {
   return InsertInstructionImpl(child, index);
+}
+
+Instruction *Instruction::TakeInstruction(int index)
+{
+  return TakeInstructionImpl(index);
 }
 
 bool NeedsExecute(ExecutionStatus status)

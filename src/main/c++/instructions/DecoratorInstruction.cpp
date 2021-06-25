@@ -77,6 +77,11 @@ bool DecoratorInstruction::InsertInstructionImpl(Instruction *child, int index)
     return true;
 }
 
+Instruction* DecoratorInstruction::TakeInstructionImpl(int index)
+{
+  return _child && index == 0 ? _child.release() : nullptr;
+}
+
 bool DecoratorInstruction::SetupImpl(const Procedure & proc)
 {
   return SetupChild(proc);

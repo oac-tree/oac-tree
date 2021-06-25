@@ -59,6 +59,30 @@ TEST_F(DecoratorInstructionTest, InsertChild)
   EXPECT_EQ(decorator.ChildrenCount(), 1);
 }
 
+TEST_F(DecoratorInstructionTest, TakeChild)
+{
+  TestClass decorator;
+  EXPECT_EQ(decorator.ChildrenCount(), 0);
+
+  // not possible to take non-existing child
+  EXPECT_FALSE(decorator.TakeInstruction(0));
+
+  // inserting children one after another
+  auto child0 = new Wait;
+  EXPECT_TRUE(decorator.InsertInstruction(child0, 0));
+  EXPECT_EQ(decorator.ChildrenCount(), 1);
+
+  // not possible to take index !=0
+  EXPECT_FALSE(decorator.TakeInstruction(1));
+
+  // tremoving child
+  auto child0_taken = decorator.TakeInstruction(0);
+  EXPECT_EQ(child0, child0_taken);
+  delete child0_taken;
+
+  EXPECT_EQ(decorator.ChildrenCount(), 0);
+}
+
 TEST_F(DecoratorInstructionTest, ChildInstructions)
 {
   auto registry = sup::sequencer::GlobalInstructionRegistry();

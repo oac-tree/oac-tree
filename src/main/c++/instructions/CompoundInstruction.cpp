@@ -34,10 +34,10 @@
 
 // Type definition
 
-namespace sup {
-
-namespace sequencer {
-
+namespace sup
+{
+namespace sequencer
+{
 // Global variables
 
 // Function declaration
@@ -69,7 +69,7 @@ int CompoundInstruction::ChildrenCountImpl() const
   return static_cast<int>(_children.size());
 }
 
-bool CompoundInstruction::InsertInstructionImpl(Instruction *child, int index)
+bool CompoundInstruction::InsertInstructionImpl(Instruction* child, int index)
 {
   if (index < 0 || index > ChildrenCount())
     return false;
@@ -77,12 +77,23 @@ bool CompoundInstruction::InsertInstructionImpl(Instruction *child, int index)
   return true;
 }
 
-bool CompoundInstruction::SetupImpl(const Procedure & proc)
+Instruction *CompoundInstruction::TakeInstructionImpl(int index)
+{
+  if (index < 0 || index >= ChildrenCount())
+    return nullptr;
+
+  auto it = std::next(_children.begin(), index);
+  auto retval = *it;
+  _children.erase(it);
+  return retval;
+}
+
+bool CompoundInstruction::SetupImpl(const Procedure& proc)
 {
   return SetupChildren(proc);
 }
 
-bool CompoundInstruction::SetupChildren(const Procedure & proc)
+bool CompoundInstruction::SetupChildren(const Procedure& proc)
 {
   log_debug("CompoundInstruction::SetupChildren - entering function..");
   bool result = true;
@@ -114,9 +125,7 @@ void CompoundInstruction::HaltChildren()
   }
 }
 
-CompoundInstruction::CompoundInstruction(const std::string & type)
-    : Instruction(type)
-{}
+CompoundInstruction::CompoundInstruction(const std::string& type) : Instruction(type) {}
 
 CompoundInstruction::~CompoundInstruction()
 {
@@ -126,21 +135,19 @@ CompoundInstruction::~CompoundInstruction()
   }
 }
 
-void CompoundInstruction::PushBack(Instruction * instruction)
+void CompoundInstruction::PushBack(Instruction* instruction)
 {
   _children.push_back(instruction);
 }
 
-} // namespace sequencer
+}  // namespace sequencer
 
-} // namespace sup
+}  // namespace sup
 
-extern "C" {
+extern "C"
+{
+  // C API function definitions
 
-// C API function definitions
-
-} // extern C
+}  // extern C
 
 #undef LOG_ALTERN_SRC
-
-

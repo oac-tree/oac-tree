@@ -64,6 +64,7 @@ class CompoundInstruction : public Instruction
     std::vector<const Instruction *> ChildInstructionsImpl() const override;
     int ChildrenCountImpl() const override;
     bool InsertInstructionImpl(Instruction *child, int index) override;
+    Instruction* TakeInstructionImpl(int index) override;
     bool SetupImpl(const Procedure & proc) override;
 
     /**

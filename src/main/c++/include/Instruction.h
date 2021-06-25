@@ -200,6 +200,15 @@ class Instruction
     virtual bool InsertInstructionImpl(Instruction *child, int index);
 
     /**
+     * @brief Removes child with the given index and returns it to the user.
+     *
+     * @return child on success, nullptr otherwise
+     * @details Index must be in the range [0, current_children_count-1], ownership
+     * is given to the user.
+     */
+    virtual Instruction* TakeInstructionImpl(int index);
+
+    /**
      * @brief Setup implementation.
      *
      * @param proc Procedure containing Workspace and instruction declarations.
@@ -361,6 +370,15 @@ class Instruction
      * @details Index must be in the range [0, current_children_count] inclusively.
      */
     bool InsertInstruction(Instruction *child, int index);
+
+    /**
+     * @brief Removes child with the given index and returns it to the user.
+     *
+     * @return child on success, nullptr otherwise
+     * @details Index must be in the range [0, current_children_count-1], ownership
+     * is given to the user.
+     */
+    Instruction* TakeInstruction(int index);
 };
 
 // Global variables

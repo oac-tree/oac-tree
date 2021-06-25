@@ -37,6 +37,7 @@ TEST(Wait, InitialState)
 
   sup::sequencer::Wait child;
   EXPECT_FALSE(instruction.InsertInstruction(&child, 0));
+  EXPECT_FALSE(instruction.TakeInstruction(0));
 }
 
 TEST(Wait, Registration)

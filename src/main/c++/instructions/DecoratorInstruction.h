@@ -62,6 +62,8 @@ class DecoratorInstruction : public Instruction
     void ResetHook() override;
     void HaltImpl() override;
     std::vector<const Instruction *> ChildInstructionsImpl() const override;
+    int ChildrenCountImpl() const override;
+    bool InsertInstructionImpl(Instruction *child, int index) override;
     bool SetupImpl(const Procedure & proc) override;
 
     /**

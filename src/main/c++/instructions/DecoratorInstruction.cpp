@@ -64,6 +64,19 @@ std::vector<const Instruction *> DecoratorInstruction::ChildInstructionsImpl() c
   return result;
 }
 
+int DecoratorInstruction::ChildrenCountImpl() const
+{
+    return _child ? 1 : 0;
+}
+
+bool DecoratorInstruction::InsertInstructionImpl(Instruction *child, int index)
+{
+    if (index != 0)
+        return false;
+    _child.reset(child);
+    return true;
+}
+
 bool DecoratorInstruction::SetupImpl(const Procedure & proc)
 {
   return SetupChild(proc);

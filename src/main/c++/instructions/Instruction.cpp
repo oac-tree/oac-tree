@@ -92,12 +92,22 @@ void Instruction::HaltImpl()
 
 bool Instruction::PostInitialiseVariables(const AttributeMap & source)
 {
-  return true;
+    return true;
+}
+
+int Instruction::ChildrenCountImpl() const
+{
+    return 0;
 }
 
 std::vector<const Instruction *> Instruction::ChildInstructionsImpl() const
 {
   return {};
+}
+
+bool Instruction::InsertInstructionImpl(Instruction *, int)
+{
+  return false;
 }
 
 bool Instruction::SetupImpl(const Procedure & proc)
@@ -203,6 +213,11 @@ bool Instruction::InitialiseVariableAttributes(const AttributeMap & source)
   return status;
 }
 
+int Instruction::ChildrenCount() const
+{
+    return ChildrenCountImpl();
+}
+
 std::vector<Instruction *> Instruction::ChildInstructions()
 {
   std::vector<Instruction *> result;
@@ -216,6 +231,11 @@ std::vector<Instruction *> Instruction::ChildInstructions()
 std::vector<const Instruction *> Instruction::ChildInstructions() const
 {
   return ChildInstructionsImpl();
+}
+
+bool Instruction::InsertInstruction(Instruction *child, int index)
+{
+  return InsertInstructionImpl(child, index);
 }
 
 bool NeedsExecute(ExecutionStatus status)

@@ -178,11 +178,26 @@ class Instruction
     virtual bool PostInitialiseVariables(const AttributeMap & source);
 
     /**
+     * @brief Returns children count.
+     *
+     * @return children count
+     */
+    virtual int ChildrenCountImpl() const;
+
+    /**
      * @brief Get list of child instructions implementation (const version).
      *
      * @return List of child instructions.
      */
     virtual std::vector<const Instruction *> ChildInstructionsImpl() const;
+
+    /**
+     * @brief Inserts child into the given index.
+     *
+     * @return true on success
+     * @details Index must be in the range [0, current_children_count] inclusively.
+     */
+    virtual bool InsertInstructionImpl(Instruction *child, int index);
 
     /**
      * @brief Setup implementation.
@@ -319,6 +334,13 @@ class Instruction
     bool InitialiseVariableAttributes(const AttributeMap & source);
 
     /**
+     * @brief Returns children count.
+     *
+     * @return children count
+     */
+    int ChildrenCount() const;
+
+    /**
      * @brief Get list of child instructions.
      *
      * @return List of child instructions.
@@ -331,6 +353,14 @@ class Instruction
      * @return List of child instructions.
      */
     std::vector<const Instruction *> ChildInstructions() const;
+
+    /**
+     * @brief Inserts child into the given index.
+     *
+     * @return true on success
+     * @details Index must be in the range [0, current_children_count] inclusively.
+     */
+    bool InsertInstruction(Instruction *child, int index);
 };
 
 // Global variables

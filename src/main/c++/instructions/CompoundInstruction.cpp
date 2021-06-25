@@ -64,6 +64,19 @@ std::vector<const Instruction *> CompoundInstruction::ChildInstructionsImpl() co
   return result;
 }
 
+int CompoundInstruction::ChildrenCountImpl() const
+{
+  return static_cast<int>(_children.size());
+}
+
+bool CompoundInstruction::InsertInstructionImpl(Instruction *child, int index)
+{
+  if (index < 0 || index > ChildrenCount())
+    return false;
+  _children.insert(std::next(_children.begin(), index), child);
+  return true;
+}
+
 bool CompoundInstruction::SetupImpl(const Procedure & proc)
 {
   return SetupChildren(proc);

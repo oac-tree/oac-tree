@@ -19,223 +19,169 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
-
-#include <algorithm> // std::find
-
-#include <gtest/gtest.h> // Google test framework
-
-#include <common/BasicTypes.h>
-
-#include <SequenceParser.h>
+#include "DecoratorInstruction.h"
+#include "InstructionRegistry.h"
+#include "LogUI.h"
+#include "UnitTestHelper.h"
+#include "Wait.h"
 
 #include <Instruction.h>
 #include <InstructionRegistry.h>
+#include <SequenceParser.h>
+#include <common/BasicTypes.h>
+#include <gtest/gtest.h>
 
-// Local header files
+using namespace sup::sequencer;
 
-#include "UnitTestHelper.h"
-#include "LogUI.h"
+class DecoratorInstructionTest : public ::testing::Test
+{
+public:
+  class TestClass : public DecoratorInstruction
+  {
+  public:
+    TestClass() : DecoratorInstruction("TestClass") {}
+    ExecutionStatus ExecuteSingleImpl(UserInterface*, Workspace*) override { return {}; }
+  };
+};
 
-#include "InstructionRegistry.h"
-#include "DecoratorInstruction.h"
-
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "unit-test"
-
-// Type declaration
-
-// Function declaration
-
-// Global variables
-
-static ccs::log::Func_t _log_handler = ccs::log::SetStdout();
-
-// Function definition
-
-// ToDo - Should implement test-specific instruction class to verify if called multiple times, or called by the ForceSuccess, etc.
+// ToDo - Should implement test-specific instruction class to verify if called multiple times, or
+// called by the ForceSuccess, etc.
 //        Need for this a wait to get a reference to the instruction in the procedure.
 
-TEST(DecoratorInstruction, ChildInstructions)
+TEST_F(DecoratorInstructionTest, InsertChild)
 {
+  TestClass decorator;
+  EXPECT_EQ(decorator.ChildrenCount(), 0);
 
-  sup::sequencer::InstructionRegistry registry = sup::sequencer::GlobalInstructionRegistry();
-  bool status = (registry.RegisteredInstructionNames().end() != std::find(registry.RegisteredInstructionNames().begin(), registry.RegisteredInstructionNames().end(), "ForceSuccess"));
-
-  std::unique_ptr<sup::sequencer::Instruction> decor;
-
-  sup::sequencer::DecoratorInstruction* ref = NULL_PTR_CAST(sup::sequencer::DecoratorInstruction*);
-
-  if (status)
-    {
-      decor = sup::sequencer::GlobalInstructionRegistry().Create("ForceSuccess");
-      status = static_cast<bool>(decor);
-    }
-
-  if (status)
-    {
-      ref = dynamic_cast<sup::sequencer::DecoratorInstruction*>(decor.get());
-      status = (NULL_PTR_CAST(sup::sequencer::DecoratorInstruction*) != ref);
-    }
-
-  if (status)
-    { // HasChild is protected
-      status = (true == decor->ChildInstructions().empty());
-    }
-
-  std::unique_ptr<sup::sequencer::Instruction> child;
-
-  if (status)
-    {
-      child = sup::sequencer::GlobalInstructionRegistry().Create("Wait");
-      status = static_cast<bool>(child);
-    }
-
-  if (status)
-    {
-      //ref->SetInstruction(child.get());
-      ref->SetInstruction(child.release());
-      status = (false == decor->ChildInstructions().empty());
-    }
-
-  ASSERT_EQ(true, status);
-
+  // inserting children one after another
+  auto child0 = new Wait;
+  EXPECT_TRUE(decorator.InsertInstruction(child0, 0));
+  EXPECT_EQ(decorator.ChildrenCount(), 1);
 }
 
-TEST(DecoratorInstruction, ForceSuccess_success)
+TEST_F(DecoratorInstructionTest, ChildInstructions)
 {
+  auto registry = sup::sequencer::GlobalInstructionRegistry();
+  auto instruction = GlobalInstructionRegistry().Create("ForceSuccess");
+  auto decorator = dynamic_cast<DecoratorInstruction*>(instruction.get());
+  ASSERT_TRUE(decorator != nullptr);
+  ASSERT_TRUE(decorator->ChildInstructions().empty());
 
+  auto child = GlobalInstructionRegistry().Create("Wait");
+  decorator->SetInstruction(child.release());
+  ASSERT_FALSE(decorator->ChildInstructions().empty());
+}
+
+TEST_F(DecoratorInstructionTest, ForceSuccess_success)
+{
   sup::sequencer::LogUI ui;
   auto proc = sup::sequencer::ParseProcedureString(
-    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-    "           name=\"Trivial procedure for testing purposes\"\n"
-    "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-    "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-    "    <Repeat maxCount=\"10\">\n"
-    "        <ForceSuccess name=\"success\">\n"
-    "            <Wait name=\"wait\" timeout=\"0.1\"/>\n"
-    "        </ForceSuccess>\n"
-    "    </Repeat>\n"
-    "    <Workspace>\n"
-    "    </Workspace>\n"
-    "</Procedure>");
+      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+      "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
+      "           name=\"Trivial procedure for testing purposes\"\n"
+      "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+      "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
+      "    <Repeat maxCount=\"10\">\n"
+      "        <ForceSuccess name=\"success\">\n"
+      "            <Wait name=\"wait\" timeout=\"0.1\"/>\n"
+      "        </ForceSuccess>\n"
+      "    </Repeat>\n"
+      "    <Workspace>\n"
+      "    </Workspace>\n"
+      "</Procedure>");
 
-  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
-
-  ASSERT_EQ(true, status);
-
+  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
 }
 
-TEST(DecoratorInstruction, ForceSuccess_failure)
+TEST_F(DecoratorInstructionTest, ForceSuccess_failure)
 {
-
   sup::sequencer::LogUI ui;
   auto proc = sup::sequencer::ParseProcedureString(
-    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-    "           name=\"Trivial procedure for testing purposes\"\n"
-    "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-    "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-    "    <Repeat maxCount=\"10\">\n"
-    "        <ForceSuccess name=\"success\">\n"
-    "            <Inverter name=\"failure\">\n"
-    "                <Wait name=\"wait\" timeout=\"0.1\"/>\n"
-    "            </Inverter>\n"
-    "        </ForceSuccess>\n"
-    "    </Repeat>\n"
-    "    <Workspace>\n"
-    "    </Workspace>\n"
-    "</Procedure>");
+      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+      "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
+      "           name=\"Trivial procedure for testing purposes\"\n"
+      "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+      "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
+      "    <Repeat maxCount=\"10\">\n"
+      "        <ForceSuccess name=\"success\">\n"
+      "            <Inverter name=\"failure\">\n"
+      "                <Wait name=\"wait\" timeout=\"0.1\"/>\n"
+      "            </Inverter>\n"
+      "        </ForceSuccess>\n"
+      "    </Repeat>\n"
+      "    <Workspace>\n"
+      "    </Workspace>\n"
+      "</Procedure>");
 
-  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
-
-  ASSERT_EQ(true, status);
-
+  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
 }
 
-TEST(DecoratorInstruction, Inverter_success)
+TEST_F(DecoratorInstructionTest, Inverter_success)
 {
-
   sup::sequencer::LogUI ui;
   auto proc = sup::sequencer::ParseProcedureString(
-    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-    "           name=\"Trivial procedure for testing purposes\"\n"
-    "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-    "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-    "    <Repeat maxCount=\"10\">\n"
-    "        <Inverter name=\"success\">\n"
-    "            <Inverter name=\"failure\">\n"
-    "                <Wait name=\"wait\" timeout=\"0.1\"/>\n"
-    "            </Inverter>\n"
-    "        </Inverter>\n"
-    "    </Repeat>\n"
-    "    <Workspace>\n"
-    "    </Workspace>\n"
-    "</Procedure>");
+      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+      "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
+      "           name=\"Trivial procedure for testing purposes\"\n"
+      "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+      "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
+      "    <Repeat maxCount=\"10\">\n"
+      "        <Inverter name=\"success\">\n"
+      "            <Inverter name=\"failure\">\n"
+      "                <Wait name=\"wait\" timeout=\"0.1\"/>\n"
+      "            </Inverter>\n"
+      "        </Inverter>\n"
+      "    </Repeat>\n"
+      "    <Workspace>\n"
+      "    </Workspace>\n"
+      "</Procedure>");
 
-  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
-
-  ASSERT_EQ(true, status);
-
+  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
 }
 
-TEST(DecoratorInstruction, Inverter_failure)
+TEST_F(DecoratorInstructionTest, Inverter_failure)
 {
-
   sup::sequencer::LogUI ui;
   auto proc = sup::sequencer::ParseProcedureString(
-    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-    "           name=\"Trivial procedure for testing purposes\"\n"
-    "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-    "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-    "    <Repeat maxCount=\"10\">\n"
-    "        <Inverter name=\"failure\">\n"
-    "            <Wait name=\"wait\" timeout=\"0.1\"/>\n"
-    "        </Inverter>\n"
-    "    </Repeat>\n"
-    "    <Workspace>\n"
-    "    </Workspace>\n"
-    "</Procedure>");
+      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+      "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
+      "           name=\"Trivial procedure for testing purposes\"\n"
+      "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+      "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
+      "    <Repeat maxCount=\"10\">\n"
+      "        <Inverter name=\"failure\">\n"
+      "            <Wait name=\"wait\" timeout=\"0.1\"/>\n"
+      "        </Inverter>\n"
+      "    </Repeat>\n"
+      "    <Workspace>\n"
+      "    </Workspace>\n"
+      "</Procedure>");
 
-  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE);
-
-  ASSERT_EQ(true, status);
-
+  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui, ExecutionStatus::FAILURE));
 }
 
-TEST(DecoratorInstruction, BaseClass_halt)
+TEST_F(DecoratorInstructionTest, BaseClass_halt)
 {
-
   sup::sequencer::LogUI ui;
   auto proc = sup::sequencer::ParseProcedureString(
-    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-    "           name=\"Trivial procedure for testing purposes\"\n"
-    "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-    "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-    "    <Repeat maxCount=\"10\">\n"
-    "        <ParallelSequence>\n"
-    "            <ForceSuccess name=\"success\">\n"
-    "                <Wait name=\"wait\" timeout=\"1.0\"/>\n"
-    "            </ForceSuccess>\n"
-    "            <Inverter name=\"failure\">\n"
-    "                <Wait name=\"wait\" timeout=\"0.1\"/>\n"
-    "            </Inverter>\n"
-    "        </ParallelSequence>\n"
-    "    </Repeat>\n"
-    "    <Workspace>\n"
-    "    </Workspace>\n"
-    "</Procedure>");
+      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+      "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
+      "           name=\"Trivial procedure for testing purposes\"\n"
+      "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+      "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
+      "    <Repeat maxCount=\"10\">\n"
+      "        <ParallelSequence>\n"
+      "            <ForceSuccess name=\"success\">\n"
+      "                <Wait name=\"wait\" timeout=\"1.0\"/>\n"
+      "            </ForceSuccess>\n"
+      "            <Inverter name=\"failure\">\n"
+      "                <Wait name=\"wait\" timeout=\"0.1\"/>\n"
+      "            </Inverter>\n"
+      "        </ParallelSequence>\n"
+      "    </Repeat>\n"
+      "    <Workspace>\n"
+      "    </Workspace>\n"
+      "</Procedure>");
 
-  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE);
-
-  ASSERT_EQ(true, status);
-
+  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui, ExecutionStatus::FAILURE));
 }
-
-#undef LOG_ALTERN_SRC

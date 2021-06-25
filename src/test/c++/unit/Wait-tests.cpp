@@ -19,86 +19,63 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
-
-#include <algorithm> // std::find
-
-#include <gtest/gtest.h> // Google test framework
-
-#include <common/BasicTypes.h>
+#include "InstructionRegistry.h"
+#include "LogUI.h"
+#include "UnitTestHelper.h"
+#include "Wait.h"
 
 #include <SequenceParser.h>
+#include <common/BasicTypes.h>
+#include <gtest/gtest.h>
 
-// Local header files
+#include <algorithm>
 
-#include "InstructionRegistry.h"
+TEST(Wait, InitialState)
+{
+  sup::sequencer::Wait instruction;
+  EXPECT_EQ(instruction.ChildrenCount(), 0);
 
-#include "UnitTestHelper.h"
-#include "LogUI.h"
-
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "unit-test"
-
-// Type declaration
-
-// Function declaration
-
-// Global variables
-
-static ccs::log::Func_t _log_handler = ccs::log::SetStdout();
-
-// Function definition
+  sup::sequencer::Wait child;
+  EXPECT_FALSE(instruction.InsertInstruction(&child, 0));
+}
 
 TEST(Wait, Registration)
 {
+  auto existing_names = sup::sequencer::GlobalInstructionRegistry().RegisteredInstructionNames();
 
-  sup::sequencer::InstructionRegistry registry = sup::sequencer::GlobalInstructionRegistry();
-  bool status = (registry.RegisteredInstructionNames().end() != std::find(registry.RegisteredInstructionNames().begin(), registry.RegisteredInstructionNames().end(), "Wait"));
-
-  ASSERT_EQ(true, status);
-
+  auto it = std::find(existing_names.begin(), existing_names.end(), "Wait");
+  ASSERT_TRUE(it != existing_names.end());
 }
 
 TEST(Wait, Procedure_success)
 {
-
   sup::sequencer::LogUI ui;
   auto proc = sup::sequencer::ParseProcedureString(
-    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-    "           name=\"Trivial procedure for testing purposes\"\n"
-    "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-    "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-    "    <Wait timeout=\"0.1\"/>\n"
-    "    <Workspace/>\n"
-    "</Procedure>");
+      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+      "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
+      "           name=\"Trivial procedure for testing purposes\"\n"
+      "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+      "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
+      "    <Wait timeout=\"0.1\"/>\n"
+      "    <Workspace/>\n"
+      "</Procedure>");
 
-  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
-
-  ASSERT_EQ(true, status);
-
+  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
 }
 
 TEST(Wait, SetupImpl_throw)
 {
-
   sup::sequencer::LogUI ui;
   auto proc = sup::sequencer::ParseProcedureString(
-    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-    "           name=\"Trivial procedure for testing purposes\"\n"
-    "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-    "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-    "    <Wait timeout=\"not-a-number\"/>\n"
-    "    <Workspace/>\n"
-    "</Procedure>");
+      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+      "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
+      "           name=\"Trivial procedure for testing purposes\"\n"
+      "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+      "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
+      "    <Wait timeout=\"not-a-number\"/>\n"
+      "    <Workspace/>\n"
+      "</Procedure>");
 
-  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui); // Should have expect failure in Setup but the exception does not cause SetupImpl to fail ..
-
-  ASSERT_EQ(true, status);
-
+  // Should have expect failure in Setup but the exception does not cause SetupImpl to fail.
+  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
 }
-
-#undef LOG_ALTERN_SRC

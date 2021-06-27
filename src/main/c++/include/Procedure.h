@@ -169,6 +169,11 @@ class Procedure
     std::vector<const Instruction *> GetInstructions(const std::string & filename = {}) const;
 
     /**
+     * @brief Get number of top-level instructions.
+     */
+    int GetInstructionCount() const;
+
+    /**
      * @brief Push Instruction at top level.
      *
      * @note Procedure takes ownership of the instruction and will take care of its timely

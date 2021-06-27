@@ -108,6 +108,7 @@ TEST_F(ProcedureTest, DefaultConstructed)
   EXPECT_EQ(empty_proc.RootInstrunction(), nullptr);
   auto instructions = empty_proc.GetInstructions();
   EXPECT_EQ(instructions.size(), 0);
+  EXPECT_EQ(empty_proc.GetInstructionCount(), 0);
 
   // Add one instruction
   EXPECT_FALSE(empty_proc.PushInstruction(nullptr));
@@ -145,16 +146,16 @@ TEST_F(ProcedureTest, InsertInstruction)
   // inserting children one after another
   auto child0 = new Wait;
   EXPECT_TRUE(procedure.InsertInstruction(child0, 0));
-  EXPECT_EQ(procedure.GetInstructions().size(), 1);
+  EXPECT_EQ(empty_proc.GetInstructionCount(), 1);
 
   auto child1 = new Wait;
   EXPECT_TRUE(procedure.InsertInstruction(child1, 1));
-  EXPECT_EQ(procedure.GetInstructions().size(), 2);
+  EXPECT_EQ(empty_proc.GetInstructionCount(), 2);
 
   // inserting child in between
   auto child2 = new Wait;
   EXPECT_TRUE(procedure.InsertInstruction(child2, 1));
-  EXPECT_EQ(procedure.GetInstructions().size(), 3);
+  EXPECT_EQ(empty_proc.GetInstructionCount(), 3);
 
   EXPECT_EQ(procedure.GetInstructions(), std::vector<const Instruction*>({child0, child2, child1}));
 

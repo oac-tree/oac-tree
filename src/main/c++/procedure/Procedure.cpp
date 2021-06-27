@@ -151,6 +151,11 @@ std::vector<const Instruction *> Procedure::GetInstructions(const std::string & 
   return result;
 }
 
+int Procedure::GetInstructionCount() const
+{
+  return static_cast<int>(_instructions.size());
+}
+
 bool Procedure::PushInstruction(Instruction * instruction)
 {
   if (instruction == nullptr)

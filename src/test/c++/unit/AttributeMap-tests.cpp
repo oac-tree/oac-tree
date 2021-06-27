@@ -22,7 +22,6 @@
 // Global header files
 
 #include <gtest/gtest.h> // Google test framework
-#include <common/log-api.h> // Syslog wrapper routines
 #include <algorithm>
 
 // Local header files
@@ -30,9 +29,6 @@
 #include "AttributeMap.h"
 
 // Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
 
 // Type definition
 
@@ -52,8 +48,6 @@ class AttributeMapTest : public ::testing::Test {
 
 // Global variables
 
-static ::ccs::log::Func_t __handler = ::ccs::log::SetStdout();
-
 static const std::string NAME_VALUE = "TestName";
 static const std::string DESCRIPTION_ATTRIBUTE = "Description";
 static const std::string DESCRIPTION_VALUE = "Description of this testing attribute";
@@ -72,7 +66,7 @@ TEST_F(AttributeMapTest, DefaultConstructed)
   EXPECT_EQ(attr_names.size(), 0);
 
   int n = 0;
-  for (auto attr : attr_map_0)
+  for (const auto& attr : attr_map_0)
   {
     ++n;
   }
@@ -86,7 +80,7 @@ TEST_F(AttributeMapTest, CopyConstructed)
   EXPECT_FALSE(attr_map != attr_map_1);
   EXPECT_EQ(attr_map.GetNumberOfAttributes(), attr_map_1.GetNumberOfAttributes());
 
-  for (auto attr : attr_map_1)
+  for (const auto& attr : attr_map_1)
   {
     EXPECT_TRUE(attr_map.HasAttribute(attr.first));
     EXPECT_EQ(attr_map.GetAttribute(attr.first), attr.second);
@@ -101,7 +95,7 @@ TEST_F(AttributeMapTest, MoveConstructed)
   EXPECT_FALSE(attr_map != attr_map_1);
   EXPECT_EQ(attr_map.GetNumberOfAttributes(), attr_map_1.GetNumberOfAttributes());
 
-  for (auto attr : attr_map_1)
+  for (const auto& attr : attr_map_1)
   {
     EXPECT_TRUE(attr_map.HasAttribute(attr.first));
     EXPECT_EQ(attr_map.GetAttribute(attr.first), attr.second);
@@ -115,7 +109,7 @@ TEST_F(AttributeMapTest, CopyAssigned)
   EXPECT_FALSE(attr_map_0 != attr_map_1);
   EXPECT_EQ(attr_map_0.GetNumberOfAttributes(), attr_map_1.GetNumberOfAttributes());
 
-  for (auto attr : attr_map_1)
+  for (const auto& attr : attr_map_1)
   {
     EXPECT_TRUE(attr_map_0.HasAttribute(attr.first));
     EXPECT_EQ(attr_map_0.GetAttribute(attr.first), attr.second);
@@ -130,7 +124,7 @@ TEST_F(AttributeMapTest, MoveAssigned)
   EXPECT_FALSE(attr_map_0 != attr_map_1);
   EXPECT_EQ(attr_map_0.GetNumberOfAttributes(), attr_map_1.GetNumberOfAttributes());
 
-  for (auto attr : attr_map_1)
+  for (const auto& attr : attr_map_1)
   {
     EXPECT_TRUE(attr_map_0.HasAttribute(attr.first));
     EXPECT_EQ(attr_map_0.GetAttribute(attr.first), attr.second);
@@ -171,7 +165,7 @@ TEST_F(AttributeMapTest, AddAttribute)
   EXPECT_NE(std::find(attr_names.begin(), attr_names.end(), attributes::NAME_ATTRIBUTE), attr_names.end());
   EXPECT_NE(std::find(attr_names.begin(), attr_names.end(), DESCRIPTION_ATTRIBUTE), attr_names.end());
   n = 0;
-  for (auto attr : attr_map_0)
+  for (const auto& attr : attr_map_0)
   {
     ++n;
   }
@@ -188,7 +182,7 @@ TEST_F(AttributeMapTest, AddAttribute)
   EXPECT_NE(std::find(attr_names.begin(), attr_names.end(), attributes::NAME_ATTRIBUTE), attr_names.end());
   EXPECT_NE(std::find(attr_names.begin(), attr_names.end(), DESCRIPTION_ATTRIBUTE), attr_names.end());
   n = 0;
-  for (auto attr : attr_map_0)
+  for (const auto& attr : attr_map_0)
   {
     ++n;
   }
@@ -226,7 +220,7 @@ TEST_F(AttributeMapTest, SetAttribute)
   EXPECT_EQ(attr_names.size(), 1);
   EXPECT_NE(std::find(attr_names.begin(), attr_names.end(), attributes::NAME_ATTRIBUTE), attr_names.end());
   n = 0;
-  for (auto attr : attr_map_0)
+  for (const auto& attr : attr_map_0)
   {
     EXPECT_EQ(attr.first, attributes::NAME_ATTRIBUTE);
     EXPECT_EQ(attr.second, overwrite_val);
@@ -252,7 +246,7 @@ TEST_F(AttributeMapTest, Remove)
   EXPECT_EQ(attr_map_1.GetAttribute(attributes::NAME_ATTRIBUTE), NAME_VALUE);
 
   int n = 0;
-  for (auto attr : attr_map_1)
+  for (const auto& attr : attr_map_1)
   {
     EXPECT_EQ(attr.first, attributes::NAME_ATTRIBUTE);
     EXPECT_EQ(attr.second, NAME_VALUE);
@@ -274,7 +268,7 @@ TEST_F(AttributeMapTest, Clear)
   EXPECT_EQ(attr_names.size(), 0);
 
   int n = 0;
-  for (auto attr : attr_map_1)
+  for (const auto& attr : attr_map_1)
   {
     ++n;
   }
@@ -329,5 +323,3 @@ AttributeMapTest::AttributeMapTest()
 }
 
 AttributeMapTest::~AttributeMapTest() = default;
-
-#undef LOG_ALTERN_SRC

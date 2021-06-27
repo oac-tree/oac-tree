@@ -200,6 +200,14 @@ bool Instruction::AddAttribute(const std::string & name, const std::string & val
   return _attributes.AddAttribute(name, value);
 }
 
+bool Instruction::SetAttribute(const std::string &name, const std::string &value)
+{
+  if (!_attributes.HasAttribute(name))
+    return false;
+  _attributes.SetAttribute(name, value);
+  return true;
+}
+
 bool Instruction::AddAttributes(const AttributeMap & attributes)
 {
   bool result = true;

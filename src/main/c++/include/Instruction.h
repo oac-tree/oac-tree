@@ -318,13 +318,22 @@ class Instruction
     AttributeMap GetAttributes() const;
 
     /**
-     * @brief Set attribute with given name and value.
+     * @brief Set new attribute with given name and value.
      *
      * @param name Attribute name.
      * @param value Attribute value.
      * @return true when successful.
      */
     bool AddAttribute(const std::string & name, const std::string & value);
+
+    /**
+     * @brief Set attribute with given name and value.
+     *
+     * @param name Attribute name.
+     * @param value Attribute value.
+     * @return true when successful.
+     */
+    bool SetAttribute(const std::string & name, const std::string & value);
 
     /**
      * @brief Set all attributes from given map.

@@ -51,3 +51,26 @@ TEST_F(InstructionTest, SetAttribute)
   EXPECT_TRUE(instruction.SetAttribute("key", "new-value"));
   EXPECT_EQ(instruction.GetAttribute("key"), std::string("new-value"));
 }
+
+TEST_F(InstructionTest, SetName)
+{
+  TestInstruction instruction;
+  const std::string name_of_attribute{"name"};
+
+  // by default there is no such attribute, and name is empty
+  EXPECT_EQ(instruction.GetName(), std::string());
+  EXPECT_FALSE(instruction.HasAttribute(name_of_attribute));
+
+  // it is possible to set name, attribute should appear
+  const std::string expected_name{"expected_name"};
+  instruction.SetName(expected_name);
+  EXPECT_EQ(instruction.GetName(), expected_name);
+  EXPECT_TRUE(instruction.HasAttribute(name_of_attribute));
+
+  // it should be possible to change name again
+  const std::string new_name{"new_name"};
+  instruction.SetName(new_name);
+  EXPECT_EQ(instruction.GetName(), new_name);
+  EXPECT_TRUE(instruction.HasAttribute(name_of_attribute));
+
+}

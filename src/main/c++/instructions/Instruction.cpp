@@ -141,7 +141,10 @@ std::string Instruction::GetName() const
 
 void Instruction::SetName(const std::string & name)
 {
-  AddAttribute(attributes::NAME_ATTRIBUTE, name);
+  if (HasAttribute(attributes::NAME_ATTRIBUTE))
+    SetAttribute(attributes::NAME_ATTRIBUTE, name);
+  else
+    AddAttribute(attributes::NAME_ATTRIBUTE, name);
 }
 
 bool Instruction::Setup(const Procedure & proc)

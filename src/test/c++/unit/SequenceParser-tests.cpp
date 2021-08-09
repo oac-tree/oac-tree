@@ -1,137 +1,115 @@
 /******************************************************************************
-* $HeadURL: $
-* $Id: $
-*
-* Project       : SUP Sequencer
-*
-* Description   : Unit test code
-*
-* Author        : Walter Van Herck (IO)
-*
-* Copyright (c) : 2010-2020 ITER Organization,
-*                 CS 90 046
-*                 13067 St. Paul-lez-Durance Cedex
-*                 France
-*
-* This file is part of ITER CODAC software.
-* For the terms and conditions of redistribution or use of this software
-* refer to the file ITER-LICENSE.TXT located in the top level directory
-* of the distribution package.
-******************************************************************************/
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP Sequencer
+ *
+ * Description   : Unit test code
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2020 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
 
-// Global header files
-
-#include <gtest/gtest.h> // Google test framework
+#include <gtest/gtest.h>
 
 #include <common/AnyValue.h>
 
-// Local header files
-
 #include "InstructionRegistry.h"
 #include "SequenceParser.h"
-
-// Constants
+#include "UnitTestHelper.h"
 
 #undef LOG_ALTERN_SRC
 #define LOG_ALTERN_SRC "sup::sequencer"
 
-// Function declaration
-
-static bool PrintProcedureWorkspace(::sup::sequencer::Procedure * procedure);
-
-// Global variables
+static bool PrintProcedureWorkspace(::sup::sequencer::Procedure *procedure);
 
 static ::ccs::log::Func_t __handler = ::ccs::log::SetStdout();
 
-// Function definition
-
-static inline bool Initialise (void)
-{
-  return true;
-}
-
-static inline bool Terminate (void)
-{
-  return true;
-}
-
 TEST(SequenceParser, Default) // Static initialisation
 {
-  bool status = Initialise();
+  const std::string body{R"(
+    <Sequence>
+        <Wait name="First" />
+        <Wait name="Second" />
+        <Inverter>
+            <Wait name="Third" />
+        </Inverter>
+    </Sequence>
+    <Workspace>
+    </Workspace>
+)"};
 
-  auto proc = sup::sequencer::ParseProcedureFile("../resources/sequence_fail.xml");
+  const std::string file_name = "/tmp/sequence_fail.xml";
+  ::sup::UnitTestHelper::TemporaryTestFile test_file(
+      file_name, ::sup::UnitTestHelper::CreateProcedureString(body));
 
-  status = bool(proc);
-
-  Terminate();
-
-  ASSERT_EQ(true, status);
+  auto proc = sup::sequencer::ParseProcedureFile(file_name);
+  ASSERT_TRUE(proc.get() != nullptr);
 }
 
 TEST(SequenceParser, Workspace) // Static initialisation
 {
-  bool status = Initialise();
+  const std::string body{R"(
+    <Sequence>
+        <Wait name="Only" />
+    </Sequence>
+    <Workspace>
+        <Local name="var1"
+               type='{"type":"vartype1","attributes":[{"value":{"type":"uint64"}}]}'
+               value='{"value":1729}' />
+        <Local name="var2"
+               type='{"type":"vartype2","attributes":[{"value":{"type":"string"}}]}' />
+        <Local name="var3"
+               type='{"type":"vartype3","attributes":[{"value":{"type":"bool"}}]}'/>
+    </Workspace>
+)"};
 
-  auto proc = sup::sequencer::ParseProcedureFile("../resources/workspace.xml");
+  const std::string file_name = "/tmp/workspace.xml";
+  ::sup::UnitTestHelper::TemporaryTestFile test_file(
+      file_name, ::sup::UnitTestHelper::CreateProcedureString(body));
 
-  status = bool(proc);
-
-  if (status)
-  {
-    status = PrintProcedureWorkspace(proc.get());
-  }
-
-  Terminate();
-
-  ASSERT_EQ(true, status);
+  auto proc = sup::sequencer::ParseProcedureFile(file_name);
+  ASSERT_TRUE(PrintProcedureWorkspace(proc.get()));
 }
 
 TEST(SequenceParser, ParseString) // Static initialisation
 {
-  bool status = Initialise();
+  const std::string body{R"(
+    <Sequence>
+        <Wait name="First" />
+        <Wait name="Second" />
+    </Sequence>
+    <Workspace>
+    </Workspace>
+)"};
 
   auto proc = sup::sequencer::ParseProcedureString(
-    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-    "           name=\"Trivial procedure for testing purposes\"\n"
-    "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-    "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-    "    <Sequence>\n"
-    "        <Wait name=\"First\" />\n"
-    "        <Wait name=\"Second\" />\n"
-    "    </Sequence>\n"
-    "    <Workspace>\n"
-    "    </Workspace>\n"
-    "</Procedure>");
+      ::sup::UnitTestHelper::CreateProcedureString(body));
 
-  status = bool(proc);
-
-  if (status)
-  {
-    status = PrintProcedureWorkspace(proc.get());
-  }
-
-  Terminate();
-
-  ASSERT_EQ(true, status);
+  ASSERT_TRUE(proc.get() != nullptr);
+  ASSERT_TRUE(PrintProcedureWorkspace(proc.get()));
 }
 
-
-static bool PrintProcedureWorkspace(::sup::sequencer::Procedure * procedure)
-{
+static bool PrintProcedureWorkspace(::sup::sequencer::Procedure *procedure) {
   auto var_names = procedure->VariableNames();
   ::ccs::types::char8 val_string[1024];
-  for (const auto & var_name : var_names)
-  {
+  for (const auto &var_name : var_names) {
     ::ccs::types::AnyValue val;
     bool var_initialized = procedure->GetVariableValue(var_name, val);
-    if (var_initialized)
-    {
+    if (var_initialized) {
       val.SerialiseInstance(val_string, 1024);
-      log_debug("Variable '%s', with value\n  %s", var_name.c_str(), val_string);
-    }
-    else
-    {
+      log_debug("Variable '%s', with value\n  %s", var_name.c_str(),
+                val_string);
+    } else {
       log_debug("Variable '%s' uninitialized", var_name.c_str());
     }
   }

@@ -54,11 +54,36 @@ static bool PrintProcedureWorkspace(::sup::sequencer::Procedure *procedure);
 
 TEST(Choice, Default) // Static initialisation
 {
+  const std::string body{R"(
+   <Choice var_name="sel">
+        <Copy name="zero" input="a" output="res" />
+        <Copy name="one" input="b" output="res" />
+        <Copy name="two" input="c" output="res" />
+    </Choice>
+    <Workspace>
+        <Local name="res"
+               type='{"type":"int8"}'
+               value='0' />
+        <Local name="a"
+               type='{"type":"int8"}'
+               value='1' />
+        <Local name="b"
+               type='{"type":"int8"}'
+               value='2' />
+        <Local name="c"
+               type='{"type":"int8"}'
+               value='3' />
+    </Workspace>
+)"};
+
+  const std::string file_name = "/tmp/workspace_choice.xml";
+  ::sup::UnitTestHelper::TemporaryTestFile test_file(file_name, ::sup::UnitTestHelper::CreateProcedureString(body));
+
   bool status(true);
   ccs::types::uint32 i = 0u;
   while ((testTable[i][0] != NULL) && status) {
     auto proc =
-        sup::sequencer::ParseProcedureFile("../resources/workspace_choice.xml");
+        sup::sequencer::ParseProcedureFile(file_name);
 
     std::unique_ptr<Variable> varX(new LocalVariable);
 

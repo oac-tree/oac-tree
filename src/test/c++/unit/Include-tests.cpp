@@ -19,189 +19,181 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
-
-#include <gtest/gtest.h> // Google test framework
-
-#include <common/BasicTypes.h>
-
 #include <SequenceParser.h>
+#include <common/BasicTypes.h>
+#include <common/SysTools.h>
+#include <gtest/gtest.h> 
 
-// Local header files
-
-#include "UnitTestHelper.h"
 #include "LogUI.h"
-
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "unit-test"
-
-// Type declaration
-
-// Function declaration
-
-// Global variables
-
-static ccs::log::Func_t _log_handler = ccs::log::SetStdout();
-
-// Function definition
+#include "UnitTestHelper.h"
 
 TEST(Include, Procedure_local)
 {
+  const std::string body{R"(
+    <Sequence name="CountTwice">
+        <Counter/>
+        <Counter/>
+    </Sequence>
+    <Repeat isRoot="true" maxCount="10">
+        <Include name="Counts" path="CountTwice"/>
+    </Repeat>
+    <Workspace>
+    </Workspace>
+)"};
 
   sup::sequencer::LogUI ui;
-  auto proc = sup::sequencer::ParseProcedureString(
-    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-    "           name=\"Trivial procedure for testing purposes\"\n"
-    "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-    "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-    "    <Sequence name=\"CountTwice\">\n"
-    "        <Counter/>\n"
-    "        <Counter/>\n"
-    "    </Sequence>\n"
-    "    <Repeat isRoot=\"true\" maxCount=\"10\">\n"
-    "        <Include name=\"Counts\" path=\"CountTwice\"/>\n"
-    "    </Repeat>\n"
-    "    <Workspace>\n"
-    "    </Workspace>\n"
-    "</Procedure>");
+  auto proc =
+      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
 
-  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
-
-  if (status)
-    {
-      log_debug("TEST(Include, Procedure_local) - Count is '%u'", sup::UnitTestHelper::CounterInstruction::GetCount());
-      status = (20u == sup::UnitTestHelper::CounterInstruction::GetCount());
-    }
-
-  ASSERT_EQ(true, status);
-
+  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+  EXPECT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 20);
 }
 
 TEST(Include, Procedure_param)
 {
+  const std::string body{R"(
+    <Sequence name="CountParam">
+        <Counter incr="$incr"/>
+    </Sequence>
+    <Repeat isRoot="true" maxCount="10">
+        <Include name="Counts" path="CountParam" incr="2"/>
+    </Repeat>
+    <Workspace>
+    </Workspace>
+)"};
 
   sup::sequencer::LogUI ui;
-  auto proc = sup::sequencer::ParseProcedureString(
-    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-    "           name=\"Trivial procedure for testing purposes\"\n"
-    "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-    "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-    "    <Sequence name=\"CountParam\">\n"
-    "        <Counter incr=\"$incr\"/>\n"
-    "    </Sequence>\n"
-    "    <Repeat isRoot=\"true\" maxCount=\"10\">\n"
-    "        <Include name=\"Counts\" path=\"CountParam\" incr=\"2\"/>\n"
-    "    </Repeat>\n"
-    "    <Workspace>\n"
-    "    </Workspace>\n"
-    "</Procedure>");
+  auto proc =
+      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
 
-  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
-
-  if (status)
-    {
-      log_debug("TEST(Include, Procedure_param) - Count is '%u'", sup::UnitTestHelper::CounterInstruction::GetCount());
-      status = (20u == sup::UnitTestHelper::CounterInstruction::GetCount());
-    }
-
-  ASSERT_EQ(true, status);
-
+  ASSERT_TRUE(proc.get() != nullptr);
+  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+  EXPECT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 20);
 }
 
 TEST(Include, Procedure_decorator)
 {
+  const std::string body{R"(
+    <ForceSuccess name="CountParamWithDecorator">
+        <Counter incr="$incr"/>
+    </ForceSuccess>
+    <Repeat isRoot="true" maxCount="10">
+        <Include name="Counts" path="CountParamWithDecorator" 
+incr="2"/>
+    </Repeat>
+    <Workspace>
+    </Workspace>
+)"};
 
   sup::sequencer::LogUI ui;
-  auto proc = sup::sequencer::ParseProcedureString(
-    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-    "           name=\"Trivial procedure for testing purposes\"\n"
-    "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-    "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-    "    <ForceSuccess name=\"CountParamWithDecorator\">\n"
-    "        <Counter incr=\"$incr\"/>\n"
-    "    </ForceSuccess>\n"
-    "    <Repeat isRoot=\"true\" maxCount=\"10\">\n"
-    "        <Include name=\"Counts\" path=\"CountParamWithDecorator\" incr=\"2\"/>\n"
-    "    </Repeat>\n"
-    "    <Workspace>\n"
-    "    </Workspace>\n"
-    "</Procedure>");
+  auto proc =
+      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
 
-  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
-
-  if (status)
-    {
-      log_debug("TEST(Include, Procedure_param) - Count is '%u'", sup::UnitTestHelper::CounterInstruction::GetCount());
-      status = (20u == sup::UnitTestHelper::CounterInstruction::GetCount());
-    }
-
-  ASSERT_EQ(true, status);
-
+  ASSERT_TRUE(proc.get() != nullptr);
+  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+  EXPECT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 20);
 }
 
 TEST(Include, Procedure_undefined)
 {
+  const std::string body{R"(
+    <Sequence isRoot="true">
+        <Include name="undefined" path="undefined"/>
+        <Include name="undefined" file="undefined"/>
+        <Include name="undefined" path="undefined" file="undefined"/>
+    </Sequence>
+    <Workspace>
+    </Workspace>
+)"};
 
   sup::sequencer::LogUI ui;
-  auto proc = sup::sequencer::ParseProcedureString(
-    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-    "           name=\"Trivial procedure for testing purposes\"\n"
-    "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-    "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-    "    <Sequence isRoot=\"true\">\n"
-    "        <Include name=\"undefined\" path=\"undefined\"/>\n"
-    "        <Include name=\"undefined\" file=\"undefined\"/>\n"
-    "        <Include name=\"undefined\" path=\"undefined\" file=\"undefined\"/>\n"
-    "    </Sequence>\n"
-    "    <Workspace>\n"
-    "    </Workspace>\n"
-    "</Procedure>");
+  auto proc =
+      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
 
-  bool status = (false == sup::UnitTestHelper::TryAndExecute(proc, &ui));
-
-  ASSERT_EQ(true, status);
-
+  ASSERT_TRUE(proc.get() != nullptr);
+  ASSERT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
 }
 
 TEST(Include, Procedure_extern)
 {
+  // preparing test file for inclusion
+  const std::string body{R"(
+    <ParallelSequence name="Parallel Wait" successThreshold="2">
+        <Wait name="One" timeout="1.0" />
+        <Wait name="Two" timeout="2.0" />
+        <Wait name="Three" timeout="3.0" />
+    </ParallelSequence>
+    <Workspace>
+    </Workspace>
+)"};
+
+  const std::string file_name = "/tmp/parallel_sequence.xml";
+  ::sup::UnitTestHelper::TemporaryTestFile test_file(
+      file_name, ::sup::UnitTestHelper::CreateProcedureString(body));
+
+  const std::string procedure_body{R"(
+    <Repeat isRoot="true" maxCount="10">
+        <Include name="Waits" path="Parallel Wait" file="/tmp/parallel_sequence.xml"/>
+    </Repeat>
+    <Workspace>
+    </Workspace>
+)"};
 
   sup::sequencer::LogUI ui;
   auto proc = sup::sequencer::ParseProcedureString(
-    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-    "           name=\"Trivial procedure for testing purposes\"\n"
-    "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-    "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-    "    <Repeat isRoot=\"true\" maxCount=\"10\">\n"
-    "        <Include name=\"Waits\" path=\"Parallel Wait\" file=\"../resources/parallel_sequence.xml\"/>\n"
-    "    </Repeat>\n"
-    "    <Workspace>\n"
-    "    </Workspace>\n"
-    "</Procedure>");
-
-  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
-
-  ASSERT_EQ(true, status);
-
+      ::sup::UnitTestHelper::CreateProcedureString(procedure_body));
+  ASSERT_TRUE(proc.get() != nullptr);
+  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
 }
 
 TEST(Include, Procedure_nested)
-{ // Just call for now the XML part of resources
+{
+  // preparing files for recursive inclusion
+  ccs::HelperTools::CreatePath("/tmp/instruction_definitions");
+  ccs::HelperTools::CreatePath("/tmp/instruction_definitions/waits");
+
+  const std::string single_waits_body{R"(
+    <Wait name="OneSecond" timeout="1.0" />
+    <Wait name="TwoSeconds" timeout="2.0" />
+    <Wait name="ThreeSeconds" timeout="3.0" />
+    <Wait name="ParametrizedWait" timeout="$timeout" />
+)"};
+
+  const std::string single_wait_file_name = "/tmp/instruction_definitions/waits/single_waits.xml";
+  ::sup::UnitTestHelper::TemporaryTestFile single_waits_test_file(
+      single_wait_file_name, ::sup::UnitTestHelper::CreateProcedureString(single_waits_body));
+
+  const std::string compound_waits_body{R"(
+    <Sequence name="SerialWait">
+        <Include name="One" path="OneSecond" file="waits/single_waits.xml" />
+        <Include name="Two" path="ParametrizedWait" file="waits/single_waits.xml" timeout="$par1" />
+    </Sequence>
+    <ParallelSequence name="ParallelWait">
+        <Include name="One" path="TwoSeconds" file="waits/single_waits.xml" />
+        <Include name="Two" path="ParametrizedWait" file="waits/single_waits.xml" timeout="$par1" />
+    </ParallelSequence>
+)"};
+
+  const std::string compound_waits_file_name = "/tmp/instruction_definitions/compound_waits.xml";
+  ::sup::UnitTestHelper::TemporaryTestFile compound_waits_test_file(
+      compound_waits_file_name, ::sup::UnitTestHelper::CreateProcedureString(compound_waits_body));
+
+  const std::string main_body{R"(
+    <Sequence isRoot="True">
+        <Include name="First wait" path="SerialWait"
+                 file="instruction_definitions/compound_waits.xml" par1="1.0" />
+        <Include name="Second Wait" path="ParallelWait"
+                 file="instruction_definitions/compound_waits.xml" par1="3.0" />
+    </Sequence>
+)"};
+
+  const std::string file_name = "/tmp/recursive_include.xml";
+  ::sup::UnitTestHelper::TemporaryTestFile test_file(
+      file_name, ::sup::UnitTestHelper::CreateProcedureString(main_body));
 
   sup::sequencer::LogUI ui;
-  auto proc = sup::sequencer::ParseProcedureFile("../resources/recursive_include.xml");
+  auto proc = sup::sequencer::ParseProcedureFile(file_name);
 
-  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
-
-  ASSERT_EQ(true, status);
-
+  ASSERT_TRUE(proc.get() != nullptr);
+  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
 }
-
-#undef LOG_ALTERN_SRC

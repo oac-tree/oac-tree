@@ -32,24 +32,6 @@
 #include "UnitTestHelper.h"
 #include "UserInterface.h"
 
-namespace {
-
-const std::string header {
-R"RAW(<?xml version="1.0" encoding="UTF-8"?>
-<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
-           name="Trivial procedure for testing purposes"
-           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">)RAW"
-};
-
-const std::string footer {R"RAW(</Procedure>)RAW"};
-
-std::string CreateProcedureString(const std::string& body) {
-  return header + body + footer;
-}
-
-} // namespace
-
 //! Testing Output instruction.
 class OutputTest : public ::testing::Test {
 public:
@@ -92,7 +74,7 @@ TEST_F(OutputTest, PutInteger) {
   </Workspace>
 )RAW"};
 
-  const auto procedure_string = CreateProcedureString(procedure_body);
+  const auto procedure_string = ::sup::UnitTestHelper::CreateProcedureString(procedure_body);
 
   const unsigned expected{22};
   TestInterface ui{expected};

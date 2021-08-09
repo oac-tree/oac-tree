@@ -183,6 +183,12 @@ static inline bool TryAndExecute (std::unique_ptr<sup::sequencer::Procedure>& pr
 
 }
 
+/**
+ * Creates a string representing a valid XML of sequencer procedure by enclosing user provided body
+ * between appropriate header and footer.
+ */
+std::string CreateProcedureString(const std::string& body);
+
 } // namespace UnitTestHelper
 
 } // namespace sup

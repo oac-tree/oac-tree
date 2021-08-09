@@ -19,34 +19,26 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
-#include <gtest/gtest.h> // Google test framework
+#include <gtest/gtest.h>
 
-#include <common/log-api.h> // Syslog wrapper routines
-#include "common/BasicTypes.h"
-#include "common/AnyValue.h"
-#include "common/SharedReference.h"
 #include "common/AnyType.h"
+#include "common/AnyValue.h"
+#include "common/BasicTypes.h"
+#include "common/SharedReference.h"
+#include <common/log-api.h>
 
-// Local header files
-
-#include "Workspace.h"
-#include "LocalVariable.h"
 #include "Condition.h"
+#include "LocalVariable.h"
 #include "SequenceParser.h"
+#include "Workspace.h"
 
-#include "UnitTestHelper.h"
 #include "LogUI.h"
-
-// Constants
+#include "UnitTestHelper.h"
 
 #undef LOG_ALTERN_SRC
 #define LOG_ALTERN_SRC "sup::sequencer"
 
-// Type declaration
-
 using namespace sup::sequencer;
-
 
 static const ccs::types::char8 *conditionTable[][14] = {
         { "c", "{\"type\":\"uint8\"}", "0", "c", "false", NULL },
@@ -56,218 +48,179 @@ static const ccs::types::char8 *conditionTable[][14] = {
         { "c[1].field1", "{\"type\":\"StructuredData6a\", \"multiplicity\":2, \"element\":{\"type\":\"StructuredData6Base\", \"attributes\":[{\"field1\":{\"type\":\"uint32\"}}]}}", "[{\"field1\":1}, {\"field1\":0}]", "c", "false", NULL },
         { NULL } };
 
-
-// Function definition
-
-static inline bool Initialise(void) {
-    return true;
-}
-
-static inline bool Terminate(void) {
-    return true;
-}
-
 static bool PrintProcedureWorkspace(::sup::sequencer::Procedure *procedure);
 
-TEST(Condition, Default) // Static initialisation
-{
-    bool status = Initialise();
+TEST(Condition, Default) {
+  const std::string body{R"(
+    <Sequence>
+        <Condition name="Condition" var_name="a" />
+    </Sequence>
+    <Workspace>
+        <Local name="a"
+               type='{"type":"int8"}'
+               value='1' />
+        <Local name="b"
+               type='{"type":"uint8"}'
+               value='0' />
+        <Local name="c"
+               type='{"type":"uint16"}'
+               value='3' />
+        <Local name="d"
+               type='{"type":"uint32"}'
+               value='0' />
+    </Workspace>
+)"};
 
-    auto proc = sup::sequencer::ParseProcedureFile("../resources/workspaceCondition.xml");
+  const std::string file_name = "/tmp/workspaceCondition.xml";
+  ::sup::UnitTestHelper::TemporaryTestFile test_file(
+      file_name, ::sup::UnitTestHelper::CreateProcedureString(body));
 
-    status = bool(proc);
+  auto proc = sup::sequencer::ParseProcedureFile(file_name);
+  ASSERT_TRUE(proc.get() != nullptr);
 
-    if (status)
-    {
-        status = PrintProcedureWorkspace(proc.get());
-    }
+  ASSERT_TRUE(PrintProcedureWorkspace(proc.get()));
 
-    if (status)
-    {
-        LogUI ui;
-        proc->ExecuteSingle(&ui);
-        status = (proc->GetStatus() == ExecutionStatus::SUCCESS);
-    }
+  LogUI ui;
+  proc->ExecuteSingle(&ui);
+  ASSERT_EQ(proc->GetStatus(), ExecutionStatus::SUCCESS);
 
-    if (status)
-    {
-        status = PrintProcedureWorkspace(proc.get());
-    }
-
-    Terminate();
-
-    ASSERT_EQ(true, status);
+  ASSERT_TRUE(PrintProcedureWorkspace(proc.get()));
 }
 
+TEST(Condition, Default1) {
+  bool status(true);
 
-TEST(Condition, Default1) // Static initialisation
-{
-    bool status = Initialise();
+  ccs::types::uint32 i = 0u;
+  while ((conditionTable[i][0] != NULL) && status) {
 
-    ccs::types::uint32 i=0u;
-    while((conditionTable[i][0]!=NULL) && status) {
+    std::unique_ptr<Procedure> proc(new Procedure);
+    std::unique_ptr<Condition> myCondNode(new Condition);
+    myCondNode->AddAttribute("var_name", conditionTable[i][0]);
 
-        std::unique_ptr<Procedure> proc(new Procedure);
-        std::unique_ptr<Condition> myCondNode(new Condition);
-        myCondNode->AddAttribute("var_name", conditionTable[i][0]);
+    ccs::types::AnyValue resVal;
 
-        ccs::types::AnyValue resVal;
+    std::unique_ptr<Variable> varX(new LocalVariable);
+    varX->AddAttribute("type", conditionTable[i][1]);
+    varX->AddAttribute("value", conditionTable[i][2]);
 
-        std::unique_ptr<Variable> varX(new LocalVariable);
-        varX->AddAttribute("type", conditionTable[i][1]);
-        varX->AddAttribute("value", conditionTable[i][2]);
+    varX->GetValue(resVal);
+    proc->AddVariable(conditionTable[i][3], varX.release());
 
-        varX->GetValue(resVal);
-        proc->AddVariable(conditionTable[i][3], varX.release());
+    status = PrintProcedureWorkspace(proc.get());
 
-        status = PrintProcedureWorkspace(proc.get());
+    if (status) {
+      LogUI ui;
+      proc->PushInstruction(myCondNode.release());
+      proc->Setup();
+      proc->ExecuteSingle(&ui);
 
-        if (status) {
-            LogUI ui;
-            proc->PushInstruction(myCondNode.release());
-            proc->Setup();
-            proc->ExecuteSingle(&ui);
-
-            ::std::string result=conditionTable[i][4];
-            if(result=="true"){
-                status = (proc->GetStatus() == ExecutionStatus::SUCCESS);
-            }
-            else{
-                status = (proc->GetStatus() == ExecutionStatus::FAILURE);
-            }
-        }
-
-
-        if (status) {
-            status = PrintProcedureWorkspace(proc.get());
-        }
-
-        i++;
+      ::std::string result = conditionTable[i][4];
+      if (result == "true") {
+        status = (proc->GetStatus() == ExecutionStatus::SUCCESS);
+      } else {
+        status = (proc->GetStatus() == ExecutionStatus::FAILURE);
+      }
     }
 
-    Terminate();
+    if (status) {
+      status = PrintProcedureWorkspace(proc.get());
+    }
 
-    ASSERT_EQ(true, status);
+    i++;
+  }
+
+  ASSERT_TRUE(status);
 }
 
 static bool PrintProcedureWorkspace(::sup::sequencer::Procedure *procedure) {
-    auto var_names = procedure->VariableNames();
-    ::ccs::types::char8 val_string[1024];
-    for (const auto &var_name : var_names) {
-        ::ccs::types::AnyValue val;
-        log_debug("Variable '%s'", var_name.c_str());
+  auto var_names = procedure->VariableNames();
+  ::ccs::types::char8 val_string[1024];
+  for (const auto &var_name : var_names) {
+    ::ccs::types::AnyValue val;
+    log_debug("Variable '%s'", var_name.c_str());
 
-        bool var_initialized = procedure->GetVariableValue(var_name, val);
-        if (var_initialized) {
-            val.SerialiseInstance(val_string, 1024);
-            log_debug("Variable '%s', with value\n  %s", var_name.c_str(), val_string);
-        }
-        else {
-            log_debug("Variable '%s' uninitialized", var_name.c_str());
-        }
+    bool var_initialized = procedure->GetVariableValue(var_name, val);
+    if (var_initialized) {
+      val.SerialiseInstance(val_string, 1024);
+      log_debug("Variable '%s', with value\n  %s", var_name.c_str(),
+                val_string);
+    } else {
+      log_debug("Variable '%s' uninitialized", var_name.c_str());
     }
-    return true;
+  }
+  return true;
 }
 
-TEST(Condition, NonScalarVariable_success)
-{
+TEST(Condition, NonScalarVariable_success) {
+  const std::string body{R"(
+    <Repeat maxCount="10">
+        <Condition name="struct" var_name="struct.timestamp"/>
+    </Repeat>
+    <Workspace>
+        <Local name="struct"
+               type='{"type":"sup::test::MyType/v1.0","attributes":[{"timestamp":{"type":"uint64"}}]}'
+               value='{"timestamp":1}'/>
+    </Workspace>
+)"};
 
   sup::sequencer::LogUI ui;
   auto proc = sup::sequencer::ParseProcedureString(
-    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-    "           name=\"Trivial procedure for testing purposes\"\n"
-    "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-    "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-    "    <Repeat maxCount=\"10\">\n"
-    "        <Condition name=\"struct\" var_name=\"struct.timestamp\"/>\n"
-    "    </Repeat>\n"
-    "    <Workspace>\n"
-    "        <Local name=\"struct\"\n"
-    "               type='{\"type\":\"sup::test::MyType/v1.0\",\"attributes\":[{\"timestamp\":{\"type\":\"uint64\"}}]}'\n"
-    "               value='{\"timestamp\":1}'/>"
-    "    </Workspace>\n"
-    "</Procedure>");
-
-  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
-
-  ASSERT_EQ(true, status);
-
+      ::sup::UnitTestHelper::CreateProcedureString(body));
+  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
 }
 
-TEST(Condition, NonScalarVariable_failure)
-{
+TEST(Condition, NonScalarVariable_failure) {
+  const std::string body{R"(
+    <Repeat maxCount="10">
+        <Condition name="struct" var_name="struct"/>
+    </Repeat>
+    <Workspace>
+        <Local name="struct"
+               type='{"type":"sup::test::MyType/v1.0","attributes":[{"timestamp":{"type":"uint64"}}]}'
+               value='{"timestamp":1}'/>
+    </Workspace>
+)"};
 
   sup::sequencer::LogUI ui;
   auto proc = sup::sequencer::ParseProcedureString(
-    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-    "           name=\"Trivial procedure for testing purposes\"\n"
-    "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-    "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-    "    <Repeat maxCount=\"10\">\n"
-    "        <Condition name=\"struct\" var_name=\"struct\"/>\n"
-    "    </Repeat>\n"
-    "    <Workspace>\n"
-    "        <Local name=\"struct\"\n"
-    "               type='{\"type\":\"sup::test::MyType/v1.0\",\"attributes\":[{\"timestamp\":{\"type\":\"uint64\"}}]}'\n"
-    "               value='{\"timestamp\":1}'/>"
-    "    </Workspace>\n"
-    "</Procedure>");
-
-  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE);
-
-  ASSERT_EQ(true, status);
-
+      ::sup::UnitTestHelper::CreateProcedureString(body));
+  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(
+      proc, &ui, sup::sequencer::ExecutionStatus::FAILURE));
 }
 
-TEST(Condition, NoSuchVariable_name)
-{
+TEST(Condition, NoSuchVariable_name) {
+  const std::string body{R"(
+    <Repeat maxCount="10">
+        <Condition name="struct" var_name="undefined"/>
+    </Repeat>
+    <Workspace>
+    </Workspace>
+)"};
 
   sup::sequencer::LogUI ui;
   auto proc = sup::sequencer::ParseProcedureString(
-    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-    "           name=\"Trivial procedure for testing purposes\"\n"
-    "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-    "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-    "    <Repeat maxCount=\"10\">\n"
-    "        <Condition name=\"struct\" var_name=\"undefined\"/>\n"
-    "    </Repeat>\n"
-    "    <Workspace>\n"
-    "    </Workspace>\n"
-    "</Procedure>");
-
-  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE);
-
-  ASSERT_EQ(true, status);
-
+      ::sup::UnitTestHelper::CreateProcedureString(body));
+  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(
+      proc, &ui, sup::sequencer::ExecutionStatus::FAILURE));
 }
 
-TEST(Condition, NoSuchVariable_attr)
-{
+TEST(Condition, NoSuchVariable_attr) {
+  const std::string body{R"(
+    <Repeat maxCount="10">
+        <Condition name="struct" var_name="struct.array[0].node"/>
+    </Repeat>
+    <Workspace>
+        <Local name="struct"
+               type='{"type":"sup::test::MyType/v1.0","attributes":[{"timestamp":{"type":"uint64"}}]}'
+               value='{"timestamp":1}'/>
+    </Workspace>"
+)"};
 
   sup::sequencer::LogUI ui;
   auto proc = sup::sequencer::ParseProcedureString(
-    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-    "           name=\"Trivial procedure for testing purposes\"\n"
-    "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-    "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-    "    <Repeat maxCount=\"10\">\n"
-    "        <Condition name=\"struct\" var_name=\"struct.array[0].node\"/>\n"
-    "    </Repeat>\n"
-    "    <Workspace>\n"
-    "        <Local name=\"struct\"\n"
-    "               type='{\"type\":\"sup::test::MyType/v1.0\",\"attributes\":[{\"timestamp\":{\"type\":\"uint64\"}}]}'\n"
-    "               value='{\"timestamp\":1}'/>"
-    "    </Workspace>\n"
-    "</Procedure>");
-
-  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE);
-
-  ASSERT_EQ(true, status);
-
+      ::sup::UnitTestHelper::CreateProcedureString(body));
+  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(
+      proc, &ui, sup::sequencer::ExecutionStatus::FAILURE));
 }
 
 #undef LOG_ALTERN_SRC

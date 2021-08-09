@@ -19,237 +19,183 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
-#include <gtest/gtest.h> // Google test framework
+#include <gtest/gtest.h>
 
-#include <common/log-api.h> // Syslog wrapper routines
-#include "common/BasicTypes.h"
-#include "common/AnyValue.h"
-#include "common/SharedReference.h"
 #include "common/AnyType.h"
-
-// Local header files
+#include "common/AnyValue.h"
+#include "common/BasicTypes.h"
+#include "common/SharedReference.h"
+#include <common/log-api.h>
 
 #include "Instruction.h"
 #include "InstructionRegistry.h"
-#include "Workspace.h"
 #include "LocalVariable.h"
 #include "SequenceParser.h"
+#include "Workspace.h"
 
 #include "LogUI.h"
 
 #include "UnitTestHelper.h"
 
-// Constants
-
 #undef LOG_ALTERN_SRC
 #define LOG_ALTERN_SRC "sup::sequencer"
-
-// Type declaration
 
 using namespace sup::sequencer;
 
 // Function definition
-static const ccs::types::char8 *testTable[][2] = { { "{\"type\":\"uint8\"}", "0" }, { "{\"type\":\"uint8\"}", "1" }, { "{\"type\":\"uint8\"}", "2" }, {
-        "{\"type\":\"uint8\"}", "3" }, { NULL } };
-static ::ccs::types::uint8 resVal[] = { 1, 2, 3, 0 };
-
-static inline bool Initialise(void) {
-    return true;
-}
-
-static inline bool Terminate(void) {
-    return true;
-}
+static const ccs::types::char8 *testTable[][2] = {{"{\"type\":\"uint8\"}", "0"},
+                                                  {"{\"type\":\"uint8\"}", "1"},
+                                                  {"{\"type\":\"uint8\"}", "2"},
+                                                  {"{\"type\":\"uint8\"}", "3"},
+                                                  {NULL}};
+static ::ccs::types::uint8 resVal[] = {1, 2, 3, 0};
 
 static bool PrintProcedureWorkspace(::sup::sequencer::Procedure *procedure);
 
 TEST(Choice, Default) // Static initialisation
 {
-    bool status = Initialise();
+  bool status(true);
+  ccs::types::uint32 i = 0u;
+  while ((testTable[i][0] != NULL) && status) {
+    auto proc =
+        sup::sequencer::ParseProcedureFile("../resources/workspace_choice.xml");
 
-    ccs::types::uint32 i=0u;
-    while((testTable[i][0]!=NULL) && status) {
-        auto proc = sup::sequencer::ParseProcedureFile("../resources/workspace_choice.xml");
+    std::unique_ptr<Variable> varX(new LocalVariable);
 
-        std::unique_ptr<Variable> varX(new LocalVariable);
+    varX->AddAttribute("type", testTable[i][0]);
+    varX->AddAttribute("value", testTable[i][1]);
+    proc->AddVariable("sel", varX.release());
 
-        varX->AddAttribute("type", testTable[i][0]);
-        varX->AddAttribute("value", testTable[i][1]);
-        proc->AddVariable("sel", varX.release());
+    status = PrintProcedureWorkspace(proc.get());
 
-        status = PrintProcedureWorkspace(proc.get());
+    if (status) {
+      LogUI ui;
+      proc->Setup();
+      while ((proc->GetStatus() != ExecutionStatus::SUCCESS) &&
+             (proc->GetStatus() != ExecutionStatus::FAILURE)) {
+        proc->ExecuteSingle(&ui);
+      }
 
-        if (status) {
-            LogUI ui;
-            proc->Setup();
-            while((proc->GetStatus()!= ExecutionStatus::SUCCESS) && (proc->GetStatus()!= ExecutionStatus::FAILURE)) {
-                proc->ExecuteSingle(&ui);
-            }
-
-            status = (proc->GetStatus() == ExecutionStatus::SUCCESS);
-        }
-
-        if (status) {
-            ::ccs::types::AnyValue result;
-            proc->GetVariableValue("res", result);
-            ::ccs::types::uint8 checkVal=*(::ccs::types::uint8 *)(result.GetInstance());
-            status = checkVal==resVal[i];
-
-            if(!status) {
-                printf("Failed %u!=%u\n", checkVal, resVal[i]);
-            }
-        }
-
-        if (status) {
-            status = PrintProcedureWorkspace(proc.get());
-        }
-
-        i++;
+      status = (proc->GetStatus() == ExecutionStatus::SUCCESS);
     }
 
-    Terminate();
+    if (status) {
+      ::ccs::types::AnyValue result;
+      proc->GetVariableValue("res", result);
+      ::ccs::types::uint8 checkVal =
+          *(::ccs::types::uint8 *)(result.GetInstance());
+      status = checkVal == resVal[i];
 
-    ASSERT_EQ(true, status);
+      if (!status) {
+        printf("Failed %u!=%u\n", checkVal, resVal[i]);
+      }
+    }
+
+    if (status) {
+      status = PrintProcedureWorkspace(proc.get());
+    }
+
+    i++;
+  }
+
+  ASSERT_EQ(true, status);
 }
 
-TEST(Choice, BitMask_success)
-{
+TEST(Choice, BitMask_success) {
+  const std::string body{R"(
+    <Choice is_mask="true" var_name="choice">
+        <Counter/>
+        <Counter incr="2"/>
+        <Wait timeout="0.1"/>
+        <Inverter>
+            <Counter/>
+        </Inverter>
+    </Choice>
+    <Workspace>
+        <Local name="choice" type='{"type":"uint32"}' value="7"/>
+    </Workspace>
+)"};
 
   sup::UnitTestHelper::MockUI ui;
   auto proc = sup::sequencer::ParseProcedureString(
-    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-    "           name=\"Trivial procedure for testing purposes\"\n"
-    "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-    "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-    "    <Choice is_mask=\"true\" var_name=\"choice\">\n"
-    "        <Counter/>\n"
-    "        <Counter incr=\"2\"/>\n"
-    "        <Wait timeout=\"0.1\"/>\n"
-    "        <Inverter>\n"
-    "            <Counter/>\n"
-    "        </Inverter>\n"
-    "    </Choice>\n"
-    "    <Workspace>\n"
-    "        <Local name=\"choice\" type='{\"type\":\"uint32\"}' value=\"7\"/>\n"
-    "    </Workspace>\n"
-    "</Procedure>");
+      ::sup::UnitTestHelper::CreateProcedureString(body));
+  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+  ASSERT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 3);
+}
 
-  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
+TEST(Choice, BitMask_failure) {
+  const std::string body{R"(
+    <Choice is_mask="true" var_name="choice">
+        <Counter/>
+        <Counter incr="2"/>
+        <Wait timeout="0.1"/>
+        <Inverter>
+            <Counter/>
+        </Inverter>
+    </Choice>
+    <Workspace>
+        <Local name="choice" type='{"type":"uint32"}' value="14"/>
+    </Workspace>
+)"};
 
-  // Instructions called
-
-  if (status)
-    {
-      status = (3u == sup::UnitTestHelper::CounterInstruction::GetCount());
-    }
-
+  sup::UnitTestHelper::MockUI ui;
+  auto proc = sup::sequencer::ParseProcedureString(
+      ::sup::UnitTestHelper::CreateProcedureString(body));
   // Instruction called and return failure
-
-  ASSERT_EQ(true, status);
-
+  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(
+      proc, &ui, sup::sequencer::ExecutionStatus::FAILURE));
+  ASSERT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 3);
 }
 
-TEST(Choice, BitMask_failure)
-{
+TEST(Choice, NoSuchVariable) {
+  const std::string body{R"(
+    <Choice var_name="undefined">"
+        <Counter/>"
+        <Wait timeout="0.1"/>"
+    </Choice>"
+    <Workspace/>"
+)"};
 
   sup::UnitTestHelper::MockUI ui;
   auto proc = sup::sequencer::ParseProcedureString(
-    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-    "           name=\"Trivial procedure for testing purposes\"\n"
-    "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-    "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-    "    <Choice is_mask=\"true\" var_name=\"choice\">\n"
-    "        <Counter/>\n"
-    "        <Counter incr=\"2\"/>\n"
-    "        <Wait timeout=\"0.1\"/>\n"
-    "        <Inverter>\n"
-    "            <Counter/>\n"
-    "        </Inverter>\n"
-    "    </Choice>\n"
-    "    <Workspace>\n"
-    "        <Local name=\"choice\" type='{\"type\":\"uint32\"}' value=\"14\"/>\n"
-    "    </Workspace>\n"
-    "</Procedure>");
-
-  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE);
-
-  // Instruction called and return failure
-
-  if (status)
-    {
-      status = (3u == sup::UnitTestHelper::CounterInstruction::GetCount());
-    }
-
-  ASSERT_EQ(true, status);
-
+      ::sup::UnitTestHelper::CreateProcedureString(body));
+  // Expect failure in Setup
+  ASSERT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
 }
 
-TEST(Choice, NoSuchVariable)
-{
+TEST(Choice, NoAttribute) {
+  const std::string body{R"(
+    <Choice>"
+        <Counter/>"
+        <Wait timeout="0.1"/>"
+    </Choice>"
+    <Workspace/>"
+)"};
 
   sup::UnitTestHelper::MockUI ui;
   auto proc = sup::sequencer::ParseProcedureString(
-    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-    "           name=\"Trivial procedure for testing purposes\"\n"
-    "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-    "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-    "    <Choice var_name=\"undefined\">\n"
-    "        <Counter/>\n"
-    "        <Wait timeout=\"0.1\"/>\n"
-    "    </Choice>\n"
-    "    <Workspace/>\n"
-    "</Procedure>");
-
-  bool status = (false == sup::UnitTestHelper::TryAndExecute(proc, &ui)); // Expect failure in Setup
-
-  ASSERT_EQ(true, status);
-
-}
-
-TEST(Choice, NoAttribute)
-{
-
-  sup::UnitTestHelper::MockUI ui;
-  auto proc = sup::sequencer::ParseProcedureString(
-    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-    "           name=\"Trivial procedure for testing purposes\"\n"
-    "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-    "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-    "    <Choice>\n"
-    "        <Counter/>\n"
-    "        <Wait timeout=\"0.1\"/>\n"
-    "    </Choice>\n"
-    "    <Workspace/>\n"
-    "</Procedure>");
-
-  bool status = (false == sup::UnitTestHelper::TryAndExecute(proc, &ui)); // Expect failure in Setup
-
-  ASSERT_EQ(true, status);
-
+      ::sup::UnitTestHelper::CreateProcedureString(body));
+  // Expect failure in Setup
+  ASSERT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
 }
 
 static bool PrintProcedureWorkspace(::sup::sequencer::Procedure *procedure) {
-    auto var_names = procedure->VariableNames();
-    ::ccs::types::char8 val_string[1024];
-    for (const auto &var_name : var_names) {
-        ::ccs::types::AnyValue val;
-        log_debug("Variable '%s'", var_name.c_str());
+  auto var_names = procedure->VariableNames();
+  ::ccs::types::char8 val_string[1024];
+  for (const auto &var_name : var_names) {
+    ::ccs::types::AnyValue val;
+    log_debug("Variable '%s'", var_name.c_str());
 
-        bool var_initialized = procedure->GetVariableValue(var_name, val);
-        if (var_initialized) {
-            val.SerialiseInstance(val_string, 1024);
-            log_debug("Variable '%s', with value\n  %s", var_name.c_str(), val_string);
-        }
-        else {
-            log_debug("Variable '%s' uninitialized", var_name.c_str());
-        }
+    bool var_initialized = procedure->GetVariableValue(var_name, val);
+    if (var_initialized) {
+      val.SerialiseInstance(val_string, 1024);
+      log_debug("Variable '%s', with value\n  %s", var_name.c_str(),
+                val_string);
+    } else {
+      log_debug("Variable '%s' uninitialized", var_name.c_str());
     }
-    return true;
+  }
+  return true;
 }
 
 #undef LOG_ALTERN_SRC

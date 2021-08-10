@@ -19,143 +19,100 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
-
-#include <SequenceParser.h>
-#include <common/BasicTypes.h>
-#include <gtest/gtest.h>  // Google test framework
-
-// Local header files
-
 #include "UnitTestHelper.h"
 #include "UserInterface.h"
 
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "unit-test"
-
-// Type declaration
-
-// Function declaration
-
-// Global variables
-
-static ccs::log::Func_t _log_handler = ccs::log::SetStdout();
-
-// Function definition
+#include <SequenceParser.h>
+#include <common/BasicTypes.h>
+#include <gtest/gtest.h>
 
 TEST(Input, GetUserValue_success)
 {
+  const std::string body{R"(
+    <Sequence>
+        <Input description="Put some uint32 here" output="uint32"/>
+    </Sequence>
+    <Workspace>
+        <Local name="uint32" type='{"type":"uint32"}'/>
+    </Workspace>
+)"};
+
   sup::UnitTestHelper::MockUI ui;
-  auto proc = sup::sequencer::ParseProcedureString(
-      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-      "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-      "           name=\"Trivial procedure for testing purposes\"\n"
-      "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-      "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-      "    <Sequence>\n"
-      "        <Input description=\"Put some uint32 here\" output=\"uint32\"/>\n"
-      "    </Sequence>\n"
-      "    <Workspace>\n"
-      "        <Local name=\"uint32\" type='{\"type\":\"uint32\"}'/>\n"
-      "    </Workspace>\n"
-      "</Procedure>");
+  auto proc =
+      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
 
   ccs::types::AnyValue value(1234u);
   ui.SetStatus(true);
   ui.SetValue(value);
 
-  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
-
-  if (status)
-  {
-    status = (ccs::types::UnsignedInteger32 == ui.GetType());
-  }
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+  EXPECT_TRUE(ccs::types::UnsignedInteger32 == ui.GetType());
 
   // ToDo - Test workspace variable
-
-  ASSERT_EQ(true, status);
 }
 
 TEST(Input, GetUserValue_failure)
 {
+  const std::string body{R"(
+    <Sequence>
+        <Input description="Put some uint32 here" output="uint32"/>
+    </Sequence>
+    <Workspace>
+        <Local name="uint32" type='{"type":"uint32"}'/>
+    </Workspace>
+)"};
+
   sup::UnitTestHelper::MockUI ui;
-  auto proc = sup::sequencer::ParseProcedureString(
-      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-      "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-      "           name=\"Trivial procedure for testing purposes\"\n"
-      "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-      "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-      "    <Sequence>\n"
-      "        <Input description=\"Put some uint32 here\" output=\"uint32\"/>\n"
-      "    </Sequence>\n"
-      "    <Workspace>\n"
-      "        <Local name=\"uint32\" type='{\"type\":\"uint32\"}'/>\n"
-      "    </Workspace>\n"
-      "</Procedure>");
+  auto proc =
+      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
 
   ui.SetStatus(false);
-
-  bool status =
-      sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE);
-
-  ASSERT_EQ(true, status);
+  EXPECT_TRUE(
+      sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE));
 }
 
 TEST(Input, Variable_uninitialised)
 {
+  const std::string body{R"(
+    <Sequence>
+        <Input description="Put some uint32 here" output="uint32"/>
+    </Sequence>
+    <Workspace>
+        <Local name="uint32"/>
+    </Workspace>
+)"};
+
   sup::UnitTestHelper::MockUI ui;
-  auto proc = sup::sequencer::ParseProcedureString(
-      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-      "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-      "           name=\"Trivial procedure for testing purposes\"\n"
-      "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-      "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-      "    <Sequence>\n"
-      "        <Input description=\"Put some uint32 here\" output=\"uint32\"/>\n"
-      "    </Sequence>\n"
-      "    <Workspace>\n"
-      "        <Local name=\"uint32\"/>\n"
-      "    </Workspace>\n"
-      "</Procedure>");
+  auto proc =
+      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
 
   ccs::types::AnyValue value(1234u);
   ui.SetStatus(true);
   ui.SetValue(value);
-
-  bool status =
-      sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE);
-
-  ASSERT_EQ(true, status);
+  EXPECT_TRUE(
+      sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE));
 }
 
 TEST(Input, Variable_undefined)
 {
+  const std::string body{R"(
+    <Sequence>
+        <Input description="Put some uint32 here" output="uint32"/>
+    </Sequence>
+    <Workspace>
+    </Workspace>
+)"};
+
   sup::UnitTestHelper::MockUI ui;
-  auto proc = sup::sequencer::ParseProcedureString(
-      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-      "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-      "           name=\"Trivial procedure for testing purposes\"\n"
-      "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-      "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-      "    <Sequence>\n"
-      "        <Input description=\"Put some uint32 here\" output=\"uint32\"/>\n"
-      "    </Sequence>\n"
-      "    <Workspace>\n"
-      "    </Workspace>\n"
-      "</Procedure>");
+  auto proc =
+      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
 
   ccs::types::AnyValue value(1234u);
   ui.SetStatus(true);
   ui.SetValue(value);
 
-  bool status =
-      sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE);
-
-  ASSERT_EQ(true, status);
+  EXPECT_TRUE(
+      sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE));
 }
 
 // ToDo - Workspace variable not updated
-
-#undef LOG_ALTERN_SRC

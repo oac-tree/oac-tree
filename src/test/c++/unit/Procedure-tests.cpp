@@ -19,18 +19,6 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
-
-#include <gtest/gtest.h>  // Google test framework
-
-#include <algorithm>
-#include <chrono>
-#include <thread>
-
-#include <common/log-api.h>  // Syslog wrapper routines
-
-// Local header files
-
 #include "InstructionRegistry.h"
 #include "MockUserInterface.h"
 #include "Procedure.h"
@@ -40,12 +28,11 @@
 #include "VariableRegistry.h"
 #include "Wait.h"
 
-// Constants
+#include <gtest/gtest.h>
 
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
-
-// Type definition
+#include <algorithm>
+#include <chrono>
+#include <thread>
 
 using namespace sup::sequencer;
 
@@ -63,18 +50,7 @@ protected:
   std::unique_ptr<Variable> var2;
 };
 
-// Function declaration
-
-// Global variables
-
-static ::ccs::log::Func_t __handler = ::ccs::log::SetStdout();
-
-static const std::string ProcedureString =
-    R"RAW(<?xml version="1.0" encoding="UTF-8"?>
-<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
-           name="Procedure for testing purposes"
-           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+const std::string ProcedureString{R"(
     <Wait name="Not Used" timeout="1.0"/>
     <Sequence name="Main Sequence" isRoot="Yes">
         <Wait name="Immediate Success"/>
@@ -88,10 +64,7 @@ static const std::string ProcedureString =
                type='{"type":"vartype2","attributes":[{"value":{"type":"string"}}]}' />
         <Local name="var3" />
     </Workspace>
-</Procedure>
-)RAW";
-
-// Function definition
+)"};
 
 using ::testing::_;
 using ::testing::AtLeast;
@@ -276,7 +249,8 @@ TEST_F(ProcedureTest, ExternalInclude)
 ProcedureTest::ProcedureTest()
     : mock_ui{}
     , empty_proc{}
-    , loaded_proc{ParseProcedureString(ProcedureString)}
+    , loaded_proc{ParseProcedureString(
+          ::sup::UnitTestHelper::CreateProcedureString(ProcedureString))}
     , wait{GlobalInstructionRegistry().Create("Wait")}
     , var1{GlobalVariableRegistry().Create("Local")}
     , var2{GlobalVariableRegistry().Create("Local")}
@@ -291,5 +265,3 @@ ProcedureTest::~ProcedureTest()
     loaded_proc->Reset();
   }
 }
-
-#undef LOG_ALTERN_SRC

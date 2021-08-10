@@ -19,129 +19,80 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
-
-#include <SequenceParser.h>
-#include <common/BasicTypes.h>
-#include <gtest/gtest.h>  // Google test framework
-
-#include <algorithm>  // std::find
-
-// Local header files
-
 #include "InstructionRegistry.h"
 #include "LogUI.h"
 #include "UnitTestHelper.h"
 
-// Constants
+#include <SequenceParser.h>
+#include <common/BasicTypes.h>
+#include <gtest/gtest.h>
 
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "unit-test"
-
-// Type declaration
-
-// Function declaration
-
-// Global variables
-
-static ccs::log::Func_t _log_handler = ccs::log::SetStdout();
-
-// Function definition
+#include <algorithm>
 
 TEST(Repeat, Registration)
 {
   sup::sequencer::InstructionRegistry registry = sup::sequencer::GlobalInstructionRegistry();
-  bool status = (registry.RegisteredInstructionNames().end()
-                 != std::find(registry.RegisteredInstructionNames().begin(),
-                              registry.RegisteredInstructionNames().end(), "Repeat"));
-
-  ASSERT_EQ(true, status);
+  auto it = std::find(registry.RegisteredInstructionNames().begin(),
+                      registry.RegisteredInstructionNames().end(), "Repeat");
+  ASSERT_TRUE(it != registry.RegisteredInstructionNames().end());
 }
 
 TEST(Repeat, Procedure_success)
 {
+  const std::string body{R"(
+    <Repeat maxCount="10">
+        <Counter/>
+    </Repeat>
+    <Workspace>
+    </Workspace>
+)"};
+
   sup::sequencer::LogUI ui;
-  auto proc = sup::sequencer::ParseProcedureString(
-      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-      "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-      "           name=\"Trivial procedure for testing purposes\"\n"
-      "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-      "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-      "    <Repeat maxCount=\"10\">\n"
-      "        <Counter/>\n"
-      "    </Repeat>\n"
-      "    <Workspace>\n"
-      "    </Workspace>\n"
-      "</Procedure>");
+  auto proc =
+      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
+  ASSERT_TRUE(proc.get() != nullptr);
 
-  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
-
-  if (status)
-  {
-    log_debug("TEST(Repeat, Procedure_success) - Count is '%u'",
-              sup::UnitTestHelper::CounterInstruction::GetCount());
-    status = (10u == sup::UnitTestHelper::CounterInstruction::GetCount());
-  }
-
-  ASSERT_EQ(true, status);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+  EXPECT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 10);
 }
 
 TEST(Repeat, Procedure_failure)
 {
+  const std::string body{R"(
+    <Repeat maxCount="10">
+        <Inverter name="failure">
+            <Counter/>
+        </Inverter>
+    </Repeat>
+    <Workspace>
+    </Workspace>
+)"};
+
   sup::sequencer::LogUI ui;
-  auto proc = sup::sequencer::ParseProcedureString(
-      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-      "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-      "           name=\"Trivial procedure for testing purposes\"\n"
-      "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-      "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-      "    <Repeat maxCount=\"10\">\n"
-      "        <Inverter name=\"failure\">\n"
-      "            <Counter/>\n"
-      "        </Inverter>\n"
-      "    </Repeat>\n"
-      "    <Workspace>\n"
-      "    </Workspace>\n"
-      "</Procedure>");
-
-  bool status =
-      sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE);
-
-  if (status)
-  {
-    log_debug("TEST(Repeat, Procedure_failure) - Count is '%u'",
-              sup::UnitTestHelper::CounterInstruction::GetCount());
-    status = (1u == sup::UnitTestHelper::CounterInstruction::GetCount());
-  }
-
-  ASSERT_EQ(true, status);
+  auto proc =
+      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(
+      sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE));
+  EXPECT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 1);
 }
 
 TEST(Repeat, Procedure_attribute)
 {
+  const std::string body{R"(
+    <Repeat maxCount="undefined">
+        <Counter/>
+    </Repeat>
+    <Workspace>
+    </Workspace>
+)"};
+
   sup::sequencer::LogUI ui;
-  auto proc = sup::sequencer::ParseProcedureString(
-      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-      "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-      "           name=\"Trivial procedure for testing purposes\"\n"
-      "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-      "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-      "    <Repeat maxCount=\"undefined\">\n"
-      "        <Counter/>\n"
-      "    </Repeat>\n"
-      "    <Workspace>\n"
-      "    </Workspace>\n"
-      "</Procedure>");
+  auto proc =
+      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  ASSERT_TRUE(proc.get() != nullptr);
 
-  bool status =
-      (false == sup::UnitTestHelper::TryAndExecute(proc, &ui));  // Expect failure during Setup
-
-  if (status)
-  {
-    status = (0u == sup::UnitTestHelper::CounterInstruction::GetCount());
-  }
-
-  ASSERT_EQ(true, status);
+  // Expect failure during Setup
+  EXPECT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+  EXPECT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 0);
 }
-
-#undef LOG_ALTERN_SRC

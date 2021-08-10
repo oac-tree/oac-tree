@@ -228,12 +228,42 @@ TEST_F(ProcedureTest, ConstructedFromString)
 
 TEST_F(ProcedureTest, ExternalInclude)
 {
-  std::string main_file = ::sup::UnitTestHelper::GetFullTestFilePath("external_include.xml");
-  auto proc = ParseProcedureFile(main_file);
+  // preparing test file for inclusion
+  const std::string external_include_body{R"(
+    <Sequence name="MyWait">
+        <Wait timeout="$par1" />
+        <Wait timeout="$par1" />
+    </Sequence>
+    <Sequence isRoot="True">
+        <Include name="Local Wait Sequence" path="MyWait" par1="1.0" />
+        <Include name="External Wait" path="Parallel Wait" file="parallel_sequence.xml" />
+    </Sequence>
+)"};
+
+  const std::string external_include_file_name = "/tmp/external_include.xml";
+  ::sup::UnitTestHelper::TemporaryTestFile external_include_file(
+      external_include_file_name,
+      ::sup::UnitTestHelper::CreateProcedureString(external_include_body));
+
+  const std::string parallel_sequence_body{R"(
+    <ParallelSequence name="Parallel Wait" successThreshold="2">
+        <Wait name="One" timeout="1.0" />
+        <Wait name="Two" timeout="2.0" />
+        <Wait name="Three" timeout="3.0" />
+    </ParallelSequence>
+    <Workspace>
+    </Workspace>
+)"};
+
+  const std::string parallel_sequence_file_name = "/tmp/parallel_sequence.xml";
+  ::sup::UnitTestHelper::TemporaryTestFile parallel_sequence_file(
+      parallel_sequence_file_name,
+      ::sup::UnitTestHelper::CreateProcedureString(parallel_sequence_body));
+
+  auto proc = ParseProcedureFile(external_include_file_name);
   ASSERT_TRUE(static_cast<bool>(proc));
 
-  std::string external_file = ::sup::UnitTestHelper::GetFullTestFilePath("parallel_sequence.xml");
-  auto ext_instructions = proc->GetInstructions(external_file);
+  auto ext_instructions = proc->GetInstructions(parallel_sequence_file_name);
   EXPECT_GT(ext_instructions.size(), 0);
 
   EXPECT_TRUE(proc->Setup());

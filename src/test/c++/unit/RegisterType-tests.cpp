@@ -19,37 +19,15 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
-
-#include <SequenceParser.h>
-#include <gtest/gtest.h>
-
-// Local header files
-
 #include "ExecutionStatus.h"
 #include "InstructionRegistry.h"
 #include "LogUI.h"
 #include "UnitTestHelper.h"
 
-// Constants
+#include <SequenceParser.h>
+#include <gtest/gtest.h>
 
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "unit-test"
-
-// Type declaration
-
-// Function declaration
-
-// Global variables
-
-static ccs::log::Func_t _log_handler = ccs::log::SetStdout();
-
-static const std::string RegisterTypeProcedureString =
-    R"RAW(<?xml version="1.0" encoding="UTF-8"?>
-<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
-           name="RegisterType procedure for testing purposes"
-           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+static const std::string RegisterTypeProcedureString{R"(
     <RegisterType jsontype='{"type":"range_uint32","attributes":[{"min":{"type":"uint32"}},{"max":{"type":"uint32"}}]}'/>
     <RegisterType jsontype='{"type":"ranges_uint32","multiplicity":3,"element":{"type":"range_uint32"}}'/>
     <Sequence>
@@ -64,25 +42,13 @@ static const std::string RegisterTypeProcedureString =
                value='[{"min":0,"max":10},{"min":10,"max":20},{"min":20,"max":40}]' />
         <Local name="var4" type='{"type":"ranges_uint32"}' />
     </Workspace>
-</Procedure>
-)RAW";
+)"};
 
-static const std::string FailedRegisterTypeProcedureString =
-    R"RAW(<?xml version="1.0" encoding="UTF-8"?>
-<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
-           name="Failing RegisterType procedure for testing purposes"
-           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+static const std::string FailedRegisterTypeProcedureString = {R"(
     <RegisterType jsontype='{"type":"fail_ranges_uint32","multiplicity":3,"element":{"type":"undefined_type"}}'/>
-</Procedure>
-)RAW";
+)"};
 
-static const std::string RegisterTypeFromFileProcedureString =
-    R"RAW(<?xml version="1.0" encoding="UTF-8"?>
-<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
-           name="RegisterType procedure for testing purposes"
-           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+static const std::string RegisterTypeFromFileProcedureString = {R"(
     <RegisterType jsonfile="/tmp/range_uint16.json"/>
     <RegisterType jsontype='{"type":"ranges_uint16","multiplicity":3,"element":{"type":"range_uint16"}}'/>
     <Sequence>
@@ -97,18 +63,11 @@ static const std::string RegisterTypeFromFileProcedureString =
                value='[{"min":0,"max":10},{"min":10,"max":20},{"min":20,"max":40}]' />
         <Local name="var4" type='{"type":"ranges_uint16"}' />
     </Workspace>
-</Procedure>
-)RAW";
+)"};
 
-static const std::string FailedRegisterTypeFromFileProcedureString =
-    R"RAW(<?xml version="1.0" encoding="UTF-8"?>
-<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
-           name="Failing RegisterType procedure for testing purposes"
-           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+static const std::string FailedRegisterTypeFromFileProcedureString = {R"(
     <RegisterType jsonfile="does_not_exist.json"/>
-</Procedure>
-)RAW";
+)"};
 
 static const std::string JSON_FILE_NAME = "/tmp/range_uint16.json";
 
@@ -133,12 +92,11 @@ static const std::string JSONRangeRepresentation =
 }
 )RAW";
 
-// Function definition
-
 TEST(RegisterType, string_success)
 {
   sup::sequencer::LogUI ui;
-  auto proc = sup::sequencer::ParseProcedureString(RegisterTypeProcedureString);
+  auto proc = sup::sequencer::ParseProcedureString(
+      ::sup::UnitTestHelper::CreateProcedureString(RegisterTypeProcedureString));
   ASSERT_TRUE(static_cast<bool>(proc));
 
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
@@ -146,7 +104,8 @@ TEST(RegisterType, string_success)
 
 TEST(RegisterType, string_failed)
 {
-  auto proc = sup::sequencer::ParseProcedureString(FailedRegisterTypeProcedureString);
+  auto proc = sup::sequencer::ParseProcedureString(
+      ::sup::UnitTestHelper::CreateProcedureString(FailedRegisterTypeProcedureString));
   EXPECT_FALSE(static_cast<bool>(proc));
 }
 
@@ -154,7 +113,8 @@ TEST(RegisterType, file_success)
 {
   sup::UnitTestHelper::TemporaryTestFile json_file(JSON_FILE_NAME, JSONRangeRepresentation);
   sup::sequencer::LogUI ui;
-  auto proc = sup::sequencer::ParseProcedureString(RegisterTypeFromFileProcedureString);
+  auto proc = sup::sequencer::ParseProcedureString(
+      ::sup::UnitTestHelper::CreateProcedureString(RegisterTypeFromFileProcedureString));
   ASSERT_TRUE(static_cast<bool>(proc));
 
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
@@ -162,8 +122,7 @@ TEST(RegisterType, file_success)
 
 TEST(RegisterType, file_failed)
 {
-  auto proc = sup::sequencer::ParseProcedureString(FailedRegisterTypeFromFileProcedureString);
+  auto proc = sup::sequencer::ParseProcedureString(
+      ::sup::UnitTestHelper::CreateProcedureString(FailedRegisterTypeFromFileProcedureString));
   EXPECT_FALSE(static_cast<bool>(proc));
 }
-
-#undef LOG_ALTERN_SRC

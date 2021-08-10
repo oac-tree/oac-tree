@@ -39,6 +39,8 @@
 
 // Type definition
 
+#include "Instruction.h"
+
 #ifdef __cplusplus
 
 namespace sup

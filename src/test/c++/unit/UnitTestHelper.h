@@ -192,7 +192,7 @@ std::string CreateProcedureString(const std::string& body);
 /**
  * Prints variables in a workspace.
  */
-bool PrintProcedureWorkspace(::sup::sequencer::Procedure *procedure);
+void PrintProcedureWorkspace(::sup::sequencer::Procedure *procedure);
 
 
 } // namespace UnitTestHelper

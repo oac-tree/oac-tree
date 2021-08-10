@@ -37,9 +37,6 @@
 
 #include "UnitTestHelper.h"
 
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
-
 using namespace sup::sequencer;
 
 // Function definition
@@ -89,7 +86,7 @@ TEST(Choice, Default) // Static initialisation
     varX->AddAttribute("value", testTable[i][1]);
     proc->AddVariable("sel", varX.release());
 
-    status = ::sup::UnitTestHelper::PrintProcedureWorkspace(proc.get());
+    ::sup::UnitTestHelper::PrintProcedureWorkspace(proc.get());
 
     if (status) {
       LogUI ui;
@@ -114,9 +111,7 @@ TEST(Choice, Default) // Static initialisation
       }
     }
 
-    if (status) {
-      status = ::sup::UnitTestHelper::PrintProcedureWorkspace(proc.get());
-    }
+    ::sup::UnitTestHelper::PrintProcedureWorkspace(proc.get());
 
     i++;
   }

@@ -67,13 +67,13 @@ TEST(SequenceWorkspace, CopyVariable) {
   auto proc = sup::sequencer::ParseProcedureFile(file_name);
   ASSERT_TRUE(proc.get() != nullptr);
 
-  ASSERT_TRUE(::sup::UnitTestHelper::PrintProcedureWorkspace(proc.get()));
+  ::sup::UnitTestHelper::PrintProcedureWorkspace(proc.get());
 
   LogUI ui;
   proc->ExecuteSingle(&ui);
   EXPECT_EQ(proc->GetStatus(), ExecutionStatus::SUCCESS);
 
-  ASSERT_TRUE(::sup::UnitTestHelper::PrintProcedureWorkspace(proc.get()));
+  ::sup::UnitTestHelper::PrintProcedureWorkspace(proc.get());
 }
 
 CopyNode::CopyNode() : Instruction(Type) {}

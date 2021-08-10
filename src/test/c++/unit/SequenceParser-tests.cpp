@@ -71,7 +71,7 @@ TEST(SequenceParser, Workspace)
       file_name, ::sup::UnitTestHelper::CreateProcedureString(body));
 
   auto proc = sup::sequencer::ParseProcedureFile(file_name);
-  ASSERT_TRUE(::sup::UnitTestHelper::PrintProcedureWorkspace(proc.get()));
+  ::sup::UnitTestHelper::PrintProcedureWorkspace(proc.get());
 }
 
 TEST(SequenceParser, ParseString)
@@ -89,5 +89,5 @@ TEST(SequenceParser, ParseString)
       ::sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
-  ASSERT_TRUE(::sup::UnitTestHelper::PrintProcedureWorkspace(proc.get()));
+  ::sup::UnitTestHelper::PrintProcedureWorkspace(proc.get());
 }

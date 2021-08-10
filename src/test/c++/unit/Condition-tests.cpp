@@ -72,13 +72,13 @@ TEST(Condition, Default) {
   auto proc = sup::sequencer::ParseProcedureFile(file_name);
   ASSERT_TRUE(proc.get() != nullptr);
 
-  ASSERT_TRUE(::sup::UnitTestHelper::PrintProcedureWorkspace(proc.get()));
+  ::sup::UnitTestHelper::PrintProcedureWorkspace(proc.get());
 
   LogUI ui;
   proc->ExecuteSingle(&ui);
   ASSERT_EQ(proc->GetStatus(), ExecutionStatus::SUCCESS);
 
-  ASSERT_TRUE(::sup::UnitTestHelper::PrintProcedureWorkspace(proc.get()));
+  ::sup::UnitTestHelper::PrintProcedureWorkspace(proc.get());
 }
 
 TEST(Condition, Default1) {
@@ -100,7 +100,7 @@ TEST(Condition, Default1) {
     varX->GetValue(resVal);
     proc->AddVariable(conditionTable[i][3], varX.release());
 
-    status = ::sup::UnitTestHelper::PrintProcedureWorkspace(proc.get());
+    ::sup::UnitTestHelper::PrintProcedureWorkspace(proc.get());
 
     if (status) {
       LogUI ui;
@@ -116,9 +116,7 @@ TEST(Condition, Default1) {
       }
     }
 
-    if (status) {
-      status = ::sup::UnitTestHelper::PrintProcedureWorkspace(proc.get());
-    }
+      sup::UnitTestHelper::PrintProcedureWorkspace(proc.get());
 
     i++;
   }

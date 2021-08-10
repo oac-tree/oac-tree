@@ -151,7 +151,7 @@ R"RAW(<?xml version="1.0" encoding="UTF-8"?>
   return header + body + footer;
 }
 
-bool PrintProcedureWorkspace(::sup::sequencer::Procedure *procedure)
+void PrintProcedureWorkspace(::sup::sequencer::Procedure *procedure)
 {
   auto var_names = procedure->VariableNames();
   ::ccs::types::char8 val_string[1024];
@@ -168,7 +168,6 @@ bool PrintProcedureWorkspace(::sup::sequencer::Procedure *procedure)
       log_debug("Variable '%s' uninitialized", var_name.c_str());
     }
   }
-  return true;
 }
 
 

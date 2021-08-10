@@ -19,82 +19,48 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
-
-#include <SequenceParser.h>
-#include <gtest/gtest.h>  // Google test framework
-
-// Local header files
-
 #include "ExecutionStatus.h"
 #include "InstructionRegistry.h"
 #include "LogUI.h"
 #include "UnitTestHelper.h"
 
-// Constants
+#include <SequenceParser.h>
+#include <gtest/gtest.h>
 
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "unit-test"
-
-// Type declaration
-
-// Function declaration
-
-// Global variables
-
-static ccs::log::Func_t _log_handler = ccs::log::SetStdout();
-
-static const std::string EqualProcedureString =
-    R"RAW(<?xml version="1.0" encoding="UTF-8"?>
-<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
-           name="Procedure containing no workspace for testing purposes"
-           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+TEST(Equals, Equals_success)
+{
+  const std::string body{R"(
     <Equals lhs="a" rhs="b"/>
     <Workspace>
         <Local name="a" type='{"type":"uint8"}' value='1' />
         <Local name="b" type='{"type":"uint8"}' value='1' />
     </Workspace>
-</Procedure>
-)RAW";
+)"};
 
-static const std::string NotEqualProcedureString =
-    R"RAW(<?xml version="1.0" encoding="UTF-8"?>
-<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
-           name="Procedure containing no workspace for testing purposes"
-           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+  sup::sequencer::LogUI ui;
+  auto proc =
+      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+}
+
+TEST(Equals, Equals_failure)
+{
+  const std::string body{R"(
     <Equals lhs="a" rhs="b"/>
     <Workspace>
         <Local name="a" type='{"type":"uint8"}' value='1' />
         <Local name="b" type='{"type":"uint8"}' value='3' />
     </Workspace>
-</Procedure>
-)RAW";
+)"};
 
-// Function definition
-
-TEST(Equals, Equals_success)
-{
   sup::sequencer::LogUI ui;
-  auto proc = sup::sequencer::ParseProcedureString(EqualProcedureString);
+  auto proc =
+      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
 
-  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
-
-  ASSERT_EQ(true, status);
+  ASSERT_TRUE(proc.get() != nullptr);
+  // Should have expect failure in Setup but the exception does not cause SetupImpl to fail ..
+  EXPECT_TRUE(
+      sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE));
 }
-
-TEST(Equals, Equals_failure)
-{
-  sup::sequencer::LogUI ui;
-  auto proc = sup::sequencer::ParseProcedureString(NotEqualProcedureString);
-
-  bool status = sup::UnitTestHelper::TryAndExecute(
-      proc, &ui,
-      sup::sequencer::ExecutionStatus::FAILURE);  // Should have expect failure in Setup but the
-                                                  // exception does not cause SetupImpl to fail ..
-
-  ASSERT_EQ(true, status);
-}
-
-#undef LOG_ALTERN_SRC

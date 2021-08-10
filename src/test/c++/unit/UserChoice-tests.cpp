@@ -19,115 +19,56 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
+#include "UnitTestHelper.h"
 
 #include <SequenceParser.h>
 #include <common/BasicTypes.h>
-#include <gtest/gtest.h>  // Google test framework
-
-// Local header files
-
-#include "UnitTestHelper.h"
-
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "unit-test"
-
-// Type declaration
-
-// Function declaration
-
-// Global variables
-
-static ccs::log::Func_t _log_handler = ccs::log::SetStdout();
-
-// Function definition
+#include <gtest/gtest.h>
 
 TEST(UserChoice, GetUserChoice)
 {
+  using sup::UnitTestHelper::CounterInstruction;
+  using sup::UnitTestHelper::TryAndExecute;
+
   sup::UnitTestHelper::MockUI ui;
-  auto proc = sup::sequencer::ParseProcedureString(
-      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-      "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-      "           name=\"Trivial procedure for testing purposes\"\n"
-      "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-      "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-      "    <UserChoice description=\"Tick or wait\">\n"
-      "        <Counter/>\n"
-      "        <Counter incr=\"2\"/>\n"
-      "        <Wait timeout=\"0.1\"/>\n"
-      "        <Inverter>\n"
-      "            <Counter/>\n"
-      "        </Inverter>\n"
-      "    </UserChoice>\n"
-      "    <Workspace/>\n"
-      "</Procedure>");
+  const std::string body{R"(
+    <UserChoice description="Tick or wait">
+        <Counter/>
+        <Counter incr="2"/>
+        <Wait timeout="0.1"/>
+        <Inverter>
+            <Counter/>
+        </Inverter>
+    </UserChoice>
+    <Workspace/>
+)"};
+
+  auto proc =
+      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
+  ASSERT_TRUE(proc.get() != nullptr);
 
   ui.SetChoice(0);
+  EXPECT_TRUE(TryAndExecute(proc, &ui));
+  EXPECT_EQ(CounterInstruction::GetCount(), 1);
 
-  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
+  ui.SetChoice(1);
+  EXPECT_TRUE(TryAndExecute(proc, &ui));
+  EXPECT_EQ(CounterInstruction::GetCount(), 3);
 
-  // Instructions called
-
-  if (status)
-  {
-    status = (1u == sup::UnitTestHelper::CounterInstruction::GetCount());
-  }
-
-  if (status)
-  {
-    ui.SetChoice(1);
-    status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
-  }
-
-  if (status)
-  {
-    status = (3u == sup::UnitTestHelper::CounterInstruction::GetCount());
-  }
-
-  if (status)
-  {
-    ui.SetChoice(2);
-    status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
-  }
-
-  if (status)
-  {
-    status = (3u == sup::UnitTestHelper::CounterInstruction::GetCount());
-  }
+  ui.SetChoice(2);
+  EXPECT_TRUE(TryAndExecute(proc, &ui));
+  EXPECT_EQ(CounterInstruction::GetCount(), 3);
 
   // Instruction called and return failure
-
-  if (status)
-  {
-    ui.SetChoice(3);
-    status =
-        sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE);
-  }
-
-  if (status)
-  {
-    status = (4u == sup::UnitTestHelper::CounterInstruction::GetCount());
-  }
+  ui.SetChoice(3);
+  EXPECT_TRUE(TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE));
+  EXPECT_EQ(CounterInstruction::GetCount(), 4);
 
   // Invalid choices
 
-  if (status)
-  {
-    ui.SetChoice(4);
-    status =
-        sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE);
-  }
+  ui.SetChoice(4);
+  EXPECT_TRUE(TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE));
 
-  if (status)
-  {
-    ui.SetChoice(-1);
-    status =
-        sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE);
-  }
-
-  ASSERT_EQ(true, status);
+  ui.SetChoice(-1);
+  EXPECT_TRUE(TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE));
 }
-
-#undef LOG_ALTERN_SRC

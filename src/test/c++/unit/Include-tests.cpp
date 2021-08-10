@@ -22,7 +22,7 @@
 #include <SequenceParser.h>
 #include <common/BasicTypes.h>
 #include <common/SysTools.h>
-#include <gtest/gtest.h> 
+#include <gtest/gtest.h>
 
 #include "LogUI.h"
 #include "UnitTestHelper.h"
@@ -78,7 +78,7 @@ TEST(Include, Procedure_decorator)
         <Counter incr="$incr"/>
     </ForceSuccess>
     <Repeat isRoot="true" maxCount="10">
-        <Include name="Counts" path="CountParamWithDecorator" 
+        <Include name="Counts" path="CountParamWithDecorator"
 incr="2"/>
     </Repeat>
     <Workspace>
@@ -119,8 +119,8 @@ TEST(Include, Procedure_extern)
   // preparing test file for inclusion
   const std::string body{R"(
     <ParallelSequence name="Parallel Wait" successThreshold="2">
-        <Wait name="One" timeout="1.0" />
-        <Wait name="Two" timeout="2.0" />
+        <Wait name="One" timeout="0.1" />
+        <Wait name="Two" timeout="0.2" />
         <Wait name="Three" timeout="3.0" />
     </ParallelSequence>
     <Workspace>
@@ -153,9 +153,9 @@ TEST(Include, Procedure_nested)
   ccs::HelperTools::CreatePath("/tmp/instruction_definitions/waits");
 
   const std::string single_waits_body{R"(
-    <Wait name="OneSecond" timeout="1.0" />
-    <Wait name="TwoSeconds" timeout="2.0" />
-    <Wait name="ThreeSeconds" timeout="3.0" />
+    <Wait name="OneTenthSecond" timeout="0.1" />
+    <Wait name="TwoTenthSeconds" timeout="0.2" />
+    <Wait name="ThreeTenthSeconds" timeout="0.3" />
     <Wait name="ParametrizedWait" timeout="$timeout" />
 )"};
 
@@ -165,11 +165,11 @@ TEST(Include, Procedure_nested)
 
   const std::string compound_waits_body{R"(
     <Sequence name="SerialWait">
-        <Include name="One" path="OneSecond" file="waits/single_waits.xml" />
+        <Include name="One" path="OneTenthSecond" file="waits/single_waits.xml" />
         <Include name="Two" path="ParametrizedWait" file="waits/single_waits.xml" timeout="$par1" />
     </Sequence>
     <ParallelSequence name="ParallelWait">
-        <Include name="One" path="TwoSeconds" file="waits/single_waits.xml" />
+        <Include name="One" path="TwoTenthSeconds" file="waits/single_waits.xml" />
         <Include name="Two" path="ParametrizedWait" file="waits/single_waits.xml" timeout="$par1" />
     </ParallelSequence>
 )"};
@@ -181,9 +181,9 @@ TEST(Include, Procedure_nested)
   const std::string main_body{R"(
     <Sequence isRoot="True">
         <Include name="First wait" path="SerialWait"
-                 file="instruction_definitions/compound_waits.xml" par1="1.0" />
+                 file="instruction_definitions/compound_waits.xml" par1="0.4" />
         <Include name="Second Wait" path="ParallelWait"
-                 file="instruction_definitions/compound_waits.xml" par1="3.0" />
+                 file="instruction_definitions/compound_waits.xml" par1="0.4" />
     </Sequence>
 )"};
 

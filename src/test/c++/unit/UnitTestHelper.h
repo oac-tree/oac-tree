@@ -189,6 +189,12 @@ static inline bool TryAndExecute (std::unique_ptr<sup::sequencer::Procedure>& pr
  */
 std::string CreateProcedureString(const std::string& body);
 
+/**
+ * Prints variables in a workspace.
+ */
+bool PrintProcedureWorkspace(::sup::sequencer::Procedure *procedure);
+
+
 } // namespace UnitTestHelper
 
 } // namespace sup

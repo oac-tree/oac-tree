@@ -50,8 +50,6 @@ static const ccs::types::char8 *testTable[][2] = {{"{\"type\":\"uint8\"}", "0"},
                                                   {NULL}};
 static ::ccs::types::uint8 resVal[] = {1, 2, 3, 0};
 
-static bool PrintProcedureWorkspace(::sup::sequencer::Procedure *procedure);
-
 TEST(Choice, Default) // Static initialisation
 {
   const std::string body{R"(
@@ -91,7 +89,7 @@ TEST(Choice, Default) // Static initialisation
     varX->AddAttribute("value", testTable[i][1]);
     proc->AddVariable("sel", varX.release());
 
-    status = PrintProcedureWorkspace(proc.get());
+    status = ::sup::UnitTestHelper::PrintProcedureWorkspace(proc.get());
 
     if (status) {
       LogUI ui;
@@ -117,7 +115,7 @@ TEST(Choice, Default) // Static initialisation
     }
 
     if (status) {
-      status = PrintProcedureWorkspace(proc.get());
+      status = ::sup::UnitTestHelper::PrintProcedureWorkspace(proc.get());
     }
 
     i++;
@@ -203,24 +201,3 @@ TEST(Choice, NoAttribute) {
   // Expect failure in Setup
   ASSERT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
 }
-
-static bool PrintProcedureWorkspace(::sup::sequencer::Procedure *procedure) {
-  auto var_names = procedure->VariableNames();
-  ::ccs::types::char8 val_string[1024];
-  for (const auto &var_name : var_names) {
-    ::ccs::types::AnyValue val;
-    log_debug("Variable '%s'", var_name.c_str());
-
-    bool var_initialized = procedure->GetVariableValue(var_name, val);
-    if (var_initialized) {
-      val.SerialiseInstance(val_string, 1024);
-      log_debug("Variable '%s', with value\n  %s", var_name.c_str(),
-                val_string);
-    } else {
-      log_debug("Variable '%s' uninitialized", var_name.c_str());
-    }
-  }
-  return true;
-}
-
-#undef LOG_ALTERN_SRC

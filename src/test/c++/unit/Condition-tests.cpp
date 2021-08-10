@@ -25,7 +25,6 @@
 #include "common/AnyValue.h"
 #include "common/BasicTypes.h"
 #include "common/SharedReference.h"
-#include <common/log-api.h>
 
 #include "Condition.h"
 #include "LocalVariable.h"
@@ -34,9 +33,6 @@
 
 #include "LogUI.h"
 #include "UnitTestHelper.h"
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
 
 using namespace sup::sequencer;
 
@@ -47,8 +43,6 @@ static const ccs::types::char8 *conditionTable[][14] = {
         { "c.field1", "{\"type\":\"StructuredData1\", \"attributes\":[{\"field1\":{\"type\":\"uint32\"}}]}", "{\"field1\":2}", "c", "true", NULL },
         { "c[1].field1", "{\"type\":\"StructuredData6a\", \"multiplicity\":2, \"element\":{\"type\":\"StructuredData6Base\", \"attributes\":[{\"field1\":{\"type\":\"uint32\"}}]}}", "[{\"field1\":1}, {\"field1\":0}]", "c", "false", NULL },
         { NULL } };
-
-static bool PrintProcedureWorkspace(::sup::sequencer::Procedure *procedure);
 
 TEST(Condition, Default) {
   const std::string body{R"(
@@ -78,13 +72,13 @@ TEST(Condition, Default) {
   auto proc = sup::sequencer::ParseProcedureFile(file_name);
   ASSERT_TRUE(proc.get() != nullptr);
 
-  ASSERT_TRUE(PrintProcedureWorkspace(proc.get()));
+  ASSERT_TRUE(::sup::UnitTestHelper::PrintProcedureWorkspace(proc.get()));
 
   LogUI ui;
   proc->ExecuteSingle(&ui);
   ASSERT_EQ(proc->GetStatus(), ExecutionStatus::SUCCESS);
 
-  ASSERT_TRUE(PrintProcedureWorkspace(proc.get()));
+  ASSERT_TRUE(::sup::UnitTestHelper::PrintProcedureWorkspace(proc.get()));
 }
 
 TEST(Condition, Default1) {
@@ -106,7 +100,7 @@ TEST(Condition, Default1) {
     varX->GetValue(resVal);
     proc->AddVariable(conditionTable[i][3], varX.release());
 
-    status = PrintProcedureWorkspace(proc.get());
+    status = ::sup::UnitTestHelper::PrintProcedureWorkspace(proc.get());
 
     if (status) {
       LogUI ui;
@@ -123,32 +117,13 @@ TEST(Condition, Default1) {
     }
 
     if (status) {
-      status = PrintProcedureWorkspace(proc.get());
+      status = ::sup::UnitTestHelper::PrintProcedureWorkspace(proc.get());
     }
 
     i++;
   }
 
   ASSERT_TRUE(status);
-}
-
-static bool PrintProcedureWorkspace(::sup::sequencer::Procedure *procedure) {
-  auto var_names = procedure->VariableNames();
-  ::ccs::types::char8 val_string[1024];
-  for (const auto &var_name : var_names) {
-    ::ccs::types::AnyValue val;
-    log_debug("Variable '%s'", var_name.c_str());
-
-    bool var_initialized = procedure->GetVariableValue(var_name, val);
-    if (var_initialized) {
-      val.SerialiseInstance(val_string, 1024);
-      log_debug("Variable '%s', with value\n  %s", var_name.c_str(),
-                val_string);
-    } else {
-      log_debug("Variable '%s' uninitialized", var_name.c_str());
-    }
-  }
-  return true;
 }
 
 TEST(Condition, NonScalarVariable_success) {
@@ -222,5 +197,3 @@ TEST(Condition, NoSuchVariable_attr) {
   ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(
       proc, &ui, sup::sequencer::ExecutionStatus::FAILURE));
 }
-
-#undef LOG_ALTERN_SRC

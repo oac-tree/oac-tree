@@ -27,14 +27,7 @@
 #include "SequenceParser.h"
 #include "UnitTestHelper.h"
 
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
-
-static bool PrintProcedureWorkspace(::sup::sequencer::Procedure *procedure);
-
-static ::ccs::log::Func_t __handler = ::ccs::log::SetStdout();
-
-TEST(SequenceParser, Default) // Static initialisation
+TEST(SequenceParser, Default) 
 {
   const std::string body{R"(
     <Sequence>
@@ -56,7 +49,7 @@ TEST(SequenceParser, Default) // Static initialisation
   ASSERT_TRUE(proc.get() != nullptr);
 }
 
-TEST(SequenceParser, Workspace) // Static initialisation
+TEST(SequenceParser, Workspace)
 {
   const std::string body{R"(
     <Sequence>
@@ -78,10 +71,10 @@ TEST(SequenceParser, Workspace) // Static initialisation
       file_name, ::sup::UnitTestHelper::CreateProcedureString(body));
 
   auto proc = sup::sequencer::ParseProcedureFile(file_name);
-  ASSERT_TRUE(PrintProcedureWorkspace(proc.get()));
+  ASSERT_TRUE(::sup::UnitTestHelper::PrintProcedureWorkspace(proc.get()));
 }
 
-TEST(SequenceParser, ParseString) // Static initialisation
+TEST(SequenceParser, ParseString)
 {
   const std::string body{R"(
     <Sequence>
@@ -96,24 +89,5 @@ TEST(SequenceParser, ParseString) // Static initialisation
       ::sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
-  ASSERT_TRUE(PrintProcedureWorkspace(proc.get()));
+  ASSERT_TRUE(::sup::UnitTestHelper::PrintProcedureWorkspace(proc.get()));
 }
-
-static bool PrintProcedureWorkspace(::sup::sequencer::Procedure *procedure) {
-  auto var_names = procedure->VariableNames();
-  ::ccs::types::char8 val_string[1024];
-  for (const auto &var_name : var_names) {
-    ::ccs::types::AnyValue val;
-    bool var_initialized = procedure->GetVariableValue(var_name, val);
-    if (var_initialized) {
-      val.SerialiseInstance(val_string, 1024);
-      log_debug("Variable '%s', with value\n  %s", var_name.c_str(),
-                val_string);
-    } else {
-      log_debug("Variable '%s' uninitialized", var_name.c_str());
-    }
-  }
-  return true;
-}
-
-#undef LOG_ALTERN_SRC

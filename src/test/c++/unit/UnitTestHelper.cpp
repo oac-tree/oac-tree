@@ -29,6 +29,7 @@
 
 // Local header files
 
+#include "Procedure.h"
 #include "Instruction.h"
 #include "InstructionRegistry.h"
 #include "UserInterface.h"
@@ -149,6 +150,27 @@ R"RAW(<?xml version="1.0" encoding="UTF-8"?>
 
   return header + body + footer;
 }
+
+bool PrintProcedureWorkspace(::sup::sequencer::Procedure *procedure)
+{
+  auto var_names = procedure->VariableNames();
+  ::ccs::types::char8 val_string[1024];
+  for (const auto &var_name : var_names) {
+    ::ccs::types::AnyValue val;
+    log_debug("Variable '%s'", var_name.c_str());
+
+    bool var_initialized = procedure->GetVariableValue(var_name, val);
+    if (var_initialized) {
+      val.SerialiseInstance(val_string, 1024);
+      log_debug("Variable '%s', with value\n  %s", var_name.c_str(),
+                val_string);
+    } else {
+      log_debug("Variable '%s' uninitialized", var_name.c_str());
+    }
+  }
+  return true;
+}
+
 
 } // namespace UnitTestHelper
 

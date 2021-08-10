@@ -1,23 +1,23 @@
 /******************************************************************************
-* $HeadURL: $
-* $Id: $
-*
-* Project       : SUP - Sequencer
-*
-* Description   : Sequencer for operational procedures
-*
-* Author        : Walter Van Herck (IO)
-*
-* Copyright (c) : 2010-2021 ITER Organization,
-*                 CS 90 046
-*                 13067 St. Paul-lez-Durance Cedex
-*                 France
-*
-* This file is part of ITER CODAC software.
-* For the terms and conditions of redistribution or use of this software
-* refer to the file ITER-LICENSE.TXT located in the top level directory
-* of the distribution package.
-******************************************************************************/
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP - Sequencer
+ *
+ * Description   : Sequencer for operational procedures
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2021 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
 
 // Global header files
 
@@ -39,13 +39,13 @@
 
 // Function declaration
 
-namespace sup {
-
-namespace sequencer {
-
+namespace sup
+{
+namespace sequencer
+{
 // Function definition
 
-void DaemonInterface::UpdateInstructionStatusImpl(const Instruction * instruction)
+void DaemonInterface::UpdateInstructionStatusImpl(const Instruction *instruction)
 {
   if (_log_enabled)
   {
@@ -54,7 +54,7 @@ void DaemonInterface::UpdateInstructionStatusImpl(const Instruction * instructio
     auto status = instruction->GetStatus();
 
     log_info("Instruction: (%s:%s) : %s", instruction_type.c_str(), instruction_name.c_str(),
-                                          StatusToString(status).c_str());
+             StatusToString(status).c_str());
   }
 }
 
@@ -86,20 +86,18 @@ void DaemonInterface::EndSingleStepImpl()
   }
 }
 
-DaemonInterface::DaemonInterface(bool log_enabled)
-  : _log_enabled{log_enabled}
-{}
+DaemonInterface::DaemonInterface(bool log_enabled) : _log_enabled{log_enabled} {}
 
 DaemonInterface::~DaemonInterface() = default;
 
-} // namespace sequencer
+}  // namespace sequencer
 
-} // namespace sup
+}  // namespace sup
 
-extern "C" {
+extern "C"
+{
+  // C API function definitions
 
-// C API function definitions
-
-} // extern C
+}  // extern C
 
 #undef LOG_ALTERN_SRC

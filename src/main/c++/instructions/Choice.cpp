@@ -24,191 +24,216 @@
 /*---------------------------------------------------------------------------*/
 
 #include <common/AnyType.h>
+
 #include <common/log-api.h>
 /*---------------------------------------------------------------------------*/
 /*                         Project header includes                           */
 /*---------------------------------------------------------------------------*/
 
 #include "Choice.h"
-#include "Workspace.h"
 #include "Procedure.h"
+#include "Workspace.h"
 
 /*---------------------------------------------------------------------------*/
 /*                           Static definitions                              */
 /*---------------------------------------------------------------------------*/
 
-namespace sup {
-
-namespace sequencer {
+namespace sup
+{
+namespace sequencer
+{
 /*---------------------------------------------------------------------------*/
 /*                           Method definitions                              */
 /*---------------------------------------------------------------------------*/
 
 const std::string Choice::Type = "Choice";
 
-Choice::Choice() :
-        CompoundInstruction(Type) {
-    numberOfElements = 1u;
-    elementSize = 0u;
-    isMask = false;
+Choice::Choice() : CompoundInstruction(Type)
+{
+  numberOfElements = 1u;
+  elementSize = 0u;
+  isMask = false;
 }
 
-Choice::~Choice() {
-//Auto-generated destructor stub for Choice
+Choice::~Choice()
+{
+  // Auto-generated destructor stub for Choice
 
-//TODO Verify if manual additions are needed here
+  // TODO Verify if manual additions are needed here
 }
 
-bool Choice::CheckIfSelectorArray(const ::ccs::types::AnyValue &_val) {
-//check if array
-    bool ret = true;
-    if (!isMask) {
-        ::ccs::base::SharedReference<const ::ccs::types::ArrayType> myArrayType = _val.GetType();
-        if (myArrayType.IsValid()) {
-            numberOfElements = myArrayType->GetElementNumber();
-            elementSize = myArrayType->GetElementType()->GetSize();
-        }
-        //they must be arrays of uint32 or positive int32
-        ret = (elementSize <= 4u);
-        if (!ret) {
-            log_error("Choice::Setup - element size must be <= 4");
-        }
+bool Choice::CheckIfSelectorArray(const ::ccs::types::AnyValue &_val)
+{
+  // check if array
+  bool ret = true;
+  if (!isMask)
+  {
+    ::ccs::base::SharedReference<const ::ccs::types::ArrayType> myArrayType = _val.GetType();
+    if (myArrayType.IsValid())
+    {
+      numberOfElements = myArrayType->GetElementNumber();
+      elementSize = myArrayType->GetElementType()->GetSize();
     }
-    return ret;
+    // they must be arrays of uint32 or positive int32
+    ret = (elementSize <= 4u);
+    if (!ret)
+    {
+      log_error("Choice::Setup - element size must be <= 4");
+    }
+  }
+  return ret;
 }
 
-bool Choice::CheckSelectorType(const Procedure &proc) {
-
-    varName = GetAttribute("var_name");
-    ::ccs::types::AnyValue _val;
-    bool ret = proc.GetVariableValue(varName, _val);
-    if (ret) {
-        elementSize = _val.GetSize();
-        isMask = HasAttribute("is_mask");
-        if (isMask) {
-            isMask = (GetAttribute("is_mask") == "true");
-        }
-        ret = CheckIfSelectorArray(_val);
+bool Choice::CheckSelectorType(const Procedure &proc)
+{
+  varName = GetAttribute("var_name");
+  ::ccs::types::AnyValue _val;
+  bool ret = proc.GetVariableValue(varName, _val);
+  if (ret)
+  {
+    elementSize = _val.GetSize();
+    isMask = HasAttribute("is_mask");
+    if (isMask)
+    {
+      isMask = (GetAttribute("is_mask") == "true");
     }
-    return ret;
+    ret = CheckIfSelectorArray(_val);
+  }
+  return ret;
 }
 
-bool Choice::SetupImpl(const Procedure &proc) {
-    bool ret = SetupChildren(proc);
-    if (ret) {
-        ret = HasAttribute("var_name");
-        if (ret) {
-            ret = CheckSelectorType(proc);
-        }
-        else {
-            log_error("Choice::Setup - No attribute var_name found");
-        }
-
-        log_debug("Choice::Setup - With var_name=%s numberOfElements=%u elementSize=%u isMask=%u", varName.c_str(), numberOfElements, elementSize, isMask);
+bool Choice::SetupImpl(const Procedure &proc)
+{
+  bool ret = SetupChildren(proc);
+  if (ret)
+  {
+    ret = HasAttribute("var_name");
+    if (ret)
+    {
+      ret = CheckSelectorType(proc);
     }
-    return ret;
+    else
+    {
+      log_error("Choice::Setup - No attribute var_name found");
+    }
+
+    log_debug("Choice::Setup - With var_name=%s numberOfElements=%u elementSize=%u isMask=%u",
+              varName.c_str(), numberOfElements, elementSize, isMask);
+  }
+  return ret;
 }
 
 ExecutionStatus Choice::ExecuteBitChild(const ::ccs::types::uint64 value,
-                             const ::ccs::types::uint32 remained,
-                             UserInterface *ui,
-                             Workspace *ws) {
-    ExecutionStatus child_status = ExecutionStatus::SUCCESS;
+                                        const ::ccs::types::uint32 remained, UserInterface *ui,
+                                        Workspace *ws)
+{
+  ExecutionStatus child_status = ExecutionStatus::SUCCESS;
 
-    bool exit = false;
-    for (::ccs::types::uint32 i = 0u; (i < remained) && (!exit); i++) {
-        log_debug("Choice::ExecuteSingleImpl - Considering bit %d of %d", i, remained);
-        if (((value >> i) & (0x1u))) {
-            child_status = ExecuteChild(i, ui, ws);
-            //continue only if success
-            exit = (child_status != ExecutionStatus::SUCCESS);
-            //child_status = _children[i]->GetStatus();
-        }
+  bool exit = false;
+  for (::ccs::types::uint32 i = 0u; (i < remained) && (!exit); i++)
+  {
+    log_debug("Choice::ExecuteSingleImpl - Considering bit %d of %d", i, remained);
+    if (((value >> i) & (0x1u)))
+    {
+      child_status = ExecuteChild(i, ui, ws);
+      // continue only if success
+      exit = (child_status != ExecutionStatus::SUCCESS);
+      // child_status = _children[i]->GetStatus();
     }
-    return child_status;
+  }
+  return child_status;
 }
 
-ExecutionStatus Choice::ExecuteMaskSelector(::ccs::types::uint8 *valPtr,
-                                 UserInterface *ui,
-                                 Workspace *ws) {
-    ExecutionStatus child_status = ExecutionStatus::SUCCESS;
+ExecutionStatus Choice::ExecuteMaskSelector(::ccs::types::uint8 *valPtr, UserInterface *ui,
+                                            Workspace *ws)
+{
+  ExecutionStatus child_status = ExecutionStatus::SUCCESS;
 
-    ::ccs::types::uint32 nElems = (elementSize * sizeof(::ccs::types::uint64));
-    log_debug("Choice::ExecuteSingleImpl - isMask nElems=%d", nElems);
-    bool exit = false;
-    //generic...can consider very big elements
-    while ((nElems > 0u) && (!exit)) {
-        ::ccs::types::uint32 remained = (nElems > 64u) ? (64u) : (nElems);
-        ::ccs::types::uint64 value = 0u;
-        memcpy(&value, valPtr, (remained / 8u));
-        log_debug("Choice::ExecuteSingleImpl - isMask value=%d", value);
-        child_status = ExecuteBitChild(value, remained, ui, ws);
-        exit = (child_status != ExecutionStatus::SUCCESS);
-        nElems -= remained;
-        valPtr += sizeof(::ccs::types::uint64);
-    }
-    return child_status;
-
+  ::ccs::types::uint32 nElems = (elementSize * sizeof(::ccs::types::uint64));
+  log_debug("Choice::ExecuteSingleImpl - isMask nElems=%d", nElems);
+  bool exit = false;
+  // generic...can consider very big elements
+  while ((nElems > 0u) && (!exit))
+  {
+    ::ccs::types::uint32 remained = (nElems > 64u) ? (64u) : (nElems);
+    ::ccs::types::uint64 value = 0u;
+    memcpy(&value, valPtr, (remained / 8u));
+    log_debug("Choice::ExecuteSingleImpl - isMask value=%d", value);
+    child_status = ExecuteBitChild(value, remained, ui, ws);
+    exit = (child_status != ExecutionStatus::SUCCESS);
+    nElems -= remained;
+    valPtr += sizeof(::ccs::types::uint64);
+  }
+  return child_status;
 }
 
-ExecutionStatus Choice::ExecuteArraySelector(::ccs::types::uint8 *valPtr,
-                                  UserInterface *ui,
-                                  Workspace *ws) {
-    ExecutionStatus child_status = ExecutionStatus::SUCCESS;
+ExecutionStatus Choice::ExecuteArraySelector(::ccs::types::uint8 *valPtr, UserInterface *ui,
+                                             Workspace *ws)
+{
+  ExecutionStatus child_status = ExecutionStatus::SUCCESS;
 
-    for (::ccs::types::uint32 i = 0u; i < numberOfElements; i++) {
-        ::ccs::types::uint32 value = 0u;
+  for (::ccs::types::uint32 i = 0u; i < numberOfElements; i++)
+  {
+    ::ccs::types::uint32 value = 0u;
 
-        memcpy(&value, valPtr, elementSize);
+    memcpy(&value, valPtr, elementSize);
 
-        child_status = ExecuteChild(value, ui, ws);
-        //continue only if success
-        if (child_status != ExecutionStatus::SUCCESS) {
-            //child_status = _children[value]->GetStatus();
-            break;
-        }
-        valPtr += elementSize;
+    child_status = ExecuteChild(value, ui, ws);
+    // continue only if success
+    if (child_status != ExecutionStatus::SUCCESS)
+    {
+      // child_status = _children[value]->GetStatus();
+      break;
     }
-    return child_status;
+    valPtr += elementSize;
+  }
+  return child_status;
 }
 
-ExecutionStatus Choice::ExecuteSingleImpl(UserInterface *ui,
-                                          Workspace *ws) {
-    ExecutionStatus child_status = ExecutionStatus::SUCCESS;
-    ::ccs::types::AnyValue _val;
-    ws->GetValue(varName, _val);
-    auto valPtr = reinterpret_cast<::ccs::types::uint8*>(_val.GetInstance());
+ExecutionStatus Choice::ExecuteSingleImpl(UserInterface *ui, Workspace *ws)
+{
+  ExecutionStatus child_status = ExecutionStatus::SUCCESS;
+  ::ccs::types::AnyValue _val;
+  ws->GetValue(varName, _val);
+  auto valPtr = reinterpret_cast<::ccs::types::uint8 *>(_val.GetInstance());
 
-    if (isMask) {
-        child_status = ExecuteMaskSelector(valPtr, ui, ws);
-    }
-    else {
-        child_status = ExecuteArraySelector(valPtr, ui, ws);
-    }
-    return child_status;
+  if (isMask)
+  {
+    child_status = ExecuteMaskSelector(valPtr, ui, ws);
+  }
+  else
+  {
+    child_status = ExecuteArraySelector(valPtr, ui, ws);
+  }
+  return child_status;
 }
 
-ExecutionStatus Choice::ExecuteChild(::ccs::types::uint32 idx,
-                                     UserInterface *ui,
-                                     Workspace *ws) {
-    ExecutionStatus child_status = ExecutionStatus::SUCCESS;
-    if (idx < ChildInstructions().size()) {
-        child_status = ChildInstructions()[idx]->GetStatus();
+ExecutionStatus Choice::ExecuteChild(::ccs::types::uint32 idx, UserInterface *ui, Workspace *ws)
+{
+  ExecutionStatus child_status = ExecutionStatus::SUCCESS;
+  if (idx < ChildInstructions().size())
+  {
+    child_status = ChildInstructions()[idx]->GetStatus();
 
-        if (NeedsExecute(child_status)) {
-            auto childName = ChildInstructions()[idx]->GetName();
-            log_debug("Choice::ExecuteChild - Executing child[%u]=%s", idx, childName.c_str());
+    if (NeedsExecute(child_status))
+    {
+      auto childName = ChildInstructions()[idx]->GetName();
+      log_debug("Choice::ExecuteChild - Executing child[%u]=%s", idx, childName.c_str());
 
-            ChildInstructions()[idx]->ExecuteSingle(ui, ws);
-            child_status = ExecutionStatus::NOT_FINISHED;
-        }
+      ChildInstructions()[idx]->ExecuteSingle(ui, ws);
+      child_status = ExecutionStatus::NOT_FINISHED;
     }
-    else {
-        log_warning("Status Choice::ExecuteSingleImpl - child[%u] not executed because exceeding children size (%u)", idx, ChildInstructions().size());
-    }
-    return child_status;
+  }
+  else
+  {
+    log_warning(
+        "Status Choice::ExecuteSingleImpl - child[%u] not executed because exceeding children size "
+        "(%u)",
+        idx, ChildInstructions().size());
+  }
+  return child_status;
 }
 
-}
+}  // namespace sequencer
 
-}
+}  // namespace sup

@@ -1,23 +1,23 @@
 /******************************************************************************
-* $HeadURL: $
-* $Id: $
-*
-* Project       : CODAC Supervision and Automation (SUP) Sequencer component
-*
-* Description   : Instruction node implementation
-*
-* Author        : Walter Van Herck (IO)
-*
-* Copyright (c) : 2010-2020 ITER Organization,
-*                 CS 90 046
-*                 13067 St. Paul-lez-Durance Cedex
-*                 France
-*
-* This file is part of ITER CODAC software.
-* For the terms and conditions of redistribution or use of this software
-* refer to the file ITER-LICENSE.TXT located in the top level directory
-* of the distribution package.
-******************************************************************************/
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : CODAC Supervision and Automation (SUP) Sequencer component
+ *
+ * Description   : Instruction node implementation
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2020 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
 
 // Global header files
 
@@ -25,12 +25,10 @@
 
 // Local header files
 
+#include "Equals.h"
 #include "Instruction.h"
 #include "InstructionRegistry.h"
-
 #include "Workspace.h"
-
-#include "Equals.h"
 
 // Constants
 
@@ -39,10 +37,10 @@
 
 // Type definition
 
-namespace sup {
-
-namespace sequencer {
-
+namespace sup
+{
+namespace sequencer
+{
 // Function declaration
 
 // Global variables
@@ -51,7 +49,7 @@ const std::string Equals::Type = "Equals";
 
 // Function definition
 
-ExecutionStatus Equals::ExecuteSingleImpl (UserInterface * ui, Workspace * ws)
+ExecutionStatus Equals::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
 {
   (void)ui;
   (void)ws;
@@ -62,12 +60,12 @@ ExecutionStatus Equals::ExecuteSingleImpl (UserInterface * ui, Workspace * ws)
   ccs::types::AnyValue rhs;
 
   if (status)
-  { // Read lhs from workspace
+  {  // Read lhs from workspace
     status = ws->GetValue(Instruction::GetAttribute("lhs"), lhs);
   }
 
   if (status)
-  { // Read rhs from workspace
+  {  // Read rhs from workspace
     status = ws->GetValue(Instruction::GetAttribute("rhs"), rhs);
   }
 
@@ -87,8 +85,8 @@ ExecutionStatus Equals::ExecuteSingleImpl (UserInterface * ui, Workspace * ws)
 Equals::Equals() : Instruction(Equals::Type) {}
 Equals::~Equals() = default;
 
-} // namespace sequencer
+}  // namespace sequencer
 
-} // namespace sup
+}  // namespace sup
 
 #undef LOG_ALTERN_SRC

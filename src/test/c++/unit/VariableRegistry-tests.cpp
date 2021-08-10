@@ -21,15 +21,17 @@
 
 // Global header files
 
-#include <gtest/gtest.h> // Google test framework
-#include <common/log-api.h> // Syslog wrapper routines
+#include <gtest/gtest.h>  // Google test framework
+
 #include <algorithm>
+
+#include <common/log-api.h>  // Syslog wrapper routines
 
 // Local header files
 
-#include "VariableRegistry.h"
 #include "FileVariable.h"
 #include "LocalVariable.h"
+#include "VariableRegistry.h"
 
 // Constants
 
@@ -42,24 +44,24 @@ using namespace sup::sequencer;
 
 class VariableRegistryTest : public ::testing::Test
 {
-  protected:
-    VariableRegistryTest();
-    virtual ~VariableRegistryTest();
+protected:
+  VariableRegistryTest();
+  virtual ~VariableRegistryTest();
 
-    VariableRegistry empty_reg;
+  VariableRegistry empty_reg;
 };
 
 class TestVariable : public Variable
 {
-  private:
-    bool GetValueImpl(::ccs::types::AnyValue &) const override { return true; }
-    bool SetValueImpl(const ::ccs::types::AnyValue &) override { return true; }
+private:
+  bool GetValueImpl(::ccs::types::AnyValue &) const override { return true; }
+  bool SetValueImpl(const ::ccs::types::AnyValue &) override { return true; }
 
-  public:
-    TestVariable() : Variable{Type} {}
-    ~TestVariable() override {}
+public:
+  TestVariable() : Variable{Type} {}
+  ~TestVariable() override {}
 
-    static const std::string Type;
+  static const std::string Type;
 };
 
 // Function declaration
@@ -68,7 +70,6 @@ class TestVariable : public Variable
 
 static ::ccs::log::Func_t __handler = ::ccs::log::SetStdout();
 const std::string TestVariable::Type = "TestVariable";
-
 
 // Function definition
 
@@ -81,7 +82,7 @@ TEST_F(VariableRegistryTest, DefaultConstructed)
 
 TEST_F(VariableRegistryTest, GlobalRegistry)
 {
-  auto & global_reg = GlobalVariableRegistry();
+  auto &global_reg = GlobalVariableRegistry();
   auto var_names = global_reg.RegisteredVariableNames();
   EXPECT_GE(var_names.size(), 2);
   EXPECT_NE(global_reg.Create(FileVariable::Type).get(), nullptr);
@@ -95,30 +96,25 @@ TEST_F(VariableRegistryTest, RegisterVariable)
   EXPECT_TRUE(RegisterVariable<FileVariable>(empty_reg));
   var_names = empty_reg.RegisteredVariableNames();
   EXPECT_EQ(var_names.size(), 1);
-  EXPECT_NE(std::find(var_names.begin(), var_names.end(), FileVariable::Type),
-            var_names.end());
+  EXPECT_NE(std::find(var_names.begin(), var_names.end(), FileVariable::Type), var_names.end());
   EXPECT_NE(empty_reg.Create(FileVariable::Type).get(), nullptr);
 }
 
 TEST_F(VariableRegistryTest, RegisterGlobalVariable)
 {
-  auto & global_reg = GlobalVariableRegistry();
+  auto &global_reg = GlobalVariableRegistry();
   auto var_names = global_reg.RegisteredVariableNames();
-  EXPECT_EQ(std::find(var_names.begin(), var_names.end(), TestVariable::Type),
-            var_names.end());
+  EXPECT_EQ(std::find(var_names.begin(), var_names.end(), TestVariable::Type), var_names.end());
   EXPECT_EQ(empty_reg.Create(TestVariable::Type).get(), nullptr);
   auto size_before = var_names.size();
   RegisterGlobalVariable<TestVariable>();
   var_names = global_reg.RegisteredVariableNames();
   EXPECT_EQ(var_names.size(), size_before + 1);
-  EXPECT_NE(std::find(var_names.begin(), var_names.end(), TestVariable::Type),
-            var_names.end());
+  EXPECT_NE(std::find(var_names.begin(), var_names.end(), TestVariable::Type), var_names.end());
   EXPECT_NE(global_reg.Create(TestVariable::Type).get(), nullptr);
 }
 
-VariableRegistryTest::VariableRegistryTest()
-  : empty_reg{}
-{}
+VariableRegistryTest::VariableRegistryTest() : empty_reg{} {}
 
 VariableRegistryTest::~VariableRegistryTest() = default;
 

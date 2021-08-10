@@ -1,35 +1,37 @@
 /******************************************************************************
-* $HeadURL: $
-* $Id: $
-*
-* Project       : SUP Sequencer
-*
-* Description   : Unit test code
-*
-* Author        : Walter Van Herck (IO)
-*
-* Copyright (c) : 2010-2020 ITER Organization,
-*                 CS 90 046
-*                 13067 St. Paul-lez-Durance Cedex
-*                 France
-*
-* This file is part of ITER CODAC software.
-* For the terms and conditions of redistribution or use of this software
-* refer to the file ITER-LICENSE.TXT located in the top level directory
-* of the distribution package.
-******************************************************************************/
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP Sequencer
+ *
+ * Description   : Unit test code
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2020 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
 
 // Global header files
 
-#include <gtest/gtest.h> // Google test framework
-#include <common/log-api.h> // Syslog wrapper routines
+#include <gtest/gtest.h>  // Google test framework
+
 #include <algorithm>
+
+#include <common/log-api.h>  // Syslog wrapper routines
 
 // Local header files
 
-#include "MockUserInterface.h"
 #include "Instruction.h"
 #include "InstructionRegistry.h"
+#include "MockUserInterface.h"
 #include "Workspace.h"
 
 // Constants
@@ -42,21 +44,21 @@ using namespace sup::sequencer;
 
 class EmptyUserInterface : public UserInterface
 {
-  private:
-    void UpdateInstructionStatusImpl(const Instruction * instruction) override {};
+private:
+  void UpdateInstructionStatusImpl(const Instruction* instruction) override{};
 };
 
-class UserInterfaceTest : public ::testing::Test {
-  protected:
-    UserInterfaceTest();
-    virtual ~UserInterfaceTest();
+class UserInterfaceTest : public ::testing::Test
+{
+protected:
+  UserInterfaceTest();
+  virtual ~UserInterfaceTest();
 
-    MockUserInterface mock_ui;
-    EmptyUserInterface empty_ui;
-    Workspace empty_ws;
-    std::unique_ptr<Instruction> wait;
+  MockUserInterface mock_ui;
+  EmptyUserInterface empty_ui;
+  Workspace empty_ws;
+  std::unique_ptr<Instruction> wait;
 };
-
 
 // Function declaration
 
@@ -68,13 +70,14 @@ static const std::string TREE_TYPE = "TestData";
 
 // Function definition
 
-using ::testing::InSequence;
 using ::testing::_;
+using ::testing::InSequence;
 using ::testing::Return;
 
 TEST_F(UserInterfaceTest, UpdateInstructionStatusDispatch)
 {
-  EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::NOT_STARTED)));
+  EXPECT_CALL(mock_ui,
+              UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::NOT_STARTED)));
   mock_ui.UpdateInstructionStatus(wait.get());
 }
 
@@ -82,9 +85,10 @@ TEST_F(UserInterfaceTest, PutValueDispatch)
 {
   ::ccs::types::AnyValue val;
   std::string description = "TestPutValue";
-  EXPECT_CALL(mock_ui, PutValueImpl(_, description)).Times(2)
-                                                        .WillOnce(Return(false))
-                                                        .WillOnce(Return(true));
+  EXPECT_CALL(mock_ui, PutValueImpl(_, description))
+      .Times(2)
+      .WillOnce(Return(false))
+      .WillOnce(Return(true));
   EXPECT_CALL(mock_ui, GetUserValueImpl(_, _)).Times(0);
   EXPECT_CALL(mock_ui, GetUserChoiceImpl(_, _)).Times(0);
   EXPECT_FALSE(mock_ui.PutValue(val, description));
@@ -96,9 +100,10 @@ TEST_F(UserInterfaceTest, GetUserValueDispatch)
   ::ccs::types::AnyValue val;
   std::string description = "TestGetUserValue";
   EXPECT_CALL(mock_ui, PutValueImpl(_, _)).Times(0);
-  EXPECT_CALL(mock_ui, GetUserValueImpl(_, description)).Times(2)
-                                                        .WillOnce(Return(false))
-                                                        .WillOnce(Return(true));
+  EXPECT_CALL(mock_ui, GetUserValueImpl(_, description))
+      .Times(2)
+      .WillOnce(Return(false))
+      .WillOnce(Return(true));
   EXPECT_CALL(mock_ui, GetUserChoiceImpl(_, _)).Times(0);
   EXPECT_FALSE(mock_ui.GetUserValue(val, description));
   EXPECT_TRUE(mock_ui.GetUserValue(val, description));
@@ -106,13 +111,14 @@ TEST_F(UserInterfaceTest, GetUserValueDispatch)
 
 TEST_F(UserInterfaceTest, GetUserChoiceDispatch)
 {
-  std::vector<std::string> choices = { "yes", "no" };
+  std::vector<std::string> choices = {"yes", "no"};
   std::string description = "TestGetUserChoice";
   EXPECT_CALL(mock_ui, PutValueImpl(_, _)).Times(0);
   EXPECT_CALL(mock_ui, GetUserValueImpl(_, _)).Times(0);
-  EXPECT_CALL(mock_ui, GetUserChoiceImpl(choices, description)).Times(2)
-                                                               .WillOnce(Return(-1))
-                                                               .WillOnce(Return(0));
+  EXPECT_CALL(mock_ui, GetUserChoiceImpl(choices, description))
+      .Times(2)
+      .WillOnce(Return(-1))
+      .WillOnce(Return(0));
   EXPECT_EQ(mock_ui.GetUserChoice(choices, description), -1);
   EXPECT_EQ(mock_ui.GetUserChoice(choices, description), 0);
 }
@@ -171,17 +177,15 @@ TEST_F(UserInterfaceTest, InstructionExecution)
   EXPECT_THAT(wait, HasExecutionStatus(ExecutionStatus::NOT_STARTED));
   {
     InSequence seq;
-    EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::NOT_FINISHED)));
+    EXPECT_CALL(mock_ui,
+                UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::NOT_FINISHED)));
     EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::SUCCESS)));
   }
   wait->ExecuteSingle(&mock_ui, &empty_ws);
 }
 
 UserInterfaceTest::UserInterfaceTest()
-  : mock_ui{}
-  , empty_ui{}
-  , empty_ws{}
-  , wait{GlobalInstructionRegistry().Create("Wait")}
+    : mock_ui{}, empty_ui{}, empty_ws{}, wait{GlobalInstructionRegistry().Create("Wait")}
 {
 }
 

@@ -21,17 +21,15 @@
 
 // Global header files
 
-#include <gtest/gtest.h> // Google test framework
-
 #include <SequenceParser.h>
+#include <gtest/gtest.h>  // Google test framework
 
 // Local header files
 
 #include "ExecutionStatus.h"
 #include "InstructionRegistry.h"
-
-#include "UnitTestHelper.h"
 #include "LogUI.h"
+#include "UnitTestHelper.h"
 
 // Constants
 
@@ -47,7 +45,7 @@
 static ccs::log::Func_t _log_handler = ccs::log::SetStdout();
 
 static const std::string EqualProcedureString =
-R"RAW(<?xml version="1.0" encoding="UTF-8"?>
+    R"RAW(<?xml version="1.0" encoding="UTF-8"?>
 <Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
            name="Procedure containing no workspace for testing purposes"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
@@ -61,7 +59,7 @@ R"RAW(<?xml version="1.0" encoding="UTF-8"?>
 )RAW";
 
 static const std::string NotEqualProcedureString =
-R"RAW(<?xml version="1.0" encoding="UTF-8"?>
+    R"RAW(<?xml version="1.0" encoding="UTF-8"?>
 <Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
            name="Procedure containing no workspace for testing purposes"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
@@ -78,26 +76,25 @@ R"RAW(<?xml version="1.0" encoding="UTF-8"?>
 
 TEST(Equals, Equals_success)
 {
-
   sup::sequencer::LogUI ui;
   auto proc = sup::sequencer::ParseProcedureString(EqualProcedureString);
 
   bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
 
   ASSERT_EQ(true, status);
-
 }
 
 TEST(Equals, Equals_failure)
 {
-
   sup::sequencer::LogUI ui;
   auto proc = sup::sequencer::ParseProcedureString(NotEqualProcedureString);
 
-  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE); // Should have expect failure in Setup but the exception does not cause SetupImpl to fail ..
+  bool status = sup::UnitTestHelper::TryAndExecute(
+      proc, &ui,
+      sup::sequencer::ExecutionStatus::FAILURE);  // Should have expect failure in Setup but the
+                                                  // exception does not cause SetupImpl to fail ..
 
   ASSERT_EQ(true, status);
-
 }
 
 #undef LOG_ALTERN_SRC

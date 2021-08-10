@@ -1,29 +1,31 @@
 /******************************************************************************
-* $HeadURL: $
-* $Id: $
-*
-* Project       : SUP Sequencer
-*
-* Description   : Unit test code
-*
-* Author        : Walter Van Herck (IO)
-*
-* Copyright (c) : 2010-2020 ITER Organization,
-*                 CS 90 046
-*                 13067 St. Paul-lez-Durance Cedex
-*                 France
-*
-* This file is part of ITER CODAC software.
-* For the terms and conditions of redistribution or use of this software
-* refer to the file ITER-LICENSE.TXT located in the top level directory
-* of the distribution package.
-******************************************************************************/
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP Sequencer
+ *
+ * Description   : Unit test code
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2020 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
 
 // Global header files
 
-#include <gtest/gtest.h> // Google test framework
-#include <common/log-api.h> // Syslog wrapper routines
+#include <gtest/gtest.h>  // Google test framework
+
 #include <algorithm>
+
+#include <common/log-api.h>  // Syslog wrapper routines
 
 // Local header files
 
@@ -37,15 +39,16 @@
 // Type definition
 using namespace sup::sequencer;
 
-class TreeDataTest : public ::testing::Test {
-  protected:
-    TreeDataTest();
-    virtual ~TreeDataTest();
+class TreeDataTest : public ::testing::Test
+{
+protected:
+  TreeDataTest();
+  virtual ~TreeDataTest();
 
-    TreeData data;
-    TreeData parent;
-    TreeData child_0;
-    TreeData child_1;
+  TreeData data;
+  TreeData parent;
+  TreeData child_0;
+  TreeData child_1;
 };
 
 // Function declaration
@@ -78,10 +81,10 @@ TEST_F(TreeDataTest, Constructed)
   EXPECT_FALSE(data.HasAttribute(attributes::NAME_ATTRIBUTE));
   EXPECT_EQ(data.GetAttribute(attributes::NAME_ATTRIBUTE), empty_str);
   EXPECT_EQ(data.GetNumberOfAttributes(), 0);
-  auto & attr_map = data.Attributes();
+  auto& attr_map = data.Attributes();
   EXPECT_EQ(attr_map.GetNumberOfAttributes(), 0);
   EXPECT_EQ(data.GetNumberOfChildren(), 0);
-  auto & children = data.Children();
+  auto& children = data.Children();
   EXPECT_EQ(children.size(), 0);
   EXPECT_EQ(data.GetContent(), empty_str);
 
@@ -367,10 +370,7 @@ TEST_F(TreeDataTest, SetContent)
 }
 
 TreeDataTest::TreeDataTest()
-  : data{TREE_TYPE}
-  , parent{TREE_TYPE}
-  , child_0{CHILD0_TYPE}
-  , child_1{CHILD1_TYPE}
+    : data{TREE_TYPE}, parent{TREE_TYPE}, child_0{CHILD0_TYPE}, child_1{CHILD1_TYPE}
 {
   child_0.SetName(CHILD0_NAME);
   child_0.AddAttribute(ATTR_NAME_1, ATTR_VALUE_1);

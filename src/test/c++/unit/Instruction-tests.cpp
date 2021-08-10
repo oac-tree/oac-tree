@@ -72,5 +72,4 @@ TEST_F(InstructionTest, SetName)
   instruction.SetName(new_name);
   EXPECT_EQ(instruction.GetName(), new_name);
   EXPECT_TRUE(instruction.HasAttribute(name_of_attribute));
-
 }

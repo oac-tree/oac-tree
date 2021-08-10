@@ -21,22 +21,24 @@
 
 // Global header files
 
-#include <gtest/gtest.h> // Google test framework
-#include <common/log-api.h> // Syslog wrapper routines
+#include <gtest/gtest.h>  // Google test framework
+
 #include <algorithm>
 #include <chrono>
 #include <thread>
 
+#include <common/log-api.h>  // Syslog wrapper routines
+
 // Local header files
 
-#include "Procedure.h"
 #include "InstructionRegistry.h"
 #include "MockUserInterface.h"
+#include "Procedure.h"
 #include "SequenceParser.h"
 #include "UnitTestHelper.h"
 #include "Variable.h"
-#include "Wait.h"
 #include "VariableRegistry.h"
+#include "Wait.h"
 
 // Constants
 
@@ -49,16 +51,16 @@ using namespace sup::sequencer;
 
 class ProcedureTest : public ::testing::Test
 {
-  protected:
-    ProcedureTest();
-    virtual ~ProcedureTest();
+protected:
+  ProcedureTest();
+  virtual ~ProcedureTest();
 
-    MockUserInterface mock_ui;
-    Procedure empty_proc;
-    std::unique_ptr<Procedure> loaded_proc;
-    std::unique_ptr<Instruction> wait;
-    std::unique_ptr<Variable> var1;
-    std::unique_ptr<Variable> var2;
+  MockUserInterface mock_ui;
+  Procedure empty_proc;
+  std::unique_ptr<Procedure> loaded_proc;
+  std::unique_ptr<Instruction> wait;
+  std::unique_ptr<Variable> var1;
+  std::unique_ptr<Variable> var2;
 };
 
 // Function declaration
@@ -68,7 +70,7 @@ class ProcedureTest : public ::testing::Test
 static ::ccs::log::Func_t __handler = ::ccs::log::SetStdout();
 
 static const std::string ProcedureString =
-R"RAW(<?xml version="1.0" encoding="UTF-8"?>
+    R"RAW(<?xml version="1.0" encoding="UTF-8"?>
 <Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
            name="Procedure for testing purposes"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
@@ -91,8 +93,8 @@ R"RAW(<?xml version="1.0" encoding="UTF-8"?>
 
 // Function definition
 
-using ::testing::AtLeast;
 using ::testing::_;
+using ::testing::AtLeast;
 using ::testing::InSequence;
 
 TEST_F(ProcedureTest, DefaultConstructed)
@@ -157,7 +159,8 @@ TEST_F(ProcedureTest, InsertInstruction)
   EXPECT_TRUE(procedure.InsertInstruction(child2, 1));
   EXPECT_EQ(procedure.GetInstructionCount(), 3);
 
-  EXPECT_EQ(procedure.GetInstructions(), std::vector<const Instruction*>({child0, child2, child1}));
+  EXPECT_EQ(procedure.GetInstructions(),
+            std::vector<const Instruction *>({child0, child2, child1}));
 
   // wrong insert index
   Wait child3;
@@ -183,7 +186,8 @@ TEST_F(ProcedureTest, TakeMiddleChild)
   auto child1_taken = procedure.TakeInstruction(1);
   EXPECT_EQ(child1, child1_taken);
   EXPECT_EQ(procedure.GetInstructions().size(), 3);
-  EXPECT_EQ(procedure.GetInstructions(), std::vector<const Instruction*>({child0, child2, child3}));
+  EXPECT_EQ(procedure.GetInstructions(),
+            std::vector<const Instruction *>({child0, child2, child3}));
   delete child1_taken;
 
   // attempt to take non-existing one
@@ -270,12 +274,12 @@ TEST_F(ProcedureTest, ExternalInclude)
 }
 
 ProcedureTest::ProcedureTest()
-  : mock_ui{}
-  , empty_proc{}
-  , loaded_proc{ParseProcedureString(ProcedureString)}
-  , wait{GlobalInstructionRegistry().Create("Wait")}
-  , var1{GlobalVariableRegistry().Create("Local")}
-  , var2{GlobalVariableRegistry().Create("Local")}
+    : mock_ui{}
+    , empty_proc{}
+    , loaded_proc{ParseProcedureString(ProcedureString)}
+    , wait{GlobalInstructionRegistry().Create("Wait")}
+    , var1{GlobalVariableRegistry().Create("Local")}
+    , var2{GlobalVariableRegistry().Create("Local")}
 {
   loaded_proc->Setup();
 }

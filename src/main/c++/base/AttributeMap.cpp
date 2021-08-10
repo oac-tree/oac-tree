@@ -1,28 +1,29 @@
 /******************************************************************************
-* $HeadURL: $
-* $Id: $
-*
-* Project       : SUP - Sequencer
-*
-* Description   : Sequencer for operational procedures
-*
-* Author        : Walter Van Herck (IO)
-*
-* Copyright (c) : 2010-2020 ITER Organization,
-*                 CS 90 046
-*                 13067 St. Paul-lez-Durance Cedex
-*                 France
-*
-* This file is part of ITER CODAC software.
-* For the terms and conditions of redistribution or use of this software
-* refer to the file ITER-LICENSE.TXT located in the top level directory
-* of the distribution package.
-******************************************************************************/
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP - Sequencer
+ *
+ * Description   : Sequencer for operational procedures
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2020 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
 
 // Global header files
 
-#include <common/log-api.h>
 #include <type_traits>
+
+#include <common/log-api.h>
 
 // Local header files
 
@@ -36,16 +37,16 @@
 
 // Type definition
 
-namespace {
-
-bool StartsWith(const std::string & str, char c);
+namespace
+{
+bool StartsWith(const std::string &str, char c);
 
 }
 
-namespace sup {
-
-namespace sequencer {
-
+namespace sup
+{
+namespace sequencer
+{
 // Static assertion
 static_assert(std::is_same<AttributeMap::map_type::iterator::value_type,
                            std::pair<const std::string, std::string>>::value,
@@ -69,14 +70,14 @@ AttributeMap::~AttributeMap() = default;
 AttributeMap::AttributeMap(const AttributeMap &) = default;
 AttributeMap::AttributeMap(AttributeMap &&) = default;
 
-AttributeMap & AttributeMap::operator=(const AttributeMap &) = default;
-AttributeMap & AttributeMap::operator=(AttributeMap &&) = default;
+AttributeMap &AttributeMap::operator=(const AttributeMap &) = default;
+AttributeMap &AttributeMap::operator=(AttributeMap &&) = default;
 
-bool AttributeMap::operator==(const AttributeMap & other) const
+bool AttributeMap::operator==(const AttributeMap &other) const
 {
   return _attributes == other._attributes;
 }
-bool AttributeMap::operator!=(const AttributeMap & other) const
+bool AttributeMap::operator!=(const AttributeMap &other) const
 {
   return !this->operator==(other);
 }
@@ -86,16 +87,16 @@ size_t AttributeMap::GetNumberOfAttributes() const
   return _attributes.size();
 }
 
-bool AttributeMap::HasAttribute(const std::string & name) const
+bool AttributeMap::HasAttribute(const std::string &name) const
 {
   return _attributes.find(name) != _attributes.end();
 }
 
-std::string AttributeMap::GetAttribute(const std::string & name) const
+std::string AttributeMap::GetAttribute(const std::string &name) const
 {
   if (!HasAttribute(name))
   {
-      return {};
+    return {};
   }
   return _attributes.at(name);
 }
@@ -103,14 +104,14 @@ std::string AttributeMap::GetAttribute(const std::string & name) const
 std::vector<std::string> AttributeMap::GetAttributeNames() const
 {
   std::vector<std::string> result;
-  for (auto & pair : _attributes)
+  for (auto &pair : _attributes)
   {
     result.push_back(pair.first);
   }
   return result;
 }
 
-bool AttributeMap::AddAttribute(const std::string & name, const std::string & value)
+bool AttributeMap::AddAttribute(const std::string &name, const std::string &value)
 {
   if (HasAttribute(name))
   {
@@ -120,7 +121,7 @@ bool AttributeMap::AddAttribute(const std::string & name, const std::string & va
   return true;
 }
 
-void AttributeMap::SetAttribute(const std::string & name, const std::string & value)
+void AttributeMap::SetAttribute(const std::string &name, const std::string &value)
 {
   _attributes[name] = value;
 }
@@ -130,21 +131,23 @@ void AttributeMap::Clear()
   _attributes.clear();
 }
 
-bool AttributeMap::Remove(const std::string & name)
+bool AttributeMap::Remove(const std::string &name)
 {
   return _attributes.erase(name) > 0;
 }
 
-bool AttributeMap::InitialiseVariableAttributes(const AttributeMap & source)
+bool AttributeMap::InitialiseVariableAttributes(const AttributeMap &source)
 {
   bool result = true;
-  for (const auto& attr_name : GetAttributeNames())
+  for (const auto &attr_name : GetAttributeNames())
   {
     auto attr_value = GetAttribute(attr_name);
     if (StartsWith(attr_value, DefaultSettings::VAR_ATTRIBUTE_CHAR))
     {
-      log_debug("AttributeMap::InitialiseVariableAttributes() - attr_name('%s'), "
-               "attr_value('%s')", attr_name.c_str(), attr_value.c_str());
+      log_debug(
+          "AttributeMap::InitialiseVariableAttributes() - attr_name('%s'), "
+          "attr_value('%s')",
+          attr_name.c_str(), attr_value.c_str());
       auto var_name = attr_value.substr(1);
       if (!source.HasAttribute(var_name))
       {
@@ -152,21 +155,23 @@ bool AttributeMap::InitialiseVariableAttributes(const AttributeMap & source)
         continue;
       }
       auto var_value = source.GetAttribute(var_name);
-      log_debug("AttributeMap::InitialiseVariableAttributes() - set attr_name('%s') "
-               "to '%s'", attr_name.c_str(), var_value.c_str());
+      log_debug(
+          "AttributeMap::InitialiseVariableAttributes() - set attr_name('%s') "
+          "to '%s'",
+          attr_name.c_str(), var_value.c_str());
       _attributes[attr_name] = var_value;
     }
   }
   return result;
 }
 
-} // namespace sequencer
+}  // namespace sequencer
 
-} // namespace sup
+}  // namespace sup
 
-namespace {
-
-bool StartsWith(const std::string & str, char c)
+namespace
+{
+bool StartsWith(const std::string &str, char c)
 {
   if (str.empty())
   {
@@ -175,12 +180,12 @@ bool StartsWith(const std::string & str, char c)
   return str[0] == c;
 }
 
-}
+}  // namespace
 
-extern "C" {
+extern "C"
+{
+  // C API function definitions
 
-// C API function definitions
-
-} // extern C
+}  // extern C
 
 #undef LOG_ALTERN_SRC

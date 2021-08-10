@@ -1,23 +1,23 @@
 /******************************************************************************
-* $HeadURL: $
-* $Id: $
-*
-* Project       : CODAC Supervision and Automation (SUP) Sequencer component
-*
-* Description   : File-based variable implementation
-*
-* Author        : Bertrand Bauvir (IO)
-*
-* Copyright (c) : 2010-2020 ITER Organization,
-*                 CS 90 046
-*                 13067 St. Paul-lez-Durance Cedex
-*                 France
-*
-* This file is part of ITER CODAC software.
-* For the terms and conditions of redistribution or use of this software
-* refer to the file ITER-LICENSE.TXT located in the top level directory
-* of the distribution package.
-******************************************************************************/
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : CODAC Supervision and Automation (SUP) Sequencer component
+ *
+ * Description   : File-based variable implementation
+ *
+ * Author        : Bertrand Bauvir (IO)
+ *
+ * Copyright (c) : 2010-2020 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
 
 /**
  * @file FileVariable.h
@@ -43,40 +43,40 @@
 
 #ifdef __cplusplus
 
-namespace sup {
-
-namespace sequencer {
-
+namespace sup
+{
+namespace sequencer
+{
 /**
  * @brief FileVariable class.
  * @details Variable with file-based backend.
  */
 class FileVariable : public Variable
 {
-  private:
-    /**
-     * @brief See sup::sequencer::Variable.
-     */
-    bool GetValueImpl(::ccs::types::AnyValue& value) const override;
-    bool SetValueImpl(const ::ccs::types::AnyValue& value) override;
-    bool SetupImpl() override;
-  protected:
+private:
+  /**
+   * @brief See sup::sequencer::Variable.
+   */
+  bool GetValueImpl(::ccs::types::AnyValue& value) const override;
+  bool SetValueImpl(const ::ccs::types::AnyValue& value) override;
+  bool SetupImpl() override;
 
-  public:
-    /**
-     * @brief Constructor.
-     */
-    FileVariable ();
+protected:
+public:
+  /**
+   * @brief Constructor.
+   */
+  FileVariable();
 
-    /**
-     * @brief Destructor.
-     */
-    ~FileVariable () override;
+  /**
+   * @brief Destructor.
+   */
+  ~FileVariable() override;
 
-    /**
-     * @brief Class name for VariableRegistry.
-     */
-    static const std::string Type;
+  /**
+   * @brief Class name for VariableRegistry.
+   */
+  static const std::string Type;
 };
 
 // Global variables
@@ -85,17 +85,18 @@ class FileVariable : public Variable
 
 // Function definition
 
-} // namespace sequencer
+}  // namespace sequencer
 
-} // namespace sup
+}  // namespace sup
 
-extern "C" {
-#endif // __cplusplus
+extern "C"
+{
+#endif  // __cplusplus
 
-// C API function declarations
+  // C API function declarations
 
 #ifdef __cplusplus
-} // extern C
-#endif // __cplusplus
+}  // extern C
+#endif  // __cplusplus
 
-#endif // _SEQ_FileVariable_h_
+#endif  // _SEQ_FileVariable_h_

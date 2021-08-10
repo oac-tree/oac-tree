@@ -1,23 +1,23 @@
 /******************************************************************************
-* $HeadURL: $
-* $Id: $
-*
-* Project       : SUP - Sequencer
-*
-* Description   : Sequencer for operational procedures
-*
-* Author        : Walter Van Herck (IO)
-*
-* Copyright (c) : 2010-2020 ITER Organization,
-*                 CS 90 046
-*                 13067 St. Paul-lez-Durance Cedex
-*                 France
-*
-* This file is part of ITER CODAC software.
-* For the terms and conditions of redistribution or use of this software
-* refer to the file ITER-LICENSE.TXT located in the top level directory
-* of the distribution package.
-******************************************************************************/
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP - Sequencer
+ *
+ * Description   : Sequencer for operational procedures
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2020 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
 
 // Global header files
 
@@ -34,10 +34,10 @@
 
 // Type definition
 
-namespace sup {
-
-namespace sequencer {
-
+namespace sup
+{
+namespace sequencer
+{
 // Global variables
 
 const std::string Fallback::Type = "Fallback";
@@ -46,7 +46,7 @@ const std::string Fallback::Type = "Fallback";
 
 // Function definition
 
-ExecutionStatus Fallback::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
+ExecutionStatus Fallback::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
 {
   if (!HasChildren())
   {
@@ -68,7 +68,8 @@ ExecutionStatus Fallback::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
     }
     else
     {
-      log_warning("Fallback::ExecuteSingleImpl() - Fallback was ticked again while already successful");
+      log_warning(
+          "Fallback::ExecuteSingleImpl() - Fallback was ticked again while already successful");
       return child_status;
     }
   }
@@ -86,8 +87,8 @@ ExecutionStatus Fallback::CalculateCompoundStatus() const
       continue;
     }
 
-    if (child_status == ExecutionStatus::NOT_STARTED ||
-        child_status == ExecutionStatus::NOT_FINISHED)
+    if (child_status == ExecutionStatus::NOT_STARTED
+        || child_status == ExecutionStatus::NOT_FINISHED)
     {
       return ExecutionStatus::NOT_FINISHED;
     }
@@ -100,20 +101,18 @@ ExecutionStatus Fallback::CalculateCompoundStatus() const
   return ExecutionStatus::FAILURE;
 }
 
-Fallback::Fallback()
-  : CompoundInstruction(Type)
-{}
+Fallback::Fallback() : CompoundInstruction(Type) {}
 
 Fallback::~Fallback() = default;
 
-} // namespace sequencer
+}  // namespace sequencer
 
-} // namespace sup
+}  // namespace sup
 
-extern "C" {
+extern "C"
+{
+  // C API function definitions
 
-// C API function definitions
-
-} // extern C
+}  // extern C
 
 #undef LOG_ALTERN_SRC

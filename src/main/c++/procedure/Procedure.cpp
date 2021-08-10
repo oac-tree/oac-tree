@@ -20,10 +20,11 @@
  ******************************************************************************/
 
 // Global header files
-#include <common/log-api.h>
+#include <common/AnyValue.h>
+
 #include <algorithm>
 
-#include <common/AnyValue.h>
+#include <common/log-api.h>
 
 // Local header files
 
@@ -37,29 +38,26 @@
 #undef LOG_ALTERN_SRC
 #define LOG_ALTERN_SRC "sup::sequencer"
 
-namespace sup {
-
-namespace sequencer {
-
+namespace sup
+{
+namespace sequencer
+{
 const std::string Procedure::TICK_TIMEOUT_ATTRIBUTE_NAME = "tickTimeout";
 
 // Type definition
 
 // Global variables
 
-static const std::string IS_ROOT_ATTRIBUTE="isRoot";
-static const std::vector<std::string> TRUE_LIST = {
-    "True", "true", "TRUE",
-    "Yes", "yes", "YES"
-};
+static const std::string IS_ROOT_ATTRIBUTE = "isRoot";
+static const std::vector<std::string> TRUE_LIST = {"True", "true", "TRUE", "Yes", "yes", "YES"};
 
 // Function declaration
 
-static bool HasRootAttributeSet(const Instruction & instruction);
+static bool HasRootAttributeSet(const Instruction &instruction);
 
 // Function definition
 
-const Procedure * Procedure::LoadProcedure(const std::string & filename) const
+const Procedure *Procedure::LoadProcedure(const std::string &filename) const
 {
   if (_procedure_cache.find(filename) == _procedure_cache.end())
   {
@@ -72,7 +70,8 @@ const Procedure * Procedure::LoadProcedure(const std::string & filename) const
   }
   if (_procedure_cache.find(filename) == _procedure_cache.end())
   {
-    log_warning("Procedure::LoadProcedure('%s') - Could not load procedure from file..", filename.c_str());
+    log_warning("Procedure::LoadProcedure('%s') - Could not load procedure from file..",
+                filename.c_str());
     return nullptr;
   }
   return _procedure_cache[filename].get();
@@ -83,9 +82,7 @@ void Procedure::ClearProcedureCache() const
   _procedure_cache.clear();
 }
 
-Procedure::Procedure()
-  : _workspace{new Workspace()}
-{}
+Procedure::Procedure() : _workspace{new Workspace()} {}
 
 Procedure::~Procedure()
 {
@@ -93,7 +90,7 @@ Procedure::~Procedure()
   Reset();
 }
 
-void Procedure::SetFilename(const std::string & filename)
+void Procedure::SetFilename(const std::string &filename)
 {
   _filename = filename;
 }
@@ -103,13 +100,13 @@ std::string Procedure::GetFilename() const
   return _filename;
 }
 
-Instruction * Procedure::RootInstrunction()
+Instruction *Procedure::RootInstrunction()
 {
   // Scott Meyers' solution for avoiding code duplication:
   return const_cast<Instruction *>(static_cast<const Procedure &>(*this).RootInstrunction());
 }
 
-const Instruction * Procedure::RootInstrunction() const
+const Instruction *Procedure::RootInstrunction() const
 {
   if (_instructions.empty())
   {
@@ -119,7 +116,7 @@ const Instruction * Procedure::RootInstrunction() const
   {
     return _instructions[0].get();
   }
-  for (auto & instr : _instructions)
+  for (auto &instr : _instructions)
   {
     if (HasRootAttributeSet(*instr))
     {
@@ -129,12 +126,12 @@ const Instruction * Procedure::RootInstrunction() const
   return nullptr;
 }
 
-std::vector<const Instruction *> Procedure::GetInstructions(const std::string & filename) const
+std::vector<const Instruction *> Procedure::GetInstructions(const std::string &filename) const
 {
   std::vector<const Instruction *> result;
   if (filename.empty() || filename == GetFilename())
   {
-    for (auto & instr : _instructions)
+    for (auto &instr : _instructions)
     {
       result.push_back(instr.get());
     }
@@ -146,7 +143,8 @@ std::vector<const Instruction *> Procedure::GetInstructions(const std::string & 
     {
       return loaded_proc->GetInstructions();
     }
-    log_warning("Procedure::GetInstructions('%s') - finding instructions failed..", filename.c_str());
+    log_warning("Procedure::GetInstructions('%s') - finding instructions failed..",
+                filename.c_str());
   }
   return result;
 }
@@ -156,7 +154,7 @@ int Procedure::GetInstructionCount() const
   return static_cast<int>(_instructions.size());
 }
 
-bool Procedure::PushInstruction(Instruction * instruction)
+bool Procedure::PushInstruction(Instruction *instruction)
 {
   if (instruction == nullptr)
   {
@@ -186,7 +184,7 @@ Instruction *Procedure::TakeInstruction(int index)
   return retval.release();
 }
 
-bool Procedure::AddVariable(std::string name, Variable * var)
+bool Procedure::AddVariable(std::string name, Variable *var)
 {
   return _workspace->AddVariable(name, var);
 }
@@ -196,7 +194,7 @@ std::vector<std::string> Procedure::VariableNames() const
   return _workspace->VariableNames();
 }
 
-bool Procedure::GetVariableValue(std::string name, ::ccs::types::AnyValue & value) const
+bool Procedure::GetVariableValue(std::string name, ::ccs::types::AnyValue &value) const
 {
   return _workspace->GetValue(name, value);
 }
@@ -211,7 +209,7 @@ bool Procedure::Setup()
   return RootInstrunction()->Setup(*this);
 }
 
-void Procedure::ExecuteSingle(UserInterface * ui)
+void Procedure::ExecuteSingle(UserInterface *ui)
 {
   if (RootInstrunction() == nullptr)
   {
@@ -238,32 +236,32 @@ ExecutionStatus Procedure::GetStatus() const
   return RootInstrunction()->GetStatus();
 }
 
-bool Procedure::HasAttribute(const std::string & name) const
+bool Procedure::HasAttribute(const std::string &name) const
 {
   return _attributes.HasAttribute(name);
 }
 
-std::string Procedure::GetAttribute(const std::string & name) const
+std::string Procedure::GetAttribute(const std::string &name) const
 {
   return _attributes.GetAttribute(name);
 }
 
-bool Procedure::AddAttribute(const std::string & name, const std::string & value)
+bool Procedure::AddAttribute(const std::string &name, const std::string &value)
 {
   return _attributes.AddAttribute(name, value);
 }
 
-bool Procedure::AddAttributes(const AttributeMap & attributes)
+bool Procedure::AddAttributes(const AttributeMap &attributes)
 {
   bool result = true;
-  for (auto & attr : attributes)
+  for (auto &attr : attributes)
   {
     result = AddAttribute(attr.first, attr.second) && result;
   }
   return result;
 }
 
-static bool HasRootAttributeSet(const Instruction & instruction)
+static bool HasRootAttributeSet(const Instruction &instruction)
 {
   if (!instruction.HasAttribute(IS_ROOT_ATTRIBUTE))
   {
@@ -274,14 +272,14 @@ static bool HasRootAttributeSet(const Instruction & instruction)
   return it != TRUE_LIST.end();
 }
 
-} // namespace sequencer
+}  // namespace sequencer
 
-} // namespace sup
+}  // namespace sup
 
-extern "C" {
+extern "C"
+{
+  // C API function definitions
 
-// C API function definitions
-
-}// extern C
+}  // extern C
 
 #undef LOG_ALTERN_SRC

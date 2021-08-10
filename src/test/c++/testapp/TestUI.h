@@ -6,15 +6,15 @@
 class TestUI : public UserInterface
 {
 public:
-    TestUI();
+  TestUI();
 
-    ~TestUI() override;
+  ~TestUI() override;
 
-    void UpdateInstructionStatus(const Instruction * instruction) override;
+  void UpdateInstructionStatus(const Instruction* instruction) override;
 
-    void StartSingleStep() override;
+  void StartSingleStep() override;
 
-    void EndSingleStep() override;
+  void EndSingleStep() override;
 };
 
-#endif // TESTUI_H
+#endif  // TESTUI_H

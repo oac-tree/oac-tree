@@ -1,31 +1,32 @@
 /******************************************************************************
-* $HeadURL: $
-* $Id: $
-*
-* Project       : SUP - Sequencer
-*
-* Description   : Sequencer for operational procedures
-*
-* Author        : Walter Van Herck (IO)
-*
-* Copyright (c) : 2010-2020 ITER Organization,
-*                 CS 90 046
-*                 13067 St. Paul-lez-Durance Cedex
-*                 France
-*
-* This file is part of ITER CODAC software.
-* For the terms and conditions of redistribution or use of this software
-* refer to the file ITER-LICENSE.TXT located in the top level directory
-* of the distribution package.
-******************************************************************************/
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP - Sequencer
+ *
+ * Description   : Sequencer for operational procedures
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2020 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
 
 // Global header files
 
-#include <common/log-api.h>
 #include <common/SysTools.h>
 #include <libxml/parser.h>
 #include <stdio.h>
 #include <string.h>
+
+#include <common/log-api.h>
 
 // Local header files
 
@@ -40,10 +41,10 @@
 
 // Type definition
 
-namespace sup {
-
-namespace sequencer {
-
+namespace sup
+{
+namespace sequencer
+{
 // Global variables
 
 // Function declaration
@@ -52,9 +53,9 @@ static std::unique_ptr<TreeData> ParseXMLDoc(xmlDocPtr doc);
 
 static std::unique_ptr<TreeData> ParseDataTree(xmlDocPtr doc, xmlNodePtr node);
 
-static void AddXMLAttributes(TreeData * tree, xmlNodePtr node);
+static void AddXMLAttributes(TreeData *tree, xmlNodePtr node);
 
-static void AddXMLChildren(TreeData * tree, xmlDocPtr doc, xmlNodePtr node);
+static void AddXMLChildren(TreeData *tree, xmlDocPtr doc, xmlNodePtr node);
 
 static std::string ToString(const xmlChar *xml_name);
 
@@ -117,7 +118,7 @@ static std::unique_ptr<TreeData> ParseDataTree(xmlDocPtr doc, xmlNodePtr node)
   return result;
 }
 
-static void AddXMLAttributes(TreeData * tree, xmlNodePtr node)
+static void AddXMLAttributes(TreeData *tree, xmlNodePtr node)
 {
   auto attribute = node->properties;
   while (attribute != nullptr)
@@ -131,7 +132,7 @@ static void AddXMLAttributes(TreeData * tree, xmlNodePtr node)
   }
 }
 
-static void AddXMLChildren(TreeData * tree, xmlDocPtr doc, xmlNodePtr node)
+static void AddXMLChildren(TreeData *tree, xmlDocPtr doc, xmlNodePtr node)
 {
   auto child_node = node->children;
   while (child_node != nullptr)
@@ -155,17 +156,17 @@ static void AddXMLChildren(TreeData * tree, xmlDocPtr doc, xmlNodePtr node)
 
 static std::string ToString(const xmlChar *xml_name)
 {
-  return std::string(reinterpret_cast<const char*>(xml_name), xmlStrlen(xml_name));
+  return std::string(reinterpret_cast<const char *>(xml_name), xmlStrlen(xml_name));
 }
 
-} // namespace sequencer
+}  // namespace sequencer
 
-} // namespace sup
+}  // namespace sup
 
-extern "C" {
+extern "C"
+{
+  // C API function definitions
 
-// C API function definitions
-
-}// extern C
+}  // extern C
 
 #undef LOG_ALTERN_SRC

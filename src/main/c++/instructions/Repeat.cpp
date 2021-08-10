@@ -1,23 +1,23 @@
 /******************************************************************************
-* $HeadURL: $
-* $Id: $
-*
-* Project       : SUP - Sequencer
-*
-* Description   : Sequencer for operational procedures
-*
-* Author        : Walter Van Herck (IO)
-*
-* Copyright (c) : 2010-2020 ITER Organization,
-*                 CS 90 046
-*                 13067 St. Paul-lez-Durance Cedex
-*                 France
-*
-* This file is part of ITER CODAC software.
-* For the terms and conditions of redistribution or use of this software
-* refer to the file ITER-LICENSE.TXT located in the top level directory
-* of the distribution package.
-******************************************************************************/
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP - Sequencer
+ *
+ * Description   : Sequencer for operational procedures
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2020 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
 
 // Global header files
 
@@ -34,10 +34,10 @@
 
 // Type definition
 
-namespace sup {
-
-namespace sequencer {
-
+namespace sup
+{
+namespace sequencer
+{
 // Global variables
 
 const std::string Repeat::Type = "Repeat";
@@ -51,9 +51,9 @@ void Repeat::InitHook()
   _count = 0;
 }
 
-ExecutionStatus Repeat::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
+ExecutionStatus Repeat::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
 {
-  if (!HasChild()|| _max_count == 0)
+  if (!HasChild() || _max_count == 0)
   {
     return ExecutionStatus::SUCCESS;
   }
@@ -69,8 +69,8 @@ ExecutionStatus Repeat::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
 
   child_status = GetChildStatus();
   // Don't increment count when _max_count is not strictly positive.
-  if (_max_count > 0 && (child_status == ExecutionStatus::SUCCESS ||
-                         child_status == ExecutionStatus::FAILURE))
+  if (_max_count > 0
+      && (child_status == ExecutionStatus::SUCCESS || child_status == ExecutionStatus::FAILURE))
   {
     _count++;
   }
@@ -78,7 +78,7 @@ ExecutionStatus Repeat::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
   return CalculateStatus();
 }
 
-bool Repeat::SetupImpl(const Procedure & proc)
+bool Repeat::SetupImpl(const Procedure& proc)
 {
   bool status = HasAttribute("maxCount");
   if (status)
@@ -92,7 +92,7 @@ bool Repeat::SetupImpl(const Procedure & proc)
         _max_count = -1;
       }
     }
-    catch(const std::exception&)
+    catch (const std::exception&)
     {
       log_warning("Repeat::InitMaxCount() - could not parse maxCount attribute!");
       status = false;
@@ -120,23 +120,18 @@ ExecutionStatus Repeat::CalculateStatus() const
   return child_status;
 }
 
-Repeat::Repeat()
-  : DecoratorInstruction(Type)
-  , _max_count{0}
-  , _count{0}
-  , _init_ok{false}
-{}
+Repeat::Repeat() : DecoratorInstruction(Type), _max_count{0}, _count{0}, _init_ok{false} {}
 
 Repeat::~Repeat() = default;
 
-} // namespace sequencer
+}  // namespace sequencer
 
-} // namespace sup
+}  // namespace sup
 
-extern "C" {
+extern "C"
+{
+  // C API function definitions
 
-// C API function definitions
-
-} // extern C
+}  // extern C
 
 #undef LOG_ALTERN_SRC

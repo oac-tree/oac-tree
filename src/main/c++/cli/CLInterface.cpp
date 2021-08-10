@@ -1,31 +1,32 @@
 /******************************************************************************
-* $HeadURL: $
-* $Id: $
-*
-* Project       : SUP - Sequencer
-*
-* Description   : Sequencer for operational procedures
-*
-* Author        : Walter Van Herck (IO)
-*
-* Copyright (c) : 2010-2020 ITER Organization,
-*                 CS 90 046
-*                 13067 St. Paul-lez-Durance Cedex
-*                 France
-*
-* This file is part of ITER CODAC software.
-* For the terms and conditions of redistribution or use of this software
-* refer to the file ITER-LICENSE.TXT located in the top level directory
-* of the distribution package.
-******************************************************************************/
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP - Sequencer
+ *
+ * Description   : Sequencer for operational procedures
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2020 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
 
 // Global header files
 
-#include <iostream>
-#include <sstream>
-#include <map>
-
 #include <common/AnyValueHelper.h>
+
+#include <iostream>
+#include <map>
+#include <sstream>
+
 #include <common/log-api.h>
 
 // Local header files
@@ -44,46 +45,46 @@
 
 // Function declaration
 
-static bool ParseStringToScalarAnyvalue(::ccs::types::AnyValue & value, const std::string & str);
+static bool ParseStringToScalarAnyvalue(::ccs::types::AnyValue &value, const std::string &str);
 
-namespace sup {
-
-namespace sequencer {
-
+namespace sup
+{
+namespace sequencer
+{
 // Function definition
 
-void CLInterface::UpdateInstructionStatusImpl(const Instruction * instruction)
+void CLInterface::UpdateInstructionStatusImpl(const Instruction *instruction)
 {
   auto instruction_type = instruction->GetType();
   auto instruction_name = instruction->GetName();
   auto status = instruction->GetStatus();
 
-  if (_verbose) 
+  if (_verbose)
   {
     std::cout << "Instruction: (" << instruction_type << ":" << instruction_name << ") : ";
     std::cout << StatusToString(status) << std::endl;
   }
 }
 
-bool CLInterface::PutValueImpl(const ::ccs::types::AnyValue & value, const std::string & description)
+bool CLInterface::PutValueImpl(const ::ccs::types::AnyValue &value, const std::string &description)
 {
   std::cout << description << " (" << value.GetType()->GetName() << "): ";
-  ccs::types::char8 buffer [4096] = STRING_UNDEFINED;
+  ccs::types::char8 buffer[4096] = STRING_UNDEFINED;
   auto result = ccs::HelperTools::SerialiseToJSONStream(&value, buffer, 4096u);
   if (result)
   {
     std::cout << buffer << "\n";
   }
-  else 
+  else
   {
     log_warning("CLInterface::PutValueImpl() could not serialize the value");
   }
   return result;
 }
 
-bool CLInterface::GetUserValueImpl(::ccs::types::AnyValue & value, const std::string & description)
+bool CLInterface::GetUserValueImpl(::ccs::types::AnyValue &value, const std::string &description)
 {
-  if (! ::ccs::HelperTools::Is<::ccs::types::ScalarType>(&value))
+  if (!::ccs::HelperTools::Is<::ccs::types::ScalarType>(&value))
   {
     log_warning("CLInterface::GetUserValueImpl(value, '%s') only supports scalar values..",
                 description.c_str());
@@ -101,8 +102,8 @@ bool CLInterface::GetUserValueImpl(::ccs::types::AnyValue & value, const std::st
   return result;
 }
 
-int CLInterface::GetUserChoiceImpl(const std::vector<std::string> & choices,
-                                   const std::string & description)
+int CLInterface::GetUserChoiceImpl(const std::vector<std::string> &choices,
+                                   const std::string &description)
 {
   std::string message = description;
   if (message.empty())
@@ -110,13 +111,13 @@ int CLInterface::GetUserChoiceImpl(const std::vector<std::string> & choices,
     message = "Select one of the following options:";
   }
   std::cout << message << std::endl;
-  for (int i=0; i<choices.size(); ++i)
+  for (int i = 0; i < choices.size(); ++i)
   {
     std::cout << i << ": " << choices[i] << std::endl;
   }
   int input = -1;
   std::cin >> input;
-  if (std::cin.fail() || input < 0 || input >=choices.size())
+  if (std::cin.fail() || input < 0 || input >= choices.size())
   {
     log_warning("CLInterface::GetUserChoiceImpl() - invalid choice");
     return -1;
@@ -141,17 +142,15 @@ void CLInterface::EndSingleStepImpl()
   }
 }
 
-CLInterface::CLInterface(bool verbose)
-  : _verbose{verbose}
-{}
+CLInterface::CLInterface(bool verbose) : _verbose{verbose} {}
 
 CLInterface::~CLInterface() = default;
 
-} // namespace sequencer
+}  // namespace sequencer
 
-} // namespace sup
+}  // namespace sup
 
-using ParseFunction = bool (*)(::ccs::types::AnyValue & value, const std::string & str);
+using ParseFunction = bool (*)(::ccs::types::AnyValue &value, const std::string &str);
 
 template <typename T>
 bool ParserFunctionT(::ccs::types::AnyValue &value, const std::string &str)
@@ -161,8 +160,8 @@ bool ParserFunctionT(::ccs::types::AnyValue &value, const std::string &str)
   istr >> val;
   if (istr.fail())
   {
-    log_warning("ParseStringToScalarAnyvalue() - could not parse ('%s') in type ('%s)",
-                str.c_str(), value.GetType()->GetName());
+    log_warning("ParseStringToScalarAnyvalue() - could not parse ('%s') in type ('%s)", str.c_str(),
+                value.GetType()->GetName());
     return false;
   }
   value = val;
@@ -181,8 +180,8 @@ bool ParserFunctionT<::ccs::types::boolean>(::ccs::types::AnyValue &value, const
   istr >> std::boolalpha >> val;
   if (istr.fail())
   {
-    log_warning("ParseStringToScalarAnyvalue() - could not parse ('%s') in type ('%s)",
-                str.c_str(), value.GetType()->GetName());
+    log_warning("ParseStringToScalarAnyvalue() - could not parse ('%s') in type ('%s)", str.c_str(),
+                value.GetType()->GetName());
     return false;
   }
   value = val;
@@ -216,18 +215,17 @@ static std::map<std::string, ParseFunction> CreateParserMap()
   return parser_map;
 }
 
-static std::map<std::string, ParseFunction> & GetParserMap()
+static std::map<std::string, ParseFunction> &GetParserMap()
 {
   static std::map<std::string, ParseFunction> parser_map = CreateParserMap();
   return parser_map;
 }
 
-static bool
-ParseStringToScalarAnyvalue(::ccs::types::AnyValue &value, const std::string &str)
+static bool ParseStringToScalarAnyvalue(::ccs::types::AnyValue &value, const std::string &str)
 {
   std::string type_name = value.GetType()->GetName();
 
-  auto & parser_map = GetParserMap();
+  auto &parser_map = GetParserMap();
   if (parser_map.find(type_name) == parser_map.end())
   {
     return false;
@@ -236,10 +234,10 @@ ParseStringToScalarAnyvalue(::ccs::types::AnyValue &value, const std::string &st
   return parse_function(value, str);
 }
 
-extern "C" {
+extern "C"
+{
+  // C API function definitions
 
-// C API function definitions
-
-} // extern C
+}  // extern C
 
 #undef LOG_ALTERN_SRC

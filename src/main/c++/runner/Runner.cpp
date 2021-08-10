@@ -1,36 +1,36 @@
 /******************************************************************************
-* $HeadURL: $
-* $Id: $
-*
-* Project       : SUP - Sequencer
-*
-* Description   : Sequencer for operational procedures
-*
-* Author        : Walter Van Herck (IO)
-*
-* Copyright (c) : 2010-2020 ITER Organization,
-*                 CS 90 046
-*                 13067 St. Paul-lez-Durance Cedex
-*                 France
-*
-* This file is part of ITER CODAC software.
-* For the terms and conditions of redistribution or use of this software
-* refer to the file ITER-LICENSE.TXT located in the top level directory
-* of the distribution package.
-******************************************************************************/
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP - Sequencer
+ *
+ * Description   : Sequencer for operational procedures
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2020 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
 
 // Global header files
-
-#include <common/log-api.h>
 
 #include <chrono>
 #include <thread>
 
+#include <common/log-api.h>
+
 // Local header files
 
-#include "Runner.h"
 #include "Constants.h"
 #include "Procedure.h"
+#include "Runner.h"
 #include "UserInterface.h"
 
 // Constants
@@ -44,22 +44,19 @@
 
 // Function declaration
 
-namespace sup {
-
-namespace sequencer {
-
-static int TickTimeoutMs(Procedure * procedure);
+namespace sup
+{
+namespace sequencer
+{
+static int TickTimeoutMs(Procedure* procedure);
 
 // Function definition
 
-Runner::Runner(UserInterface * ui)
-  : _proc{nullptr}
-  , _ui{ui}
-{}
+Runner::Runner(UserInterface* ui) : _proc{nullptr}, _ui{ui} {}
 
 Runner::~Runner() = default;
 
-void Runner::SetProcedure(Procedure * procedure)
+void Runner::SetProcedure(Procedure* procedure)
 {
   _proc = procedure;
 }
@@ -70,7 +67,7 @@ void Runner::ExecuteProcedure()
   {
     auto sleep_time_ms = TickTimeoutMs(_proc);
 
-    while(!IsFinished())
+    while (!IsFinished())
     {
       ExecuteSingle();
       if (IsRunning())
@@ -99,8 +96,7 @@ bool Runner::IsFinished() const
   }
 
   auto status = _proc->GetStatus();
-  return (status == ExecutionStatus::SUCCESS ||
-          status == ExecutionStatus::FAILURE);
+  return (status == ExecutionStatus::SUCCESS || status == ExecutionStatus::FAILURE);
 }
 
 bool Runner::IsRunning() const
@@ -114,7 +110,7 @@ bool Runner::IsRunning() const
   return (status == ExecutionStatus::RUNNING);
 }
 
-static int TickTimeoutMs(Procedure * procedure)
+static int TickTimeoutMs(Procedure* procedure)
 {
   if (procedure->HasAttribute(Procedure::TICK_TIMEOUT_ATTRIBUTE_NAME))
   {
@@ -128,14 +124,14 @@ static int TickTimeoutMs(Procedure * procedure)
   return DefaultSettings::DEFAULT_SLEEP_TIME_MS;
 }
 
-} // namespace sequencer
+}  // namespace sequencer
 
-} // namespace sup
+}  // namespace sup
 
-extern "C" {
+extern "C"
+{
+  // C API function definitions
 
-// C API function definitions
-
-} // extern C
+}  // extern C
 
 #undef LOG_ALTERN_SRC

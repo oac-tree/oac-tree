@@ -1,23 +1,23 @@
 /******************************************************************************
-* $HeadURL: $
-* $Id: $
-*
-* Project       : SUP - Sequencer
-*
-* Description   : Sequencer for operational procedures
-*
-* Author        : Walter Van Herck (IO)
-*
-* Copyright (c) : 2010-2020 ITER Organization,
-*                 CS 90 046
-*                 13067 St. Paul-lez-Durance Cedex
-*                 France
-*
-* This file is part of ITER CODAC software.
-* For the terms and conditions of redistribution or use of this software
-* refer to the file ITER-LICENSE.TXT located in the top level directory
-* of the distribution package.
-******************************************************************************/
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP - Sequencer
+ *
+ * Description   : Sequencer for operational procedures
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2020 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
 
 /**
  * @file InstructionHelper.h
@@ -43,12 +43,12 @@
 
 #ifdef __cplusplus
 
-namespace sup {
-
-namespace sequencer {
-
-namespace InstructionHelper {
-
+namespace sup
+{
+namespace sequencer
+{
+namespace InstructionHelper
+{
 // Global variables
 
 // Function declarations
@@ -60,8 +60,8 @@ namespace InstructionHelper {
  * @param name_path Full path of names to reach requested instruction.
  * @return The found instruction or nullptr.
  */
-const Instruction * FindInstruction(const std::vector<const Instruction *> & instructions,
-                                    const std::string & name_path);
+const Instruction *FindInstruction(const std::vector<const Instruction *> &instructions,
+                                   const std::string &name_path);
 
 /**
  * @brief Clone an instruction, including its descendents.
@@ -70,7 +70,7 @@ const Instruction * FindInstruction(const std::vector<const Instruction *> & ins
  * @return Clone of instruction tree.
  * @details Caller needs to take ownership of the cloned instruction tree.
  */
-Instruction * CloneInstruction(const Instruction * instruction);
+Instruction *CloneInstruction(const Instruction *instruction);
 
 /**
  * @brief Initialize variable attributes.
@@ -79,23 +79,24 @@ Instruction * CloneInstruction(const Instruction * instruction);
  * @param instructions List of attributes to use for initialisation.
  * @return true on successful initialisation of variable attributes.
  */
-bool InitialiseVariableAttributes(Instruction & instruction, const AttributeMap & attributes);
+bool InitialiseVariableAttributes(Instruction &instruction, const AttributeMap &attributes);
 
 // Function definitions
 
-} // namespace InstructionHelper
+}  // namespace InstructionHelper
 
-} // namespace sequencer
+}  // namespace sequencer
 
-} // namespace sup
+}  // namespace sup
 
-extern "C" {
-#endif // __cplusplus
+extern "C"
+{
+#endif  // __cplusplus
 
-// C API function declarations
+  // C API function declarations
 
 #ifdef __cplusplus
-} // extern C
-#endif // __cplusplus
+}  // extern C
+#endif  // __cplusplus
 
-#endif // _SEQ_InstructionHelper_h_
+#endif  // _SEQ_InstructionHelper_h_

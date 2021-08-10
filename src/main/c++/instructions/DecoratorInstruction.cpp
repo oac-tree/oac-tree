@@ -1,23 +1,23 @@
 /******************************************************************************
-* $HeadURL: $
-* $Id: $
-*
-* Project       : SUP - Sequencer
-*
-* Description   : Sequencer for operational procedures
-*
-* Author        : Walter Van Herck (IO)
-*
-* Copyright (c) : 2010-2020 ITER Organization,
-*                 CS 90 046
-*                 13067 St. Paul-lez-Durance Cedex
-*                 France
-*
-* This file is part of ITER CODAC software.
-* For the terms and conditions of redistribution or use of this software
-* refer to the file ITER-LICENSE.TXT located in the top level directory
-* of the distribution package.
-******************************************************************************/
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP - Sequencer
+ *
+ * Description   : Sequencer for operational procedures
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2020 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
 
 // Global header files
 
@@ -34,10 +34,10 @@
 
 // Type definition
 
-namespace sup {
-
-namespace sequencer {
-
+namespace sup
+{
+namespace sequencer
+{
 // Global variables
 
 // Function declaration
@@ -66,28 +66,28 @@ std::vector<const Instruction *> DecoratorInstruction::ChildInstructionsImpl() c
 
 int DecoratorInstruction::ChildrenCountImpl() const
 {
-    return _child ? 1 : 0;
+  return _child ? 1 : 0;
 }
 
 bool DecoratorInstruction::InsertInstructionImpl(Instruction *child, int index)
 {
-    if (index != 0)
-        return false;
-    _child.reset(child);
-    return true;
+  if (index != 0)
+    return false;
+  _child.reset(child);
+  return true;
 }
 
-Instruction* DecoratorInstruction::TakeInstructionImpl(int index)
+Instruction *DecoratorInstruction::TakeInstructionImpl(int index)
 {
   return _child && index == 0 ? _child.release() : nullptr;
 }
 
-bool DecoratorInstruction::SetupImpl(const Procedure & proc)
+bool DecoratorInstruction::SetupImpl(const Procedure &proc)
 {
   return SetupChild(proc);
 }
 
-bool DecoratorInstruction::SetupChild(const Procedure & proc)
+bool DecoratorInstruction::SetupChild(const Procedure &proc)
 {
   log_debug("DecoratorInstruction::SetupChild - entering function..");
   bool status = true;
@@ -136,26 +136,23 @@ void DecoratorInstruction::HaltChild()
   }
 }
 
-DecoratorInstruction::DecoratorInstruction(const std::string & type)
-  : Instruction(type)
-  , _child{}
-{}
+DecoratorInstruction::DecoratorInstruction(const std::string &type) : Instruction(type), _child{} {}
 
 DecoratorInstruction::~DecoratorInstruction() = default;
 
-void DecoratorInstruction::SetInstruction(Instruction * instruction)
+void DecoratorInstruction::SetInstruction(Instruction *instruction)
 {
   _child.reset(instruction);
 }
 
-} // namespace sequencer
+}  // namespace sequencer
 
-} // namespace sup
+}  // namespace sup
 
-extern "C" {
+extern "C"
+{
+  // C API function definitions
 
-// C API function definitions
-
-} // extern C
+}  // extern C
 
 #undef LOG_ALTERN_SRC

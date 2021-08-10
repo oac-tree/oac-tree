@@ -1,37 +1,38 @@
 /******************************************************************************
-* $HeadURL: $
-* $Id: $
-*
-* Project       : SUP - Sequencer
-*
-* Description   : Sequencer for operational procedures
-*
-* Author        : Walter Van Herck (IO)
-*
-* Copyright (c) : 2010-2020 ITER Organization,
-*                 CS 90 046
-*                 13067 St. Paul-lez-Durance Cedex
-*                 France
-*
-* This file is part of ITER CODAC software.
-* For the terms and conditions of redistribution or use of this software
-* refer to the file ITER-LICENSE.TXT located in the top level directory
-* of the distribution package.
-******************************************************************************/
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP - Sequencer
+ *
+ * Description   : Sequencer for operational procedures
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2020 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
 
 // Global header files
 
-#include <common/log-api.h>
 #include <common/TimeTools.h>
 
 #include <chrono>
 #include <cmath>
 #include <thread>
 
+#include <common/log-api.h>
+
 // Local header files
 
-#include "Wait.h"
 #include "Constants.h"
+#include "Wait.h"
 
 // Constants
 
@@ -40,10 +41,10 @@
 
 // Type definition
 
-namespace sup {
-
-namespace sequencer {
-
+namespace sup
+{
+namespace sequencer
+{
 // Global variables
 
 const std::string Wait::Type = "Wait";
@@ -60,7 +61,7 @@ void Wait::InitHook()
   _finish = _now + _timeout;
 }
 
-ExecutionStatus Wait::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
+ExecutionStatus Wait::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
 {
   (void)ui;
   (void)ws;
@@ -75,7 +76,7 @@ ExecutionStatus Wait::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
   return ExecutionStatus::SUCCESS;
 }
 
-bool Wait::SetupImpl(const Procedure & /*proc*/)
+bool Wait::SetupImpl(const Procedure& /*proc*/)
 {
   if (HasAttribute("timeout"))
   {
@@ -85,19 +86,15 @@ bool Wait::SetupImpl(const Procedure & /*proc*/)
       double t = std::stod(timeout);
       _timeout = ToNanoSeconds(t);
     }
-    catch(const std::exception&)
+    catch (const std::exception&)
     {
       log_warning("Wait::SetupImpl() - could not parse timeout attribute!");
     }
   }
-  return true; // if timeout was not specified, Wait immediately returns SUCCESS.
+  return true;  // if timeout was not specified, Wait immediately returns SUCCESS.
 }
 
-Wait::Wait()
-  : Instruction(Type)
-  , _timeout(0)
-  , _finish(0)
-{}
+Wait::Wait() : Instruction(Type), _timeout(0), _finish(0) {}
 
 Wait::~Wait() = default;
 
@@ -110,14 +107,14 @@ static unsigned long ToNanoSeconds(double sec)
   return 0;
 }
 
-} // namespace sequencer
+}  // namespace sequencer
 
-} // namespace sup
+}  // namespace sup
 
-extern "C" {
+extern "C"
+{
+  // C API function definitions
 
-// C API function definitions
-
-} // extern C
+}  // extern C
 
 #undef LOG_ALTERN_SRC

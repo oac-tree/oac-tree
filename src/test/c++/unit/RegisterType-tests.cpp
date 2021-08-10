@@ -21,17 +21,15 @@
 
 // Global header files
 
-#include <gtest/gtest.h>
-
 #include <SequenceParser.h>
+#include <gtest/gtest.h>
 
 // Local header files
 
 #include "ExecutionStatus.h"
 #include "InstructionRegistry.h"
-
-#include "UnitTestHelper.h"
 #include "LogUI.h"
+#include "UnitTestHelper.h"
 
 // Constants
 
@@ -47,7 +45,7 @@
 static ccs::log::Func_t _log_handler = ccs::log::SetStdout();
 
 static const std::string RegisterTypeProcedureString =
-R"RAW(<?xml version="1.0" encoding="UTF-8"?>
+    R"RAW(<?xml version="1.0" encoding="UTF-8"?>
 <Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
            name="RegisterType procedure for testing purposes"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
@@ -70,7 +68,7 @@ R"RAW(<?xml version="1.0" encoding="UTF-8"?>
 )RAW";
 
 static const std::string FailedRegisterTypeProcedureString =
-R"RAW(<?xml version="1.0" encoding="UTF-8"?>
+    R"RAW(<?xml version="1.0" encoding="UTF-8"?>
 <Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
            name="Failing RegisterType procedure for testing purposes"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
@@ -80,7 +78,7 @@ R"RAW(<?xml version="1.0" encoding="UTF-8"?>
 )RAW";
 
 static const std::string RegisterTypeFromFileProcedureString =
-R"RAW(<?xml version="1.0" encoding="UTF-8"?>
+    R"RAW(<?xml version="1.0" encoding="UTF-8"?>
 <Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
            name="RegisterType procedure for testing purposes"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
@@ -103,7 +101,7 @@ R"RAW(<?xml version="1.0" encoding="UTF-8"?>
 )RAW";
 
 static const std::string FailedRegisterTypeFromFileProcedureString =
-R"RAW(<?xml version="1.0" encoding="UTF-8"?>
+    R"RAW(<?xml version="1.0" encoding="UTF-8"?>
 <Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
            name="Failing RegisterType procedure for testing purposes"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
@@ -115,7 +113,7 @@ R"RAW(<?xml version="1.0" encoding="UTF-8"?>
 static const std::string JSON_FILE_NAME = "/tmp/range_uint16.json";
 
 static const std::string JSONRangeRepresentation =
-R"RAW(
+    R"RAW(
 {
     "type": "range_uint16",
     "attributes": [

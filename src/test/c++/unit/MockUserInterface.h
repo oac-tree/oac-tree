@@ -1,23 +1,23 @@
 /******************************************************************************
-* $HeadURL: $
-* $Id: $
-*
-* Project       : SUP - Sequencer
-*
-* Description   : Sequencer for operational procedures
-*
-* Author        : Walter Van Herck (IO)
-*
-* Copyright (c) : 2010-2020 ITER Organization,
-*                 CS 90 046
-*                 13067 St. Paul-lez-Durance Cedex
-*                 France
-*
-* This file is part of ITER CODAC software.
-* For the terms and conditions of redistribution or use of this software
-* refer to the file ITER-LICENSE.TXT located in the top level directory
-* of the distribution package.
-******************************************************************************/
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP - Sequencer
+ *
+ * Description   : Sequencer for operational procedures
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2020 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
 
 /**
  * @file MockUserInterface.h
@@ -37,8 +37,8 @@
 
 // Local header files
 
-#include "UserInterface.h"
 #include "Instruction.h"
+#include "UserInterface.h"
 
 // Constants
 
@@ -46,28 +46,31 @@
 
 #ifdef __cplusplus
 
-namespace sup {
-
-namespace sequencer {
-
+namespace sup
+{
+namespace sequencer
+{
 /**
  * @brief Mock UserInterface class for unit testing.
  */
 class MockUserInterface : public UserInterface
 {
-  public:
-    MOCK_METHOD1(UpdateInstructionStatusImpl, void(const Instruction *));
-    MOCK_METHOD2(PutValueImpl, bool(const ::ccs::types::AnyValue & value,
-                                        const std::string & description));
-    MOCK_METHOD2(GetUserValueImpl, bool(::ccs::types::AnyValue & value,
-                                        const std::string & description));
-    MOCK_METHOD2(GetUserChoiceImpl, int(const std::vector<std::string> & choices,
-                                        const std::string & description));
-    MOCK_METHOD0(StartSingleStepImpl, void());
-    MOCK_METHOD0(EndSingleStepImpl, void());
+public:
+  MOCK_METHOD1(UpdateInstructionStatusImpl, void(const Instruction *));
+  MOCK_METHOD2(PutValueImpl,
+               bool(const ::ccs::types::AnyValue &value, const std::string &description));
+  MOCK_METHOD2(GetUserValueImpl,
+               bool(::ccs::types::AnyValue &value, const std::string &description));
+  MOCK_METHOD2(GetUserChoiceImpl,
+               int(const std::vector<std::string> &choices, const std::string &description));
+  MOCK_METHOD0(StartSingleStepImpl, void());
+  MOCK_METHOD0(EndSingleStepImpl, void());
 };
 
-MATCHER_P(HasExecutionStatus, expected, "") { return arg->GetStatus() == expected; }
+MATCHER_P(HasExecutionStatus, expected, "")
+{
+  return arg->GetStatus() == expected;
+}
 
 // Global variables
 
@@ -75,17 +78,18 @@ MATCHER_P(HasExecutionStatus, expected, "") { return arg->GetStatus() == expecte
 
 // Function definitions
 
-} // namespace sequencer
+}  // namespace sequencer
 
-} // namespace sup
+}  // namespace sup
 
-extern "C" {
-#endif // __cplusplus
+extern "C"
+{
+#endif  // __cplusplus
 
-// C API function declarations
+  // C API function declarations
 
 #ifdef __cplusplus
-} // extern C
-#endif // __cplusplus
+}  // extern C
+#endif  // __cplusplus
 
-#endif // _SEQ_MockUserInterface_h_
+#endif  // _SEQ_MockUserInterface_h_

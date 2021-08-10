@@ -1,36 +1,37 @@
 /******************************************************************************
-* $HeadURL: $
-* $Id: $
-*
-* Project       : SUP - Sequencer
-*
-* Description   : Sequencer for operational procedures
-*
-* Author        : Walter Van Herck (IO)
-*
-* Copyright (c) : 2010-2021 ITER Organization,
-*                 CS 90 046
-*                 13067 St. Paul-lez-Durance Cedex
-*                 France
-*
-* This file is part of ITER CODAC software.
-* For the terms and conditions of redistribution or use of this software
-* refer to the file ITER-LICENSE.TXT located in the top level directory
-* of the distribution package.
-******************************************************************************/
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP - Sequencer
+ *
+ * Description   : Sequencer for operational procedures
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2021 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
 
 // Global header files
 
-#include <iostream> // std::cout, etc.
+#include <common/SysTools.h>  // Misc. helper functions
 
-#include <common/log-api.h> // CCS logging library
-#include <common/SysTools.h> // Misc. helper functions
+#include <iostream>  // std::cout, etc.
+
+#include <common/log-api.h>  // CCS logging library
 
 // Local header files
 
-#include "SequenceParser.h"
-#include "Runner.h"
 #include "DaemonInterface.h"
+#include "Runner.h"
+#include "SequenceParser.h"
 
 // Constants
 
@@ -51,10 +52,10 @@ struct DaemonParams
 
 // Function declaration
 
-DaemonParams ParseCommandLineArgs(int argc, char * argv[]);
-bool IsHelpOption(const char * option);
-bool IsFileOption(const char * option);
-bool IsLogOption(const char * option);
+DaemonParams ParseCommandLineArgs(int argc, char* argv[]);
+bool IsHelpOption(const char* option);
+bool IsFileOption(const char* option);
+bool IsLogOption(const char* option);
 
 // Function definition
 
@@ -68,13 +69,15 @@ void print_usage()
   std::cout << "         -f|--file <filename>: Load, parse and execute <filename>." << std::endl;
   std::cout << "         -l|--logging: Enable logging." << std::endl;
   std::cout << std::endl;
-  std::cout << "The program loads <filename>, parses it into an executable behaviour tree and executes it." << std::endl;
+  std::cout << "The program loads <filename>, parses it into an executable behaviour tree and "
+               "executes it."
+            << std::endl;
   std::cout << std::endl;
 
   return;
 }
 
-int main(int argc, char * argv[])
+int main(int argc, char* argv[])
 {
   auto params = ParseCommandLineArgs(argc, argv);
   if (params.print_usage)
@@ -106,7 +109,8 @@ int main(int argc, char * argv[])
 
   if (!proc->Setup())
   {
-    log_error("sequencer-daemon couldn't setup the parsed procedure from file: <%s>", params.filepath);
+    log_error("sequencer-daemon couldn't setup the parsed procedure from file: <%s>",
+              params.filepath);
     return 1;
   }
 
@@ -118,7 +122,7 @@ int main(int argc, char * argv[])
   return 0;
 }
 
-DaemonParams ParseCommandLineArgs(int argc, char * argv[])
+DaemonParams ParseCommandLineArgs(int argc, char* argv[])
 {
   DaemonParams result = {false, STRING_UNDEFINED, false, 0};
   if (argc <= 1)
@@ -157,24 +161,24 @@ DaemonParams ParseCommandLineArgs(int argc, char * argv[])
   return result;
 }
 
-bool IsHelpOption(const char * option)
+bool IsHelpOption(const char* option)
 {
   bool result = ccs::HelperTools::StringCompare(option, "-h")
-             || ccs::HelperTools::StringCompare(option, "--help");
+                || ccs::HelperTools::StringCompare(option, "--help");
   return result;
 }
 
-bool IsFileOption(const char * option)
+bool IsFileOption(const char* option)
 {
   bool result = ccs::HelperTools::StringCompare(option, "-f")
-             || ccs::HelperTools::StringCompare(option, "--file");
+                || ccs::HelperTools::StringCompare(option, "--file");
   return result;
 }
 
-bool IsLogOption(const char * option)
+bool IsLogOption(const char* option)
 {
   bool result = ccs::HelperTools::StringCompare(option, "-l")
-             || ccs::HelperTools::StringCompare(option, "--logging");
+                || ccs::HelperTools::StringCompare(option, "--logging");
   return result;
 }
 

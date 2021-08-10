@@ -19,15 +19,14 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <gtest/gtest.h>
-
-#include <common/AnyValue.h>
-
 #include "InstructionRegistry.h"
 #include "SequenceParser.h"
 #include "UnitTestHelper.h"
 
-TEST(SequenceParser, Default) 
+#include <common/AnyValue.h>
+#include <gtest/gtest.h>
+
+TEST(SequenceParser, Default)
 {
   const std::string body{R"(
     <Sequence>
@@ -85,8 +84,8 @@ TEST(SequenceParser, ParseString)
     </Workspace>
 )"};
 
-  auto proc = sup::sequencer::ParseProcedureString(
-      ::sup::UnitTestHelper::CreateProcedureString(body));
+  auto proc =
+      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
   ::sup::UnitTestHelper::PrintProcedureWorkspace(proc.get());

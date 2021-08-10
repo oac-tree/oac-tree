@@ -1,23 +1,23 @@
 /******************************************************************************
-* $HeadURL: $
-* $Id: $
-*
-* Project       : SUP - Sequencer
-*
-* Description   : Sequencer for operational procedures
-*
-* Author        : Walter Van Herck (IO)
-*
-* Copyright (c) : 2010-2020 ITER Organization,
-*                 CS 90 046
-*                 13067 St. Paul-lez-Durance Cedex
-*                 France
-*
-* This file is part of ITER CODAC software.
-* For the terms and conditions of redistribution or use of this software
-* refer to the file ITER-LICENSE.TXT located in the top level directory
-* of the distribution package.
-******************************************************************************/
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP - Sequencer
+ *
+ * Description   : Sequencer for operational procedures
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2020 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
 
 /**
  * @file ProcedureParser.h
@@ -37,8 +37,8 @@
 
 // Local header files
 
-#include "TreeData.h"
 #include "Procedure.h"
+#include "TreeData.h"
 
 // Constants
 
@@ -46,33 +46,34 @@
 
 #ifdef __cplusplus
 
-namespace sup {
-
-namespace sequencer {
-
+namespace sup
+{
+namespace sequencer
+{
 // Global variables
 
 // Function declarations
 
-std::unique_ptr<Procedure> ParseProcedure(const TreeData & data, const std::string & filename = {});
+std::unique_ptr<Procedure> ParseProcedure(const TreeData& data, const std::string& filename = {});
 
-std::string GetFullPathName(const std::string & directory, const std::string & filename);
+std::string GetFullPathName(const std::string& directory, const std::string& filename);
 
-std::string GetFileDirectory(const std::string & filename);
+std::string GetFileDirectory(const std::string& filename);
 
 // Function definitions
 
-} // namespace sequencer
+}  // namespace sequencer
 
-} // namespace sup
+}  // namespace sup
 
-extern "C" {
-#endif // __cplusplus
+extern "C"
+{
+#endif  // __cplusplus
 
-// C API function declarations
+  // C API function declarations
 
 #ifdef __cplusplus
-} // extern C
-#endif // __cplusplus
+}  // extern C
+#endif  // __cplusplus
 
-#endif // _SEQ_ProcedureParser_h_
+#endif  // _SEQ_ProcedureParser_h_

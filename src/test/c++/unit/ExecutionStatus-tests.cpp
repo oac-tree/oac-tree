@@ -21,9 +21,11 @@
 
 // Global header files
 
-#include <gtest/gtest.h> // Google test framework
-#include <common/log-api.h> // Syslog wrapper routines
+#include <gtest/gtest.h>  // Google test framework
+
 #include <set>
+
+#include <common/log-api.h>  // Syslog wrapper routines
 
 // Local header files
 

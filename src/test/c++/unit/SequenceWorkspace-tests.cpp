@@ -19,19 +19,19 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <gtest/gtest.h> 
-
 #include "Instruction.h"
 #include "InstructionRegistry.h"
+#include "LogUI.h"
 #include "SequenceParser.h"
 #include "UnitTestHelper.h"
 #include "Workspace.h"
 
-#include "LogUI.h"
+#include <gtest/gtest.h>
 
 using namespace sup::sequencer;
 
-class CopyNode : public Instruction {
+class CopyNode : public Instruction
+{
 private:
   ExecutionStatus ExecuteSingleImpl(UserInterface *ui, Workspace *ws) override;
 
@@ -46,7 +46,8 @@ const std::string CopyNode::Type = "CopyNode";
 
 static bool CopyNodeRegistered = RegisterGlobalInstruction<CopyNode>();
 
-TEST(SequenceWorkspace, CopyVariable) {
+TEST(SequenceWorkspace, CopyVariable)
+{
   const std::string body{R"(
     <Sequence>
         <Copy name="Copy workspace variables" input="var1" output="var2" />
@@ -78,30 +79,33 @@ TEST(SequenceWorkspace, CopyVariable) {
 
 CopyNode::CopyNode() : Instruction(Type) {}
 
-ExecutionStatus CopyNode::ExecuteSingleImpl(UserInterface *ui, Workspace *ws) {
+ExecutionStatus CopyNode::ExecuteSingleImpl(UserInterface *ui, Workspace *ws)
+{
   ::ccs::types::AnyValue val;
 
   bool status = HasAttribute("input");
 
-  if (status) {
+  if (status)
+  {
     std::string var_input = GetAttribute("input");
-    log_debug("CopyNode::ExecuteSingleImpl() - read input variable '%s'",
-              var_input.c_str());
+    log_debug("CopyNode::ExecuteSingleImpl() - read input variable '%s'", var_input.c_str());
     status = ws->GetValue(var_input, val);
   }
 
-  if (status) {
+  if (status)
+  {
     status = HasAttribute("output");
   }
 
-  if (status) {
+  if (status)
+  {
     std::string var_output = GetAttribute("output");
-    log_debug("CopyNode::ExecuteSingleImpl() - write output variable '%s'",
-              var_output.c_str());
+    log_debug("CopyNode::ExecuteSingleImpl() - write output variable '%s'", var_output.c_str());
     status = ws->SetValue(var_output, val);
   }
 
-  if (status) {
+  if (status)
+  {
     return ExecutionStatus::SUCCESS;
   }
 

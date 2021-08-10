@@ -1,23 +1,23 @@
 /******************************************************************************
-* $HeadURL: $
-* $Id: $
-*
-* Project       : SUP - Sequencer
-*
-* Description   : Sequencer for operational procedures
-*
-* Author        : Walter Van Herck (IO)
-*
-* Copyright (c) : 2010-2020 ITER Organization,
-*                 CS 90 046
-*                 13067 St. Paul-lez-Durance Cedex
-*                 France
-*
-* This file is part of ITER CODAC software.
-* For the terms and conditions of redistribution or use of this software
-* refer to the file ITER-LICENSE.TXT located in the top level directory
-* of the distribution package.
-******************************************************************************/
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP - Sequencer
+ *
+ * Description   : Sequencer for operational procedures
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2020 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
 
 /**
  * @file LogUI.h
@@ -43,36 +43,35 @@
 
 #ifdef __cplusplus
 
-namespace sup {
-
-namespace sequencer {
-
+namespace sup
+{
+namespace sequencer
+{
 /**
  * @brief Class implementing a log interface for the Sequencer.
  */
 
 class LogUI : public UserInterface
 {
-  private:
-    /**
-     * @brief See sup::sequencer::UserInterface.
-     */
-    void UpdateInstructionStatusImpl(const Instruction * instruction) override;
-    void StartSingleStepImpl() override;
-    void EndSingleStepImpl() override;
+private:
+  /**
+   * @brief See sup::sequencer::UserInterface.
+   */
+  void UpdateInstructionStatusImpl(const Instruction* instruction) override;
+  void StartSingleStepImpl() override;
+  void EndSingleStepImpl() override;
 
-  protected:
+protected:
+public:
+  /**
+   * @brief Constructor.
+   */
+  LogUI();
 
-  public:
-    /**
-     * @brief Constructor.
-     */
-    LogUI();
-
-    /**
-     * @brief Destructor.
-     */
-    ~LogUI() override;
+  /**
+   * @brief Destructor.
+   */
+  ~LogUI() override;
 };
 
 // Global variables
@@ -81,17 +80,18 @@ class LogUI : public UserInterface
 
 // Function definitions
 
-} // namespace sequencer
+}  // namespace sequencer
 
-} // namespace sup
+}  // namespace sup
 
-extern "C" {
-#endif // __cplusplus
+extern "C"
+{
+#endif  // __cplusplus
 
-// C API function declarations
+  // C API function declarations
 
 #ifdef __cplusplus
-} // extern C
-#endif // __cplusplus
+}  // extern C
+#endif  // __cplusplus
 
-#endif // _SEQ_LogUI_h_
+#endif  // _SEQ_LogUI_h_

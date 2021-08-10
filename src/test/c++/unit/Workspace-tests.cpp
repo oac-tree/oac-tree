@@ -21,17 +21,19 @@
 
 // Global header files
 
-#include <gtest/gtest.h> // Google test framework
-#include <common/log-api.h> // Syslog wrapper routines
 #include <common/AnyValueHelper.h>
+#include <gtest/gtest.h>  // Google test framework
+
 #include <algorithm>
+
+#include <common/log-api.h>  // Syslog wrapper routines
 
 // Local header files
 
-#include "Workspace.h"
 #include "LocalVariable.h"
-#include "VariableRegistry.h"
 #include "SequenceParser.h"
+#include "VariableRegistry.h"
+#include "Workspace.h"
 
 // Constants
 
@@ -44,14 +46,14 @@ using namespace sup::sequencer;
 
 class WorkspaceTest : public ::testing::Test
 {
-  protected:
-    WorkspaceTest();
-    virtual ~WorkspaceTest();
+protected:
+  WorkspaceTest();
+  virtual ~WorkspaceTest();
 
-    Workspace ws;
-    std::unique_ptr<Variable> var1;
-    std::unique_ptr<Variable> var2;
-    std::unique_ptr<Variable> var3;
+  Workspace ws;
+  std::unique_ptr<Variable> var1;
+  std::unique_ptr<Variable> var2;
+  std::unique_ptr<Variable> var3;
 };
 
 // Function declaration
@@ -65,11 +67,10 @@ static const std::string var2_name = "var2";
 static const std::string var3_name = "var3";
 
 static const std::string var2_type =
-R"RAW({"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}},{"status":{"type":"bool"}}]})RAW";
+    R"RAW({"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}},{"status":{"type":"bool"}}]})RAW";
 static const std::string var3_type =
-R"RAW({"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}},{"status":{"type":"bool"}}]})RAW";
-static const std::string var3_val =
-R"RAW({"value":55,"status":1})RAW";
+    R"RAW({"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}},{"status":{"type":"bool"}}]})RAW";
+static const std::string var3_val = R"RAW({"value":55,"status":1})RAW";
 
 // Function definition
 
@@ -105,7 +106,7 @@ TEST_F(WorkspaceTest, AddVariable)
 
 TEST_F(WorkspaceTest, GetValue)
 {
-    auto variables = ws.VariableNames();
+  auto variables = ws.VariableNames();
   EXPECT_EQ(variables.size(), 0);
 
   // Add all variables
@@ -207,17 +208,16 @@ TEST_F(WorkspaceTest, SetValue)
 }
 
 WorkspaceTest::WorkspaceTest()
-  : ws{}
-  , var1{GlobalVariableRegistry().Create("Local")}
-  , var2{GlobalVariableRegistry().Create("Local")}
-  , var3{GlobalVariableRegistry().Create("Local")}
+    : ws{}
+    , var1{GlobalVariableRegistry().Create("Local")}
+    , var2{GlobalVariableRegistry().Create("Local")}
+    , var3{GlobalVariableRegistry().Create("Local")}
 {
   var2->AddAttribute(LocalVariable::JSON_TYPE, var2_type);
   var3->AddAttribute(LocalVariable::JSON_TYPE, var3_type);
   var3->AddAttribute(LocalVariable::JSON_VALUE, var3_val);
 }
 
-WorkspaceTest::~WorkspaceTest()
-{}
+WorkspaceTest::~WorkspaceTest() {}
 
 #undef LOG_ALTERN_SRC

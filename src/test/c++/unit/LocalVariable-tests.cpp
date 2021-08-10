@@ -21,10 +21,12 @@
 
 // Global header files
 
-#include <gtest/gtest.h> // Google test framework
-#include <common/log-api.h> // Syslog wrapper routines
+#include <gtest/gtest.h>  // Google test framework
+
 #include <algorithm>
 #include <sstream>
+
+#include <common/log-api.h>  // Syslog wrapper routines
 
 // Local header files
 
@@ -41,16 +43,16 @@ using namespace sup::sequencer;
 
 class LocalVariableTest : public ::testing::Test
 {
-  protected:
-    LocalVariableTest();
-    virtual ~LocalVariableTest();
+protected:
+  LocalVariableTest();
+  virtual ~LocalVariableTest();
 
-    LocalVariable empty_var;
-    LocalVariable bool_var;
-    LocalVariable uint64_var;
-    LocalVariable float32_var;
-    AttributeMap attr_partial;
-    AttributeMap attr_full;
+  LocalVariable empty_var;
+  LocalVariable bool_var;
+  LocalVariable uint64_var;
+  LocalVariable float32_var;
+  AttributeMap attr_partial;
+  AttributeMap attr_full;
 };
 
 // Function declaration
@@ -283,12 +285,7 @@ static std::string stob(bool b)
 }
 
 LocalVariableTest::LocalVariableTest()
-  : empty_var{}
-  , bool_var{}
-  , uint64_var{}
-  , float32_var{}
-  , attr_partial{}
-  , attr_full{}
+    : empty_var{}, bool_var{}, uint64_var{}, float32_var{}, attr_partial{}, attr_full{}
 {
   bool_var.AddAttribute(LocalVariable::JSON_TYPE, BOOL_TYPE);
   bool_var.AddAttribute(LocalVariable::JSON_VALUE, BOOL_VALUE_STR);

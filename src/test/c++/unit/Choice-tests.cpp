@@ -19,23 +19,21 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <gtest/gtest.h>
-
+#include "Instruction.h"
+#include "InstructionRegistry.h"
+#include "LocalVariable.h"
+#include "LogUI.h"
+#include "SequenceParser.h"
+#include "UnitTestHelper.h"
+#include "Workspace.h"
 #include "common/AnyType.h"
 #include "common/AnyValue.h"
 #include "common/BasicTypes.h"
 #include "common/SharedReference.h"
+
+#include <gtest/gtest.h>
+
 #include <common/log-api.h>
-
-#include "Instruction.h"
-#include "InstructionRegistry.h"
-#include "LocalVariable.h"
-#include "SequenceParser.h"
-#include "Workspace.h"
-
-#include "LogUI.h"
-
-#include "UnitTestHelper.h"
 
 using namespace sup::sequencer;
 
@@ -47,7 +45,7 @@ static const ccs::types::char8 *testTable[][2] = {{"{\"type\":\"uint8\"}", "0"},
                                                   {NULL}};
 static ::ccs::types::uint8 resVal[] = {1, 2, 3, 0};
 
-TEST(Choice, Default) // Static initialisation
+TEST(Choice, Default)  // Static initialisation
 {
   const std::string body{R"(
    <Choice var_name="sel">
@@ -72,13 +70,14 @@ TEST(Choice, Default) // Static initialisation
 )"};
 
   const std::string file_name = "/tmp/workspace_choice.xml";
-  ::sup::UnitTestHelper::TemporaryTestFile test_file(file_name, ::sup::UnitTestHelper::CreateProcedureString(body));
+  ::sup::UnitTestHelper::TemporaryTestFile test_file(
+      file_name, ::sup::UnitTestHelper::CreateProcedureString(body));
 
   bool status(true);
   ccs::types::uint32 i = 0u;
-  while ((testTable[i][0] != NULL) && status) {
-    auto proc =
-        sup::sequencer::ParseProcedureFile(file_name);
+  while ((testTable[i][0] != NULL) && status)
+  {
+    auto proc = sup::sequencer::ParseProcedureFile(file_name);
 
     std::unique_ptr<Variable> varX(new LocalVariable);
 
@@ -88,25 +87,28 @@ TEST(Choice, Default) // Static initialisation
 
     ::sup::UnitTestHelper::PrintProcedureWorkspace(proc.get());
 
-    if (status) {
+    if (status)
+    {
       LogUI ui;
       proc->Setup();
-      while ((proc->GetStatus() != ExecutionStatus::SUCCESS) &&
-             (proc->GetStatus() != ExecutionStatus::FAILURE)) {
+      while ((proc->GetStatus() != ExecutionStatus::SUCCESS)
+             && (proc->GetStatus() != ExecutionStatus::FAILURE))
+      {
         proc->ExecuteSingle(&ui);
       }
 
       status = (proc->GetStatus() == ExecutionStatus::SUCCESS);
     }
 
-    if (status) {
+    if (status)
+    {
       ::ccs::types::AnyValue result;
       proc->GetVariableValue("res", result);
-      ::ccs::types::uint8 checkVal =
-          *(::ccs::types::uint8 *)(result.GetInstance());
+      ::ccs::types::uint8 checkVal = *(::ccs::types::uint8 *)(result.GetInstance());
       status = checkVal == resVal[i];
 
-      if (!status) {
+      if (!status)
+      {
         printf("Failed %u!=%u\n", checkVal, resVal[i]);
       }
     }
@@ -119,7 +121,8 @@ TEST(Choice, Default) // Static initialisation
   ASSERT_EQ(true, status);
 }
 
-TEST(Choice, BitMask_success) {
+TEST(Choice, BitMask_success)
+{
   const std::string body{R"(
     <Choice is_mask="true" var_name="choice">
         <Counter/>
@@ -135,13 +138,14 @@ TEST(Choice, BitMask_success) {
 )"};
 
   sup::UnitTestHelper::MockUI ui;
-  auto proc = sup::sequencer::ParseProcedureString(
-      ::sup::UnitTestHelper::CreateProcedureString(body));
+  auto proc =
+      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
   ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
   ASSERT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 3);
 }
 
-TEST(Choice, BitMask_failure) {
+TEST(Choice, BitMask_failure)
+{
   const std::string body{R"(
     <Choice is_mask="true" var_name="choice">
         <Counter/>
@@ -157,15 +161,16 @@ TEST(Choice, BitMask_failure) {
 )"};
 
   sup::UnitTestHelper::MockUI ui;
-  auto proc = sup::sequencer::ParseProcedureString(
-      ::sup::UnitTestHelper::CreateProcedureString(body));
+  auto proc =
+      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
   // Instruction called and return failure
-  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(
-      proc, &ui, sup::sequencer::ExecutionStatus::FAILURE));
+  ASSERT_TRUE(
+      sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE));
   ASSERT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 3);
 }
 
-TEST(Choice, NoSuchVariable) {
+TEST(Choice, NoSuchVariable)
+{
   const std::string body{R"(
     <Choice var_name="undefined">"
         <Counter/>"
@@ -175,13 +180,14 @@ TEST(Choice, NoSuchVariable) {
 )"};
 
   sup::UnitTestHelper::MockUI ui;
-  auto proc = sup::sequencer::ParseProcedureString(
-      ::sup::UnitTestHelper::CreateProcedureString(body));
+  auto proc =
+      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
   // Expect failure in Setup
   ASSERT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
 }
 
-TEST(Choice, NoAttribute) {
+TEST(Choice, NoAttribute)
+{
   const std::string body{R"(
     <Choice>"
         <Counter/>"
@@ -191,8 +197,8 @@ TEST(Choice, NoAttribute) {
 )"};
 
   sup::UnitTestHelper::MockUI ui;
-  auto proc = sup::sequencer::ParseProcedureString(
-      ::sup::UnitTestHelper::CreateProcedureString(body));
+  auto proc =
+      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
   // Expect failure in Setup
   ASSERT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
 }

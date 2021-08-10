@@ -1,23 +1,23 @@
 /******************************************************************************
-* $HeadURL: $
-* $Id: $
-*
-* Project       : SUP - Sequencer
-*
-* Description   : Sequencer for operational procedures
-*
-* Author        : Walter Van Herck (IO)
-*
-* Copyright (c) : 2010-2020 ITER Organization,
-*                 CS 90 046
-*                 13067 St. Paul-lez-Durance Cedex
-*                 France
-*
-* This file is part of ITER CODAC software.
-* For the terms and conditions of redistribution or use of this software
-* refer to the file ITER-LICENSE.TXT located in the top level directory
-* of the distribution package.
-******************************************************************************/
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP - Sequencer
+ *
+ * Description   : Sequencer for operational procedures
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2020 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
 
 // Global header files
 
@@ -35,10 +35,10 @@
 
 // Type definition
 
-namespace sup {
-
-namespace sequencer {
-
+namespace sup
+{
+namespace sequencer
+{
 // Global variables
 
 const std::string UserChoice::Type = "UserChoice";
@@ -49,7 +49,7 @@ static const std::string DESCRIPTION_ATTRIBUTE = "description";
 
 // Function definition
 
-ExecutionStatus UserChoice::ExecuteSingleImpl(UserInterface * ui, Workspace * ws)
+ExecutionStatus UserChoice::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
 {
   (void)ws;
 
@@ -77,8 +77,10 @@ ExecutionStatus UserChoice::ExecuteSingleImpl(UserInterface * ui, Workspace * ws
     selected->ExecuteSingle(ui, ws);
     return selected->GetStatus();
   }
-  log_warning("UserChoice::ExecuteSingleImpl() - Selected instruction was not in the correct "
-              "state to execute: '%s'", StatusToString(selected_status).c_str());
+  log_warning(
+      "UserChoice::ExecuteSingleImpl() - Selected instruction was not in the correct "
+      "state to execute: '%s'",
+      StatusToString(selected_status).c_str());
   return ExecutionStatus::FAILURE;
 }
 
@@ -87,27 +89,25 @@ std::vector<std::string> UserChoice::GetChoices() const
   std::vector<std::string> result;
   for (auto instruction : ChildInstructions())
   {
-    std::string description = instruction->GetName() + std::string(" (type:") +
-                              instruction->GetType() + std::string(")");
+    std::string description =
+        instruction->GetName() + std::string(" (type:") + instruction->GetType() + std::string(")");
     result.push_back(description);
   }
   return result;
 }
 
-UserChoice::UserChoice()
-  : CompoundInstruction(Type)
-{}
+UserChoice::UserChoice() : CompoundInstruction(Type) {}
 
 UserChoice::~UserChoice() = default;
 
-} // namespace sequencer
+}  // namespace sequencer
 
-} // namespace sup
+}  // namespace sup
 
-extern "C" {
+extern "C"
+{
+  // C API function definitions
 
-// C API function definitions
-
-} // extern C
+}  // extern C
 
 #undef LOG_ALTERN_SRC

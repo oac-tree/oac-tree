@@ -1,23 +1,23 @@
 /******************************************************************************
-* $HeadURL: $
-* $Id: $
-*
-* Project       : SUP - Sequencer
-*
-* Description   : Sequencer for operational procedures
-*
-* Author        : Walter Van Herck (IO)
-*
-* Copyright (c) : 2010-2020 ITER Organization,
-*                 CS 90 046
-*                 13067 St. Paul-lez-Durance Cedex
-*                 France
-*
-* This file is part of ITER CODAC software.
-* For the terms and conditions of redistribution or use of this software
-* refer to the file ITER-LICENSE.TXT located in the top level directory
-* of the distribution package.
-******************************************************************************/
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP - Sequencer
+ *
+ * Description   : Sequencer for operational procedures
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2020 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
 
 /**
  * @file LocalVariable.h
@@ -43,10 +43,10 @@
 
 #ifdef __cplusplus
 
-namespace sup {
-
-namespace sequencer {
-
+namespace sup
+{
+namespace sequencer
+{
 /**
  * @brief Variable that is hosted locally in the workspace.
  *
@@ -59,42 +59,41 @@ namespace sequencer {
 
 class LocalVariable : public Variable
 {
-  private:
-    /**
-     * @brief Encapsulated AnyValue.
-     */
-    ::ccs::types::AnyValue _val;
+private:
+  /**
+   * @brief Encapsulated AnyValue.
+   */
+  ::ccs::types::AnyValue _val;
 
-    /**
-     * @brief See sup::sequencer::Variable.
-     */
-    bool GetValueImpl(::ccs::types::AnyValue& value) const override;
-    bool SetValueImpl(const ::ccs::types::AnyValue& value) override;
-    bool SetupImpl() override;
+  /**
+   * @brief See sup::sequencer::Variable.
+   */
+  bool GetValueImpl(::ccs::types::AnyValue& value) const override;
+  bool SetValueImpl(const ::ccs::types::AnyValue& value) override;
+  bool SetupImpl() override;
 
-  protected:
+protected:
+public:
+  /**
+   * @brief Constructor.
+   */
+  LocalVariable();
 
-  public:
-    /**
-     * @brief Constructor.
-     */
-    LocalVariable();
+  /**
+   * @brief Destructor.
+   */
+  ~LocalVariable() override;
 
-    /**
-     * @brief Destructor.
-     */
-    ~LocalVariable() override;
+  /**
+   * @brief Class name for VariableRegistry.
+   */
+  static const std::string Type;
 
-    /**
-     * @brief Class name for VariableRegistry.
-     */
-    static const std::string Type;
-
-    /**
-     * @brief Defined attribute names.
-     */
-    static const std::string JSON_TYPE;
-    static const std::string JSON_VALUE;
+  /**
+   * @brief Defined attribute names.
+   */
+  static const std::string JSON_TYPE;
+  static const std::string JSON_VALUE;
 };
 
 // Global variables
@@ -103,17 +102,18 @@ class LocalVariable : public Variable
 
 // Function definitions
 
-} // namespace sequencer
+}  // namespace sequencer
 
-} // namespace sup
+}  // namespace sup
 
-extern "C" {
-#endif // __cplusplus
+extern "C"
+{
+#endif  // __cplusplus
 
-// C API function declarations
+  // C API function declarations
 
 #ifdef __cplusplus
-} // extern C
-#endif // __cplusplus
+}  // extern C
+#endif  // __cplusplus
 
-#endif // _SEQ_LocalVariable_h_
+#endif  // _SEQ_LocalVariable_h_

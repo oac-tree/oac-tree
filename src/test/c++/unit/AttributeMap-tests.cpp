@@ -1,27 +1,28 @@
 /******************************************************************************
-* $HeadURL: $
-* $Id: $
-*
-* Project       : SUP Sequencer
-*
-* Description   : Unit test code
-*
-* Author        : Walter Van Herck (IO)
-*
-* Copyright (c) : 2010-2020 ITER Organization,
-*                 CS 90 046
-*                 13067 St. Paul-lez-Durance Cedex
-*                 France
-*
-* This file is part of ITER CODAC software.
-* For the terms and conditions of redistribution or use of this software
-* refer to the file ITER-LICENSE.TXT located in the top level directory
-* of the distribution package.
-******************************************************************************/
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP Sequencer
+ *
+ * Description   : Unit test code
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2020 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
 
 // Global header files
 
-#include <gtest/gtest.h> // Google test framework
+#include <gtest/gtest.h>  // Google test framework
+
 #include <algorithm>
 
 // Local header files
@@ -34,14 +35,15 @@
 
 using namespace sup::sequencer;
 
-class AttributeMapTest : public ::testing::Test {
-  protected:
-    AttributeMapTest();
-    virtual ~AttributeMapTest();
+class AttributeMapTest : public ::testing::Test
+{
+protected:
+  AttributeMapTest();
+  virtual ~AttributeMapTest();
 
-    AttributeMap attr_map_0;
-    AttributeMap attr_map_1;
-    AttributeMap attr_map_2;
+  AttributeMap attr_map_0;
+  AttributeMap attr_map_1;
+  AttributeMap attr_map_2;
 };
 
 // Function declaration
@@ -142,7 +144,8 @@ TEST_F(AttributeMapTest, AddAttribute)
   EXPECT_EQ(attr_map_0.GetNumberOfAttributes(), 1);
   auto attr_names = attr_map_0.GetAttributeNames();
   EXPECT_EQ(attr_names.size(), 1);
-  EXPECT_NE(std::find(attr_names.begin(), attr_names.end(), attributes::NAME_ATTRIBUTE), attr_names.end());
+  EXPECT_NE(std::find(attr_names.begin(), attr_names.end(), attributes::NAME_ATTRIBUTE),
+            attr_names.end());
   int n = 0;
   for (auto attr : attr_map_0)
   {
@@ -162,8 +165,10 @@ TEST_F(AttributeMapTest, AddAttribute)
   EXPECT_EQ(attr_map_0.GetNumberOfAttributes(), 2);
   attr_names = attr_map_0.GetAttributeNames();
   EXPECT_EQ(attr_names.size(), 2);
-  EXPECT_NE(std::find(attr_names.begin(), attr_names.end(), attributes::NAME_ATTRIBUTE), attr_names.end());
-  EXPECT_NE(std::find(attr_names.begin(), attr_names.end(), DESCRIPTION_ATTRIBUTE), attr_names.end());
+  EXPECT_NE(std::find(attr_names.begin(), attr_names.end(), attributes::NAME_ATTRIBUTE),
+            attr_names.end());
+  EXPECT_NE(std::find(attr_names.begin(), attr_names.end(), DESCRIPTION_ATTRIBUTE),
+            attr_names.end());
   n = 0;
   for (const auto& attr : attr_map_0)
   {
@@ -179,8 +184,10 @@ TEST_F(AttributeMapTest, AddAttribute)
   EXPECT_EQ(attr_map_0.GetNumberOfAttributes(), 2);
   attr_names = attr_map_0.GetAttributeNames();
   EXPECT_EQ(attr_names.size(), 2);
-  EXPECT_NE(std::find(attr_names.begin(), attr_names.end(), attributes::NAME_ATTRIBUTE), attr_names.end());
-  EXPECT_NE(std::find(attr_names.begin(), attr_names.end(), DESCRIPTION_ATTRIBUTE), attr_names.end());
+  EXPECT_NE(std::find(attr_names.begin(), attr_names.end(), attributes::NAME_ATTRIBUTE),
+            attr_names.end());
+  EXPECT_NE(std::find(attr_names.begin(), attr_names.end(), DESCRIPTION_ATTRIBUTE),
+            attr_names.end());
   n = 0;
   for (const auto& attr : attr_map_0)
   {
@@ -200,7 +207,8 @@ TEST_F(AttributeMapTest, SetAttribute)
   EXPECT_EQ(attr_map_0.GetNumberOfAttributes(), 1);
   auto attr_names = attr_map_0.GetAttributeNames();
   EXPECT_EQ(attr_names.size(), 1);
-  EXPECT_NE(std::find(attr_names.begin(), attr_names.end(), attributes::NAME_ATTRIBUTE), attr_names.end());
+  EXPECT_NE(std::find(attr_names.begin(), attr_names.end(), attributes::NAME_ATTRIBUTE),
+            attr_names.end());
   int n = 0;
   for (auto attr : attr_map_0)
   {
@@ -218,7 +226,8 @@ TEST_F(AttributeMapTest, SetAttribute)
   EXPECT_EQ(attr_map_0.GetNumberOfAttributes(), 1);
   attr_names = attr_map_0.GetAttributeNames();
   EXPECT_EQ(attr_names.size(), 1);
-  EXPECT_NE(std::find(attr_names.begin(), attr_names.end(), attributes::NAME_ATTRIBUTE), attr_names.end());
+  EXPECT_NE(std::find(attr_names.begin(), attr_names.end(), attributes::NAME_ATTRIBUTE),
+            attr_names.end());
   n = 0;
   for (const auto& attr : attr_map_0)
   {

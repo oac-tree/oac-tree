@@ -21,15 +21,17 @@
 
 // Global header files
 
-#include <gtest/gtest.h> // Google test framework
-#include <common/log-api.h> // Syslog wrapper routines
+#include <gtest/gtest.h>  // Google test framework
+
 #include <chrono>
 #include <thread>
 
+#include <common/log-api.h>  // Syslog wrapper routines
+
 // Local header files
 
-#include "Runner.h"
 #include "MockUserInterface.h"
+#include "Runner.h"
 #include "SequenceParser.h"
 
 // Constants
@@ -43,13 +45,13 @@ using namespace sup::sequencer;
 
 class RunnerTest : public ::testing::Test
 {
-  protected:
-    RunnerTest();
-    virtual ~RunnerTest();
+protected:
+  RunnerTest();
+  virtual ~RunnerTest();
 
-    MockUserInterface mock_ui;
-    std::unique_ptr<Procedure> async_proc;
-    std::unique_ptr<Procedure> sync_proc;
+  MockUserInterface mock_ui;
+  std::unique_ptr<Procedure> async_proc;
+  std::unique_ptr<Procedure> sync_proc;
 };
 
 // Function declaration
@@ -59,7 +61,7 @@ class RunnerTest : public ::testing::Test
 static ::ccs::log::Func_t __handler = ::ccs::log::SetStdout();
 
 static const std::string AsyncProcedureString =
-R"RAW(<?xml version="1.0" encoding="UTF-8"?>
+    R"RAW(<?xml version="1.0" encoding="UTF-8"?>
 <Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
            name="Asynchronous procedure for testing purposes"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
@@ -75,7 +77,7 @@ R"RAW(<?xml version="1.0" encoding="UTF-8"?>
 )RAW";
 
 static const std::string SyncProcedureString =
-R"RAW(<?xml version="1.0" encoding="UTF-8"?>
+    R"RAW(<?xml version="1.0" encoding="UTF-8"?>
 <Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
            name="Synchronous procedure for testing purposes"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
@@ -93,8 +95,8 @@ R"RAW(<?xml version="1.0" encoding="UTF-8"?>
 
 // Function definition
 
-using ::testing::AtLeast;
 using ::testing::_;
+using ::testing::AtLeast;
 using ::testing::InSequence;
 
 TEST_F(RunnerTest, NoProcedure)
@@ -179,13 +181,17 @@ TEST_F(RunnerTest, UICalls)
   {
     InSequence seq;
     EXPECT_CALL(mock_ui, StartSingleStepImpl());
-    EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::NOT_FINISHED)));
-    EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::NOT_FINISHED)));
+    EXPECT_CALL(mock_ui,
+                UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::NOT_FINISHED)));
+    EXPECT_CALL(mock_ui,
+                UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::NOT_FINISHED)));
     EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::SUCCESS)));
     EXPECT_CALL(mock_ui, EndSingleStepImpl());
     EXPECT_CALL(mock_ui, StartSingleStepImpl());
-    EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::NOT_FINISHED)));
-    EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::NOT_FINISHED)));
+    EXPECT_CALL(mock_ui,
+                UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::NOT_FINISHED)));
+    EXPECT_CALL(mock_ui,
+                UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::NOT_FINISHED)));
     EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::SUCCESS)));
     EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::FAILURE)));
     EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::FAILURE)));
@@ -210,10 +216,11 @@ TEST_F(RunnerTest, UICalls)
 }
 
 RunnerTest::RunnerTest()
- : mock_ui{}
- , async_proc{sup::sequencer::ParseProcedureString(AsyncProcedureString)}
- , sync_proc{sup::sequencer::ParseProcedureString(SyncProcedureString)}
-{}
+    : mock_ui{}
+    , async_proc{sup::sequencer::ParseProcedureString(AsyncProcedureString)}
+    , sync_proc{sup::sequencer::ParseProcedureString(SyncProcedureString)}
+{
+}
 
 RunnerTest::~RunnerTest()
 {

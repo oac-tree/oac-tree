@@ -20,10 +20,11 @@
  ******************************************************************************/
 
 // Global header files
-#include <common/log-api.h>
 #include <algorithm>
 #include <memory>
 #include <utility>
+
+#include <common/log-api.h>
 
 // Local header files
 
@@ -36,22 +37,19 @@
 
 // Type definition
 
-namespace sup {
-
-namespace sequencer {
-
+namespace sup
+{
+namespace sequencer
+{
 // Global variables
 
 // Function declaration
 
-static std::pair<std::string, std::string> SplitToNameField(const std::string & fullname);
+static std::pair<std::string, std::string> SplitToNameField(const std::string &fullname);
 
 // Function definition
 
-Workspace::Workspace()
-  : _var_map{}
-  , _var_pointers{}
-{}
+Workspace::Workspace() : _var_map{}, _var_pointers{} {}
 
 Workspace::~Workspace()
 {
@@ -63,25 +61,31 @@ Workspace::~Workspace()
 
 bool Workspace::AddVariable(std::string name, Variable *var)
 {
-  std::unique_ptr<Variable> var_owned(var); // take ownership immediately
+  std::unique_ptr<Variable> var_owned(var);  // take ownership immediately
   if (_var_map.find(name) != _var_map.end())
   {
-    log_warning("sup::sequencer::Workspace::AddVariable('%s', var) - variable with "
-                "this name already exists!", name.c_str());
+    log_warning(
+        "sup::sequencer::Workspace::AddVariable('%s', var) - variable with "
+        "this name already exists!",
+        name.c_str());
     return false;
   }
   auto result = _var_pointers.insert(var);
   if (result.second)
   {
-    log_debug("sup::sequencer::Workspace::AddVariable('%s', var) - add variable "
-           "to workspace..", name.c_str());
+    log_debug(
+        "sup::sequencer::Workspace::AddVariable('%s', var) - add variable "
+        "to workspace..",
+        name.c_str());
     _var_map[name] = var_owned.release();
   }
   else
   {
-    var_owned.release(); // variable is already owned
-    log_warning("sup::sequencer::Workspace::AddVariable('%s', var) - variable with "
-                "same address already added!", name.c_str());
+    var_owned.release();  // variable is already owned
+    log_warning(
+        "sup::sequencer::Workspace::AddVariable('%s', var) - variable with "
+        "same address already added!",
+        name.c_str());
   }
   return result.second;
 }
@@ -90,9 +94,7 @@ std::vector<std::string> Workspace::VariableNames() const
 {
   std::vector<std::string> result;
   std::transform(_var_map.begin(), _var_map.end(), std::back_inserter(result),
-                 [](const decltype(_var_map)::value_type &pair) {
-                   return pair.first;
-                   });
+                 [](const decltype(_var_map)::value_type &pair) { return pair.first; });
   return result;
 }
 
@@ -105,15 +107,18 @@ bool Workspace::GetValue(std::string name, ::ccs::types::AnyValue &value) const
   auto it = _var_map.find(varname);
   if (it == _var_map.end())
   {
-    log_warning("sup::sequencer::Workspace::GetValue('%s', value) - variable with name '%s' "
-                "not in workspace!", name.c_str(), varname.c_str());
+    log_warning(
+        "sup::sequencer::Workspace::GetValue('%s', value) - variable with name '%s' "
+        "not in workspace!",
+        name.c_str(), varname.c_str());
     return false;
   }
   auto var = it->second;
 
-  log_debug("sup::sequencer::Workspace::GetValue('%s', 'value') - trying to copy found "
-           "workspace variable to 'value'..",
-           name.c_str());
+  log_debug(
+      "sup::sequencer::Workspace::GetValue('%s', 'value') - trying to copy found "
+      "workspace variable to 'value'..",
+      name.c_str());
   return var->GetValue(value, fieldname);
 }
 
@@ -126,18 +131,22 @@ bool Workspace::SetValue(std::string name, const ::ccs::types::AnyValue &value)
   auto it = _var_map.find(varname);
   if (it == _var_map.end())
   {
-    log_warning("sup::sequencer::Workspace::SetValue('%s', value) - variable with name '%s' "
-                "not in workspace!", name.c_str(), varname.c_str());
+    log_warning(
+        "sup::sequencer::Workspace::SetValue('%s', value) - variable with name '%s' "
+        "not in workspace!",
+        name.c_str(), varname.c_str());
     return false;
   }
   auto var = it->second;
-  log_debug("sup::sequencer::Workspace::SetValue('%s', 'value') - trying to copy "
-           "'value' into found workspace variable..", name.c_str());
+  log_debug(
+      "sup::sequencer::Workspace::SetValue('%s', 'value') - trying to copy "
+      "'value' into found workspace variable..",
+      name.c_str());
 
   return var->SetValue(value, fieldname);
 }
 
-static std::pair<std::string, std::string> SplitToNameField(const std::string & fullname)
+static std::pair<std::string, std::string> SplitToNameField(const std::string &fullname)
 {
   auto pos1 = fullname.find('.');
   auto pos2 = fullname.find('[');
@@ -146,19 +155,19 @@ static std::pair<std::string, std::string> SplitToNameField(const std::string & 
   auto total_length = fullname.length();
   if (pos < total_length)
   {
-    return { fullname.substr(0u, pos), fullname.substr(pos + 1u) };
+    return {fullname.substr(0u, pos), fullname.substr(pos + 1u)};
   }
-  return { fullname, {} };
+  return {fullname, {}};
 }
 
-} // namespace sequencer
+}  // namespace sequencer
 
-} // namespace sup
+}  // namespace sup
 
-extern "C" {
+extern "C"
+{
+  // C API function definitions
 
-// C API function definitions
-
-}// extern C
+}  // extern C
 
 #undef LOG_ALTERN_SRC

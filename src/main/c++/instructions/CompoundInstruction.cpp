@@ -1,23 +1,23 @@
 /******************************************************************************
-* $HeadURL: $
-* $Id: $
-*
-* Project       : SUP - Sequencer
-*
-* Description   : Sequencer for operational procedures
-*
-* Author        : Walter Van Herck (IO)
-*
-* Copyright (c) : 2010-2020 ITER Organization,
-*                 CS 90 046
-*                 13067 St. Paul-lez-Durance Cedex
-*                 France
-*
-* This file is part of ITER CODAC software.
-* For the terms and conditions of redistribution or use of this software
-* refer to the file ITER-LICENSE.TXT located in the top level directory
-* of the distribution package.
-******************************************************************************/
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP - Sequencer
+ *
+ * Description   : Sequencer for operational procedures
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2020 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
 
 // Global header files
 
@@ -54,9 +54,9 @@ void CompoundInstruction::HaltImpl()
   HaltChildren();
 }
 
-std::vector<const Instruction *> CompoundInstruction::ChildInstructionsImpl() const
+std::vector<const Instruction*> CompoundInstruction::ChildInstructionsImpl() const
 {
-  std::vector<const Instruction *> result;
+  std::vector<const Instruction*> result;
   for (auto instr : _children)
   {
     result.push_back(instr);
@@ -77,7 +77,7 @@ bool CompoundInstruction::InsertInstructionImpl(Instruction* child, int index)
   return true;
 }
 
-Instruction *CompoundInstruction::TakeInstructionImpl(int index)
+Instruction* CompoundInstruction::TakeInstructionImpl(int index)
 {
   if (index < 0 || index >= ChildrenCount())
     return nullptr;

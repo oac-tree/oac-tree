@@ -1,23 +1,23 @@
 /******************************************************************************
-* $HeadURL: $
-* $Id: $
-*
-* Project       : SUP - Sequencer
-*
-* Description   : Sequencer for operational procedures
-*
-* Author        : Walter Van Herck (IO)
-*
-* Copyright (c) : 2010-2020 ITER Organization,
-*                 CS 90 046
-*                 13067 St. Paul-lez-Durance Cedex
-*                 France
-*
-* This file is part of ITER CODAC software.
-* For the terms and conditions of redistribution or use of this software
-* refer to the file ITER-LICENSE.TXT located in the top level directory
-* of the distribution package.
-******************************************************************************/
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP - Sequencer
+ *
+ * Description   : Sequencer for operational procedures
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2020 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
 
 // Global header files
 
@@ -27,7 +27,6 @@
 
 // Local header files
 
-#include "InstructionRegistry.h"
 #include "Choice.h"
 #include "Condition.h"
 #include "Copy.h"
@@ -37,6 +36,7 @@
 #include "Include.h"
 #include "Input.h"
 #include "Instruction.h"
+#include "InstructionRegistry.h"
 #include "Inverter.h"
 #include "Output.h"
 #include "ParallelSequence.h"
@@ -52,25 +52,25 @@
 
 // Type definition
 
-namespace sup {
-
-namespace sequencer {
-
+namespace sup
+{
+namespace sequencer
+{
 // Global variables
 
 std::once_flag global_instruction_registry_initialized_flag;
 
 // Function declaration
 
-void InitInstructionRegistry(InstructionRegistry & registry);
+void InitInstructionRegistry(InstructionRegistry& registry);
 
 // Function definition
 
-InstructionRegistry & GlobalInstructionRegistry()
+InstructionRegistry& GlobalInstructionRegistry()
 {
   static InstructionRegistry global_instruction_registry;
-  std::call_once(global_instruction_registry_initialized_flag,
-                 InitInstructionRegistry, std::ref(global_instruction_registry));
+  std::call_once(global_instruction_registry_initialized_flag, InitInstructionRegistry,
+                 std::ref(global_instruction_registry));
   return global_instruction_registry;
 }
 
@@ -102,7 +102,7 @@ std::vector<std::string> InstructionRegistry::RegisteredInstructionNames() const
   return result;
 }
 
-void InitInstructionRegistry(InstructionRegistry & registry)
+void InitInstructionRegistry(InstructionRegistry& registry)
 {
   // Register compound instructions:
   (void)RegisterInstruction<Fallback>(registry);
@@ -126,14 +126,14 @@ void InitInstructionRegistry(InstructionRegistry & registry)
   (void)RegisterInstruction<Wait>(registry);
 }
 
-} // namespace sequencer
+}  // namespace sequencer
 
-} // namespace sup
+}  // namespace sup
 
-extern "C" {
+extern "C"
+{
+  // C API function definitions
 
-// C API function definitions
-
-} // extern C
+}  // extern C
 
 #undef LOG_ALTERN_SRC

@@ -1,23 +1,23 @@
 /******************************************************************************
-* $HeadURL: $
-* $Id: $
-*
-* Project       : SUP - Sequencer
-*
-* Description   : Sequencer for operational procedures
-*
-* Author        : Walter Van Herck (IO)
-*
-* Copyright (c) : 2010-2021 ITER Organization,
-*                 CS 90 046
-*                 13067 St. Paul-lez-Durance Cedex
-*                 France
-*
-* This file is part of ITER CODAC software.
-* For the terms and conditions of redistribution or use of this software
-* refer to the file ITER-LICENSE.TXT located in the top level directory
-* of the distribution package.
-******************************************************************************/
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP - Sequencer
+ *
+ * Description   : Sequencer for operational procedures
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2021 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
 
 /**
  * @file VariableRegistry.h
@@ -44,10 +44,10 @@
 
 #ifdef __cplusplus
 
-namespace sup {
-
-namespace sequencer {
-
+namespace sup
+{
+namespace sequencer
+{
 // Forward declarations
 
 class Variable;
@@ -61,51 +61,50 @@ class Variable;
 
 class VariableRegistry
 {
-  private:
-    /**
-     * @brief Definition of Variable constructor.
-     */
-    using VariableConstructor = Variable *(*)();
+private:
+  /**
+   * @brief Definition of Variable constructor.
+   */
+  using VariableConstructor = Variable *(*)();
 
-    /**
-     * @brief Map between Variable typename and its constructor.
-     */
-    std::map<std::string, VariableConstructor> _variable_map;
+  /**
+   * @brief Map between Variable typename and its constructor.
+   */
+  std::map<std::string, VariableConstructor> _variable_map;
 
-  protected:
+protected:
+public:
+  /**
+   * @brief Constructor.
+   */
+  VariableRegistry() = default;
 
-  public:
-    /**
-     * @brief Constructor.
-     */
-    VariableRegistry() = default;
+  /**
+   * @brief Register a variable.
+   *
+   * @param name Name under which the variable is to be registered.
+   * @param constructor Function that instantiates the variable.
+   */
+  bool RegisterVariable(std::string name, VariableConstructor constructor);
 
-    /**
-     * @brief Register a variable.
-     *
-     * @param name Name under which the variable is to be registered.
-     * @param constructor Function that instantiates the variable.
-     */
-    bool RegisterVariable(std::string name, VariableConstructor constructor);
+  /**
+   * @brief Instantiate a variable with the given name.
+   *
+   * @param name Name under which the variable was registered.
+   */
+  std::unique_ptr<Variable> Create(std::string name);
 
-    /**
-     * @brief Instantiate a variable with the given name.
-     *
-     * @param name Name under which the variable was registered.
-     */
-    std::unique_ptr<Variable> Create(std::string name);
-
-    /**
-     * @brief List names of registered variables.
-     */
-    std::vector<std::string> RegisteredVariableNames() const;
+  /**
+   * @brief List names of registered variables.
+   */
+  std::vector<std::string> RegisteredVariableNames() const;
 };
 
 // Global variables
 
 // Function declarations
 
-VariableRegistry & GlobalVariableRegistry();
+VariableRegistry &GlobalVariableRegistry();
 
 // Function definitions
 
@@ -137,9 +136,9 @@ VariableRegistry & GlobalVariableRegistry();
    @endcode
  */
 template <class T>
-bool RegisterVariable(VariableRegistry & registry)
+bool RegisterVariable(VariableRegistry &registry)
 {
-  auto constructor = []() { return static_cast<Variable*>(new T()); };
+  auto constructor = []() { return static_cast<Variable *>(new T()); };
   return registry.RegisterVariable(T::Type, constructor);
 }
 
@@ -170,17 +169,18 @@ bool RegisterGlobalVariable()
   return RegisterVariable<T>(GlobalVariableRegistry());
 }
 
-} // namespace sequencer
+}  // namespace sequencer
 
-} // namespace sup
+}  // namespace sup
 
-extern "C" {
-#endif // __cplusplus
+extern "C"
+{
+#endif  // __cplusplus
 
-// C API function declarations
+  // C API function declarations
 
 #ifdef __cplusplus
-} // extern C
-#endif // __cplusplus
+}  // extern C
+#endif  // __cplusplus
 
-#endif // _SEQ_VariableRegistry_h_
+#endif  // _SEQ_VariableRegistry_h_

@@ -19,13 +19,13 @@
  * of the distribution package.
  ******************************************************************************/
 
+#include "LogUI.h"
+#include "UnitTestHelper.h"
+
 #include <SequenceParser.h>
 #include <common/BasicTypes.h>
 #include <common/SysTools.h>
 #include <gtest/gtest.h>
-
-#include "LogUI.h"
-#include "UnitTestHelper.h"
 
 TEST(Include, Procedure_local)
 {

@@ -1,23 +1,23 @@
 /******************************************************************************
-* $HeadURL: $
-* $Id: $
-*
-* Project       : SUP - Sequencer
-*
-* Description   : Sequencer for operational procedures
-*
-* Author        : Walter Van Herck (IO)
-*
-* Copyright (c) : 2010-2020 ITER Organization,
-*                 CS 90 046
-*                 13067 St. Paul-lez-Durance Cedex
-*                 France
-*
-* This file is part of ITER CODAC software.
-* For the terms and conditions of redistribution or use of this software
-* refer to the file ITER-LICENSE.TXT located in the top level directory
-* of the distribution package.
-******************************************************************************/
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP - Sequencer
+ *
+ * Description   : Sequencer for operational procedures
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2020 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
 
 /**
  * @file ExecutionStatus.h
@@ -43,40 +43,42 @@
 
 #ifdef __cplusplus
 
-namespace sup {
-
-namespace sequencer {
-
+namespace sup
+{
+namespace sequencer
+{
 /**
  * @brief Enumeration for possible execution statuses.
  */
-enum class ExecutionStatus {
-    NOT_STARTED,   // Not started yet.
-    NOT_FINISHED,  // Started and waiting for next tick.
-    RUNNING,       // Started and (child) running asynchronously.
-    SUCCESS,       // Finished successfully.
-    FAILURE        // Finished unsuccessfully.
+enum class ExecutionStatus
+{
+  NOT_STARTED,   // Not started yet.
+  NOT_FINISHED,  // Started and waiting for next tick.
+  RUNNING,       // Started and (child) running asynchronously.
+  SUCCESS,       // Finished successfully.
+  FAILURE        // Finished unsuccessfully.
 };
 
 // Global variables
 
 // Function declarations
 
-std::string StatusToString(const ExecutionStatus & status);
+std::string StatusToString(const ExecutionStatus& status);
 
 // Function definitions
 
-} // namespace sequencer
+}  // namespace sequencer
 
-} // namespace sup
+}  // namespace sup
 
-extern "C" {
-#endif // __cplusplus
+extern "C"
+{
+#endif  // __cplusplus
 
-// C API function declarations
+  // C API function declarations
 
 #ifdef __cplusplus
-} // extern C
-#endif // __cplusplus
+}  // extern C
+#endif  // __cplusplus
 
-#endif // _SEQ_ExecutionStatus_h_
+#endif  // _SEQ_ExecutionStatus_h_

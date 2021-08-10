@@ -21,11 +21,9 @@
 
 // Global header files
 
-#include <gtest/gtest.h>
-
-#include <common/BasicTypes.h>
-
 #include <SequenceParser.h>
+#include <common/BasicTypes.h>
+#include <gtest/gtest.h>
 
 // Local header files
 
@@ -33,39 +31,37 @@
 #include "UserInterface.h"
 
 //! Testing Output instruction.
-class OutputTest : public ::testing::Test {
+class OutputTest : public ::testing::Test
+{
 public:
-
   //! Test interface which accepts values from the workspace.
-  class TestInterface : public ::sup::sequencer::UserInterface {
+  class TestInterface : public ::sup::sequencer::UserInterface
+  {
   public:
-    TestInterface(unsigned par) : m_value(ccs::types::UnsignedInteger32){
+    TestInterface(unsigned par) : m_value(ccs::types::UnsignedInteger32)
+    {
       m_value = static_cast<ccs::types::uint32>(par);
     }
 
-    bool PutValueImpl(const ::ccs::types::AnyValue &value,
-                      const std::string &description) override {
+    bool PutValueImpl(const ::ccs::types::AnyValue &value, const std::string &description) override
+    {
       m_value = value;
       return true;
     }
 
-    bool GetUserValueImpl (::ccs::types::AnyValue &, const std::string&) override {
-      return true;
-    }
+    bool GetUserValueImpl(::ccs::types::AnyValue &, const std::string &) override { return true; }
 
-    void UpdateInstructionStatusImpl(
-        const sup::sequencer::Instruction *instruction) override {}
+    void UpdateInstructionStatusImpl(const sup::sequencer::Instruction *instruction) override {}
     ::ccs::types::AnyValue m_value;
-
   };
-
 };
 
 // Takes integer value from the workspace and put in into TestInterface.
 
-TEST_F(OutputTest, PutInteger) {
-  static const std::string procedure_body { 
-  R"RAW(
+TEST_F(OutputTest, PutInteger)
+{
+  static const std::string procedure_body{
+      R"RAW(
   <Sequence>
     <Output from="var1"/>
   </Sequence>
@@ -83,8 +79,8 @@ TEST_F(OutputTest, PutInteger) {
 
   auto proc = sup::sequencer::ParseProcedureString(procedure_string);
   ASSERT_TRUE(proc.get() != nullptr);
-  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(
-      proc, &ui, sup::sequencer::ExecutionStatus::SUCCESS));
+  ASSERT_TRUE(
+      sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::SUCCESS));
 
   // checking that Output instruction has propagated the value to the interface
   EXPECT_EQ(static_cast<ccs::types::uint32>(ui.m_value), static_cast<ccs::types::uint32>(42));

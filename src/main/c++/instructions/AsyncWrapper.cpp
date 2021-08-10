@@ -1,30 +1,30 @@
 /******************************************************************************
-* $HeadURL: $
-* $Id: $
-*
-* Project       : SUP - Sequencer
-*
-* Description   : Sequencer for operational procedures
-*
-* Author        : Walter Van Herck (IO)
-*
-* Copyright (c) : 2010-2020 ITER Organization,
-*                 CS 90 046
-*                 13067 St. Paul-lez-Durance Cedex
-*                 France
-*
-* This file is part of ITER CODAC software.
-* For the terms and conditions of redistribution or use of this software
-* refer to the file ITER-LICENSE.TXT located in the top level directory
-* of the distribution package.
-******************************************************************************/
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP - Sequencer
+ *
+ * Description   : Sequencer for operational procedures
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2020 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
 
 // Global header files
 
-#include <common/log-api.h>
-
 #include <chrono>
 #include <functional>
+
+#include <common/log-api.h>
 
 // Local header files
 
@@ -37,20 +37,19 @@
 
 // Type definition
 
-namespace sup {
-
-namespace sequencer {
-
+namespace sup
+{
+namespace sequencer
+{
 // Global variables
 
 // Function declaration
 
 // Function definition
 
-void AsyncWrapper::LaunchChild(UserInterface * ui, Workspace * ws)
+void AsyncWrapper::LaunchChild(UserInterface* ui, Workspace* ws)
 {
-  _child_result = std::async(std::launch::async, &Instruction::ExecuteSingle,
-                             _instruction, ui, ws);
+  _child_result = std::async(std::launch::async, &Instruction::ExecuteSingle, _instruction, ui, ws);
 }
 
 bool AsyncWrapper::ChildIsRunning() const
@@ -63,16 +62,16 @@ bool AsyncWrapper::ChildIsRunning() const
   return result_status == std::future_status::timeout;
 }
 
-AsyncWrapper::AsyncWrapper(Instruction * instruction)
-  : _instruction{instruction}
-  , _status{ExecutionStatus::NOT_STARTED}
-{}
+AsyncWrapper::AsyncWrapper(Instruction* instruction)
+    : _instruction{instruction}, _status{ExecutionStatus::NOT_STARTED}
+{
+}
 
-AsyncWrapper::AsyncWrapper(AsyncWrapper && other) =default;
+AsyncWrapper::AsyncWrapper(AsyncWrapper&& other) = default;
 
 AsyncWrapper::~AsyncWrapper() = default;
 
-void AsyncWrapper::Tick(UserInterface * ui, Workspace * ws)
+void AsyncWrapper::Tick(UserInterface* ui, Workspace* ws)
 {
   if (ChildIsRunning())
   {
@@ -80,8 +79,7 @@ void AsyncWrapper::Tick(UserInterface * ui, Workspace * ws)
   }
   auto child_status = _instruction->GetStatus();
 
-  if (child_status == ExecutionStatus::SUCCESS ||
-      child_status == ExecutionStatus::FAILURE)
+  if (child_status == ExecutionStatus::SUCCESS || child_status == ExecutionStatus::FAILURE)
   {
     _status = child_status;
   }
@@ -97,14 +95,14 @@ ExecutionStatus AsyncWrapper::GetStatus() const
   return _status;
 }
 
-} // namespace sequencer
+}  // namespace sequencer
 
-} // namespace sup
+}  // namespace sup
 
-extern "C" {
+extern "C"
+{
+  // C API function definitions
 
-// C API function definitions
-
-} // extern C
+}  // extern C
 
 #undef LOG_ALTERN_SRC

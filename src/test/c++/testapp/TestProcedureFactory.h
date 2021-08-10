@@ -8,11 +8,11 @@
 class TestProcedureFactory
 {
 public:
-    TestProcedureFactory();
+  TestProcedureFactory();
 
-    ~TestProcedureFactory();
+  ~TestProcedureFactory();
 
-    std::unique_ptr<Procedure> CreateProcedure() const;
+  std::unique_ptr<Procedure> CreateProcedure() const;
 };
 
-#endif // TESTPROCEDUREFACTORY_H
+#endif  // TESTPROCEDUREFACTORY_H

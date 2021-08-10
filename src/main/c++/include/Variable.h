@@ -1,23 +1,23 @@
 /******************************************************************************
-* $HeadURL: $
-* $Id: $
-*
-* Project       : SUP - Sequencer
-*
-* Description   : Sequencer for operational procedures
-*
-* Author        : Walter Van Herck (IO)
-*
-* Copyright (c) : 2010-2020 ITER Organization,
-*                 CS 90 046
-*                 13067 St. Paul-lez-Durance Cedex
-*                 France
-*
-* This file is part of ITER CODAC software.
-* For the terms and conditions of redistribution or use of this software
-* refer to the file ITER-LICENSE.TXT located in the top level directory
-* of the distribution package.
-******************************************************************************/
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP - Sequencer
+ *
+ * Description   : Sequencer for operational procedures
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2020 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
 
 /**
  * @file Variable.h
@@ -33,8 +33,9 @@
 
 // Global header files
 
-#include <mutex>
 #include <common/AnyValue.h>
+
+#include <mutex>
 
 // Local header files
 
@@ -46,148 +47,147 @@
 
 #ifdef __cplusplus
 
-namespace sup {
-
-namespace sequencer {
-
+namespace sup
+{
+namespace sequencer
+{
 /**
  * @brief Interface for workspace variables.
  */
 
 class Variable
 {
-  private:
-    /**
-     * @brief Typename of this variable
-     */
-    std::string _type;
+private:
+  /**
+   * @brief Typename of this variable
+   */
+  std::string _type;
 
-    /**
-     * @brief Mutex for concurrent access of Variable.
-     */
-    mutable std::mutex _access_mutex;
+  /**
+   * @brief Mutex for concurrent access of Variable.
+   */
+  mutable std::mutex _access_mutex;
 
-    /**
-     * @brief List of attributes.
-     */
-    AttributeMap _attributes;
+  /**
+   * @brief List of attributes.
+   */
+  AttributeMap _attributes;
 
-    /**
-     * @brief Indicates if the Variable was correctly setup from its attributes.
-     */
-    bool _setup_successful;
+  /**
+   * @brief Indicates if the Variable was correctly setup from its attributes.
+   */
+  bool _setup_successful;
 
-    /**
-     * @brief Get value of variable.
-     *
-     * @param value variable reference to contain the value.
-     * @return true on success.
-     *
-     * @note Private virtual implementation.
-     */
-    virtual bool GetValueImpl(::ccs::types::AnyValue& value) const =0;
+  /**
+   * @brief Get value of variable.
+   *
+   * @param value variable reference to contain the value.
+   * @return true on success.
+   *
+   * @note Private virtual implementation.
+   */
+  virtual bool GetValueImpl(::ccs::types::AnyValue& value) const = 0;
 
-    /**
-     * @brief Set value of variable.
-     *
-     * @param value value to set.
-     * @return true on success.
-     *
-     * @note Private virtual implementation.
-     */
-    virtual bool SetValueImpl(const ::ccs::types::AnyValue& value) =0;
+  /**
+   * @brief Set value of variable.
+   *
+   * @param value value to set.
+   * @return true on success.
+   *
+   * @note Private virtual implementation.
+   */
+  virtual bool SetValueImpl(const ::ccs::types::AnyValue& value) = 0;
 
-    /**
-     * @brief Setup value of variable.
-     *
-     * @note Private virtual implementation.
-     */
-    virtual bool SetupImpl();
+  /**
+   * @brief Setup value of variable.
+   *
+   * @note Private virtual implementation.
+   */
+  virtual bool SetupImpl();
 
-  protected:
+protected:
+public:
+  /**
+   * @brief Constructor.
+   */
+  Variable(const std::string& type);
 
-  public:
-    /**
-     * @brief Constructor.
-     */
-    Variable(const std::string & type);
+  /**
+   * @brief Destructor.
+   */
+  virtual ~Variable();
 
-    /**
-     * @brief Destructor.
-     */
-    virtual ~Variable();
+  /**
+   * @brief Get variable type
+   * @return variable type
+   */
+  std::string GetType() const;
 
-    /**
-     * @brief Get variable type
-     * @return variable type
-     */
-    std::string GetType() const;
+  /**
+   * @brief Get variable name
+   * @return variable name
+   */
+  std::string GetName() const;
 
-    /**
-     * @brief Get variable name
-     * @return variable name
-     */
-    std::string GetName() const;
+  /**
+   * @brief Set variable name
+   * @param name Name to set
+   * @return void
+   */
+  void SetName(const std::string& name);
 
-    /**
-     * @brief Set variable name
-     * @param name Name to set
-     * @return void
-     */
-    void SetName(const std::string & name);
+  /**
+   * @brief Get value of variable.
+   *
+   * @param value variable reference to contain the value.
+   * @return true on success.
+   *
+   * @note Non-virtual interface.
+   */
+  bool GetValue(::ccs::types::AnyValue& value, const std::string& fieldname = {}) const;
 
-    /**
-     * @brief Get value of variable.
-     *
-     * @param value variable reference to contain the value.
-     * @return true on success.
-     *
-     * @note Non-virtual interface.
-     */
-    bool GetValue(::ccs::types::AnyValue& value, const std::string & fieldname={}) const;
+  /**
+   * @brief Set value of variable.
+   *
+   * @param value value to set.
+   * @return true on success.
+   *
+   * @note Non-virtual interface.
+   */
+  bool SetValue(const ::ccs::types::AnyValue& value, const std::string& fieldname = {});
 
-    /**
-     * @brief Set value of variable.
-     *
-     * @param value value to set.
-     * @return true on success.
-     *
-     * @note Non-virtual interface.
-     */
-    bool SetValue(const ::ccs::types::AnyValue& value, const std::string & fieldname={});
+  /**
+   * @brief Indicate presence of attribute with given name.
+   *
+   * @param name Attribute name.
+   * @return true when present.
+   */
+  bool HasAttribute(const std::string& name) const;
 
-    /**
-     * @brief Indicate presence of attribute with given name.
-     *
-     * @param name Attribute name.
-     * @return true when present.
-     */
-    bool HasAttribute(const std::string & name) const;
+  /**
+   * @brief Get attribute with given name.
+   *
+   * @param name Attribute name.
+   * @return Attribute value.
+   */
+  std::string GetAttribute(const std::string& name) const;
 
-    /**
-     * @brief Get attribute with given name.
-     *
-     * @param name Attribute name.
-     * @return Attribute value.
-     */
-    std::string GetAttribute(const std::string & name) const;
+  /**
+   * @brief Set attribute with given name and value.
+   *
+   * @param name Attribute name.
+   * @param value Attribute value.
+   * @return true when successful.
+   */
+  bool AddAttribute(const std::string& name, const std::string& value);
 
-    /**
-     * @brief Set attribute with given name and value.
-     *
-     * @param name Attribute name.
-     * @param value Attribute value.
-     * @return true when successful.
-     */
-    bool AddAttribute(const std::string & name, const std::string & value);
-
-    /**
-     * @brief Set all attributes in given list.
-     *
-     * @param attributes Attribute list.
-     * @return true when successful.
-     */
-    bool AddAttributes(const AttributeMap & attributes);
+  /**
+   * @brief Set all attributes in given list.
+   *
+   * @param attributes Attribute list.
+   * @return true when successful.
+   */
+  bool AddAttributes(const AttributeMap& attributes);
 };
 
 // Global variables
@@ -196,17 +196,18 @@ class Variable
 
 // Function definitions
 
-} // namespace sequencer
+}  // namespace sequencer
 
-} // namespace sup
+}  // namespace sup
 
-extern "C" {
-#endif // __cplusplus
+extern "C"
+{
+#endif  // __cplusplus
 
-// C API function declarations
+  // C API function declarations
 
 #ifdef __cplusplus
-} // extern C
-#endif // __cplusplus
+}  // extern C
+#endif  // __cplusplus
 
-#endif // _SEQ_Variable_h_
+#endif  // _SEQ_Variable_h_

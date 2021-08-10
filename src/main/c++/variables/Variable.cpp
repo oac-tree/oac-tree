@@ -20,8 +20,9 @@
  ******************************************************************************/
 
 // Global header files
-#include <common/log-api.h>
 #include <common/AnyValueHelper.h>
+
+#include <common/log-api.h>
 
 // Local header files
 
@@ -34,18 +35,17 @@
 
 // Type definition
 
-namespace sup {
-
-namespace sequencer {
-
+namespace sup
+{
+namespace sequencer
+{
 // Global variables
 
 // Function declaration
 
 // Function definition
 
-Variable::Variable(const std::string & type)
-  : _type(type)
+Variable::Variable(const std::string &type) : _type(type)
 {
   _setup_successful = SetupImpl();
 }
@@ -62,15 +62,16 @@ std::string Variable::GetName() const
   return GetAttribute(attributes::NAME_ATTRIBUTE);
 }
 
-void Variable::SetName(const std::string & name)
+void Variable::SetName(const std::string &name)
 {
   AddAttribute(attributes::NAME_ATTRIBUTE, name);
 }
 
-bool Variable::GetValue(::ccs::types::AnyValue &value, const std::string & fieldname) const
+bool Variable::GetValue(::ccs::types::AnyValue &value, const std::string &fieldname) const
 {
   std::lock_guard<std::mutex> lock(_access_mutex);
-  if (!_setup_successful) {
+  if (!_setup_successful)
+  {
     log_warning("Variable::GetValue() - Variable was not successfully set up..");
     return false;
   }
@@ -98,10 +99,11 @@ bool Variable::GetValue(::ccs::types::AnyValue &value, const std::string & field
   return status;
 }
 
-bool Variable::SetValue(const ::ccs::types::AnyValue &value, const std::string & fieldname)
+bool Variable::SetValue(const ::ccs::types::AnyValue &value, const std::string &fieldname)
 {
   std::lock_guard<std::mutex> lock(_access_mutex);
-  if (!_setup_successful) {
+  if (!_setup_successful)
+  {
     log_warning("Variable::SetValue() - Variable was not successfully set up..");
     return false;
   }
@@ -118,7 +120,7 @@ bool Variable::SetValue(const ::ccs::types::AnyValue &value, const std::string &
     status = ::ccs::HelperTools::SetAttributeValue(&var_copy, fieldname.c_str(), value);
     if (status)
     {
-      //need to update it in the Variable
+      // need to update it in the Variable
       status = SetValueImpl(var_copy);
     }
   }
@@ -129,17 +131,17 @@ bool Variable::SetValue(const ::ccs::types::AnyValue &value, const std::string &
   return status;
 }
 
-bool Variable::HasAttribute(const std::string & name) const
+bool Variable::HasAttribute(const std::string &name) const
 {
   return _attributes.HasAttribute(name);
 }
 
-std::string Variable::GetAttribute(const std::string & name) const
+std::string Variable::GetAttribute(const std::string &name) const
 {
   return _attributes.GetAttribute(name);
 }
 
-bool Variable::AddAttribute(const std::string & name, const std::string & value)
+bool Variable::AddAttribute(const std::string &name, const std::string &value)
 {
   std::lock_guard<std::mutex> lock(_access_mutex);
   bool status = _attributes.AddAttribute(name, value);
@@ -147,11 +149,12 @@ bool Variable::AddAttribute(const std::string & name, const std::string & value)
   return status;
 }
 
-bool Variable::AddAttributes(const AttributeMap & attributes)
+bool Variable::AddAttributes(const AttributeMap &attributes)
 {
   std::lock_guard<std::mutex> lock(_access_mutex);
   bool status = true;
-  for (auto & attr : attributes) {
+  for (auto &attr : attributes)
+  {
     // Order in AND matters: add all attributes, even if previous adding failed.
     status = _attributes.AddAttribute(attr.first, attr.second) && status;
   }
@@ -164,14 +167,14 @@ bool Variable::SetupImpl()
   return true;
 }
 
-} // namespace sequencer
+}  // namespace sequencer
 
-} // namespace sup
+}  // namespace sup
 
-extern "C" {
+extern "C"
+{
+  // C API function definitions
 
-// C API function definitions
-
-}// extern C
+}  // extern C
 
 #undef LOG_ALTERN_SRC

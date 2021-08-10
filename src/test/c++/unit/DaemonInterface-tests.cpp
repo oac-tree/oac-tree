@@ -21,12 +21,14 @@
 
 // Global header files
 
-#include <gtest/gtest.h> // Google test framework
-#include <common/log-api.h> // Syslog wrapper routines
 #include <common/CompoundType.h>
 #include <common/StringTools.h>
+#include <gtest/gtest.h>  // Google test framework
+
 #include <memory>
 #include <sstream>
+
+#include <common/log-api.h>  // Syslog wrapper routines
 
 // Local header files
 
@@ -47,20 +49,20 @@ using namespace sup::sequencer;
 
 class DaemonInterfaceTest : public ::testing::Test
 {
-  protected:
-    DaemonInterfaceTest();
-    virtual ~DaemonInterfaceTest();
+protected:
+  DaemonInterfaceTest();
+  virtual ~DaemonInterfaceTest();
 
-    DaemonInterface daemon_interface;
-    DaemonInterface daemon_interface_logging;
-    std::unique_ptr<Instruction> wait;
-    ccs::log::Func_t old_cb;
+  DaemonInterface daemon_interface;
+  DaemonInterface daemon_interface_logging;
+  std::unique_ptr<Instruction> wait;
+  ccs::log::Func_t old_cb;
 };
 
 // Function declaration
 
-static void log_cb(ccs::log::Severity_t severity, const ccs::types::char8 * const source,
-                   const ccs::types::char8 * const message, va_list args);
+static void log_cb(ccs::log::Severity_t severity, const ccs::types::char8* const source,
+                   const ccs::types::char8* const message, va_list args);
 
 // Global variables
 
@@ -125,15 +127,15 @@ TEST_F(DaemonInterfaceTest, GetUserValue)
 TEST_F(DaemonInterfaceTest, GetUserChoice)
 {
   EXPECT_TRUE(out_stream.str().empty());
-  std::vector<std::string> choices = { "one", "two" };
+  std::vector<std::string> choices = {"one", "two"};
   EXPECT_EQ(daemon_interface.GetUserChoice(choices), -1);
   EXPECT_FALSE(out_stream.str().empty());
 }
 
 DaemonInterfaceTest::DaemonInterfaceTest()
-  : daemon_interface{}
-  , daemon_interface_logging{true}
-  , wait{GlobalInstructionRegistry().Create("Wait")}
+    : daemon_interface{}
+    , daemon_interface_logging{true}
+    , wait{GlobalInstructionRegistry().Create("Wait")}
 {
   old_cb = ccs::log::SetCallback(log_cb);
   out_stream.str("");
@@ -144,10 +146,10 @@ DaemonInterfaceTest::~DaemonInterfaceTest()
   (void)ccs::log::SetCallback(old_cb);
 }
 
-static void log_cb(ccs::log::Severity_t severity, const ccs::types::char8 * const source,
-                   const ccs::types::char8 * const message, va_list args)
+static void log_cb(ccs::log::Severity_t severity, const ccs::types::char8* const source,
+                   const ccs::types::char8* const message, va_list args)
 {
-  ccs::types::char8 buffer [1024];
+  ccs::types::char8 buffer[1024];
   ccs::types::char8* p_buf = static_cast<ccs::types::char8*>(buffer);
   size_t size = 1024u;
 

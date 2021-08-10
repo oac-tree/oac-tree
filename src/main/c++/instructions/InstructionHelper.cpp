@@ -1,23 +1,23 @@
 /******************************************************************************
-* $HeadURL: $
-* $Id: $
-*
-* Project       : SUP - Sequencer
-*
-* Description   : Sequencer for operational procedures
-*
-* Author        : Walter Van Herck (IO)
-*
-* Copyright (c) : 2010-2020 ITER Organization,
-*                 CS 90 046
-*                 13067 St. Paul-lez-Durance Cedex
-*                 France
-*
-* This file is part of ITER CODAC software.
-* For the terms and conditions of redistribution or use of this software
-* refer to the file ITER-LICENSE.TXT located in the top level directory
-* of the distribution package.
-******************************************************************************/
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP - Sequencer
+ *
+ * Description   : Sequencer for operational procedures
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2020 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
 
 // Global header files
 
@@ -25,12 +25,12 @@
 
 // Local header files
 
-#include "InstructionHelper.h"
-#include "Constants.h"
-#include "Include.h"
-#include "InstructionRegistry.h"
 #include "CompoundInstruction.h"
+#include "Constants.h"
 #include "DecoratorInstruction.h"
+#include "Include.h"
+#include "InstructionHelper.h"
+#include "InstructionRegistry.h"
 
 // Constants
 
@@ -43,31 +43,33 @@
 
 // Function declaration
 
-namespace {
+namespace
+{
+std::pair<std::string, std::string> StripPath(const std::string &path);
+bool CloneChildInstructions(sup::sequencer::Instruction *clone,
+                            const sup::sequencer::Instruction *source);
+bool AddClonedChildInstruction(sup::sequencer::Instruction *instr,
+                               const sup::sequencer::Instruction *child);
 
-std::pair<std::string, std::string> StripPath(const std::string & path);
-bool CloneChildInstructions(sup::sequencer::Instruction * clone,
-                            const sup::sequencer::Instruction * source);
-bool AddClonedChildInstruction(sup::sequencer::Instruction * instr,
-                               const sup::sequencer::Instruction * child);
+}  // Unnamed namespace
 
-} // Unnamed namespace
-
-namespace sup {
-
-namespace sequencer {
-
-namespace InstructionHelper {
-
+namespace sup
+{
+namespace sequencer
+{
+namespace InstructionHelper
+{
 // Function definition
 
-const Instruction * FindInstruction(const std::vector<const Instruction *> & instructions,
-                                    const std::string & name_path)
+const Instruction *FindInstruction(const std::vector<const Instruction *> &instructions,
+                                   const std::string &name_path)
 {
-  const Instruction * result = nullptr;
+  const Instruction *result = nullptr;
   auto names = StripPath(name_path);
-  log_debug("sup::sequencer::InstructionHelper::FindInstruction(): checking "
-             "names ('%s','%s')..", names.first.c_str(), names.second.c_str());
+  log_debug(
+      "sup::sequencer::InstructionHelper::FindInstruction(): checking "
+      "names ('%s','%s')..",
+      names.first.c_str(), names.second.c_str());
   for (auto inst : instructions)
   {
     if (inst->GetName() == names.first)
@@ -78,8 +80,10 @@ const Instruction * FindInstruction(const std::vector<const Instruction *> & ins
   }
   if (result == nullptr)
   {
-    log_warning("sup::sequencer::InstructionHelper::FindInstruction(): could not "
-                "find instruction with name_path '%s'", name_path.c_str());
+    log_warning(
+        "sup::sequencer::InstructionHelper::FindInstruction(): could not "
+        "find instruction with name_path '%s'",
+        name_path.c_str());
     return result;
   }
   if (names.second.empty())
@@ -89,7 +93,7 @@ const Instruction * FindInstruction(const std::vector<const Instruction *> & ins
   return FindInstruction(result->ChildInstructions(), names.second);
 }
 
-Instruction * CloneInstruction(const Instruction * instruction)
+Instruction *CloneInstruction(const Instruction *instruction)
 {
   if (instruction == nullptr)
   {
@@ -115,7 +119,7 @@ Instruction * CloneInstruction(const Instruction * instruction)
   return result.release();
 }
 
-bool InitialiseVariableAttributes(Instruction & instruction, const AttributeMap & attributes)
+bool InitialiseVariableAttributes(Instruction &instruction, const AttributeMap &attributes)
 {
   bool result = instruction.InitialiseVariableAttributes(attributes);
   for (auto child : instruction.ChildInstructions())
@@ -125,15 +129,15 @@ bool InitialiseVariableAttributes(Instruction & instruction, const AttributeMap 
   return result;
 }
 
-} // namespace InstructionHelper
+}  // namespace InstructionHelper
 
-} // namespace sequencer
+}  // namespace sequencer
 
-} // namespace sup
+}  // namespace sup
 
-namespace {
-
-std::pair<std::string, std::string> StripPath(const std::string & path)
+namespace
+{
+std::pair<std::string, std::string> StripPath(const std::string &path)
 {
   std::pair<std::string, std::string> result;
   std::size_t delim_pos = path.find(sup::sequencer::DefaultSettings::PATH_DELIMITER);
@@ -145,8 +149,8 @@ std::pair<std::string, std::string> StripPath(const std::string & path)
   return result;
 }
 
-bool CloneChildInstructions(sup::sequencer::Instruction * clone,
-                            const sup::sequencer::Instruction * source)
+bool CloneChildInstructions(sup::sequencer::Instruction *clone,
+                            const sup::sequencer::Instruction *source)
 {
   bool result = true;
   if (clone == nullptr || source == nullptr)
@@ -160,8 +164,8 @@ bool CloneChildInstructions(sup::sequencer::Instruction * clone,
   return result;
 }
 
-bool AddClonedChildInstruction(sup::sequencer::Instruction * instr,
-                               const sup::sequencer::Instruction * child)
+bool AddClonedChildInstruction(sup::sequencer::Instruction *instr,
+                               const sup::sequencer::Instruction *child)
 {
   auto compound = dynamic_cast<sup::sequencer::CompoundInstruction *>(instr);
   if (compound)
@@ -178,12 +182,12 @@ bool AddClonedChildInstruction(sup::sequencer::Instruction * instr,
   return false;
 }
 
-} // Unnamed namespace
+}  // Unnamed namespace
 
-extern "C" {
+extern "C"
+{
+  // C API function definitions
 
-// C API function definitions
-
-} // extern C
+}  // extern C
 
 #undef LOG_ALTERN_SRC

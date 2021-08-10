@@ -1,23 +1,23 @@
 /******************************************************************************
-* $HeadURL: $
-* $Id: $
-*
-* Project       : SUP - Sequencer
-*
-* Description   : Sequencer for operational procedures
-*
-* Author        : Walter Van Herck (IO)
-*
-* Copyright (c) : 2010-2020 ITER Organization,
-*                 CS 90 046
-*                 13067 St. Paul-lez-Durance Cedex
-*                 France
-*
-* This file is part of ITER CODAC software.
-* For the terms and conditions of redistribution or use of this software
-* refer to the file ITER-LICENSE.TXT located in the top level directory
-* of the distribution package.
-******************************************************************************/
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP - Sequencer
+ *
+ * Description   : Sequencer for operational procedures
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2020 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
 
 /**
  * @file Include.h
@@ -43,10 +43,10 @@
 
 #ifdef __cplusplus
 
-namespace sup {
-
-namespace sequencer {
-
+namespace sup
+{
+namespace sequencer
+{
 /**
  * @brief Decorator that includes an instruction tree by reference.
  *
@@ -56,64 +56,63 @@ namespace sequencer {
 
 class Include : public DecoratorInstruction
 {
-  private:
-    /**
-     * @brief See sup::sequencer::Instruction.
-     */
-    ExecutionStatus ExecuteSingleImpl(UserInterface * ui, Workspace * ws) override;
-    bool PostInitialiseVariables(const AttributeMap & source) override;
+private:
+  /**
+   * @brief See sup::sequencer::Instruction.
+   */
+  ExecutionStatus ExecuteSingleImpl(UserInterface* ui, Workspace* ws) override;
+  bool PostInitialiseVariables(const AttributeMap& source) override;
 
-    /**
-     * @brief See sup::sequencer::Instruction.
-     *
-     * @details Tries to load and copy an instruction tree as its child.
-     */
-    bool SetupImpl(const Procedure & proc) override;
+  /**
+   * @brief See sup::sequencer::Instruction.
+   *
+   * @details Tries to load and copy an instruction tree as its child.
+   */
+  bool SetupImpl(const Procedure& proc) override;
 
-    std::string GetPath() const;
+  std::string GetPath() const;
 
-    ExecutionStatus CalculateStatus() const;
+  ExecutionStatus CalculateStatus() const;
 
-    /**
-     * @brief Name of file from which this include instruction was loaded (if loaded form file).
-     *
-     * @note This filename may include the relative or absolute paths.
-     */
-    std::string _filename;
+  /**
+   * @brief Name of file from which this include instruction was loaded (if loaded form file).
+   *
+   * @note This filename may include the relative or absolute paths.
+   */
+  std::string _filename;
 
-  protected:
+protected:
+public:
+  /**
+   * @brief Constructor.
+   */
+  Include();
 
-  public:
-    /**
-     * @brief Constructor.
-     */
-    Include();
+  /**
+   * @brief Destructor.
+   */
+  ~Include() override;
 
-    /**
-     * @brief Destructor.
-     */
-    ~Include() override;
+  /**
+   * @brief Set the filename of this include instruction (if loaded from file).
+   *
+   * @param filename Filename of this include instruction.
+   * @details This filename is used for external includes with relative pathnames.
+   */
+  void SetFilename(const std::string& filename);
 
-    /**
-     * @brief Set the filename of this include instruction (if loaded from file).
-     *
-     * @param filename Filename of this include instruction.
-     * @details This filename is used for external includes with relative pathnames.
-     */
-    void SetFilename(const std::string & filename);
+  /**
+   * @brief Get the filename of this include instruction (if loaded from file).
+   *
+   * @return Filename of this include instruction.
+   * @details This filename is used for external includes with relative pathnames.
+   */
+  std::string GetFilename() const;
 
-    /**
-     * @brief Get the filename of this include instruction (if loaded from file).
-     *
-     * @return Filename of this include instruction.
-     * @details This filename is used for external includes with relative pathnames.
-     */
-    std::string GetFilename() const;
-
-    /**
-     * @brief The instruction's typename.
-     */
-    static const std::string Type;
+  /**
+   * @brief The instruction's typename.
+   */
+  static const std::string Type;
 };
 
 // Global variables
@@ -122,17 +121,18 @@ class Include : public DecoratorInstruction
 
 // Function definitions
 
-} // namespace sequencer
+}  // namespace sequencer
 
-} // namespace sup
+}  // namespace sup
 
-extern "C" {
-#endif // __cplusplus
+extern "C"
+{
+#endif  // __cplusplus
 
-// C API function declarations
+  // C API function declarations
 
 #ifdef __cplusplus
-} // extern C
-#endif // __cplusplus
+}  // extern C
+#endif  // __cplusplus
 
-#endif // _SEQ_Include_h_
+#endif  // _SEQ_Include_h_

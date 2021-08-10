@@ -24,11 +24,11 @@
 
 // Local header files
 
-#include "InstructionParser.h"
-#include "Include.h"
-#include "InstructionRegistry.h"
 #include "CompoundInstruction.h"
 #include "DecoratorInstruction.h"
+#include "Include.h"
+#include "InstructionParser.h"
+#include "InstructionRegistry.h"
 
 // Constants
 
@@ -37,24 +37,26 @@
 
 // Type definition
 
-namespace sup {
-
-namespace sequencer {
-
+namespace sup
+{
+namespace sequencer
+{
 // Global variables
 
 // Function declaration
 
-static bool AddChildInstructions(Instruction * instruction, const std::vector<TreeData> & children,
-                                 const std::string & filename);
-static bool AddChildrenToDecorator(DecoratorInstruction * decorator, const std::vector<TreeData> & children,
-                                   const std::string & filename);
-static bool AddChildrenToCompound(CompoundInstruction * compound, const std::vector<TreeData> & children,
-                                  const std::string & filename);
+static bool AddChildInstructions(Instruction *instruction, const std::vector<TreeData> &children,
+                                 const std::string &filename);
+static bool AddChildrenToDecorator(DecoratorInstruction *decorator,
+                                   const std::vector<TreeData> &children,
+                                   const std::string &filename);
+static bool AddChildrenToCompound(CompoundInstruction *compound,
+                                  const std::vector<TreeData> &children,
+                                  const std::string &filename);
 
 // Function definition
 
-std::unique_ptr<Instruction> ParseInstruction(const TreeData & data, const std::string & filename)
+std::unique_ptr<Instruction> ParseInstruction(const TreeData &data, const std::string &filename)
 {
   auto instr_type = data.GetType();
   auto instr = GlobalInstructionRegistry().Create(instr_type);
@@ -64,24 +66,28 @@ std::unique_ptr<Instruction> ParseInstruction(const TreeData & data, const std::
                 instr_type.c_str());
     return {};
   }
-  for (auto & attr : data.Attributes())
+  for (auto &attr : data.Attributes())
   {
     instr->AddAttribute(attr.first, attr.second);
   }
-  log_debug("sup::sequencer::ParseInstruction() - "
-           "parsing child instructions for instruction of type: '%s'", instr_type.c_str());
+  log_debug(
+      "sup::sequencer::ParseInstruction() - "
+      "parsing child instructions for instruction of type: '%s'",
+      instr_type.c_str());
   bool status = AddChildInstructions(instr.get(), data.Children(), filename);
   if (!status)
   {
-    log_warning("sup::sequencer::ParseInstruction() - instruction with type: '%s' parsing child "
-                "instructions failed..", instr->GetType().c_str());
+    log_warning(
+        "sup::sequencer::ParseInstruction() - instruction with type: '%s' parsing child "
+        "instructions failed..",
+        instr->GetType().c_str());
     return {};
   }
   return instr;
 }
 
-static bool AddChildInstructions(Instruction * instruction, const std::vector<TreeData> & children,
-                                 const std::string & filename)
+static bool AddChildInstructions(Instruction *instruction, const std::vector<TreeData> &children,
+                                 const std::string &filename)
 {
   auto instr_name = instruction->GetName();
   auto instr_type = instruction->GetType();
@@ -122,8 +128,9 @@ static bool AddChildInstructions(Instruction * instruction, const std::vector<Tr
   return false;
 }
 
-static bool AddChildrenToDecorator(DecoratorInstruction * decorator, const std::vector<TreeData> & children,
-                                   const std::string & filename)
+static bool AddChildrenToDecorator(DecoratorInstruction *decorator,
+                                   const std::vector<TreeData> &children,
+                                   const std::string &filename)
 {
   if (children.size() == 1u)
   {
@@ -131,7 +138,8 @@ static bool AddChildrenToDecorator(DecoratorInstruction * decorator, const std::
     if (child_instr)
     {
       auto child_type = child_instr->GetType();
-      log_debug("AddChildrenToDecorator() - calling Decorator->SetInstruction(%s)", child_type.c_str());
+      log_debug("AddChildrenToDecorator() - calling Decorator->SetInstruction(%s)",
+                child_type.c_str());
       decorator->SetInstruction(child_instr.release());
       return true;
     }
@@ -139,13 +147,14 @@ static bool AddChildrenToDecorator(DecoratorInstruction * decorator, const std::
   return false;
 }
 
-static bool AddChildrenToCompound(CompoundInstruction * compound, const std::vector<TreeData> & children,
-                                  const std::string & filename)
+static bool AddChildrenToCompound(CompoundInstruction *compound,
+                                  const std::vector<TreeData> &children,
+                                  const std::string &filename)
 {
   if (children.size() > 0)
   {
     bool result = true;
-    for (auto & child : children)
+    for (auto &child : children)
     {
       auto child_instr = ParseInstruction(child, filename);
       if (child_instr)
@@ -162,14 +171,14 @@ static bool AddChildrenToCompound(CompoundInstruction * compound, const std::vec
   return false;
 }
 
-} // namespace sequencer
+}  // namespace sequencer
 
-} // namespace sup
+}  // namespace sup
 
-extern "C" {
+extern "C"
+{
+  // C API function definitions
 
-// C API function definitions
-
-}// extern C
+}  // extern C
 
 #undef LOG_ALTERN_SRC

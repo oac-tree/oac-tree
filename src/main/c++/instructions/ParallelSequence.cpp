@@ -1,23 +1,23 @@
 /******************************************************************************
-* $HeadURL: $
-* $Id: $
-*
-* Project       : SUP - Sequencer
-*
-* Description   : Sequencer for operational procedures
-*
-* Author        : Walter Van Herck (IO)
-*
-* Copyright (c) : 2010-2020 ITER Organization,
-*                 CS 90 046
-*                 13067 St. Paul-lez-Durance Cedex
-*                 France
-*
-* This file is part of ITER CODAC software.
-* For the terms and conditions of redistribution or use of this software
-* refer to the file ITER-LICENSE.TXT located in the top level directory
-* of the distribution package.
-******************************************************************************/
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP - Sequencer
+ *
+ * Description   : Sequencer for operational procedures
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2020 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
 
 // Global header files
 #include <common/log-api.h>
@@ -33,10 +33,10 @@
 
 // Type definition
 
-namespace sup {
-
-namespace sequencer {
-
+namespace sup
+{
+namespace sequencer
+{
 // Global variables
 
 const std::string ParallelSequence::Type = "ParallelSequence";
@@ -90,7 +90,7 @@ void ParallelSequence::ResetHook()
   ResetChildren();
 }
 
-bool ParallelSequence::SetupImpl(const Procedure & proc)
+bool ParallelSequence::SetupImpl(const Procedure &proc)
 {
   bool status = SetupChildren(proc);
   if (status)
@@ -112,7 +112,8 @@ bool ParallelSequence::SetupImpl(const Procedure & proc)
       }
       catch (const std::exception &)
       {
-        log_warning("ParallelSequence::InitThresholds() - could not parse successThreshold attribute!");
+        log_warning(
+            "ParallelSequence::InitThresholds() - could not parse successThreshold attribute!");
         status = false;
       }
     }
@@ -135,7 +136,8 @@ bool ParallelSequence::SetupImpl(const Procedure & proc)
       }
       catch (const std::exception &)
       {
-        log_warning("ParallelSequence::InitThresholds() - could not parse failureThreshold attribute!");
+        log_warning(
+            "ParallelSequence::InitThresholds() - could not parse failureThreshold attribute!");
         status = false;
       }
     }
@@ -182,22 +184,18 @@ void ParallelSequence::InitWrappers()
   }
 }
 
-ParallelSequence::ParallelSequence()
-  : CompoundInstruction(Type)
-  , _success_th{0}
-  , _failure_th{0}
-{}
+ParallelSequence::ParallelSequence() : CompoundInstruction(Type), _success_th{0}, _failure_th{0} {}
 
 ParallelSequence::~ParallelSequence() = default;
 
-} // namespace sequencer
+}  // namespace sequencer
 
-} // namespace sup
+}  // namespace sup
 
-extern "C" {
+extern "C"
+{
+  // C API function definitions
 
-// C API function definitions
-
-}// extern C
+}  // extern C
 
 #undef LOG_ALTERN_SRC

@@ -1,23 +1,23 @@
 /******************************************************************************
-* $HeadURL: $
-* $Id: $
-*
-* Project       : SUP - Sequencer
-*
-* Description   : Sequencer for operational procedures
-*
-* Author        : Walter Van Herck (IO)
-*
-* Copyright (c) : 2010-2020 ITER Organization,
-*                 CS 90 046
-*                 13067 St. Paul-lez-Durance Cedex
-*                 France
-*
-* This file is part of ITER CODAC software.
-* For the terms and conditions of redistribution or use of this software
-* refer to the file ITER-LICENSE.TXT located in the top level directory
-* of the distribution package.
-******************************************************************************/
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP - Sequencer
+ *
+ * Description   : Sequencer for operational procedures
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2020 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
 
 // Global header files
 
@@ -35,10 +35,10 @@
 
 // Type definition
 
-namespace sup {
-
-namespace sequencer {
-
+namespace sup
+{
+namespace sequencer
+{
 // Global variables
 
 // Function declaration
@@ -51,10 +51,9 @@ void Instruction::SetStatus(ExecutionStatus status)
   _status = status;
 }
 
-void Instruction::InitHook()
-{}
+void Instruction::InitHook() {}
 
-void Instruction::Preamble(UserInterface * ui)
+void Instruction::Preamble(UserInterface *ui)
 {
   PreExecuteHook(ui);
   if (GetStatus() == ExecutionStatus::NOT_STARTED)
@@ -65,17 +64,17 @@ void Instruction::Preamble(UserInterface * ui)
   }
 }
 
-void Instruction::PreExecuteHook(UserInterface * ui)
+void Instruction::PreExecuteHook(UserInterface *ui)
 {
   (void)ui;
 }
 
-void Instruction::PostExecuteHook(UserInterface * ui)
+void Instruction::PostExecuteHook(UserInterface *ui)
 {
   (void)ui;
 }
 
-void Instruction::Postamble(UserInterface * ui)
+void Instruction::Postamble(UserInterface *ui)
 {
   if (GetStatus() != _status_before)
   {
@@ -84,20 +83,18 @@ void Instruction::Postamble(UserInterface * ui)
   PostExecuteHook(ui);
 }
 
-void Instruction::ResetHook()
-{}
+void Instruction::ResetHook() {}
 
-void Instruction::HaltImpl()
-{}
+void Instruction::HaltImpl() {}
 
-bool Instruction::PostInitialiseVariables(const AttributeMap & source)
+bool Instruction::PostInitialiseVariables(const AttributeMap &source)
 {
-    return true;
+  return true;
 }
 
 int Instruction::ChildrenCountImpl() const
 {
-    return 0;
+  return 0;
 }
 
 std::vector<const Instruction *> Instruction::ChildInstructionsImpl() const
@@ -115,17 +112,18 @@ Instruction *Instruction::TakeInstructionImpl(int)
   return nullptr;
 }
 
-bool Instruction::SetupImpl(const Procedure & proc)
+bool Instruction::SetupImpl(const Procedure &proc)
 {
   return true;
 }
 
-Instruction::Instruction(const std::string & type)
-  : _type{type}
-  , _status{ExecutionStatus::NOT_STARTED}
-  , _status_before{ExecutionStatus::NOT_STARTED}
-  , _halt_requested{false}
-{}
+Instruction::Instruction(const std::string &type)
+    : _type{type}
+    , _status{ExecutionStatus::NOT_STARTED}
+    , _status_before{ExecutionStatus::NOT_STARTED}
+    , _halt_requested{false}
+{
+}
 
 Instruction::~Instruction() = default;
 
@@ -139,7 +137,7 @@ std::string Instruction::GetName() const
   return GetAttribute(attributes::NAME_ATTRIBUTE);
 }
 
-void Instruction::SetName(const std::string & name)
+void Instruction::SetName(const std::string &name)
 {
   if (HasAttribute(attributes::NAME_ATTRIBUTE))
     SetAttribute(attributes::NAME_ATTRIBUTE, name);
@@ -147,12 +145,12 @@ void Instruction::SetName(const std::string & name)
     AddAttribute(attributes::NAME_ATTRIBUTE, name);
 }
 
-bool Instruction::Setup(const Procedure & proc)
+bool Instruction::Setup(const Procedure &proc)
 {
   return SetupImpl(proc);
 }
 
-void Instruction::ExecuteSingle(UserInterface * ui, Workspace * ws)
+void Instruction::ExecuteSingle(UserInterface *ui, Workspace *ws)
 {
   if (_halt_requested.load())
   {
@@ -183,12 +181,12 @@ void Instruction::Reset()
   _halt_requested.store(false);
 }
 
-bool Instruction::HasAttribute(const std::string & name) const
+bool Instruction::HasAttribute(const std::string &name) const
 {
   return _attributes.HasAttribute(name);
 }
 
-std::string Instruction::GetAttribute(const std::string & name) const
+std::string Instruction::GetAttribute(const std::string &name) const
 {
   return _attributes.GetAttribute(name);
 }
@@ -198,7 +196,7 @@ AttributeMap Instruction::GetAttributes() const
   return _attributes;
 }
 
-bool Instruction::AddAttribute(const std::string & name, const std::string & value)
+bool Instruction::AddAttribute(const std::string &name, const std::string &value)
 {
   return _attributes.AddAttribute(name, value);
 }
@@ -211,10 +209,10 @@ bool Instruction::SetAttribute(const std::string &name, const std::string &value
   return true;
 }
 
-bool Instruction::AddAttributes(const AttributeMap & attributes)
+bool Instruction::AddAttributes(const AttributeMap &attributes)
 {
   bool result = true;
-  for (const auto & name : attributes.GetAttributeNames())
+  for (const auto &name : attributes.GetAttributeNames())
   {
     auto value = attributes.GetAttribute(name);
     result = AddAttribute(name, value) && result;
@@ -222,16 +220,15 @@ bool Instruction::AddAttributes(const AttributeMap & attributes)
   return result;
 }
 
-bool Instruction::InitialiseVariableAttributes(const AttributeMap & source)
+bool Instruction::InitialiseVariableAttributes(const AttributeMap &source)
 {
-  bool status = _attributes.InitialiseVariableAttributes(source) &&
-                PostInitialiseVariables(source);
+  bool status = _attributes.InitialiseVariableAttributes(source) && PostInitialiseVariables(source);
   return status;
 }
 
 int Instruction::ChildrenCount() const
 {
-    return ChildrenCountImpl();
+  return ChildrenCountImpl();
 }
 
 std::vector<Instruction *> Instruction::ChildInstructions()
@@ -261,19 +258,18 @@ Instruction *Instruction::TakeInstruction(int index)
 
 bool NeedsExecute(ExecutionStatus status)
 {
-  return (status == ExecutionStatus::NOT_STARTED ||
-          status == ExecutionStatus::NOT_FINISHED ||
-          status == ExecutionStatus::RUNNING);
+  return (status == ExecutionStatus::NOT_STARTED || status == ExecutionStatus::NOT_FINISHED
+          || status == ExecutionStatus::RUNNING);
 }
 
-} // namespace sequencer
+}  // namespace sequencer
 
-} // namespace sup
+}  // namespace sup
 
-extern "C" {
+extern "C"
+{
+  // C API function definitions
 
-// C API function definitions
-
-} // extern C
+}  // extern C
 
 #undef LOG_ALTERN_SRC

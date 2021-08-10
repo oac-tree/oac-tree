@@ -21,19 +21,21 @@
 
 // Global header files
 
-#include <gtest/gtest.h> // Google test framework
-#include <common/log-api.h> // Syslog wrapper routines
 #include <common/CompoundType.h>
 #include <common/StringTools.h>
+#include <gtest/gtest.h>  // Google test framework
+
 #include <memory>
 #include <sstream>
+
+#include <common/log-api.h>  // Syslog wrapper routines
 
 // Local header files
 
 #include "CLInterface.h"
-#include "StdRedirectors.h"
 #include "Instruction.h"
 #include "InstructionRegistry.h"
+#include "StdRedirectors.h"
 
 // Constants
 
@@ -46,13 +48,13 @@ using namespace sup::sequencer;
 
 class CLInterfaceTest : public ::testing::Test
 {
-  protected:
-    CLInterfaceTest();
-    virtual ~CLInterfaceTest();
+protected:
+  CLInterfaceTest();
+  virtual ~CLInterfaceTest();
 
-    CLInterface cli;
-    CLInterface cli_verbose;
-    std::unique_ptr<Instruction> wait;
+  CLInterface cli;
+  CLInterface cli_verbose;
+  std::unique_ptr<Instruction> wait;
 };
 
 // Function declaration
@@ -132,8 +134,8 @@ TEST_F(CLInterfaceTest, GetUserValueParseError)
 TEST_F(CLInterfaceTest, GetUserValueUnsupportedType)
 {
   auto test_type = (new ::ccs::types::CompoundType("CompoundTestType"))
-                      ->AddAttribute("timestamp", "uint64")
-                      ->AddAttribute("count", "uint16");
+                       ->AddAttribute("timestamp", "uint64")
+                       ->AddAttribute("count", "uint16");
   ::ccs::types::AnyValue val(test_type);
   std::istringstream input("17");
   CinRedirector redirect(input);
@@ -142,7 +144,7 @@ TEST_F(CLInterfaceTest, GetUserValueUnsupportedType)
 
 TEST_F(CLInterfaceTest, GetUserChoice)
 {
-  std::vector<std::string> choices = { "one", "two" };
+  std::vector<std::string> choices = {"one", "two"};
   std::istringstream input("1");
   CinRedirector redirect(input);
   auto choice = cli.GetUserChoice(choices);
@@ -151,7 +153,7 @@ TEST_F(CLInterfaceTest, GetUserChoice)
 
 TEST_F(CLInterfaceTest, GetUserChoiceParseError)
 {
-  std::vector<std::string> choices = { "one", "two" };
+  std::vector<std::string> choices = {"one", "two"};
   std::istringstream input("one");
   CinRedirector redirect(input);
   auto choice = cli.GetUserChoice(choices);
@@ -160,7 +162,7 @@ TEST_F(CLInterfaceTest, GetUserChoiceParseError)
 
 TEST_F(CLInterfaceTest, GetUserChoiceOutOfBounds)
 {
-  std::vector<std::string> choices = { "one", "two" };
+  std::vector<std::string> choices = {"one", "two"};
   std::istringstream input("2");
   CinRedirector redirect(input);
   auto choice = cli.GetUserChoice(choices);
@@ -168,13 +170,10 @@ TEST_F(CLInterfaceTest, GetUserChoiceOutOfBounds)
 }
 
 CLInterfaceTest::CLInterfaceTest()
-  : cli{}
-  , cli_verbose{true}
-  , wait{GlobalInstructionRegistry().Create("Wait")}
+    : cli{}, cli_verbose{true}, wait{GlobalInstructionRegistry().Create("Wait")}
 {
 }
 
-CLInterfaceTest::~CLInterfaceTest()
-{}
+CLInterfaceTest::~CLInterfaceTest() {}
 
 #undef LOG_ALTERN_SRC

@@ -1,23 +1,23 @@
 /******************************************************************************
-* $HeadURL: $
-* $Id: $
-*
-* Project       : SUP - Sequencer
-*
-* Description   : Sequencer for operational procedures
-*
-* Author        : Walter Van Herck (IO)
-*
-* Copyright (c) : 2010-2020 ITER Organization,
-*                 CS 90 046
-*                 13067 St. Paul-lez-Durance Cedex
-*                 France
-*
-* This file is part of ITER CODAC software.
-* For the terms and conditions of redistribution or use of this software
-* refer to the file ITER-LICENSE.TXT located in the top level directory
-* of the distribution package.
-******************************************************************************/
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP - Sequencer
+ *
+ * Description   : Sequencer for operational procedures
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2020 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
 
 /**
  * @file InstructionRegistry.h
@@ -44,10 +44,10 @@
 
 #ifdef __cplusplus
 
-namespace sup {
-
-namespace sequencer {
-
+namespace sup
+{
+namespace sequencer
+{
 // Forward declarations
 
 class Instruction;
@@ -61,51 +61,50 @@ class Instruction;
 
 class InstructionRegistry
 {
-  private:
-    /**
-     * @brief Definition of Instruction constructor.
-     */
-    using InstructionConstructor = Instruction *(*)();
+private:
+  /**
+   * @brief Definition of Instruction constructor.
+   */
+  using InstructionConstructor = Instruction *(*)();
 
-    /**
-     * @brief Map between instruction typename and its constructor.
-     */
-    std::map<std::string, InstructionConstructor> _instruction_map;
+  /**
+   * @brief Map between instruction typename and its constructor.
+   */
+  std::map<std::string, InstructionConstructor> _instruction_map;
 
-  protected:
+protected:
+public:
+  /**
+   * @brief Constructor.
+   */
+  InstructionRegistry() = default;
 
-  public:
-    /**
-     * @brief Constructor.
-     */
-    InstructionRegistry() = default;
+  /**
+   * @brief Register an instruction.
+   *
+   * @param name Name under which the instruction is to be registered.
+   * @param constructor Function that instantiates the instruction.
+   */
+  bool RegisterInstruction(std::string name, InstructionConstructor constructor);
 
-    /**
-     * @brief Register an instruction.
-     *
-     * @param name Name under which the instruction is to be registered.
-     * @param constructor Function that instantiates the instruction.
-     */
-    bool RegisterInstruction(std::string name, InstructionConstructor constructor);
+  /**
+   * @brief Instantiate an instruction with the given name.
+   *
+   * @param name Name under which the instruction was registered.
+   */
+  std::unique_ptr<Instruction> Create(std::string name);
 
-    /**
-     * @brief Instantiate an instruction with the given name.
-     *
-     * @param name Name under which the instruction was registered.
-     */
-    std::unique_ptr<Instruction> Create(std::string name);
-
-    /**
-     * @brief List names of registered instructions.
-     */
-    std::vector<std::string> RegisteredInstructionNames() const;
+  /**
+   * @brief List names of registered instructions.
+   */
+  std::vector<std::string> RegisteredInstructionNames() const;
 };
 
 // Global variables
 
 // Function declarations
 
-InstructionRegistry & GlobalInstructionRegistry();
+InstructionRegistry &GlobalInstructionRegistry();
 
 // Function definitions
 
@@ -137,9 +136,9 @@ InstructionRegistry & GlobalInstructionRegistry();
    @endcode
  */
 template <class T>
-bool RegisterInstruction(InstructionRegistry & registry)
+bool RegisterInstruction(InstructionRegistry &registry)
 {
-  auto constructor = []() { return static_cast<Instruction*>(new T()); };
+  auto constructor = []() { return static_cast<Instruction *>(new T()); };
   return registry.RegisterInstruction(T::Type, constructor);
 }
 
@@ -170,18 +169,18 @@ bool RegisterGlobalInstruction()
   return RegisterInstruction<T>(GlobalInstructionRegistry());
 }
 
+}  // namespace sequencer
 
-} // namespace sequencer
+}  // namespace sup
 
-} // namespace sup
+extern "C"
+{
+#endif  // __cplusplus
 
-extern "C" {
-#endif // __cplusplus
-
-// C API function declarations
+  // C API function declarations
 
 #ifdef __cplusplus
-} // extern C
-#endif // __cplusplus
+}  // extern C
+#endif  // __cplusplus
 
-#endif // _SEQ_InstructionRegistry_h_
+#endif  // _SEQ_InstructionRegistry_h_

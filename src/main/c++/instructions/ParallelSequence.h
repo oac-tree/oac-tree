@@ -1,23 +1,23 @@
 /******************************************************************************
-* $HeadURL: $
-* $Id: $
-*
-* Project       : SUP - Sequencer
-*
-* Description   : Sequencer for operational procedures
-*
-* Author        : Walter Van Herck (IO)
-*
-* Copyright (c) : 2010-2020 ITER Organization,
-*                 CS 90 046
-*                 13067 St. Paul-lez-Durance Cedex
-*                 France
-*
-* This file is part of ITER CODAC software.
-* For the terms and conditions of redistribution or use of this software
-* refer to the file ITER-LICENSE.TXT located in the top level directory
-* of the distribution package.
-******************************************************************************/
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP - Sequencer
+ *
+ * Description   : Sequencer for operational procedures
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2020 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
 
 /**
  * @file ParallelSequence.h
@@ -44,10 +44,10 @@
 
 #ifdef __cplusplus
 
-namespace sup {
-
-namespace sequencer {
-
+namespace sup
+{
+namespace sequencer
+{
 /**
  * @brief Compound instruction representing a parallel sequence.
  *
@@ -59,47 +59,46 @@ namespace sequencer {
  */
 class ParallelSequence : public CompoundInstruction
 {
-  private:
-    /**
-     * @brief See sup::sequencer::Instruction.
-     */
-    void InitHook() override;
-    ExecutionStatus ExecuteSingleImpl(UserInterface * ui, Workspace * ws) override;
-    void ResetHook() override;
-    bool SetupImpl(const Procedure & proc) override;
+private:
+  /**
+   * @brief See sup::sequencer::Instruction.
+   */
+  void InitHook() override;
+  ExecutionStatus ExecuteSingleImpl(UserInterface* ui, Workspace* ws) override;
+  void ResetHook() override;
+  bool SetupImpl(const Procedure& proc) override;
 
-    /**
-     * @brief Calculate this instruction's status from the status of its child instructions.
-     */
-    ExecutionStatus CalculateCompoundStatus() const;
+  /**
+   * @brief Calculate this instruction's status from the status of its child instructions.
+   */
+  ExecutionStatus CalculateCompoundStatus() const;
 
-    /**
-     * @brief Initialize synchronous wrappers that encapsulate the asynchronous execution
-     * of each child instruction.
-     */
-    void InitWrappers();
+  /**
+   * @brief Initialize synchronous wrappers that encapsulate the asynchronous execution
+   * of each child instruction.
+   */
+  void InitWrappers();
 
-    std::vector<AsyncWrapper> _wrappers;
+  std::vector<AsyncWrapper> _wrappers;
 
-    int _success_th, _failure_th;
+  int _success_th, _failure_th;
 
-  protected:
+protected:
+public:
+  /**
+   * @brief Constructor.
+   */
+  ParallelSequence();
 
-  public:
-    /**
-     * @brief Constructor.
-     */
-    ParallelSequence();
+  /**
+   * @brief Destructor.
+   */
+  ~ParallelSequence() override;
 
-    /**
-     * @brief Destructor.
-     */
-    ~ParallelSequence() override;
-
-    /**
-     * @brief The instruction's typename.
-     */
-    static const std::string Type;
+  /**
+   * @brief The instruction's typename.
+   */
+  static const std::string Type;
 };
 
 // Global variables
@@ -108,17 +107,18 @@ class ParallelSequence : public CompoundInstruction
 
 // Function definitions
 
-} // namespace sequencer
+}  // namespace sequencer
 
-} // namespace sup
+}  // namespace sup
 
-extern "C" {
-#endif // __cplusplus
+extern "C"
+{
+#endif  // __cplusplus
 
-// C API function declarations
+  // C API function declarations
 
 #ifdef __cplusplus
-} // extern C
-#endif // __cplusplus
+}  // extern C
+#endif  // __cplusplus
 
-#endif // _SEQ_ParallelSequence_h_
+#endif  // _SEQ_ParallelSequence_h_

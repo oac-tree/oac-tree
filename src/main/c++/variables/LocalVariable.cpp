@@ -1,28 +1,29 @@
 /******************************************************************************
-* $HeadURL: $
-* $Id: $
-*
-* Project       : SUP - Sequencer
-*
-* Description   : Sequencer for operational procedures
-*
-* Author        : Walter Van Herck (IO)
-*
-* Copyright (c) : 2010-2020 ITER Organization,
-*                 CS 90 046
-*                 13067 St. Paul-lez-Durance Cedex
-*                 France
-*
-* This file is part of ITER CODAC software.
-* For the terms and conditions of redistribution or use of this software
-* refer to the file ITER-LICENSE.TXT located in the top level directory
-* of the distribution package.
-******************************************************************************/
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP - Sequencer
+ *
+ * Description   : Sequencer for operational procedures
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2020 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
 
 // Global header files
 
-#include <common/log-api.h>
 #include <memory>
+
+#include <common/log-api.h>
 
 // Local header files
 
@@ -35,24 +36,21 @@
 
 // Type definition
 
-namespace sup {
-
-namespace sequencer {
-
+namespace sup
+{
+namespace sequencer
+{
 // Global variables
 
 const std::string LocalVariable::Type = "Local";
-const std::string LocalVariable::JSON_TYPE="type";
-const std::string LocalVariable::JSON_VALUE="value";
+const std::string LocalVariable::JSON_TYPE = "type";
+const std::string LocalVariable::JSON_VALUE = "value";
 
 // Function declaration
 
 // Function definition
 
-LocalVariable::LocalVariable()
-  : Variable(LocalVariable::Type)
-  , _val{}
-{}
+LocalVariable::LocalVariable() : Variable(LocalVariable::Type), _val{} {}
 
 LocalVariable::~LocalVariable() {}
 
@@ -77,7 +75,7 @@ bool LocalVariable::GetValueImpl(::ccs::types::AnyValue& value) const
   return true;
 }
 
-bool LocalVariable::SetValueImpl(const ::ccs::types::AnyValue & value)
+bool LocalVariable::SetValueImpl(const ::ccs::types::AnyValue& value)
 {
   if (!_val.GetType() || _val.GetSize() == value.GetSize())
   {
@@ -131,14 +129,14 @@ bool LocalVariable::SetupImpl()
   return status;  // empty AnyValue is allowed for setting.
 }
 
-} // namespace sequencer
+}  // namespace sequencer
 
-} // namespace sup
+}  // namespace sup
 
-extern "C" {
+extern "C"
+{
+  // C API function definitions
 
-// C API function definitions
-
-} // extern C
+}  // extern C
 
 #undef LOG_ALTERN_SRC

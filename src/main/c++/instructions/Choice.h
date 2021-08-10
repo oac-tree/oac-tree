@@ -34,8 +34,8 @@
 /*---------------------------------------------------------------------------*/
 /*                        Standard header includes                           */
 /*---------------------------------------------------------------------------*/
-#include <common/BasicTypes.h>
 #include <common/AnyValue.h>
+#include <common/BasicTypes.h>
 
 /*---------------------------------------------------------------------------*/
 /*                        Project header includes                            */
@@ -45,72 +45,63 @@
 /*                           Class declaration                               */
 /*---------------------------------------------------------------------------*/
 
-namespace sup {
-
-namespace sequencer {
-
-class Choice: public CompoundInstruction {
+namespace sup
+{
+namespace sequencer
+{
+class Choice : public CompoundInstruction
+{
 private:
+  /**
+   * @brief Executes a subset of children depending on a variable value
+   *
+   * @return SUCCESS if all the selected children return SUCCESS.
+   */
+  ExecutionStatus ExecuteSingleImpl(UserInterface *ui, Workspace *ws) override;
 
-    /**
-     * @brief Executes a subset of children depending on a variable value
-     *
-     * @return SUCCESS if all the selected children return SUCCESS.
-     */
-    ExecutionStatus ExecuteSingleImpl(UserInterface * ui,
-                                      Workspace * ws) override;
+  /**
+   * @brief child execution
+   */
+  ExecutionStatus ExecuteChild(::ccs::types::uint32 idx, UserInterface *ui, Workspace *ws);
 
-    /**
-     * @brief child execution
-     */
-    ExecutionStatus ExecuteChild(::ccs::types::uint32 idx,
-                                 UserInterface *ui,
-                                 Workspace *ws);
+  bool CheckIfSelectorArray(const ::ccs::types::AnyValue &_val);
 
-    bool CheckIfSelectorArray(const ::ccs::types::AnyValue &_val);
+  bool CheckSelectorType(const Procedure &proc);
 
-    bool CheckSelectorType(const Procedure &proc);
+  ExecutionStatus ExecuteBitChild(const ::ccs::types::uint64 value,
+                                  const ::ccs::types::uint32 remained, UserInterface *ui,
+                                  Workspace *ws);
 
-    ExecutionStatus ExecuteBitChild(const ::ccs::types::uint64 value,
-                         const ::ccs::types::uint32 remained,
-                         UserInterface *ui,
-                         Workspace *ws);
+  ExecutionStatus ExecuteMaskSelector(::ccs::types::uint8 *valPtr, UserInterface *ui,
+                                      Workspace *ws);
 
-    ExecutionStatus ExecuteMaskSelector(::ccs::types::uint8 *valPtr,
-                             UserInterface *ui,
-                             Workspace *ws);
+  ExecutionStatus ExecuteArraySelector(::ccs::types::uint8 *valPtr, UserInterface *ui,
+                                       Workspace *ws);
 
-    ExecutionStatus ExecuteArraySelector(::ccs::types::uint8 *valPtr,
-                              UserInterface *ui,
-                              Workspace *ws);
+  bool SetupImpl(const Procedure &proc) override;
 
-    bool SetupImpl(const Procedure &proc) override;
+  std::string varName;
 
-    std::string varName;
+  ::ccs::types::uint32 numberOfElements;
 
-    ::ccs::types::uint32 numberOfElements;
+  ::ccs::types::uint32 elementSize;
 
-    ::ccs::types::uint32 elementSize;
-
-    bool isMask;
+  bool isMask;
 
 public:
+  Choice();
 
-    Choice();
+  virtual ~Choice();
 
-    virtual ~Choice();
-
-    static const std::string Type;
-
+  static const std::string Type;
 };
 
-}
+}  // namespace sequencer
 
-}
+}  // namespace sup
 
 /*---------------------------------------------------------------------------*/
 /*                        Inline method definitions                          */
 /*---------------------------------------------------------------------------*/
 
 #endif /* SRC_MAIN_C___INSTRUCTIONS_SELECTOR_H_ */
-

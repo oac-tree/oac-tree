@@ -19,28 +19,30 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <gtest/gtest.h>
-
-#include <common/AnyValueHelper.h>
-
 #include "LogUI.h"
 #include "SequenceParser.h"
 #include "UnitTestHelper.h"
 #include "Variable.h"
 #include "VariableRegistry.h"
 
+#include <common/AnyValueHelper.h>
+#include <gtest/gtest.h>
+
 #undef LOG_ALTERN_SRC
 #define LOG_ALTERN_SRC "unit-test"
 
-static inline bool Terminate(void) {
+static inline bool Terminate(void)
+{
   bool status = false;
-  if (ccs::HelperTools::Exist("/tmp/variable.bck")) {
+  if (ccs::HelperTools::Exist("/tmp/variable.bck"))
+  {
     status = (std::remove("/tmp/variable.bck") == 0);
   }
   return status;
 }
 
-TEST(FileVariable, File_write) {
+TEST(FileVariable, File_write)
+{
   const std::string body{R"(
     <Sequence>
         <Copy name="copy"
@@ -69,7 +71,7 @@ TEST(FileVariable, File_write) {
 
   EXPECT_TRUE(ccs::HelperTools::Exist("/tmp/variable.bck"));
 
-  ccs::types::AnyValue value; // Placeholder
+  ccs::types::AnyValue value;  // Placeholder
 
   EXPECT_TRUE(ccs::HelperTools::ReadFromFile(&value, "/tmp/variable.bck"));
 
@@ -79,48 +81,53 @@ TEST(FileVariable, File_write) {
   Terminate();
 }
 
-TEST(FileVariable, Setup_error) {
-  auto variable =
-      sup::sequencer::GlobalVariableRegistry().Create("FileVariable");
+TEST(FileVariable, Setup_error)
+{
+  auto variable = sup::sequencer::GlobalVariableRegistry().Create("FileVariable");
 
   bool status = static_cast<bool>(variable);
 
-  if (status) { // Missing mandatory attribute .. Setup implicit
+  if (status)
+  {  // Missing mandatory attribute .. Setup implicit
     // status = (false == variable->Setup());
     status = variable->AddAttribute("irrelevant", "undefined");
   }
 
-  ccs::types::AnyValue value; // Placeholder
+  ccs::types::AnyValue value;  // Placeholder
 
-  if (status) {
-    status = ((false == variable->GetValue(value)) &&
-              (false == static_cast<bool>(value.GetType())));
+  if (status)
+  {
+    status =
+        ((false == variable->GetValue(value)) && (false == static_cast<bool>(value.GetType())));
   }
 
   ASSERT_EQ(true, status);
 }
 
-TEST(FileVariable, File_error) {
-  auto variable =
-      sup::sequencer::GlobalVariableRegistry().Create("FileVariable");
+TEST(FileVariable, File_error)
+{
+  auto variable = sup::sequencer::GlobalVariableRegistry().Create("FileVariable");
 
   bool status = static_cast<bool>(variable);
 
-  if (status) {
+  if (status)
+  {
     status = variable->AddAttribute("file", "undefined");
   }
 
-  ccs::types::AnyValue value; // Placeholder
+  ccs::types::AnyValue value;  // Placeholder
 
-  if (status) {
-    status = ((false == variable->GetValue(value)) &&
-              (false == static_cast<bool>(value.GetType())));
+  if (status)
+  {
+    status =
+        ((false == variable->GetValue(value)) && (false == static_cast<bool>(value.GetType())));
   }
 
   ASSERT_EQ(true, status);
 }
 
-TEST(FileVariable, File_attr) {
+TEST(FileVariable, File_attr)
+{
   const std::string body{R"(
     <Sequence>
         <!-- Expected datatype -->
@@ -158,41 +165,46 @@ TEST(FileVariable, File_attr) {
 
   bool status = bool(proc);
 
-  if (status) {
+  if (status)
+  {
     sup::sequencer::LogUI ui;
-    sup::sequencer::ExecutionStatus exec =
-        sup::sequencer::ExecutionStatus::FAILURE;
+    sup::sequencer::ExecutionStatus exec = sup::sequencer::ExecutionStatus::FAILURE;
 
-    do {
+    do
+    {
       proc->ExecuteSingle(&ui);
       exec = proc->GetStatus();
-    } while ((sup::sequencer::ExecutionStatus::SUCCESS != exec) &&
-             (sup::sequencer::ExecutionStatus::FAILURE != exec));
+    } while ((sup::sequencer::ExecutionStatus::SUCCESS != exec)
+             && (sup::sequencer::ExecutionStatus::FAILURE != exec));
 
     status = (sup::sequencer::ExecutionStatus::SUCCESS == exec);
   }
 
-  if (status) {
+  if (status)
+  {
     status = ccs::HelperTools::Exist("/tmp/variable.bck");
   }
 
-  ccs::types::AnyValue value; // Placeholder
+  ccs::types::AnyValue value;  // Placeholder
 
-  if (status) {
+  if (status)
+  {
     status = ccs::HelperTools::ReadFromFile(&value, "/tmp/variable.bck");
   }
 
-  if (status) {
+  if (status)
+  {
     status = static_cast<bool>(value.GetType());
   }
 
   // Test variable
-  if (status) {
-    status = (ccs::HelperTools::HasAttribute(&value, "severity") &&
-              (ccs::types::UnsignedInteger32 ==
-               ccs::HelperTools::GetAttributeType(&value, "severity")) &&
-              (7u == ccs::HelperTools::GetAttributeValue<ccs::types::uint32>(
-                         &value, "severity")));
+  if (status)
+  {
+    status =
+        (ccs::HelperTools::HasAttribute(&value, "severity")
+         && (ccs::types::UnsignedInteger32
+             == ccs::HelperTools::GetAttributeType(&value, "severity"))
+         && (7u == ccs::HelperTools::GetAttributeValue<ccs::types::uint32>(&value, "severity")));
   }
 
   Terminate();

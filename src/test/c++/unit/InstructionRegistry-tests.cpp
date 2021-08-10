@@ -21,16 +21,13 @@
 
 // Global header files
 
-#include <algorithm> // std::find
-
-#include <gtest/gtest.h> // Google test framework
-
-#include <common/BasicTypes.h>
-
-#include <SequenceParser.h>
-
 #include <Instruction.h>
 #include <InstructionRegistry.h>
+#include <SequenceParser.h>
+#include <common/BasicTypes.h>
+#include <gtest/gtest.h>  // Google test framework
+
+#include <algorithm>  // std::find
 
 #include <common/log-api.h>
 
@@ -47,37 +44,33 @@
 
 class TestInstruction : public sup::sequencer::Instruction
 {
+private:
+  /**
+   * @brief See sup::sequencer::Instruction.
+   */
 
-  private:
+  sup::sequencer::ExecutionStatus ExecuteSingleImpl(sup::sequencer::UserInterface* ui,
+                                                    sup::sequencer::Workspace* ws) override;
 
-    /**
-     * @brief See sup::sequencer::Instruction.
-     */
+protected:
+public:
+  /**
+   * @brief Constructor.
+   */
 
-    sup::sequencer::ExecutionStatus ExecuteSingleImpl (sup::sequencer::UserInterface * ui, sup::sequencer::Workspace * ws) override;
+  TestInstruction(void);
 
-  protected:
+  /**
+   * @brief Destructor.
+   */
 
-  public:
+  ~TestInstruction(void) override;
 
-    /**
-     * @brief Constructor.
-     */
+  /**
+   * @brief Class name for InstructionRegistry.
+   */
 
-    TestInstruction (void);
-
-    /**
-     * @brief Destructor.
-     */
-
-    ~TestInstruction (void) override;
-
-    /**
-     * @brief Class name for InstructionRegistry.
-     */
-
-    static const std::string Type;
-
+  static const std::string Type;
 };
 
 // Function declaration
@@ -89,55 +82,56 @@ const std::string TestInstruction::Type = "TestInstruction";
 
 // Function definition
 
-sup::sequencer::ExecutionStatus TestInstruction::ExecuteSingleImpl (sup::sequencer::UserInterface * ui, sup::sequencer::Workspace * ws) {}
+sup::sequencer::ExecutionStatus TestInstruction::ExecuteSingleImpl(
+    sup::sequencer::UserInterface* ui, sup::sequencer::Workspace* ws)
+{
+}
 TestInstruction::TestInstruction() : sup::sequencer::Instruction(TestInstruction::Type) {}
 TestInstruction::~TestInstruction() {}
 
 TEST(InstructionRegistry, Register_success)
 {
-
   bool status = sup::sequencer::RegisterGlobalInstruction<TestInstruction>();
 
   if (status)
-    {
-      sup::sequencer::InstructionRegistry registry = sup::sequencer::GlobalInstructionRegistry();
-      status = (registry.RegisteredInstructionNames().end() != std::find(registry.RegisteredInstructionNames().begin(), registry.RegisteredInstructionNames().end(), TestInstruction::Type));
-    }
+  {
+    sup::sequencer::InstructionRegistry registry = sup::sequencer::GlobalInstructionRegistry();
+    status = (registry.RegisteredInstructionNames().end()
+              != std::find(registry.RegisteredInstructionNames().begin(),
+                           registry.RegisteredInstructionNames().end(), TestInstruction::Type));
+  }
 
   ASSERT_EQ(true, status);
-
 }
 
 TEST(InstructionRegistry, Create_success)
 {
-
   sup::sequencer::InstructionRegistry registry = sup::sequencer::GlobalInstructionRegistry();
-  bool status = (registry.RegisteredInstructionNames().end() != std::find(registry.RegisteredInstructionNames().begin(), registry.RegisteredInstructionNames().end(), TestInstruction::Type));
+  bool status = (registry.RegisteredInstructionNames().end()
+                 != std::find(registry.RegisteredInstructionNames().begin(),
+                              registry.RegisteredInstructionNames().end(), TestInstruction::Type));
 
   if (!status)
-    {
-      status = sup::sequencer::RegisterGlobalInstruction<TestInstruction>();
-    } 
+  {
+    status = sup::sequencer::RegisterGlobalInstruction<TestInstruction>();
+  }
 
   if (status)
-    {
-      auto inst = sup::sequencer::GlobalInstructionRegistry().Create(TestInstruction::Type);
-      status = static_cast<bool>(inst);
-    }
+  {
+    auto inst = sup::sequencer::GlobalInstructionRegistry().Create(TestInstruction::Type);
+    status = static_cast<bool>(inst);
+  }
 
   ASSERT_EQ(true, status);
-
 }
 
 TEST(InstructionRegistry, Create_failure)
 {
-
   sup::sequencer::InstructionRegistry registry = sup::sequencer::GlobalInstructionRegistry();
   auto inst = sup::sequencer::GlobalInstructionRegistry().Create("UndefinedInstructionName");
   bool status = (false == static_cast<bool>(inst));
 
   ASSERT_EQ(true, status);
-
 }
 
 #undef LOG_ALTERN_SRC

@@ -1,23 +1,23 @@
 /******************************************************************************
-* $HeadURL: $
-* $Id: $
-*
-* Project       : SUP - Sequencer
-*
-* Description   : Sequencer for operational procedures
-*
-* Author        : Walter Van Herck (IO)
-*
-* Copyright (c) : 2010-2021 ITER Organization,
-*                 CS 90 046
-*                 13067 St. Paul-lez-Durance Cedex
-*                 France
-*
-* This file is part of ITER CODAC software.
-* For the terms and conditions of redistribution or use of this software
-* refer to the file ITER-LICENSE.TXT located in the top level directory
-* of the distribution package.
-******************************************************************************/
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP - Sequencer
+ *
+ * Description   : Sequencer for operational procedures
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2021 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
 
 /**
  * @file DaemonInterface.h
@@ -43,41 +43,40 @@
 
 #ifdef __cplusplus
 
-namespace sup {
-
-namespace sequencer {
-
+namespace sup
+{
+namespace sequencer
+{
 /**
  * @brief Class implementing a write-only user interface for the Sequencer daemon procedures.
  */
 
 class DaemonInterface : public UserInterface
 {
-  private:
-    /**
-     * @brief See sup::sequencer::UserInterface.
-     */
-    void UpdateInstructionStatusImpl(const Instruction * instruction) override;
-    bool GetUserValueImpl(::ccs::types::AnyValue & value, const std::string & description) override;
-    int GetUserChoiceImpl(const std::vector<std::string> & choices,
-                          const std::string & description) override;
-    void StartSingleStepImpl() override;
-    void EndSingleStepImpl() override;
+private:
+  /**
+   * @brief See sup::sequencer::UserInterface.
+   */
+  void UpdateInstructionStatusImpl(const Instruction* instruction) override;
+  bool GetUserValueImpl(::ccs::types::AnyValue& value, const std::string& description) override;
+  int GetUserChoiceImpl(const std::vector<std::string>& choices,
+                        const std::string& description) override;
+  void StartSingleStepImpl() override;
+  void EndSingleStepImpl() override;
 
-    bool _log_enabled;
+  bool _log_enabled;
 
-  protected:
+protected:
+public:
+  /**
+   * @brief Constructor.
+   */
+  DaemonInterface(bool log_enabled = false);
 
-  public:
-    /**
-     * @brief Constructor.
-     */
-    DaemonInterface(bool log_enabled=false);
-
-    /**
-     * @brief Destructor.
-     */
-    ~DaemonInterface() override;
+  /**
+   * @brief Destructor.
+   */
+  ~DaemonInterface() override;
 };
 
 // Global variables
@@ -86,17 +85,18 @@ class DaemonInterface : public UserInterface
 
 // Function definitions
 
-} // namespace sequencer
+}  // namespace sequencer
 
-} // namespace sup
+}  // namespace sup
 
-extern "C" {
-#endif // __cplusplus
+extern "C"
+{
+#endif  // __cplusplus
 
-// C API function declarations
+  // C API function declarations
 
 #ifdef __cplusplus
-} // extern C
-#endif // __cplusplus
+}  // extern C
+#endif  // __cplusplus
 
-#endif // _SEQ_DaemonInterface_h_
+#endif  // _SEQ_DaemonInterface_h_

@@ -21,11 +21,9 @@
 
 // Global header files
 
-#include <gtest/gtest.h> // Google test framework
-
-#include <common/BasicTypes.h>
-
 #include <SequenceParser.h>
+#include <common/BasicTypes.h>
+#include <gtest/gtest.h>  // Google test framework
 
 // Local header files
 
@@ -48,24 +46,23 @@ static ccs::log::Func_t _log_handler = ccs::log::SetStdout();
 
 TEST(UserChoice, GetUserChoice)
 {
-
   sup::UnitTestHelper::MockUI ui;
   auto proc = sup::sequencer::ParseProcedureString(
-    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-    "           name=\"Trivial procedure for testing purposes\"\n"
-    "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-    "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-    "    <UserChoice description=\"Tick or wait\">\n"
-    "        <Counter/>\n"
-    "        <Counter incr=\"2\"/>\n"
-    "        <Wait timeout=\"0.1\"/>\n"
-    "        <Inverter>\n"
-    "            <Counter/>\n"
-    "        </Inverter>\n"
-    "    </UserChoice>\n"
-    "    <Workspace/>\n"
-    "</Procedure>");
+      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+      "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
+      "           name=\"Trivial procedure for testing purposes\"\n"
+      "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+      "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
+      "    <UserChoice description=\"Tick or wait\">\n"
+      "        <Counter/>\n"
+      "        <Counter incr=\"2\"/>\n"
+      "        <Wait timeout=\"0.1\"/>\n"
+      "        <Inverter>\n"
+      "            <Counter/>\n"
+      "        </Inverter>\n"
+      "    </UserChoice>\n"
+      "    <Workspace/>\n"
+      "</Procedure>");
 
   ui.SetChoice(0);
 
@@ -74,61 +71,63 @@ TEST(UserChoice, GetUserChoice)
   // Instructions called
 
   if (status)
-    {
-      status = (1u == sup::UnitTestHelper::CounterInstruction::GetCount());
-    }
+  {
+    status = (1u == sup::UnitTestHelper::CounterInstruction::GetCount());
+  }
 
   if (status)
-    {
-      ui.SetChoice(1);
-      status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
-    }
+  {
+    ui.SetChoice(1);
+    status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
+  }
 
   if (status)
-    {
-      status = (3u == sup::UnitTestHelper::CounterInstruction::GetCount());
-    }
+  {
+    status = (3u == sup::UnitTestHelper::CounterInstruction::GetCount());
+  }
 
   if (status)
-    {
-      ui.SetChoice(2);
-      status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
-    }
+  {
+    ui.SetChoice(2);
+    status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
+  }
 
   if (status)
-    {
-      status = (3u == sup::UnitTestHelper::CounterInstruction::GetCount());
-    }
+  {
+    status = (3u == sup::UnitTestHelper::CounterInstruction::GetCount());
+  }
 
   // Instruction called and return failure
 
   if (status)
-    {
-      ui.SetChoice(3);
-      status = sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE);
-    }
+  {
+    ui.SetChoice(3);
+    status =
+        sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE);
+  }
 
   if (status)
-    {
-      status = (4u == sup::UnitTestHelper::CounterInstruction::GetCount());
-    }
+  {
+    status = (4u == sup::UnitTestHelper::CounterInstruction::GetCount());
+  }
 
   // Invalid choices
 
   if (status)
-    {
-      ui.SetChoice(4);
-      status = sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE);
-    }
+  {
+    ui.SetChoice(4);
+    status =
+        sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE);
+  }
 
   if (status)
-    {
-      ui.SetChoice(-1);
-      status = sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE);
-    }
+  {
+    ui.SetChoice(-1);
+    status =
+        sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE);
+  }
 
   ASSERT_EQ(true, status);
-
 }
 
 #undef LOG_ALTERN_SRC

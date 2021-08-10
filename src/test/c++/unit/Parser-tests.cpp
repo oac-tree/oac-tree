@@ -19,25 +19,13 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
-
-#include <gtest/gtest.h>  // Google test framework
-
-#include <cstdio>   // std::remove
-#include <fstream>  // std::ofstream
-
-#include <common/log-api.h>  // Syslog wrapper routines
-
-// Local header files
-
 #include "SequenceParser.h"
+#include "UnitTestHelper.h"
 
-// Constants
+#include <gtest/gtest.h>
 
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
-
-// Type definition
+#include <cstdio>
+#include <fstream>
 
 using namespace sup::sequencer;
 
@@ -47,43 +35,30 @@ protected:
   ParserTest();
   virtual ~ParserTest();
 
+  std::unique_ptr<Procedure> CreateProcedure(const std::string& body)
+  {
+    return ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
+  }
+
   std::string incorrect_root_file;
   std::string syntax_error_file;
 };
 
-// Function declaration
-
-// Global variables
-
-static ::ccs::log::Func_t __handler = ::ccs::log::SetStdout();
-
-static const std::string ProcedureOnlyString =
-    R"RAW(<?xml version="1.0" encoding="UTF-8"?>
-<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
-           name="Procedure containing no workspace for testing purposes"
-           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+const std::string ProcedureOnlyString{R"(
     <Sequence name="Main Sequence">
         <Wait name="Immediate Success"/>
         <Wait name="One" timeout="1.0"/>
     </Sequence>
-</Procedure>
-)RAW";
+)"};
 
-static const std::string WorkspaceOnlyString =
-    R"RAW(<?xml version="1.0" encoding="UTF-8"?>
-<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
-           name="Procedure containing only a workspace for testing purposes"
-           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+const std::string WorkspaceOnlyString{R"(
     <Workspace>
         <Local name="a" type='{"type":"int8"}' value='1' />
         <Local name="b" type='{"type":"uint8"}' value='0' />
     </Workspace>
-</Procedure>
-)RAW";
+)"};
 
-static const std::string IncorrectRootString =
+const std::string IncorrectRootStringProcedure =
     R"RAW(<?xml version="1.0" encoding="UTF-8"?>
 <Sequence xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
           name="Procedure containing the wrong root element type for testing purposes"
@@ -91,10 +66,10 @@ static const std::string IncorrectRootString =
           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
     <Wait name="Immediate Success"/>
     <Wait name="One" timeout="1.0"/>
-</Sequence>
+</Sequence>  
 )RAW";
 
-static const std::string XMLSyntaxErrorString =
+static const std::string XMLSyntaxErrorStringProcedure =
     R"RAW(<?xml version="1.0" encoding="UTF-8"?>
 <Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
            name="Procedure containing a XML syntax error for testing purposes"
@@ -106,106 +81,80 @@ static const std::string XMLSyntaxErrorString =
     </Sequence>
 )RAW";
 
-static const std::string NonExistentInstructionString =
-    R"RAW(<?xml version="1.0" encoding="UTF-8"?>
-<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
-           name="Procedure containing non-existent instruciton for testing purposes"
-           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+const std::string NonExistentInstructionString{R"(
     <Sequence name="Main Sequence">
         <DoesNotExist name="Cannot be parsed"/>
         <Wait name="One" timeout="1.0"/>
     </Sequence>
-</Procedure>
-)RAW";
+)"};
 
-static const std::string NonExistentVariableString =
-    R"RAW(<?xml version="1.0" encoding="UTF-8"?>
-<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
-           name="Procedure containing only a workspace for testing purposes"
-           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+const std::string NonExistentVariableString{R"(
     <Wait name="Immediate success" />
     <Workspace>
         <DoesNotExist name="Cannot be parsed" />
     </Workspace>
-</Procedure>
-)RAW";
+)"};
 
-static const std::string NonExistentPluginString =
-    R"RAW(<?xml version="1.0" encoding="UTF-8"?>
-<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
-           name="Procedure containing non-existent instruciton for testing purposes"
-           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+const std::string NonExistentPluginString{R"(
     <Plugin>libNonExistent.so</Plugin>
     <Sequence name="Main Sequence">
         <Wait name="Immediate success"/>
         <Wait name="One" timeout="1.0"/>
     </Sequence>
-</Procedure>
-)RAW";
+)"};
 
-static const std::string InvalidChildString =
-    R"RAW(<?xml version="1.0" encoding="UTF-8"?>
-<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
-           name="Procedure containing invalid child of leaf instruction for testing purposes"
-           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+const std::string InvalidChildString{R"(
     <Wait name="Immediate Success">
         <Wait name="One" timeout="1.0"/>
     </Wait>
-</Procedure>
-)RAW";
+)"};
 
-// Function definition
-
-TEST(Parser, Successful)
+TEST_F(ParserTest, Successful)
 {
-  auto proc = ParseProcedureString(ProcedureOnlyString);
+  auto proc = CreateProcedure(ProcedureOnlyString);
   EXPECT_TRUE(static_cast<bool>(proc));
 }
 
-TEST(Parser, WorkspaceOnly)
+TEST_F(ParserTest, WorkspaceOnly)
 {
-  auto proc = ParseProcedureString(WorkspaceOnlyString);
+  auto proc = CreateProcedure(WorkspaceOnlyString);
   ASSERT_TRUE(static_cast<bool>(proc));
   EXPECT_EQ(proc->RootInstrunction(), nullptr);
 }
 
-TEST(Parser, IncorrectRoot)
+TEST_F(ParserTest, IncorrectRoot)
 {
-  auto proc = ParseProcedureString(IncorrectRootString);
+  auto proc = ParseProcedureString(IncorrectRootStringProcedure);
   ASSERT_FALSE(static_cast<bool>(proc));
 }
 
-TEST(Parser, XMLSyntaxError)
+TEST_F(ParserTest, XMLSyntaxError)
 {
-  auto proc = ParseProcedureString(XMLSyntaxErrorString);
+  auto proc = ParseProcedureString(XMLSyntaxErrorStringProcedure);
   ASSERT_FALSE(static_cast<bool>(proc));
 }
 
-TEST(Parser, NonExistentInstructionError)
+TEST_F(ParserTest, NonExistentInstructionError)
 {
-  auto proc = ParseProcedureString(NonExistentInstructionString);
+  auto proc = CreateProcedure(NonExistentInstructionString);
   ASSERT_FALSE(static_cast<bool>(proc));
 }
 
-TEST(Parser, NonExistentVariableError)
+TEST_F(ParserTest, NonExistentVariableError)
 {
-  auto proc = ParseProcedureString(NonExistentVariableString);
+  auto proc = CreateProcedure(NonExistentVariableString);
   ASSERT_FALSE(static_cast<bool>(proc));
 }
 
-TEST(Parser, NonExistentPluginError)
+TEST_F(ParserTest, NonExistentPluginError)
 {
-  auto proc = ParseProcedureString(NonExistentPluginString);
+  auto proc = CreateProcedure(NonExistentPluginString);
   ASSERT_FALSE(static_cast<bool>(proc));
 }
 
-TEST(Parser, InvalidChildError)
+TEST_F(ParserTest, InvalidChildError)
 {
-  auto proc = ParseProcedureString(InvalidChildString);
+  auto proc = CreateProcedure(InvalidChildString);
   ASSERT_FALSE(static_cast<bool>(proc));
 }
 
@@ -226,11 +175,11 @@ ParserTest::ParserTest()
 {
   {
     std::ofstream of_str(incorrect_root_file);
-    of_str << IncorrectRootString;
+    of_str << IncorrectRootStringProcedure;
   }
   {
     std::ofstream of_str(syntax_error_file);
-    of_str << XMLSyntaxErrorString;
+    of_str << XMLSyntaxErrorStringProcedure;
   }
 }
 
@@ -239,5 +188,3 @@ ParserTest::~ParserTest()
   std::remove(incorrect_root_file.c_str());
   std::remove(syntax_error_file.c_str());
 }
-
-#undef LOG_ALTERN_SRC

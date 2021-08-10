@@ -32,9 +32,9 @@
 TEST(Repeat, Registration)
 {
   sup::sequencer::InstructionRegistry registry = sup::sequencer::GlobalInstructionRegistry();
-  auto it = std::find(registry.RegisteredInstructionNames().begin(),
-                      registry.RegisteredInstructionNames().end(), "Repeat");
-  ASSERT_TRUE(it != registry.RegisteredInstructionNames().end());
+  auto names = registry.RegisteredInstructionNames();
+  auto it = std::find(names.begin(), names.end(), "Repeat");
+  ASSERT_TRUE(it != names.end());
 }
 
 TEST(Repeat, Procedure_success)

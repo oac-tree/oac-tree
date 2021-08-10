@@ -19,33 +19,14 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
+#include "LogUI.h"
+#include "UnitTestHelper.h"
 
 #include <Instruction.h>
 #include <InstructionRegistry.h>
 #include <SequenceParser.h>
 #include <common/BasicTypes.h>
-#include <gtest/gtest.h>  // Google test framework
-
-// Local header files
-
-#include "LogUI.h"
-#include "UnitTestHelper.h"
-
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "unit-test"
-
-// Type declaration
-
-// Function declaration
-
-// Global variables
-
-static ccs::log::Func_t _log_handler = ccs::log::SetStdout();
-
-// Function definition
+#include <gtest/gtest.h>
 
 // ToDo - Should implement test-specific instruction class to verify if called multiple times, or
 // called by the ForceSuccess, etc.
@@ -53,96 +34,72 @@ static ccs::log::Func_t _log_handler = ccs::log::SetStdout();
 
 TEST(Fallback, Procedure_first)
 {
+  const std::string body{R"(
+    <Fallback>
+        <ForceSuccess name="success">
+            <Counter/>
+        </ForceSuccess>
+        <ForceSuccess name="success">
+            <Counter/>
+        </ForceSuccess>
+    </Fallback>
+    <Workspace>
+    </Workspace>
+)"};
+
   sup::sequencer::LogUI ui;
-  auto proc = sup::sequencer::ParseProcedureString(
-      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-      "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-      "           name=\"Trivial procedure for testing purposes\"\n"
-      "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-      "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-      "    <Fallback>\n"
-      "        <ForceSuccess name=\"success\">\n"
-      "            <Counter/>\n"
-      "        </ForceSuccess>\n"
-      "        <ForceSuccess name=\"success\">\n"
-      "            <Counter/>\n"
-      "        </ForceSuccess>\n"
-      "    </Fallback>\n"
-      "    <Workspace>\n"
-      "    </Workspace>\n"
-      "</Procedure>");
+  auto proc =
+      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
 
-  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
-
-  if (status)
-  {
-    status = (1u == sup::UnitTestHelper::CounterInstruction::GetCount());
-  }
-
-  ASSERT_EQ(true, status);
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+  EXPECT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 1);
 }
 
 TEST(Fallback, Procedure_alternative)
 {
+  const std::string body{R"(
+    <Fallback>
+        <Inverter name="failure">
+            <Counter/>
+        </Inverter>
+        <ForceSuccess name="success">
+            <Counter/>
+        </ForceSuccess>
+    </Fallback>
+    <Workspace>
+    </Workspace>
+)"};
+
   sup::sequencer::LogUI ui;
-  auto proc = sup::sequencer::ParseProcedureString(
-      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-      "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-      "           name=\"Trivial procedure for testing purposes\"\n"
-      "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-      "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-      "    <Fallback>\n"
-      "        <Inverter name=\"failure\">\n"
-      "            <Counter/>\n"
-      "        </Inverter>\n"
-      "        <ForceSuccess name=\"success\">\n"
-      "            <Counter/>\n"
-      "        </ForceSuccess>\n"
-      "    </Fallback>\n"
-      "    <Workspace>\n"
-      "    </Workspace>\n"
-      "</Procedure>");
+  auto proc =
+      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
 
-  bool status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
-
-  if (status)
-  {
-    status = (2u == sup::UnitTestHelper::CounterInstruction::GetCount());
-  }
-
-  ASSERT_EQ(true, status);
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+  EXPECT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 2);
 }
 
 TEST(Fallback, Procedure_failure)
 {
+  const std::string body{R"(
+    <Fallback>
+        <Inverter name="failure">
+            <Counter/>
+        </Inverter>
+        <Inverter name="failure">
+            <Counter/>
+        </Inverter>
+    </Fallback>
+    <Workspace>
+    </Workspace>
+)"};
+
   sup::sequencer::LogUI ui;
-  auto proc = sup::sequencer::ParseProcedureString(
-      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-      "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-      "           name=\"Trivial procedure for testing purposes\"\n"
-      "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-      "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-      "    <Fallback>\n"
-      "        <Inverter name=\"failure\">\n"
-      "            <Counter/>\n"
-      "        </Inverter>\n"
-      "        <Inverter name=\"failure\">\n"
-      "            <Counter/>\n"
-      "        </Inverter>\n"
-      "    </Fallback>\n"
-      "    <Workspace>\n"
-      "    </Workspace>\n"
-      "</Procedure>");
+  auto proc =
+      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
 
-  bool status =
-      sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE);
-
-  if (status)
-  {
-    status = (2u == sup::UnitTestHelper::CounterInstruction::GetCount());
-  }
-
-  ASSERT_EQ(true, status);
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE));
+  EXPECT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 2);
 }
-
-#undef LOG_ALTERN_SRC

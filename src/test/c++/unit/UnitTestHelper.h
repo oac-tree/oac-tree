@@ -187,6 +187,12 @@ std::string CreateProcedureString(const std::string& body);
  */
 void PrintProcedureWorkspace(::sup::sequencer::Procedure* procedure);
 
+
+/**
+ * Returns text file content.
+ */
+std::string GetTextFileContent(const std::string &file_name);
+
 }  // namespace UnitTestHelper
 
 }  // namespace sup

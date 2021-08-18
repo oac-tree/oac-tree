@@ -25,6 +25,8 @@
 #include <common/SysTools.h>
 
 #include <cstdio>
+#include <fstream>
+#include <sstream>
 
 #include <common/log-api.h>
 
@@ -194,6 +196,14 @@ void PrintProcedureWorkspace(::sup::sequencer::Procedure *procedure)
       log_debug("Variable '%s' uninitialized", var_name.c_str());
     }
   }
+}
+
+std::string GetTextFileContent(const std::string &file_name)
+{
+  std::ifstream in(file_name);
+  std::stringstream sstr;
+  while(in >> sstr.rdbuf());
+  return sstr.str();
 }
 
 }  // namespace UnitTestHelper

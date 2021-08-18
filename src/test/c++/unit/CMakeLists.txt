@@ -30,6 +30,7 @@ target_sources(unit-tests
         ${CMAKE_CURRENT_LIST_DIR}/SequenceParser-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/SequenceWorkspace-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/TreeData-tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/TreeDataXmlWriteUtils-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/UserChoice-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/UserInterface-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/VariableRegistry-tests.cpp

@@ -3,6 +3,7 @@ AccessModifierOffset: -2
 AllowAllConstructorInitializersOnNextLine: true
 AllowShortFunctionsOnASingleLine: Inline
 AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
 BreakBeforeBinaryOperators: NonAssignment
 BreakBeforeBraces: Allman
 BreakConstructorInitializers : BeforeComma

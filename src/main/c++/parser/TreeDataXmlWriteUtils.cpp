@@ -25,6 +25,7 @@
 #include <libxml/xmlwriter.h>
 
 #include "TreeData.h"
+#include "XmlUtils.h"
 
 #include <stdexcept>
 
@@ -34,18 +35,6 @@
 
 namespace
 {
-//! Converts xmlChar to std::string.
-std::string ToString(const xmlChar *xml_name)
-{
-  return std::string(reinterpret_cast<const char *>(xml_name), xmlStrlen(xml_name));
-}
-
-//! Converts std::string to xmlChar.
-const xmlChar *FromString(const std::string &str)
-{
-  return reinterpret_cast<const xmlChar *>(str.c_str());
-}
-
 //! Main method for recursive writing of XML from TreeData.
 void AddTreeData(xmlTextWriterPtr writer, const ::sup::sequencer::TreeData &tree_data);
 
@@ -122,6 +111,8 @@ namespace
 {
 void AddTreeData(xmlTextWriterPtr writer, const ::sup::sequencer::TreeData &tree_data)
 {
+  using ::sup::sequencer::FromString;
+
   if (tree_data.GetType().empty())
     throw std::runtime_error("Error in AddTreeData: missed type in TreeData.");
 
@@ -157,7 +148,7 @@ void AddTreeAttributes(xmlTextWriterPtr writer, const ::sup::sequencer::TreeData
 {
   for (const auto &attr : tree_data.Attributes())
   {
-    int rc = xmlTextWriterWriteAttribute(writer, FromString(attr.first), FromString(attr.second));
+    int rc = xmlTextWriterWriteAttribute(writer, ::sup::sequencer::FromString(attr.first), ::sup::sequencer::FromString(attr.second));
     if (rc < 0)
       throw std::runtime_error("Error at xmlTextWriterWriteAttribute");
   }
@@ -167,7 +158,7 @@ void SetupWriterIndentation(xmlTextWriterPtr writer)
 {
   const int indentation_on = 1;
   xmlTextWriterSetIndent(writer, indentation_on);
-  xmlTextWriterSetIndentString(writer, FromString(std::string("  ")));
+  xmlTextWriterSetIndentString(writer, ::sup::sequencer::FromString(std::string("  ")));
 }
 
 }  // namespace

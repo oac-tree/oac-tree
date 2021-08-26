@@ -107,7 +107,7 @@ static std::unique_ptr<TreeData> ParseXMLDoc(xmlDocPtr doc)
 
 static std::unique_ptr<TreeData> ParseDataTree(xmlDocPtr doc, xmlNodePtr node)
 {
-  auto node_name = ::sup::sequencer::ToString(node->name);
+  auto node_name = ToString(node->name);
   std::unique_ptr<TreeData> result(new TreeData(node_name));
 
   AddXMLAttributes(result.get(), node);
@@ -122,9 +122,9 @@ static void AddXMLAttributes(TreeData *tree, xmlNodePtr node)
   auto attribute = node->properties;
   while (attribute != nullptr)
   {
-    auto name = ::sup::sequencer::ToString(attribute->name);
+    auto name = ToString(attribute->name);
     auto xml_val = xmlGetProp(node, attribute->name);
-    auto value = ::sup::sequencer::ToString(xml_val);
+    auto value = ToString(xml_val);
     xmlFree(xml_val);
     tree->AddAttribute(name, value);
     attribute = attribute->next;
@@ -139,7 +139,7 @@ static void AddXMLChildren(TreeData *tree, xmlDocPtr doc, xmlNodePtr node)
     if (child_node->type == XML_TEXT_NODE)
     {
       auto xml_content = xmlNodeListGetString(doc, child_node, 1);
-      auto content = ::sup::sequencer::ToString(xml_content);
+      auto content = ToString(xml_content);
       tree->SetContent(content);
       xmlFree(xml_content);
     }

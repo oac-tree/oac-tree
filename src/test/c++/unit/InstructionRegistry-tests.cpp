@@ -83,8 +83,9 @@ const std::string TestInstruction::Type = "TestInstruction";
 // Function definition
 
 sup::sequencer::ExecutionStatus TestInstruction::ExecuteSingleImpl(
-    sup::sequencer::UserInterface* ui, sup::sequencer::Workspace* ws)
+    sup::sequencer::UserInterface*, sup::sequencer::Workspace*)
 {
+  return sup::sequencer::ExecutionStatus::SUCCESS;
 }
 TestInstruction::TestInstruction() : sup::sequencer::Instruction(TestInstruction::Type) {}
 TestInstruction::~TestInstruction() {}

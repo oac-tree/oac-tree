@@ -59,12 +59,5 @@ target_link_directories(unit-tests
     )
 
 find_package(GTest REQUIRED)
-find_package(PkgConfig)
-pkg_check_modules(GMOCK REQUIRED gmock>=1.6.0)
-pkg_get_variable(GMOCK_SRC_DIR gmock srcdir)
-target_sources(unit-tests
-    PRIVATE
-        ${GMOCK_SRC_DIR}/gmock-all.cc
-    )
 
-target_link_libraries(unit-tests sequencer GTest::GTest GTest::Main ccs-types ccs-base ccs-common)
+target_link_libraries(unit-tests sequencer GTest::GTest GTest::Main gmock ccs-types ccs-base ccs-common)

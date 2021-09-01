@@ -24,6 +24,6 @@ all: cmake_targets
 
 cmake_targets:
 	@mkdir -p $(BUILD_DIR)
-	cmake3 -B$(BUILD_DIR) $(CMAKE_FLAGS)
-	cmake3 --build $(BUILD_DIR)
+	cmake -B$(BUILD_DIR) $(CMAKE_FLAGS)
+	cmake --build $(BUILD_DIR)
 	make -C $(BUILD_DIR) install

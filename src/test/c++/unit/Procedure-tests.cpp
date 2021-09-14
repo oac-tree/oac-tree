@@ -74,7 +74,7 @@ TEST_F(ProcedureTest, DefaultConstructed)
 {
   // Test constructed
   EXPECT_TRUE(empty_proc.GetFilename().empty());
-  EXPECT_EQ(empty_proc.GetStatus(), ExecutionStatus::NOT_STARTED);
+  EXPECT_EQ(empty_proc.GetStatus(), ExecutionStatus::SUCCESS);
   std::string filename = "TestFile.xml";
   EXPECT_NO_THROW(empty_proc.SetFilename(filename));
   EXPECT_EQ(empty_proc.GetFilename(), filename);

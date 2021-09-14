@@ -231,7 +231,7 @@ ExecutionStatus Procedure::GetStatus() const
 {
   if (RootInstrunction() == nullptr)
   {
-    return ExecutionStatus::NOT_STARTED;
+    return ExecutionStatus::SUCCESS;
   }
   return RootInstrunction()->GetStatus();
 }

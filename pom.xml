@@ -24,7 +24,7 @@
     <groupId>org.iter.codac.units</groupId>
     <artifactId>sequencer</artifactId>
     <packaging>codac</packaging>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
     <name>SUP sequencer module</name>
     <description>The engine for the SUP sequencer</description>
     <url>http://www.iter.org/</url>

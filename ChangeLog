@@ -1,3 +1,14 @@
+Changes for 1.2.0:
+
+- Port to RHEL8
+
 Changes for 1.1.0:
 
--
+- Added executable for daemon procedures
+- Added Equals instruction
+- Added Output instruction
+- Added type registration to preamble
+- More granular verbosity options for sequencer-cli
+- Extend API to accomodate for GUI: insert/remove instruction, change name, ...
+- Serialization of TreeData to XML
+- Refactor unit tests and remove dependence to current working directory

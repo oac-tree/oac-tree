@@ -89,6 +89,9 @@
                 <extensions>true</extensions>
                 <configuration>
                     <init>
+                        <expand source="-" file="main/VERSION">
+                            <![CDATA[${project.version}]]>
+                        </expand>
                         <expand source="ld.so.conf" file="main/codac-${project.artifactId}.conf"
                                 rpmeval="true" mvneval="true" />
                     </init>

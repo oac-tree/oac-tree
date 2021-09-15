@@ -1,9 +1,9 @@
 .PHONY: all cmake_targets
 
-LIBVERSION=$(shell grep '<version>1' ../../../pom.xml | sed 's/    <version>//g' | sed 's/<\/version>//g')
-LIBMAJOR=$(shell echo $(LIBVERSION) | sed 's/\([1-9]\).\([0-9]\).\([0-9]\)/\1/g')
-LIBMINOR=$(shell echo $(LIBVERSION) | sed 's/\([1-9]\).\([0-9]\).\([0-9]\)/\2/g')
-LIBMAINT=$(shell echo $(LIBVERSION) | sed 's/\([1-9]\).\([0-9]\).\([0-9]\)/\3/g')
+LIBVERSION=$(shell cat ../VERSION)
+LIBMAJOR=$(shell cat ../VERSION | cut -d'.' -f1)
+LIBMINOR=$(shell cat ../VERSION | cut -d'.' -f2)
+LIBMAINT=$(shell cat ../VERSION | cut -d'.' -f3)
 
 TARGET=../../../target
 

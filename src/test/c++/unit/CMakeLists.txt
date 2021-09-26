@@ -60,4 +60,11 @@ target_link_directories(unit-tests
 
 find_package(GTest REQUIRED)
 
-target_link_libraries(unit-tests sequencer GTest::GTest GTest::Main gmock ccs-types ccs-base ccs-common)
+target_link_libraries(unit-tests
+    PRIVATE
+        GTest::GTest
+        GTest::Main
+        gmock
+        sequencer
+        ccs-core
+    )

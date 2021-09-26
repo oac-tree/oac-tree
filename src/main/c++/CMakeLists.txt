@@ -59,9 +59,7 @@ target_link_libraries(sequencer-shared
         ${LIBXML2_LIBRARIES}
     PUBLIC
         sequencer-obj
-        ccs-common
-        ccs-types
-        ccs-base
+        ccs-core
     )
 
 set_target_properties(sequencer-static PROPERTIES
@@ -77,9 +75,6 @@ target_link_libraries(sequencer-static
         ${LIBXML2_LIBRARIES}
     PUBLIC
         sequencer-obj
-        ccs-common
-        ccs-types
-        ccs-base
     )
 
 target_include_directories(sequencer-cli

@@ -1,4 +1,4 @@
-.PHONY: all cmake_targets
+.PHONY: all
 
 LIBVERSION=$(shell cat ../VERSION)
 LIBMAJOR=$(shell cat ../VERSION | cut -d'.' -f1)
@@ -25,5 +25,4 @@ all: cmake_targets
 cmake_targets:
 	@mkdir -p $(BUILD_DIR)
 	cmake -B$(BUILD_DIR) $(CMAKE_FLAGS)
-	cmake --build $(BUILD_DIR)
-	make -C $(BUILD_DIR) install
+	$(MAKE) -C $(BUILD_DIR) install

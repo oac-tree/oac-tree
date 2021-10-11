@@ -146,6 +146,14 @@ bool Workspace::SetValue(std::string name, const ::ccs::types::AnyValue &value)
   return var->SetValue(value, fieldname);
 }
 
+std::vector<const Variable *> Workspace::GetVariables() const
+{
+  std::vector<const Variable *> result;
+  std::transform(std::begin(_var_map), std::end(_var_map), std::back_inserter(result),
+                 [](const decltype(_var_map)::value_type &pair) { return pair.second; });
+  return result;
+}
+
 static std::pair<std::string, std::string> SplitToNameField(const std::string &fullname)
 {
   auto pos1 = fullname.find('.');

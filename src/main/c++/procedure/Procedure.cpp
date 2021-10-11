@@ -261,6 +261,11 @@ bool Procedure::AddAttributes(const AttributeMap &attributes)
   return result;
 }
 
+const Workspace *Procedure::GetWorkspace() const
+{
+  return _workspace.get();
+}
+
 static bool HasRootAttributeSet(const Instruction &instruction)
 {
   if (!instruction.HasAttribute(IS_ROOT_ATTRIBUTE))

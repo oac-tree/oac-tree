@@ -19,28 +19,15 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
-
-#include <common/AnyValueHelper.h>
-#include <gtest/gtest.h>  // Google test framework
-
-#include <algorithm>
-
-#include <common/log-api.h>  // Syslog wrapper routines
-
-// Local header files
-
 #include "LocalVariable.h"
 #include "SequenceParser.h"
 #include "VariableRegistry.h"
 #include "Workspace.h"
 
-// Constants
+#include <common/AnyValueHelper.h>
+#include <gtest/gtest.h>
 
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
-
-// Type definition
+#include <algorithm>
 
 using namespace sup::sequencer;
 
@@ -48,7 +35,6 @@ class WorkspaceTest : public ::testing::Test
 {
 protected:
   WorkspaceTest();
-  virtual ~WorkspaceTest();
 
   Workspace ws;
   std::unique_ptr<Variable> var1;
@@ -207,6 +193,21 @@ TEST_F(WorkspaceTest, SetValue)
   EXPECT_FALSE(ws.GetValue(var3_unknown_field_name, var3_status_field));
 }
 
+TEST_F(WorkspaceTest, GetVariables)
+{
+  Workspace workspace;
+  EXPECT_TRUE(workspace.GetVariables().empty());
+
+  auto v1 = std::make_unique<LocalVariable>();
+  auto v2 = std::make_unique<LocalVariable>();
+  std::vector<const Variable *> expected({v1.get(), v2.get()});
+
+  workspace.AddVariable("v1", v1.release());
+  workspace.AddVariable("v2", v2.release());
+
+  EXPECT_EQ(workspace.GetVariables(), expected);
+}
+
 WorkspaceTest::WorkspaceTest()
     : ws{}
     , var1{GlobalVariableRegistry().Create("Local")}
@@ -217,7 +218,3 @@ WorkspaceTest::WorkspaceTest()
   var3->AddAttribute(LocalVariable::JSON_TYPE, var3_type);
   var3->AddAttribute(LocalVariable::JSON_VALUE, var3_val);
 }
-
-WorkspaceTest::~WorkspaceTest() {}
-
-#undef LOG_ALTERN_SRC

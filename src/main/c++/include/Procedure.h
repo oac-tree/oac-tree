@@ -285,6 +285,13 @@ public:
   bool AddAttributes(const AttributeMap& attributes);
 
   /**
+   * @brief Returns pointer to internal workspace.
+   *
+   * @return workspace.
+   */
+  const Workspace* GetWorkspace() const;
+
+  /**
    * @brief Name of attribute that defines the timeout between ticks.
    */
   static const std::string TICK_TIMEOUT_ATTRIBUTE_NAME;

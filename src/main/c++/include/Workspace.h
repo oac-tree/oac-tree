@@ -109,6 +109,8 @@ public:
    * @param name Variable value.
    */
   bool SetValue(std::string name, const ::ccs::types::AnyValue& value);
+
+  std::vector<const Variable*> GetVariables() const;
 };
 
 // Global variables

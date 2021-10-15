@@ -118,7 +118,7 @@ TEST_F(ProcedureTest, DefaultConstructed)
 TEST_F(ProcedureTest, GetWorkspace)
 {
   Procedure procedure;
-  auto variable = std::make_unique<LocalVariable>();
+  auto variable = GlobalVariableRegistry().Create("Local");
   std::vector<const Variable*> expected({variable.get()});
   procedure.AddVariable("var", variable.release());
 

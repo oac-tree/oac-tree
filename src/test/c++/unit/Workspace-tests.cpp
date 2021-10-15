@@ -42,12 +42,6 @@ protected:
   std::unique_ptr<Variable> var3;
 };
 
-// Function declaration
-
-// Global variables
-
-static ::ccs::log::Func_t __handler = ::ccs::log::SetStdout();
-
 static const std::string var1_name = "var1";
 static const std::string var2_name = "var2";
 static const std::string var3_name = "var3";
@@ -198,8 +192,9 @@ TEST_F(WorkspaceTest, GetVariables)
   Workspace workspace;
   EXPECT_TRUE(workspace.GetVariables().empty());
 
-  auto v1 = std::make_unique<LocalVariable>();
-  auto v2 = std::make_unique<LocalVariable>();
+  auto v1 = GlobalVariableRegistry().Create("Local");
+  auto v2 = GlobalVariableRegistry().Create("Local");
+
   std::vector<const Variable *> expected({v1.get(), v2.get()});
 
   workspace.AddVariable("v1", v1.release());

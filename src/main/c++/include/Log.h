@@ -53,10 +53,10 @@ enum class LogOutput
 void SetLogOutput(LogOutput log_output);
 
 template <typename... Args>
-void VariadicLog(int severity, const std::string& source, const std::string& format, Args... args)
+void VariadicLog(int severity, const std::string& source, const std::string& format, Args&&... args)
 {
   char buffer[BUFFER_SIZE];
-  (void)snprintf(buffer, BUFFER_SIZE, format.c_str(), args...);
+  (void)snprintf(buffer, BUFFER_SIZE, format.c_str(), std::forward<Args>(args)...);
   SimpleLog(severity, source, std::string(buffer));
 }
 

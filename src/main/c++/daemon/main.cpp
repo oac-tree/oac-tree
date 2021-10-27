@@ -30,6 +30,7 @@
 // Local header files
 
 #include "DaemonInterface.h"
+#include "Log.h"
 #include "Runner.h"
 #include "SequenceParser.h"
 
@@ -88,7 +89,7 @@ int main(int argc, char* argv[])
 
   if (ccs::HelperTools::StringCompare(params.filepath, STRING_UNDEFINED))
   {
-    log_warning("sequencer-daemon called without filename");
+    sup::sequencer::VariadicLog(4, "sup::sequencer", "sequencer-daemon called without filename");
     return 1;
   }
 
@@ -96,7 +97,7 @@ int main(int argc, char* argv[])
 
   if (!ccs::HelperTools::Exist(params.filepath))
   {
-    log_error("sequencer-daemon: file not found <%s>", params.filepath);
+    sup::sequencer::VariadicLog(3, "sup::sequencer", "sequencer-daemon: file not found <%s>", params.filepath);
     return 1;
   }
 

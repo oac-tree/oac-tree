@@ -1,6 +1,7 @@
 target_sources(sequencer-obj
     PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/AttributeMap.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/Log.cpp
         ${CMAKE_CURRENT_LIST_DIR}/TreeData.cpp
 )
 

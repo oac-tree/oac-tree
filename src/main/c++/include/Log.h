@@ -90,9 +90,57 @@ void VariadicLog<>(int severity, const std::string& source, const std::string& m
 }
 
 template <typename... Args>
+void LogEmergency(const std::string& source, const std::string& format, Args&&... args)
+{
+  VariadicLog(SUP_LOG_EMERG, source, format, std::forward<Args>(args)...);
+}
+
+template <typename... Args>
+void LogAlert(const std::string& source, const std::string& format, Args&&... args)
+{
+  VariadicLog(SUP_LOG_ALERT, source, format, std::forward<Args>(args)...);
+}
+
+template <typename... Args>
+void LogCritical(const std::string& source, const std::string& format, Args&&... args)
+{
+  VariadicLog(SUP_LOG_CRIT, source, format, std::forward<Args>(args)...);
+}
+
+template <typename... Args>
+void LogError(const std::string& source, const std::string& format, Args&&... args)
+{
+  VariadicLog(SUP_LOG_ERR, source, format, std::forward<Args>(args)...);
+}
+
+template <typename... Args>
+void LogWarning(const std::string& source, const std::string& format, Args&&... args)
+{
+  VariadicLog(SUP_LOG_WARNING, source, format, std::forward<Args>(args)...);
+}
+
+template <typename... Args>
+void LogNotice(const std::string& source, const std::string& format, Args&&... args)
+{
+  VariadicLog(SUP_LOG_NOTICE, source, format, std::forward<Args>(args)...);
+}
+
+template <typename... Args>
+void LogInfo(const std::string& source, const std::string& format, Args&&... args)
+{
+  VariadicLog(SUP_LOG_INFO, source, format, std::forward<Args>(args)...);
+}
+
+template <typename... Args>
 void LogDebug(const std::string& source, const std::string& format, Args&&... args)
 {
-  VariadicLog(SUP_LOG_DEBUG, source, const std::string& format, std::forward<Args>(args)...);
+  VariadicLog(SUP_LOG_DEBUG, source, format, std::forward<Args>(args)...);
+}
+
+template <typename... Args>
+void LogTrace(const std::string& source, const std::string& format, Args&&... args)
+{
+  VariadicLog(SUP_LOG_TRACE, source, format, std::forward<Args>(args)...);
 }
 
 }  // namespace sequencer

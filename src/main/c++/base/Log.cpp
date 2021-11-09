@@ -25,15 +25,19 @@
 #undef LOG_ALTERN_SRC
 #define LOG_ALTERN_SRC "sup::sequencer"
 
+namespace
+{
+int& GetMaxSeverity()
+{
+  static int max_severity = sup::sequencer::SUP_LOG_INFO;
+  return max_severity;
+}
+}
+
 namespace sup
 {
 namespace sequencer
 {
-
-void SimpleLog(int severity, const std::string& source, const std::string& message)
-{
-  ccs::log::Message(severity, source.c_str(), message.c_str());
-}
 
 void SetLogOutput(LogOutput log_output)
 {
@@ -44,6 +48,22 @@ void SetLogOutput(LogOutput log_output)
     case LogOutput::system_log:      ccs::log::SetSyslog();
                                      break;
   }
+}
+
+void SetMaxSeverity(int severity)
+{
+  auto& max_severity = GetMaxSeverity();
+  max_severity = severity;
+}
+
+int MaxSeverity()
+{
+  return GetMaxSeverity();
+}
+
+void SimpleLog(int severity, const std::string& source, const std::string& message)
+{
+  ccs::log::Message(severity, source.c_str(), message.c_str());
 }
 
 }  // namespace sequencer

@@ -89,7 +89,7 @@ int main(int argc, char* argv[])
 
   if (ccs::HelperTools::StringCompare(params.filepath, STRING_UNDEFINED))
   {
-    sup::sequencer::VariadicLog(4, "sup::sequencer", "sequencer-daemon called without filename");
+    sup::sequencer::LogDebug("sup::sequencer", "sequencer-daemon called without filename");
     return 1;
   }
 

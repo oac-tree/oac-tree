@@ -42,7 +42,18 @@ namespace sequencer
 
 constexpr size_t BUFFER_SIZE = 1024;
 
-void SimpleLog(int severity, const std::string& source, const std::string& message);
+enum LogSeverity
+{
+  SUP_LOG_EMERG = 0,
+  SUP_LOG_ALERT,
+  SUP_LOG_CRIT,
+  SUP_LOG_ERR,
+  SUP_LOG_WARNING,
+  SUP_LOG_NOTICE,
+  SUP_LOG_INFO,
+  SUP_LOG_DEBUG,
+  SUP_LOG_TRACE
+};
 
 enum class LogOutput
 {
@@ -51,10 +62,18 @@ enum class LogOutput
 };
 
 void SetLogOutput(LogOutput log_output);
+void SetMaxSeverity(int severity);
+int MaxSeverity();
+
+void SimpleLog(int severity, const std::string& source, const std::string& message);
 
 template <typename... Args>
 void VariadicLog(int severity, const std::string& source, const std::string& format, Args&&... args)
 {
+  if (severity > MaxSeverity())
+  {
+    return;
+  }
   char buffer[BUFFER_SIZE];
   (void)snprintf(buffer, BUFFER_SIZE, format.c_str(), std::forward<Args>(args)...);
   SimpleLog(severity, source, std::string(buffer));
@@ -63,7 +82,17 @@ void VariadicLog(int severity, const std::string& source, const std::string& for
 template <>
 void VariadicLog<>(int severity, const std::string& source, const std::string& message)
 {
+  if (severity > MaxSeverity())
+  {
+    return;
+  }
   SimpleLog(severity, source, message);
+}
+
+template <typename... Args>
+void LogDebug(const std::string& source, const std::string& format, Args&&... args)
+{
+  VariadicLog(SUP_LOG_DEBUG, source, const std::string& format, std::forward<Args>(args)...);
 }
 
 }  // namespace sequencer

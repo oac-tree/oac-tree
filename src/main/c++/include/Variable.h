@@ -61,7 +61,7 @@ private:
   /**
    * @brief Typename of this variable
    */
-  std::string _type;
+  const std::string _type;
 
   /**
    * @brief Mutex for concurrent access of Variable.

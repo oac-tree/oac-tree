@@ -23,6 +23,8 @@
 #include <common/AnyValueHelper.h>
 
 #include <common/log-api.h>
+#include <chrono>
+#include <cmath>
 
 // Local header files
 
@@ -45,7 +47,9 @@ namespace sequencer
 
 // Function definition
 
-Variable::Variable(const std::string &type) : _type(type)
+Variable::Variable(const std::string &type)
+  : _type{type}
+  , _update_counter{0}
 {
   _setup_successful = SetupImpl();
 }
@@ -101,23 +105,26 @@ bool Variable::GetValue(::ccs::types::AnyValue &value, const std::string &fieldn
 
 bool Variable::SetValue(const ::ccs::types::AnyValue &value, const std::string &fieldname)
 {
-  std::lock_guard<std::mutex> lock(_access_mutex);
+  std::unique_lock<std::mutex> lock(_access_mutex);
   if (!_setup_successful)
   {
     log_warning("Variable::SetValue() - Variable was not successfully set up..");
     return false;
   }
 
+  bool status = false;
   if (fieldname.empty())
   {
-    return SetValueImpl(value);
+    status = SetValueImpl(value);
   }
-
-  ::ccs::types::AnyValue var_copy;
-  bool status = GetValueImpl(var_copy);
-  if (status)
+  else
   {
-    status = ::ccs::HelperTools::SetAttributeValue(&var_copy, fieldname.c_str(), value);
+    ::ccs::types::AnyValue var_copy;
+    status = GetValueImpl(var_copy);
+    if (status)
+    {
+      status = ::ccs::HelperTools::SetAttributeValue(&var_copy, fieldname.c_str(), value);
+    }
     if (status)
     {
       // need to update it in the Variable
@@ -127,8 +134,32 @@ bool Variable::SetValue(const ::ccs::types::AnyValue &value, const std::string &
   if (!status)
   {
     log_error("Variable::SetValue() - Failed with field name '%s'", fieldname.c_str());
+    return false;
   }
-  return status;
+  lock.unlock();
+  Notify();
+  return true;
+}
+
+bool Variable::WaitFor(double seconds) const
+{
+  if (seconds <= 0.0)
+  {
+    return false;
+  }
+  auto duration = std::chrono::nanoseconds(std::lround(seconds * 1e9));
+  std::unique_lock<std::mutex> lk(_access_mutex);
+  auto current_counter = _update_counter;
+  return _update_cond.wait_for(lk, duration, [this, current_counter](){ return _update_counter != current_counter; });
+}
+
+void Variable::Notify()
+{
+  {
+    std::lock_guard<std::mutex> lk(_access_mutex);
+    ++_update_counter;
+  }
+  _update_cond.notify_all();
 }
 
 bool Variable::HasAttribute(const std::string &name) const

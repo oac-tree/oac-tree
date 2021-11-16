@@ -35,6 +35,7 @@
 
 #include <common/AnyValue.h>
 
+#include <condition_variable>
 #include <mutex>
 
 // Local header files
@@ -65,6 +66,7 @@ private:
 
   /**
    * @brief Mutex for concurrent access of Variable.
+   * @details This mutex protects access to all other private member data.
    */
   mutable std::mutex _access_mutex;
 
@@ -77,6 +79,18 @@ private:
    * @brief Indicates if the Variable was correctly setup from its attributes.
    */
   bool _setup_successful;
+
+  /**
+   * @brief Used to track updates of the underlying value.
+   * @details This counter is incremented for each variable update.
+   */
+  unsigned int _update_counter;
+
+  /**
+   * @brief Used to track updates of the underlying value.
+   * @details This condition variable is notified after an update.
+   */
+  mutable std::condition_variable _update_cond;
 
   /**
    * @brief Get value of variable.
@@ -155,6 +169,19 @@ public:
    * @note Non-virtual interface.
    */
   bool SetValue(const ::ccs::types::AnyValue& value, const std::string& fieldname = {});
+
+  /**
+   * @brief Call that blocks until the variable is updated or the timeout expires.
+   * @return true is variable was updated, false when timeout expired.
+   */
+  bool WaitFor(double seconds) const;
+
+  /**
+   * @brief Notify waiting threads of an update to the variable.
+   * @note Needs to be called whenever the variable is updated with a different mechanism as
+   * SetValue. It has to be called without holding the mutex lock.
+   */
+  void Notify();
 
   /**
    * @brief Indicate presence of attribute with given name.

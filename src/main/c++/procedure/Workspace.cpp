@@ -154,6 +154,22 @@ std::vector<const Variable *> Workspace::GetVariables() const
   return result;
 }
 
+const Variable* Workspace::GetVariable(const std::string& name) const
+{
+  auto it = _var_map.find(name);
+  if (it == _var_map.end())
+  {
+    return nullptr;
+  }
+  return it->second;
+}
+
+bool Workspace::HasVariable(const std::string& name) const
+{
+  return _var_map.find(name) != _var_map.end();
+}
+
+
 static std::pair<std::string, std::string> SplitToNameField(const std::string &fullname)
 {
   auto pos1 = fullname.find('.');

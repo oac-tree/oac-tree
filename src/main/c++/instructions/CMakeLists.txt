@@ -21,6 +21,7 @@ target_sources(sequencer-obj
         ${CMAKE_CURRENT_LIST_DIR}/Sequence.cpp
         ${CMAKE_CURRENT_LIST_DIR}/UserChoice.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Wait.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/WaitForUpdate.cpp
     )
 
 target_include_directories(sequencer-obj

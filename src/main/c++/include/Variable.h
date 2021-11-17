@@ -172,6 +172,8 @@ public:
 
   /**
    * @brief Call that blocks until the variable is updated or the timeout expires.
+   *
+   * @param seconds Maximum number of seconds to wait for update.
    * @return true is variable was updated, false when timeout expired.
    */
   bool WaitFor(double seconds) const;

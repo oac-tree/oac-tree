@@ -31,23 +31,13 @@
 #ifndef _SEQ_Workspace_h_
 #define _SEQ_Workspace_h_
 
-// Global header files
-
-#include <common/AnyValue.h>
-
 #include <map>
 #include <set>
 #include <vector>
 
-// Local header files
+#include <common/AnyValue.h>
 
 #include "Variable.h"
-
-// Constants
-
-// Type definition
-
-#ifdef __cplusplus
 
 namespace sup
 {
@@ -56,7 +46,6 @@ namespace sequencer
 /**
  * @brief Container class for managing variables.
  */
-
 class Workspace
 {
 private:
@@ -70,16 +59,8 @@ private:
    */
   std::set<Variable*> _var_pointers;
 
-protected:
 public:
-  /**
-   * @brief Constructor.
-   */
   Workspace();
-
-  /**
-   * @brief Destructor.
-   */
   ~Workspace();
 
   /**
@@ -111,26 +92,26 @@ public:
   bool SetValue(std::string name, const ::ccs::types::AnyValue& value);
 
   std::vector<const Variable*> GetVariables() const;
+
+  /**
+   * @brief Get variable with given name
+   *
+   * @param name Variable name.
+   * @return const pointer to found variable or null pointer otherwise.
+   */
+  const Variable* GetVariable(const std::string& name) const;
+
+  /**
+   * @brief Check existence of variable with given name
+   *
+   * @param name Variable name.
+   * @return true if variable exists.
+   */
+  bool HasVariable(const std::string& name) const;
 };
-
-// Global variables
-
-// Function declarations
-
-// Function definitions
 
 }  // namespace sequencer
 
 }  // namespace sup
-
-extern "C"
-{
-#endif  // __cplusplus
-
-  // C API function declarations
-
-#ifdef __cplusplus
-}  // extern C
-#endif  // __cplusplus
 
 #endif  // _SEQ_Workspace_h_

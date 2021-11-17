@@ -24,6 +24,7 @@
 #include <gtest/gtest.h>  // Google test framework
 
 #include <algorithm>
+#include <future>
 #include <sstream>
 
 #include <common/log-api.h>  // Syslog wrapper routines
@@ -275,6 +276,33 @@ TEST_F(LocalVariableTest, Float32Type)
   EXPECT_TRUE(float32_var.GetValue(any_value));
   val = any_value;
   EXPECT_EQ(val, val_2);  // unchanged
+}
+
+TEST_F(LocalVariableTest, WaitForSuccess)
+{
+  std::promise<void> ready;
+  auto wait_activity = [this, &ready]()
+  {
+    ready.set_value();
+    return uint64_var.WaitFor(3.0);
+  };
+  auto result = std::async(std::launch::async, wait_activity);
+  ready.get_future().wait();
+  std::this_thread::sleep_for(std::chrono::milliseconds(250));
+  ::ccs::types::AnyValue val(::ccs::types::UnsignedInteger64);
+  val = 5;
+  EXPECT_TRUE(uint64_var.SetValue(val));
+  EXPECT_TRUE(result.get());
+}
+
+TEST_F(LocalVariableTest, WaitForTimeout)
+{
+  auto wait_activity = [this]()
+  {
+    return uint64_var.WaitFor(0.1);
+  };
+  auto result = std::async(std::launch::async, wait_activity);
+  EXPECT_FALSE(result.get());
 }
 
 static std::string stob(bool b)

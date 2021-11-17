@@ -148,15 +148,16 @@ bool Variable::WaitFor(double seconds) const
     return false;
   }
   auto duration = std::chrono::nanoseconds(std::lround(seconds * 1e9));
-  std::unique_lock<std::mutex> lk(_access_mutex);
+  std::unique_lock<std::mutex> lk(_counter_mutex);
   auto current_counter = _update_counter;
-  return _update_cond.wait_for(lk, duration, [this, current_counter](){ return _update_counter != current_counter; });
+  return _update_cond.wait_for(lk, duration,
+      [this, current_counter](){ return _update_counter != current_counter; });
 }
 
 void Variable::Notify()
 {
   {
-    std::lock_guard<std::mutex> lk(_access_mutex);
+    std::lock_guard<std::mutex> lk(_counter_mutex);
     ++_update_counter;
   }
   _update_cond.notify_all();

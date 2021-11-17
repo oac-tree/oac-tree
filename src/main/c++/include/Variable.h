@@ -66,7 +66,8 @@ private:
 
   /**
    * @brief Mutex for concurrent access of Variable.
-   * @details This mutex protects access to all other private member data.
+   * @details This mutex protects access to all other private member data, unless explicitly
+   * mentioned otherwise.
    */
   mutable std::mutex _access_mutex;
 
@@ -81,8 +82,15 @@ private:
   bool _setup_successful;
 
   /**
+   * @brief Mutex for concurrent access of the update counter.
+   * @details This mutex protects only access to the update counter.
+   */
+  mutable std::mutex _counter_mutex;
+
+  /**
    * @brief Used to track updates of the underlying value.
-   * @details This counter is incremented for each variable update.
+   * @details This counter is incremented for each variable update. It is protected by a separate
+   * mutex.
    */
   unsigned int _update_counter;
 

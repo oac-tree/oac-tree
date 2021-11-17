@@ -26,6 +26,7 @@
 // Local header files
 
 #include "LogUI.h"
+#include "InstructionRegistry.h"
 #include "UnitTestHelper.h"
 #include "UserInterface.h"
 
@@ -91,4 +92,19 @@ TEST(WaitForUpdateTest, NonExistentVariable)
   ASSERT_TRUE(proc.get() != nullptr);
   ASSERT_TRUE(
       sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE));
+}
+
+TEST(WaitForUpdateTest, Setup)
+{
+  auto waitfor = sup::sequencer::GlobalInstructionRegistry().Create("WaitForUpdate");
+  sup::sequencer::Procedure proc;
+  EXPECT_FALSE(waitfor->Setup(proc));
+  waitfor->AddAttribute("variable", "varname");
+  EXPECT_FALSE(waitfor->Setup(proc));
+  waitfor->AddAttribute("timeout", "CANNOT_BE_PARSED_CORRECTLY");
+  EXPECT_FALSE(waitfor->Setup(proc));
+  waitfor->SetAttribute("timeout", "-1.9");
+  EXPECT_FALSE(waitfor->Setup(proc));
+  waitfor->SetAttribute("timeout", "3.0");
+  EXPECT_TRUE(waitfor->Setup(proc));
 }

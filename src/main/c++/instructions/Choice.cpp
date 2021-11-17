@@ -19,41 +19,27 @@
  * of the distribution package.
  ******************************************************************************/
 
-/*---------------------------------------------------------------------------*/
-/*                         Standard header includes                          */
-/*---------------------------------------------------------------------------*/
-
 #include <common/AnyType.h>
-
 #include <common/log-api.h>
-/*---------------------------------------------------------------------------*/
-/*                         Project header includes                           */
-/*---------------------------------------------------------------------------*/
 
 #include "Choice.h"
 #include "Procedure.h"
 #include "Workspace.h"
 
-/*---------------------------------------------------------------------------*/
-/*                           Static definitions                              */
-/*---------------------------------------------------------------------------*/
 
 namespace sup
 {
 namespace sequencer
 {
-/*---------------------------------------------------------------------------*/
-/*                           Method definitions                              */
-/*---------------------------------------------------------------------------*/
 
 const std::string Choice::Type = "Choice";
 
-Choice::Choice() : CompoundInstruction(Type)
-{
-  numberOfElements = 1u;
-  elementSize = 0u;
-  isMask = false;
-}
+Choice::Choice()
+  : CompoundInstruction(Type)
+  , numberOfElements{1u}
+  , elementSize{0}
+  , isMask{false}
+{}
 
 Choice::~Choice()
 {

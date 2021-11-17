@@ -119,7 +119,7 @@ static bool AddChildInstructions(Instruction *instruction, const std::vector<Tre
                 instr_type.c_str(), instr_name.c_str());
     return false;
   }
-  if (!decorator && !compound && children.empty())
+  if (children.empty())
   {
     // Leaf instructions don't have children, so ok.
     return true;

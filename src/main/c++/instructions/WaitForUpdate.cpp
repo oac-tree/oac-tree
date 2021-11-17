@@ -50,7 +50,6 @@ ExecutionStatus WaitForUpdateInstruction::ExecuteSingleImpl(UserInterface*, Work
   }
   auto finish = std::chrono::system_clock::now() +
                 std::chrono::nanoseconds(std::lround(timeout * 1e9));
-  bool updated = false;
   double accuracy = std::round(DefaultSettings::MAX_BLOCKING_TIME_MS) / 1e3;
   while (!_halt_requested.load() && std::chrono::system_clock::now() < finish)
   {

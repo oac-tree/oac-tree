@@ -47,19 +47,16 @@ R"RAW(<ParallelSequence name="Parallel sequence with wait for update branch">
 )RAW";
 
 static const std::string WAITFORUPDATE_FAILURE_PROCEDURE =
-R"RAW(<ParallelSequence name="Parallel sequence with wait for update branch">
-    <WaitForUpdate variable="target" timeout="0.2" />
-    <Sequence>
-        <Wait timeout="1.0"/>
-        <Copy input="source" output="target"/>
-    </Sequence>
-</ParallelSequence>
+R"RAW(<WaitForUpdate variable="target" timeout="0.2" />
 <Workspace>
-    <Local name="source"
-           type='{"type":"uint64"}'
-           value='1729' />
     <Local name="target"
            type='{"type":"uint64"}' />
+</Workspace>
+)RAW";
+
+static const std::string WAITFORUPDATE_NOVAR_PROCEDURE =
+R"RAW(<WaitForUpdate variable="target" timeout="0.2" />
+<Workspace>
 </Workspace>
 )RAW";
 
@@ -77,6 +74,17 @@ TEST(WaitForUpdateTest, Success)
 TEST(WaitForUpdateTest, Failure)
 {
   const auto procedure_string = ::sup::UnitTestHelper::CreateProcedureString(WAITFORUPDATE_FAILURE_PROCEDURE);
+
+  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  sup::sequencer::LogUI ui;
+  ASSERT_TRUE(proc.get() != nullptr);
+  ASSERT_TRUE(
+      sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE));
+}
+
+TEST(WaitForUpdateTest, NonExistentVariable)
+{
+  const auto procedure_string = ::sup::UnitTestHelper::CreateProcedureString(WAITFORUPDATE_NOVAR_PROCEDURE);
 
   auto proc = sup::sequencer::ParseProcedureString(procedure_string);
   sup::sequencer::LogUI ui;

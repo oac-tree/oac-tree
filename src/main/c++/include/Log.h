@@ -39,36 +39,61 @@ namespace sup
 {
 namespace sequencer
 {
-
 constexpr size_t BUFFER_SIZE = 1024;
 
-enum LogSeverity
+class ILogger
 {
-  SUP_LOG_EMERG = 0,
-  SUP_LOG_ALERT,
-  SUP_LOG_CRIT,
-  SUP_LOG_ERR,
-  SUP_LOG_WARNING,
-  SUP_LOG_NOTICE,
-  SUP_LOG_INFO,
-  SUP_LOG_DEBUG,
-  SUP_LOG_TRACE
+public:
+  enum LogSeverity
+  {
+    SUP_LOG_EMERG = 0,
+    SUP_LOG_ALERT,
+    SUP_LOG_CRIT,
+    SUP_LOG_ERR,
+    SUP_LOG_WARNING,
+    SUP_LOG_NOTICE,
+    SUP_LOG_INFO,
+    SUP_LOG_DEBUG,
+    SUP_LOG_TRACE,
+    NUMBER_OF_LOG_LEVELS
+  };
+  static std::string SeverityToString(int severity);
+
+  virtual ~ILogger() = default;
+
+  void SetMaxSeverity(int severity);
+  int MaxSeverity() const;
+
+  template <typename... Args> void Emergency(const std::string& source,
+                                             const std::string& format, Args&&... args);
+  template <typename... Args> void Alert(const std::string& source,
+                                         const std::string& format, Args&&... args);
+  template <typename... Args> void Critical(const std::string& source,
+                                            const std::string& format, Args&&... args);
+  template <typename... Args> void Error(const std::string& source,
+                                         const std::string& format, Args&&... args);
+  template <typename... Args> void Warning(const std::string& source,
+                                           const std::string& format, Args&&... args);
+  template <typename... Args> void Notice(const std::string& source,
+                                          const std::string& format, Args&&... args);
+  template <typename... Args> void Info(const std::string& source,
+                                        const std::string& format, Args&&... args);
+  template <typename... Args> void Debug(const std::string& source,
+                                         const std::string& format, Args&&... args);
+  template <typename... Args> void Trace(const std::string& source,
+                                         const std::string& format, Args&&... args);
+
+private:
+  int max_severity;
+  virtual void SimpleLog(int severity, const std::string& source, const std::string& message) = 0;
+
+  template <typename... Args> void VariadicLog(int severity, const std::string& source,
+                                               const std::string& format, Args&&... args);
 };
-
-enum class LogOutput
-{
-  standard_output,
-  system_log
-};
-
-void SetLogOutput(LogOutput log_output);
-void SetMaxSeverity(int severity);
-int MaxSeverity();
-
-void SimpleLog(int severity, const std::string& source, const std::string& message);
 
 template <typename... Args>
-void VariadicLog(int severity, const std::string& source, const std::string& format, Args&&... args)
+void ILogger::VariadicLog(int severity, const std::string& source,
+                          const std::string& format, Args&&... args)
 {
   if (severity > MaxSeverity())
   {
@@ -80,7 +105,7 @@ void VariadicLog(int severity, const std::string& source, const std::string& for
 }
 
 template <>
-void VariadicLog<>(int severity, const std::string& source, const std::string& message)
+void ILogger::VariadicLog<>(int severity, const std::string& source, const std::string& message)
 {
   if (severity > MaxSeverity())
   {
@@ -90,55 +115,55 @@ void VariadicLog<>(int severity, const std::string& source, const std::string& m
 }
 
 template <typename... Args>
-void LogEmergency(const std::string& source, const std::string& format, Args&&... args)
+void ILogger::Emergency(const std::string& source, const std::string& format, Args&&... args)
 {
   VariadicLog(SUP_LOG_EMERG, source, format, std::forward<Args>(args)...);
 }
 
 template <typename... Args>
-void LogAlert(const std::string& source, const std::string& format, Args&&... args)
+void ILogger::Alert(const std::string& source, const std::string& format, Args&&... args)
 {
   VariadicLog(SUP_LOG_ALERT, source, format, std::forward<Args>(args)...);
 }
 
 template <typename... Args>
-void LogCritical(const std::string& source, const std::string& format, Args&&... args)
+void ILogger::Critical(const std::string& source, const std::string& format, Args&&... args)
 {
   VariadicLog(SUP_LOG_CRIT, source, format, std::forward<Args>(args)...);
 }
 
 template <typename... Args>
-void LogError(const std::string& source, const std::string& format, Args&&... args)
+void ILogger::Error(const std::string& source, const std::string& format, Args&&... args)
 {
   VariadicLog(SUP_LOG_ERR, source, format, std::forward<Args>(args)...);
 }
 
 template <typename... Args>
-void LogWarning(const std::string& source, const std::string& format, Args&&... args)
+void ILogger::Warning(const std::string& source, const std::string& format, Args&&... args)
 {
   VariadicLog(SUP_LOG_WARNING, source, format, std::forward<Args>(args)...);
 }
 
 template <typename... Args>
-void LogNotice(const std::string& source, const std::string& format, Args&&... args)
+void ILogger::Notice(const std::string& source, const std::string& format, Args&&... args)
 {
   VariadicLog(SUP_LOG_NOTICE, source, format, std::forward<Args>(args)...);
 }
 
 template <typename... Args>
-void LogInfo(const std::string& source, const std::string& format, Args&&... args)
+void ILogger::Info(const std::string& source, const std::string& format, Args&&... args)
 {
   VariadicLog(SUP_LOG_INFO, source, format, std::forward<Args>(args)...);
 }
 
 template <typename... Args>
-void LogDebug(const std::string& source, const std::string& format, Args&&... args)
+void ILogger::Debug(const std::string& source, const std::string& format, Args&&... args)
 {
   VariadicLog(SUP_LOG_DEBUG, source, format, std::forward<Args>(args)...);
 }
 
 template <typename... Args>
-void LogTrace(const std::string& source, const std::string& format, Args&&... args)
+void ILogger::Trace(const std::string& source, const std::string& format, Args&&... args)
 {
   VariadicLog(SUP_LOG_TRACE, source, format, std::forward<Args>(args)...);
 }

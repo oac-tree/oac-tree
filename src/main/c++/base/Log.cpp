@@ -20,50 +20,56 @@
  ******************************************************************************/
 
 #include "Log.h"
-#include <common/log-api.h>
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
-
-namespace
-{
-int& GetMaxSeverity()
-{
-  static int max_severity = sup::sequencer::SUP_LOG_INFO;
-  return max_severity;
-}
-}
 
 namespace sup
 {
 namespace sequencer
 {
 
-void SetLogOutput(LogOutput log_output)
+std::string ILogger::SeverityToString(int severity)
 {
-  switch (log_output)
+  std::string result;
+  switch (severity)
   {
-    case LogOutput::standard_output: ccs::log::SetStdout();
-                                     break;
-    case LogOutput::system_log:      ccs::log::SetSyslog();
-                                     break;
+    case SUP_LOG_EMERG:
+      result = "emergency";
+      break;
+    case SUP_LOG_ALERT:
+      result = "alert";
+      break;
+    case SUP_LOG_CRIT:
+      result = "critical";
+      break;
+    case SUP_LOG_ERR:
+      result = "error";
+      break;
+    case SUP_LOG_WARNING:
+      result = "warning";
+      break;
+    case SUP_LOG_NOTICE:
+      result = "notice";
+      break;
+    case SUP_LOG_INFO:
+      result = "info";
+      break;
+    case SUP_LOG_DEBUG:
+      result = "debug";
+      break;
+    case SUP_LOG_TRACE:
+      result = "trace";
+      break;
   }
+  return result;
 }
 
-void SetMaxSeverity(int severity)
+void ILogger::SetMaxSeverity(int severity)
 {
-  auto& max_severity = GetMaxSeverity();
   max_severity = severity;
 }
 
-int MaxSeverity()
+int ILogger::MaxSeverity() const
 {
-  return GetMaxSeverity();
-}
-
-void SimpleLog(int severity, const std::string& source, const std::string& message)
-{
-  ccs::log::Message(severity, source.c_str(), message.c_str());
+  return max_severity;
 }
 
 }  // namespace sequencer

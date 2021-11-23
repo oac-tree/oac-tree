@@ -25,16 +25,18 @@
 
 #include <iostream>  // std::cout, etc.
 
+#include <common/log-api.h>  // CCS logging library
+
 // Local header files
 
 #include "DaemonInterface.h"
-#include "Log.h"
 #include "Runner.h"
 #include "SequenceParser.h"
 
 // Constants
 
-static const std::string LOG_SOURCE = "sup::sequencer";
+#undef LOG_ALTERN_SRC
+#define LOG_ALTERN_SRC "sup::sequencer"
 
 // Type definition
 
@@ -86,30 +88,29 @@ int main(int argc, char* argv[])
 
   if (ccs::HelperTools::StringCompare(params.filepath, STRING_UNDEFINED))
   {
-    sup::sequencer::LogDebug(LOG_SOURCE, "sequencer-daemon called without filename");
+    log_warning("sequencer-daemon called without filename");
     return 1;
   }
 
-  sup::sequencer::LogDebug(LOG_SOURCE, "sequencer-daemon called with filename: %s", params.filepath);
+  log_debug("sequencer-daemon called with filename: %s", params.filepath);
 
   if (!ccs::HelperTools::Exist(params.filepath))
   {
-    sup::sequencer::LogError(LOG_SOURCE, "sequencer-daemon: file not found <%s>", params.filepath);
+    log_error("sequencer-daemon: file not found <%s>", params.filepath);
     return 1;
   }
 
   auto proc = sup::sequencer::ParseProcedureFile(params.filepath);
   if (!proc)
   {
-    sup::sequencer::LogError(LOG_SOURCE,
-        "sequencer-daemon couldn't parse file <%s>", params.filepath);
+    log_error("sequencer-daemon couldn't parse file <%s>", params.filepath);
     return 1;
   }
 
   if (!proc->Setup())
   {
-    sup::sequencer::LogError(LOG_SOURCE,
-        "sequencer-daemon couldn't setup the parsed procedure from file: <%s>", params.filepath);
+    log_error("sequencer-daemon couldn't setup the parsed procedure from file: <%s>",
+              params.filepath);
     return 1;
   }
 
@@ -180,3 +181,5 @@ bool IsLogOption(const char* option)
                 || ccs::HelperTools::StringCompare(option, "--logging");
   return result;
 }
+
+#undef LOG_ALTERN_SRC

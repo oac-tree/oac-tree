@@ -36,6 +36,7 @@
 #include <common/AnyValue.h>
 
 #include <condition_variable>
+#include <functional>
 #include <mutex>
 
 // Local header files
@@ -85,7 +86,7 @@ private:
    * @brief Mutex for concurrent access of the update counter.
    * @details This mutex protects only access to the update counter.
    */
-  mutable std::mutex _counter_mutex;
+  mutable std::mutex notify_mutex;
 
   /**
    * @brief Used to track updates of the underlying value.
@@ -99,6 +100,11 @@ private:
    * @details This condition variable is notified after an update.
    */
   mutable std::condition_variable _update_cond;
+
+  /**
+   * @brief Callback function to call when value was updated.
+   */
+  std::function<void(const ccs::types::AnyValue&)> notify_cb;
 
   /**
    * @brief Get value of variable.
@@ -192,6 +198,16 @@ public:
    * SetValue. It has to be called without holding the mutex lock.
    */
   void Notify();
+
+  /**
+   * @brief Set callback for value update notifications
+   *
+   * @param func Callback function object.
+   * @return true if successful.
+   *
+   * @note This method will overwrite an existing callback if there was one.
+   */
+  void SetNotifyCallback(std::function<void(const ccs::types::AnyValue&)> func);
 
   /**
    * @brief Indicate presence of attribute with given name.

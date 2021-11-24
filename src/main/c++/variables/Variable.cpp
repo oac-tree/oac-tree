@@ -49,7 +49,6 @@ namespace sequencer
 
 Variable::Variable(const std::string &type)
   : _type{type}
-  , _update_counter{0}
 {
   _setup_successful = SetupImpl();
 }
@@ -105,7 +104,7 @@ bool Variable::GetValue(::ccs::types::AnyValue &value, const std::string &fieldn
 
 bool Variable::SetValue(const ::ccs::types::AnyValue &value, const std::string &fieldname)
 {
-  std::unique_lock<std::mutex> lock(_access_mutex);
+  std::lock_guard<std::mutex> lk(_access_mutex);
   if (!_setup_successful)
   {
     log_warning("Variable::SetValue() - Variable was not successfully set up..");
@@ -136,31 +135,29 @@ bool Variable::SetValue(const ::ccs::types::AnyValue &value, const std::string &
     log_error("Variable::SetValue() - Failed with field name '%s'", fieldname.c_str());
     return false;
   }
-  lock.unlock();
-  Notify();
   return true;
 }
 
-bool Variable::WaitFor(double seconds) const
-{
-  if (seconds <= 0.0)
-  {
-    return false;
-  }
-  auto duration = std::chrono::nanoseconds(std::lround(seconds * 1e9));
-  std::unique_lock<std::mutex> lk(notify_mutex);
-  auto current_counter = _update_counter;
-  return _update_cond.wait_for(lk, duration,
-      [this, current_counter](){ return _update_counter != current_counter; });
-}
+// bool Variable::WaitFor(double seconds) const
+// {
+//   if (seconds <= 0.0)
+//   {
+//     return false;
+//   }
+//   auto duration = std::chrono::nanoseconds(std::lround(seconds * 1e9));
+//   std::unique_lock<std::mutex> lk(notify_mutex);
+//   auto current_counter = _update_counter;
+//   return _update_cond.wait_for(lk, duration,
+//       [this, current_counter](){ return _update_counter != current_counter; });
+// }
 
-void Variable::Notify()
+void Variable::Notify(const ccs::types::AnyValue& value)
 {
+  std::lock_guard<std::mutex> lk(notify_mutex);
+  if (notify_cb)
   {
-    std::lock_guard<std::mutex> lk(notify_mutex);
-    ++_update_counter;
+    notify_cb(value);
   }
-  _update_cond.notify_all();
 }
 
 void Variable::SetNotifyCallback(std::function<void(const ccs::types::AnyValue&)> func)

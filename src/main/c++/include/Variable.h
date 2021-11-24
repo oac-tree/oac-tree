@@ -90,19 +90,18 @@ private:
 
   /**
    * @brief Used to track updates of the underlying value.
-   * @details This counter is incremented for each variable update. It is protected by a separate
-   * mutex.
-   */
-  unsigned int _update_counter;
-
-  /**
-   * @brief Used to track updates of the underlying value.
    * @details This condition variable is notified after an update.
    */
   mutable std::condition_variable _update_cond;
 
   /**
    * @brief Callback function to call when value was updated.
+   *
+   * @note There is currently no option to set multiple callback functions.
+   * This is on purpose, while the workspace will register itself here and can provide more
+   * complex use cases. This callback is typically called while holding locks on the variable, so
+   * it's the responsibility of the listener to prevent deadlock (e.g. by pushing the value to a
+   * queue and processing it after returning from the callback).
    */
   std::function<void(const ccs::types::AnyValue&)> notify_cb;
 
@@ -185,19 +184,11 @@ public:
   bool SetValue(const ::ccs::types::AnyValue& value, const std::string& fieldname = {});
 
   /**
-   * @brief Call that blocks until the variable is updated or the timeout expires.
-   *
-   * @param seconds Maximum number of seconds to wait for update.
-   * @return true is variable was updated, false when timeout expired.
-   */
-  bool WaitFor(double seconds) const;
-
-  /**
    * @brief Notify waiting threads of an update to the variable.
    * @note Needs to be called whenever the variable is updated with a different mechanism as
    * SetValue. It has to be called without holding the mutex lock.
    */
-  void Notify();
+  void Notify(const ccs::types::AnyValue& value);
 
   /**
    * @brief Set callback for value update notifications

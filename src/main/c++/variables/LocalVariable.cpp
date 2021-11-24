@@ -81,6 +81,7 @@ bool LocalVariable::SetValueImpl(const ::ccs::types::AnyValue& value)
   {
     log_debug("sup::sequencer::LocalVariable::SetValue() - copying value..");
     _val = value;
+    Notify(value);
     return true;
   }
   log_warning("sup::sequencer::LocalVariable::SetValue() - incompatible types..");

@@ -59,6 +59,12 @@ Runner::~Runner() = default;
 void Runner::SetProcedure(Procedure* procedure)
 {
   _proc = procedure;
+  UserInterface* ui = _ui;
+  _proc->AddUpdateCallback(
+    [ui](const std::string& name, const ccs::types::AnyValue& value)
+    {
+      ui->VariableUpdated(name, value);
+    });
 }
 
 void Runner::ExecuteProcedure()

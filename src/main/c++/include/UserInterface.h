@@ -69,6 +69,12 @@ private:
 
   /**
    * @brief Private virtual implementation of
+   * UserInterface::VariableUpdated(const std::string& name, const ccs::types::AnyValue& value).
+   */
+  virtual void VariableUpdatedImpl(const std::string& name, const ccs::types::AnyValue& value);
+
+  /**
+   * @brief Private virtual implementation of
    * UserInterface::PutValue(const AnyValue & value, const std::string & description).
    *
    * @note Default implementation returns false.
@@ -133,6 +139,15 @@ public:
    * @note Non-Virtual Interface.
    */
   void UpdateInstructionStatus(const Instruction* instruction);
+
+  /**
+   * @brief Method called when a workspace Variable has received a value update.
+   *
+   * @param name Name of the Variable.
+   * @param value New value of the Variable.
+   * @note Non-Virtual Interface.
+   */
+  void VariableUpdated(const std::string& name, const ccs::types::AnyValue& value);
 
   /**
    * @brief Method to put the value.

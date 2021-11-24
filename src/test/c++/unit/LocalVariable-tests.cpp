@@ -163,6 +163,23 @@ TEST_F(LocalVariableTest, AddAttributesFull)
   EXPECT_EQ(val, UINT64_VALUE);
 }
 
+TEST_F(LocalVariableTest, NotifyCallback)
+{
+  ccs::types::int32 value = 0;
+  LocalVariable int32_var{};
+  EXPECT_TRUE(int32_var.AddAttribute(LocalVariable::JSON_TYPE, R"RAW({"type":"int32"})RAW"));
+  EXPECT_TRUE(int32_var.AddAttribute(LocalVariable::JSON_VALUE, std::to_string(value)));
+  int32_var.SetNotifyCallback(
+    [&value](const ccs::types::AnyValue& val)
+    {
+      value = val;
+    });
+  ccs::types::AnyValue new_value(ccs::types::SignedInteger32);
+  new_value = 1234;
+  EXPECT_TRUE(int32_var.SetValue(new_value));
+  EXPECT_EQ(value, 1234);
+}
+
 TEST_F(LocalVariableTest, BooleanType)
 {
   EXPECT_EQ(bool_var.GetType(), LocalVariable::Type);

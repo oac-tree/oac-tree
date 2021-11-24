@@ -52,6 +52,7 @@ protected:
   MockUserInterface mock_ui;
   std::unique_ptr<Procedure> async_proc;
   std::unique_ptr<Procedure> sync_proc;
+  std::unique_ptr<Procedure> copy_proc;
 };
 
 // Function declaration
@@ -93,10 +94,30 @@ static const std::string SyncProcedureString =
 </Procedure>
 )RAW";
 
+static const std::string CopyVariableProcedureString =
+    R"RAW(<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+           name="Trivial procedure for testing purposes"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+    <Sequence>
+        <Copy name="Copy workspace variables" input="var1" output="var2" />
+    </Sequence>
+    <Workspace>
+        <Local name="var1"
+               type='{"type":"uint64"}'
+               value='1729' />
+        <Local name="var2"
+               type='{"type":"uint64"}' />
+    </Workspace>
+</Procedure>
+)RAW";
+
 // Function definition
 
 using ::testing::_;
 using ::testing::AtLeast;
+using ::testing::Exactly;
 using ::testing::InSequence;
 
 TEST_F(RunnerTest, NoProcedure)
@@ -215,10 +236,38 @@ TEST_F(RunnerTest, UICalls)
   EXPECT_FALSE(runner.IsRunning());
 }
 
+TEST_F(RunnerTest, UIVariableCalls)
+{
+  // Set Expectations on mock UserInterface calls
+  ccs::types::AnyValue val(ccs::types::UnsignedInteger64);
+  val = ccs::types::uint64(1729);
+  EXPECT_CALL(mock_ui, VariableUpdatedImpl("var2", HasSameValue(val))).Times(Exactly(1));
+  EXPECT_CALL(mock_ui, StartSingleStepImpl()).Times(AtLeast(1));
+  EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(_)).Times(AtLeast(4));
+  EXPECT_CALL(mock_ui, EndSingleStepImpl()).Times(AtLeast(1));
+
+  // Test preconditions
+  Runner runner(&mock_ui);
+  EXPECT_TRUE(runner.IsFinished());  // empty procedure is finished by default
+  EXPECT_FALSE(runner.IsRunning());
+
+  // Set procedure and test conditions again
+  EXPECT_NO_THROW(copy_proc->Setup());
+  EXPECT_NO_THROW(runner.SetProcedure(copy_proc.get()));
+  EXPECT_FALSE(runner.IsFinished());
+  EXPECT_FALSE(runner.IsRunning());
+
+  // Execute whole procedure
+  EXPECT_NO_THROW(runner.ExecuteProcedure());
+  EXPECT_TRUE(runner.IsFinished());
+  EXPECT_FALSE(runner.IsRunning());
+}
+
 RunnerTest::RunnerTest()
     : mock_ui{}
     , async_proc{sup::sequencer::ParseProcedureString(AsyncProcedureString)}
     , sync_proc{sup::sequencer::ParseProcedureString(SyncProcedureString)}
+    , copy_proc{sup::sequencer::ParseProcedureString(CopyVariableProcedureString)}
 {
 }
 
@@ -231,6 +280,10 @@ RunnerTest::~RunnerTest()
   if (sync_proc)
   {
     sync_proc->Reset();
+  }
+  if (copy_proc)
+  {
+    copy_proc->Reset();
   }
 }
 

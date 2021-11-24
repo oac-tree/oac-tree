@@ -203,6 +203,28 @@ TEST_F(WorkspaceTest, GetVariables)
   EXPECT_EQ(workspace.GetVariables(), expected);
 }
 
+TEST_F(WorkspaceTest, NotifyCallback)
+{
+  std::string var_name;
+  ccs::types::AnyValue var_value;
+  EXPECT_TRUE(ws.AddUpdateCallback(
+    [&var_name, &var_value](const std::string& name, const ccs::types::AnyValue& value)
+    {
+      var_name = name;
+      var_value = value;
+    }));
+  std::string name = "FromWorkspace";
+  auto var = GlobalVariableRegistry().Create("Local");
+  EXPECT_TRUE(var->AddAttribute(LocalVariable::JSON_TYPE, R"RAW({"type":"uint16"})RAW"));
+  EXPECT_TRUE(ws.AddVariable(name, var.release()));
+  ccs::types::AnyValue new_value(ccs::types::UnsignedInteger16);
+  ccs::types::uint16 raw_value = 123;
+  new_value = ccs::types::uint16(raw_value);
+  EXPECT_TRUE(ws.SetValue(name, new_value));
+  EXPECT_EQ(var_name, name);
+  EXPECT_EQ(var_value, raw_value);
+}
+
 WorkspaceTest::WorkspaceTest()
     : ws{}
     , var1{GlobalVariableRegistry().Create("Local")}

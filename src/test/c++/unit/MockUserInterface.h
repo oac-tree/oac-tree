@@ -34,6 +34,7 @@
 // Global header files
 
 #include <gmock/gmock.h>
+#include <cstring>
 
 // Local header files
 
@@ -57,6 +58,8 @@ class MockUserInterface : public UserInterface
 {
 public:
   MOCK_METHOD1(UpdateInstructionStatusImpl, void(const Instruction *));
+  MOCK_METHOD2(VariableUpdatedImpl,
+               void( const std::string &name, const ::ccs::types::AnyValue &value));
   MOCK_METHOD2(PutValueImpl,
                bool(const ::ccs::types::AnyValue &value, const std::string &description));
   MOCK_METHOD2(GetUserValueImpl,
@@ -70,6 +73,15 @@ public:
 MATCHER_P(HasExecutionStatus, expected, "")
 {
   return arg->GetStatus() == expected;
+}
+
+MATCHER_P(HasSameValue, value, "")
+{
+  if (arg.GetSize() != value.GetSize())
+  {
+    return false;
+  }
+  return (std::memcmp(arg.GetInstance(), value.GetInstance(), arg.GetSize()) == 0);
 }
 
 // Global variables

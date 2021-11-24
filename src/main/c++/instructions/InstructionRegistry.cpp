@@ -44,7 +44,7 @@
 #include "Sequence.h"
 #include "UserChoice.h"
 #include "Wait.h"
-#include "WaitForUpdate.h"
+// #include "WaitForUpdate.h"
 
 // Constants
 
@@ -125,7 +125,7 @@ void InitInstructionRegistry(InstructionRegistry& registry)
   (void)RegisterInstruction<Input>(registry);
   (void)RegisterInstruction<Output>(registry);
   (void)RegisterInstruction<Wait>(registry);
-  (void)RegisterInstruction<WaitForUpdateInstruction>(registry);
+  // (void)RegisterInstruction<WaitForUpdateInstruction>(registry);
 }
 
 }  // namespace sequencer

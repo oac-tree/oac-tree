@@ -71,6 +71,15 @@ private:
    * @return true if Variable pointer is already present.
    */
   bool ContainsVariablePointer(Variable* var) const;
+
+  /**
+   * @brief Method which is called if a variable is updated.
+   *
+   * @param name Variable name.
+   * @param name Variable's new value.
+   */
+  void VariableUpdated(const std::string name, const ccs::types::AnyValue& value);
+
 public:
   Workspace();
   ~Workspace();

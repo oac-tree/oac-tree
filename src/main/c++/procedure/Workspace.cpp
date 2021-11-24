@@ -58,6 +58,13 @@ bool Workspace::ContainsVariablePointer(Variable* var) const
   return true;
 }
 
+void Workspace::VariableUpdated(const std::string name, const ccs::types::AnyValue& value)
+{
+  (void)name;
+  (void)value;
+  return;
+}
+
 Workspace::Workspace()
    : _var_map{}
 {}
@@ -84,6 +91,11 @@ bool Workspace::AddVariable(std::string name, Variable *var)
   }
   log_debug("sup::sequencer::Workspace::AddVariable('%s', var) - add variable to workspace..",
             name.c_str());
+  var_owned->SetNotifyCallback(
+    [this, name](const ccs::types::AnyValue& value)
+    {
+      VariableUpdated(name, value);
+    });
   _var_map[name] = std::move(var_owned);
   return true;
 }

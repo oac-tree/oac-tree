@@ -60,9 +60,7 @@ bool Workspace::ContainsVariablePointer(Variable* var) const
 
 void Workspace::VariableUpdated(const std::string name, const ccs::types::AnyValue& value)
 {
-  (void)name;
-  (void)value;
-  return;
+  callbacks.ExecuteCallbacks(name, value);
 }
 
 Workspace::Workspace()
@@ -174,6 +172,12 @@ const Variable* Workspace::GetVariable(const std::string& name) const
 bool Workspace::HasVariable(const std::string& name) const
 {
   return _var_map.find(name) != _var_map.end();
+}
+
+bool Workspace::AddUpdateCallback(
+  const std::function<void(const std::string&, const ccs::types::AnyValue&)>& cb)
+{
+  return callbacks.AddCallback(cb);
 }
 
 static std::pair<std::string, std::string> SplitToNameField(const std::string &fullname)

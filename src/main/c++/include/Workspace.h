@@ -38,6 +38,7 @@
 #include <common/AnyValue.h>
 
 #include "Variable.h"
+#include "CallBackManager.h"
 
 namespace sup
 {
@@ -55,6 +56,11 @@ private:
    * @note Workspace owns its Variable objects.
    */
   std::map<std::string, std::unique_ptr<Variable>> _var_map;
+
+  /**
+   * @brief Threadsafe list of callback objects.
+   */
+  CallbackManager<void(const std::string&, const ccs::types::AnyValue&)> callbacks;
 
   /**
    * @brief Check if the given Variable name is already present.
@@ -129,6 +135,15 @@ public:
    * @return true if variable exists.
    */
   bool HasVariable(const std::string& name) const;
+
+  /**
+   * @brief Add callback for variable updates
+   *
+   * @param cb Callback function object.
+   * @return true if adding the callback was successful.
+   */
+  bool AddUpdateCallback(
+    const std::function<void(const std::string&, const ccs::types::AnyValue&)>& cb);
 };
 
 }  // namespace sequencer

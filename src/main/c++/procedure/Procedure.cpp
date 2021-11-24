@@ -266,6 +266,12 @@ const Workspace *Procedure::GetWorkspace() const
   return _workspace.get();
 }
 
+bool Procedure::AddUpdateCallback(
+    const std::function<void(const std::string&, const ccs::types::AnyValue&)>& cb)
+{
+  return _workspace->AddUpdateCallback(cb);
+}
+
 static bool HasRootAttributeSet(const Instruction &instruction)
 {
   if (!instruction.HasAttribute(IS_ROOT_ATTRIBUTE))

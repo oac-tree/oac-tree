@@ -33,6 +33,7 @@
 
 // Global header files
 
+#include <functional>
 #include <map>
 #include <memory>
 #include <string>
@@ -290,6 +291,15 @@ public:
    * @return workspace.
    */
   const Workspace* GetWorkspace() const;
+
+  /**
+   * @brief Add callback for variable updates
+   *
+   * @param cb Callback function object.
+   * @return true if adding the callback was successful.
+   */
+  bool AddUpdateCallback(
+    const std::function<void(const std::string&, const ccs::types::AnyValue&)>& cb);
 
   /**
    * @brief Name of attribute that defines the timeout between ticks.

@@ -56,7 +56,6 @@ namespace sequencer
 /**
  * @brief Interface for workspace variables.
  */
-
 class Variable
 {
 private:

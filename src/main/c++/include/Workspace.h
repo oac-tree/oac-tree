@@ -32,7 +32,7 @@
 #define _SEQ_Workspace_h_
 
 #include <map>
-#include <set>
+#include <memory>
 #include <vector>
 
 #include <common/AnyValue.h>
@@ -51,14 +51,26 @@ class Workspace
 private:
   /**
    * @brief Map from Variable names to Variable pointers.
+   *
+   * @note Workspace owns its Variable objects.
    */
-  std::map<std::string, Variable*> _var_map;
+  std::map<std::string, std::unique_ptr<Variable>> _var_map;
 
   /**
-   * @brief Set of Variable pointers to check uniqueness and facilitate cleanup.
+   * @brief Check if the given Variable name is already present.
+   *
+   * @param name Name to check.
+   * @return true if Variable name is already present.
    */
-  std::set<Variable*> _var_pointers;
+  bool ContainsVariableName(const std::string& name) const;
 
+  /**
+   * @brief Check if the Variable pointer is already present.
+   *
+   * @param var Variable pointer to check.
+   * @return true if Variable pointer is already present.
+   */
+  bool ContainsVariablePointer(Variable* var) const;
 public:
   Workspace();
   ~Workspace();
@@ -67,7 +79,7 @@ public:
    * @brief Add variable.
    *
    * @param name Variable name.
-   * @param var Variable to add.
+   * @param var Variable pointer.
    */
   bool AddVariable(std::string name, Variable* var);
 

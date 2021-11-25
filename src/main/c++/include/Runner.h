@@ -31,24 +31,15 @@
 #ifndef _SEQ_Runner_h_
 #define _SEQ_Runner_h_
 
-// Global header files
-
-// Local header files
-
-// Constants
-
-#ifdef __cplusplus
+#include <atomic>
 
 namespace sup
 {
 namespace sequencer
 {
-// Forward declarations
 
 class Procedure;
 class UserInterface;
-
-// Type definition
 
 /**
  * @brief Class that aggregates a Procedure and a UserInterface.
@@ -59,6 +50,8 @@ private:
   Procedure* _proc;
 
   UserInterface* _ui;
+
+  std::atomic_bool halt;
 
 protected:
 public:
@@ -90,6 +83,11 @@ public:
   void ExecuteSingle();
 
   /**
+   * @brief Halts the procedure execution.
+   */
+  void Halt();
+
+  /**
    * @brief Query if procedure has finished.
    *
    * @return True if procedure has finished.
@@ -113,15 +111,5 @@ public:
 }  // namespace sequencer
 
 }  // namespace sup
-
-extern "C"
-{
-#endif  // __cplusplus
-
-  // C API function declarations
-
-#ifdef __cplusplus
-}  // extern C
-#endif  // __cplusplus
 
 #endif  // _SEQ_Runner_h_

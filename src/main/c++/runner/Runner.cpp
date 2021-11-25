@@ -52,7 +52,11 @@ static int TickTimeoutMs(Procedure* procedure);
 
 // Function definition
 
-Runner::Runner(UserInterface* ui) : _proc{nullptr}, _ui{ui} {}
+Runner::Runner(UserInterface* ui)
+  : _proc{nullptr}
+  , _ui{ui}
+  , halt{false}
+{}
 
 Runner::~Runner() = default;
 
@@ -69,6 +73,7 @@ void Runner::SetProcedure(Procedure* procedure)
 
 void Runner::ExecuteProcedure()
 {
+  halt.store(false);
   if (_proc)
   {
     auto sleep_time_ms = TickTimeoutMs(_proc);
@@ -94,9 +99,18 @@ void Runner::ExecuteSingle()
   }
 }
 
+void Runner::Halt()
+{
+  halt.store(true);
+  if (_proc)
+  {
+    _proc->Halt();
+  }
+}
+
 bool Runner::IsFinished() const
 {
-  if (!_proc)
+  if (!_proc || halt.load())
   {
     return true;
   }

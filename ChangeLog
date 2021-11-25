@@ -2,6 +2,7 @@ Changes for 1.2.0:
 
 - Port to RHEL8
 - Add notification mechanism for Variable updates and propagate this to the UserInterface
+- Add halt method for Runner
 
 Changes for 1.1.0:
 

@@ -218,6 +218,15 @@ void Procedure::ExecuteSingle(UserInterface *ui)
   RootInstrunction()->ExecuteSingle(ui, _workspace.get());
 }
 
+void Procedure::Halt()
+{
+  if (RootInstrunction() == nullptr)
+  {
+    return;
+  }
+  RootInstrunction()->Halt();
+}
+
 void Procedure::Reset()
 {
   if (RootInstrunction() == nullptr)

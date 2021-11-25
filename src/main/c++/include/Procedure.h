@@ -238,6 +238,14 @@ public:
   void ExecuteSingle(UserInterface* ui);
 
   /**
+   * @brief Halt the procedure's execution.
+   *
+   * @note This is mainly used for interrupting all instructions that are running in a separate
+   * thread.
+   */
+  void Halt();
+
+  /**
    * @brief Reset procedure.
    *
    * @details This method request a halt and blocks until all asynchronous instructions are

@@ -152,10 +152,6 @@ bool Instruction::Setup(const Procedure &proc)
 
 void Instruction::ExecuteSingle(UserInterface *ui, Workspace *ws)
 {
-  if (_halt_requested.load())
-  {
-    return;  // Do not start execution if a halt request was detected.
-  }
   Preamble(ui);
   _status_before = GetStatus();
   SetStatus(ExecuteSingleImpl(ui, ws));

@@ -58,6 +58,7 @@ private:
    * @brief See sup::sequencer::UserInterface.
    */
   void UpdateInstructionStatusImpl(const Instruction* instruction) override;
+  void VariableUpdatedImpl(const std::string& name, const ccs::types::AnyValue& value) override;
   bool PutValueImpl(const ::ccs::types::AnyValue& value, const std::string& description) override;
   bool GetUserValueImpl(::ccs::types::AnyValue& value, const std::string& description) override;
   int GetUserChoiceImpl(const std::vector<std::string>& choices,

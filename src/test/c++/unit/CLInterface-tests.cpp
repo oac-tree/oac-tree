@@ -72,6 +72,22 @@ TEST_F(CLInterfaceTest, UpdateInstructionStatus)
   EXPECT_TRUE(output.str().empty());
   cli.UpdateInstructionStatus(wait.get());
   EXPECT_TRUE(output.str().empty());
+  cli_verbose.UpdateInstructionStatus(wait.get());
+  EXPECT_FALSE(output.str().empty());
+}
+
+TEST_F(CLInterfaceTest, VariableUpdated)
+{
+  std::ostringstream output;
+  CoutRedirector redirect(output);
+  ::ccs::types::AnyValue val(::ccs::types::UnsignedInteger32);
+  val = (ccs::types::uint32)1234;
+  std::string name = "TestUpdated";
+  EXPECT_TRUE(output.str().empty());
+  cli.VariableUpdated(name, val);
+  EXPECT_TRUE(output.str().empty());
+  cli_verbose.VariableUpdated(name, val);
+  EXPECT_FALSE(output.str().empty());
 }
 
 TEST_F(CLInterfaceTest, StartSingleStep)

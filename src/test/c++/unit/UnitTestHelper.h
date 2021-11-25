@@ -73,13 +73,13 @@ public:
    * @brief Constructor.
    */
 
-  CounterInstruction(void);
+  CounterInstruction();
 
   /**
    * @brief Destructor.
    */
 
-  ~CounterInstruction(void) override;
+  ~CounterInstruction() override;
 
   /**
    * @brief Class name for InstructionRegistry.
@@ -88,13 +88,12 @@ public:
   static const std::string Type;
 
   static ccs::types::uint32 counter;
-  static ccs::types::uint32 GetCount(void);
+  static ccs::types::uint32 GetCount();
 };
 
 /**
  * @brief Obvious.
  */
-
 class MockUI : public sup::sequencer::UserInterface
 {
 private:
@@ -107,21 +106,33 @@ private:
    * @brief See sup::sequencer::UserInterface.
    */
 
-  virtual void UpdateInstructionStatusImpl(const sup::sequencer::Instruction* instruction);
-  virtual bool GetUserValueImpl(::ccs::types::AnyValue& value, const std::string& description);
-  virtual int GetUserChoiceImpl(const std::vector<std::string>& choices,
-                                const std::string& description);
+  void UpdateInstructionStatusImpl(const sup::sequencer::Instruction* instruction) override;
+  bool GetUserValueImpl(::ccs::types::AnyValue& value, const std::string& description) override;
+  int GetUserChoiceImpl(const std::vector<std::string>& choices,
+                        const std::string& description) override;
 
 protected:
 public:
-  ::ccs::base::SharedReference<const ::ccs::types::AnyType> GetType(void) const;
+  ::ccs::base::SharedReference<const ::ccs::types::AnyType> GetType() const;
 
   void SetChoice(int choice);
   void SetStatus(bool status);
   void SetValue(::ccs::types::AnyValue& value);
 
-  MockUI(void);
-  virtual ~MockUI(void);
+  MockUI();
+  virtual ~MockUI();
+};
+
+/**
+ * @brief Obvious.
+ */
+class EmptyUserInterface : public sup::sequencer::UserInterface
+{
+private:
+  void UpdateInstructionStatusImpl(const sup::sequencer::Instruction* instruction) override {}
+public:
+  EmptyUserInterface() = default;
+  ~EmptyUserInterface() =default;
 };
 
 class TemporaryTestFile

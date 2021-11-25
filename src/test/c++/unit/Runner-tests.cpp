@@ -24,6 +24,7 @@
 #include <gtest/gtest.h>  // Google test framework
 
 #include <chrono>
+#include <future>
 #include <thread>
 
 #include <common/log-api.h>  // Syslog wrapper routines
@@ -31,6 +32,7 @@
 // Local header files
 
 #include "MockUserInterface.h"
+#include "UnitTestHelper.h"
 #include "Runner.h"
 #include "SequenceParser.h"
 
@@ -42,6 +44,7 @@
 // Type definition
 
 using namespace sup::sequencer;
+using namespace sup::UnitTestHelper;
 
 class RunnerTest : public ::testing::Test
 {
@@ -50,9 +53,11 @@ protected:
   virtual ~RunnerTest();
 
   MockUserInterface mock_ui;
+  EmptyUserInterface empty_ui;
   std::unique_ptr<Procedure> async_proc;
   std::unique_ptr<Procedure> sync_proc;
   std::unique_ptr<Procedure> copy_proc;
+  std::unique_ptr<Procedure> async_wait_proc;
 };
 
 // Function declaration
@@ -110,6 +115,21 @@ static const std::string CopyVariableProcedureString =
         <Local name="var2"
                type='{"type":"uint64"}' />
     </Workspace>
+</Procedure>
+)RAW";
+
+static const std::string AsyncWaitProcedureString =
+    R"RAW(<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+           name="Synchronous procedure for testing purposes"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd"
+           tickTimeout="0.05">
+    <ParallelSequence name="Main Sequence">
+        <Wait name="Immediate Success" timeout="5.0"/>
+        <Wait name="Immediate Success" timeout="10.0"/>
+        <Wait name="Immediate Success" timeout="10.0"/>
+    </ParallelSequence>
 </Procedure>
 )RAW";
 
@@ -263,11 +283,58 @@ TEST_F(RunnerTest, UIVariableCalls)
   EXPECT_FALSE(runner.IsRunning());
 }
 
+TEST_F(RunnerTest, Halt)
+{
+  // Test preconditions
+  Runner runner(&empty_ui);
+  EXPECT_TRUE(runner.IsFinished());  // empty procedure is finished by default
+  EXPECT_FALSE(runner.IsRunning());
+
+  // Set procedure and test conditions again
+  EXPECT_NO_THROW(async_wait_proc->Setup());
+  EXPECT_NO_THROW(runner.SetProcedure(async_wait_proc.get()));
+  EXPECT_EQ(async_wait_proc->GetStatus(), ExecutionStatus::NOT_STARTED);
+  EXPECT_FALSE(runner.IsFinished());
+  EXPECT_FALSE(runner.IsRunning());
+
+  // Setup separate thread to halt the execution after a second
+  std::promise<void> ready;
+  auto halt_future = std::async(std::launch::async,
+    [this, &runner, &ready](){
+      ready.set_value();
+      while(async_wait_proc->GetStatus() != ExecutionStatus::RUNNING)
+      {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+      }
+      runner.Halt();
+    });
+
+  // Execute whole procedure
+  ready.get_future().get();
+  EXPECT_NO_THROW(runner.ExecuteProcedure());
+  halt_future.get();
+  EXPECT_EQ(async_wait_proc->GetStatus(), ExecutionStatus::RUNNING);
+  EXPECT_FALSE(runner.IsFinished());
+  EXPECT_TRUE(runner.IsRunning());
+  runner.ExecuteSingle();  // retrieves statuses of asynchronous instructions
+  int max_waits = 10;
+  while (async_wait_proc->GetStatus() == ExecutionStatus::RUNNING && max_waits > 0)
+  {
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    --max_waits;
+  }
+  EXPECT_EQ(async_wait_proc->GetStatus(), ExecutionStatus::FAILURE);
+  EXPECT_TRUE(runner.IsFinished());
+  EXPECT_FALSE(runner.IsRunning());
+}
+
 RunnerTest::RunnerTest()
     : mock_ui{}
+    , empty_ui{}
     , async_proc{sup::sequencer::ParseProcedureString(AsyncProcedureString)}
     , sync_proc{sup::sequencer::ParseProcedureString(SyncProcedureString)}
     , copy_proc{sup::sequencer::ParseProcedureString(CopyVariableProcedureString)}
+    , async_wait_proc{sup::sequencer::ParseProcedureString(AsyncWaitProcedureString)}
 {
 }
 
@@ -284,6 +351,10 @@ RunnerTest::~RunnerTest()
   if (copy_proc)
   {
     copy_proc->Reset();
+  }
+  if (async_wait_proc)
+  {
+    async_wait_proc->Reset();
   }
 }
 

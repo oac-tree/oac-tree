@@ -78,7 +78,7 @@ void Runner::ExecuteProcedure()
   {
     auto sleep_time_ms = TickTimeoutMs(_proc);
 
-    while (!IsFinished())
+    while (!IsFinished() && !halt.load())
     {
       ExecuteSingle();
       if (IsRunning())
@@ -110,7 +110,7 @@ void Runner::Halt()
 
 bool Runner::IsFinished() const
 {
-  if (!_proc || halt.load())
+  if (!_proc)
   {
     return true;
   }

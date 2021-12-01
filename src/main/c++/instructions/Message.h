@@ -46,7 +46,6 @@ private:
   /**
    * @brief See sup::sequencer::Instruction.
    */
-  bool SetupImpl(const Procedure& proc) override;
   ExecutionStatus ExecuteSingleImpl(UserInterface* ui, Workspace* ws) override;
 
 protected:

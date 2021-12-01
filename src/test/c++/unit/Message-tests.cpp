@@ -53,10 +53,10 @@ protected:
 TEST_F(MessageTest, Setup)
 {
   Message message_instr{};
-  EXPECT_FALSE(message_instr.Setup(proc));
+  EXPECT_TRUE(message_instr.Setup(proc));
 
   message_instr.AddAttribute("name", "MyMessageInstruction");
-  EXPECT_FALSE(message_instr.Setup(proc));
+  EXPECT_TRUE(message_instr.Setup(proc));
 
   message_instr.AddAttribute("text", "Hello world!");
   EXPECT_TRUE(message_instr.Setup(proc));
@@ -77,13 +77,12 @@ TEST_F(MessageTest, Execute)
 
 TEST_F(MessageTest, FromRegistry)
 {
-  std::string message("Hello Sequencer!");
   auto message_instr = GlobalInstructionRegistry().Create("Message");
-  message_instr->AddAttribute("text", message);
   EXPECT_TRUE(message_instr->Setup(proc));
+  ui.ui_message = "UNDEFINED";
 
   message_instr->ExecuteSingle(&ui, &ws);
   EXPECT_EQ(message_instr->GetStatus(), ExecutionStatus::SUCCESS);
 
-  EXPECT_EQ(ui.ui_message, message);
+  EXPECT_EQ(ui.ui_message, "");
 }

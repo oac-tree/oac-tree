@@ -36,22 +36,14 @@ const std::string Message::Type = "Message";
 
 static const std::string TEXT_ATTRIBUTE = "text";
 
-bool Message::SetupImpl(const Procedure& proc)
-{
-  if (!HasAttribute(TEXT_ATTRIBUTE))
-  {
-    return false;
-  }
-  return true;
-}
-
 ExecutionStatus Message::ExecuteSingleImpl(UserInterface* ui, Workspace*)
 {
-  auto message = GetAttribute(TEXT_ATTRIBUTE);
-  if (!message.empty())
+  std::string message;
+  if (HasAttribute(TEXT_ATTRIBUTE))
   {
-    ui->Message(message);
+    message = GetAttribute(TEXT_ATTRIBUTE);
   }
+  ui->Message(message);
   return ExecutionStatus::SUCCESS;
 }
 

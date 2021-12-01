@@ -135,8 +135,11 @@ int CLInterface::GetUserChoiceImpl(const std::vector<std::string> &choices,
     std::cout << i << ": " << choices[i] << std::endl;
   }
   int input = -1;
-  std::cin >> input;
-  if (std::cin.fail() || input < 0 || input >= choices.size())
+  std::string input_str;
+  std::getline(std::cin, input_str);
+  std::istringstream istr(input_str);
+  istr >> input;
+  if (istr.fail() || input < 0 || input >= choices.size())
   {
     log_warning("CLInterface::GetUserChoiceImpl() - invalid choice");
     return -1;

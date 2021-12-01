@@ -4,6 +4,7 @@ Changes for 1.2.0:
 - Add notification mechanism for Variable updates and propagate this to the UserInterface
 - Add halt method for Runner
 - Add Message instruction that delegates to the UserInterface
+- Fix multiple inputs from CLInterface (remaining whitespace)
 
 Changes for 1.1.0:
 

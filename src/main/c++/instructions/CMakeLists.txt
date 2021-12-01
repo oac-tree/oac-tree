@@ -15,6 +15,7 @@ target_sources(sequencer-obj
         ${CMAKE_CURRENT_LIST_DIR}/InstructionHelper.cpp
         ${CMAKE_CURRENT_LIST_DIR}/InstructionRegistry.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Inverter.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/Message.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Output.cpp
         ${CMAKE_CURRENT_LIST_DIR}/ParallelSequence.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Repeat.cpp

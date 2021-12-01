@@ -116,6 +116,14 @@ private:
   virtual void EndSingleStepImpl();
 
   /**
+   * @brief Private virtual implementation of
+   * UserInterface::Message().
+   *
+   * @note Default implementation is empty.
+   */
+  virtual void MessageImpl(const std::string& message);
+
+  /**
    * @brief Mutex for concurrent access of UserInterface.
    */
   mutable std::mutex _ui_mutex;
@@ -192,6 +200,13 @@ public:
    * @note Non-Virtual Interface.
    */
   void EndSingleStep();
+
+  /**
+   * @brief Method called to display a message.
+   *
+   * @note Non-Virtual Interface.
+   */
+  void Message(const std::string& message);
 };
 
 // Global variables

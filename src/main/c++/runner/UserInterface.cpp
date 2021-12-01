@@ -68,6 +68,8 @@ void UserInterface::StartSingleStepImpl() {}
 
 void UserInterface::EndSingleStepImpl() {}
 
+void UserInterface::MessageImpl(const std::string&) {}
+
 void UserInterface::UpdateInstructionStatus(const Instruction* instruction)
 {
   std::lock_guard<std::mutex> lock(_ui_mutex);
@@ -109,6 +111,12 @@ void UserInterface::EndSingleStep()
 {
   std::lock_guard<std::mutex> lock(_ui_mutex);
   EndSingleStepImpl();
+}
+
+void UserInterface::Message(const std::string& message)
+{
+  std::lock_guard<std::mutex> lock(_ui_mutex);
+  MessageImpl(message);
 }
 
 }  // namespace sequencer

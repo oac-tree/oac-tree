@@ -65,6 +65,7 @@ private:
                         const std::string& description) override;
   void StartSingleStepImpl() override;
   void EndSingleStepImpl() override;
+  void MessageImpl(const std::string& message) override;
 
   bool _verbose;
 

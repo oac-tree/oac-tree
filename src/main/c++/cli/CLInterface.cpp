@@ -153,6 +153,11 @@ void CLInterface::StartSingleStepImpl()
   }
 }
 
+void CLInterface::MessageImpl(const std::string& message)
+{
+  std::cout << message << std::endl;
+}
+
 void CLInterface::EndSingleStepImpl()
 {
   if (_verbose)

@@ -86,6 +86,14 @@ void DaemonInterface::EndSingleStepImpl()
   }
 }
 
+void DaemonInterface::MessageImpl(const std::string& message)
+{
+  if (_log_enabled)
+  {
+    log_info("%s", message.c_str());
+  }
+}
+
 DaemonInterface::DaemonInterface(bool log_enabled) : _log_enabled{log_enabled} {}
 
 DaemonInterface::~DaemonInterface() = default;

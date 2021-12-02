@@ -216,6 +216,13 @@ public:
   std::string GetAttribute(const std::string& name) const;
 
   /**
+   * @brief Get all attributes.
+   *
+   * @return Map containing all attributes.
+   */
+  AttributeMap GetAttributes() const;
+
+  /**
    * @brief Set attribute with given name and value.
    *
    * @param name Attribute name.

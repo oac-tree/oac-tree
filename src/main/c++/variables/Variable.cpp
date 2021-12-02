@@ -176,6 +176,11 @@ std::string Variable::GetAttribute(const std::string &name) const
   return _attributes.GetAttribute(name);
 }
 
+AttributeMap Variable::GetAttributes() const
+{
+  return _attributes;
+}
+
 bool Variable::AddAttribute(const std::string &name, const std::string &value)
 {
   std::lock_guard<std::mutex> lock(_access_mutex);

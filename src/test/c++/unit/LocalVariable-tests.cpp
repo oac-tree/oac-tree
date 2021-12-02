@@ -150,6 +150,9 @@ TEST_F(LocalVariableTest, AddAttributesFull)
   // Add attributes
   EXPECT_TRUE(empty_var.AddAttributes(attr_full));
 
+  // Get attributes
+  EXPECT_EQ(empty_var.GetAttributes().GetAttributeNames(), attr_full.GetAttributeNames());
+
   // Post conditions
   EXPECT_TRUE(empty_var.HasAttribute(attributes::NAME_ATTRIBUTE));
   EXPECT_TRUE(empty_var.HasAttribute(LocalVariable::JSON_TYPE));

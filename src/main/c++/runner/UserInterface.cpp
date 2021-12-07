@@ -78,7 +78,6 @@ void UserInterface::UpdateInstructionStatus(const Instruction* instruction)
 
 void UserInterface::VariableUpdated(const std::string& name, const ccs::types::AnyValue& value)
 {
-  std::lock_guard<std::mutex> lock(_ui_mutex);
   VariableUpdatedImpl(name, value);
 }
 

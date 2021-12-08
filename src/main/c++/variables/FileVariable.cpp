@@ -22,6 +22,8 @@
 // Global header files
 
 #include <common/AnyValueHelper.h>  // Misc. helper functions
+#include <fstream>
+#include <sstream>
 
 // Local header files
 
@@ -33,6 +35,8 @@
 #define LOG_ALTERN_SRC "sup::sequencer"
 
 // Type definition
+
+static std::string StripWhitespaceFromFile(const std::string& filename);
 
 namespace sup
 {
@@ -54,7 +58,12 @@ bool FileVariable::SetupImpl(void)
 
 bool FileVariable::GetValueImpl(::ccs::types::AnyValue& value) const
 {
-  bool status = ::ccs::HelperTools::ReadFromFile(&value, Variable::GetAttribute("file").c_str());
+  auto str = StripWhitespaceFromFile(GetAttribute("file"));
+  if (str.empty())
+  {
+    return false;
+  }
+  bool status = ccs::HelperTools::ParseFromJSONStream(&value, str.c_str());
   return status;
 }
 
@@ -74,5 +83,21 @@ FileVariable::~FileVariable() = default;
 }  // namespace sequencer
 
 }  // namespace sup
+
+static std::string StripWhitespaceFromFile(const std::string& filename)
+{
+  if (!ccs::HelperTools::Exist(filename.c_str()))
+  {
+    return {};
+  }
+  std::ostringstream result;
+  std::ifstream fin(filename);
+  std::string s;
+  while (fin >> s)
+  {
+    result << s;
+  }
+  return result.str();
+}
 
 #undef LOG_ALTERN_SRC

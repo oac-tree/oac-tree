@@ -88,7 +88,7 @@ static const std::string ProcedureSequenceString =
     <Repeat maxCount="3">
         <Sequence>
             <Wait name="wait" timeout="0.1"/>
-            <Wait name="again" timeout="0.1"/>
+            <Wait name="again" timeout="0.01"/>
         </Sequence>
     </Repeat>
     <Workspace>
@@ -104,9 +104,9 @@ static const std::string ProcedureParallelString =
            name="Trivial procedure for testing purposes"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
-    <Repeat maxCount="10">
+    <Repeat maxCount="3">
         <ParallelSequence name="parallel" successThreshold="1" failureThreshold="2">
-            <Wait name="wait" timeout="1.0"/>
+            <Wait name="wait" timeout="0.01"/>
             <Wait name="again" timeout="0.1"/>
         </ParallelSequence>
     </Repeat>
@@ -123,11 +123,11 @@ static const std::string ProcedureParallelBuiltinString =
            name="Trivial procedure for testing purposes"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
-    <Repeat maxCount="10">
+    <Repeat maxCount="3">
         <ParallelSequence name="parallel" successThreshold="1" failureThreshold="3">
-            <Wait name="wait" timeout="1.0"/>
+            <Wait name="wait" timeout="0.01"/>
             <Copy name="copy" input="input" output="output"/>
-            <Wait name="again" timeout="1.0"/>
+            <Wait name="again" timeout="0.1"/>
         </ParallelSequence>
     </Repeat>
     <Workspace>
@@ -143,11 +143,11 @@ static const std::string ProcedureParallelUserCodeString =
            name="Trivial procedure for testing purposes"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
-    <Repeat maxCount="10">
+    <Repeat maxCount="3">
         <ParallelSequence name="parallel" successThreshold="1" failureThreshold="3">
-            <Wait name="wait" timeout="1.0"/>
+            <Wait name="wait" timeout="0.01"/>
             <CopyInstruction name="copy" input="input" output="output"/>
-            <Wait name="again" timeout="1.0"/>
+            <Wait name="again" timeout="0.1"/>
         </ParallelSequence>
     </Repeat>
     <Workspace>
@@ -163,9 +163,9 @@ static const std::string ProcedureThresholdsString =
            name="Trivial procedure for testing purposes"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
-    <Repeat maxCount="10">
+    <Repeat maxCount="3">
         <ParallelSequence name="parallel" successThreshold="undefined" failureThreshold="undefined">
-            <Wait name="wait" timeout="1.0"/>
+            <Wait name="wait" timeout="0.1"/>
         </ParallelSequence>
     </Repeat>
     <Workspace>

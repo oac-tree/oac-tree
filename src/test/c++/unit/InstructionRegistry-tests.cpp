@@ -19,121 +19,54 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
+#include "InstructionRegistry.h"
 
 #include <Instruction.h>
 #include <InstructionRegistry.h>
 #include <SequenceParser.h>
 #include <common/BasicTypes.h>
-#include <gtest/gtest.h>  // Google test framework
+#include <gtest/gtest.h>
 
-#include <algorithm>  // std::find
-
-#include <common/log-api.h>
-
-// Local header files
-
-#include "InstructionRegistry.h"
-
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "unit-test"
-
-// Type declaration
+#include <algorithm>
 
 class TestInstruction : public sup::sequencer::Instruction
 {
-private:
-  /**
-   * @brief See sup::sequencer::Instruction.
-   */
-
-  sup::sequencer::ExecutionStatus ExecuteSingleImpl(sup::sequencer::UserInterface* ui,
-                                                    sup::sequencer::Workspace* ws) override;
-
-protected:
 public:
-  /**
-   * @brief Constructor.
-   */
-
-  TestInstruction(void);
-
-  /**
-   * @brief Destructor.
-   */
-
-  ~TestInstruction(void) override;
-
-  /**
-   * @brief Class name for InstructionRegistry.
-   */
-
+  TestInstruction() : sup::sequencer::Instruction(TestInstruction::Type) {}
   static const std::string Type;
+  
+private:
+  sup::sequencer::ExecutionStatus ExecuteSingleImpl(sup::sequencer::UserInterface* ui,
+                                                    sup::sequencer::Workspace* ws) override
+  {
+    return sup::sequencer::ExecutionStatus::SUCCESS;
+  }
 };
 
-// Function declaration
-
-// Global variables
-
-static ccs::log::Func_t _log_handler = ccs::log::SetStdout();
 const std::string TestInstruction::Type = "TestInstruction";
-
-// Function definition
-
-sup::sequencer::ExecutionStatus TestInstruction::ExecuteSingleImpl(
-    sup::sequencer::UserInterface*, sup::sequencer::Workspace*)
-{
-  return sup::sequencer::ExecutionStatus::SUCCESS;
-}
-TestInstruction::TestInstruction() : sup::sequencer::Instruction(TestInstruction::Type) {}
-TestInstruction::~TestInstruction() {}
 
 TEST(InstructionRegistry, Register_success)
 {
-  bool status = sup::sequencer::RegisterGlobalInstruction<TestInstruction>();
+  EXPECT_TRUE(sup::sequencer::RegisterGlobalInstruction<TestInstruction>());
 
-  if (status)
-  {
-    auto registered_names =
-        sup::sequencer::GlobalInstructionRegistry().RegisteredInstructionNames();
-    status =
-        (registered_names.end()
-         != std::find(registered_names.begin(), registered_names.end(), TestInstruction::Type));
-  }
-
-  ASSERT_EQ(true, status);
+  auto registered_names = sup::sequencer::GlobalInstructionRegistry().RegisteredInstructionNames();
+  auto it = std::find(registered_names.begin(), registered_names.end(), TestInstruction::Type);
+  EXPECT_TRUE(it != registered_names.end());
 }
 
 TEST(InstructionRegistry, Create_success)
 {
   auto registered_names = sup::sequencer::GlobalInstructionRegistry().RegisteredInstructionNames();
-  bool status =
-      (registered_names.end()
-       != std::find(registered_names.begin(), registered_names.end(), TestInstruction::Type));
+  auto it = std::find(registered_names.begin(), registered_names.end(), TestInstruction::Type);
+  EXPECT_TRUE(it == registered_names.end());
 
-  if (!status)
-  {
-    status = sup::sequencer::RegisterGlobalInstruction<TestInstruction>();
-  }
-
-  if (status)
-  {
-    auto inst = sup::sequencer::GlobalInstructionRegistry().Create(TestInstruction::Type);
-    status = static_cast<bool>(inst);
-  }
-
-  ASSERT_EQ(true, status);
+  EXPECT_TRUE(sup::sequencer::RegisterGlobalInstruction<TestInstruction>());
+  auto inst = sup::sequencer::GlobalInstructionRegistry().Create(TestInstruction::Type);
+  EXPECT_TRUE(inst.get());
 }
 
 TEST(InstructionRegistry, Create_failure)
 {
-  sup::sequencer::InstructionRegistry registry = sup::sequencer::GlobalInstructionRegistry();
   auto inst = sup::sequencer::GlobalInstructionRegistry().Create("UndefinedInstructionName");
-  bool status = (false == static_cast<bool>(inst));
-
-  ASSERT_EQ(true, status);
+  EXPECT_FALSE(inst.get());
 }
-
-#undef LOG_ALTERN_SRC

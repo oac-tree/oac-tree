@@ -34,7 +34,7 @@ class TestInstruction : public sup::sequencer::Instruction
 public:
   TestInstruction() : sup::sequencer::Instruction(TestInstruction::Type) {}
   static const std::string Type;
-  
+
 private:
   sup::sequencer::ExecutionStatus ExecuteSingleImpl(sup::sequencer::UserInterface* ui,
                                                     sup::sequencer::Workspace* ws) override
@@ -45,27 +45,31 @@ private:
 
 const std::string TestInstruction::Type = "TestInstruction";
 
-TEST(InstructionRegistry, Register_success)
+TEST(InstructionRegistry, RegisterInstruction)
 {
-  EXPECT_TRUE(sup::sequencer::RegisterGlobalInstruction<TestInstruction>());
-
-  auto registered_names = sup::sequencer::GlobalInstructionRegistry().RegisteredInstructionNames();
-  auto it = std::find(registered_names.begin(), registered_names.end(), TestInstruction::Type);
-  EXPECT_TRUE(it != registered_names.end());
-}
-
-TEST(InstructionRegistry, Create_success)
-{
+  // no such name
   auto registered_names = sup::sequencer::GlobalInstructionRegistry().RegisteredInstructionNames();
   auto it = std::find(registered_names.begin(), registered_names.end(), TestInstruction::Type);
   EXPECT_TRUE(it == registered_names.end());
 
-  EXPECT_TRUE(sup::sequencer::RegisterGlobalInstruction<TestInstruction>());
+  // not possible to create instruction
   auto inst = sup::sequencer::GlobalInstructionRegistry().Create(TestInstruction::Type);
+  EXPECT_FALSE(inst.get());
+
+  // registration
+  EXPECT_TRUE(sup::sequencer::RegisterGlobalInstruction<TestInstruction>());
+
+  // there is a name
+  registered_names = sup::sequencer::GlobalInstructionRegistry().RegisteredInstructionNames();
+  it = std::find(registered_names.begin(), registered_names.end(), TestInstruction::Type);
+  EXPECT_TRUE(it != registered_names.end());
+
+  // can create instruction
+  inst = sup::sequencer::GlobalInstructionRegistry().Create(TestInstruction::Type);
   EXPECT_TRUE(inst.get());
 }
 
-TEST(InstructionRegistry, Create_failure)
+TEST(InstructionRegistry, CreateFailure)
 {
   auto inst = sup::sequencer::GlobalInstructionRegistry().Create("UndefinedInstructionName");
   EXPECT_FALSE(inst.get());

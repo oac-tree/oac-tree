@@ -19,15 +19,6 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
-
-#include <SequenceParser.h>
-#include <gtest/gtest.h>  // Google test framework
-
-#include <algorithm>  // std::find
-
-// Local header files
-
 #include "CompoundInstruction.h"
 #include "Instruction.h"
 #include "InstructionRegistry.h"
@@ -35,49 +26,37 @@
 #include "UnitTestHelper.h"
 #include "Workspace.h"
 
-// Constants
+#include <SequenceParser.h>
+#include <gtest/gtest.h>
 
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "unit-test"
-
-// Type definition
+#include <algorithm>
 
 using namespace sup::sequencer;
 
 class CopyInstruction : public Instruction
 {
-private:
-  /**
-   * @brief See sup::sequencer::Instruction.
-   * @details Copy variables identified with 'input' and 'output' attributes.
-   */
-  ExecutionStatus ExecuteSingleImpl(UserInterface *ui, Workspace *ws) override;
-
-protected:
 public:
-  /**
-   * @brief Constructor.
-   */
-  CopyInstruction(void);
-
-  /**
-   * @brief Destructor.
-   */
-  ~CopyInstruction(void) override;
-
-  /**
-   * @brief Class name for InstructionRegistry.
-   */
+  CopyInstruction() : sup::sequencer::Instruction(CopyInstruction::Type) {}
   static const std::string Type;
+
+private:
+  ExecutionStatus ExecuteSingleImpl(UserInterface *ui, Workspace *ws)
+  {
+    bool status = (HasAttribute("input") && HasAttribute("output"));
+    ccs::types::AnyValue _value;
+    if (status)
+    {  // Read from workspace
+      status = ws->GetValue(GetAttribute("input"), _value);
+    }
+    if (status)
+    {  // Write to workspace
+      status = ws->SetValue(GetAttribute("output"), _value);
+    }
+    return (status ? ExecutionStatus::SUCCESS : ExecutionStatus::FAILURE);
+  }
 };
 
-// Function declaration
-
-// Global variables
-
 const std::string CopyInstruction::Type = "CopyInstruction";
-
-static ccs::log::Func_t _log_handler = ccs::log::SetStdout();
 
 static const std::string ProcedureSequenceString =
     R"RAW(<?xml version="1.0" encoding="UTF-8"?>
@@ -173,32 +152,6 @@ static const std::string ProcedureThresholdsString =
 </Procedure>
 )RAW";
 
-// Function definition
-
-ExecutionStatus CopyInstruction::ExecuteSingleImpl(UserInterface *ui, Workspace *ws)
-{
-  (void)ui;
-  (void)ws;
-
-  bool status = (HasAttribute("input") && HasAttribute("output"));
-  ccs::types::AnyValue _value;
-  if (status)
-  {  // Read from workspace
-    status = ws->GetValue(GetAttribute("input"), _value);
-  }
-  if (status)
-  {  // Write to workspace
-    status = ws->SetValue(GetAttribute("output"), _value);
-  }
-  return (status ? ExecutionStatus::SUCCESS : ExecutionStatus::FAILURE);
-}
-
-CopyInstruction::CopyInstruction(void) : sup::sequencer::Instruction(CopyInstruction::Type) {}
-CopyInstruction::~CopyInstruction(void)
-{
-  log_debug("CopyInstruction::~CopyInstruction called");
-}
-
 TEST(ParallelSequence, Procedure_sequence)
 {
   bool status = true;
@@ -206,17 +159,10 @@ TEST(ParallelSequence, Procedure_sequence)
   {
     sup::sequencer::LogUI ui;
     auto proc = sup::sequencer::ParseProcedureString(ProcedureSequenceString);
-
     status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
   }
-  catch (const std::exception &e)
-  {  // Exception caught
-    log_error("TEST(ParallelSequence, Procedure_sequence) - .. '%s' exception caught", e.what());
-    status = false;
-  }
   catch (...)
-  {  // Exception caught
-    log_error("TEST(ParallelSequence, Procedure_sequence) - .. unknown exception caught");
+  {
     status = false;
   }
   ASSERT_EQ(true, status);
@@ -232,19 +178,13 @@ TEST(ParallelSequence, Procedure_parallel)
 
     status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
   }
-  catch (const std::exception &e)
-  {  // Exception caught
-    log_error("TEST(ParallelSequence, Procedure_parallel) - .. '%s' exception caught", e.what());
-    status = false;
-  }
   catch (...)
-  {  // Exception caught
-    log_error("TEST(ParallelSequence, Procedure_parallel) - .. unknown exception caught");
+  {
     status = false;
   }
   ASSERT_EQ(true, status);
 }
-// Issue during the tear-down process
+
 TEST(ParallelSequence, WithBuiltinCode)
 {
   bool status = true;
@@ -255,19 +195,13 @@ TEST(ParallelSequence, WithBuiltinCode)
 
     status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
   }
-  catch (const std::exception &e)
-  {  // Exception caught
-    log_error("TEST(ParallelSequence, Procedure_parallel) - .. '%s' exception caught", e.what());
-    status = false;
-  }
   catch (...)
-  {  // Exception caught
-    log_error("TEST(ParallelSequence, Procedure_parallel) - .. unknown exception caught");
+  {
     status = false;
   }
   ASSERT_EQ(true, status);
 }
-// Issue during the tear-down process
+
 TEST(ParallelSequence, WithUserCode)
 {
   bool status = sup::sequencer::RegisterGlobalInstruction<CopyInstruction>();
@@ -278,14 +212,8 @@ TEST(ParallelSequence, WithUserCode)
 
     status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
   }
-  catch (const std::exception &e)
-  {  // Exception caught
-    log_error("TEST(ParallelSequence, Procedure_parallel) - .. '%s' exception caught", e.what());
-    status = false;
-  }
   catch (...)
-  {  // Exception caught
-    log_error("TEST(ParallelSequence, Procedure_parallel) - .. unknown exception caught");
+  {
     status = false;
   }
   ASSERT_EQ(true, status);
@@ -293,63 +221,23 @@ TEST(ParallelSequence, WithUserCode)
 
 TEST(ParallelSequence, SetupImpl_thresholds)
 {
-  sup::sequencer::InstructionRegistry registry = sup::sequencer::GlobalInstructionRegistry();
   auto names = sup::sequencer::GlobalInstructionRegistry().RegisteredInstructionNames();
-  bool status = (names.end() != std::find(names.begin(), names.end(), "ParallelSequence"));
+  ASSERT_TRUE(std::find(names.begin(), names.end(), "ParallelSequence") != names.end());
 
-  std::unique_ptr<sup::sequencer::Instruction> parallel;
+  auto parallel = sup::sequencer::GlobalInstructionRegistry().Create("ParallelSequence");
+  auto compound = dynamic_cast<sup::sequencer::CompoundInstruction *>(parallel.get());
+  EXPECT_TRUE(compound);
 
-  sup::sequencer::CompoundInstruction *ref = NULL_PTR_CAST(sup::sequencer::CompoundInstruction *);
-
-  if (status)
-  {
-    parallel = sup::sequencer::GlobalInstructionRegistry().Create("ParallelSequence");
-    status = static_cast<bool>(parallel);
-  }
-
-  if (status)
-  {
-    ref = dynamic_cast<sup::sequencer::CompoundInstruction *>(parallel.get());
-    status = (NULL_PTR_CAST(sup::sequencer::CompoundInstruction *) != ref);
-  }
-
-  if (status)
-  {  // HasChild is protected
-    status = (true == parallel->ChildInstructions().empty());
-  }
-
-  if (status)
-  {
-    status = (parallel->AddAttribute("successThreshold", "undefined")
+  EXPECT_TRUE(parallel->ChildInstructions().empty());
+  EXPECT_TRUE(parallel->AddAttribute("successThreshold", "undefined")
               && parallel->AddAttribute("failureThreshold", "undefined"));
-  }
 
-  std::unique_ptr<sup::sequencer::Instruction> child;
+  auto child = sup::sequencer::GlobalInstructionRegistry().Create("Wait");
+  EXPECT_TRUE(child->AddAttribute("timeout", "1.0"));
 
-  if (status)
-  {
-    child = sup::sequencer::GlobalInstructionRegistry().Create("Wait");
-    status = static_cast<bool>(child);
-  }
+  compound->PushBack(child.release());
+  EXPECT_FALSE(parallel->ChildInstructions().empty());
 
-  if (status)
-  {
-    status = child->AddAttribute("timeout", "1.0");
-  }
-
-  if (status)
-  {
-    ref->PushBack(child.release());
-    status = (false == parallel->ChildInstructions().empty());
-  }
-
-  if (status)
-  {
-    sup::sequencer::Procedure proc;
-    status = (false == parallel->Setup(proc));
-  }
-
-  ASSERT_EQ(true, status);
+  sup::sequencer::Procedure proc;
+  EXPECT_FALSE(parallel->Setup(proc));
 }
-
-#undef LOG_ALTERN_SRC

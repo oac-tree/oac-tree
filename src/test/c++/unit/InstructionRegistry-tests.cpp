@@ -96,10 +96,11 @@ TEST(InstructionRegistry, Register_success)
 
   if (status)
   {
-    sup::sequencer::InstructionRegistry registry = sup::sequencer::GlobalInstructionRegistry();
-    status = (registry.RegisteredInstructionNames().end()
-              != std::find(registry.RegisteredInstructionNames().begin(),
-                           registry.RegisteredInstructionNames().end(), TestInstruction::Type));
+    auto registered_names =
+        sup::sequencer::GlobalInstructionRegistry().RegisteredInstructionNames();
+    status =
+        (registered_names.end()
+         != std::find(registered_names.begin(), registered_names.end(), TestInstruction::Type));
   }
 
   ASSERT_EQ(true, status);
@@ -107,10 +108,10 @@ TEST(InstructionRegistry, Register_success)
 
 TEST(InstructionRegistry, Create_success)
 {
-  sup::sequencer::InstructionRegistry registry = sup::sequencer::GlobalInstructionRegistry();
-  bool status = (registry.RegisteredInstructionNames().end()
-                 != std::find(registry.RegisteredInstructionNames().begin(),
-                              registry.RegisteredInstructionNames().end(), TestInstruction::Type));
+  auto registered_names = sup::sequencer::GlobalInstructionRegistry().RegisteredInstructionNames();
+  bool status =
+      (registered_names.end()
+       != std::find(registered_names.begin(), registered_names.end(), TestInstruction::Type));
 
   if (!status)
   {

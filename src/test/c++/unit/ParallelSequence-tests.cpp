@@ -33,31 +33,6 @@
 
 using namespace sup::sequencer;
 
-class CopyInstruction : public Instruction
-{
-public:
-  CopyInstruction() : sup::sequencer::Instruction(CopyInstruction::Type) {}
-  static const std::string Type;
-
-private:
-  ExecutionStatus ExecuteSingleImpl(UserInterface *ui, Workspace *ws)
-  {
-    bool status = (HasAttribute("input") && HasAttribute("output"));
-    ccs::types::AnyValue _value;
-    if (status)
-    {  // Read from workspace
-      status = ws->GetValue(GetAttribute("input"), _value);
-    }
-    if (status)
-    {  // Write to workspace
-      status = ws->SetValue(GetAttribute("output"), _value);
-    }
-    return (status ? ExecutionStatus::SUCCESS : ExecutionStatus::FAILURE);
-  }
-};
-
-const std::string CopyInstruction::Type = "CopyInstruction";
-
 static const std::string ProcedureSequenceString =
     R"RAW(<?xml version="1.0" encoding="UTF-8"?>
 <Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
@@ -125,7 +100,7 @@ static const std::string ProcedureParallelUserCodeString =
     <Repeat maxCount="3">
         <ParallelSequence name="parallel" successThreshold="1" failureThreshold="3">
             <Wait name="wait" timeout="0.01"/>
-            <CopyInstruction name="copy" input="input" output="output"/>
+            <Copy name="copy" input="input" output="output"/>
             <Wait name="again" timeout="0.1"/>
         </ParallelSequence>
     </Repeat>
@@ -192,23 +167,6 @@ TEST(ParallelSequence, WithBuiltinCode)
   {
     sup::sequencer::LogUI ui;
     auto proc = sup::sequencer::ParseProcedureString(ProcedureParallelBuiltinString);
-
-    status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
-  }
-  catch (...)
-  {
-    status = false;
-  }
-  ASSERT_EQ(true, status);
-}
-
-TEST(ParallelSequence, WithUserCode)
-{
-  bool status = sup::sequencer::RegisterGlobalInstruction<CopyInstruction>();
-  try
-  {
-    sup::sequencer::LogUI ui;
-    auto proc = sup::sequencer::ParseProcedureString(ProcedureParallelUserCodeString);
 
     status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
   }

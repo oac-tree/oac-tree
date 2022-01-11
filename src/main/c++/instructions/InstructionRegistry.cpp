@@ -78,7 +78,12 @@ InstructionRegistry& GlobalInstructionRegistry()
 
 bool InstructionRegistry::RegisterInstruction(std::string name, InstructionConstructor constructor)
 {
-  _instruction_map[name] = constructor;
+  auto it = _instruction_map.find(name);
+  if (it != _instruction_map.end())
+  {
+    throw std::runtime_error("Already registered instruction with the name '"+name+"'");
+  }
+  _instruction_map.insert(it, {name, constructor});
   return true;
 }
 

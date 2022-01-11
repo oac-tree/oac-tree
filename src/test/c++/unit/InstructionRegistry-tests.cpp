@@ -59,6 +59,9 @@ TEST(InstructionRegistry, RegisterInstruction)
   // registration
   EXPECT_TRUE(sup::sequencer::RegisterGlobalInstruction<TestInstruction>());
 
+  // second registration with the same name is not allowed
+  EXPECT_THROW(sup::sequencer::RegisterGlobalInstruction<TestInstruction>(), std::runtime_error);
+
   // there is a name
   registered_names = sup::sequencer::GlobalInstructionRegistry().RegisteredInstructionNames();
   it = std::find(registered_names.begin(), registered_names.end(), TestInstruction::Type);

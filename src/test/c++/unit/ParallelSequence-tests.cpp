@@ -294,9 +294,8 @@ TEST(ParallelSequence, WithUserCode)
 TEST(ParallelSequence, SetupImpl_thresholds)
 {
   sup::sequencer::InstructionRegistry registry = sup::sequencer::GlobalInstructionRegistry();
-  bool status = (registry.RegisteredInstructionNames().end()
-                 != std::find(registry.RegisteredInstructionNames().begin(),
-                              registry.RegisteredInstructionNames().end(), "ParallelSequence"));
+  auto names = sup::sequencer::GlobalInstructionRegistry().RegisteredInstructionNames();
+  bool status = (names.end() != std::find(names.begin(), names.end(), "ParallelSequence"));
 
   std::unique_ptr<sup::sequencer::Instruction> parallel;
 

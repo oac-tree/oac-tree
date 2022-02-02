@@ -8,7 +8,7 @@
  *
  * Author        : Walter Van Herck (IO)
  *
- * Copyright (c) : 2010-2020 ITER Organization,
+ * Copyright (c) : 2010-2022 ITER Organization,
  *                 CS 90 046
  *                 13067 St. Paul-lez-Durance Cedex
  *                 France
@@ -24,7 +24,7 @@
  * @brief Header file for Input class.
  * @date 17/03/2021
  * @author Walter Van Herck (IO)
- * @copyright 2010-2020 ITER Organization
+ * @copyright 2010-2022 ITER Organization
  * @details This header file contains the definition of the Input class.
  */
 

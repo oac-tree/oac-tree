@@ -8,7 +8,7 @@
  *
  * Author        : Bertrand Bauvir (IO)
  *
- * Copyright (c) : 2010-2020 ITER Organization,
+ * Copyright (c) : 2010-2022 ITER Organization,
  *                 CS 90 046
  *                 13067 St. Paul-lez-Durance Cedex
  *                 France
@@ -24,7 +24,7 @@
  * @brief Header file for FileVariable class.
  * @date 11/12/2020
  * @author Bertrand Bauvir (IO)
- * @copyright 2010-2020 ITER Organization
+ * @copyright 2010-2022 ITER Organization
  * @details This header file contains the definition of the FileVariable class.
  */
 

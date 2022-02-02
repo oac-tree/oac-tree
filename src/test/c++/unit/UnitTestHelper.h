@@ -24,7 +24,7 @@
  * @brief Header file for unit test helper functions.
  * @date 23/03/21
  * @author Walter Van Herck (IO)
- * @copyright 2010-2020 ITER Organization
+ * @copyright 2010-2022 ITER Organization
  * @details This header file contains the definition of the unit test helper functions.
  */
 

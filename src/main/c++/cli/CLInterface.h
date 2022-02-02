@@ -8,7 +8,7 @@
  *
  * Author        : Walter Van Herck (IO)
  *
- * Copyright (c) : 2010-2020 ITER Organization,
+ * Copyright (c) : 2010-2022 ITER Organization,
  *                 CS 90 046
  *                 13067 St. Paul-lez-Durance Cedex
  *                 France
@@ -24,7 +24,7 @@
  * @brief Header file for CLInterface class.
  * @date 25/11/20
  * @author Walter Van Herck (IO)
- * @copyright 2010-2020 ITER Organization
+ * @copyright 2010-2022 ITER Organization
  * @details This header file contains the definition of the CLInterface class.
  */
 

@@ -9,7 +9,7 @@
 #
 # Author        : Walter Van Herck (IO)
 #
-# Copyright (c) : 2010-2020 ITER Organization,
+# Copyright (c) : 2010-2022 ITER Organization,
 #                 CS 90 046
 #                 13067 St. Paul-lez-Durance Cedex
 #                 France

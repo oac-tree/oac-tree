@@ -24,7 +24,7 @@
  * @brief Header file for AttributeMap class.
  * @date 09/02/2021
  * @author Walter Van Herck (IO)
- * @copyright 2010-2021 ITER Organization
+ * @copyright 2010-2022 ITER Organization
  * @details This header file contains the definition of the AttributeMap class.
  */
 

@@ -24,7 +24,7 @@
  * @brief Header file for Instruction helper functions.
  * @date 03/03/2021
  * @author Walter Van Herck (IO)
- * @copyright 2010-2021 ITER Organization
+ * @copyright 2010-2022 ITER Organization
  * @details This header file contains the definition of the Instruction helper functions.
  */
 

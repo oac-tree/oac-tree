@@ -24,7 +24,7 @@
  * @brief Definition of CallbackManager template class.
  * @date 24/11/21
  * @author Walter Van Herck (IO)
- * @copyright 2010-2021 ITER Organization
+ * @copyright 2010-2022 ITER Organization
  * @details This header file contains the definition of the CallbackManager template class.
  */
 

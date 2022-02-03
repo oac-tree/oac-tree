@@ -31,10 +31,11 @@
 #ifndef _SEQ_NamedCallbackManager_h_
 #define _SEQ_NamedCallbackManager_h_
 
+#include <algorithm>
 #include <functional>
-#include <list>
 #include <mutex>
 #include <string>
+#include <vector>
 
 namespace sup
 {
@@ -55,11 +56,23 @@ public:
 
   bool AddGenericCallback(std::function<void(const std::string&, Args...)> cb);
 
+  bool RegisterCallback(const std::string& name,
+                        const std::function<void(Args...)>& cb, void* listener);
+
+  bool UnregisterListener(void* listener);
+
   void ExecuteCallbacks(const std::string& name, Args... args);
 
 private:
+  struct CallbackEntry
+  {
+    void* listener;
+    std::string name;
+    std::function<void(Args...)> cb;
+  };
   mutable std::mutex mtx;
-  std::list<std::function<void(const std::string&, Args...)>> generic_cb_list;
+  std::vector<std::function<void(const std::string&, Args...)>> generic_cb_list;
+  std::vector<CallbackEntry> cb_entries;
 };
 
 template <typename... Args>
@@ -76,12 +89,45 @@ bool NamedCallbackManager<Args...>::AddGenericCallback(
 }
 
 template <typename... Args>
+bool NamedCallbackManager<Args...>::RegisterCallback(
+    const std::string& name, const std::function<void(Args...)>& cb,
+    void* listener)
+{
+  if (!cb)
+  {
+    return false;
+  }
+  std::lock_guard<std::mutex> lk(mtx);
+  cb_entries.emplace_back({listener, name, cb});
+  return true;
+}
+
+template <typename... Args>
+bool NamedCallbackManager<Args...>::UnregisterListener(void* listener)
+{
+  std::lock_guard<std::mutex> lk(mtx);
+  auto new_end_it = std::remove_if(cb_entries.begin(), cb_entries.end(),
+                                   [listener](decltype(cb_entries.begin()) it)
+                                   { return it->listener = listener; });
+  auto result = new_end_it == cb_entries.end();
+  cb_entries.erase(new_end_it, cb_entries.end());
+  return result;
+}
+
+template <typename... Args>
 void NamedCallbackManager<Args...>::ExecuteCallbacks(const std::string& name, Args... args)
 {
   std::lock_guard<std::mutex> lk(mtx);
   for (const auto& cb : generic_cb_list)
   {
     cb(name, args...);
+  }
+  for (const auto& cb_entry : cb_entries)
+  {
+    if (cb_entry.name == name)
+    {
+      cb_entry.cb(args...);
+    }
   }
 }
 

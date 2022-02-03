@@ -38,7 +38,7 @@
 #include <common/AnyValue.h>
 
 #include "Variable.h"
-#include "CallBackManager.h"
+#include "NamedCallbackManager.h"
 
 namespace sup
 {
@@ -60,7 +60,7 @@ private:
   /**
    * @brief Threadsafe list of callback objects.
    */
-  CallbackManager<void(const std::string&, const ccs::types::AnyValue&)> callbacks;
+  NamedCallbackManager<const ccs::types::AnyValue&> callbacks;
 
   /**
    * @brief Check if the given Variable name is already present.
@@ -141,9 +141,34 @@ public:
    *
    * @param cb Callback function object.
    * @return true if adding the callback was successful.
+   *
+   * @note Contrary to the API for registering callbacks for specific variables, there is
+   * currently no mechanism to unregister this callback. Usage of this method must ensure that
+   * the callback function outlives the Workspace, as is the case for a Procedure method.
    */
   bool AddUpdateCallback(
     const std::function<void(const std::string&, const ccs::types::AnyValue&)>& cb);
+
+  /**
+   * @brief Add callback for a specific variable update.
+   *
+   * @param name Variable name.
+   * @param cb Callback function object.
+   * @param listener Pointer to object that listens to these updates (used for unregistering).
+   * @return true if adding the callback was successful.
+   *
+   * @note The pointer is only used as an id to allow for later removal (unregister).
+   */
+  bool RegisterCallback(const std::string& name,
+                        const std::function<void(const ccs::types::AnyValue&)>& cb, void* listener);
+
+  /**
+   * @brief Remove all callbacks from specific listener.
+   *
+   * @param listener Pointer to object that previously registered callbacks.
+   * @return true if listener is known and successfully removed.
+   */
+  bool UnregisterListener(void* listener);
 };
 
 }  // namespace sequencer

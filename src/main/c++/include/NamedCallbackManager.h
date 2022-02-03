@@ -20,20 +20,21 @@
  ******************************************************************************/
 
 /**
- * @file CallbackManager.h
- * @brief Definition of CallbackManager template class.
- * @date 24/11/21
+ * @file NamedCallbackManager.h
+ * @brief Definition of NamedCallbackManager template class.
+ * @date 03/02/22
  * @author Walter Van Herck (IO)
  * @copyright 2010-2022 ITER Organization
- * @details This header file contains the definition of the CallbackManager template class.
+ * @details This header file contains the definition of the NamedCallbackManager template class.
  */
 
-#ifndef _SEQ_CallbackManager_h_
-#define _SEQ_CallbackManager_h_
+#ifndef _SEQ_NamedCallbackManager_h_
+#define _SEQ_NamedCallbackManager_h_
 
 #include <functional>
 #include <list>
 #include <mutex>
+#include <string>
 
 namespace sup
 {
@@ -42,45 +43,45 @@ namespace sequencer
 
 /**
  * @brief Threadsafe class template for managing a list of callbacks and executing them.
+ *
+ * @note Generic callbacks will be std::function<void(const std::string&, Args...)>
  */
-template <typename Signature>
-class CallbackManager;
-
 template <typename... Args>
-class CallbackManager<void(Args...)>
+class NamedCallbackManager
 {
 public:
-  CallbackManager() = default;
-  ~CallbackManager() = default;
+  NamedCallbackManager() = default;
+  ~NamedCallbackManager() = default;
 
-  bool AddCallback(std::function<void(Args...)> cb);
+  bool AddGenericCallback(std::function<void(const std::string&, Args...)> cb);
 
-  void ExecuteCallbacks(Args... args);
+  void ExecuteCallbacks(const std::string& name, Args... args);
 
 private:
   mutable std::mutex mtx;
-  std::list<std::function<void(Args...)>> cb_list;
+  std::list<std::function<void(const std::string&, Args...)>> generic_cb_list;
 };
 
 template <typename... Args>
-bool CallbackManager<void(Args...)>::AddCallback(std::function<void(Args...)> cb)
+bool NamedCallbackManager<Args...>::AddGenericCallback(
+    std::function<void(const std::string&, Args...)> cb)
 {
   if (!cb)
   {
     return false;
   }
   std::lock_guard<std::mutex> lk(mtx);
-  cb_list.push_back(std::move(cb));
+  generic_cb_list.push_back(std::move(cb));
   return true;
 }
 
 template <typename... Args>
-void CallbackManager<void(Args...)>::ExecuteCallbacks(Args... args)
+void NamedCallbackManager<Args...>::ExecuteCallbacks(const std::string& name, Args... args)
 {
   std::lock_guard<std::mutex> lk(mtx);
-  for (const auto& cb : cb_list)
+  for (const auto& cb : generic_cb_list)
   {
-    cb(args...);
+    cb(name, args...);
   }
 }
 
@@ -88,4 +89,4 @@ void CallbackManager<void(Args...)>::ExecuteCallbacks(Args... args)
 
 }  // namespace sup
 
-#endif  // _SEQ_CallbackManager_h_
+#endif  // _SEQ_NamedCallbackManager_h_

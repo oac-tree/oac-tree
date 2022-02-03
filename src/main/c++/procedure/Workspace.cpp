@@ -177,7 +177,7 @@ bool Workspace::HasVariable(const std::string& name) const
 bool Workspace::AddUpdateCallback(
   const std::function<void(const std::string&, const ccs::types::AnyValue&)>& cb)
 {
-  return callbacks.AddCallback(cb);
+  return callbacks.AddGenericCallback(cb);
 }
 
 static std::pair<std::string, std::string> SplitToNameField(const std::string &fullname)

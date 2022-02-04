@@ -68,7 +68,8 @@ private:
 /**
  * @brief Threadsafe class template for managing a list of callbacks and executing them.
  *
- * @note Generic callbacks will be std::function<void(const std::string&, Args...)>
+ * @note Generic callbacks will be convertible to std::function<void(const std::string&, Args...)>,
+ * while callbacks for a specific name will be convertible to std::function<void(Args...)>.
  */
 template <typename... Args>
 class NamedCallbackManager
@@ -77,7 +78,7 @@ public:
   NamedCallbackManager() = default;
   ~NamedCallbackManager() = default;
 
-  bool AddGenericCallback(std::function<void(const std::string&, Args...)> cb);
+  bool AddGenericCallback(std::function<void(const std::string&, Args...)> cb, void* listener);
 
   bool RegisterCallback(const std::string& name,
                         const std::function<void(Args...)>& cb, void* listener);
@@ -89,6 +90,11 @@ public:
   CallbackGuard<NamedCallbackManager<Args...>> GetCallbackGuard(void* listener);
 
 private:
+  struct GenericCallbackEntry
+  {
+    void* listener;
+    std::function<void(const std::string&, Args...)> cb;
+  };
   struct CallbackEntry
   {
     void* listener;
@@ -96,7 +102,7 @@ private:
     std::function<void(Args...)> cb;
   };
   mutable std::mutex mtx;
-  std::vector<std::function<void(const std::string&, Args...)>> generic_cb_list;
+  std::vector<GenericCallbackEntry> generic_cb_entries;
   std::vector<CallbackEntry> cb_entries;
 };
 
@@ -140,14 +146,14 @@ void CallbackGuard<T>::Swap(CallbackGuard& other)
 
 template <typename... Args>
 bool NamedCallbackManager<Args...>::AddGenericCallback(
-    std::function<void(const std::string&, Args...)> cb)
+    std::function<void(const std::string&, Args...)> cb, void* listener)
 {
   if (!cb)
   {
     return false;
   }
   std::lock_guard<std::mutex> lk(mtx);
-  generic_cb_list.push_back(std::move(cb));
+  generic_cb_entries.push_back({listener, cb});
   return true;
 }
 
@@ -169,10 +175,16 @@ template <typename... Args>
 bool NamedCallbackManager<Args...>::UnregisterListener(void* listener)
 {
   std::lock_guard<std::mutex> lk(mtx);
-  auto new_end_it = std::remove_if(cb_entries.begin(), cb_entries.end(),
-                                   [listener](CallbackEntry cb_entry)
-                                   { return cb_entry.listener == listener; });
-  auto result = new_end_it == cb_entries.end();
+  auto result = false;
+  auto new_generic_end_it = std::remove_if(generic_cb_entries.begin(), generic_cb_entries.end(),
+                                           [listener](GenericCallbackEntry cb_entry)
+                                           { return cb_entry.listener == listener; });
+  result = new_generic_end_it != generic_cb_entries.end();
+  generic_cb_entries.erase(new_generic_end_it, generic_cb_entries.end());
+  auto new_end_it =
+      std::remove_if(cb_entries.begin(), cb_entries.end(),
+                     [listener](CallbackEntry cb_entry) { return cb_entry.listener == listener; });
+  result = result || new_end_it != cb_entries.end();
   cb_entries.erase(new_end_it, cb_entries.end());
   return result;
 }
@@ -181,9 +193,9 @@ template <typename... Args>
 void NamedCallbackManager<Args...>::ExecuteCallbacks(const std::string& name, Args... args)
 {
   std::lock_guard<std::mutex> lk(mtx);
-  for (const auto& cb : generic_cb_list)
+  for (const auto& cb_entry : generic_cb_entries)
   {
-    cb(name, args...);
+    cb_entry.cb(name, args...);
   }
   for (const auto& cb_entry : cb_entries)
   {

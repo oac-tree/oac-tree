@@ -174,16 +174,17 @@ bool Workspace::HasVariable(const std::string& name) const
   return _var_map.find(name) != _var_map.end();
 }
 
-bool Workspace::AddGenericCallback(
-  const std::function<void(const std::string&, const ccs::types::AnyValue&)>& cb)
-{
-  return callbacks.AddGenericCallback(cb);
-}
-
 CallbackGuard<NamedCallbackManager<const ccs::types::AnyValue &>> Workspace::GetCallbackGuard(
     void *listener)
 {
   return callbacks.GetCallbackGuard(this);
+}
+
+bool Workspace::AddGenericCallback(
+    const std::function<void(const std::string &, const ccs::types::AnyValue &)> &cb,
+    void *listener)
+{
+  return callbacks.AddGenericCallback(cb, listener);
 }
 
 bool Workspace::RegisterCallback(const std::string &name,

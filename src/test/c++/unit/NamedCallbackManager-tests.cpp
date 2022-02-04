@@ -63,7 +63,7 @@ TEST_F(NamedCallbackManagerTest, GenericIntCallbacks)
   EXPECT_TRUE(cb_mngr.AddGenericCallback([&](const std::string& _name, int _value){
     name = _name;
     value = _value;
-  }));
+  }, nullptr));
   EXPECT_EQ(name, std::string{});
   EXPECT_EQ(value, 0);
   std::string new_name = "Updated name";

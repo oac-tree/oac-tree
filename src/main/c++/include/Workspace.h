@@ -137,19 +137,6 @@ public:
   bool HasVariable(const std::string& name) const;
 
   /**
-   * @brief Add callback for variable updates
-   *
-   * @param cb Callback function object.
-   * @return true if adding the callback was successful.
-   *
-   * @note Contrary to the API for registering callbacks for specific variables, there is
-   * currently no mechanism to unregister this callback. Usage of this method must ensure that
-   * the callback function outlives the Workspace, as is the case for a Procedure method.
-   */
-  bool AddGenericCallback(
-    const std::function<void(const std::string&, const ccs::types::AnyValue&)>& cb);
-
-  /**
    * @brief Get a callback guard object.
    *
    * @param listener Pointer to object that listens to updates.
@@ -160,6 +147,20 @@ public:
    * them.
    */
   CallbackGuard<NamedCallbackManager<const ccs::types::AnyValue&>> GetCallbackGuard(void* listener);
+
+  /**
+   * @brief Add callback for variable updates
+   *
+   * @param cb Callback function object.
+   * @return true if adding the callback was successful.
+   *
+   * @note Generic callbacks will be called for each variable update in the workspace.
+   * @note If a pointer to the listening object is not provide (=nullptr), the callbacks are
+   * required to outlive the Workspace.
+   */
+  bool AddGenericCallback(
+      const std::function<void(const std::string&, const ccs::types::AnyValue&)>& cb,
+      void* listener = nullptr);
 
   /**
    * @brief Add callback for a specific variable update.

@@ -275,10 +275,10 @@ const Workspace *Procedure::GetWorkspace() const
   return _workspace.get();
 }
 
-bool Procedure::AddGenericCallback(
+bool Procedure::RegisterGenericCallback(
     const std::function<void(const std::string&, const ccs::types::AnyValue&)>& cb)
 {
-  return _workspace->AddGenericCallback(cb);
+  return _workspace->RegisterGenericCallback(cb);
 }
 
 static bool HasRootAttributeSet(const Instruction &instruction)

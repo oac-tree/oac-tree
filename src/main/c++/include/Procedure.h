@@ -308,7 +308,7 @@ public:
    *
    * @note Users are responsible for ensuring the callback outlives the underlying workspace.
    */
-  bool AddGenericCallback(
+  bool RegisterGenericCallback(
     const std::function<void(const std::string&, const ccs::types::AnyValue&)>& cb);
 
   /**

@@ -180,11 +180,11 @@ CallbackGuard<NamedCallbackManager<const ccs::types::AnyValue &>> Workspace::Get
   return callbacks.GetCallbackGuard(this);
 }
 
-bool Workspace::AddGenericCallback(
+bool Workspace::RegisterGenericCallback(
     const std::function<void(const std::string &, const ccs::types::AnyValue &)> &cb,
     void *listener)
 {
-  return callbacks.AddGenericCallback(cb, listener);
+  return callbacks.RegisterGenericCallback(cb, listener);
 }
 
 bool Workspace::RegisterCallback(const std::string &name,

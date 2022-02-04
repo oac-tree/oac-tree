@@ -158,7 +158,7 @@ public:
    * @note If a pointer to the listening object is not provide (=nullptr), the callbacks are
    * required to outlive the Workspace.
    */
-  bool AddGenericCallback(
+  bool RegisterGenericCallback(
       const std::function<void(const std::string&, const ccs::types::AnyValue&)>& cb,
       void* listener = nullptr);
 

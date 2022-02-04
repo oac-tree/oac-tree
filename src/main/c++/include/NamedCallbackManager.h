@@ -78,7 +78,7 @@ public:
   NamedCallbackManager() = default;
   ~NamedCallbackManager() = default;
 
-  bool AddGenericCallback(std::function<void(const std::string&, Args...)> cb, void* listener);
+  bool RegisterGenericCallback(std::function<void(const std::string&, Args...)> cb, void* listener);
 
   bool RegisterCallback(const std::string& name,
                         const std::function<void(Args...)>& cb, void* listener);
@@ -145,7 +145,7 @@ void CallbackGuard<T>::Swap(CallbackGuard& other)
 }
 
 template <typename... Args>
-bool NamedCallbackManager<Args...>::AddGenericCallback(
+bool NamedCallbackManager<Args...>::RegisterGenericCallback(
     std::function<void(const std::string&, Args...)> cb, void* listener)
 {
   if (!cb)

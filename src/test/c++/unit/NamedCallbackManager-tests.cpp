@@ -100,19 +100,26 @@ TEST_F(NamedCallbackManagerTest, CallbackGuard)
 {
   std::string name = "MyVarName";
   int value = 0;
+  std::string current_name;
   NamedCallbackManager<int> cb_mngr;
   {
     auto cb_guard = cb_mngr.GetCallbackGuard(this);
+    EXPECT_TRUE(cb_mngr.AddGenericCallback([&](const std::string& name, int){
+      current_name = name;
+    }, this));
     EXPECT_TRUE(cb_mngr.RegisterCallback(
-        name, [&](int _value) { value = _value; }, this));
+        name, [&](int value_) { value = value_; }, this));
     EXPECT_EQ(value, 0);
     int val1 = 1723;
     cb_mngr.ExecuteCallbacks(name, val1);
     EXPECT_EQ(value, val1);
+    EXPECT_EQ(current_name, name);
   }
   int val2 = -45;
+  current_name = "";
   cb_mngr.ExecuteCallbacks(name, val2);
   EXPECT_NE(value, val2);
+  EXPECT_EQ(current_name, "");
 }
 
 NamedCallbackManagerTest::NamedCallbackManagerTest() = default;

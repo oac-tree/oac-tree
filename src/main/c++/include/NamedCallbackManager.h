@@ -43,6 +43,29 @@ namespace sequencer
 {
 
 /**
+ * @brief Guard class that unregisters callbacks during destruction.
+ */
+template <typename T>
+class CallbackGuard
+{
+public:
+  CallbackGuard(T* cb_manager, void *listener);
+  ~CallbackGuard();
+
+  CallbackGuard(CallbackGuard&& other);
+  CallbackGuard& operator=(CallbackGuard&& other);
+
+  CallbackGuard(const CallbackGuard& other) = delete;
+  CallbackGuard& operator=(const CallbackGuard& other) = delete;
+
+  void Swap(CallbackGuard& other);
+
+private:
+  T* cb_manager;
+  void* listener;
+};
+
+/**
  * @brief Threadsafe class template for managing a list of callbacks and executing them.
  *
  * @note Generic callbacks will be std::function<void(const std::string&, Args...)>
@@ -63,6 +86,8 @@ public:
 
   void ExecuteCallbacks(const std::string& name, Args... args);
 
+  CallbackGuard<NamedCallbackManager<Args...>> GetCallbackGuard(void* listener);
+
 private:
   struct CallbackEntry
   {
@@ -74,6 +99,44 @@ private:
   std::vector<std::function<void(const std::string&, Args...)>> generic_cb_list;
   std::vector<CallbackEntry> cb_entries;
 };
+
+template <typename T>
+CallbackGuard<T>::CallbackGuard(T* cb_manager_, void* listener_)
+  : cb_manager{cb_manager_}
+  , listener{listener_}
+{}
+
+template <typename T>
+CallbackGuard<T>::~CallbackGuard()
+{
+  if (listener)
+  {
+    cb_manager->UnregisterListener(listener);
+  }
+}
+
+template <typename T>
+CallbackGuard<T>::CallbackGuard(CallbackGuard&& other)
+  : cb_manager{other.cb_manager}
+  , listener(other.listener)
+{
+  other.listener = nullptr;
+}
+
+template <typename T>
+CallbackGuard<T>& CallbackGuard<T>::operator=(CallbackGuard&& other)
+{
+  CallbackGuard<T> moved{std::move(other)};
+  Swap(moved);
+  return *this;
+}
+
+template <typename T>
+void CallbackGuard<T>::Swap(CallbackGuard& other)
+{
+  std::swap(cb_manager, other.cb_manager);
+  std::swap(listener, other.listener);
+}
 
 template <typename... Args>
 bool NamedCallbackManager<Args...>::AddGenericCallback(
@@ -98,7 +161,7 @@ bool NamedCallbackManager<Args...>::RegisterCallback(
     return false;
   }
   std::lock_guard<std::mutex> lk(mtx);
-  cb_entries.emplace_back({listener, name, cb});
+  cb_entries.push_back({listener, name, cb});
   return true;
 }
 
@@ -107,8 +170,8 @@ bool NamedCallbackManager<Args...>::UnregisterListener(void* listener)
 {
   std::lock_guard<std::mutex> lk(mtx);
   auto new_end_it = std::remove_if(cb_entries.begin(), cb_entries.end(),
-                                   [listener](decltype(cb_entries.begin()) it)
-                                   { return it->listener = listener; });
+                                   [listener](CallbackEntry cb_entry)
+                                   { return cb_entry.listener == listener; });
   auto result = new_end_it == cb_entries.end();
   cb_entries.erase(new_end_it, cb_entries.end());
   return result;
@@ -129,6 +192,13 @@ void NamedCallbackManager<Args...>::ExecuteCallbacks(const std::string& name, Ar
       cb_entry.cb(args...);
     }
   }
+}
+
+template <typename... Args>
+CallbackGuard<NamedCallbackManager<Args...>> NamedCallbackManager<Args...>::GetCallbackGuard(
+    void* listener)
+{
+  return CallbackGuard<NamedCallbackManager<Args...>>(this, listener);
 }
 
 }  // namespace sequencer

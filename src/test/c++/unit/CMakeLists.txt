@@ -21,6 +21,7 @@ target_sources(unit-tests
         ${CMAKE_CURRENT_LIST_DIR}/InstructionRegistry-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/LocalVariable-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Message-tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/NamedCallbackManager-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Output-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/ParallelSequence-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Parser-tests.cpp

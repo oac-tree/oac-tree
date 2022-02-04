@@ -301,12 +301,14 @@ public:
   const Workspace* GetWorkspace() const;
 
   /**
-   * @brief Add callback for variable updates
+   * @brief Add a generic callback for variable updates.
    *
    * @param cb Callback function object.
    * @return true if adding the callback was successful.
+   *
+   * @note Users are responsible for ensuring the callback outlives the underlying workspace.
    */
-  bool AddUpdateCallback(
+  bool AddGenericCallback(
     const std::function<void(const std::string&, const ccs::types::AnyValue&)>& cb);
 
   /**

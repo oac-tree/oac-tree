@@ -146,8 +146,20 @@ public:
    * currently no mechanism to unregister this callback. Usage of this method must ensure that
    * the callback function outlives the Workspace, as is the case for a Procedure method.
    */
-  bool AddUpdateCallback(
+  bool AddGenericCallback(
     const std::function<void(const std::string&, const ccs::types::AnyValue&)>& cb);
+
+  /**
+   * @brief Get a callback guard object.
+   *
+   * @param listener Pointer to object that listens to updates.
+   * @return Guard object.
+   *
+   * @note Upon destruction, the guard object will unregister its callbacks. Users are responsible
+   * for creating such an object before registering callback as there is no other way to unregister
+   * them.
+   */
+  CallbackGuard<NamedCallbackManager<const ccs::types::AnyValue&>> GetCallbackGuard(void* listener);
 
   /**
    * @brief Add callback for a specific variable update.
@@ -161,14 +173,6 @@ public:
    */
   bool RegisterCallback(const std::string& name,
                         const std::function<void(const ccs::types::AnyValue&)>& cb, void* listener);
-
-  /**
-   * @brief Remove all callbacks from specific listener.
-   *
-   * @param listener Pointer to object that previously registered callbacks.
-   * @return true if listener is known and successfully removed.
-   */
-  bool UnregisterListener(void* listener);
 };
 
 }  // namespace sequencer

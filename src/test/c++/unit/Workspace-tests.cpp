@@ -207,7 +207,7 @@ TEST_F(WorkspaceTest, NotifyCallback)
 {
   std::string var_name;
   ccs::types::AnyValue var_value;
-  EXPECT_TRUE(ws.AddUpdateCallback(
+  EXPECT_TRUE(ws.AddGenericCallback(
     [&var_name, &var_value](const std::string& name, const ccs::types::AnyValue& value)
     {
       var_name = name;

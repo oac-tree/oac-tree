@@ -22,8 +22,6 @@
 // Global header files
 #include <common/AnyValue.h>
 
-#include <algorithm>
-
 #include <common/log-api.h>
 
 // Local header files
@@ -49,7 +47,6 @@ const std::string Procedure::TICK_TIMEOUT_ATTRIBUTE_NAME = "tickTimeout";
 // Global variables
 
 static const std::string IS_ROOT_ATTRIBUTE = "isRoot";
-static const std::vector<std::string> TRUE_LIST = {"True", "true", "TRUE", "Yes", "yes", "YES"};
 
 // Function declaration
 
@@ -288,8 +285,7 @@ static bool HasRootAttributeSet(const Instruction &instruction)
     return false;
   }
   auto attr_val = instruction.GetAttribute(IS_ROOT_ATTRIBUTE);
-  auto it = std::find(TRUE_LIST.begin(), TRUE_LIST.end(), attr_val);
-  return it != TRUE_LIST.end();
+  return attributes::AttributeAsBool(attr_val);
 }
 
 }  // namespace sequencer

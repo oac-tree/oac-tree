@@ -31,34 +31,25 @@
 #ifndef _SEQ_AttributeMap_h_
 #define _SEQ_AttributeMap_h_
 
-// Global header files
-
 #include <map>
 #include <string>
 #include <utility>
 #include <vector>
 
-// Local header files
-
-#ifdef __cplusplus
-
 namespace sup
 {
 namespace sequencer
 {
-// Constants
 
 namespace attributes
 {
 const std::string NAME_ATTRIBUTE = "name";
+bool AttributeAsBool(const std::string& value);
 }
-
-// Type definition
 
 /**
  * @brief Class that contains attributes and exposes a map interface.
  */
-
 class AttributeMap
 {
 public:
@@ -182,24 +173,8 @@ public:
   bool InitialiseVariableAttributes(const AttributeMap& source);
 };
 
-// Global variables
-
-// Function declarations
-
-// Function definitions
-
 }  // namespace sequencer
 
 }  // namespace sup
-
-extern "C"
-{
-#endif  // __cplusplus
-
-  // C API function declarations
-
-#ifdef __cplusplus
-}  // extern C
-#endif  // __cplusplus
 
 #endif  // _SEQ_AttributeMap_h_

@@ -19,28 +19,20 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
-
-#include <type_traits>
-
-#include <common/log-api.h>
-
-// Local header files
-
 #include "AttributeMap.h"
 #include "Constants.h"
 
-// Constants
+#include <algorithm>
+#include <type_traits>
+#include <common/log-api.h>
 
 #undef LOG_ALTERN_SRC
 #define LOG_ALTERN_SRC "sup::sequencer"
 
-// Type definition
-
 namespace
 {
+const std::vector<std::string> TRUE_LIST = {"True", "true", "TRUE", "Yes", "yes", "YES"};
 bool StartsWith(const std::string &str, char c);
-
 }
 
 namespace sup
@@ -57,11 +49,14 @@ static_assert(std::is_same<AttributeMap::map_type::const_iterator::value_type,
               "Exposed const_iterator must point to std::pair<const std::string, "
               "std::string>");
 
-// Global variables
-
-// Function declaration
-
-// Function definition
+namespace attributes
+{
+bool AttributeAsBool(const std::string& value)
+{
+  auto it = std::find(TRUE_LIST.begin(), TRUE_LIST.end(), value);
+  return it != TRUE_LIST.end();
+}
+}
 
 AttributeMap::AttributeMap() = default;
 
@@ -181,11 +176,5 @@ bool StartsWith(const std::string &str, char c)
 }
 
 }  // namespace
-
-extern "C"
-{
-  // C API function definitions
-
-}  // extern C
 
 #undef LOG_ALTERN_SRC

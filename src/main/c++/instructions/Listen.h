@@ -32,6 +32,11 @@
 #define _SEQ_Listen_h_
 
 #include "DecoratorInstruction.h"
+#include "Workspace.h"
+
+#include <condition_variable>
+#include <map>
+#include <mutex>
 
 namespace sup
 {
@@ -60,6 +65,10 @@ public:
 
 private:
   bool force_success;
+  bool var_changed;
+  std::mutex mx;
+  std::condition_variable cv;
+  std::map<std::string, ccs::types::AnyValue> var_cache;
 
   /**
    * @brief See sup::sequencer::Instruction.
@@ -79,6 +88,11 @@ private:
   bool SetupImpl(const Procedure& proc) override;
 
   std::vector<std::string> VariableNames() const;
+
+  void UpdateCallback(const std::string& name, const ccs::types::AnyValue& val);
+
+  CallbackGuard<NamedCallbackManager<const ccs::types::AnyValue&>> RegisterCallbacks(
+      Workspace* ws, std::vector<std::string> var_names);
 };
 
 }  // namespace sequencer

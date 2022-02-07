@@ -23,6 +23,7 @@
 #include "Constants.h"
 
 #include <algorithm>
+#include <cctype>
 #include <type_traits>
 #include <common/log-api.h>
 
@@ -31,9 +32,10 @@
 
 namespace
 {
-const std::vector<std::string> TRUE_LIST = {"True", "true", "TRUE", "Yes", "yes", "YES"};
+const std::vector<std::string> TRUE_LIST = {"true", "yes", "on"};
 bool StartsWith(const std::string &str, char c);
-}
+std::string StringToLower(std::string s);
+}  // namespace
 
 namespace sup
 {
@@ -53,7 +55,7 @@ namespace attributes
 {
 bool AttributeAsBool(const std::string& value)
 {
-  auto it = std::find(TRUE_LIST.begin(), TRUE_LIST.end(), value);
+  auto it = std::find(TRUE_LIST.begin(), TRUE_LIST.end(), StringToLower(value));
   return it != TRUE_LIST.end();
 }
 }
@@ -173,6 +175,13 @@ bool StartsWith(const std::string &str, char c)
     return false;
   }
   return str[0] == c;
+}
+
+std::string StringToLower(std::string s)
+{
+  std::transform(s.begin(), s.end(), s.begin(),
+                 [](unsigned char c){ return std::tolower(c); });
+  return s;
 }
 
 }  // namespace

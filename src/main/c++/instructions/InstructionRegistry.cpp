@@ -38,6 +38,7 @@
 #include "Instruction.h"
 #include "InstructionRegistry.h"
 #include "Inverter.h"
+#include "Listen.h"
 #include "Message.h"
 #include "Output.h"
 #include "ParallelSequence.h"
@@ -121,6 +122,7 @@ void InitInstructionRegistry(InstructionRegistry& registry)
   (void)RegisterInstruction<ForceSuccess>(registry);
   (void)RegisterInstruction<Include>(registry);
   (void)RegisterInstruction<Inverter>(registry);
+  (void)RegisterInstruction<Listen>(registry);
   (void)RegisterInstruction<Repeat>(registry);
 
   // Register leaf instructions:

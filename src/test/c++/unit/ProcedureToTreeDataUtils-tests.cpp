@@ -106,3 +106,36 @@ TEST_F(ProcedureToTreeDataUtilsTest, EmptySequenceToTreeData)
   EXPECT_EQ(tree_data->GetAttribute("name"), "abc");
   EXPECT_TRUE(tree_data->GetContent().empty());
 }
+
+TEST_F(ProcedureToTreeDataUtilsTest, SequenceWithTwoChildrenToTreeData)
+{
+  auto sequence = GlobalInstructionRegistry().Create(Sequence::Type);
+
+  auto wait0 = GlobalInstructionRegistry().Create(Wait::Type);
+  wait0->AddAttribute("timeout", "42");
+  auto wait1 = GlobalInstructionRegistry().Create(Wait::Type);
+  wait1->AddAttribute("timeout", "43");
+
+  sequence->InsertInstruction(wait0.release(), 0);
+  sequence->InsertInstruction(wait1.release(), 1);
+
+  auto tree_data = ToTreeData(*sequence);
+  EXPECT_EQ(tree_data->GetType(), Sequence::Type);
+  ASSERT_EQ(tree_data->GetNumberOfChildren(), 2);
+  EXPECT_EQ(tree_data->GetNumberOfAttributes(), 0);
+  EXPECT_TRUE(tree_data->GetContent().empty());
+
+  auto wait0_data = tree_data->Children().at(0);
+  EXPECT_EQ(wait0_data.GetType(), Wait::Type);
+  EXPECT_EQ(wait0_data.GetNumberOfChildren(), 0);
+  ASSERT_EQ(wait0_data.GetNumberOfAttributes(), 1);
+  EXPECT_EQ(wait0_data.GetAttribute("timeout"), "42");
+  EXPECT_TRUE(wait0_data.GetContent().empty());
+
+  auto wait1_data = tree_data->Children().at(1);
+  EXPECT_EQ(wait1_data.GetType(), Wait::Type);
+  EXPECT_EQ(wait1_data.GetNumberOfChildren(), 0);
+  ASSERT_EQ(wait1_data.GetNumberOfAttributes(), 1);
+  EXPECT_EQ(wait1_data.GetAttribute("timeout"), "43");
+  EXPECT_TRUE(wait1_data.GetContent().empty());
+}

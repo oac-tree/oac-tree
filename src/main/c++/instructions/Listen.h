@@ -68,6 +68,7 @@ private:
   bool var_changed;
   std::mutex mx;
   std::condition_variable cv;
+  std::vector<std::string> var_names;
   std::map<std::string, ccs::types::AnyValue> var_cache;
 
   /**
@@ -82,9 +83,8 @@ private:
 
   /**
    * @brief See sup::sequencer::Instruction.
-   *
-   * @details Initializes the instruction's attributes.
    */
+  void HaltImpl() override;
   bool SetupImpl(const Procedure& proc) override;
 
   std::vector<std::string> VariableNames() const;

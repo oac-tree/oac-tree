@@ -41,6 +41,9 @@ const std::string Listen::Type = "Listen";
 Listen::Listen()
   : DecoratorInstruction(Type)
   , force_success{false}
+  , var_changed{}
+  , var_names{}
+  , var_cache{}
 {}
 
 Listen::~Listen() = default;
@@ -51,23 +54,46 @@ ExecutionStatus Listen::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
   {
     return ExecutionStatus::SUCCESS;
   }
-  std::vector<std::string> var_names;
-  std::transform(var_cache.begin(), var_cache.end(), std::back_inserter(var_names),
-                 [](decltype(var_cache)::const_reference item) { return item.first; });
-
+  // always let child run at least once
+  var_changed = true;
   // setup callbacks
   auto cb_guard = RegisterCallbacks(ws, var_names);
 
-  // TODO: listen loop:
-  // exit if child returns failure and forceSuccess was not set
-  // exit on halt too
-
+  // listen loop
+  while (true)
+  {
+    std::unique_lock<std::mutex> lk(mx);
+    cv.wait(lk, [this]{ return var_changed || _halt_requested; });
+    if (_halt_requested)
+    {
+      break;
+    }
+    var_changed = false;
+    lk.unlock();
+    auto child_status = GetChildStatus();
+    if (child_status == ExecutionStatus::SUCCESS || child_status == ExecutionStatus::FAILURE)
+    {
+      ResetChild();
+    }
+    ExecuteChild(ui, ws);
+    if(!force_success && GetChildStatus() == ExecutionStatus::FAILURE)
+    {
+      break;
+    }
+  }
   return ExecutionStatus::FAILURE;
+}
+
+void Listen::HaltImpl()
+{
+  HaltChild();
+  cv.notify_one();
 }
 
 bool Listen::SetupImpl(const Procedure& proc)
 {
   force_success = false;
+  var_changed = true;
   if (HasAttribute(FORCESUCCESS_ATTRIBUTE_NAME))
   {
     auto force_success_attr = GetAttribute(FORCESUCCESS_ATTRIBUTE_NAME);
@@ -77,8 +103,9 @@ bool Listen::SetupImpl(const Procedure& proc)
   {
     return false;
   }
+  var_names = VariableNames();
   var_cache.clear();
-  for (const auto& var_name : VariableNames())
+  for (const auto& var_name : var_names)
   {
     var_cache[var_name] = ccs::types::AnyValue{};
   }
@@ -102,7 +129,14 @@ std::vector<std::string> Listen::VariableNames() const
 void Listen::UpdateCallback(const std::string& name, const ccs::types::AnyValue& val)
 {
   std::lock_guard<std::mutex> lk(mx);
-  // TODO: if val != cached value: update cache, set updated and notify
+  auto it = var_cache.find(name);
+  if (it == var_cache.end() || Equals(it->second, val))
+  {
+    return;
+  }
+  var_changed = true;
+  it->second = val;
+  cv.notify_one();
 }
 
 CallbackGuard<NamedCallbackManager<const ccs::types::AnyValue&>> Listen::RegisterCallbacks(

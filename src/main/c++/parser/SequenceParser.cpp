@@ -30,6 +30,8 @@
 #include "ProcedureParser.h"
 #include "SequenceParser.h"
 #include "SequenceParserImpl.h"
+#include "TreeDataXmlWriteUtils.h"
+#include "ProcedureToTreeDataUtils.h"
 
 // Constants
 
@@ -107,6 +109,13 @@ std::unique_ptr<Procedure> ParseProcedureString(const std::string& xml_str)
   }
 
   return proc;
+}
+
+//! Returns XML string representing Procedure.
+std::string GetXMLString(const Procedure& procedure)
+{
+  auto tree_data = ToTreeData(procedure);
+  return GetXMLString(*tree_data);
 }
 
 }  // namespace sequencer

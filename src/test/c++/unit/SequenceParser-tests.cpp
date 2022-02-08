@@ -26,8 +26,27 @@
 #include <common/AnyValue.h>
 #include <gtest/gtest.h>
 
+#include <iostream>
+
 class SequencerParserTest : public ::testing::Test
 {
+public:
+
+  //! Returns multi-line XML string with Sequencer procedure, where user body
+  //! is wrapped into necessary elements. Procedure tag deliberately doesn't contain any schema.
+  std::string CreateProcedureString(const std::string &body)
+  {
+    static const std::string header{R"RAW(
+<?xml version="1.0" encoding="UTF-8"?>
+<Procedure>)RAW"};
+
+    static const std::string footer{R"RAW(
+</Procedure>
+)RAW"};
+
+    return header + body + footer;
+  }
+
 };
 
 TEST_F(SequencerParserTest, Default)
@@ -93,4 +112,16 @@ TEST_F(SequencerParserTest, ParseString)
 
   ASSERT_TRUE(proc.get() != nullptr);
   ::sup::UnitTestHelper::PrintProcedureWorkspace(proc.get());
+}
+
+TEST_F(SequencerParserTest, EmptyProcedureFromXMLAndBack)
+{
+  auto xml_string = CreateProcedureString(std::string());
+
+  auto procedure = ::sup::sequencer::ParseProcedureString(xml_string);
+
+  std::cout << "XXX>" <<xml_string << "\n";
+
+  EXPECT_EQ(xml_string, ::sup::sequencer::GetXMLString(*procedure));
+
 }

@@ -19,6 +19,7 @@
  * of the distribution package.
  ******************************************************************************/
 
+#include "Constants.h"
 #include "FileVariable.h"
 #include "Instruction.h"
 #include "InstructionRegistry.h"
@@ -31,7 +32,6 @@
 #include "VariableRegistry.h"
 #include "Wait.h"
 #include "Workspace.h"
-#include "Constants.h"
 
 #include <gtest/gtest.h>
 
@@ -139,4 +139,21 @@ TEST_F(ProcedureToTreeDataUtilsTest, SequenceWithTwoChildrenToTreeData)
   ASSERT_EQ(wait1_data.GetNumberOfAttributes(), 1);
   EXPECT_EQ(wait1_data.GetAttribute("timeout"), "43");
   EXPECT_TRUE(wait1_data.GetContent().empty());
+}
+
+TEST_F(ProcedureToTreeDataUtilsTest, EmptyProcedureToTreeData)
+{
+  Procedure procedure;
+
+  auto tree_data = ToTreeData(procedure);
+  EXPECT_EQ(tree_data->GetType(), Constants::PROCEDURE_ELEMENT_NAME);
+  ASSERT_EQ(tree_data->GetNumberOfChildren(), 1);    // corresponds to workspace
+  ASSERT_EQ(tree_data->GetNumberOfAttributes(), 0);  // no schema or other attributes
+  EXPECT_TRUE(tree_data->GetContent().empty());
+
+  auto workspace_data = tree_data->Children().at(0);
+  EXPECT_EQ(workspace_data.GetType(), Constants::WORKSPACE_ELEMENT_NAME);
+  EXPECT_EQ(workspace_data.GetNumberOfChildren(), 0);
+  EXPECT_EQ(workspace_data.GetNumberOfAttributes(), 0);
+  EXPECT_TRUE(workspace_data.GetContent().empty());
 }

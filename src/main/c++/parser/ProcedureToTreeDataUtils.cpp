@@ -22,12 +22,12 @@
 #include "ProcedureToTreeDataUtils.h"
 
 #include "AttributeMap.h"
+#include "Constants.h"
 #include "Instruction.h"
 #include "Procedure.h"
 #include "TreeData.h"
 #include "Variable.h"
 #include "Workspace.h"
-#include "Constants.h"
 
 #include <set>
 
@@ -74,6 +74,17 @@ namespace sequencer
 std::unique_ptr<TreeData> ToTreeData(const Procedure& procedure)
 {
   auto result = make_unique<TreeData>(Constants::PROCEDURE_ELEMENT_NAME);
+
+  for (auto instruction : procedure.GetInstructions())
+  {
+    auto next_parent_item = ProcessInstruction(instruction, result.get());
+    if (next_parent_item)
+    {
+      Iterate(instruction, next_parent_item);
+    }
+  }
+
+  result->AddChild(*ToTreeData(*procedure.GetWorkspace()));
 
   return result;
 }

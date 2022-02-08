@@ -22,7 +22,9 @@
 #include "Listen.h"
 #include "Constants.h"
 
+#include <chrono>
 #include <cstring>
+#include <thread>
 
 static const std::string VARNAMES_ATTRIBUTE_NAME = "varNames";
 static const std::string FORCESUCCESS_ATTRIBUTE_NAME = "forceSuccess";
@@ -71,12 +73,18 @@ ExecutionStatus Listen::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
     }
     var_changed = false;
     lk.unlock();
+    ResetChild();
     auto child_status = GetChildStatus();
-    if (child_status == ExecutionStatus::SUCCESS || child_status == ExecutionStatus::FAILURE)
+    while (child_status != ExecutionStatus::SUCCESS && child_status != ExecutionStatus::FAILURE)
     {
-      ResetChild();
+      ExecuteChild(ui, ws);
+      child_status = GetChildStatus();
+      if (child_status == ExecutionStatus::RUNNING)
+      {
+        std::this_thread::sleep_for(
+            std::chrono::milliseconds(DefaultSettings::DEFAULT_SLEEP_TIME_MS));
+      }
     }
-    ExecuteChild(ui, ws);
     if(!force_success && GetChildStatus() == ExecutionStatus::FAILURE)
     {
       break;
@@ -108,7 +116,7 @@ bool Listen::SetupImpl(const Procedure& proc)
   var_cache.clear();
   for (const auto& var_name : var_names)
   {
-    var_cache[var_name] = ccs::types::AnyValue{};
+    var_cache[var_name] = {};
   }
   return true;
 }

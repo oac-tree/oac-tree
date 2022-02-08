@@ -3,15 +3,23 @@
            name="Procedure for testing Repeat instruction with parallel sequence"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
-    <ParallelSequence successThreshold="2">
+    <ParallelSequence>
         <Listen varNames="monitor">
-            <Output from="monitor" description="Updated monitor" />
+            <Sequence>
+                <Copy input="monitor" output="result" />
+                <Output from="monitor" description="Updated monitor" />
+                <Inverter>
+                    <Equals lhs="monitor" rhs="update" />
+                </Inverter>
+            </Sequence>
         </Listen>
         <Sequence>
-            <Wait timeout="0.5" />
+            <Wait timeout="0.2" />
             <Copy input="update" output="monitor"/>
         </Sequence>
-        <Wait timeout="1.0" />
+        <Inverter>
+            <Wait timeout="2.0" />
+        </Inverter>
     </ParallelSequence>
     <Workspace>
         <Local name="monitor"
@@ -20,5 +28,7 @@
         <Local name="update"
                type='{"type":"uint64"}'
                value='1729' />
+        <Local name="result"
+               type='{"type":"uint64"}' />
     </Workspace>
 </Procedure>

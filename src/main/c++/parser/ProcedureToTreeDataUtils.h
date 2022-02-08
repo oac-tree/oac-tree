@@ -33,10 +33,13 @@ class TreeData;
 class Procedure;
 class Variable;
 class Instruction;
+class Workspace;
 
 std::unique_ptr<TreeData> ToTreeData(const Procedure& procedure);
 
 std::unique_ptr<TreeData> ToTreeData(const Variable& variable);
+
+std::unique_ptr<TreeData> ToTreeData(const Workspace& workspace);
 
 }  // namespace sequencer
 

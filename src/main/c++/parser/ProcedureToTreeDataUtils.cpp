@@ -26,6 +26,7 @@
 #include "Procedure.h"
 #include "TreeData.h"
 #include "Variable.h"
+#include "Workspace.h"
 
 namespace
 {
@@ -52,6 +53,17 @@ std::unique_ptr<TreeData> ToTreeData(const Variable& variable)
   {
     result->AddAttribute(it.first, it.second);
   }
+  return result;
+}
+
+std::unique_ptr<TreeData> ToTreeData(const Workspace& workspace)
+{
+  auto result = make_unique<TreeData>("Workspace");  // FIXME replace with constants
+  for (auto variable : workspace.GetVariables())
+  {
+    result->AddChild(*ToTreeData(*variable));
+  }
+
   return result;
 }
 

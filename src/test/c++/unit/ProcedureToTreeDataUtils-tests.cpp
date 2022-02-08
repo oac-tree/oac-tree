@@ -21,10 +21,14 @@
 
 #include "Instruction.h"
 #include "LocalVariable.h"
+#include "FileVariable.h"
 #include "Procedure.h"
 #include "ProcedureToTreeDataUtils.h"
 #include "TreeData.h"
 #include "Variable.h"
+#include "VariableRegistry.h"
+#include "Wait.h"
+#include "Workspace.h"
 
 #include <gtest/gtest.h>
 
@@ -53,4 +57,35 @@ TEST_F(ProcedureToTreeDataUtilsTest, VariableToTreeData)
   EXPECT_EQ(tree_data->GetNumberOfAttributes(), 2);
   EXPECT_EQ(tree_data->GetAttribute(type_key), expected_type);
   EXPECT_EQ(tree_data->GetAttribute(value_key), expected_value);
+}
+
+TEST_F(ProcedureToTreeDataUtilsTest, EmptyWorkspaceToTreeData)
+{
+  Workspace workspace;
+
+  auto tree_data = ToTreeData(workspace);
+  EXPECT_EQ(tree_data->GetType(), std::string("Workspace"));  // FIXME replace with constant
+  EXPECT_EQ(tree_data->GetNumberOfChildren(), 0);
+  EXPECT_EQ(tree_data->GetNumberOfAttributes(), 0);
+  EXPECT_TRUE(tree_data->GetContent().empty());
+}
+
+TEST_F(ProcedureToTreeDataUtilsTest, WorkspaceWithSingleVariableToTreeData)
+{
+  Workspace workspace;
+
+  // workspace with single variable
+  const std::string value_key("value");
+  const std::string expected_value("42");
+  auto variable0 = GlobalVariableRegistry().Create(LocalVariable::Type);
+  workspace.AddVariable("var0", variable0.release());
+  auto tree_data = ToTreeData(workspace);
+  EXPECT_EQ(tree_data->GetType(), std::string("Workspace"));  // FIXME replace with constant
+  ASSERT_EQ(tree_data->GetNumberOfChildren(), 1);
+  EXPECT_EQ(tree_data->GetNumberOfAttributes(), 0);
+  EXPECT_TRUE(tree_data->GetContent().empty());
+
+  auto variable_data = tree_data->Children().at(0);
+  EXPECT_EQ(variable_data.GetType(), LocalVariable::Type);
+  EXPECT_EQ(variable_data.GetAttribute(value_key), expected_value);
 }

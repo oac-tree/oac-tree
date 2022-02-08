@@ -73,7 +73,9 @@ namespace sequencer
 {
 std::unique_ptr<TreeData> ToTreeData(const Procedure& procedure)
 {
-  return {};
+  auto result = make_unique<TreeData>(Constants::PROCEDURE_ELEMENT_NAME);
+
+  return result;
 }
 
 std::unique_ptr<TreeData> ToTreeData(const Variable& variable)

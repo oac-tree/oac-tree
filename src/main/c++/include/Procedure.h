@@ -148,14 +148,14 @@ public:
    *
    * @return Root instruction.
    */
-  Instruction* RootInstrunction();
+  Instruction* RootInstruction();
 
   /**
    * @brief Get root instruction (const version).
    *
    * @return Root instruction.
    */
-  const Instruction* RootInstrunction() const;
+  const Instruction* RootInstruction() const;
 
   /**
    * @brief Get top-level instructions (from other procedure file if requested).

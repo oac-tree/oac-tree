@@ -97,13 +97,13 @@ std::string Procedure::GetFilename() const
   return _filename;
 }
 
-Instruction *Procedure::RootInstrunction()
+Instruction *Procedure::RootInstruction()
 {
   // Scott Meyers' solution for avoiding code duplication:
-  return const_cast<Instruction *>(static_cast<const Procedure &>(*this).RootInstrunction());
+  return const_cast<Instruction *>(static_cast<const Procedure &>(*this).RootInstruction());
 }
 
-const Instruction *Procedure::RootInstrunction() const
+const Instruction *Procedure::RootInstruction() const
 {
   if (_instructions.empty())
   {
@@ -198,48 +198,48 @@ bool Procedure::GetVariableValue(std::string name, ::ccs::types::AnyValue &value
 
 bool Procedure::Setup()
 {
-  if (RootInstrunction() == nullptr)
+  if (RootInstruction() == nullptr)
   {
     return true;
   }
   ClearProcedureCache();
-  return RootInstrunction()->Setup(*this);
+  return RootInstruction()->Setup(*this);
 }
 
 void Procedure::ExecuteSingle(UserInterface *ui)
 {
-  if (RootInstrunction() == nullptr)
+  if (RootInstruction() == nullptr)
   {
     return;
   }
-  RootInstrunction()->ExecuteSingle(ui, _workspace.get());
+  RootInstruction()->ExecuteSingle(ui, _workspace.get());
 }
 
 void Procedure::Halt()
 {
-  if (RootInstrunction() == nullptr)
+  if (RootInstruction() == nullptr)
   {
     return;
   }
-  RootInstrunction()->Halt();
+  RootInstruction()->Halt();
 }
 
 void Procedure::Reset()
 {
-  if (RootInstrunction() == nullptr)
+  if (RootInstruction() == nullptr)
   {
     return;
   }
-  RootInstrunction()->Reset();
+  RootInstruction()->Reset();
 }
 
 ExecutionStatus Procedure::GetStatus() const
 {
-  if (RootInstrunction() == nullptr)
+  if (RootInstruction() == nullptr)
   {
     return ExecutionStatus::SUCCESS;
   }
-  return RootInstrunction()->GetStatus();
+  return RootInstruction()->GetStatus();
 }
 
 bool Procedure::HasAttribute(const std::string &name) const

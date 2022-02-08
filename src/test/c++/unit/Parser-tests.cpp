@@ -119,7 +119,7 @@ TEST_F(ParserTest, WorkspaceOnly)
 {
   auto proc = CreateProcedure(WorkspaceOnlyString);
   ASSERT_TRUE(static_cast<bool>(proc));
-  EXPECT_EQ(proc->RootInstrunction(), nullptr);
+  EXPECT_EQ(proc->RootInstruction(), nullptr);
 }
 
 TEST_F(ParserTest, IncorrectRoot)

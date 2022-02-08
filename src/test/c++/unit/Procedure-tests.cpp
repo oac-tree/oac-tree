@@ -81,7 +81,7 @@ TEST_F(ProcedureTest, DefaultConstructed)
   EXPECT_EQ(empty_proc.GetFilename(), filename);
 
   // Empty instruction list
-  EXPECT_EQ(empty_proc.RootInstrunction(), nullptr);
+  EXPECT_EQ(empty_proc.RootInstruction(), nullptr);
   auto instructions = empty_proc.GetInstructions();
   EXPECT_EQ(instructions.size(), 0);
   EXPECT_EQ(empty_proc.GetInstructionCount(), 0);
@@ -90,7 +90,7 @@ TEST_F(ProcedureTest, DefaultConstructed)
   EXPECT_FALSE(empty_proc.PushInstruction(nullptr));
   Instruction *p_wait = wait.get();
   EXPECT_TRUE(empty_proc.PushInstruction(wait.release()));
-  EXPECT_EQ(empty_proc.RootInstrunction(), p_wait);
+  EXPECT_EQ(empty_proc.RootInstruction(), p_wait);
   instructions = empty_proc.GetInstructions();
   EXPECT_EQ(instructions.size(), 1);
   instructions = empty_proc.GetInstructions(filename);
@@ -189,7 +189,7 @@ TEST_F(ProcedureTest, ConstructedFromString)
   EXPECT_EQ(loaded_proc->GetFilename(), filename);
 
   // Instruction list
-  auto root = loaded_proc->RootInstrunction();
+  auto root = loaded_proc->RootInstruction();
   EXPECT_NE(root, nullptr);
   auto instructions = loaded_proc->GetInstructions();
   EXPECT_EQ(instructions.size(), 2);
@@ -199,7 +199,7 @@ TEST_F(ProcedureTest, ConstructedFromString)
   EXPECT_TRUE(loaded_proc->PushInstruction(wait.release()));
   instructions = loaded_proc->GetInstructions();
   EXPECT_EQ(instructions.size(), 3);
-  EXPECT_EQ(loaded_proc->RootInstrunction(), root);
+  EXPECT_EQ(loaded_proc->RootInstruction(), root);
 
   // Variables
   auto variables = loaded_proc->VariableNames();

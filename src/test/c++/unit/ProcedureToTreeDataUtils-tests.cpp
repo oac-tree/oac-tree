@@ -78,10 +78,10 @@ TEST_F(ProcedureToTreeDataUtilsTest, WorkspaceWithSingleVariableToTreeData)
   Workspace workspace;
 
   // workspace with single variable
-  const std::string value_key("value");
-  const std::string expected_value("42");
+  const std::string variable_attr_name("value");
+  const std::string variable_attr_value("42");
   auto variable0 = GlobalVariableRegistry().Create(LocalVariable::Type);
-  variable0->AddAttribute(value_key, expected_value);
+  variable0->AddAttribute(variable_attr_name, variable_attr_value);
 
   workspace.AddVariable("var0", variable0.release());
   auto tree_data = ToTreeData(workspace);
@@ -92,19 +92,22 @@ TEST_F(ProcedureToTreeDataUtilsTest, WorkspaceWithSingleVariableToTreeData)
 
   auto variable_data = tree_data->Children().at(0);
   EXPECT_EQ(variable_data.GetType(), LocalVariable::Type);
-  EXPECT_EQ(variable_data.GetAttribute(value_key), expected_value);
+  EXPECT_EQ(variable_data.GetAttribute(variable_attr_name), variable_attr_value);
 }
 
 TEST_F(ProcedureToTreeDataUtilsTest, EmptySequenceToTreeData)
 {
+  const std::string instruction_attr_name("name");
+  const std::string instruction_attr_value("abc");
+
   auto sequence = GlobalInstructionRegistry().Create(Sequence::Type);
-  sequence->AddAttribute("name", "abc");
+  sequence->AddAttribute(instruction_attr_name, instruction_attr_value);
 
   auto tree_data = ToTreeData(*sequence);
   EXPECT_EQ(tree_data->GetType(), Sequence::Type);
   EXPECT_EQ(tree_data->GetNumberOfChildren(), 0);
   ASSERT_EQ(tree_data->GetNumberOfAttributes(), 1);
-  EXPECT_EQ(tree_data->GetAttribute("name"), "abc");
+  EXPECT_EQ(tree_data->GetAttribute(instruction_attr_name), instruction_attr_value);
   EXPECT_TRUE(tree_data->GetContent().empty());
 }
 
@@ -112,10 +115,15 @@ TEST_F(ProcedureToTreeDataUtilsTest, SequenceWithTwoChildrenToTreeData)
 {
   auto sequence = GlobalInstructionRegistry().Create(Sequence::Type);
 
+  const std::string wait0_attr_name("timeout");
+  const std::string wait0_attr_value("42");
   auto wait0 = GlobalInstructionRegistry().Create(Wait::Type);
-  wait0->AddAttribute("timeout", "42");
+  wait0->AddAttribute(wait0_attr_name, wait0_attr_value);
+
+  const std::string wait1_attr_name("timeout");
+  const std::string wait1_attr_value("43");
   auto wait1 = GlobalInstructionRegistry().Create(Wait::Type);
-  wait1->AddAttribute("timeout", "43");
+  wait1->AddAttribute(wait1_attr_name, wait1_attr_value);
 
   sequence->InsertInstruction(wait0.release(), 0);
   sequence->InsertInstruction(wait1.release(), 1);
@@ -130,14 +138,14 @@ TEST_F(ProcedureToTreeDataUtilsTest, SequenceWithTwoChildrenToTreeData)
   EXPECT_EQ(wait0_data.GetType(), Wait::Type);
   EXPECT_EQ(wait0_data.GetNumberOfChildren(), 0);
   ASSERT_EQ(wait0_data.GetNumberOfAttributes(), 1);
-  EXPECT_EQ(wait0_data.GetAttribute("timeout"), "42");
+  EXPECT_EQ(wait0_data.GetAttribute(wait0_attr_name), wait0_attr_value);
   EXPECT_TRUE(wait0_data.GetContent().empty());
 
   auto wait1_data = tree_data->Children().at(1);
   EXPECT_EQ(wait1_data.GetType(), Wait::Type);
   EXPECT_EQ(wait1_data.GetNumberOfChildren(), 0);
   ASSERT_EQ(wait1_data.GetNumberOfAttributes(), 1);
-  EXPECT_EQ(wait1_data.GetAttribute("timeout"), "43");
+  EXPECT_EQ(wait1_data.GetAttribute(wait1_attr_name), wait1_attr_value);
   EXPECT_TRUE(wait1_data.GetContent().empty());
 }
 
@@ -157,3 +165,74 @@ TEST_F(ProcedureToTreeDataUtilsTest, EmptyProcedureToTreeData)
   EXPECT_EQ(workspace_data.GetNumberOfAttributes(), 0);
   EXPECT_TRUE(workspace_data.GetContent().empty());
 }
+
+TEST_F(ProcedureToTreeDataUtilsTest, ProcedureWithSingleInstructionAndSingleVariableToTreeData)
+{
+  Procedure procedure;
+
+  auto wait = GlobalInstructionRegistry().Create(Wait::Type);
+  const std::string instruction_attr_name("value");
+  const std::string instruction_attr_value("42");
+  wait->AddAttribute(instruction_attr_name, instruction_attr_value);
+  procedure.PushInstruction(wait.release());
+
+  const std::string variable_attr_name("timeout");
+  const std::string variable_attr_value("43");
+  auto variable = GlobalVariableRegistry().Create(LocalVariable::Type);
+  variable->AddAttribute(variable_attr_name, variable_attr_value);
+  procedure.AddVariable("var0", variable.release());
+
+  auto tree_data = ToTreeData(procedure);
+
+  EXPECT_EQ(tree_data->GetType(), Constants::PROCEDURE_ELEMENT_NAME);
+  ASSERT_EQ(tree_data->GetNumberOfChildren(), 2);    // single instruction, workspace
+  EXPECT_EQ(tree_data->GetNumberOfAttributes(), 0);  // no schema or other attributes
+  EXPECT_TRUE(tree_data->GetContent().empty());
+
+  auto wait_data = tree_data->Children().at(0);
+  EXPECT_EQ(wait_data.GetType(), Wait::Type);
+  EXPECT_EQ(wait_data.GetNumberOfChildren(), 0);
+  EXPECT_EQ(wait_data.GetNumberOfAttributes(), 1);
+  EXPECT_TRUE(wait_data.GetContent().empty());
+  EXPECT_EQ(wait_data.GetAttribute(instruction_attr_name), instruction_attr_value);
+
+  auto workspace_data = tree_data->Children().at(1);
+  EXPECT_EQ(workspace_data.GetType(), Constants::WORKSPACE_ELEMENT_NAME);
+  ASSERT_EQ(workspace_data.GetNumberOfChildren(), 1);
+  EXPECT_EQ(workspace_data.GetNumberOfAttributes(), 0);
+  EXPECT_TRUE(workspace_data.GetContent().empty());
+
+  auto variable_data = workspace_data.Children().at(0);
+  EXPECT_EQ(variable_data.GetType(), LocalVariable::Type);
+  EXPECT_EQ(variable_data.GetAttribute(variable_attr_name), variable_attr_value);
+}
+
+// TEST_F(ProcedureToTreeDataUtilsTest, ProcedureWithSequenceToTreeData)
+// {
+//   Procedure procedure;
+
+//   auto wait = GlobalInstructionRegistry().Create(Wait::Type);
+//   const std::string instruction_attr_name("value");
+//   const std::string instruction_attr_value("42");
+//   wait->AddAttribute(instruction_attr_name, instruction_attr_value);
+
+//   auto sequence = GlobalInstructionRegistry().Create(Sequence::Type);
+//   sequence->InsertInstruction(wait.release(), 0);
+
+//   procedure.PushInstruction(sequence.release());
+
+//   auto tree_data = ToTreeData(procedure);
+
+//   EXPECT_EQ(tree_data->GetType(), Constants::PROCEDURE_ELEMENT_NAME);
+//   ASSERT_EQ(tree_data->GetNumberOfChildren(), 2); // sequence, workspace
+//   EXPECT_EQ(tree_data->GetNumberOfAttributes(), 0);
+//   EXPECT_TRUE(tree_data->GetContent().empty());
+
+//   auto sequence_data = tree_data->Children().at(0);
+//   EXPECT_EQ(sequence_data.GetType(), Sequence::Type);
+//   ASSERT_EQ(sequence_data.GetNumberOfChildren(), 1);
+
+//   auto wait_data = sequence_data.Children().at(0);
+//   EXPECT_EQ(wait_data.GetType(), Wait::Type);
+//   ASSERT_EQ(wait_data.GetNumberOfChildren(), 1);
+// }

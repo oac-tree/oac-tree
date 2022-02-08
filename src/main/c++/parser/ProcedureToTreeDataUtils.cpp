@@ -20,17 +20,39 @@
  ******************************************************************************/
 
 #include "ProcedureToTreeDataUtils.h"
-#include "TreeData.h"
+
+#include "AttributeMap.h"
+#include "Instruction.h"
 #include "Procedure.h"
+#include "TreeData.h"
+#include "Variable.h"
+
+namespace
+{
+template <typename T, typename... Args>
+std::unique_ptr<T> make_unique(Args&&... args)
+{
+  return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
+}
+}  // namespace
 
 namespace sup
 {
 namespace sequencer
 {
-
 std::unique_ptr<TreeData> ToTreeData(const Procedure& procedure)
 {
   return {};
+}
+
+std::unique_ptr<TreeData> ToTreeData(const Variable& variable)
+{
+  auto result = make_unique<TreeData>(variable.GetType());
+  for (const auto& it : variable.GetAttributes())
+  {
+    result->AddAttribute(it.first, it.second);
+  }
+  return result;
 }
 
 }  // namespace sequencer

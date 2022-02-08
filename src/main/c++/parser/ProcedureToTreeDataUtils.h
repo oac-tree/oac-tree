@@ -31,8 +31,12 @@ namespace sequencer
 
 class TreeData;
 class Procedure;
+class Variable;
+class Instruction;
 
 std::unique_ptr<TreeData> ToTreeData(const Procedure& procedure);
+
+std::unique_ptr<TreeData> ToTreeData(const Variable& variable);
 
 }  // namespace sequencer
 

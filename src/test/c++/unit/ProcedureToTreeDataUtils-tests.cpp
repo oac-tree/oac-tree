@@ -19,10 +19,14 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <gtest/gtest.h>
 #include "Instruction.h"
+#include "LocalVariable.h"
 #include "Procedure.h"
+#include "ProcedureToTreeDataUtils.h"
+#include "TreeData.h"
 #include "Variable.h"
+
+#include <gtest/gtest.h>
 
 using namespace sup::sequencer;
 
@@ -30,7 +34,23 @@ class ProcedureToTreeDataUtilsTest : public ::testing::Test
 {
 };
 
-TEST_F(ProcedureToTreeDataUtilsTest, VariableConversion)
+TEST_F(ProcedureToTreeDataUtilsTest, VariableToTreeData)
 {
-  EXPECT_EQ(1,1);
+  const std::string type_key("type");
+  const std::string value_key("value");
+  const std::string expected_type(R"RAW({"type":"uint32"})RAW");
+  const std::string expected_value("42");
+
+  LocalVariable variable;
+  variable.AddAttribute(type_key, expected_type);
+  variable.AddAttribute(value_key, expected_value);
+
+  auto tree_data = ToTreeData(variable);
+
+  EXPECT_EQ(tree_data->GetType(), variable.GetType());
+  EXPECT_TRUE(tree_data->GetContent().empty());
+  EXPECT_EQ(tree_data->GetNumberOfChildren(), 0);
+  EXPECT_EQ(tree_data->GetNumberOfAttributes(), 2);
+  EXPECT_EQ(tree_data->GetAttribute(type_key), expected_type);
+  EXPECT_EQ(tree_data->GetAttribute(value_key), expected_value);
 }

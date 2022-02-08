@@ -26,7 +26,11 @@
 #include <common/AnyValue.h>
 #include <gtest/gtest.h>
 
-TEST(SequenceParser, Default)
+class SequencerParserTest : public ::testing::Test
+{
+};
+
+TEST_F(SequencerParserTest, Default)
 {
   const std::string body{R"(
     <Sequence>
@@ -48,7 +52,7 @@ TEST(SequenceParser, Default)
   ASSERT_TRUE(proc.get() != nullptr);
 }
 
-TEST(SequenceParser, Workspace)
+TEST_F(SequencerParserTest, Workspace)
 {
   const std::string body{R"(
     <Sequence>
@@ -73,7 +77,7 @@ TEST(SequenceParser, Workspace)
   ::sup::UnitTestHelper::PrintProcedureWorkspace(proc.get());
 }
 
-TEST(SequenceParser, ParseString)
+TEST_F(SequencerParserTest, ParseString)
 {
   const std::string body{R"(
     <Sequence>

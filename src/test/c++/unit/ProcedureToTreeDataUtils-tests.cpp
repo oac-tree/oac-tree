@@ -31,6 +31,7 @@
 #include "VariableRegistry.h"
 #include "Wait.h"
 #include "Workspace.h"
+#include "Constants.h"
 
 #include <gtest/gtest.h>
 
@@ -66,7 +67,7 @@ TEST_F(ProcedureToTreeDataUtilsTest, EmptyWorkspaceToTreeData)
   Workspace workspace;
 
   auto tree_data = ToTreeData(workspace);
-  EXPECT_EQ(tree_data->GetType(), std::string("Workspace"));  // FIXME replace with constant
+  EXPECT_EQ(tree_data->GetType(), Constants::WORKSPACE_ELEMENT_NAME);
   EXPECT_EQ(tree_data->GetNumberOfChildren(), 0);
   EXPECT_EQ(tree_data->GetNumberOfAttributes(), 0);
   EXPECT_TRUE(tree_data->GetContent().empty());
@@ -84,7 +85,7 @@ TEST_F(ProcedureToTreeDataUtilsTest, WorkspaceWithSingleVariableToTreeData)
 
   workspace.AddVariable("var0", variable0.release());
   auto tree_data = ToTreeData(workspace);
-  EXPECT_EQ(tree_data->GetType(), std::string("Workspace"));  // FIXME replace with constant
+  EXPECT_EQ(tree_data->GetType(), Constants::WORKSPACE_ELEMENT_NAME);
   ASSERT_EQ(tree_data->GetNumberOfChildren(), 1);
   EXPECT_EQ(tree_data->GetNumberOfAttributes(), 0);
   EXPECT_TRUE(tree_data->GetContent().empty());

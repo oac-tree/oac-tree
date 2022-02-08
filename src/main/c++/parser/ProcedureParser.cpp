@@ -33,6 +33,7 @@
 #include "ProcedureParser.h"
 #include "SequenceParser.h"
 #include "VariableParser.h"
+#include "Constants.h"
 
 // Constants
 
@@ -47,10 +48,6 @@ namespace sequencer
 {
 // Global variables
 
-static const std::string PROCEDURE_ELEMENT_NAME = "Procedure";
-static const std::string WORKSPACE_ELEMENT_NAME = "Workspace";
-static const std::string PLUGIN_ELEMENT_NAME = "Plugin";
-static const std::string REGISTERTYPE_ELEMENT_NAME = "RegisterType";
 static const std::string JSONTYPE_ATTRIBUTE_NAME = "jsontype";
 static const std::string JSONFILE_ATTRIBUTE_NAME = "jsonfile";
 
@@ -70,7 +67,7 @@ std::unique_ptr<Procedure> ParseProcedure(const TreeData &data, const std::strin
 {
   log_debug("sup::sequencer::ParseProcedure() - entering function..");
 
-  if (data.GetType() != PROCEDURE_ELEMENT_NAME)
+  if (data.GetType() != Constants::PROCEDURE_ELEMENT_NAME)
   {
     log_warning("sup::sequencer::ParseProcedure() - incorrect root element type: '%s'",
                 data.GetType().c_str());
@@ -149,14 +146,14 @@ static bool ParsePreamble(const TreeData &data, const std::string &filename)
   bool result = true;
   for (const auto &child : data.Children())
   {
-    if (child.GetType() == PLUGIN_ELEMENT_NAME)
+    if (child.GetType() == Constants::PLUGIN_ELEMENT_NAME)
     {
       if (!ParseAndLoadPlugin(child))
       {
         result = false;
       }
     }
-    else if (child.GetType() == REGISTERTYPE_ELEMENT_NAME)
+    else if (child.GetType() == Constants::REGISTERTYPE_ELEMENT_NAME)
     {
       if (!RegisterTypeInformation(child, filename))
       {
@@ -217,11 +214,11 @@ static bool ParseProcedureChildren(Procedure *procedure, const TreeData &data)
   for (auto it = data.Children().begin(); status && it != data.Children().end(); ++it)
   {
     auto element_type = it->GetType();
-    if (element_type == WORKSPACE_ELEMENT_NAME)
+    if (element_type == Constants::WORKSPACE_ELEMENT_NAME)
     {
       status = AddWorkspaceVariables(procedure, *it);
     }
-    else if (element_type == PLUGIN_ELEMENT_NAME || element_type == REGISTERTYPE_ELEMENT_NAME)
+    else if (element_type == Constants::PLUGIN_ELEMENT_NAME || element_type == Constants::REGISTERTYPE_ELEMENT_NAME)
     {
       continue;  // Plugins were already handled.
     }

@@ -27,6 +27,7 @@
 #include "TreeData.h"
 #include "Variable.h"
 #include "Workspace.h"
+#include "Constants.h"
 
 #include <set>
 
@@ -87,7 +88,7 @@ std::unique_ptr<TreeData> ToTreeData(const Variable& variable)
 
 std::unique_ptr<TreeData> ToTreeData(const Workspace& workspace)
 {
-  auto result = make_unique<TreeData>("Workspace");  // FIXME replace with constants
+  auto result = make_unique<TreeData>(Constants::WORKSPACE_ELEMENT_NAME);
   for (auto variable : workspace.GetVariables())
   {
     result->AddChild(*ToTreeData(*variable));

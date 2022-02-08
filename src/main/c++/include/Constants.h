@@ -34,6 +34,7 @@
 
 // Global header files
 
+#include <string>
 // Local header files
 
 // Constants
@@ -94,6 +95,15 @@ static const char PATH_DELIMITER = '.';
  */
 static const char VARNAME_DELIMITER = ',';
 }  // namespace DefaultSettings
+
+namespace Constants
+{
+static const std::string PROCEDURE_ELEMENT_NAME = "Procedure";
+static const std::string WORKSPACE_ELEMENT_NAME = "Workspace";
+static const std::string PLUGIN_ELEMENT_NAME = "Plugin";
+static const std::string REGISTERTYPE_ELEMENT_NAME = "RegisterType";
+
+} // namespace Constants
 
 // Function declarations
 

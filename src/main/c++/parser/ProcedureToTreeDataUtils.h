@@ -41,6 +41,8 @@ std::unique_ptr<TreeData> ToTreeData(const Variable& variable);
 
 std::unique_ptr<TreeData> ToTreeData(const Workspace& workspace);
 
+std::unique_ptr<TreeData> ToTreeData(const Instruction& instruction);
+
 }  // namespace sequencer
 
 }  // namespace sup

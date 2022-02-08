@@ -28,6 +28,8 @@
 #include "Variable.h"
 #include "Workspace.h"
 
+#include <set>
+
 namespace
 {
 template <typename T, typename... Args>
@@ -35,6 +37,33 @@ std::unique_ptr<T> make_unique(Args&&... args)
 {
   return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
 }
+
+::sup::sequencer::TreeData* ProcessInstruction(const ::sup::sequencer::Instruction* instruction,
+                                               ::sup::sequencer::TreeData* parent)
+{
+  auto tree_data = make_unique<::sup::sequencer::TreeData>(instruction->GetType());
+  for (const auto& it : instruction->GetAttributes())
+  {
+    tree_data->AddAttribute(it.first, it.second);
+  }
+
+  auto next_parent = tree_data.get();
+  parent->AddChild(*tree_data);
+  return next_parent;
+}
+
+void Iterate(const ::sup::sequencer::Instruction* instruction, ::sup::sequencer::TreeData* parent)
+{
+  for (auto& instruction : instruction->ChildInstructions())
+  {
+    auto next_parent_item = ProcessInstruction(instruction, parent);
+    if (next_parent_item)
+    {
+      Iterate(instruction, next_parent_item);
+    }
+  }
+}
+
 }  // namespace
 
 namespace sup
@@ -65,6 +94,18 @@ std::unique_ptr<TreeData> ToTreeData(const Workspace& workspace)
   }
 
   return result;
+}
+
+std::unique_ptr<TreeData> ToTreeData(const Instruction& instruction)
+{
+  auto tree_data = make_unique<::sup::sequencer::TreeData>(instruction.GetType());
+  for (const auto& it : instruction.GetAttributes())
+  {
+    tree_data->AddAttribute(it.first, it.second);
+  }
+  Iterate(&instruction, tree_data.get());
+
+  return tree_data;
 }
 
 }  // namespace sequencer

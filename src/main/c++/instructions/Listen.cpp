@@ -147,7 +147,7 @@ CallbackGuard<NamedCallbackManager<const ccs::types::AnyValue&>> Listen::Registe
   {
     ws->RegisterCallback(
         var_name,
-        [this, &var_name](const ccs::types::AnyValue& val) { UpdateCallback(var_name, val); },
+        [this, var_name](const ccs::types::AnyValue& val) { UpdateCallback(var_name, val); },
         this);
   }
   return cb_guard;

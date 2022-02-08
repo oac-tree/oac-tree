@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+           name="Procedure for testing Repeat instruction with parallel sequence"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+    <ParallelSequence successThreshold="2">
+        <Listen varNames="monitor">
+            <Sequence>
+                <Output from="monitor" description="Updated monitor" />
+                <!-- <Copy input="monitor" output="result"/> -->
+            </Sequence>
+        </Listen>
+        <Sequence>
+            <Wait timeout="0.5" />
+            <Copy input="update" output="monitor"/>
+        </Sequence>
+        <Wait timeout="1.0" />
+    </ParallelSequence>
+    <Workspace>
+        <Local name="monitor"
+               type='{"type":"uint64"}'
+               value='0' />
+        <Local name="update"
+               type='{"type":"uint64"}'
+               value='1729' />
+        <Local name="result"
+               type='{"type":"uint64"}' />
+    </Workspace>
+</Procedure>

@@ -81,11 +81,18 @@ static const int TIMING_ACCURACY_MS = 50;
 static const char VAR_ATTRIBUTE_CHAR = '$';
 
 /**
- * @brief Character to be used a separator between different elements of an instruction path.
+ * @brief Character to be used as a separator between different elements of an instruction path.
  *
  * @note See the Include instruction for more details.
  */
 static const char PATH_DELIMITER = '.';
+
+/**
+ * @brief Character to be used as a separator between different variable names in an attribute.
+ *
+ * @note See the Include instruction for more details.
+ */
+static const char VARNAME_DELIMITER = ',';
 }  // namespace DefaultSettings
 
 // Function declarations

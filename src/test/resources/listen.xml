@@ -5,10 +5,7 @@
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
     <ParallelSequence successThreshold="2">
         <Listen varNames="monitor">
-            <Sequence>
-                <Output from="monitor" description="Updated monitor" />
-                <!-- <Copy input="monitor" output="result"/> -->
-            </Sequence>
+            <Output from="monitor" description="Updated monitor" />
         </Listen>
         <Sequence>
             <Wait timeout="0.5" />
@@ -23,7 +20,5 @@
         <Local name="update"
                type='{"type":"uint64"}'
                value='1729' />
-        <Local name="result"
-               type='{"type":"uint64"}' />
     </Workspace>
 </Procedure>

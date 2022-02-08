@@ -20,6 +20,7 @@
  ******************************************************************************/
 
 #include "Listen.h"
+#include "Constants.h"
 
 #include <cstring>
 
@@ -116,12 +117,16 @@ std::vector<std::string> Listen::VariableNames() const
 {
   auto var_names_attr = GetAttribute(VARNAMES_ATTRIBUTE_NAME);
   std::vector<std::string> result;
-  size_t pos = var_names_attr.find_first_not_of(',');
+  size_t pos = var_names_attr.find_first_not_of(DefaultSettings::VARNAME_DELIMITER);
   while (pos != std::string::npos)
   {
-    auto next = var_names_attr.find_first_of(',', pos);
-    result.push_back(var_names_attr.substr(pos, next - pos));
-    pos = var_names_attr.find_first_not_of(',', next);
+    auto next = var_names_attr.find_first_of(DefaultSettings::VARNAME_DELIMITER, pos);
+    auto var_name = var_names_attr.substr(pos, next - pos);
+    if (!var_name.empty())
+    {
+      result.push_back(var_name);
+    }
+    pos = var_names_attr.find_first_not_of(DefaultSettings::VARNAME_DELIMITER, next);
   }
   return result;
 }

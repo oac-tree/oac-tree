@@ -207,32 +207,32 @@ TEST_F(ProcedureToTreeDataUtilsTest, ProcedureWithSingleInstructionAndSingleVari
   EXPECT_EQ(variable_data.GetAttribute(variable_attr_name), variable_attr_value);
 }
 
-// TEST_F(ProcedureToTreeDataUtilsTest, ProcedureWithSequenceToTreeData)
-// {
-//   Procedure procedure;
+TEST_F(ProcedureToTreeDataUtilsTest, ProcedureWithSequenceToTreeData)
+{
+  Procedure procedure;
 
-//   auto wait = GlobalInstructionRegistry().Create(Wait::Type);
-//   const std::string instruction_attr_name("value");
-//   const std::string instruction_attr_value("42");
-//   wait->AddAttribute(instruction_attr_name, instruction_attr_value);
+  auto wait = GlobalInstructionRegistry().Create(Wait::Type);
+  const std::string instruction_attr_name("value");
+  const std::string instruction_attr_value("42");
+  wait->AddAttribute(instruction_attr_name, instruction_attr_value);
 
-//   auto sequence = GlobalInstructionRegistry().Create(Sequence::Type);
-//   sequence->InsertInstruction(wait.release(), 0);
+  auto sequence = GlobalInstructionRegistry().Create(Sequence::Type);
+  sequence->InsertInstruction(wait.release(), 0);
 
-//   procedure.PushInstruction(sequence.release());
+  procedure.PushInstruction(sequence.release());
 
-//   auto tree_data = ToTreeData(procedure);
+  auto tree_data = ToTreeData(procedure);
 
-//   EXPECT_EQ(tree_data->GetType(), Constants::PROCEDURE_ELEMENT_NAME);
-//   ASSERT_EQ(tree_data->GetNumberOfChildren(), 2); // sequence, workspace
-//   EXPECT_EQ(tree_data->GetNumberOfAttributes(), 0);
-//   EXPECT_TRUE(tree_data->GetContent().empty());
+  EXPECT_EQ(tree_data->GetType(), Constants::PROCEDURE_ELEMENT_NAME);
+  ASSERT_EQ(tree_data->GetNumberOfChildren(), 2); // sequence, workspace
+  EXPECT_EQ(tree_data->GetNumberOfAttributes(), 0);
+  EXPECT_TRUE(tree_data->GetContent().empty());
 
-//   auto sequence_data = tree_data->Children().at(0);
-//   EXPECT_EQ(sequence_data.GetType(), Sequence::Type);
-//   ASSERT_EQ(sequence_data.GetNumberOfChildren(), 1);
+  auto sequence_data = tree_data->Children().at(0);
+  EXPECT_EQ(sequence_data.GetType(), Sequence::Type);
+  ASSERT_EQ(sequence_data.GetNumberOfChildren(), 1);
 
-//   auto wait_data = sequence_data.Children().at(0);
-//   EXPECT_EQ(wait_data.GetType(), Wait::Type);
-//   ASSERT_EQ(wait_data.GetNumberOfChildren(), 1);
-// }
+  auto wait_data = sequence_data.Children().at(0);
+  EXPECT_EQ(wait_data.GetType(), Wait::Type);
+  ASSERT_EQ(wait_data.GetNumberOfChildren(), 0);
+}

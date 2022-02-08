@@ -39,29 +39,24 @@ std::unique_ptr<T> make_unique(Args&&... args)
   return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
 }
 
-::sup::sequencer::TreeData* ProcessInstruction(const ::sup::sequencer::Instruction* instruction,
-                                               ::sup::sequencer::TreeData* parent)
+std::unique_ptr<::sup::sequencer::TreeData> CreateTreeData(
+    const ::sup::sequencer::Instruction* instruction)
 {
   auto tree_data = make_unique<::sup::sequencer::TreeData>(instruction->GetType());
   for (const auto& it : instruction->GetAttributes())
   {
     tree_data->AddAttribute(it.first, it.second);
   }
-
-  auto next_parent = tree_data.get();
-  parent->AddChild(*tree_data);
-  return next_parent;
+  return tree_data;
 }
 
 void Iterate(const ::sup::sequencer::Instruction* instruction, ::sup::sequencer::TreeData* parent)
 {
-  for (auto& instruction : instruction->ChildInstructions())
+  for (auto& child : instruction->ChildInstructions())
   {
-    auto next_parent_item = ProcessInstruction(instruction, parent);
-    if (next_parent_item)
-    {
-      Iterate(instruction, next_parent_item);
-    }
+    auto tree_data = CreateTreeData(child);
+    Iterate(child, tree_data.get());
+    parent->AddChild(*tree_data);
   }
 }
 
@@ -77,11 +72,7 @@ std::unique_ptr<TreeData> ToTreeData(const Procedure& procedure)
 
   for (auto instruction : procedure.GetInstructions())
   {
-    auto next_parent_item = ProcessInstruction(instruction, result.get());
-    if (next_parent_item)
-    {
-      Iterate(instruction, next_parent_item);
-    }
+    result->AddChild(*ToTreeData(*instruction));
   }
 
   result->AddChild(*ToTreeData(*procedure.GetWorkspace()));
@@ -112,13 +103,8 @@ std::unique_ptr<TreeData> ToTreeData(const Workspace& workspace)
 
 std::unique_ptr<TreeData> ToTreeData(const Instruction& instruction)
 {
-  auto tree_data = make_unique<::sup::sequencer::TreeData>(instruction.GetType());
-  for (const auto& it : instruction.GetAttributes())
-  {
-    tree_data->AddAttribute(it.first, it.second);
-  }
+  auto tree_data = CreateTreeData(&instruction);
   Iterate(&instruction, tree_data.get());
-
   return tree_data;
 }
 

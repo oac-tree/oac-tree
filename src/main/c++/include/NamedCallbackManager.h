@@ -60,6 +60,8 @@ public:
 
   void Swap(CallbackGuard& other);
 
+  bool IsValid() const;
+
 private:
   T* cb_manager;
   void* listener;
@@ -115,7 +117,7 @@ CallbackGuard<T>::CallbackGuard(T* cb_manager_, void* listener_)
 template <typename T>
 CallbackGuard<T>::~CallbackGuard()
 {
-  if (listener)
+  if (IsValid())
   {
     cb_manager->UnregisterListener(listener);
   }
@@ -142,6 +144,12 @@ void CallbackGuard<T>::Swap(CallbackGuard& other)
 {
   std::swap(cb_manager, other.cb_manager);
   std::swap(listener, other.listener);
+}
+
+template <typename T>
+bool CallbackGuard<T>::IsValid() const
+{
+  return cb_manager != nullptr && listener != nullptr;
 }
 
 template <typename... Args>

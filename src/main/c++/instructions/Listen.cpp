@@ -44,9 +44,10 @@ const std::string Listen::Type = "Listen";
 Listen::Listen()
   : DecoratorInstruction(Type)
   , force_success{false}
-  , var_changed{}
+  , var_changed{false}
   , var_names{}
   , var_cache{}
+  , cb_guard(nullptr, nullptr)
 {}
 
 Listen::~Listen() = default;
@@ -57,44 +58,36 @@ ExecutionStatus Listen::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
   {
     return ExecutionStatus::SUCCESS;
   }
-  // always let child run at least once
-  var_changed = true;
-  // setup callbacks
-  auto cb_guard = RegisterCallbacks(ws, var_names);
-
-  // listen loop
-  while (true)
+  if (!cb_guard.IsValid())
   {
+    var_changed = false;
+    RegisterCallbacks(ws, var_names);
+  }
+  auto child_status = GetChildStatus();
+  if (IsFinishedStatus(child_status))
+  {
+    ResetChild();
     std::unique_lock<std::mutex> lk(mx);
     cv.wait(lk, [this]{ return var_changed || _halt_requested; });
-    if (_halt_requested)
-    {
-      break;
-    }
     var_changed = false;
     lk.unlock();
-    ResetChild();
-    auto child_status = GetChildStatus();
-    while (child_status != ExecutionStatus::SUCCESS && child_status != ExecutionStatus::FAILURE)
+    if (_halt_requested)
     {
-      ExecuteChild(ui, ws);
-      child_status = GetChildStatus();
-      if (child_status == ExecutionStatus::RUNNING)
-      {
-        std::this_thread::sleep_for(
-            std::chrono::milliseconds(DefaultSettings::DEFAULT_SLEEP_TIME_MS));
-      }
-    }
-    if(!force_success && GetChildStatus() == ExecutionStatus::FAILURE)
-    {
-      break;
+      return ExecutionStatus::FAILURE;
     }
   }
-  return ExecutionStatus::FAILURE;
+  ExecuteChild(ui, ws);
+  auto status = CalculateStatus();
+  if (IsFinishedStatus(status))
+  {
+    ClearCallbacks();
+  }
+  return status;
 }
 
 void Listen::HaltImpl()
 {
+  ClearCallbacks();
   HaltChild();
   cv.notify_one();
 }
@@ -119,6 +112,20 @@ bool Listen::SetupImpl(const Procedure& proc)
     var_cache[var_name] = {};
   }
   return true;
+}
+
+ExecutionStatus Listen::CalculateStatus() const
+{
+  auto child_status = GetChildStatus();
+  if (child_status == ExecutionStatus::SUCCESS)
+  {
+    return ExecutionStatus::NOT_FINISHED;
+  }
+  if (force_success && child_status == ExecutionStatus::FAILURE)
+  {
+    return ExecutionStatus::NOT_FINISHED;
+  }
+  return child_status;
 }
 
 std::vector<std::string> Listen::VariableNames() const
@@ -152,10 +159,10 @@ void Listen::UpdateCallback(const std::string& name, const ccs::types::AnyValue&
   cv.notify_one();
 }
 
-CallbackGuard<NamedCallbackManager<const ccs::types::AnyValue&>> Listen::RegisterCallbacks(
+void Listen::RegisterCallbacks(
     Workspace* ws, std::vector<std::string> var_names)
 {
-  auto cb_guard = ws->GetCallbackGuard(this);
+  cb_guard = ws->GetCallbackGuard(this);
   for (const auto& var_name : var_names)
   {
     ws->RegisterCallback(
@@ -163,7 +170,11 @@ CallbackGuard<NamedCallbackManager<const ccs::types::AnyValue&>> Listen::Registe
         [this, var_name](const ccs::types::AnyValue& val) { UpdateCallback(var_name, val); },
         this);
   }
-  return cb_guard;
+}
+
+void Listen::ClearCallbacks()
+{
+  cb_guard = CBGuard(nullptr, nullptr);
 }
 
 namespace

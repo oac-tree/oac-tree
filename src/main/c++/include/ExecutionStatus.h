@@ -64,6 +64,7 @@ enum class ExecutionStatus
 // Function declarations
 
 std::string StatusToString(const ExecutionStatus& status);
+bool IsFinishedStatus(const ExecutionStatus& status);
 
 // Function definitions
 

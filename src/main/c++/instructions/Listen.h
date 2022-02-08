@@ -36,6 +36,7 @@
 
 #include <condition_variable>
 #include <map>
+#include <memory>
 #include <mutex>
 
 namespace sup
@@ -64,12 +65,15 @@ public:
   static const std::string Type;
 
 private:
+  using CBGuard = CallbackGuard<NamedCallbackManager<const ccs::types::AnyValue&>>;
+
   bool force_success;
   bool var_changed;
   std::mutex mx;
   std::condition_variable cv;
   std::vector<std::string> var_names;
   std::map<std::string, ccs::types::AnyValue> var_cache;
+  CBGuard cb_guard;
 
   /**
    * @brief See sup::sequencer::Instruction.
@@ -87,12 +91,17 @@ private:
   void HaltImpl() override;
   bool SetupImpl(const Procedure& proc) override;
 
+  /**
+   * @brief Calculate this instruction's status from the status of its child instruction.
+   */
+  ExecutionStatus CalculateStatus() const;
+
   std::vector<std::string> VariableNames() const;
 
   void UpdateCallback(const std::string& name, const ccs::types::AnyValue& val);
 
-  CallbackGuard<NamedCallbackManager<const ccs::types::AnyValue&>> RegisterCallbacks(
-      Workspace* ws, std::vector<std::string> var_names);
+  void RegisterCallbacks(Workspace* ws, std::vector<std::string> var_names);
+  void ClearCallbacks();
 };
 
 }  // namespace sequencer

@@ -62,6 +62,11 @@ std::string StatusToString(const ExecutionStatus& status)
   return "Unknown status";
 }
 
+bool IsFinishedStatus(const ExecutionStatus& status)
+{
+  return status == ExecutionStatus::SUCCESS || status == ExecutionStatus::FAILURE;
+}
+
 }  // namespace sequencer
 
 }  // namespace sup

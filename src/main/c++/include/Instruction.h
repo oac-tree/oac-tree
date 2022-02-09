@@ -31,31 +31,20 @@
 #ifndef _SEQ_Instruction_h_
 #define _SEQ_Instruction_h_
 
-// Global header files
-
 #include <atomic>
 #include <mutex>
 
-// Local header files
-
 #include "AttributeMap.h"
 #include "ExecutionStatus.h"
-
-// Constants
-
-#ifdef __cplusplus
 
 namespace sup
 {
 namespace sequencer
 {
-// Forward declarations
 
 class Procedure;
 class UserInterface;
 class Workspace;
-
-// Type definition
 
 /**
  * @brief Abstract interface for all executable instructions
@@ -95,6 +84,48 @@ private:
   void SetStatus(ExecutionStatus status);
 
   /**
+   * @brief Private method that is always called before delegating further execution to the
+   * private virutal Instruction::ExecuteSingleImple(UserInterface * ui, Workspace * ws).
+   *
+   * @details This method first calls the virtual private Instruction::PreExecuteHook(UserInterface
+   * * ui). If the instruction was not yet executed (or reset through a call to
+   * Instruction::Reset()), it clears the halt requested atomic, calls Instruction::InitHook(),
+   * changes the status to ExecutionStatus::NOT_FINISHED and finally informs the user interface of a
+   * status change.
+   */
+  void Preamble(UserInterface* ui);
+
+  /**
+   * @brief Private method that is always called the delegated execution to the
+   * private virutal Instruction::ExecuteSingleImple(UserInterface * ui, Workspace * ws).
+   *
+   * @details This method first checks if the instruction's status was changed as a consequence
+   * of the call to Instruction::ExecuteSingleImple(UserInterface * ui, Workspace * ws). If so,
+   * it informs the user interface of this status change. Afterwards, it calls the virtual
+   * private Instruction::PostExecuteHook(UserInterface * ui).
+   */
+  void Postamble(UserInterface* ui);
+
+  /**
+   * @brief Setup implementation.
+   *
+   * @param proc Procedure containing Workspace and instruction declarations.
+   * @return true on successful instruction setup.
+   * @details Successful completion of this instruction means that the instruction
+   * was able to configure itself from its attributes and (possibly) data from the Procedure.
+   * This method is called from the Instruction::Setup(const Procedure & proc) method.
+   */
+  virtual bool SetupImpl(const Procedure& proc);
+
+  /**
+   * @brief Private hook that is always called at the start of each execution request.
+   *
+   * @details See Instruction::Preamble(UserInterface * ui) for more details.
+   * @note Default implementation is empty.
+   */
+  virtual void PreExecuteHook(UserInterface* ui);
+
+  /**
    * @brief Private hook that is called at the start of the first ExecuteSingle call.
    *
    * @details This hook is meant to establish a correct starting state (e.g. reset internal
@@ -106,31 +137,11 @@ private:
   virtual void InitHook();
 
   /**
-   * @brief Private method that is always called before delegating further execution to the
-   * private virutal Instruction::ExecuteSingleImple(UserInterface * ui, Workspace * ws).
-   *
-   * @details This method first calls the virtual private Instruction::PreExecuteHook(UserInterface
-   * * ui). If the instruction was not yet executed (or reset through a call to
-   * Instruction::Reset()), it clears the halt requested atomic, calls Instruction::InitHook(),
-   * changes the status to ExecutionStatus::NOT_FINISHED and finally informs the user interface of a
-   * status change.
-   */
-  void Preamble(UserInterface *ui);
-
-  /**
-   * @brief Private hook that is always called at the start of each execution request.
-   *
-   * @details See Instruction::Preamble(UserInterface * ui) for more details.
-   * @note Default implementation is empty.
-   */
-  virtual void PreExecuteHook(UserInterface *ui);
-
-  /**
    * @brief Private implementation of the execute action.
    *
    * @details Pure virtual: this method contains the action(s) to be taken during execution.
    */
-  virtual ExecutionStatus ExecuteSingleImpl(UserInterface *ui, Workspace *ws) = 0;
+  virtual ExecutionStatus ExecuteSingleImpl(UserInterface* ui, Workspace* ws) = 0;
 
   /**
    * @brief Private hook that is always called at the end of each execution request.
@@ -138,18 +149,15 @@ private:
    * @details See Instruction::Postamble(UserInterface * ui) for more details.
    * @note Default implementation is empty.
    */
-  virtual void PostExecuteHook(UserInterface *ui);
+  virtual void PostExecuteHook(UserInterface* ui);
 
   /**
-   * @brief Private method that is always called the delegated execution to the
-   * private virutal Instruction::ExecuteSingleImple(UserInterface * ui, Workspace * ws).
+   * @brief Hook called during Instruction::Halt().
    *
-   * @details This method first checks if the instruction's status was changed as a consequence
-   * of the call to Instruction::ExecuteSingleImple(UserInterface * ui, Workspace * ws). If so,
-   * it informs the user interface of this status change. Afterwards, it calls the virtual
-   * private Instruction::PostExecuteHook(UserInterface * ui).
+   * @details This hook is meant to propagate the call to Instruction::Halt() to
+   * the instructions's child instructions.
    */
-  void Postamble(UserInterface *ui);
+  virtual void HaltImpl();
 
   /**
    * @brief Private hook that is always called during a call to Instruction::Reset().
@@ -162,21 +170,13 @@ private:
   virtual void ResetHook();
 
   /**
-   * @brief Hook called during Instruction::Halt().
-   *
-   * @details This hook is meant to propagate the call to Instruction::Halt() to
-   * the instructions's child instructions.
-   */
-  virtual void HaltImpl();
-
-  /**
    * @brief Private hook that is called after variable initialisation.
    *
    * @return true on succes.
    * @details Mainly used to propagate attributes to nested instructions.
    * Default implementation returns true.
    */
-  virtual bool PostInitialiseVariables(const AttributeMap &source);
+  virtual bool PostInitialiseVariables(const AttributeMap& source);
 
   /**
    * @brief Returns children count.
@@ -198,7 +198,7 @@ private:
    * @return true on success
    * @details Index must be in the range [0, current_children_count] inclusively.
    */
-  virtual bool InsertInstructionImpl(Instruction *child, int index);
+  virtual bool InsertInstructionImpl(Instruction* child, int index);
 
   /**
    * @brief Removes child with the given index and returns it to the user.
@@ -207,18 +207,7 @@ private:
    * @details Index must be in the range [0, current_children_count-1], ownership
    * is given to the user.
    */
-  virtual Instruction *TakeInstructionImpl(int index);
-
-  /**
-   * @brief Setup implementation.
-   *
-   * @param proc Procedure containing Workspace and instruction declarations.
-   * @return true on successful instruction setup.
-   * @details Successful completion of this instruction means that the instruction
-   * was able to configure itself from its attributes and (possibly) data from the Procedure.
-   * This method is called from the Instruction::Setup(const Procedure & proc) method.
-   */
-  virtual bool SetupImpl(const Procedure &proc);
+  virtual Instruction* TakeInstructionImpl(int index);
 
 protected:
   /**
@@ -257,18 +246,24 @@ public:
   void SetName(const std::string &name);
 
   /**
+   * @brief Get execution status.
+   * @return Execution status.
+   */
+  ExecutionStatus GetStatus() const;
+
+  /**
    * @brief Setup method.
    * @param proc Procedure containing Workspace and instruction declarations.
    * @return true on successful instruction setup.
    */
-  bool Setup(const Procedure &proc);
+  bool Setup(const Procedure& proc);
 
   /**
    * @brief Execution method.
    * @param ui UserInterface to handle input/output.
    * @param ws Workspace that contains the variables.
    */
-  void ExecuteSingle(UserInterface *ui, Workspace *ws);
+  void ExecuteSingle(UserInterface* ui, Workspace* ws);
 
   /**
    * @brief Halt execution.
@@ -278,12 +273,6 @@ public:
    * expected that an instruction will fail if it is interrupted (status: FAILURE).
    */
   void Halt();
-
-  /**
-   * @brief Get execution status.
-   * @return Execution status.
-   */
-  ExecutionStatus GetStatus() const;
 
   /**
    * @brief Reset execution status
@@ -301,7 +290,7 @@ public:
    * @param name Attribute name.
    * @return true when present.
    */
-  bool HasAttribute(const std::string &name) const;
+  bool HasAttribute(const std::string& name) const;
 
   /**
    * @brief Get attribute with given name.
@@ -309,7 +298,7 @@ public:
    * @param name Attribute name.
    * @return Attribute value.
    */
-  std::string GetAttribute(const std::string &name) const;
+  std::string GetAttribute(const std::string& name) const;
 
   /**
    * @brief Get all attributes.
@@ -325,7 +314,7 @@ public:
    * @param value Attribute value.
    * @return true when successful.
    */
-  bool AddAttribute(const std::string &name, const std::string &value);
+  bool AddAttribute(const std::string& name, const std::string& value);
 
   /**
    * @brief Set attribute with given name and value.
@@ -334,7 +323,7 @@ public:
    * @param value Attribute value.
    * @return true when successful.
    */
-  bool SetAttribute(const std::string &name, const std::string &value);
+  bool SetAttribute(const std::string& name, const std::string& value);
 
   /**
    * @brief Set all attributes from given map.
@@ -342,7 +331,7 @@ public:
    * @param attributes Map of attributes to set.
    * @return true when successful.
    */
-  bool AddAttributes(const AttributeMap &attributes);
+  bool AddAttributes(const AttributeMap& attributes);
 
   /**
    * @brief Initialise variable attributes with values from attribute map.
@@ -350,7 +339,7 @@ public:
    * @param source Map containing variable name - value pairs.
    * @return true when all variable attributes were initialised.
    */
-  bool InitialiseVariableAttributes(const AttributeMap &source);
+  bool InitialiseVariableAttributes(const AttributeMap& source);
 
   /**
    * @brief Returns children count.
@@ -379,7 +368,7 @@ public:
    * @return true on success
    * @details Index must be in the range [0, current_children_count] inclusively.
    */
-  bool InsertInstruction(Instruction *child, int index);
+  bool InsertInstruction(Instruction* child, int index);
 
   /**
    * @brief Removes child with the given index and returns it to the user.
@@ -388,12 +377,8 @@ public:
    * @details Index must be in the range [0, current_children_count-1], ownership
    * is given to the user.
    */
-  Instruction *TakeInstruction(int index);
+  Instruction* TakeInstruction(int index);
 };
-
-// Global variables
-
-// Function declarations
 
 /**
  * @brief Check if status corresponds to a state where execution is meaningful.
@@ -401,20 +386,8 @@ public:
  */
 bool NeedsExecute(ExecutionStatus status);
 
-// Function definitions
-
 }  // namespace sequencer
 
 }  // namespace sup
-
-extern "C"
-{
-#endif  // __cplusplus
-
-  // C API function declarations
-
-#ifdef __cplusplus
-}  // extern C
-#endif  // __cplusplus
 
 #endif  // _SEQ_Instruction_h_

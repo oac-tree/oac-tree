@@ -19,31 +19,18 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
-
-#include <common/log-api.h>
-
-// Local header files
-
 #include "Instruction.h"
 #include "UserInterface.h"
 
-// Constants
+#include <common/log-api.h>
 
 #undef LOG_ALTERN_SRC
 #define LOG_ALTERN_SRC "sup::sequencer"
-
-// Type definition
 
 namespace sup
 {
 namespace sequencer
 {
-// Global variables
-
-// Function declaration
-
-// Function definition
 
 void Instruction::SetStatus(ExecutionStatus status)
 {
@@ -51,9 +38,7 @@ void Instruction::SetStatus(ExecutionStatus status)
   _status = status;
 }
 
-void Instruction::InitHook() {}
-
-void Instruction::Preamble(UserInterface *ui)
+void Instruction::Preamble(UserInterface* ui)
 {
   PreExecuteHook(ui);
   if (GetStatus() == ExecutionStatus::NOT_STARTED)
@@ -64,17 +49,7 @@ void Instruction::Preamble(UserInterface *ui)
   }
 }
 
-void Instruction::PreExecuteHook(UserInterface *ui)
-{
-  (void)ui;
-}
-
-void Instruction::PostExecuteHook(UserInterface *ui)
-{
-  (void)ui;
-}
-
-void Instruction::Postamble(UserInterface *ui)
+void Instruction::Postamble(UserInterface* ui)
 {
   if (GetStatus() != _status_before)
   {
@@ -83,11 +58,22 @@ void Instruction::Postamble(UserInterface *ui)
   PostExecuteHook(ui);
 }
 
-void Instruction::ResetHook() {}
+bool Instruction::SetupImpl(const Procedure&)
+{
+  return true;
+}
+
+void Instruction::PreExecuteHook(UserInterface*) {}
+
+void Instruction::InitHook() {}
+
+void Instruction::PostExecuteHook(UserInterface*) {}
 
 void Instruction::HaltImpl() {}
 
-bool Instruction::PostInitialiseVariables(const AttributeMap &source)
+void Instruction::ResetHook() {}
+
+bool Instruction::PostInitialiseVariables(const AttributeMap&)
 {
   return true;
 }
@@ -102,19 +88,14 @@ std::vector<const Instruction *> Instruction::ChildInstructionsImpl() const
   return {};
 }
 
-bool Instruction::InsertInstructionImpl(Instruction *, int)
+bool Instruction::InsertInstructionImpl(Instruction*, int)
 {
   return false;
 }
 
-Instruction *Instruction::TakeInstructionImpl(int)
+Instruction* Instruction::TakeInstructionImpl(int)
 {
   return nullptr;
-}
-
-bool Instruction::SetupImpl(const Procedure &proc)
-{
-  return true;
 }
 
 Instruction::Instruction(const std::string &type)
@@ -145,12 +126,18 @@ void Instruction::SetName(const std::string &name)
     AddAttribute(attributes::NAME_ATTRIBUTE, name);
 }
 
-bool Instruction::Setup(const Procedure &proc)
+ExecutionStatus Instruction::GetStatus() const
+{
+  std::lock_guard<std::mutex> lock(_status_mutex);
+  return _status;
+}
+
+bool Instruction::Setup(const Procedure& proc)
 {
   return SetupImpl(proc);
 }
 
-void Instruction::ExecuteSingle(UserInterface *ui, Workspace *ws)
+void Instruction::ExecuteSingle(UserInterface* ui, Workspace* ws)
 {
   Preamble(ui);
   _status_before = GetStatus();
@@ -164,12 +151,6 @@ void Instruction::Halt()
   HaltImpl();
 }
 
-ExecutionStatus Instruction::GetStatus() const
-{
-  std::lock_guard<std::mutex> lock(_status_mutex);
-  return _status;
-}
-
 void Instruction::Reset()
 {
   ResetHook();
@@ -177,12 +158,12 @@ void Instruction::Reset()
   _halt_requested.store(false);
 }
 
-bool Instruction::HasAttribute(const std::string &name) const
+bool Instruction::HasAttribute(const std::string& name) const
 {
   return _attributes.HasAttribute(name);
 }
 
-std::string Instruction::GetAttribute(const std::string &name) const
+std::string Instruction::GetAttribute(const std::string& name) const
 {
   return _attributes.GetAttribute(name);
 }
@@ -192,12 +173,12 @@ AttributeMap Instruction::GetAttributes() const
   return _attributes;
 }
 
-bool Instruction::AddAttribute(const std::string &name, const std::string &value)
+bool Instruction::AddAttribute(const std::string& name, const std::string& value)
 {
   return _attributes.AddAttribute(name, value);
 }
 
-bool Instruction::SetAttribute(const std::string &name, const std::string &value)
+bool Instruction::SetAttribute(const std::string& name, const std::string& value)
 {
   if (!_attributes.HasAttribute(name))
     return false;
@@ -205,7 +186,7 @@ bool Instruction::SetAttribute(const std::string &name, const std::string &value
   return true;
 }
 
-bool Instruction::AddAttributes(const AttributeMap &attributes)
+bool Instruction::AddAttributes(const AttributeMap& attributes)
 {
   bool result = true;
   for (const auto &name : attributes.GetAttributeNames())
@@ -216,7 +197,7 @@ bool Instruction::AddAttributes(const AttributeMap &attributes)
   return result;
 }
 
-bool Instruction::InitialiseVariableAttributes(const AttributeMap &source)
+bool Instruction::InitialiseVariableAttributes(const AttributeMap& source)
 {
   bool status = _attributes.InitialiseVariableAttributes(source) && PostInitialiseVariables(source);
   return status;
@@ -242,12 +223,12 @@ std::vector<const Instruction *> Instruction::ChildInstructions() const
   return ChildInstructionsImpl();
 }
 
-bool Instruction::InsertInstruction(Instruction *child, int index)
+bool Instruction::InsertInstruction(Instruction* child, int index)
 {
   return InsertInstructionImpl(child, index);
 }
 
-Instruction *Instruction::TakeInstruction(int index)
+Instruction* Instruction::TakeInstruction(int index)
 {
   return TakeInstructionImpl(index);
 }
@@ -261,11 +242,5 @@ bool NeedsExecute(ExecutionStatus status)
 }  // namespace sequencer
 
 }  // namespace sup
-
-extern "C"
-{
-  // C API function definitions
-
-}  // extern C
 
 #undef LOG_ALTERN_SRC

@@ -233,12 +233,6 @@ Instruction* Instruction::TakeInstruction(int index)
   return TakeInstructionImpl(index);
 }
 
-bool NeedsExecute(ExecutionStatus status)
-{
-  return (status == ExecutionStatus::NOT_STARTED || status == ExecutionStatus::NOT_FINISHED
-          || status == ExecutionStatus::RUNNING);
-}
-
 }  // namespace sequencer
 
 }  // namespace sup

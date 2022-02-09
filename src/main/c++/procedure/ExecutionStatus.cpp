@@ -19,30 +19,17 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
+#include "ExecutionStatus.h"
 
 #include <common/log-api.h>
 
-// Local header files
-
-#include "ExecutionStatus.h"
-
-// Constants
-
 #undef LOG_ALTERN_SRC
 #define LOG_ALTERN_SRC "sup::sequencer"
-
-// Type definition
 
 namespace sup
 {
 namespace sequencer
 {
-// Global variables
-
-// Function declaration
-
-// Function definition
 
 std::string StatusToString(const ExecutionStatus& status)
 {
@@ -67,14 +54,13 @@ bool IsFinishedStatus(const ExecutionStatus& status)
   return status == ExecutionStatus::SUCCESS || status == ExecutionStatus::FAILURE;
 }
 
+bool NeedsExecute(const ExecutionStatus& status)
+{
+  return !IsFinishedStatus(status);
+}
+
 }  // namespace sequencer
 
 }  // namespace sup
-
-extern "C"
-{
-  // C API function definitions
-
-}  // extern C
 
 #undef LOG_ALTERN_SRC

@@ -31,17 +31,7 @@
 #ifndef _SEQ_ExecutionStatus_h_
 #define _SEQ_ExecutionStatus_h_
 
-// Global header files
-
 #include <string>
-
-// Local header files
-
-// Constants
-
-// Type definition
-
-#ifdef __cplusplus
 
 namespace sup
 {
@@ -59,27 +49,25 @@ enum class ExecutionStatus
   FAILURE        // Finished unsuccessfully.
 };
 
-// Global variables
-
-// Function declarations
-
+/**
+ * @brief Return string representation of ExecutionStatus enumerator.
+ */
 std::string StatusToString(const ExecutionStatus& status);
+
+/**
+ * @brief Check if the given status indicates the instruction was finished.
+ * @return true if status is SUCCESS or FAILURE.
+ */
 bool IsFinishedStatus(const ExecutionStatus& status);
 
-// Function definitions
+/**
+ * @brief Check if the given status indicates further execution is required.
+ * @return true if status is not SUCCESS nor FAILURE.
+ */
+bool NeedsExecute(const ExecutionStatus& status);
 
 }  // namespace sequencer
 
 }  // namespace sup
-
-extern "C"
-{
-#endif  // __cplusplus
-
-  // C API function declarations
-
-#ifdef __cplusplus
-}  // extern C
-#endif  // __cplusplus
 
 #endif  // _SEQ_ExecutionStatus_h_

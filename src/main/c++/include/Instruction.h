@@ -380,12 +380,6 @@ public:
   Instruction* TakeInstruction(int index);
 };
 
-/**
- * @brief Check if status corresponds to a state where execution is meaningful.
- * @return true if execution is meaningful (not already finished).
- */
-bool NeedsExecute(ExecutionStatus status);
-
 }  // namespace sequencer
 
 }  // namespace sup

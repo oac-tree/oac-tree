@@ -25,7 +25,6 @@ target_sources(unit-tests
         ${CMAKE_CURRENT_LIST_DIR}/NamedCallbackManager-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Output-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/ParallelSequence-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Parser-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Procedure-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/ProcedureToTreeDataUtils-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Repeat-tests.cpp

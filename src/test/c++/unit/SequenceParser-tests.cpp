@@ -31,22 +31,18 @@
 class SequencerParserTest : public ::testing::Test
 {
 public:
-
   //! Returns multi-line XML string with Sequencer procedure, where user body
   //! is wrapped into necessary elements. Procedure tag deliberately doesn't contain any schema.
   std::string CreateProcedureString(const std::string &body)
   {
-    static const std::string header{R"RAW(
-<?xml version="1.0" encoding="UTF-8"?>
+    static const std::string header{R"RAW(<?xml version="1.0" encoding="UTF-8"?>
 <Procedure>)RAW"};
 
-    static const std::string footer{R"RAW(
-</Procedure>
+    static const std::string footer{R"RAW(</Procedure>
 )RAW"};
 
     return header + body + footer;
   }
-
 };
 
 TEST_F(SequencerParserTest, Default)
@@ -116,12 +112,29 @@ TEST_F(SequencerParserTest, ParseString)
 
 TEST_F(SequencerParserTest, EmptyProcedureFromXMLAndBack)
 {
-  auto xml_string = CreateProcedureString(std::string());
+  const std::string body{R"(
+  <Workspace/>
+)"};
 
-  auto procedure = ::sup::sequencer::ParseProcedureString(xml_string);
-
-  std::cout << "XXX>" <<xml_string << "\n";
+  auto xml_string = CreateProcedureString(body);
+  auto procedure = sup::sequencer::ParseProcedureString(xml_string);
 
   EXPECT_EQ(xml_string, ::sup::sequencer::GetXMLString(*procedure));
+}
 
+TEST_F(SequencerParserTest, ProcedureWithSequenceAndVariableFromXMLAndBack)
+{
+  const std::string body{R"(
+  <Sequence>
+    <Wait name="wait" timeout="0.1"/>
+  </Sequence>
+  <Workspace>
+    <Local name="input"/>
+  </Workspace>
+)"};
+
+  auto xml_string = CreateProcedureString(body);
+  auto procedure = sup::sequencer::ParseProcedureString(xml_string);
+
+  EXPECT_EQ(xml_string, ::sup::sequencer::GetXMLString(*procedure));
 }

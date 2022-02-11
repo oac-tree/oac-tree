@@ -70,7 +70,7 @@ TEST(Condition, Default)
     </Workspace>
 )"};
 
-  const std::string file_name = "/tmp/workspaceCondition.xml";
+  const std::string file_name = "workspaceCondition.xml";
   ::sup::UnitTestHelper::TemporaryTestFile test_file(
       file_name, ::sup::UnitTestHelper::CreateProcedureString(body));
 

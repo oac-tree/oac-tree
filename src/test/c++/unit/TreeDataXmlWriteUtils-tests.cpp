@@ -45,10 +45,10 @@ TEST_F(TreeDataXmlWriteUilsTest, WriteElement)
   EXPECT_EQ(GetXMLString(tree_data), expected);
 
   // writing to file and checking its content
-  const std::string file_name = "/tmp/WriteElement.xml";
-  ::sup::UnitTestHelper::TemporaryTestFile(file_name, "");
+  const std::string file_name = "WriteElement.xml";
   WriteToXMLFile(file_name, tree_data);
   EXPECT_EQ(::sup::UnitTestHelper::GetTextFileContent(file_name), expected);
+  std::remove(file_name.c_str());
 }
 
 //! Write a single element with attribute.
@@ -66,10 +66,10 @@ TEST_F(TreeDataXmlWriteUilsTest, WriteElementWithAttribute)
   EXPECT_EQ(GetXMLString(tree_data), expected);
 
   // writing to file and checking its content
-  const std::string file_name = "/tmp/WriteElementWithAttribute.xml";
-  ::sup::UnitTestHelper::TemporaryTestFile(file_name, "");
+  const std::string file_name = "WriteElementWithAttribute.xml";
   WriteToXMLFile(file_name, tree_data);
   EXPECT_EQ(::sup::UnitTestHelper::GetTextFileContent(file_name), expected);
+  std::remove(file_name.c_str());
 }
 
 //! Write a single element with attribute.
@@ -88,10 +88,10 @@ TEST_F(TreeDataXmlWriteUilsTest, WriteElementWithTwoAttributes)
   EXPECT_EQ(GetXMLString(tree_data), expected);
 
   // writing to file and checking its content
-  const std::string file_name = "/tmp/WriteElementWithTwoAttributes.xml";
-  ::sup::UnitTestHelper::TemporaryTestFile(file_name, "");
+  const std::string file_name = "WriteElementWithTwoAttributes.xml";
   WriteToXMLFile(file_name, tree_data);
   EXPECT_EQ(::sup::UnitTestHelper::GetTextFileContent(file_name), expected);
+  std::remove(file_name.c_str());
 }
 
 //! Write a single element with content defined.
@@ -109,10 +109,10 @@ TEST_F(TreeDataXmlWriteUilsTest, WriteElementContent)
   EXPECT_EQ(GetXMLString(tree_data), expected);
 
   // writing to file and checking its content
-  const std::string file_name = "/tmp/WriteElementContent.xml";
-  ::sup::UnitTestHelper::TemporaryTestFile(file_name, "");
+  const std::string file_name = "WriteElementContent.xml";
   WriteToXMLFile(file_name, tree_data);
   EXPECT_EQ(::sup::UnitTestHelper::GetTextFileContent(file_name), expected);
+  std::remove(file_name.c_str());
 }
 
 //! Write a single element with attribute and content defined.
@@ -131,10 +131,10 @@ TEST_F(TreeDataXmlWriteUilsTest, WriteElementAttributeAndContent)
   EXPECT_EQ(GetXMLString(tree_data), expected);
 
   // writing to file and checking its content
-  const std::string file_name = "/tmp/WriteElementAttributeAndContent.xml";
-  ::sup::UnitTestHelper::TemporaryTestFile(file_name, "");
+  const std::string file_name = "WriteElementAttributeAndContent.xml";
   WriteToXMLFile(file_name, tree_data);
   EXPECT_EQ(::sup::UnitTestHelper::GetTextFileContent(file_name), expected);
+  std::remove(file_name.c_str());
 }
 
 //! Write a single element with attribute and content defined.
@@ -156,10 +156,10 @@ TEST_F(TreeDataXmlWriteUilsTest, WriteElementWithChildren)
   EXPECT_EQ(GetXMLString(tree_data), expected);
 
   // writing to file and checking its content
-  const std::string file_name = "/tmp/WriteElementWithChildren.xml";
-  ::sup::UnitTestHelper::TemporaryTestFile(file_name, "");
+  const std::string file_name = "WriteElementWithChildren.xml";
   WriteToXMLFile(file_name, tree_data);
   EXPECT_EQ(::sup::UnitTestHelper::GetTextFileContent(file_name), expected);
+  std::remove(file_name.c_str());
 }
 
 //! Write a single element with attribute and content defined.
@@ -190,8 +190,8 @@ TEST_F(TreeDataXmlWriteUilsTest, WriteItemData)
   EXPECT_EQ(GetXMLString(tree_data), expected);
 
   // writing to file and checking its content
-  const std::string file_name = "/tmp/WriteItemData.xml";
-  ::sup::UnitTestHelper::TemporaryTestFile(file_name, "");
+  const std::string file_name = "WriteItemData.xml";
   WriteToXMLFile(file_name, tree_data);
   EXPECT_EQ(::sup::UnitTestHelper::GetTextFileContent(file_name), expected);
+  std::remove(file_name.c_str());
 }

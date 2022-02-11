@@ -49,7 +49,7 @@ static const std::string FailedRegisterTypeProcedureString = {R"(
 )"};
 
 static const std::string RegisterTypeFromFileProcedureString = {R"(
-    <RegisterType jsonfile="/tmp/range_uint16.json"/>
+    <RegisterType jsonfile="range_uint16.json"/>
     <RegisterType jsontype='{"type":"ranges_uint16","multiplicity":3,"element":{"type":"range_uint16"}}'/>
     <Sequence>
         <Copy name="Copy range variables" input="var1" output="var2" />
@@ -69,7 +69,7 @@ static const std::string FailedRegisterTypeFromFileProcedureString = {R"(
     <RegisterType jsonfile="does_not_exist.json"/>
 )"};
 
-static const std::string JSON_FILE_NAME = "/tmp/range_uint16.json";
+static const std::string JSON_FILE_NAME = "range_uint16.json";
 
 static const std::string JSONRangeRepresentation =
     R"RAW(

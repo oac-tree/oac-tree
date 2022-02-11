@@ -228,7 +228,7 @@ TEST_F(ProcedureTest, ExternalInclude)
     </Sequence>
 )"};
 
-  const std::string external_include_file_name = "/tmp/external_include.xml";
+  const std::string external_include_file_name = "external_include.xml";
   ::sup::UnitTestHelper::TemporaryTestFile external_include_file(
       external_include_file_name,
       ::sup::UnitTestHelper::CreateProcedureString(external_include_body));
@@ -243,7 +243,7 @@ TEST_F(ProcedureTest, ExternalInclude)
     </Workspace>
 )"};
 
-  const std::string parallel_sequence_file_name = "/tmp/parallel_sequence.xml";
+  const std::string parallel_sequence_file_name = "parallel_sequence.xml";
   ::sup::UnitTestHelper::TemporaryTestFile parallel_sequence_file(
       parallel_sequence_file_name,
       ::sup::UnitTestHelper::CreateProcedureString(parallel_sequence_body));

@@ -34,9 +34,9 @@
 static inline bool Terminate(void)
 {
   bool status = false;
-  if (ccs::HelperTools::Exist("/tmp/variable.bck"))
+  if (ccs::HelperTools::Exist("variable.bck"))
   {
-    status = (std::remove("/tmp/variable.bck") == 0);
+    status = (std::remove("variable.bck") == 0);
   }
   return status;
 }
@@ -54,11 +54,11 @@ TEST(FileVariable, File_write)
             type='{"type":"MyStruct","attributes":[{"value":{"type":"float32"}}]}'
             value='{"value":0.0}'/>
         <FileVariable name="file"
-            file="/tmp/variable.bck"/>
+            file="variable.bck"/>
     </Workspace>
 )"};
 
-  const std::string file_name = "/tmp/variable_file.xml";
+  const std::string file_name = "variable_file.xml";
   ::sup::UnitTestHelper::TemporaryTestFile test_file(
       file_name, ::sup::UnitTestHelper::CreateProcedureString(body));
 
@@ -69,11 +69,11 @@ TEST(FileVariable, File_write)
   proc->ExecuteSingle(&ui);
   EXPECT_EQ(proc->GetStatus(), sup::sequencer::ExecutionStatus::SUCCESS);
 
-  EXPECT_TRUE(ccs::HelperTools::Exist("/tmp/variable.bck"));
+  EXPECT_TRUE(ccs::HelperTools::Exist("variable.bck"));
 
   ccs::types::AnyValue value;  // Placeholder
 
-  EXPECT_TRUE(ccs::HelperTools::ReadFromFile(&value, "/tmp/variable.bck"));
+  EXPECT_TRUE(ccs::HelperTools::ReadFromFile(&value, "variable.bck"));
 
   ASSERT_TRUE(static_cast<bool>(value.GetType()));
   // TODO check variable
@@ -153,11 +153,11 @@ TEST(FileVariable, File_attr)
             type='{"type":"uint32"}'
             value='7'/>
         <FileVariable name="file"
-            file="/tmp/variable.bck"/>
+            file="variable.bck"/>
     </Workspace>
 )"};
 
-  const std::string file_name = "/tmp/variable_attr.xml";
+  const std::string file_name = "variable_attr.xml";
   ::sup::UnitTestHelper::TemporaryTestFile test_file(
       file_name, ::sup::UnitTestHelper::CreateProcedureString(body));
 
@@ -182,14 +182,14 @@ TEST(FileVariable, File_attr)
 
   if (status)
   {
-    status = ccs::HelperTools::Exist("/tmp/variable.bck");
+    status = ccs::HelperTools::Exist("variable.bck");
   }
 
   ccs::types::AnyValue value;  // Placeholder
 
   if (status)
   {
-    status = ccs::HelperTools::ReadFromFile(&value, "/tmp/variable.bck");
+    status = ccs::HelperTools::ReadFromFile(&value, "variable.bck");
   }
 
   if (status)

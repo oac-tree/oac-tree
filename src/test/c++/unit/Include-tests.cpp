@@ -127,13 +127,13 @@ TEST(Include, Procedure_extern)
     </Workspace>
 )"};
 
-  const std::string file_name = "/tmp/parallel_sequence.xml";
+  const std::string file_name = "parallel_sequence.xml";
   ::sup::UnitTestHelper::TemporaryTestFile test_file(
       file_name, ::sup::UnitTestHelper::CreateProcedureString(body));
 
   const std::string procedure_body{R"(
     <Repeat isRoot="true" maxCount="10">
-        <Include name="Waits" path="Parallel Wait" file="/tmp/parallel_sequence.xml"/>
+        <Include name="Waits" path="Parallel Wait" file="parallel_sequence.xml"/>
     </Repeat>
     <Workspace>
     </Workspace>
@@ -149,8 +149,8 @@ TEST(Include, Procedure_extern)
 TEST(Include, Procedure_nested)
 {
   // preparing files for recursive inclusion
-  ccs::HelperTools::CreatePath("/tmp/instruction_definitions");
-  ccs::HelperTools::CreatePath("/tmp/instruction_definitions/waits");
+  ccs::HelperTools::CreatePath("instruction_definitions");
+  ccs::HelperTools::CreatePath("instruction_definitions/waits");
 
   const std::string single_waits_body{R"(
     <Wait name="OneTenthSecond" timeout="0.1" />
@@ -159,7 +159,7 @@ TEST(Include, Procedure_nested)
     <Wait name="ParametrizedWait" timeout="$timeout" />
 )"};
 
-  const std::string single_wait_file_name = "/tmp/instruction_definitions/waits/single_waits.xml";
+  const std::string single_wait_file_name = "instruction_definitions/waits/single_waits.xml";
   ::sup::UnitTestHelper::TemporaryTestFile single_waits_test_file(
       single_wait_file_name, ::sup::UnitTestHelper::CreateProcedureString(single_waits_body));
 
@@ -174,7 +174,7 @@ TEST(Include, Procedure_nested)
     </ParallelSequence>
 )"};
 
-  const std::string compound_waits_file_name = "/tmp/instruction_definitions/compound_waits.xml";
+  const std::string compound_waits_file_name = "instruction_definitions/compound_waits.xml";
   ::sup::UnitTestHelper::TemporaryTestFile compound_waits_test_file(
       compound_waits_file_name, ::sup::UnitTestHelper::CreateProcedureString(compound_waits_body));
 
@@ -187,7 +187,7 @@ TEST(Include, Procedure_nested)
     </Sequence>
 )"};
 
-  const std::string file_name = "/tmp/recursive_include.xml";
+  const std::string file_name = "recursive_include.xml";
   ::sup::UnitTestHelper::TemporaryTestFile test_file(
       file_name, ::sup::UnitTestHelper::CreateProcedureString(main_body));
 

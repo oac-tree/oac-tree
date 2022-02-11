@@ -61,7 +61,7 @@ TEST(SequenceWorkspace, CopyVariable)
     </Workspace>
 )"};
 
-  const std::string file_name = "/tmp/workspace_copyvar.xml";
+  const std::string file_name = "workspace_copyvar.xml";
   ::sup::UnitTestHelper::TemporaryTestFile test_file(
       file_name, ::sup::UnitTestHelper::CreateProcedureString(body));
 

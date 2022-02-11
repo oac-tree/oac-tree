@@ -41,6 +41,8 @@ protected:
     return header + body + footer;
   }
 
+
+
   std::unique_ptr<::sup::sequencer::Procedure> CreateProcedure(const std::string& body)
   {
     return ::sup::sequencer::ParseProcedureString(
@@ -226,24 +228,6 @@ TEST_F(SequencerParserTest, Workspace)
   ::sup::UnitTestHelper::PrintProcedureWorkspace(proc.get());
 }
 
-TEST_F(SequencerParserTest, ParseString)
-{
-  const std::string body{R"(
-    <Sequence>
-        <Wait name="First" />
-        <Wait name="Second" />
-    </Sequence>
-    <Workspace>
-    </Workspace>
-)"};
-
-  auto proc =
-      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
-
-  ASSERT_TRUE(proc.get() != nullptr);
-  ::sup::UnitTestHelper::PrintProcedureWorkspace(proc.get());
-}
-
 TEST_F(SequencerParserTest, EmptyProcedureFromXMLAndBack)
 {
   const std::string body{R"(
@@ -252,7 +236,6 @@ TEST_F(SequencerParserTest, EmptyProcedureFromXMLAndBack)
 
   auto xml_string = CreateProcedureString(body);
   auto procedure = sup::sequencer::ParseProcedureString(xml_string);
-
   EXPECT_EQ(xml_string, ::sup::sequencer::GetXMLString(*procedure));
 }
 
@@ -267,8 +250,7 @@ TEST_F(SequencerParserTest, ProcedureWithSequenceAndVariableFromXMLAndBack)
   </Workspace>
 )"};
 
-  auto xml_string = CreateProcedureString(body);
+  auto xml_string = CreateProcedureString(body);  
   auto procedure = sup::sequencer::ParseProcedureString(xml_string);
-
   EXPECT_EQ(xml_string, ::sup::sequencer::GetXMLString(*procedure));
 }

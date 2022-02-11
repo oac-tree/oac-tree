@@ -20,6 +20,7 @@
  ******************************************************************************/
 
 #include "InstructionRegistry.h"
+#include "Sequence.h"
 #include "SequenceParser.h"
 #include "UnitTestHelper.h"
 
@@ -27,29 +28,6 @@
 #include <gtest/gtest.h>
 
 #include <iostream>
-
-const std::string IncorrectRootStringProcedure =
-    R"RAW(<?xml version="1.0" encoding="UTF-8"?>
-<Sequence xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
-          name="Procedure containing the wrong root element type for testing purposes"
-          xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-          xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
-    <Wait name="Immediate Success"/>
-    <Wait name="One" timeout="1.0"/>
-</Sequence>  
-)RAW";
-
-static const std::string XMLSyntaxErrorStringProcedure =
-    R"RAW(<?xml version="1.0" encoding="UTF-8"?>
-<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
-           name="Procedure containing a XML syntax error for testing purposes"
-           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
-    <Sequence name="Main Sequence">
-        <Wait name="Immediate Success"/>
-        <Wait name="One" timeout="1.0"/>
-    </Sequence>
-)RAW";
 
 class SequencerParserTest : public ::testing::Test
 {
@@ -60,24 +38,9 @@ protected:
   {
     static const std::string header{R"RAW(<?xml version="1.0" encoding="UTF-8"?>
 <Procedure>)RAW"};
-
     static const std::string footer{R"RAW(</Procedure>
 )RAW"};
-
     return header + body + footer;
-  }
-
-  SequencerParserTest()
-      : incorrect_root_file("/tmp/incorrect_root.xml"), syntax_error_file("/tmp/syntax_error.xml")
-  {
-    {
-      std::ofstream of_str(incorrect_root_file);
-      of_str << IncorrectRootStringProcedure;
-    }
-    {
-      std::ofstream of_str(syntax_error_file);
-      of_str << XMLSyntaxErrorStringProcedure;
-    }
   }
 
   std::unique_ptr<::sup::sequencer::Procedure> CreateProcedure(const std::string& body)
@@ -85,18 +48,9 @@ protected:
     return ::sup::sequencer::ParseProcedureString(
         ::sup::UnitTestHelper::CreateProcedureString(body));
   }
-
-  ~SequencerParserTest()
-  {
-    std::remove(incorrect_root_file.c_str());
-    std::remove(syntax_error_file.c_str());
-  }
-
-  std::string incorrect_root_file;
-  std::string syntax_error_file;
 };
 
-TEST_F(SequencerParserTest, Successful)
+TEST_F(SequencerParserTest, ProcedureOnlyString)
 {
   const std::string ProcedureOnlyString{R"(
     <Sequence name="Main Sequence">
@@ -106,7 +60,11 @@ TEST_F(SequencerParserTest, Successful)
 )"};
 
   auto proc = CreateProcedure(ProcedureOnlyString);
-  EXPECT_TRUE(static_cast<bool>(proc));
+  ASSERT_TRUE(static_cast<bool>(proc));
+  EXPECT_EQ(proc->RootInstruction()->GetType(), ::sup::sequencer::Sequence::Type);
+  EXPECT_EQ(proc->RootInstruction()->ChildrenCount(), 2);
+  ASSERT_NE(proc->GetWorkspace(), nullptr);
+  ASSERT_EQ(proc->GetWorkspace()->GetVariables().size(), 0);
 }
 
 TEST_F(SequencerParserTest, WorkspaceOnly)
@@ -125,14 +83,50 @@ TEST_F(SequencerParserTest, WorkspaceOnly)
 
 TEST_F(SequencerParserTest, IncorrectRoot)
 {
+  const std::string IncorrectRootStringProcedure =
+      R"RAW(<?xml version="1.0" encoding="UTF-8"?>
+<Sequence xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+          name="Procedure containing the wrong root element type for testing purposes"
+          xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+          xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+    <Wait name="Immediate Success"/>
+    <Wait name="One" timeout="1.0"/>
+</Sequence>  
+)RAW";
+
   auto proc = ::sup::sequencer::ParseProcedureString(IncorrectRootStringProcedure);
   ASSERT_FALSE(static_cast<bool>(proc));
+
+  // same via file on disk
+  const std::string file_name("incorrect_root.xml");
+  ::sup::UnitTestHelper::TemporaryTestFile test_file(
+      file_name, ::sup::UnitTestHelper::CreateProcedureString(IncorrectRootStringProcedure));
+  proc = ::sup::sequencer::ParseProcedureFile(file_name);
+  EXPECT_FALSE(static_cast<bool>(proc));
 }
 
 TEST_F(SequencerParserTest, XMLSyntaxError)
 {
+  static const std::string XMLSyntaxErrorStringProcedure =
+      R"RAW(<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+           name="Procedure containing a XML syntax error for testing purposes"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+    <Sequence name="Main Sequence">
+        <Wait name="Immediate Success"/>
+        <Wait name="One" timeout="1.0"/>
+    </Sequence>
+)RAW";
+
   auto proc = ::sup::sequencer::ParseProcedureString(XMLSyntaxErrorStringProcedure);
   ASSERT_FALSE(static_cast<bool>(proc));
+
+  const std::string file_name("syntax_error.xml");
+  ::sup::UnitTestHelper::TemporaryTestFile test_file(
+      file_name, ::sup::UnitTestHelper::CreateProcedureString(XMLSyntaxErrorStringProcedure));
+  proc = ::sup::sequencer::ParseProcedureFile(file_name);
+  EXPECT_FALSE(static_cast<bool>(proc));
 }
 
 TEST_F(SequencerParserTest, NonExistentInstructionError)
@@ -185,18 +179,6 @@ TEST_F(SequencerParserTest, InvalidChildError)
 
   auto proc = CreateProcedure(InvalidChildString);
   ASSERT_FALSE(static_cast<bool>(proc));
-}
-
-TEST_F(SequencerParserTest, IncorrectRootFromFile)
-{
-  auto proc = ::sup::sequencer::ParseProcedureFile(incorrect_root_file);
-  EXPECT_FALSE(static_cast<bool>(proc));
-}
-
-TEST_F(SequencerParserTest, XMLSyntaxErrorFromFile)
-{
-  auto proc = ::sup::sequencer::ParseProcedureFile(syntax_error_file);
-  EXPECT_FALSE(static_cast<bool>(proc));
 }
 
 TEST_F(SequencerParserTest, Default)

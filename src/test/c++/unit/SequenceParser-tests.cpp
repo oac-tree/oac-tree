@@ -27,8 +27,6 @@
 #include <common/AnyValue.h>
 #include <gtest/gtest.h>
 
-#include <iostream>
-
 class SequencerParserTest : public ::testing::Test
 {
 protected:
@@ -52,14 +50,14 @@ protected:
 
 TEST_F(SequencerParserTest, ProcedureOnlyString)
 {
-  const std::string ProcedureOnlyString{R"(
+  const std::string body{R"(
     <Sequence name="Main Sequence">
         <Wait name="Immediate Success"/>
         <Wait name="One" timeout="1.0"/>
     </Sequence>
 )"};
 
-  auto proc = CreateProcedure(ProcedureOnlyString);
+  auto proc = CreateProcedure(body);
   ASSERT_TRUE(static_cast<bool>(proc));
   EXPECT_EQ(proc->RootInstruction()->GetType(), ::sup::sequencer::Sequence::Type);
   EXPECT_EQ(proc->RootInstruction()->ChildrenCount(), 2);
@@ -69,21 +67,21 @@ TEST_F(SequencerParserTest, ProcedureOnlyString)
 
 TEST_F(SequencerParserTest, WorkspaceOnly)
 {
-  const std::string WorkspaceOnlyString{R"(
+  const std::string body{R"(
     <Workspace>
         <Local name="a" type='{"type":"int8"}' value='1' />
         <Local name="b" type='{"type":"uint8"}' value='0' />
     </Workspace>
 )"};
 
-  auto proc = CreateProcedure(WorkspaceOnlyString);
+  auto proc = CreateProcedure(body);
   ASSERT_TRUE(static_cast<bool>(proc));
   EXPECT_EQ(proc->RootInstruction(), nullptr);
 }
 
 TEST_F(SequencerParserTest, IncorrectRoot)
 {
-  const std::string IncorrectRootStringProcedure =
+  const std::string body =
       R"RAW(<?xml version="1.0" encoding="UTF-8"?>
 <Sequence xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
           name="Procedure containing the wrong root element type for testing purposes"
@@ -94,20 +92,20 @@ TEST_F(SequencerParserTest, IncorrectRoot)
 </Sequence>  
 )RAW";
 
-  auto proc = ::sup::sequencer::ParseProcedureString(IncorrectRootStringProcedure);
+  auto proc = ::sup::sequencer::ParseProcedureString(body);
   ASSERT_FALSE(static_cast<bool>(proc));
 
   // same via file on disk
   const std::string file_name("incorrect_root.xml");
   ::sup::UnitTestHelper::TemporaryTestFile test_file(
-      file_name, ::sup::UnitTestHelper::CreateProcedureString(IncorrectRootStringProcedure));
+      file_name, ::sup::UnitTestHelper::CreateProcedureString(body));
   proc = ::sup::sequencer::ParseProcedureFile(file_name);
   EXPECT_FALSE(static_cast<bool>(proc));
 }
 
 TEST_F(SequencerParserTest, XMLSyntaxError)
 {
-  static const std::string XMLSyntaxErrorStringProcedure =
+  static const std::string body =
       R"RAW(<?xml version="1.0" encoding="UTF-8"?>
 <Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
            name="Procedure containing a XML syntax error for testing purposes"
@@ -119,45 +117,45 @@ TEST_F(SequencerParserTest, XMLSyntaxError)
     </Sequence>
 )RAW";
 
-  auto proc = ::sup::sequencer::ParseProcedureString(XMLSyntaxErrorStringProcedure);
+  auto proc = ::sup::sequencer::ParseProcedureString(body);
   ASSERT_FALSE(static_cast<bool>(proc));
 
   const std::string file_name("syntax_error.xml");
   ::sup::UnitTestHelper::TemporaryTestFile test_file(
-      file_name, ::sup::UnitTestHelper::CreateProcedureString(XMLSyntaxErrorStringProcedure));
+      file_name, ::sup::UnitTestHelper::CreateProcedureString(body));
   proc = ::sup::sequencer::ParseProcedureFile(file_name);
   EXPECT_FALSE(static_cast<bool>(proc));
 }
 
 TEST_F(SequencerParserTest, NonExistentInstructionError)
 {
-  const std::string NonExistentInstructionString{R"(
+  const std::string body{R"(
     <Sequence name="Main Sequence">
         <DoesNotExist name="Cannot be parsed"/>
         <Wait name="One" timeout="1.0"/>
     </Sequence>
 )"};
 
-  auto proc = CreateProcedure(NonExistentInstructionString);
+  auto proc = CreateProcedure(body);
   ASSERT_FALSE(static_cast<bool>(proc));
 }
 
 TEST_F(SequencerParserTest, NonExistentVariableError)
 {
-  const std::string NonExistentVariableString{R"(
+  const std::string body{R"(
     <Wait name="Immediate success" />
     <Workspace>
         <DoesNotExist name="Cannot be parsed" />
     </Workspace>
 )"};
 
-  auto proc = CreateProcedure(NonExistentVariableString);
+  auto proc = CreateProcedure(body);
   ASSERT_FALSE(static_cast<bool>(proc));
 }
 
 TEST_F(SequencerParserTest, NonExistentPluginError)
 {
-  const std::string NonExistentPluginString{R"(
+  const std::string body{R"(
     <Plugin>libNonExistent.so</Plugin>
     <Sequence name="Main Sequence">
         <Wait name="Immediate success"/>
@@ -165,19 +163,19 @@ TEST_F(SequencerParserTest, NonExistentPluginError)
     </Sequence>
 )"};
 
-  auto proc = CreateProcedure(NonExistentPluginString);
+  auto proc = CreateProcedure(body);
   ASSERT_FALSE(static_cast<bool>(proc));
 }
 
 TEST_F(SequencerParserTest, InvalidChildError)
 {
-  const std::string InvalidChildString{R"(
+  const std::string body{R"(
     <Wait name="Immediate Success">
         <Wait name="One" timeout="1.0"/>
     </Wait>
 )"};
 
-  auto proc = CreateProcedure(InvalidChildString);
+  auto proc = CreateProcedure(body);
   ASSERT_FALSE(static_cast<bool>(proc));
 }
 

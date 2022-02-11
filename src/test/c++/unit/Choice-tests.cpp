@@ -85,8 +85,6 @@ TEST(Choice, Default)  // Static initialisation
     varX->AddAttribute("value", testTable[i][1]);
     proc->AddVariable("sel", varX.release());
 
-    ::sup::UnitTestHelper::PrintProcedureWorkspace(proc.get());
-
     if (status)
     {
       LogUI ui;
@@ -112,8 +110,6 @@ TEST(Choice, Default)  // Static initialisation
         printf("Failed %u!=%u\n", checkVal, resVal[i]);
       }
     }
-
-    ::sup::UnitTestHelper::PrintProcedureWorkspace(proc.get());
 
     i++;
   }

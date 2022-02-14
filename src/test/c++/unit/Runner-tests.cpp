@@ -298,10 +298,12 @@ TEST_F(RunnerTest, Halt)
   EXPECT_FALSE(runner.IsRunning());
 
   // Setup separate thread to halt the execution after a second
-  std::promise<void> ready;
+  std::promise<void> ready, go;
+  auto go_future = go.get_future();
   auto halt_future = std::async(std::launch::async,
-    [this, &runner, &ready](){
+    [this, &runner, &ready, &go_future](){
       ready.set_value();
+      go_future.get();
       while(async_wait_proc->GetStatus() != ExecutionStatus::RUNNING)
       {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -311,6 +313,7 @@ TEST_F(RunnerTest, Halt)
 
   // Execute whole procedure
   ready.get_future().get();
+  go.set_value();
   EXPECT_NO_THROW(runner.ExecuteProcedure());
   halt_future.get();
   EXPECT_EQ(async_wait_proc->GetStatus(), ExecutionStatus::RUNNING);

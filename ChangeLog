@@ -5,6 +5,8 @@ Changes for 1.2.0:
 - Add halt method for Runner
 - Add Message instruction that delegates to the UserInterface
 - Fix multiple inputs from CLInterface (remaining whitespace)
+- Add Listen decorator instruction that monitors variable updates
+- Provide serialization of Procedure back to XML
 
 Changes for 1.1.0:
 

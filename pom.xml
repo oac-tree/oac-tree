@@ -142,6 +142,7 @@
                             <include type="file" source="bin/unit-tests" target="tests/${project.artifactId}/unit-tests"/>
                             <!-- Package dependencies -->
                             <requires version="current">%{codac_rpm_prefix}-${project.artifactId}-devel</requires>
+                            <requires version="current">gtest</requires>
                             <requires version="current" buildOnly="true">gtest-devel</requires>
                             <requires version="current" buildOnly="true">gmock-devel</requires>
                         </package>

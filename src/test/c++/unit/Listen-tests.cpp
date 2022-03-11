@@ -132,3 +132,59 @@ R"RAW(
   EXPECT_TRUE(ws->GetValue("result", result));
   EXPECT_EQ(result, (ccs::types::uint64)1729);
 }
+
+TEST_F(ListenTest, PropagateSetup)
+{
+  static const std::string procedure_body{
+R"RAW(
+    <Sequence isRoot="True">
+        <ForceSuccess>
+            <Include name="Test Setup of Listen child" path="TestSetupListen"/>
+        </ForceSuccess>
+        <Equals lhs="result" rhs="one"/>
+    </Sequence>
+    <ParallelSequence name="TestSetupListen">
+        <Listen varNames="monitor">
+            <Fallback>
+                <Equals lhs="monitor" rhs="zero" />
+                <Include name="Set variable and fail" path="SetVarAndFail"/>
+            </Fallback>
+        </Listen>
+        <Sequence>
+            <Wait timeout="0.2" />
+            <Copy input="one" output="monitor"/>
+        </Sequence>
+        <Inverter>
+            <Wait timeout="2.0" />
+        </Inverter>
+    </ParallelSequence>
+    <Sequence name="SetVarAndFail">
+        <Copy input="one" output="result"/>
+        <Inverter>
+            <Wait/>
+        </Inverter>
+    </Sequence>
+    <Workspace>
+        <Local name="monitor" type='{"type":"uint64"}' value='0' />
+        <Local name="zero" type='{"type":"uint64"}' value='0' />
+        <Local name="one" type='{"type":"uint64"}' value='1' />
+        <Local name="result" type='{"type":"uint64"}' value='0' />
+    </Workspace>
+)RAW"};
+
+  const auto procedure_string = ::sup::UnitTestHelper::CreateProcedureString(procedure_body);
+
+  ::sup::UnitTestHelper::EmptyUserInterface ui{};
+
+  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  ASSERT_NE(proc.get(), nullptr);
+  EXPECT_TRUE(
+      sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::SUCCESS));
+
+  // check result variable
+  auto ws = proc->GetWorkspace();
+  ASSERT_NE(ws, nullptr);
+  ccs::types::AnyValue result{ccs::types::UnsignedInteger64};
+  EXPECT_TRUE(ws->GetValue("result", result));
+  EXPECT_EQ(result, (ccs::types::uint64)1);
+}

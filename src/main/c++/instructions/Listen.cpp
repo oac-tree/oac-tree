@@ -111,7 +111,7 @@ bool Listen::SetupImpl(const Procedure& proc)
   {
     var_cache[var_name] = {};
   }
-  return true;
+  return SetupChild(proc);
 }
 
 ExecutionStatus Listen::CalculateStatus() const

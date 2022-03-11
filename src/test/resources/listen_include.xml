@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+           name="Procedure for testing Repeat instruction with parallel sequence"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+    <Sequence isRoot="True">
+        <ForceSuccess>
+            <Include name="Test Setup of Listen child" path="TestSetupListen"/>
+        </ForceSuccess>
+        <Equals lhs="result" rhs="one"/>
+    </Sequence>
+    <ParallelSequence name="TestSetupListen">
+        <Listen varNames="monitor">
+            <Fallback>
+                <Equals lhs="monitor" rhs="zero" />
+                <Include name="Set variable and fail" path="SetVarAndFail"/>
+            </Fallback>
+        </Listen>
+        <Sequence>
+            <Wait timeout="0.2" />
+            <Copy input="one" output="monitor"/>
+        </Sequence>
+        <Inverter>
+            <Wait timeout="2.0" />
+        </Inverter>
+    </ParallelSequence>
+    <Sequence name="SetVarAndFail">
+        <Copy input="one" output="result"/>
+        <Inverter>
+            <Wait/>
+        </Inverter>
+    </Sequence>
+    <Workspace>
+        <Local name="monitor" type='{"type":"uint64"}' value='0' />
+        <Local name="zero" type='{"type":"uint64"}' value='0' />
+        <Local name="one" type='{"type":"uint64"}' value='1' />
+        <Local name="result" type='{"type":"uint64"}' value='0' />
+    </Workspace>
+</Procedure>

@@ -50,22 +50,25 @@ const std::string LocalVariable::JSON_VALUE = "value";
 
 // Function definition
 
-LocalVariable::LocalVariable() : Variable(LocalVariable::Type), _val{} {}
+LocalVariable::LocalVariable()
+  : Variable(LocalVariable::Type)
+  , val{}
+{}
 
 LocalVariable::~LocalVariable() {}
 
 bool LocalVariable::GetValueImpl(::ccs::types::AnyValue& value) const
 {
-  if (!_val.GetType())
+  if (!val->GetType())
   {
     log_warning("sup::sequencer::LocalVariable::GetValue() - not initialized..");
     return false;
   }
 
-  if (!value.GetType() || value.GetSize() == _val.GetSize())
+  if (!value.GetType() || value.GetSize() == val->GetSize())
   {
     log_debug("sup::sequencer::LocalVariable::GetValue() - copying value..");
-    value = _val;
+    value = *val;
   }
   else
   {
@@ -77,10 +80,10 @@ bool LocalVariable::GetValueImpl(::ccs::types::AnyValue& value) const
 
 bool LocalVariable::SetValueImpl(const ::ccs::types::AnyValue& value)
 {
-  if (!_val.GetType() || _val.GetSize() == value.GetSize())
+  if (!val->GetType() || val->GetSize() == value.GetSize())
   {
     log_debug("sup::sequencer::LocalVariable::SetValue() - copying value..");
-    _val = value;
+    *val = value;
     Notify(value);
     return true;
   }
@@ -90,6 +93,7 @@ bool LocalVariable::SetValueImpl(const ::ccs::types::AnyValue& value)
 
 bool LocalVariable::SetupImpl()
 {
+  val.reset(new ::ccs::types::AnyValue());
   bool status = HasAttribute(JSON_TYPE);
 
   ::ccs::base::SharedReference<::ccs::types::AnyType> local_type;
@@ -111,7 +115,7 @@ bool LocalVariable::SetupImpl()
   {
     log_debug("LocalVariable::Setup() - create local AnyValue");
     ::ccs::base::SharedReference<const ::ccs::types::AnyType> const_type(local_type);
-    _val = ::ccs::types::AnyValue(const_type);
+    val.reset(new ::ccs::types::AnyValue(const_type));
     local_value.reset(new ::ccs::types::AnyValue(const_type));
   }
 
@@ -128,6 +132,11 @@ bool LocalVariable::SetupImpl()
   }
 
   return status;  // empty AnyValue is allowed for setting.
+}
+
+void LocalVariable::ResetImpl()
+{
+  val.reset();
 }
 
 }  // namespace sequencer

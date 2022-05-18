@@ -33,6 +33,8 @@
 
 // Global header files
 
+#include <memory>
+
 // Local header files
 
 #include "Variable.h"
@@ -63,7 +65,7 @@ private:
   /**
    * @brief Encapsulated AnyValue.
    */
-  ::ccs::types::AnyValue _val;
+  std::unique_ptr<::ccs::types::AnyValue> val;
 
   /**
    * @brief See sup::sequencer::Variable.
@@ -71,6 +73,7 @@ private:
   bool GetValueImpl(::ccs::types::AnyValue& value) const override;
   bool SetValueImpl(const ::ccs::types::AnyValue& value) override;
   bool SetupImpl() override;
+  void ResetImpl() override;
 
 protected:
 public:

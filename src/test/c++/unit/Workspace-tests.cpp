@@ -229,6 +229,30 @@ TEST_F(WorkspaceTest, NotifyCallback)
   EXPECT_EQ(var_value, raw_value);
 }
 
+TEST_F(WorkspaceTest, ResetVariable)
+{
+  auto variables = ws.VariableNames();
+  EXPECT_EQ(variables.size(), 0);
+
+  // Add all variables
+  ::ccs::types::AnyValue val;
+  EXPECT_FALSE(ws.GetValue(var1_name, val));
+  EXPECT_TRUE(ws.AddVariable(var1_name, var1.release()));
+  variables = ws.VariableNames();
+  EXPECT_EQ(variables.size(), 1);
+
+  // Set complete variable
+  ws.Setup();
+  ::ccs::types::AnyValue val1(::ccs::types::Boolean);
+  val1 = true;
+  EXPECT_TRUE(ws.SetValue(var1_name, val1));
+  EXPECT_TRUE(ws.GetValue(var1_name, val));
+
+  // Reset variable
+  EXPECT_TRUE(ws.ResetVariable(var1_name));
+  EXPECT_FALSE(ws.GetValue(var1_name, val));
+}
+
 WorkspaceTest::WorkspaceTest()
     : ws{}
     , var1{GlobalVariableRegistry().Create("Local")}

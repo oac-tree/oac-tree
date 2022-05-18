@@ -118,6 +118,18 @@ void Workspace::Reset()
      return pair.second->Reset(); });
 }
 
+bool Workspace::ResetVariable(const std::string& varname)
+{
+  auto it = _var_map.find(varname);
+  if (it == _var_map.end())
+  {
+    return false;
+  }
+  it->second->Reset();
+  it->second->Setup();
+  return true;
+}
+
 bool Workspace::GetValue(std::string name, ::ccs::types::AnyValue &value) const
 {
   auto splitname = SplitToNameField(name);

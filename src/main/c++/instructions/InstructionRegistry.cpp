@@ -43,6 +43,7 @@
 #include "Output.h"
 #include "ParallelSequence.h"
 #include "Repeat.h"
+#include "ResetVariable.h"
 #include "Sequence.h"
 #include "UserChoice.h"
 #include "Wait.h"
@@ -133,6 +134,7 @@ void InitInstructionRegistry(InstructionRegistry& registry)
   (void)RegisterInstruction<Input>(registry);
   (void)RegisterInstruction<Message>(registry);
   (void)RegisterInstruction<Output>(registry);
+  (void)RegisterInstruction<ResetVariable>(registry);
   (void)RegisterInstruction<Wait>(registry);
   // (void)RegisterInstruction<WaitForUpdateInstruction>(registry);
 }

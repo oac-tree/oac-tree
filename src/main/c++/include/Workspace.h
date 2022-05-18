@@ -109,9 +109,17 @@ public:
   void Setup();
 
   /**
-   * @brief Reset all variables.
+   * @brief Teardown all variables.
    */
   void Reset();
+
+  /**
+   * @brief Reset specific variable.
+   *
+   * @param name Variable name.
+   * @return True if variable was found and reset.
+   */
+  bool ResetVariable(const std::string& varname);
 
   /**
    * @brief Get variable value.

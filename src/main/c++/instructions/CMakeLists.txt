@@ -20,6 +20,7 @@ target_sources(sequencer-obj
         ${CMAKE_CURRENT_LIST_DIR}/Output.cpp
         ${CMAKE_CURRENT_LIST_DIR}/ParallelSequence.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Repeat.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/ResetVariable.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Sequence.cpp
         ${CMAKE_CURRENT_LIST_DIR}/UserChoice.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Wait.cpp

@@ -76,6 +76,7 @@ TEST(Condition, Default)
 
   auto proc = sup::sequencer::ParseProcedureFile(file_name);
   ASSERT_TRUE(proc.get() != nullptr);
+  ASSERT_TRUE(proc->Setup());
 
   LogUI ui;
   proc->ExecuteSingle(&ui);

@@ -198,6 +198,7 @@ bool Procedure::GetVariableValue(std::string name, ::ccs::types::AnyValue &value
 
 bool Procedure::Setup()
 {
+  _workspace->Setup();
   if (RootInstruction() == nullptr)
   {
     return true;
@@ -226,6 +227,7 @@ void Procedure::Halt()
 
 void Procedure::Reset()
 {
+  _workspace->Reset();
   if (RootInstruction() == nullptr)
   {
     return;

@@ -87,6 +87,7 @@ TEST_F(LocalVariableTest, DefaultConstructed)
   EXPECT_EQ(empty_var.GetType(), LocalVariable::Type);
   EXPECT_TRUE(empty_var.GetName().empty());
   EXPECT_FALSE(empty_var.HasAttribute(attributes::NAME_ATTRIBUTE));
+  EXPECT_NO_THROW(empty_var.Setup());
 
   // Test Get/SetName
   empty_var.SetName(EMPTY_VAR_NAME);
@@ -121,6 +122,7 @@ TEST_F(LocalVariableTest, AddAttributesPartial)
 
   // Add attributes
   EXPECT_TRUE(empty_var.AddAttributes(attr_partial));
+  EXPECT_NO_THROW(empty_var.Setup());
 
   // Post conditions
   EXPECT_TRUE(empty_var.HasAttribute(attributes::NAME_ATTRIBUTE));
@@ -144,11 +146,13 @@ TEST_F(LocalVariableTest, AddAttributesFull)
   EXPECT_FALSE(empty_var.HasAttribute(attributes::NAME_ATTRIBUTE));
   EXPECT_FALSE(empty_var.HasAttribute(LocalVariable::JSON_TYPE));
   EXPECT_FALSE(empty_var.HasAttribute(LocalVariable::JSON_VALUE));
+  EXPECT_NO_THROW(empty_var.Setup());
   ::ccs::types::AnyValue any_value;
   EXPECT_FALSE(empty_var.GetValue(any_value));
 
   // Add attributes
   EXPECT_TRUE(empty_var.AddAttributes(attr_full));
+  EXPECT_NO_THROW(empty_var.Setup());
 
   // Get attributes
   EXPECT_EQ(empty_var.GetAttributes().GetAttributeNames(), attr_full.GetAttributeNames());
@@ -177,6 +181,7 @@ TEST_F(LocalVariableTest, NotifyCallback)
     {
       value = val;
     });
+  EXPECT_NO_THROW(int32_var.Setup());
   ccs::types::AnyValue new_value(ccs::types::SignedInteger32);
   new_value = 1234;
   EXPECT_TRUE(int32_var.SetValue(new_value));
@@ -190,6 +195,7 @@ TEST_F(LocalVariableTest, BooleanType)
   EXPECT_FALSE(bool_var.HasAttribute(attributes::NAME_ATTRIBUTE));
   EXPECT_TRUE(bool_var.HasAttribute(LocalVariable::JSON_TYPE));
   EXPECT_EQ(bool_var.GetAttribute(LocalVariable::JSON_TYPE), BOOL_TYPE);
+  EXPECT_NO_THROW(bool_var.Setup());
   ::ccs::types::AnyValue any_value;
   EXPECT_TRUE(bool_var.GetValue(any_value));
   bool b = any_value;
@@ -227,6 +233,7 @@ TEST_F(LocalVariableTest, UnsignedInteger64Type)
   EXPECT_FALSE(uint64_var.HasAttribute(attributes::NAME_ATTRIBUTE));
   EXPECT_TRUE(uint64_var.HasAttribute(LocalVariable::JSON_TYPE));
   EXPECT_EQ(uint64_var.GetAttribute(LocalVariable::JSON_TYPE), UINT64_TYPE);
+  EXPECT_NO_THROW(uint64_var.Setup());
   ::ccs::types::AnyValue any_value;
   EXPECT_TRUE(uint64_var.GetValue(any_value));
   ::ccs::types::uint64 val = any_value;
@@ -266,6 +273,7 @@ TEST_F(LocalVariableTest, Float32Type)
   EXPECT_FALSE(float32_var.HasAttribute(attributes::NAME_ATTRIBUTE));
   EXPECT_TRUE(float32_var.HasAttribute(LocalVariable::JSON_TYPE));
   EXPECT_EQ(float32_var.GetAttribute(LocalVariable::JSON_TYPE), FLOAT32_TYPE);
+  EXPECT_NO_THROW(float32_var.Setup());
   ::ccs::types::AnyValue any_value;
   EXPECT_TRUE(float32_var.GetValue(any_value));
   ::ccs::types::float32 val = any_value;

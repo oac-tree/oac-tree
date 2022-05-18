@@ -104,6 +104,16 @@ public:
   std::vector<std::string> VariableNames() const;
 
   /**
+   * @brief Setup all variables.
+   */
+  void Setup();
+
+  /**
+   * @brief Reset all variables.
+   */
+  void Reset();
+
+  /**
    * @brief Get variable value.
    *
    * @param name Variable name.

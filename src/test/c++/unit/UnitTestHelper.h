@@ -156,9 +156,9 @@ static inline bool TryAndExecute(
 
 // Function definitions
 
-static inline bool TryAndExecute(std::unique_ptr<sup::sequencer::Procedure>& proc,
-                                 sup::sequencer::UserInterface* const ui,
-                                 const sup::sequencer::ExecutionStatus& expect)
+static inline bool TryAndExecuteNoReset(std::unique_ptr<sup::sequencer::Procedure>& proc,
+                                        sup::sequencer::UserInterface* const ui,
+                                        const sup::sequencer::ExecutionStatus& expect)
 {
   bool status = static_cast<bool>(proc);
 
@@ -180,10 +180,21 @@ static inline bool TryAndExecute(std::unique_ptr<sup::sequencer::Procedure>& pro
              && (sup::sequencer::ExecutionStatus::FAILURE != exec));
 
     status = (expect == exec);
-
-    proc->Reset();  // Wait for thread termination before calling destructor of UI
   }
 
+  return status;
+}
+
+static inline bool TryAndExecute(std::unique_ptr<sup::sequencer::Procedure>& proc,
+                                 sup::sequencer::UserInterface* const ui,
+                                 const sup::sequencer::ExecutionStatus& expect)
+{
+
+  bool status = TryAndExecuteNoReset(proc, ui, expect);
+  if (proc)
+  {
+    proc->Reset();
+  }
   return status;
 }
 

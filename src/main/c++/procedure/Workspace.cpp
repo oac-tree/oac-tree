@@ -106,6 +106,18 @@ std::vector<std::string> Workspace::VariableNames() const
   return result;
 }
 
+void Workspace::Setup()
+{
+  std::for_each(_var_map.begin(), _var_map.end(), [](const decltype(_var_map)::value_type &pair) {
+     return pair.second->Setup(); });
+}
+
+void Workspace::Reset()
+{
+  std::for_each(_var_map.begin(), _var_map.end(), [](const decltype(_var_map)::value_type &pair) {
+     return pair.second->Reset(); });
+}
+
 bool Workspace::GetValue(std::string name, ::ccs::types::AnyValue &value) const
 {
   auto splitname = SplitToNameField(name);

@@ -67,6 +67,7 @@ TEST(SequenceWorkspace, CopyVariable)
 
   auto proc = sup::sequencer::ParseProcedureFile(file_name);
   ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(proc->Setup());
 
   LogUI ui;
   proc->ExecuteSingle(&ui);

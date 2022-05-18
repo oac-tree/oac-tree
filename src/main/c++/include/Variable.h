@@ -170,10 +170,9 @@ public:
   void SetName(const std::string& name);
 
   /**
-   * @brief Setup method.
-   * @return true on successful variable setup.
+   * @brief Setup variable method.
    */
-  bool Setup();
+  void Setup();
 
   /**
    * @brief Get value of variable.

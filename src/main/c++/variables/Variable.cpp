@@ -49,9 +49,8 @@ namespace sequencer
 
 Variable::Variable(const std::string &type)
   : _type{type}
-{
-  _setup_successful = SetupImpl();
-}
+  , _setup_successful{false}
+{}
 
 Variable::~Variable() = default;
 
@@ -70,9 +69,9 @@ void Variable::SetName(const std::string &name)
   AddAttribute(attributes::NAME_ATTRIBUTE, name);
 }
 
-bool Variable::Setup()
+void Variable::Setup()
 {
-  return SetupImpl();
+  _setup_successful = SetupImpl();
 }
 
 bool Variable::GetValue(::ccs::types::AnyValue &value, const std::string &fieldname) const
@@ -173,7 +172,8 @@ void Variable::SetNotifyCallback(std::function<void(const ccs::types::AnyValue&)
 
 void Variable::Reset()
 {
-  return ResetImpl();
+  ResetImpl();
+  _setup_successful = false;
 }
 
 bool Variable::HasAttribute(const std::string &name) const
@@ -195,7 +195,6 @@ bool Variable::AddAttribute(const std::string &name, const std::string &value)
 {
   std::lock_guard<std::mutex> lock(_access_mutex);
   bool status = _attributes.AddAttribute(name, value);
-  _setup_successful = SetupImpl();
   return status;
 }
 
@@ -208,7 +207,6 @@ bool Variable::AddAttributes(const AttributeMap &attributes)
     // Order in AND matters: add all attributes, even if previous adding failed.
     status = _attributes.AddAttribute(attr.first, attr.second) && status;
   }
-  _setup_successful = SetupImpl();
   return status;
 }
 

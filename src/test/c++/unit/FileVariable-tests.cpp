@@ -64,6 +64,7 @@ TEST(FileVariable, File_write)
 
   auto proc = sup::sequencer::ParseProcedureFile(file_name);
   ASSERT_TRUE(proc.get() != nullptr);
+  ASSERT_TRUE(proc->Setup());
 
   sup::sequencer::LogUI ui;
   proc->ExecuteSingle(&ui);
@@ -85,45 +86,30 @@ TEST(FileVariable, Setup_error)
 {
   auto variable = sup::sequencer::GlobalVariableRegistry().Create("FileVariable");
 
-  bool status = static_cast<bool>(variable);
+  ASSERT_NE(variable.get(), nullptr);
 
-  if (status)
-  {  // Missing mandatory attribute .. Setup implicit
-    // status = (false == variable->Setup());
-    status = variable->AddAttribute("irrelevant", "undefined");
-  }
+  EXPECT_TRUE(variable->AddAttribute("irrelevant", "undefined"));
+  variable->Setup();
 
   ccs::types::AnyValue value;  // Placeholder
 
-  if (status)
-  {
-    status =
-        ((false == variable->GetValue(value)) && (false == static_cast<bool>(value.GetType())));
-  }
-
-  ASSERT_EQ(true, status);
+  EXPECT_FALSE(variable->GetValue(value));
+  EXPECT_FALSE(static_cast<bool>(value.GetType()));
 }
 
 TEST(FileVariable, File_error)
 {
   auto variable = sup::sequencer::GlobalVariableRegistry().Create("FileVariable");
 
-  bool status = static_cast<bool>(variable);
+  ASSERT_NE(variable.get(), nullptr);
 
-  if (status)
-  {
-    status = variable->AddAttribute("file", "undefined");
-  }
+  EXPECT_TRUE(variable->AddAttribute("file", "undefined"));
+  variable->Setup();
 
   ccs::types::AnyValue value;  // Placeholder
 
-  if (status)
-  {
-    status =
-        ((false == variable->GetValue(value)) && (false == static_cast<bool>(value.GetType())));
-  }
-
-  ASSERT_EQ(true, status);
+  EXPECT_FALSE(variable->GetValue(value));
+  EXPECT_FALSE(static_cast<bool>(value.GetType()));
 }
 
 TEST(FileVariable, File_attr)
@@ -163,53 +149,32 @@ TEST(FileVariable, File_attr)
 
   auto proc = sup::sequencer::ParseProcedureFile(file_name);
 
-  bool status = bool(proc);
+  ASSERT_NE(proc.get(), nullptr);
+  ASSERT_TRUE(proc->Setup());
 
-  if (status)
+  sup::sequencer::LogUI ui;
+  sup::sequencer::ExecutionStatus exec = sup::sequencer::ExecutionStatus::FAILURE;
+
+  do
   {
-    sup::sequencer::LogUI ui;
-    sup::sequencer::ExecutionStatus exec = sup::sequencer::ExecutionStatus::FAILURE;
+    proc->ExecuteSingle(&ui);
+    exec = proc->GetStatus();
+  } while ((sup::sequencer::ExecutionStatus::SUCCESS != exec)
+           && (sup::sequencer::ExecutionStatus::FAILURE != exec));
 
-    do
-    {
-      proc->ExecuteSingle(&ui);
-      exec = proc->GetStatus();
-    } while ((sup::sequencer::ExecutionStatus::SUCCESS != exec)
-             && (sup::sequencer::ExecutionStatus::FAILURE != exec));
-
-    status = (sup::sequencer::ExecutionStatus::SUCCESS == exec);
-  }
-
-  if (status)
-  {
-    status = ccs::HelperTools::Exist("variable.bck");
-  }
+  EXPECT_EQ(exec, sup::sequencer::ExecutionStatus::SUCCESS);
+  EXPECT_TRUE(ccs::HelperTools::Exist("variable.bck"));
 
   ccs::types::AnyValue value;  // Placeholder
-
-  if (status)
-  {
-    status = ccs::HelperTools::ReadFromFile(&value, "variable.bck");
-  }
-
-  if (status)
-  {
-    status = static_cast<bool>(value.GetType());
-  }
+  EXPECT_TRUE(ccs::HelperTools::ReadFromFile(&value, "variable.bck"));
+  EXPECT_TRUE(static_cast<bool>(value.GetType()));
 
   // Test variable
-  if (status)
-  {
-    status =
-        (ccs::HelperTools::HasAttribute(&value, "severity")
-         && (ccs::types::UnsignedInteger32
-             == ccs::HelperTools::GetAttributeType(&value, "severity"))
-         && (7u == ccs::HelperTools::GetAttributeValue<ccs::types::uint32>(&value, "severity")));
-  }
+  EXPECT_TRUE(ccs::HelperTools::HasAttribute(&value, "severity"));
+  EXPECT_EQ(ccs::HelperTools::GetAttributeType(&value, "severity"), ccs::types::UnsignedInteger32);
+  EXPECT_EQ(ccs::HelperTools::GetAttributeValue<ccs::types::uint32>(&value, "severity"), 7u);
 
   Terminate();
-
-  ASSERT_EQ(true, status);
 }
 
 #undef LOG_ALTERN_SRC

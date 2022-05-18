@@ -72,7 +72,7 @@ R"RAW(
   auto proc = sup::sequencer::ParseProcedureString(procedure_string);
   ASSERT_NE(proc.get(), nullptr);
   EXPECT_TRUE(
-      sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::SUCCESS));
+    sup::UnitTestHelper::TryAndExecuteNoReset(proc, &ui, sup::sequencer::ExecutionStatus::SUCCESS));
 
   // check result variable
   auto ws = proc->GetWorkspace();
@@ -80,6 +80,7 @@ R"RAW(
   ccs::types::AnyValue result{ccs::types::UnsignedInteger64};
   EXPECT_TRUE(ws->GetValue("monitor", result));
   EXPECT_EQ(result, (ccs::types::uint64)1729);
+  proc->Reset();
 }
 
 TEST_F(ListenTest, ForceSuccess)
@@ -123,7 +124,7 @@ R"RAW(
   auto proc = sup::sequencer::ParseProcedureString(procedure_string);
   ASSERT_NE(proc.get(), nullptr);
   EXPECT_TRUE(
-      sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::SUCCESS));
+    sup::UnitTestHelper::TryAndExecuteNoReset(proc, &ui, sup::sequencer::ExecutionStatus::SUCCESS));
 
   // check result variable
   auto ws = proc->GetWorkspace();
@@ -131,6 +132,7 @@ R"RAW(
   ccs::types::AnyValue result{ccs::types::UnsignedInteger64};
   EXPECT_TRUE(ws->GetValue("result", result));
   EXPECT_EQ(result, (ccs::types::uint64)1729);
+  proc->Reset();
 }
 
 TEST_F(ListenTest, PropagateSetup)
@@ -179,7 +181,7 @@ R"RAW(
   auto proc = sup::sequencer::ParseProcedureString(procedure_string);
   ASSERT_NE(proc.get(), nullptr);
   EXPECT_TRUE(
-      sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::SUCCESS));
+    sup::UnitTestHelper::TryAndExecuteNoReset(proc, &ui, sup::sequencer::ExecutionStatus::SUCCESS));
 
   // check result variable
   auto ws = proc->GetWorkspace();
@@ -187,4 +189,5 @@ R"RAW(
   ccs::types::AnyValue result{ccs::types::UnsignedInteger64};
   EXPECT_TRUE(ws->GetValue("result", result));
   EXPECT_EQ(result, (ccs::types::uint64)1);
+  proc->Reset();
 }

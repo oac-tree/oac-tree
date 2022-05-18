@@ -91,6 +91,7 @@ TEST_F(WorkspaceTest, GetValue)
 
   // Add all variables
   ::ccs::types::AnyValue val2;
+  ws.Setup();
   EXPECT_FALSE(ws.GetValue(var2_name, val2));
   EXPECT_FALSE(ws.SetValue(var2_name, val2));
   EXPECT_TRUE(ws.AddVariable(var1_name, var1.release()));
@@ -103,7 +104,8 @@ TEST_F(WorkspaceTest, GetValue)
   EXPECT_NE(std::find(variables.begin(), variables.end(), var3_name), variables.end());
 
   // Read complete variable
-  EXPECT_FALSE(ws.GetValue(var1_name, val2)) << "GetValue should fail for untypes variable!";
+  ws.Setup();
+  EXPECT_FALSE(ws.GetValue(var1_name, val2)) << "GetValue should fail for untyped variable!";
   EXPECT_TRUE(ws.GetValue(var2_name, val2));  // zero-initialized
   ::ccs::types::uint64 value_field;
   ::ccs::types::boolean status_field;
@@ -155,6 +157,7 @@ TEST_F(WorkspaceTest, SetValue)
   EXPECT_NE(std::find(variables.begin(), variables.end(), var3_name), variables.end());
 
   // Set complete variable
+  ws.Setup();
   ::ccs::types::AnyValue val1(::ccs::types::Boolean);
   val1 = true;
   EXPECT_TRUE(ws.SetValue(var1_name, val1));
@@ -217,6 +220,7 @@ TEST_F(WorkspaceTest, NotifyCallback)
   auto var = GlobalVariableRegistry().Create("Local");
   EXPECT_TRUE(var->AddAttribute(LocalVariable::JSON_TYPE, R"RAW({"type":"uint16"})RAW"));
   EXPECT_TRUE(ws.AddVariable(name, var.release()));
+  ws.Setup();
   ccs::types::AnyValue new_value(ccs::types::UnsignedInteger16);
   ccs::types::uint16 raw_value = 123;
   new_value = ccs::types::uint16(raw_value);

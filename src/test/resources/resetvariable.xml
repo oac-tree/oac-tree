@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+           name="Procedure for testing variable reset"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+    <Sequence>
+        <Copy input="a" output="target"/>
+        <ResetVariable varName="target"/>
+        <Copy input="b" output="target"/>
+    </Sequence>
+    <Workspace>
+        <Local name="target"/>
+        <Local name="a" type='{"type":"uint8"}' value='1' />
+        <Local name="b" type='{"type":"string"}' value='"some name"' />
+    </Workspace>
+</Procedure>

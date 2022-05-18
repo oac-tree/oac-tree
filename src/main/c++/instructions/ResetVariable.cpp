@@ -34,7 +34,6 @@ static const std::string VARNAME_ATTRIBUTE = "varName";
 
 ExecutionStatus ResetVariable::ExecuteSingleImpl(UserInterface*, Workspace* ws)
 {
-  std::string ResetVariable;
   if (HasAttribute(VARNAME_ATTRIBUTE) && ws->ResetVariable(GetAttribute(VARNAME_ATTRIBUTE)))
   {
     return ExecutionStatus::SUCCESS;

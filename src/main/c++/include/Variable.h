@@ -131,6 +131,13 @@ private:
    */
   virtual bool SetupImpl();
 
+  /**
+   * @brief Reset variable.
+   *
+   * @note Private virtual implementation.
+   */
+  virtual void ResetImpl();
+
 protected:
 public:
   /**
@@ -161,6 +168,12 @@ public:
    * @return void
    */
   void SetName(const std::string& name);
+
+  /**
+   * @brief Setup method.
+   * @return true on successful variable setup.
+   */
+  bool Setup();
 
   /**
    * @brief Get value of variable.
@@ -198,6 +211,13 @@ public:
    * @note This method will overwrite an existing callback if there was one.
    */
   void SetNotifyCallback(std::function<void(const ccs::types::AnyValue&)> func);
+
+  /**
+   * @brief Reset variable
+   * @details This method resets the variable to its initial, i.e. uninitialized, state. For
+   * example, network variables will disconnect.
+   */
+  void Reset();
 
   /**
    * @brief Indicate presence of attribute with given name.

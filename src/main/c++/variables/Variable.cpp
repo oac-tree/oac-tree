@@ -70,6 +70,11 @@ void Variable::SetName(const std::string &name)
   AddAttribute(attributes::NAME_ATTRIBUTE, name);
 }
 
+bool Variable::Setup()
+{
+  return SetupImpl();
+}
+
 bool Variable::GetValue(::ccs::types::AnyValue &value, const std::string &fieldname) const
 {
   std::lock_guard<std::mutex> lock(_access_mutex);
@@ -166,6 +171,11 @@ void Variable::SetNotifyCallback(std::function<void(const ccs::types::AnyValue&)
   notify_cb = std::move(func);
 }
 
+void Variable::Reset()
+{
+  return ResetImpl();
+}
+
 bool Variable::HasAttribute(const std::string &name) const
 {
   return _attributes.HasAttribute(name);
@@ -206,6 +216,8 @@ bool Variable::SetupImpl()
 {
   return true;
 }
+
+void Variable::ResetImpl() {}
 
 }  // namespace sequencer
 

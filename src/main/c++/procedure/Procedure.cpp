@@ -22,7 +22,7 @@
 // Global header files
 #include <common/AnyValue.h>
 
-#include <common/log-api.h>
+#include "log.h"
 
 // Local header files
 
@@ -30,11 +30,6 @@
 #include "Sequence.h"
 #include "SequenceParser.h"
 #include "Workspace.h"
-
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
 
 namespace sup
 {
@@ -58,7 +53,7 @@ const Procedure *Procedure::LoadProcedure(const std::string &filename) const
 {
   if (_procedure_cache.find(filename) == _procedure_cache.end())
   {
-    log_debug("Procedure::LoadProcedure('%s') - Loading procedure from file..", filename.c_str());
+    log::Debug("Procedure::LoadProcedure('%s') - Loading procedure from file..", filename.c_str());
     auto loaded_proc = ParseProcedureFile(filename);
     if (loaded_proc)
     {
@@ -67,7 +62,7 @@ const Procedure *Procedure::LoadProcedure(const std::string &filename) const
   }
   if (_procedure_cache.find(filename) == _procedure_cache.end())
   {
-    log_warning("Procedure::LoadProcedure('%s') - Could not load procedure from file..",
+    log::Warning("Procedure::LoadProcedure('%s') - Could not load procedure from file..",
                 filename.c_str());
     return nullptr;
   }
@@ -140,7 +135,7 @@ std::vector<const Instruction *> Procedure::GetInstructions(const std::string &f
     {
       return loaded_proc->GetInstructions();
     }
-    log_warning("Procedure::GetInstructions('%s') - finding instructions failed..",
+    log::Warning("Procedure::GetInstructions('%s') - finding instructions failed..",
                 filename.c_str());
   }
   return result;
@@ -155,7 +150,7 @@ bool Procedure::PushInstruction(Instruction *instruction)
 {
   if (instruction == nullptr)
   {
-    log_warning("Procedure::PushInstruction() - trying to add null pointer");
+    log::Warning("Procedure::PushInstruction() - trying to add null pointer");
     return false;
   }
   _instructions.emplace_back(instruction);
@@ -299,5 +294,3 @@ extern "C"
   // C API function definitions
 
 }  // extern C
-
-#undef LOG_ALTERN_SRC

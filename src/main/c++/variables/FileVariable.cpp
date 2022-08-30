@@ -29,11 +29,6 @@
 
 #include "FileVariable.h"
 
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
-
 // Type definition
 
 static std::string StripWhitespaceFromFile(const std::string& filename);
@@ -99,5 +94,3 @@ static std::string StripWhitespaceFromFile(const std::string& filename)
   }
   return result.str();
 }
-
-#undef LOG_ALTERN_SRC

@@ -24,7 +24,7 @@
 #include <chrono>
 #include <thread>
 
-#include <common/log-api.h>
+#include "log.h"
 
 // Local header files
 
@@ -32,11 +32,6 @@
 #include "Procedure.h"
 #include "Runner.h"
 #include "UserInterface.h"
-
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
 
 // Type definition
 
@@ -153,5 +148,3 @@ extern "C"
   // C API function definitions
 
 }  // extern C
-
-#undef LOG_ALTERN_SRC

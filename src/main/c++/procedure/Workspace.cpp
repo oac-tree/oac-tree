@@ -24,10 +24,7 @@
 #include <algorithm>
 #include <utility>
 
-#include <common/log-api.h>
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
+#include "log.h"
 
 namespace sup
 {
@@ -74,7 +71,7 @@ bool Workspace::AddVariable(std::string name, Variable *var)
   std::unique_ptr<Variable> var_owned(var);  // take ownership immediately
   if (ContainsVariablePointer(var))
   {
-    log_warning(
+    log::Warning(
         "sup::sequencer::Workspace::AddVariable('%s', var) - variable pointer already exists!",
         name.c_str());
     var_owned.release(); // do not delete this variable!
@@ -82,12 +79,12 @@ bool Workspace::AddVariable(std::string name, Variable *var)
   }
   if (ContainsVariableName(name))
   {
-    log_warning(
+    log::Warning(
         "sup::sequencer::Workspace::AddVariable('%s', var) - variable name already exists!",
         name.c_str());
     return false;
   }
-  log_debug("sup::sequencer::Workspace::AddVariable('%s', var) - add variable to workspace..",
+  log::Debug("sup::sequencer::Workspace::AddVariable('%s', var) - add variable to workspace..",
             name.c_str());
   var_owned->SetNotifyCallback(
     [this, name](const ccs::types::AnyValue& value)
@@ -139,13 +136,13 @@ bool Workspace::GetValue(std::string name, ::ccs::types::AnyValue &value) const
   auto it = _var_map.find(varname);
   if (it == _var_map.end())
   {
-    log_warning(
+    log::Warning(
         "sup::sequencer::Workspace::GetValue('%s', value) - variable with name '%s' "
         "not in workspace!",
         name.c_str(), varname.c_str());
     return false;
   }
-  log_debug(
+  log::Debug(
       "sup::sequencer::Workspace::GetValue('%s', 'value') - trying to copy found "
       "workspace variable to 'value'..",
       name.c_str());
@@ -161,13 +158,13 @@ bool Workspace::SetValue(std::string name, const ::ccs::types::AnyValue &value)
   auto it = _var_map.find(varname);
   if (it == _var_map.end())
   {
-    log_warning(
+    log::Warning(
         "sup::sequencer::Workspace::SetValue('%s', value) - variable with name '%s' "
         "not in workspace!",
         name.c_str(), varname.c_str());
     return false;
   }
-  log_debug(
+  log::Debug(
       "sup::sequencer::Workspace::SetValue('%s', 'value') - trying to copy "
       "'value' into found workspace variable..",
       name.c_str());
@@ -235,5 +232,3 @@ static std::pair<std::string, std::string> SplitToNameField(const std::string &f
 }  // namespace sequencer
 
 }  // namespace sup
-
-#undef LOG_ALTERN_SRC

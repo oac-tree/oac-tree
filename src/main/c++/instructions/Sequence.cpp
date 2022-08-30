@@ -21,16 +21,11 @@
 
 // Global header files
 
-#include <common/log-api.h>
+#include "log.h"
 
 // Local header files
 
 #include "Sequence.h"
-
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
 
 // Type definition
 
@@ -68,7 +63,7 @@ ExecutionStatus Sequence::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
     }
     else
     {
-      log_warning("Sequence::ExecuteSingleImpl() - Sequence was ticked again while already failed");
+      log::Warning("Sequence::ExecuteSingleImpl() - Sequence was ticked again while already failed");
       return child_status;
     }
   }
@@ -113,5 +108,3 @@ extern "C"
   // C API function definitions
 
 }  // extern C
-
-#undef LOG_ALTERN_SRC

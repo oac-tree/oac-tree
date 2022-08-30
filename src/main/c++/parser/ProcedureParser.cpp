@@ -25,7 +25,7 @@
 #include <fstream>
 #include <sstream>
 
-#include <common/log-api.h>
+#include "log.h"
 
 // Local header files
 
@@ -34,11 +34,6 @@
 #include "SequenceParser.h"
 #include "VariableParser.h"
 #include "Constants.h"
-
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
 
 // Type definition
 
@@ -65,11 +60,11 @@ static bool ParseAndAddInstruction(Procedure *procedure, const TreeData &instr_d
 
 std::unique_ptr<Procedure> ParseProcedure(const TreeData &data, const std::string &filename)
 {
-  log_debug("sup::sequencer::ParseProcedure() - entering function..");
+  log::Debug("sup::sequencer::ParseProcedure() - entering function..");
 
   if (data.GetType() != Constants::PROCEDURE_ELEMENT_NAME)
   {
-    log_warning("sup::sequencer::ParseProcedure() - incorrect root element type: '%s'",
+    log::Warning("sup::sequencer::ParseProcedure() - incorrect root element type: '%s'",
                 data.GetType().c_str());
     return {};
   }
@@ -99,11 +94,11 @@ std::unique_ptr<Procedure> ParseProcedure(const TreeData &data, const std::strin
 
 std::string GetFullPathName(const std::string &directory, const std::string &filename)
 {
-  log_debug("sup::sequencer::GetFullPathName(%s, %s) - entering function..", directory.c_str(),
+  log::Debug("sup::sequencer::GetFullPathName(%s, %s) - entering function..", directory.c_str(),
             filename.c_str());
   if (filename.empty())
   {
-    log_warning("sup::sequencer::GetFullPathName() - empty filename as argument");
+    log::Warning("sup::sequencer::GetFullPathName() - empty filename as argument");
     return {};
   }
   if (filename.front() == '/')
@@ -127,7 +122,7 @@ static std::string ReadJSONFile(const std::string &filename)
 {
   if (!::ccs::HelperTools::Exist(filename.c_str()))
   {
-    log_warning("ReadJSONFile('%s') - file not found", filename.c_str());
+    log::Warning("ReadJSONFile('%s') - file not found", filename.c_str());
     return {};
   }
   std::ifstream ifstr(filename);
@@ -171,11 +166,11 @@ static bool ParseAndLoadPlugin(const TreeData &child)
   {
     return true;
   }
-  log_debug("ParseAndLoadPlugin() - parsing plugin '%s'", plugin_name.c_str());
+  log::Debug("ParseAndLoadPlugin() - parsing plugin '%s'", plugin_name.c_str());
   bool success = LoadPlugin(plugin_name);
   if (!success)
   {
-    log_warning("ParseAndLoadPlugin() - could not load plugin '%s'", plugin_name.c_str());
+    log::Warning("ParseAndLoadPlugin() - could not load plugin '%s'", plugin_name.c_str());
   }
   return success;
 }
@@ -185,25 +180,25 @@ static bool RegisterTypeInformation(const TreeData &child, const std::string &fi
   bool status = true;
   if (child.HasAttribute(JSONTYPE_ATTRIBUTE_NAME))
   {
-    log_debug("RegisterTypeInformation() - function called with json type '%s' ..",
+    log::Debug("RegisterTypeInformation() - function called with json type '%s' ..",
               child.GetAttribute(JSONTYPE_ATTRIBUTE_NAME).c_str());
     status = ::ccs::base::GlobalTypeDatabase::Register(
         child.GetAttribute(JSONTYPE_ATTRIBUTE_NAME).c_str());
   }
   else if (child.HasAttribute(JSONFILE_ATTRIBUTE_NAME))
   {
-    log_debug("RegisterTypeInformation() - function called with json file '%s' ..",
+    log::Debug("RegisterTypeInformation() - function called with json file '%s' ..",
               child.GetAttribute(JSONFILE_ATTRIBUTE_NAME).c_str());
     std::string jsonfile =
         GetFullPathName(GetFileDirectory(filename), child.GetAttribute(JSONFILE_ATTRIBUTE_NAME));
     auto type_string = ReadJSONFile(jsonfile);
-    log_debug("RegisterTypeInformation() - json file '%s', type string '%s' ..", jsonfile.c_str(),
+    log::Debug("RegisterTypeInformation() - json file '%s', type string '%s' ..", jsonfile.c_str(),
               type_string.c_str());
     status = ::ccs::base::GlobalTypeDatabase::Register(type_string.c_str());
   }
   if (!status)
   {
-    log_warning("RegisterTypeInformation() - could not register type");
+    log::Warning("RegisterTypeInformation() - could not register type");
   }
   return status;
 }
@@ -234,11 +229,11 @@ static bool ParseProcedureChildren(Procedure *procedure, const TreeData &data)
 static bool AddWorkspaceVariables(Procedure *procedure, const TreeData &ws_data)
 {
   bool result = true;
-  log_debug("AddWorkspaceVariables() - generating workspace variables..");
+  log::Debug("AddWorkspaceVariables() - generating workspace variables..");
   for (auto &var_data : ws_data.Children())
   {
     auto name = var_data.GetName();
-    log_debug("AddWorkspaceVariables() - generate variable: '%s'", name.c_str());
+    log::Debug("AddWorkspaceVariables() - generate variable: '%s'", name.c_str());
     if (!name.empty())
     {
       auto var = ParseVariable(var_data);
@@ -271,5 +266,3 @@ extern "C"
   // C API function definitions
 
 }  // extern C
-
-#undef LOG_ALTERN_SRC

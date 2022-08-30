@@ -23,7 +23,7 @@
 
 #include <common/SysTools.h>
 
-#include <common/log-api.h>
+#include "log.h"
 
 // Local header files
 
@@ -32,11 +32,6 @@
 #include "SequenceParserImpl.h"
 #include "TreeDataXmlWriteUtils.h"
 #include "ProcedureToTreeDataUtils.h"
-
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
 
 // Type definition
 
@@ -50,28 +45,28 @@ namespace sequencer
 
 bool LoadPlugin(const std::string& name)
 {
-  log_debug("sup::sequencer::LoadPlugin('%s') - trying to load plugin..", name.c_str());
+  log::Debug("sup::sequencer::LoadPlugin('%s') - trying to load plugin..", name.c_str());
   bool status = ::ccs::HelperTools::LoadSharedLibrary(name.c_str());
 
   if (!status)
   {
-    log_warning("sup::sequencer::LoadPlugin('%s') - could not load plugin", name.c_str());
+    log::Warning("sup::sequencer::LoadPlugin('%s') - could not load plugin", name.c_str());
   }
   else
   {
-    log_debug("sup::sequencer::LoadPlugin('%s') - successfully loaded plugin", name.c_str());
+    log::Debug("sup::sequencer::LoadPlugin('%s') - successfully loaded plugin", name.c_str());
   }
   return status;
 }
 
 std::unique_ptr<Procedure> ParseProcedureFile(const std::string& filename)
 {
-  log_debug("sup::sequencer::ParseProcedureFile('%s') - load file..", filename.c_str());
+  log::Debug("sup::sequencer::ParseProcedureFile('%s') - load file..", filename.c_str());
   auto data = ParseXMLDataFile(filename);
 
   if (!data)
   {
-    log_warning("sup::sequencer::ParseProcedureFile('%s') - could not parse file",
+    log::Warning("sup::sequencer::ParseProcedureFile('%s') - could not parse file",
                 filename.c_str());
     return {};
   }
@@ -80,7 +75,7 @@ std::unique_ptr<Procedure> ParseProcedureFile(const std::string& filename)
 
   if (!proc)
   {
-    log_warning("sup::sequencer::ParseProcedureFile('%s') - could not parse structure in file!",
+    log::Warning("sup::sequencer::ParseProcedureFile('%s') - could not parse structure in file!",
                 filename.c_str());
   }
 
@@ -90,12 +85,12 @@ std::unique_ptr<Procedure> ParseProcedureFile(const std::string& filename)
 std::unique_ptr<Procedure> ParseProcedureString(const std::string& xml_str)
 {
   auto xml_head = xml_str.substr(0, 1024);
-  log_debug("sup::sequencer::ParseProcedureString('%s') - parsing string..", xml_head.c_str());
+  log::Debug("sup::sequencer::ParseProcedureString('%s') - parsing string..", xml_head.c_str());
   auto data = ParseXMLDataString(xml_str);
 
   if (!data)
   {
-    log_warning("sup::sequencer::ParseProcedureString('%s') - could not parse string",
+    log::Warning("sup::sequencer::ParseProcedureString('%s') - could not parse string",
                 xml_head.c_str());
     return {};
   }
@@ -104,7 +99,7 @@ std::unique_ptr<Procedure> ParseProcedureString(const std::string& xml_str)
 
   if (!proc)
   {
-    log_warning("sup::sequencer::ParseProcedureString('%s') - could not parse structure in string!",
+    log::Warning("sup::sequencer::ParseProcedureString('%s') - could not parse structure in string!",
                 xml_head.c_str());
   }
 
@@ -127,5 +122,3 @@ extern "C"
   // C API function definitions
 
 }  // extern C
-
-#undef LOG_ALTERN_SRC

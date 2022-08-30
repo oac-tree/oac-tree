@@ -21,17 +21,12 @@
 
 // Global header files
 
-#include <common/log-api.h>
+#include "log.h"
 
 // Local header files
 
 #include "UserChoice.h"
 #include "UserInterface.h"
-
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
 
 // Type definition
 
@@ -67,7 +62,7 @@ ExecutionStatus UserChoice::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
   int choice = ui->GetUserChoice(options, description);
   if (choice < 0 || choice >= ChildInstructions().size())
   {
-    log_warning("UserChoice::ExecuteSingleImpl() - invalid choice");
+    log::Warning("UserChoice::ExecuteSingleImpl() - invalid choice");
     return ExecutionStatus::FAILURE;
   }
   auto selected = ChildInstructions()[choice];
@@ -77,7 +72,7 @@ ExecutionStatus UserChoice::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
     selected->ExecuteSingle(ui, ws);
     return selected->GetStatus();
   }
-  log_warning(
+  log::Warning(
       "UserChoice::ExecuteSingleImpl() - Selected instruction was not in the correct "
       "state to execute: '%s'",
       StatusToString(selected_status).c_str());
@@ -109,5 +104,3 @@ extern "C"
   // C API function definitions
 
 }  // extern C
-
-#undef LOG_ALTERN_SRC

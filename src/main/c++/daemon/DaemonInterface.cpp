@@ -21,17 +21,12 @@
 
 // Global header files
 
-#include <common/log-api.h>
+#include "log.h"
 
 // Local header files
 
 #include "DaemonInterface.h"
 #include "Instruction.h"
-
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
 
 // Type definition
 
@@ -53,20 +48,20 @@ void DaemonInterface::UpdateInstructionStatusImpl(const Instruction *instruction
     auto instruction_name = instruction->GetName();
     auto status = instruction->GetStatus();
 
-    log_info("Instruction: (%s:%s) : %s", instruction_type.c_str(), instruction_name.c_str(),
+    log::Info("Instruction: (%s:%s) : %s", instruction_type.c_str(), instruction_name.c_str(),
              StatusToString(status).c_str());
   }
 }
 
 bool DaemonInterface::GetUserValueImpl(::ccs::types::AnyValue &, const std::string &)
 {
-  log_warning("DaemonInterface::GetUserValueImpl() - not implemented");
+  log::Warning("DaemonInterface::GetUserValueImpl() - not implemented");
   return false;
 }
 
 int DaemonInterface::GetUserChoiceImpl(const std::vector<std::string> &, const std::string &)
 {
-  log_warning("DaemonInterface::GetUserChoiceImpl() - not implemented");
+  log::Warning("DaemonInterface::GetUserChoiceImpl() - not implemented");
   return -1;
 }
 
@@ -74,7 +69,7 @@ void DaemonInterface::StartSingleStepImpl()
 {
   if (_log_enabled)
   {
-    log_info("Start single execution step");
+    log::Info("Start single execution step");
   }
 }
 
@@ -82,7 +77,7 @@ void DaemonInterface::EndSingleStepImpl()
 {
   if (_log_enabled)
   {
-    log_info("End single execution step");
+    log::Info("End single execution step");
   }
 }
 
@@ -90,7 +85,7 @@ void DaemonInterface::MessageImpl(const std::string& message)
 {
   if (_log_enabled)
   {
-    log_info("%s", message.c_str());
+    log::Info("%s", message.c_str());
   }
 }
 
@@ -107,5 +102,3 @@ extern "C"
   // C API function definitions
 
 }  // extern C
-
-#undef LOG_ALTERN_SRC

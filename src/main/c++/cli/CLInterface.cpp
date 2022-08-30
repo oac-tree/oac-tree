@@ -27,17 +27,12 @@
 #include <map>
 #include <sstream>
 
-#include <common/log-api.h>
+#include "log.h"
 
 // Local header files
 
 #include "CLInterface.h"
 #include "Instruction.h"
-
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
 
 // Type definition
 
@@ -81,7 +76,7 @@ void CLInterface::VariableUpdatedImpl(const std::string& name, const ccs::types:
   }
   else
   {
-    log_warning("CLInterface::VariableUpdatedImpl() could not serialize the value");
+    log::Warning("CLInterface::VariableUpdatedImpl() could not serialize the value");
   }
 }
 
@@ -96,7 +91,7 @@ bool CLInterface::PutValueImpl(const ::ccs::types::AnyValue &value, const std::s
   }
   else
   {
-    log_warning("CLInterface::PutValueImpl() could not serialize the value");
+    log::Warning("CLInterface::PutValueImpl() could not serialize the value");
   }
   return result;
 }
@@ -105,7 +100,7 @@ bool CLInterface::GetUserValueImpl(::ccs::types::AnyValue &value, const std::str
 {
   if (!::ccs::HelperTools::Is<::ccs::types::ScalarType>(&value))
   {
-    log_warning("CLInterface::GetUserValueImpl(value, '%s') only supports scalar values..",
+    log::Warning("CLInterface::GetUserValueImpl(value, '%s') only supports scalar values..",
                 description.c_str());
     return false;
   }
@@ -115,7 +110,7 @@ bool CLInterface::GetUserValueImpl(::ccs::types::AnyValue &value, const std::str
   bool result = ParseStringToScalarAnyvalue(value, input);
   if (!result)
   {
-    log_warning("CLInterface::GetUserValueImpl(value, '%s') could not parse '%s' into value..",
+    log::Warning("CLInterface::GetUserValueImpl(value, '%s') could not parse '%s' into value..",
                 input.c_str());
   }
   return result;
@@ -141,7 +136,7 @@ int CLInterface::GetUserChoiceImpl(const std::vector<std::string> &choices,
   istr >> input;
   if (istr.fail() || input < 0 || input >= choices.size())
   {
-    log_warning("CLInterface::GetUserChoiceImpl() - invalid choice");
+    log::Warning("CLInterface::GetUserChoiceImpl() - invalid choice");
     return -1;
   }
   std::cout << choices[input] << " selected" << std::endl;
@@ -187,7 +182,7 @@ bool ParserFunctionT(::ccs::types::AnyValue &value, const std::string &str)
   istr >> val;
   if (istr.fail())
   {
-    log_warning("ParseStringToScalarAnyvalue() - could not parse ('%s') in type ('%s)", str.c_str(),
+    sup::sequencer::log::Warning("ParseStringToScalarAnyvalue() - could not parse ('%s') in type ('%s)", str.c_str(),
                 value.GetType()->GetName());
     return false;
   }
@@ -207,7 +202,7 @@ bool ParserFunctionT<::ccs::types::boolean>(::ccs::types::AnyValue &value, const
   istr >> std::boolalpha >> val;
   if (istr.fail())
   {
-    log_warning("ParseStringToScalarAnyvalue() - could not parse ('%s') in type ('%s)", str.c_str(),
+    sup::sequencer::log::Warning("ParseStringToScalarAnyvalue() - could not parse ('%s') in type ('%s)", str.c_str(),
                 value.GetType()->GetName());
     return false;
   }
@@ -266,5 +261,3 @@ extern "C"
   // C API function definitions
 
 }  // extern C
-
-#undef LOG_ALTERN_SRC

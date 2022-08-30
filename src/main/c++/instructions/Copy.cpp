@@ -29,11 +29,6 @@
 #include "InstructionRegistry.h"
 #include "Workspace.h"
 
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
-
 // Type definition
 
 namespace sup
@@ -76,5 +71,3 @@ Copy::~Copy() = default;
 }  // namespace sequencer
 
 }  // namespace sup
-
-#undef LOG_ALTERN_SRC

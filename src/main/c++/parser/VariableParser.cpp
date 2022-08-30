@@ -24,17 +24,12 @@
 #include <common/AnyTypeHelper.h>
 #include <common/AnyValueHelper.h>
 
-#include <common/log-api.h>
+#include "log.h"
 
 // Local header files
 
 #include "VariableParser.h"
 #include "VariableRegistry.h"
-
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
 
 // Type definition
 
@@ -55,12 +50,12 @@ std::unique_ptr<Variable> ParseVariable(const TreeData& data)
 
   if (!var)
   {
-    log_warning("sup::sequencer::ParseVariable() - couldn't parse variable with type: '%s'",
+    log::Warning("sup::sequencer::ParseVariable() - couldn't parse variable with type: '%s'",
                 var_type.c_str());
     return {};
   }
 
-  log_debug("sup::sequencer::ParseVariable() - parsing attributes for variable of type: '%s'",
+  log::Debug("sup::sequencer::ParseVariable() - parsing attributes for variable of type: '%s'",
             var_type.c_str());
   var->AddAttributes(data.Attributes());
 
@@ -76,5 +71,3 @@ extern "C"
   // C API function definitions
 
 }  // extern C
-
-#undef LOG_ALTERN_SRC

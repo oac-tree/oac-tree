@@ -20,7 +20,7 @@
  ******************************************************************************/
 
 #include <common/AnyType.h>
-#include <common/log-api.h>
+#include "log.h"
 
 #include "Choice.h"
 #include "Procedure.h"
@@ -64,7 +64,7 @@ bool Choice::CheckIfSelectorArray(const ::ccs::types::AnyValue &_val)
     ret = (elementSize <= 4u);
     if (!ret)
     {
-      log_error("Choice::Setup - element size must be <= 4");
+      log::Error("Choice::Setup - element size must be <= 4");
     }
   }
   return ret;
@@ -100,10 +100,10 @@ bool Choice::SetupImpl(const Procedure &proc)
     }
     else
     {
-      log_error("Choice::Setup - No attribute var_name found");
+      log::Error("Choice::Setup - No attribute var_name found");
     }
 
-    log_debug("Choice::Setup - With var_name=%s numberOfElements=%u elementSize=%u isMask=%u",
+    log::Debug("Choice::Setup - With var_name=%s numberOfElements=%u elementSize=%u isMask=%u",
               varName.c_str(), numberOfElements, elementSize, isMask);
   }
   return ret;
@@ -118,7 +118,7 @@ ExecutionStatus Choice::ExecuteBitChild(const ::ccs::types::uint64 value,
   bool exit = false;
   for (::ccs::types::uint32 i = 0u; (i < remained) && (!exit); i++)
   {
-    log_debug("Choice::ExecuteSingleImpl - Considering bit %d of %d", i, remained);
+    log::Debug("Choice::ExecuteSingleImpl - Considering bit %d of %d", i, remained);
     if (((value >> i) & (0x1u)))
     {
       child_status = ExecuteChild(i, ui, ws);
@@ -136,7 +136,7 @@ ExecutionStatus Choice::ExecuteMaskSelector(::ccs::types::uint8 *valPtr, UserInt
   ExecutionStatus child_status = ExecutionStatus::SUCCESS;
 
   ::ccs::types::uint32 nElems = (elementSize * sizeof(::ccs::types::uint64));
-  log_debug("Choice::ExecuteSingleImpl - isMask nElems=%d", nElems);
+  log::Debug("Choice::ExecuteSingleImpl - isMask nElems=%d", nElems);
   bool exit = false;
   // generic...can consider very big elements
   while ((nElems > 0u) && (!exit))
@@ -144,7 +144,7 @@ ExecutionStatus Choice::ExecuteMaskSelector(::ccs::types::uint8 *valPtr, UserInt
     ::ccs::types::uint32 remained = (nElems > 64u) ? (64u) : (nElems);
     ::ccs::types::uint64 value = 0u;
     memcpy(&value, valPtr, (remained / 8u));
-    log_debug("Choice::ExecuteSingleImpl - isMask value=%d", value);
+    log::Debug("Choice::ExecuteSingleImpl - isMask value=%d", value);
     child_status = ExecuteBitChild(value, remained, ui, ws);
     exit = (child_status != ExecutionStatus::SUCCESS);
     nElems -= remained;
@@ -204,7 +204,7 @@ ExecutionStatus Choice::ExecuteChild(::ccs::types::uint32 idx, UserInterface *ui
     if (NeedsExecute(child_status))
     {
       auto childName = ChildInstructions()[idx]->GetName();
-      log_debug("Choice::ExecuteChild - Executing child[%u]=%s", idx, childName.c_str());
+      log::Debug("Choice::ExecuteChild - Executing child[%u]=%s", idx, childName.c_str());
 
       ChildInstructions()[idx]->ExecuteSingle(ui, ws);
       child_status = ExecutionStatus::NOT_FINISHED;
@@ -212,7 +212,7 @@ ExecutionStatus Choice::ExecuteChild(::ccs::types::uint32 idx, UserInterface *ui
   }
   else
   {
-    log_warning(
+    log::Warning(
         "Status Choice::ExecuteSingleImpl - child[%u] not executed because exceeding children size "
         "(%u)",
         idx, ChildInstructions().size());

@@ -25,17 +25,12 @@
 #include <common/AnyValue.h>
 #include <common/BasicTypes.h>
 
-#include <common/log-api.h>
+#include "log.h"
 
 // Local header files
 
 #include "Condition.h"
 #include "Workspace.h"
-
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
 
 // Type definition
 
@@ -73,12 +68,12 @@ ExecutionStatus Condition::ExecuteSingleImpl(UserInterface * /*ui*/, Workspace *
     }
     else
     {
-      log_error("Condition::ExecuteSingleImpl - The variable %s is not scalar", varName.c_str());
+      log::Error("Condition::ExecuteSingleImpl - The variable %s is not scalar", varName.c_str());
     }
   }
   else
   {
-    log_error("Condition::ExecuteSingleImpl - Failed WorkSpace::GetValue(%s)", varName.c_str());
+    log::Error("Condition::ExecuteSingleImpl - Failed WorkSpace::GetValue(%s)", varName.c_str());
   }
   return ret ? (ExecutionStatus::SUCCESS) : (ExecutionStatus::FAILURE);
 }
@@ -92,5 +87,3 @@ extern "C"
   // C API function definitions
 
 }  // extern C
-
-#undef LOG_ALTERN_SRC

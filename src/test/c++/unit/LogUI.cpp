@@ -21,17 +21,12 @@
 
 // Global header files
 
-#include <common/log-api.h>
+#include "log.h"
 
 // Local header files
 
 #include "Instruction.h"
 #include "LogUI.h"
-
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer::LogUI"
 
 // Type definition
 
@@ -50,17 +45,17 @@ void LogUI::UpdateInstructionStatusImpl(const Instruction* instruction)
   auto instruction_type = instruction->GetType();
   auto status = StatusToString(instruction->GetStatus());
 
-  log_debug("Instruction '%s', status '%s'", instruction_type.c_str(), status.c_str());
+  log::Debug("Instruction '%s', status '%s'", instruction_type.c_str(), status.c_str());
 }
 
 void LogUI::StartSingleStepImpl()
 {
-  log_debug("Start single execution step");
+  log::Debug("Start single execution step");
 }
 
 void LogUI::EndSingleStepImpl()
 {
-  log_debug("End single execution step");
+  log::Debug("End single execution step");
 }
 
 LogUI::LogUI() = default;
@@ -76,5 +71,3 @@ extern "C"
   // C API function definitions
 
 }  // extern C
-
-#undef LOG_ALTERN_SRC

@@ -27,16 +27,11 @@
 #include <future>
 #include <sstream>
 
-#include <common/log-api.h>  // Syslog wrapper routines
+#include "log.h"  // Syslog wrapper routines
 
 // Local header files
 
 #include "LocalVariable.h"
-
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
 
 // Type definition
 
@@ -62,7 +57,7 @@ static std::string stob(bool b);
 
 // Global variables
 
-static ::ccs::log::Func_t __handler = ::ccs::log::SetStdout();
+static const bool kLogToStdOut = (log::SetStdOut(), true);
 
 static const std::string EMPTY_VAR_NAME = "Empty LocalVariable";
 static const std::string TEST_ATTRIBUTE_NAME = "Test Attribute Name";
@@ -359,5 +354,3 @@ LocalVariableTest::LocalVariableTest()
 }
 
 LocalVariableTest::~LocalVariableTest() = default;
-
-#undef LOG_ALTERN_SRC

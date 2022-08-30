@@ -25,18 +25,13 @@
 
 #include <algorithm>
 
-#include <common/log-api.h>  // Syslog wrapper routines
+#include "log.h"  // Syslog wrapper routines
 
 // Local header files
 
 #include "FileVariable.h"
 #include "LocalVariable.h"
 #include "VariableRegistry.h"
-
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
 
 // Type definition
 
@@ -68,7 +63,7 @@ public:
 
 // Global variables
 
-static ::ccs::log::Func_t __handler = ::ccs::log::SetStdout();
+static const bool kLogToStdOut = (log::SetStdOut(), true);
 const std::string TestVariable::Type = "TestVariable";
 
 // Function definition
@@ -117,5 +112,3 @@ TEST_F(VariableRegistryTest, RegisterGlobalVariable)
 VariableRegistryTest::VariableRegistryTest() : empty_reg{} {}
 
 VariableRegistryTest::~VariableRegistryTest() = default;
-
-#undef LOG_ALTERN_SRC

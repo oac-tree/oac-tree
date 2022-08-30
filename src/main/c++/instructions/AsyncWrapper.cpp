@@ -24,16 +24,11 @@
 #include <chrono>
 #include <functional>
 
-#include <common/log-api.h>
+#include "log.h"
 
 // Local header files
 
 #include "AsyncWrapper.h"
-
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
 
 // Type definition
 
@@ -104,5 +99,3 @@ extern "C"
   // C API function definitions
 
 }  // extern C
-
-#undef LOG_ALTERN_SRC

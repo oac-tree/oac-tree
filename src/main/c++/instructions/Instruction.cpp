@@ -22,10 +22,7 @@
 #include "Instruction.h"
 #include "UserInterface.h"
 
-#include <common/log-api.h>
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
+#include "log.h"
 
 namespace sup
 {
@@ -236,5 +233,3 @@ Instruction* Instruction::TakeInstruction(int index)
 }  // namespace sequencer
 
 }  // namespace sup
-
-#undef LOG_ALTERN_SRC

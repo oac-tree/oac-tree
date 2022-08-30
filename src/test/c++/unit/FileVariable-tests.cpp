@@ -28,9 +28,6 @@
 #include <common/AnyValueHelper.h>
 #include <gtest/gtest.h>
 
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "unit-test"
-
 static inline bool Terminate(void)
 {
   bool status = false;
@@ -176,5 +173,3 @@ TEST(FileVariable, File_attr)
 
   Terminate();
 }
-
-#undef LOG_ALTERN_SRC

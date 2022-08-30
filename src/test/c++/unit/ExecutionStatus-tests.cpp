@@ -25,16 +25,11 @@
 
 #include <set>
 
-#include <common/log-api.h>  // Syslog wrapper routines
+#include "log.h"  // Syslog wrapper routines
 
 // Local header files
 
 #include "ExecutionStatus.h"
-
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "unit-test"
 
 // Type definition
 
@@ -81,5 +76,3 @@ TEST(ExecutionStatus, EnumeratorStrings)
   EXPECT_TRUE(insert_result.second);
   EXPECT_EQ(status_strings.size(), 6u);
 }
-
-#undef LOG_ALTERN_SRC

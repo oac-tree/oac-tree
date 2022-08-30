@@ -26,17 +26,12 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <common/log-api.h>
+#include "log.h"
 
 // Local header files
 
 #include "SequenceParserImpl.h"
 #include "XmlUtils.h"
-
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
 
 // Unnamed namespace declarations
 
@@ -65,13 +60,13 @@ std::unique_ptr<TreeData> ParseXMLDataFile(const std::string &filename)
   // Read file into xmlDocPtr
   if (!::ccs::HelperTools::Exist(filename.c_str()))
   {
-    log_warning("ParseXMLDataFile('%s') - file not found", filename.c_str());
+    log::Warning("ParseXMLDataFile('%s') - file not found", filename.c_str());
     return {};
   }
   xmlDocPtr doc = xmlParseFile(filename.c_str());
   if (doc == nullptr)
   {
-    log_warning("ParseXMLDataFile('%s') - Couldn't parse file", filename.c_str());
+    log::Warning("ParseXMLDataFile('%s') - Couldn't parse file", filename.c_str());
     return {};
   }
   return ParseXMLDoc(doc);
@@ -84,7 +79,7 @@ std::unique_ptr<TreeData> ParseXMLDataString(const std::string &xml_str)
   auto xml_head = xml_str.substr(0, 1024);
   if (doc == nullptr)
   {
-    log_warning("ParseXMLDataString('%s') - Couldn't parse file", xml_head.c_str());
+    log::Warning("ParseXMLDataString('%s') - Couldn't parse file", xml_head.c_str());
     return {};
   }
   return ParseXMLDoc(doc);
@@ -96,7 +91,7 @@ static std::unique_ptr<TreeData> ParseXMLDoc(xmlDocPtr doc)
   xmlNodePtr root_node = xmlDocGetRootElement(doc);
   if (root_node == nullptr)
   {
-    log_warning("ParseXMLDoc() - Couldn't retrieve root element");
+    log::Warning("ParseXMLDoc() - Couldn't retrieve root element");
     xmlFreeDoc(doc);
     return {};
   }
@@ -145,7 +140,7 @@ static void AddXMLChildren(TreeData *tree, xmlDocPtr doc, xmlNodePtr node)
     }
     else if (child_node->type == XML_ELEMENT_NODE)
     {
-      log_debug("Add child Data: %s", reinterpret_cast<const char *>(child_node->name));
+      log::Debug("Add child Data: %s", reinterpret_cast<const char *>(child_node->name));
       auto child_data = ParseDataTree(doc, child_node);
       tree->AddChild(*child_data);
     }
@@ -162,5 +157,3 @@ extern "C"
   // C API function definitions
 
 }  // extern C
-
-#undef LOG_ALTERN_SRC

@@ -28,18 +28,13 @@
 #include <memory>
 #include <sstream>
 
-#include <common/log-api.h>  // Syslog wrapper routines
+#include "log.h"  // Syslog wrapper routines
 
 // Local header files
 
 #include "DaemonInterface.h"
 #include "Instruction.h"
 #include "InstructionRegistry.h"
-
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
 
 static std::ostringstream out_stream;
 
@@ -166,5 +161,3 @@ static void log_cb(ccs::log::Severity_t severity, const ccs::types::char8* const
 
   out_stream << buffer;
 }
-
-#undef LOG_ALTERN_SRC

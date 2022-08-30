@@ -20,16 +20,11 @@
  ******************************************************************************/
 
 // Global header files
-#include <common/log-api.h>
+#include "log.h"
 
 // Local header files
 
 #include "ParallelSequence.h"
-
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
 
 // Type definition
 
@@ -112,7 +107,7 @@ bool ParallelSequence::SetupImpl(const Procedure &proc)
       }
       catch (const std::exception &)
       {
-        log_warning(
+        log::Warning(
             "ParallelSequence::InitThresholds() - could not parse successThreshold attribute!");
         status = false;
       }
@@ -136,7 +131,7 @@ bool ParallelSequence::SetupImpl(const Procedure &proc)
       }
       catch (const std::exception &)
       {
-        log_warning(
+        log::Warning(
             "ParallelSequence::InitThresholds() - could not parse failureThreshold attribute!");
         status = false;
       }
@@ -197,5 +192,3 @@ extern "C"
   // C API function definitions
 
 }  // extern C
-
-#undef LOG_ALTERN_SRC

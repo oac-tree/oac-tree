@@ -21,16 +21,11 @@
 
 // Global header files
 
-#include <common/log-api.h>
+#include "log.h"
 
 // Local header files
 
 #include "DecoratorInstruction.h"
-
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
 
 // Type definition
 
@@ -89,7 +84,7 @@ bool DecoratorInstruction::SetupImpl(const Procedure &proc)
 
 bool DecoratorInstruction::SetupChild(const Procedure &proc)
 {
-  log_debug("DecoratorInstruction::SetupChild - entering function..");
+  log::Debug("DecoratorInstruction::SetupChild - entering function..");
   bool status = true;
   if (_child)
   {
@@ -154,5 +149,3 @@ extern "C"
   // C API function definitions
 
 }  // extern C
-
-#undef LOG_ALTERN_SRC

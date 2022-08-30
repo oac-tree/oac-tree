@@ -27,17 +27,12 @@
 #include <cmath>
 #include <thread>
 
-#include <common/log-api.h>
+#include "log.h"
 
 // Local header files
 
 #include "Constants.h"
 #include "Wait.h"
-
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
 
 // Type definition
 
@@ -88,7 +83,7 @@ bool Wait::SetupImpl(const Procedure& /*proc*/)
     }
     catch (const std::exception&)
     {
-      log_warning("Wait::SetupImpl() - could not parse timeout attribute!");
+      log::Warning("Wait::SetupImpl() - could not parse timeout attribute!");
     }
   }
   return true;  // if timeout was not specified, Wait immediately returns SUCCESS.
@@ -116,5 +111,3 @@ extern "C"
   // C API function definitions
 
 }  // extern C
-
-#undef LOG_ALTERN_SRC

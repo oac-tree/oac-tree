@@ -30,11 +30,6 @@
 #include "InstructionRegistry.h"
 #include "Workspace.h"
 
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
-
 // Type definition
 
 namespace sup
@@ -88,5 +83,3 @@ Equals::~Equals() = default;
 }  // namespace sequencer
 
 }  // namespace sup
-
-#undef LOG_ALTERN_SRC

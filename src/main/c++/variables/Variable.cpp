@@ -22,18 +22,13 @@
 // Global header files
 #include <common/AnyValueHelper.h>
 
-#include <common/log-api.h>
+#include "log.h"
 #include <chrono>
 #include <cmath>
 
 // Local header files
 
 #include "Variable.h"
-
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
 
 // Type definition
 
@@ -79,7 +74,7 @@ bool Variable::GetValue(::ccs::types::AnyValue &value, const std::string &fieldn
   std::lock_guard<std::mutex> lock(_access_mutex);
   if (!_setup_successful)
   {
-    log_warning("Variable::GetValue() - Variable was not successfully set up..");
+    log::Warning("Variable::GetValue() - Variable was not successfully set up..");
     return false;
   }
   if (fieldname.empty())
@@ -101,7 +96,7 @@ bool Variable::GetValue(::ccs::types::AnyValue &value, const std::string &fieldn
   }
   if (!status)
   {
-    log_error("Variable::GetValue() - Failed with field name '%s'", fieldname.c_str());
+    log::Error("Variable::GetValue() - Failed with field name '%s'", fieldname.c_str());
   }
   return status;
 }
@@ -111,7 +106,7 @@ bool Variable::SetValue(const ::ccs::types::AnyValue &value, const std::string &
   std::lock_guard<std::mutex> lk(_access_mutex);
   if (!_setup_successful)
   {
-    log_warning("Variable::SetValue() - Variable was not successfully set up..");
+    log::Warning("Variable::SetValue() - Variable was not successfully set up..");
     return false;
   }
 
@@ -136,7 +131,7 @@ bool Variable::SetValue(const ::ccs::types::AnyValue &value, const std::string &
   }
   if (!status)
   {
-    log_error("Variable::SetValue() - Failed with field name '%s'", fieldname.c_str());
+    log::Error("Variable::SetValue() - Failed with field name '%s'", fieldname.c_str());
     return false;
   }
   return true;
@@ -226,5 +221,3 @@ extern "C"
   // C API function definitions
 
 }  // extern C
-
-#undef LOG_ALTERN_SRC

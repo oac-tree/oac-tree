@@ -23,7 +23,7 @@
 
 #include <mutex>
 
-#include <common/log-api.h>
+#include "log.h"
 
 // Local header files
 
@@ -31,11 +31,6 @@
 #include "LocalVariable.h"
 #include "Variable.h"
 #include "VariableRegistry.h"
-
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
 
 // Type definition
 
@@ -72,10 +67,10 @@ std::unique_ptr<Variable> VariableRegistry::Create(std::string name)
   auto entry = _variable_map.find(name);
   if (entry == _variable_map.end())
   {
-    log_error("VariableRegistry::Create('%s') - Variable not registered", name.c_str());
+    log::Error("VariableRegistry::Create('%s') - Variable not registered", name.c_str());
     return {};
   }
-  log_debug("VariableRegistry::Create('%s') - Create variable ..", name.c_str());
+  log::Debug("VariableRegistry::Create('%s') - Create variable ..", name.c_str());
   return std::unique_ptr<Variable>(entry->second());
 }
 
@@ -104,5 +99,3 @@ extern "C"
   // C API function definitions
 
 }  // extern C
-
-#undef LOG_ALTERN_SRC

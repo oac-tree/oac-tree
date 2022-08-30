@@ -21,7 +21,7 @@
 
 // Global header files
 
-#include <common/log-api.h>
+#include "log.h"
 
 // Local header files
 
@@ -31,11 +31,6 @@
 #include "Include.h"
 #include "InstructionHelper.h"
 #include "InstructionRegistry.h"
-
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
 
 // Type definition
 
@@ -66,7 +61,7 @@ const Instruction *FindInstruction(const std::vector<const Instruction *> &instr
 {
   const Instruction *result = nullptr;
   auto names = StripPath(name_path);
-  log_debug(
+  log::Debug(
       "sup::sequencer::InstructionHelper::FindInstruction(): checking "
       "names ('%s','%s')..",
       names.first.c_str(), names.second.c_str());
@@ -80,7 +75,7 @@ const Instruction *FindInstruction(const std::vector<const Instruction *> &instr
   }
   if (result == nullptr)
   {
-    log_warning(
+    log::Warning(
         "sup::sequencer::InstructionHelper::FindInstruction(): could not "
         "find instruction with name_path '%s'",
         name_path.c_str());
@@ -189,5 +184,3 @@ extern "C"
   // C API function definitions
 
 }  // extern C
-
-#undef LOG_ALTERN_SRC

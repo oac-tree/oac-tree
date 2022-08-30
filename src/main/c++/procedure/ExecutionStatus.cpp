@@ -21,10 +21,7 @@
 
 #include "ExecutionStatus.h"
 
-#include <common/log-api.h>
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
+#include "log.h"
 
 namespace sup
 {
@@ -62,5 +59,3 @@ bool NeedsExecute(const ExecutionStatus& status)
 }  // namespace sequencer
 
 }  // namespace sup
-
-#undef LOG_ALTERN_SRC

@@ -25,10 +25,7 @@
 #include <algorithm>
 #include <cctype>
 #include <type_traits>
-#include <common/log-api.h>
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
+#include "log.h"
 
 namespace
 {
@@ -141,7 +138,7 @@ bool AttributeMap::InitialiseVariableAttributes(const AttributeMap &source)
     auto attr_value = GetAttribute(attr_name);
     if (StartsWith(attr_value, DefaultSettings::VAR_ATTRIBUTE_CHAR))
     {
-      log_debug(
+      log::Debug(
           "AttributeMap::InitialiseVariableAttributes() - attr_name('%s'), "
           "attr_value('%s')",
           attr_name.c_str(), attr_value.c_str());
@@ -152,7 +149,7 @@ bool AttributeMap::InitialiseVariableAttributes(const AttributeMap &source)
         continue;
       }
       auto var_value = source.GetAttribute(var_name);
-      log_debug(
+      log::Debug(
           "AttributeMap::InitialiseVariableAttributes() - set attr_name('%s') "
           "to '%s'",
           attr_name.c_str(), var_value.c_str());
@@ -185,5 +182,3 @@ std::string StringToLower(std::string s)
 }
 
 }  // namespace
-
-#undef LOG_ALTERN_SRC

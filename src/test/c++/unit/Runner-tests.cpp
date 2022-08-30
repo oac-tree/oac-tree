@@ -27,7 +27,7 @@
 #include <future>
 #include <thread>
 
-#include <common/log-api.h>  // Syslog wrapper routines
+#include "log.h"  // Syslog wrapper routines
 
 // Local header files
 
@@ -35,11 +35,6 @@
 #include "UnitTestHelper.h"
 #include "Runner.h"
 #include "SequenceParser.h"
-
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
 
 // Type definition
 
@@ -64,7 +59,7 @@ protected:
 
 // Global variables
 
-static ::ccs::log::Func_t __handler = ::ccs::log::SetStdout();
+static const bool kLogToStdOut = (log::SetStdOut(), true);
 
 static const std::string AsyncProcedureString =
     R"RAW(<?xml version="1.0" encoding="UTF-8"?>
@@ -360,5 +355,3 @@ RunnerTest::~RunnerTest()
     async_wait_proc->Reset();
   }
 }
-
-#undef LOG_ALTERN_SRC

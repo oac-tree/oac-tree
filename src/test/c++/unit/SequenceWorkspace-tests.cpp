@@ -21,6 +21,7 @@
 
 #include "Instruction.h"
 #include "InstructionRegistry.h"
+#include "log.h"
 #include "LogUI.h"
 #include "SequenceParser.h"
 #include "UnitTestHelper.h"
@@ -85,7 +86,7 @@ ExecutionStatus CopyNode::ExecuteSingleImpl(UserInterface *ui, Workspace *ws)
   if (status)
   {
     std::string var_input = GetAttribute("input");
-    log_debug("CopyNode::ExecuteSingleImpl() - read input variable '%s'", var_input.c_str());
+    log::Debug("CopyNode::ExecuteSingleImpl() - read input variable '%s'", var_input.c_str());
     status = ws->GetValue(var_input, val);
   }
 
@@ -97,7 +98,7 @@ ExecutionStatus CopyNode::ExecuteSingleImpl(UserInterface *ui, Workspace *ws)
   if (status)
   {
     std::string var_output = GetAttribute("output");
-    log_debug("CopyNode::ExecuteSingleImpl() - write output variable '%s'", var_output.c_str());
+    log::Debug("CopyNode::ExecuteSingleImpl() - write output variable '%s'", var_output.c_str());
     status = ws->SetValue(var_output, val);
   }
 

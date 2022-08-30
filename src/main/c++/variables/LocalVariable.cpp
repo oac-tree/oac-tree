@@ -23,16 +23,11 @@
 
 #include <memory>
 
-#include <common/log-api.h>
+#include "log.h"
 
 // Local header files
 
 #include "LocalVariable.h"
-
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
 
 // Type definition
 
@@ -61,18 +56,18 @@ bool LocalVariable::GetValueImpl(::ccs::types::AnyValue& value) const
 {
   if (!val->GetType())
   {
-    log_warning("sup::sequencer::LocalVariable::GetValue() - not initialized..");
+    log::Warning("sup::sequencer::LocalVariable::GetValue() - not initialized..");
     return false;
   }
 
   if (!value.GetType() || value.GetSize() == val->GetSize())
   {
-    log_debug("sup::sequencer::LocalVariable::GetValue() - copying value..");
+    log::Debug("sup::sequencer::LocalVariable::GetValue() - copying value..");
     value = *val;
   }
   else
   {
-    log_warning("sup::sequencer::LocalVariable::GetValue() - incompatible types..");
+    log::Warning("sup::sequencer::LocalVariable::GetValue() - incompatible types..");
     return false;
   }
   return true;
@@ -82,12 +77,12 @@ bool LocalVariable::SetValueImpl(const ::ccs::types::AnyValue& value)
 {
   if (!val->GetType() || val->GetSize() == value.GetSize())
   {
-    log_debug("sup::sequencer::LocalVariable::SetValue() - copying value..");
+    log::Debug("sup::sequencer::LocalVariable::SetValue() - copying value..");
     *val = value;
     Notify(value);
     return true;
   }
-  log_warning("sup::sequencer::LocalVariable::SetValue() - incompatible types..");
+  log::Warning("sup::sequencer::LocalVariable::SetValue() - incompatible types..");
   return false;
 }
 
@@ -100,20 +95,20 @@ bool LocalVariable::SetupImpl()
   std::unique_ptr<::ccs::types::AnyValue> local_value;
   if (status)
   {
-    log_debug("LocalVariable::Setup() - parsing json type info..");
+    log::Debug("LocalVariable::Setup() - parsing json type info..");
     std::string json_type = GetAttribute(JSON_TYPE);
     auto read = ::ccs::HelperTools::Parse(local_type, json_type.c_str());
     status = read > 0;
   }
   else
   {
-    log_debug("LocalVariable::Setup() - no json type info..");
+    log::Debug("LocalVariable::Setup() - no json type info..");
     return true;
   }
 
   if (status)
   {
-    log_debug("LocalVariable::Setup() - create local AnyValue");
+    log::Debug("LocalVariable::Setup() - create local AnyValue");
     ::ccs::base::SharedReference<const ::ccs::types::AnyType> const_type(local_type);
     val.reset(new ::ccs::types::AnyValue(const_type));
     local_value.reset(new ::ccs::types::AnyValue(const_type));
@@ -121,12 +116,12 @@ bool LocalVariable::SetupImpl()
 
   if (status && HasAttribute(JSON_VALUE))
   {
-    log_debug("LocalVariable::Setup() - parsing json value info..");
+    log::Debug("LocalVariable::Setup() - parsing json value info..");
     std::string json_value = GetAttribute(JSON_VALUE);
     status = local_value->ParseInstance(json_value.c_str());
     if (status)
     {
-      log_debug("LocalVariable::Setup() - copying parsed value..");
+      log::Debug("LocalVariable::Setup() - copying parsed value..");
       status = SetValueImpl(*local_value);
     }
   }
@@ -148,5 +143,3 @@ extern "C"
   // C API function definitions
 
 }  // extern C
-
-#undef LOG_ALTERN_SRC

@@ -101,12 +101,6 @@ std::string FormatMessage(const std::string& format, Args&&... args)
   return std::string(buffer);
 }
 
-template <>
-std::string FormatMessage<>(const std::string& message)
-{
-  return message;
-}
-
 template <typename... Args>
 void Emergency(const std::string& format, Args&&... args)
 {
@@ -149,17 +143,27 @@ void Info(const std::string& format, Args&&... args)
   SimpleInfo(kSource, FormatMessage(format, std::forward<Args>(args)...));
 }
 
+#ifdef LOG_DEBUG_ENABLE
 template <typename... Args>
 void Debug(const std::string& format, Args&&... args)
 {
   SimpleDebug(kSource, FormatMessage(format, std::forward<Args>(args)...));
 }
+#else
+template <typename... Args>
+void Debug(const std::string& format, Args&&... args) {}
+#endif
 
+#ifdef LOG_TRACE_ENABLE
 template <typename... Args>
 void Trace(const std::string& format, Args&&... args)
 {
   SimpleTrace(kSource, FormatMessage(format, std::forward<Args>(args)...));
 }
+#else
+template <typename... Args>
+void Trace(const std::string& format, Args&&... args) {}
+#endif
 
 }  // namespace log
 

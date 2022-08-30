@@ -21,16 +21,11 @@
 
 // Global header files
 
-#include <common/log-api.h>
+#include "log.h"
 
 // Local header files
 
 #include "Repeat.h"
-
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
 
 // Type definition
 
@@ -94,7 +89,7 @@ bool Repeat::SetupImpl(const Procedure& proc)
     }
     catch (const std::exception&)
     {
-      log_warning("Repeat::InitMaxCount() - could not parse maxCount attribute!");
+      log::Warning("Repeat::InitMaxCount() - could not parse maxCount attribute!");
       status = false;
     }
   }
@@ -133,5 +128,3 @@ extern "C"
   // C API function definitions
 
 }  // extern C
-
-#undef LOG_ALTERN_SRC

@@ -20,7 +20,7 @@
  ******************************************************************************/
 
 // Global header files
-#include <common/log-api.h>
+#include "log.h"
 
 // Local header files
 
@@ -29,11 +29,6 @@
 #include "Include.h"
 #include "InstructionParser.h"
 #include "InstructionRegistry.h"
-
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
 
 // Type definition
 
@@ -62,7 +57,7 @@ std::unique_ptr<Instruction> ParseInstruction(const TreeData &data, const std::s
   auto instr = GlobalInstructionRegistry().Create(instr_type);
   if (!instr)
   {
-    log_warning("sup::sequencer::ParseInstruction() - couldn't parse instruction with type: '%s'",
+    log::Warning("sup::sequencer::ParseInstruction() - couldn't parse instruction with type: '%s'",
                 instr_type.c_str());
     return {};
   }
@@ -70,14 +65,14 @@ std::unique_ptr<Instruction> ParseInstruction(const TreeData &data, const std::s
   {
     instr->AddAttribute(attr.first, attr.second);
   }
-  log_debug(
+  log::Debug(
       "sup::sequencer::ParseInstruction() - "
       "parsing child instructions for instruction of type: '%s'",
       instr_type.c_str());
   bool status = AddChildInstructions(instr.get(), data.Children(), filename);
   if (!status)
   {
-    log_warning(
+    log::Warning(
         "sup::sequencer::ParseInstruction() - instruction with type: '%s' parsing child "
         "instructions failed..",
         instr->GetType().c_str());
@@ -103,19 +98,19 @@ static bool AddChildInstructions(Instruction *instruction, const std::vector<Tre
   auto decorator = dynamic_cast<DecoratorInstruction *>(instruction);
   if (decorator)
   {
-    log_debug("AddChildInstructions() - (%s:%s)", instr_type.c_str(), instr_name.c_str());
+    log::Debug("AddChildInstructions() - (%s:%s)", instr_type.c_str(), instr_name.c_str());
     return AddChildrenToDecorator(decorator, children, filename);
   }
 
   auto compound = dynamic_cast<CompoundInstruction *>(instruction);
   if (compound)
   {
-    log_debug("AddChildInstructions() - (%s:%s)", instr_type.c_str(), instr_name.c_str());
+    log::Debug("AddChildInstructions() - (%s:%s)", instr_type.c_str(), instr_name.c_str());
     if (AddChildrenToCompound(compound, children, filename))
     {
       return true;
     }
-    log_warning("AddChildInstructions() - could not parse child instruction of (%s:%s)",
+    log::Warning("AddChildInstructions() - could not parse child instruction of (%s:%s)",
                 instr_type.c_str(), instr_name.c_str());
     return false;
   }
@@ -138,7 +133,7 @@ static bool AddChildrenToDecorator(DecoratorInstruction *decorator,
     if (child_instr)
     {
       auto child_type = child_instr->GetType();
-      log_debug("AddChildrenToDecorator() - calling Decorator->SetInstruction(%s)",
+      log::Debug("AddChildrenToDecorator() - calling Decorator->SetInstruction(%s)",
                 child_type.c_str());
       decorator->SetInstruction(child_instr.release());
       return true;
@@ -160,7 +155,7 @@ static bool AddChildrenToCompound(CompoundInstruction *compound,
       if (child_instr)
       {
         auto child_type = child_instr->GetType();
-        log_debug("AddChildrenToCompound() - calling Compound->PushBack(%s)", child_type.c_str());
+        log::Debug("AddChildrenToCompound() - calling Compound->PushBack(%s)", child_type.c_str());
         compound->PushBack(child_instr.release());
         continue;
       }
@@ -180,5 +175,3 @@ extern "C"
   // C API function definitions
 
 }  // extern C
-
-#undef LOG_ALTERN_SRC

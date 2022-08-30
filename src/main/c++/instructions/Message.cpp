@@ -24,9 +24,6 @@
 #include "Instruction.h"
 #include "UserInterface.h"
 
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
-
 namespace sup
 {
 namespace sequencer
@@ -53,5 +50,3 @@ Message::~Message() = default;
 }  // namespace sequencer
 
 }  // namespace sup
-
-#undef LOG_ALTERN_SRC

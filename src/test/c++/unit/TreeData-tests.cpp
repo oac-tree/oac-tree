@@ -25,16 +25,11 @@
 
 #include <algorithm>
 
-#include <common/log-api.h>  // Syslog wrapper routines
+#include "log.h"  // Syslog wrapper routines
 
 // Local header files
 
 #include "TreeData.h"
-
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
 
 // Type definition
 using namespace sup::sequencer;
@@ -55,7 +50,7 @@ protected:
 
 // Global variables
 
-static ::ccs::log::Func_t __handler = ::ccs::log::SetStdout();
+static const bool kLogToStdOut = (log::SetStdOut(), true);
 
 static const std::string TREE_TYPE = "TestData";
 static const std::string CHILD0_TYPE = "Child_0";
@@ -379,5 +374,3 @@ TreeDataTest::TreeDataTest()
 }
 
 TreeDataTest::~TreeDataTest() = default;
-
-#undef LOG_ALTERN_SRC

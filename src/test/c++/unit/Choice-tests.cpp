@@ -33,7 +33,7 @@
 
 #include <gtest/gtest.h>
 
-#include <common/log-api.h>
+#include "log.h"
 
 using namespace sup::sequencer;
 

@@ -28,7 +28,7 @@
 #include <memory>
 #include <sstream>
 
-#include <common/log-api.h>  // Syslog wrapper routines
+#include "log.h"  // Syslog wrapper routines
 
 // Local header files
 
@@ -36,11 +36,6 @@
 #include "Instruction.h"
 #include "InstructionRegistry.h"
 #include "StdRedirectors.h"
-
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
 
 // Type definition
 
@@ -61,7 +56,7 @@ protected:
 
 // Global variables
 
-static ::ccs::log::Func_t __handler = ::ccs::log::SetStdout();
+static const bool kLogToStdOut = (log::SetStdOut(), true);
 
 // Function definition
 
@@ -191,5 +186,3 @@ CLInterfaceTest::CLInterfaceTest()
 }
 
 CLInterfaceTest::~CLInterfaceTest() {}
-
-#undef LOG_ALTERN_SRC

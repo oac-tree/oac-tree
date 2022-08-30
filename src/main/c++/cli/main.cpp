@@ -24,7 +24,7 @@
 #include <algorithm>
 #include <iostream>  // std::cout, etc.
 
-#include <common/log-api.h>  // CCS logging library
+#include "log.h"  // CCS logging library
 
 // Local header files
 
@@ -33,9 +33,6 @@
 #include "SequenceParser.h"
 
 // Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
 
 namespace
 {
@@ -86,31 +83,31 @@ int main(int argc, char* argv[])
     print_usage(arguments.at(0));
     return 0;
   }
-  log_debug("sequencer-cli called with filename: %s", filename.c_str());
+  sup::sequencer::log::Debug("sequencer-cli called with filename: %s", filename.c_str());
 
   if (!ccs::HelperTools::Exist(filename.c_str()))
   {
-    log_error("sequencer-cli: file not found <%s>", filename.c_str());
+    sup::sequencer::log::Error("sequencer-cli: file not found <%s>", filename.c_str());
     return 1;
   }
 
   auto verbosity = GetVerbosityLevel(arguments);
   if (verbosity > 0)
   {
-    (void)ccs::log::SetStdout();
-    (void)ccs::log::SetFilter(verbosity == kMinimal ? LOG_NOTICE : LOG_DEBUG);
+    sup::sequencer::log::SetStdOut();
+    sup::sequencer::log::SetMaxSeverity(verbosity == kMinimal ? LOG_NOTICE : LOG_DEBUG);
   }
 
   auto proc = sup::sequencer::ParseProcedureFile(filename.c_str());
   if (!proc)
   {
-    log_error("sequencer-cli couldn't parse file <%s>", filename.c_str());
+    sup::sequencer::log::Error("sequencer-cli couldn't parse file <%s>", filename.c_str());
     return 1;
   }
 
   if (!proc->Setup())
   {
-    log_error("sequencer-cli couldn't setup the parsed procedure from file: <%s>",
+    sup::sequencer::log::Error("sequencer-cli couldn't setup the parsed procedure from file: <%s>",
               filename.c_str());
     return 1;
   }
@@ -159,5 +156,3 @@ int GetVerbosityLevel(const std::vector<std::string>& arguments)
   int result = it < arguments.end() ? verbosity_map[*it] : kSilent;
   return result;
 }
-
-#undef LOG_ALTERN_SRC

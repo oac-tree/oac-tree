@@ -28,7 +28,7 @@
 #include <fstream>
 #include <sstream>
 
-#include <common/log-api.h>
+#include "log.h"
 
 // Local header files
 
@@ -37,11 +37,6 @@
 #include "Procedure.h"
 #include "UnitTestHelper.h"
 #include "UserInterface.h"
-
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "unit-test"
 
 // Type declaration
 
@@ -98,13 +93,13 @@ void MockUI::UpdateInstructionStatusImpl(const sup::sequencer::Instruction *inst
 int MockUI::GetUserChoiceImpl(const std::vector<std::string> &choices,
                               const std::string &description)
 {
-  log_debug("TestUI::GetUserChoiceImpl - Description '%s'", description.c_str());
+  sup::sequencer::log::Debug("TestUI::GetUserChoiceImpl - Description '%s'", description.c_str());
   return _choice;
 }
 
 bool MockUI::GetUserValueImpl(::ccs::types::AnyValue &value, const std::string &description)
 {
-  log_debug("TestUI::GetUserValueImpl - Description '%s'", description.c_str());
+  sup::sequencer::log::Debug("TestUI::GetUserValueImpl - Description '%s'", description.c_str());
   _type = value.GetType();
   value = _value;
   return _status;
@@ -183,17 +178,17 @@ void PrintProcedureWorkspace(::sup::sequencer::Procedure *procedure)
   for (const auto &var_name : var_names)
   {
     ::ccs::types::AnyValue val;
-    log_debug("Variable '%s'", var_name.c_str());
+    sup::sequencer::log::Debug("Variable '%s'", var_name.c_str());
 
     bool var_initialized = procedure->GetVariableValue(var_name, val);
     if (var_initialized)
     {
       val.SerialiseInstance(val_string, 1024);
-      log_debug("Variable '%s', with value\n  %s", var_name.c_str(), val_string);
+      sup::sequencer::log::Debug("Variable '%s', with value\n  %s", var_name.c_str(), val_string);
     }
     else
     {
-      log_debug("Variable '%s' uninitialized", var_name.c_str());
+      sup::sequencer::log::Debug("Variable '%s' uninitialized", var_name.c_str());
     }
   }
 }
@@ -215,5 +210,3 @@ extern "C"
   // C API function definitions
 
 }  // extern C
-
-#undef LOG_ALTERN_SRC

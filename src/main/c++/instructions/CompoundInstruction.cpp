@@ -21,16 +21,11 @@
 
 // Global header files
 
-#include <common/log-api.h>
+#include "log.h"
 
 // Local header files
 
 #include "CompoundInstruction.h"
-
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
 
 // Type definition
 
@@ -95,7 +90,7 @@ bool CompoundInstruction::SetupImpl(const Procedure& proc)
 
 bool CompoundInstruction::SetupChildren(const Procedure& proc)
 {
-  log_debug("CompoundInstruction::SetupChildren - entering function..");
+  log::Debug("CompoundInstruction::SetupChildren - entering function..");
   bool result = true;
   for (auto instruction : _children)
   {
@@ -149,5 +144,3 @@ extern "C"
   // C API function definitions
 
 }  // extern C
-
-#undef LOG_ALTERN_SRC

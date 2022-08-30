@@ -21,7 +21,7 @@
 
 // Global header files
 
-#include <common/log-api.h>
+#include "log.h"
 
 // Local header files
 
@@ -31,9 +31,6 @@
 #include "ProcedureParser.h"
 
 // Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
 
 static const std::string PATH_ATTRIBUTE_NAME = "path";
 static const std::string FILE_ATTRIBUTE_NAME = "file";
@@ -94,17 +91,17 @@ bool Include::SetupImpl(const Procedure& proc)
   auto instr = InstructionHelper::FindInstruction(instructions, path);
   if (instr == nullptr)
   {
-    log_warning("Include::SetupImpl(): instruction with path '%s' not found", path.c_str());
+    log::Warning("Include::SetupImpl(): instruction with path '%s' not found", path.c_str());
     return false;
   }
   std::unique_ptr<Instruction> clone(InstructionHelper::CloneInstruction(instr));
   if (InstructionHelper::InitialiseVariableAttributes(*clone, GetAttributes()))
   {
-    log_debug("Include::SetupImpl(): variable attributes successfully set");
+    log::Debug("Include::SetupImpl(): variable attributes successfully set");
     SetInstruction(clone.release());
     return SetupChild(proc);
   }
-  log_warning(
+  log::Warning(
       "Include::SetupImpl(): instruction with path '%s' could not be "
       "properly initialised with the given attributes",
       path.c_str());
@@ -148,5 +145,3 @@ extern "C"
   // C API function definitions
 
 }  // extern C
-
-#undef LOG_ALTERN_SRC

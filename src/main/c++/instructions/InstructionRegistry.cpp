@@ -23,7 +23,7 @@
 
 #include <mutex>
 
-#include <common/log-api.h>
+#include "log.h"
 
 // Local header files
 
@@ -48,11 +48,6 @@
 #include "UserChoice.h"
 #include "Wait.h"
 // #include "WaitForUpdate.h"
-
-// Constants
-
-#undef LOG_ALTERN_SRC
-#define LOG_ALTERN_SRC "sup::sequencer"
 
 // Type definition
 
@@ -94,10 +89,10 @@ std::unique_ptr<Instruction> InstructionRegistry::Create(std::string name)
   auto entry = _instruction_map.find(name);
   if (entry == _instruction_map.end())
   {
-    log_error("InstructionRegistry::Create('%s') - Instruction not registered", name.c_str());
+    log::Error("InstructionRegistry::Create('%s') - Instruction not registered", name.c_str());
     return {};
   }
-  log_debug("InstructionRegistry::Create('%s') - Create instruction ..", name.c_str());
+  log::Debug("InstructionRegistry::Create('%s') - Create instruction ..", name.c_str());
   return std::unique_ptr<Instruction>(entry->second());
 }
 
@@ -148,5 +143,3 @@ extern "C"
   // C API function definitions
 
 }  // extern C
-
-#undef LOG_ALTERN_SRC

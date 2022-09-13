@@ -19,34 +19,23 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
-
-#include <mutex>
-
-#include <sup/sequencer/log.h>
-
-// Local header files
+#include <sup/sequencer/variable_registry.h>
 
 #include "file_variable.h"
 #include "local_variable.h"
-#include <sup/sequencer/variable.h>
-#include <sup/sequencer/variable_registry.h>
 
-// Type definition
+#include <sup/sequencer/log.h>
+#include <sup/sequencer/variable.h>
+
+#include <mutex>
 
 namespace sup
 {
 namespace sequencer
 {
-// Global variables
-
 std::once_flag global_variable_registry_initialized_flag;
 
-// Function declaration
-
 void InitVariableRegistry(VariableRegistry& registry);
-
-// Function definition
 
 VariableRegistry& GlobalVariableRegistry()
 {
@@ -93,9 +82,3 @@ void InitVariableRegistry(VariableRegistry& registry)
 }  // namespace sequencer
 
 }  // namespace sup
-
-extern "C"
-{
-  // C API function definitions
-
-}  // extern C

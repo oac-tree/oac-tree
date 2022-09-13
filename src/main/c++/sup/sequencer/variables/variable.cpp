@@ -19,28 +19,19 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
-#include <common/AnyValueHelper.h>
-
-#include <sup/sequencer/log.h>
-#include <chrono>
-#include <cmath>
-
-// Local header files
-
 #include <sup/sequencer/variable.h>
 
-// Type definition
+#include <sup/sequencer/log.h>
+
+#include <common/AnyValueHelper.h>
+
+#include <chrono>
+#include <cmath>
 
 namespace sup
 {
 namespace sequencer
 {
-// Global variables
-
-// Function declaration
-
-// Function definition
 
 Variable::Variable(const std::string &type)
   : _type{type}
@@ -137,19 +128,6 @@ bool Variable::SetValue(const ::ccs::types::AnyValue &value, const std::string &
   return true;
 }
 
-// bool Variable::WaitFor(double seconds) const
-// {
-//   if (seconds <= 0.0)
-//   {
-//     return false;
-//   }
-//   auto duration = std::chrono::nanoseconds(std::lround(seconds * 1e9));
-//   std::unique_lock<std::mutex> lk(notify_mutex);
-//   auto current_counter = _update_counter;
-//   return _update_cond.wait_for(lk, duration,
-//       [this, current_counter](){ return _update_counter != current_counter; });
-// }
-
 void Variable::Notify(const ccs::types::AnyValue& value)
 {
   std::lock_guard<std::mutex> lk(notify_mutex);
@@ -215,9 +193,3 @@ void Variable::ResetImpl() {}
 }  // namespace sequencer
 
 }  // namespace sup
-
-extern "C"
-{
-  // C API function definitions
-
-}  // extern C

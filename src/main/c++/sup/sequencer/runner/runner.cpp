@@ -19,33 +19,21 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
+#include <sup/sequencer/runner.h>
+
+#include <sup/sequencer/constants.h>
+#include <sup/sequencer/log.h>
+#include <sup/sequencer/procedure.h>
+#include <sup/sequencer/user_interface.h>
 
 #include <chrono>
 #include <thread>
-
-#include <sup/sequencer/log.h>
-
-// Local header files
-
-#include <sup/sequencer/constants.h>
-#include <sup/sequencer/procedure.h>
-#include <sup/sequencer/runner.h>
-#include <sup/sequencer/user_interface.h>
-
-// Type definition
-
-// Global variables
-
-// Function declaration
 
 namespace sup
 {
 namespace sequencer
 {
 static int TickTimeoutMs(Procedure* procedure);
-
-// Function definition
 
 Runner::Runner(UserInterface* ui)
   : _proc{nullptr}
@@ -142,9 +130,3 @@ static int TickTimeoutMs(Procedure* procedure)
 }  // namespace sequencer
 
 }  // namespace sup
-
-extern "C"
-{
-  // C API function definitions
-
-}  // extern C

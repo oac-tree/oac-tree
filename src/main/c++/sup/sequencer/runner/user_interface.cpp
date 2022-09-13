@@ -19,25 +19,14 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
-
-#include <sup/sequencer/log.h>
-
-// Local header files
-
 #include <sup/sequencer/user_interface.h>
 
-// Type definition
+#include <sup/sequencer/log.h>
 
 namespace sup
 {
 namespace sequencer
 {
-// Global variables
-
-// Function declaration
-
-// Function definition
 
 void UserInterface::VariableUpdatedImpl(const std::string& name, const ccs::types::AnyValue& value)
 {}
@@ -116,9 +105,3 @@ void UserInterface::Message(const std::string& message)
 }  // namespace sequencer
 
 }  // namespace sup
-
-extern "C"
-{
-  // C API function definitions
-
-}  // extern C

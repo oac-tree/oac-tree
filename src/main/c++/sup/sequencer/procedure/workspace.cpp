@@ -21,10 +21,10 @@
 
 #include <sup/sequencer/workspace.h>
 
+#include <sup/sequencer/log.h>
+
 #include <algorithm>
 #include <utility>
-
-#include <sup/sequencer/log.h>
 
 namespace sup
 {

@@ -19,31 +19,20 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
-
-#include <memory>
+#include "local_variable.h"
 
 #include <sup/sequencer/log.h>
 
-// Local header files
-
-#include "local_variable.h"
-
-// Type definition
+#include <memory>
 
 namespace sup
 {
 namespace sequencer
 {
-// Global variables
 
 const std::string LocalVariable::Type = "Local";
 const std::string LocalVariable::JSON_TYPE = "type";
 const std::string LocalVariable::JSON_VALUE = "value";
-
-// Function declaration
-
-// Function definition
 
 LocalVariable::LocalVariable()
   : Variable(LocalVariable::Type)
@@ -137,9 +126,3 @@ void LocalVariable::ResetImpl()
 }  // namespace sequencer
 
 }  // namespace sup
-
-extern "C"
-{
-  // C API function definitions
-
-}  // extern C

@@ -19,17 +19,14 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
-#include <common/AnyValue.h>
+#include <sup/sequencer/procedure.h>
 
 #include <sup/sequencer/log.h>
-
-// Local header files
-
-#include <sup/sequencer/procedure.h>
-#include "Sequence.h"
+#include <sup/sequencer/instruction.h>
 #include <sup/sequencer/sequence_parser.h>
 #include <sup/sequencer/workspace.h>
+
+#include <common/AnyValue.h>
 
 namespace sup
 {
@@ -37,17 +34,9 @@ namespace sequencer
 {
 const std::string Procedure::TICK_TIMEOUT_ATTRIBUTE_NAME = "tickTimeout";
 
-// Type definition
-
-// Global variables
-
 static const std::string IS_ROOT_ATTRIBUTE = "isRoot";
 
-// Function declaration
-
 static bool HasRootAttributeSet(const Instruction &instruction);
-
-// Function definition
 
 const Procedure *Procedure::LoadProcedure(const std::string &filename) const
 {
@@ -288,9 +277,3 @@ static bool HasRootAttributeSet(const Instruction &instruction)
 }  // namespace sequencer
 
 }  // namespace sup
-
-extern "C"
-{
-  // C API function definitions
-
-}  // extern C

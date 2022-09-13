@@ -19,17 +19,12 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
-
-#include <common/AnyValueHelper.h>  // Misc. helper functions
-#include <fstream>
-#include <sstream>
-
-// Local header files
-
 #include "file_variable.h"
 
-// Type definition
+#include <common/AnyValueHelper.h>
+
+#include <fstream>
+#include <sstream>
 
 static std::string StripWhitespaceFromFile(const std::string& filename);
 
@@ -37,13 +32,7 @@ namespace sup
 {
 namespace sequencer
 {
-// Function declaration
-
-// Global variables
-
 const std::string FileVariable::Type = "FileVariable";
-
-// Function definition
 
 bool FileVariable::SetupImpl(void)
 {

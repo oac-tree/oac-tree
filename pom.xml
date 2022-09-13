@@ -33,7 +33,7 @@
     <properties>
         <unit.type>module</unit.type>
         <integrity.level>1</integrity.level>
-        <pluginpath>lib/plugins</pluginpath>
+        <pluginpath>lib/sup/sequencer/plugins</pluginpath>
         <cppcheck.args>--enable=all --suppress=missingInclude --inline-suppr</cppcheck.args>
         <sonar.exclusions>src/main/c++/cli/main.cpp, src/main/c++/daemon/main.cpp, src/main/c++/base/Log.cpp, src/test/**</sonar.exclusions>
     </properties>
@@ -101,10 +101,6 @@
                             <include type="file" source="lib" target="lib">
                                 <include>*.so.*</include>
                             </include>
-                            <!-- Plugins -->
-                            <!-- <include type="file" source="lib/plugins" target="lib/plugins">
-                                <include>*.so*</include>
-                            </include> -->
                             <include type="config" source="main/codac-${project.artifactId}.conf"
                                      target="ld.so.conf.d/codac-${project.artifactId}.conf"
                                      altpath="%{_sysconfdir}/ld.so.conf.d/codac-${project.artifactId}.conf" />
@@ -116,7 +112,7 @@
                             <!-- Package dependencies -->
                             <requires version="current">libxml2</requires>
                             <requires codac="true">cpp-common</requires>
-                            <requires version="current" buildOnly="true">cmake3</requires>
+                            <requires version="current" buildOnly="true">cmake</requires>
                             <requires version="current" buildOnly="true">libxml2-devel</requires>
                             <requires codac="true" buildOnly="true">cpp-common-devel</requires>
                             <!-- RPM scriptlet -->
@@ -131,7 +127,7 @@
                                 <include>*.so</include>
                             </include>
                             <!-- Public API headers -->
-                            <include type="file" source="include" target="include/sup">
+                            <include type="file" source="include/sup/sequencer" target="include/sup/sequencer">
                                 <include>*.h</include>
                             </include>
                             <!-- Package dependencies -->
@@ -143,6 +139,7 @@
                             <!-- Package dependencies -->
                             <requires version="current">%{codac_rpm_prefix}-${project.artifactId}-devel</requires>
                             <requires version="current">gtest</requires>
+                            <requires version="current">gmock</requires>
                             <requires version="current" buildOnly="true">gtest-devel</requires>
                             <requires version="current" buildOnly="true">gmock-devel</requires>
                         </package>

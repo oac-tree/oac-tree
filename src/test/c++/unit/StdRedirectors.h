@@ -32,17 +32,7 @@
 #ifndef _StdRedirectors_h_
 #define _StdRedirectors_h_
 
-// Global header files
-
 #include <iostream>
-
-// Local header files
-
-// Constants
-
-// Type definition
-
-#ifdef __cplusplus
 
 namespace sup
 {
@@ -96,24 +86,8 @@ inline CoutRedirector::~CoutRedirector()
   std::cout.rdbuf(cout_buf);
 }
 
-// Global variables
-
-// Function declarations
-
-// Function definitions
-
 }  // namespace sequencer
 
 }  // namespace sup
-
-extern "C"
-{
-#endif  // __cplusplus
-
-  // C API function declarations
-
-#ifdef __cplusplus
-}  // extern C
-#endif  // __cplusplus
 
 #endif  // _StdRedirectors_h_

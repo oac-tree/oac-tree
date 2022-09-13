@@ -31,23 +31,13 @@
 #ifndef _SEQ_UnitTestHelper_h_
 #define _SEQ_UnitTestHelper_h_
 
-// Global header files
+#include <sup/sequencer/ExecutionStatus.h>
+#include <sup/sequencer/Instruction.h>
+#include <sup/sequencer/Procedure.h>
+#include <sup/sequencer/UserInterface.h>
+#include <sup/sequencer/Workspace.h>
 
 #include <string>
-
-// Local header files
-
-#include "ExecutionStatus.h"
-#include "Instruction.h"
-#include "Procedure.h"
-#include "UserInterface.h"
-#include "Workspace.h"
-
-// Constants
-
-// Type definition
-
-#ifdef __cplusplus
 
 namespace sup
 {
@@ -145,16 +135,10 @@ public:
   ~TemporaryTestFile();
 };
 
-// Global variables
-
-// Function declarations
-
 std::string GetFullTestFilePath(const std::string& filename);
 static inline bool TryAndExecute(
     std::unique_ptr<sup::sequencer::Procedure>& proc, sup::sequencer::UserInterface* const ui,
     const sup::sequencer::ExecutionStatus& expect = sup::sequencer::ExecutionStatus::SUCCESS);
-
-// Function definitions
 
 static inline bool TryAndExecuteNoReset(std::unique_ptr<sup::sequencer::Procedure>& proc,
                                         sup::sequencer::UserInterface* const ui,
@@ -218,15 +202,5 @@ std::string GetTextFileContent(const std::string &file_name);
 }  // namespace UnitTestHelper
 
 }  // namespace sup
-
-extern "C"
-{
-#endif  // __cplusplus
-
-  // C API function declarations
-
-#ifdef __cplusplus
-}  // extern C
-#endif  // __cplusplus
 
 #endif  // _SEQ_UnitTestHelper_h_

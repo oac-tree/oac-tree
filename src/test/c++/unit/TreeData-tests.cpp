@@ -19,19 +19,13 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
+#include <sup/sequencer/log.h>
+#include <sup/sequencer/TreeData.h>
 
-#include <gtest/gtest.h>  // Google test framework
+#include <gtest/gtest.h>
 
 #include <algorithm>
 
-#include "log.h"  // Syslog wrapper routines
-
-// Local header files
-
-#include "TreeData.h"
-
-// Type definition
 using namespace sup::sequencer;
 
 class TreeDataTest : public ::testing::Test
@@ -46,10 +40,6 @@ protected:
   TreeData child_1;
 };
 
-// Function declaration
-
-// Global variables
-
 static const bool kLogToStdOut = (log::SetStdOut(), true);
 
 static const std::string TREE_TYPE = "TestData";
@@ -60,8 +50,6 @@ static const std::string ATTR_NAME_1 = "First attribute";
 static const std::string ATTR_NAME_2 = "Second attribute";
 static const std::string ATTR_VALUE_1 = "First value";
 static const std::string ATTR_VALUE_2 = "Second value";
-
-// Function definition
 
 TEST_F(TreeDataTest, Constructed)
 {

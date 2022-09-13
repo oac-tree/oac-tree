@@ -40,27 +40,22 @@ target_sources(unit-tests
         ${CMAKE_CURRENT_LIST_DIR}/VariableRegistry-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Wait-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Workspace-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++/cli/CLInterface.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++/daemon/DaemonInterface.cpp
-    )
+        ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++/sup/sequencer-cli/CLInterface.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++/sup/sequencer-daemon/DaemonInterface.cpp
+)
 
 target_include_directories(unit-tests
     PRIVATE
-        ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++/cli
-        ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++/daemon
-        ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++/include
-        ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++/instructions
-        ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++/variables
-        ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++/parser
-        ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++/procedure
+        ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++
+        ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++/sup/sequencer-cli
+        ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++/sup/sequencer-daemon
         $ENV{CODAC_ROOT}/include
-    )
+)
 
 target_link_directories(unit-tests
     PRIVATE
-        ${CMAKE_CURRENT_LIST_DIR}/../../../../target/lib
         $ENV{CODAC_ROOT}/lib
-    )
+)
 
 find_package(GTest REQUIRED)
 
@@ -69,6 +64,6 @@ target_link_libraries(unit-tests
         GTest::GTest
         GTest::Main
         gmock
-        sequencer-shared
+        sup-sequencer-shared
         ccs-core
-    )
+)

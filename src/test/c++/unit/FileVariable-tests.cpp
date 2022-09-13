@@ -20,12 +20,14 @@
  ******************************************************************************/
 
 #include "LogUI.h"
-#include "SequenceParser.h"
 #include "UnitTestHelper.h"
-#include "Variable.h"
-#include "VariableRegistry.h"
+
+#include <sup/sequencer/SequenceParser.h>
+#include <sup/sequencer/Variable.h>
+#include <sup/sequencer/VariableRegistry.h>
 
 #include <common/AnyValueHelper.h>
+
 #include <gtest/gtest.h>
 
 static inline bool Terminate(void)

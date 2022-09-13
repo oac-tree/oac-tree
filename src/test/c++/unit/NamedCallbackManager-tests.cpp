@@ -19,7 +19,7 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "NamedCallbackManager.h"
+#include <sup/sequencer/NamedCallbackManager.h>
 
 #include <gtest/gtest.h>
 

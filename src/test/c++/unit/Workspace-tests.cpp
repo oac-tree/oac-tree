@@ -19,12 +19,14 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "LocalVariable.h"
-#include "SequenceParser.h"
-#include "VariableRegistry.h"
-#include "Workspace.h"
+#include <sup/sequencer/variables/LocalVariable.h>
+
+#include <sup/sequencer/SequenceParser.h>
+#include <sup/sequencer/VariableRegistry.h>
+#include <sup/sequencer/Workspace.h>
 
 #include <common/AnyValueHelper.h>
+
 #include <gtest/gtest.h>
 
 #include <algorithm>
@@ -51,8 +53,6 @@ static const std::string var2_type =
 static const std::string var3_type =
     R"RAW({"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}},{"status":{"type":"bool"}}]})RAW";
 static const std::string var3_val = R"RAW({"value":55,"status":1})RAW";
-
-// Function definition
 
 TEST_F(WorkspaceTest, DefaultConstructed)
 {

@@ -19,19 +19,20 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "Constants.h"
-#include "FileVariable.h"
-#include "Instruction.h"
-#include "InstructionRegistry.h"
-#include "LocalVariable.h"
-#include "Procedure.h"
-#include "ProcedureToTreeDataUtils.h"
-#include "Sequence.h"
-#include "TreeData.h"
-#include "Variable.h"
-#include "VariableRegistry.h"
-#include "Wait.h"
-#include "Workspace.h"
+#include <sup/sequencer/variables/FileVariable.h>
+#include <sup/sequencer/variables/LocalVariable.h>
+#include <sup/sequencer/parser/ProcedureToTreeDataUtils.h>
+#include <sup/sequencer/instructions/Sequence.h>
+#include <sup/sequencer/instructions/Wait.h>
+
+#include <sup/sequencer/Constants.h>
+#include <sup/sequencer/Instruction.h>
+#include <sup/sequencer/InstructionRegistry.h>
+#include <sup/sequencer/Procedure.h>
+#include <sup/sequencer/TreeData.h>
+#include <sup/sequencer/Variable.h>
+#include <sup/sequencer/VariableRegistry.h>
+#include <sup/sequencer/Workspace.h>
 
 #include <gtest/gtest.h>
 

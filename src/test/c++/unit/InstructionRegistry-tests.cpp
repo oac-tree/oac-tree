@@ -19,12 +19,12 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "InstructionRegistry.h"
+#include <sup/sequencer/Instruction.h>
+#include <sup/sequencer/InstructionRegistry.h>
+#include <sup/sequencer/SequenceParser.h>
 
-#include <Instruction.h>
-#include <InstructionRegistry.h>
-#include <SequenceParser.h>
 #include <common/BasicTypes.h>
+
 #include <gtest/gtest.h>
 
 #include <algorithm>

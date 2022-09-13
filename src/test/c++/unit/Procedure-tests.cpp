@@ -19,15 +19,17 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "InstructionRegistry.h"
 #include "MockUserInterface.h"
-#include "Procedure.h"
-#include "SequenceParser.h"
 #include "UnitTestHelper.h"
-#include "Variable.h"
-#include "LocalVariable.h"
-#include "VariableRegistry.h"
-#include "Wait.h"
+
+#include <sup/sequencer/variables/LocalVariable.h>
+#include <sup/sequencer/instructions/Wait.h>
+
+#include <sup/sequencer/InstructionRegistry.h>
+#include <sup/sequencer/Procedure.h>
+#include <sup/sequencer/SequenceParser.h>
+#include <sup/sequencer/Variable.h>
+#include <sup/sequencer/VariableRegistry.h>
 
 #include <gtest/gtest.h>
 

@@ -1,8 +1,11 @@
 #include "TestProcedureFactory.h"
 #include "TestUI.h"
-#include "runner/Runner.h"
+
+#include <sup/sequencer/Runner.h>
 
 #include <iostream>
+
+using namespace sup::sequencer;
 
 int main(int argc, char *argv[])
 {

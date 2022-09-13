@@ -19,7 +19,13 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
+#include "UnitTestHelper.h"
+
+#include <sup/sequencer/log.h>
+#include <sup/sequencer/Instruction.h>
+#include <sup/sequencer/InstructionRegistry.h>
+#include <sup/sequencer/Procedure.h>
+#include <sup/sequencer/UserInterface.h>
 
 #include <common/BasicTypes.h>
 #include <common/SysTools.h>
@@ -28,25 +34,10 @@
 #include <fstream>
 #include <sstream>
 
-#include "log.h"
-
-// Local header files
-
-#include "Instruction.h"
-#include "InstructionRegistry.h"
-#include "Procedure.h"
-#include "UnitTestHelper.h"
-#include "UserInterface.h"
-
-// Type declaration
-
 namespace sup
 {
 namespace UnitTestHelper
 {
-// Function declaration
-
-// Global variables
 
 static const char *ENV_TEST_RESOURCES_PATH_NAME = "TEST_RESOURCES_PATH";
 
@@ -55,8 +46,6 @@ ccs::types::uint32 CounterInstruction::counter = 0u;
 
 static bool _initialise_instruction =
     sup::sequencer::RegisterGlobalInstruction<CounterInstruction>();
-
-// Function definition
 
 ccs::types::uint32 CounterInstruction::GetCount(void)
 {
@@ -204,9 +193,3 @@ std::string GetTextFileContent(const std::string &file_name)
 }  // namespace UnitTestHelper
 
 }  // namespace sup
-
-extern "C"
-{
-  // C API function definitions
-
-}  // extern C

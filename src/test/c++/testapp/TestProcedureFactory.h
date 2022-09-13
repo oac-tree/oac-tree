@@ -1,7 +1,8 @@
+
 #ifndef TESTPROCEDUREFACTORY_H
 #define TESTPROCEDUREFACTORY_H
 
-#include "procedure/Procedure.h"
+#include <sup/sequencer/Procedure.h>
 
 #include <memory>
 
@@ -12,7 +13,7 @@ public:
 
   ~TestProcedureFactory();
 
-  std::unique_ptr<Procedure> CreateProcedure() const;
+  std::unique_ptr<sup::sequencer::Procedure> CreateProcedure() const;
 };
 
 #endif  // TESTPROCEDUREFACTORY_H

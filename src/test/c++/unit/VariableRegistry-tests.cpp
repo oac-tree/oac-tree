@@ -19,21 +19,16 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
 
-#include <gtest/gtest.h>  // Google test framework
+#include <sup/sequencer/variables/FileVariable.h>
+#include <sup/sequencer/variables/LocalVariable.h>
+
+#include <sup/sequencer/log.h>
+#include <sup/sequencer/VariableRegistry.h>
+
+#include <gtest/gtest.h>
 
 #include <algorithm>
-
-#include "log.h"  // Syslog wrapper routines
-
-// Local header files
-
-#include "FileVariable.h"
-#include "LocalVariable.h"
-#include "VariableRegistry.h"
-
-// Type definition
 
 using namespace sup::sequencer;
 
@@ -59,14 +54,8 @@ public:
   static const std::string Type;
 };
 
-// Function declaration
-
-// Global variables
-
 static const bool kLogToStdOut = (log::SetStdOut(), true);
 const std::string TestVariable::Type = "TestVariable";
-
-// Function definition
 
 TEST_F(VariableRegistryTest, DefaultConstructed)
 {

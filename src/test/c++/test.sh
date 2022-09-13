@@ -35,10 +35,4 @@ echo "***** Starting unit tests *****"
 
 echo "***** End of unit tests *****"
 
-echo "***** Starting regression tests *****"
-
-#../../../target/bin/regression-tests || retcode=$?
-
-echo "***** End of regression tests *****"
-
 exit ${retcode}

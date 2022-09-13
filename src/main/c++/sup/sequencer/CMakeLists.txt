@@ -1,0 +1,10 @@
+add_subdirectory(base)
+add_subdirectory(instructions)
+add_subdirectory(parser)
+add_subdirectory(procedure)
+add_subdirectory(runner)
+add_subdirectory(variables)
+
+if(NOT DEFINED ENV{NO_PLUGINS})
+    add_subdirectory(plugins)
+endif()

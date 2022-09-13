@@ -19,27 +19,15 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
-
-#include "log.h"
-
-// Local header files
-
-#include "Instruction.h"
 #include "LogUI.h"
 
-// Type definition
+#include <sup/sequencer/log.h>
+#include <sup/sequencer/Instruction.h>
 
 namespace sup
 {
 namespace sequencer
 {
-// Global variables
-
-// Function declaration
-
-// Function definition
-
 void LogUI::UpdateInstructionStatusImpl(const Instruction* instruction)
 {
   auto instruction_type = instruction->GetType();

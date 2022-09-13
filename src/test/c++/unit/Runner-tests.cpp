@@ -19,24 +19,19 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
 
-#include <gtest/gtest.h>  // Google test framework
+#include "MockUserInterface.h"
+#include "UnitTestHelper.h"
+
+#include <sup/sequencer/log.h>
+#include <sup/sequencer/Runner.h>
+#include <sup/sequencer/SequenceParser.h>
+
+#include <gtest/gtest.h>
 
 #include <chrono>
 #include <future>
 #include <thread>
-
-#include "log.h"  // Syslog wrapper routines
-
-// Local header files
-
-#include "MockUserInterface.h"
-#include "UnitTestHelper.h"
-#include "Runner.h"
-#include "SequenceParser.h"
-
-// Type definition
 
 using namespace sup::sequencer;
 using namespace sup::UnitTestHelper;
@@ -54,10 +49,6 @@ protected:
   std::unique_ptr<Procedure> copy_proc;
   std::unique_ptr<Procedure> async_wait_proc;
 };
-
-// Function declaration
-
-// Global variables
 
 static const bool kLogToStdOut = (log::SetStdOut(), true);
 
@@ -127,8 +118,6 @@ static const std::string AsyncWaitProcedureString =
     </ParallelSequence>
 </Procedure>
 )RAW";
-
-// Function definition
 
 using ::testing::_;
 using ::testing::AtLeast;

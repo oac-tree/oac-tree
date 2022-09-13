@@ -19,22 +19,17 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
+#include "MockUserInterface.h"
 
-#include <gtest/gtest.h>  // Google test framework
+#include <sup/sequencer/Instruction.h>
+#include <sup/sequencer/InstructionRegistry.h>
+#include <sup/sequencer/log.h>
+#include <sup/sequencer/Workspace.h>
+
+#include <gtest/gtest.h>
 
 #include <algorithm>
 
-#include "log.h"  // Syslog wrapper routines
-
-// Local header files
-
-#include "Instruction.h"
-#include "InstructionRegistry.h"
-#include "MockUserInterface.h"
-#include "Workspace.h"
-
-// Type definition
 using namespace sup::sequencer;
 
 class EmptyUserInterface : public UserInterface
@@ -55,15 +50,9 @@ protected:
   std::unique_ptr<Instruction> wait;
 };
 
-// Function declaration
-
-// Global variables
-
 static const bool kLogToStdOut = (log::SetStdOut(), true);
 
 static const std::string TREE_TYPE = "TestData";
-
-// Function definition
 
 using ::testing::_;
 using ::testing::InSequence;

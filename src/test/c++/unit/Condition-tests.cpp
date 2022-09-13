@@ -19,16 +19,19 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "Condition.h"
-#include "LocalVariable.h"
 #include "LogUI.h"
-#include "SequenceParser.h"
 #include "UnitTestHelper.h"
-#include "Workspace.h"
-#include "common/AnyType.h"
-#include "common/AnyValue.h"
-#include "common/BasicTypes.h"
-#include "common/SharedReference.h"
+
+#include <sup/sequencer/instructions/Condition.h>
+#include <sup/sequencer/variables/LocalVariable.h>
+
+#include <sup/sequencer/SequenceParser.h>
+#include <sup/sequencer/Workspace.h>
+
+#include <common/AnyType.h>
+#include <common/AnyValue.h>
+#include <common/BasicTypes.h>
+#include <common/SharedReference.h>
 
 #include <gtest/gtest.h>
 

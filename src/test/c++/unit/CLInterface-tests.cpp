@@ -19,25 +19,21 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
+#include "StdRedirectors.h"
+
+#include <CLInterface.h>
+
+#include <sup/sequencer/Instruction.h>
+#include <sup/sequencer/InstructionRegistry.h>
+#include <sup/sequencer/log.h>
 
 #include <common/CompoundType.h>
 #include <common/StringTools.h>
-#include <gtest/gtest.h>  // Google test framework
+
+#include <gtest/gtest.h>
 
 #include <memory>
 #include <sstream>
-
-#include "log.h"  // Syslog wrapper routines
-
-// Local header files
-
-#include "CLInterface.h"
-#include "Instruction.h"
-#include "InstructionRegistry.h"
-#include "StdRedirectors.h"
-
-// Type definition
 
 using namespace sup::sequencer;
 
@@ -52,13 +48,7 @@ protected:
   std::unique_ptr<Instruction> wait;
 };
 
-// Function declaration
-
-// Global variables
-
 static const bool kLogToStdOut = (log::SetStdOut(), true);
-
-// Function definition
 
 TEST_F(CLInterfaceTest, UpdateInstructionStatus)
 {

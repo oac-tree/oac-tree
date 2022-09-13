@@ -22,9 +22,11 @@
 #include "LogUI.h"
 #include "UnitTestHelper.h"
 
-#include <SequenceParser.h>
+#include <sup/sequencer/SequenceParser.h>
+
 #include <common/BasicTypes.h>
 #include <common/SysTools.h>
+
 #include <gtest/gtest.h>
 
 TEST(Include, Procedure_local)

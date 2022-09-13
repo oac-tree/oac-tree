@@ -19,21 +19,14 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
+#include <sup/sequencer/log.h>
+#include <sup/sequencer/variables/LocalVariable.h>
 
-#include <gtest/gtest.h>  // Google test framework
+#include <gtest/gtest.h>
 
 #include <algorithm>
 #include <future>
 #include <sstream>
-
-#include "log.h"  // Syslog wrapper routines
-
-// Local header files
-
-#include "LocalVariable.h"
-
-// Type definition
 
 using namespace sup::sequencer;
 

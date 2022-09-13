@@ -1,20 +1,21 @@
 #ifndef TESTUI_H
 #define TESTUI_H
 
-#include "runner/UserInterface.h"
+#include <sup/sequencer/UserInterface.h>
 
-class TestUI : public UserInterface
+class TestUI : public sup::sequencer::UserInterface
 {
 public:
   TestUI();
 
   ~TestUI() override;
 
-  void UpdateInstructionStatus(const Instruction* instruction) override;
+private:
+  void UpdateInstructionStatusImpl(const sup::sequencer::Instruction* instruction) override;
 
-  void StartSingleStep() override;
+  void StartSingleStepImpl() override;
 
-  void EndSingleStep() override;
+  void EndSingleStepImpl() override;
 };
 
 #endif  // TESTUI_H

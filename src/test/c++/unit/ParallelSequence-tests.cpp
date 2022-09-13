@@ -19,14 +19,16 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "CompoundInstruction.h"
-#include "Instruction.h"
-#include "InstructionRegistry.h"
 #include "LogUI.h"
 #include "UnitTestHelper.h"
-#include "Workspace.h"
 
-#include <SequenceParser.h>
+#include <sup/sequencer/instructions/CompoundInstruction.h>
+
+#include <sup/sequencer/Instruction.h>
+#include <sup/sequencer/InstructionRegistry.h>
+#include <sup/sequencer/SequenceParser.h>
+#include <sup/sequencer/Workspace.h>
+
 #include <gtest/gtest.h>
 
 #include <algorithm>

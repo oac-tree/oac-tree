@@ -19,19 +19,11 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
+#include <sup/sequencer/AttributeMap.h>
 
-#include <gtest/gtest.h>  // Google test framework
+#include <gtest/gtest.h>
 
 #include <algorithm>
-
-// Local header files
-
-#include "AttributeMap.h"
-
-// Constants
-
-// Type definition
 
 using namespace sup::sequencer;
 
@@ -46,16 +38,10 @@ protected:
   AttributeMap attr_map_2;
 };
 
-// Function declaration
-
-// Global variables
-
 static const std::string NAME_VALUE = "TestName";
 static const std::string DESCRIPTION_ATTRIBUTE = "Description";
 static const std::string DESCRIPTION_VALUE = "Description of this testing attribute";
 static const std::string VARIABLE_ATTRIBUTE = "MyVariable";
-
-// Function definition
 
 TEST_F(AttributeMapTest, DefaultConstructed)
 {

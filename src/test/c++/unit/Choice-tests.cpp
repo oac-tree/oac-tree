@@ -19,25 +19,26 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "Instruction.h"
-#include "InstructionRegistry.h"
-#include "LocalVariable.h"
 #include "LogUI.h"
-#include "SequenceParser.h"
 #include "UnitTestHelper.h"
-#include "Workspace.h"
-#include "common/AnyType.h"
-#include "common/AnyValue.h"
-#include "common/BasicTypes.h"
-#include "common/SharedReference.h"
+
+#include <sup/sequencer/variables/LocalVariable.h>
+
+#include <sup/sequencer/Instruction.h>
+#include <sup/sequencer/InstructionRegistry.h>
+#include <sup/sequencer/log.h>
+#include <sup/sequencer/SequenceParser.h>
+#include <sup/sequencer/Workspace.h>
+
+#include <common/AnyType.h>
+#include <common/AnyValue.h>
+#include <common/BasicTypes.h>
+#include <common/SharedReference.h>
 
 #include <gtest/gtest.h>
 
-#include "log.h"
-
 using namespace sup::sequencer;
 
-// Function definition
 static const ccs::types::char8 *testTable[][2] = {{"{\"type\":\"uint8\"}", "0"},
                                                   {"{\"type\":\"uint8\"}", "1"},
                                                   {"{\"type\":\"uint8\"}", "2"},

@@ -1,0 +1,263 @@
+/******************************************************************************
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP - Sequencer
+ *
+ * Description   : Sequencer for operational procedures
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2022 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
+
+// Global header files
+
+#include <common/AnyValueHelper.h>
+
+#include <iostream>
+#include <map>
+#include <sstream>
+
+#include <sup/sequencer/log.h>
+
+// Local header files
+
+#include "CLInterface.h"
+#include <sup/sequencer/Instruction.h>
+
+// Type definition
+
+// Global variables
+
+// Function declaration
+
+static bool ParseStringToScalarAnyvalue(::ccs::types::AnyValue &value, const std::string &str);
+
+namespace sup
+{
+namespace sequencer
+{
+// Function definition
+
+void CLInterface::UpdateInstructionStatusImpl(const Instruction *instruction)
+{
+  auto instruction_type = instruction->GetType();
+  auto instruction_name = instruction->GetName();
+  auto status = instruction->GetStatus();
+
+  if (_verbose)
+  {
+    std::cout << "Instruction: (" << instruction_type << ":" << instruction_name << ") : ";
+    std::cout << StatusToString(status) << std::endl;
+  }
+}
+
+void CLInterface::VariableUpdatedImpl(const std::string& name, const ccs::types::AnyValue& value)
+{
+  if (!_verbose)
+  {
+    return;
+  }
+  std::cout << "Variable (" << name << ") updated: ";
+  ccs::types::char8 buffer[4096] = STRING_UNDEFINED;
+  auto result = ccs::HelperTools::SerialiseToJSONStream(&value, buffer, 4096u);
+  if (result)
+  {
+    std::cout << buffer << "\n";
+  }
+  else
+  {
+    log::Warning("CLInterface::VariableUpdatedImpl() could not serialize the value");
+  }
+}
+
+bool CLInterface::PutValueImpl(const ::ccs::types::AnyValue &value, const std::string &description)
+{
+  std::cout << description << " (" << value.GetType()->GetName() << "): ";
+  ccs::types::char8 buffer[4096] = STRING_UNDEFINED;
+  auto result = ccs::HelperTools::SerialiseToJSONStream(&value, buffer, 4096u);
+  if (result)
+  {
+    std::cout << buffer << "\n";
+  }
+  else
+  {
+    log::Warning("CLInterface::PutValueImpl() could not serialize the value");
+  }
+  return result;
+}
+
+bool CLInterface::GetUserValueImpl(::ccs::types::AnyValue &value, const std::string &description)
+{
+  if (!::ccs::HelperTools::Is<::ccs::types::ScalarType>(&value))
+  {
+    log::Warning("CLInterface::GetUserValueImpl(value, '%s') only supports scalar values..",
+                description.c_str());
+    return false;
+  }
+  std::cout << description << " (" << value.GetType()->GetName() << "): ";
+  std::string input;
+  std::getline(std::cin, input);
+  bool result = ParseStringToScalarAnyvalue(value, input);
+  if (!result)
+  {
+    log::Warning("CLInterface::GetUserValueImpl(value, '%s') could not parse '%s' into value..",
+                input.c_str());
+  }
+  return result;
+}
+
+int CLInterface::GetUserChoiceImpl(const std::vector<std::string> &choices,
+                                   const std::string &description)
+{
+  std::string message = description;
+  if (message.empty())
+  {
+    message = "Select one of the following options:";
+  }
+  std::cout << message << std::endl;
+  for (int i = 0; i < choices.size(); ++i)
+  {
+    std::cout << i << ": " << choices[i] << std::endl;
+  }
+  int input = -1;
+  std::string input_str;
+  std::getline(std::cin, input_str);
+  std::istringstream istr(input_str);
+  istr >> input;
+  if (istr.fail() || input < 0 || input >= choices.size())
+  {
+    log::Warning("CLInterface::GetUserChoiceImpl() - invalid choice");
+    return -1;
+  }
+  std::cout << choices[input] << " selected" << std::endl;
+  return input;
+}
+
+void CLInterface::StartSingleStepImpl()
+{
+  if (_verbose)
+  {
+    std::cout << "Start single execution step" << std::endl;
+  }
+}
+
+void CLInterface::MessageImpl(const std::string& message)
+{
+  std::cout << message << std::endl;
+}
+
+void CLInterface::EndSingleStepImpl()
+{
+  if (_verbose)
+  {
+    std::cout << "End single execution step" << std::endl;
+  }
+}
+
+CLInterface::CLInterface(bool verbose) : _verbose{verbose} {}
+
+CLInterface::~CLInterface() = default;
+
+}  // namespace sequencer
+
+}  // namespace sup
+
+using ParseFunction = bool (*)(::ccs::types::AnyValue &value, const std::string &str);
+
+template <typename T>
+bool ParserFunctionT(::ccs::types::AnyValue &value, const std::string &str)
+{
+  std::istringstream istr(str);
+  T val;
+  istr >> val;
+  if (istr.fail())
+  {
+    sup::sequencer::log::Warning("ParseStringToScalarAnyvalue() - could not parse ('%s') in type ('%s)", str.c_str(),
+                value.GetType()->GetName());
+    return false;
+  }
+  value = val;
+  return true;
+}
+
+/**
+ * @todo Extend possible input values: currently only 'true' or 'false'. Possible alternatives
+ * are integers (zero is false), case insensitive true/false, yes/no, etc.
+ */
+template <>
+bool ParserFunctionT<::ccs::types::boolean>(::ccs::types::AnyValue &value, const std::string &str)
+{
+  std::istringstream istr(str);
+  ::ccs::types::boolean val;
+  istr >> std::boolalpha >> val;
+  if (istr.fail())
+  {
+    sup::sequencer::log::Warning("ParseStringToScalarAnyvalue() - could not parse ('%s') in type ('%s)", str.c_str(),
+                value.GetType()->GetName());
+    return false;
+  }
+  value = val;
+  return true;
+}
+
+template <>
+bool ParserFunctionT<::ccs::types::string>(::ccs::types::AnyValue &value, const std::string &str)
+{
+  ::ccs::types::string buffer;
+  ::ccs::HelperTools::SafeStringCopy(buffer, str.c_str(), 64);
+  value = buffer;
+  return true;
+}
+
+static std::map<std::string, ParseFunction> CreateParserMap()
+{
+  std::map<std::string, ParseFunction> parser_map;
+  parser_map["bool"] = ParserFunctionT<::ccs::types::boolean>;
+  parser_map["char8"] = ParserFunctionT<::ccs::types::char8>;
+  parser_map["int8"] = ParserFunctionT<::ccs::types::int8>;
+  parser_map["uint8"] = ParserFunctionT<::ccs::types::uint8>;
+  parser_map["int16"] = ParserFunctionT<::ccs::types::int16>;
+  parser_map["uint16"] = ParserFunctionT<::ccs::types::uint16>;
+  parser_map["int32"] = ParserFunctionT<::ccs::types::int32>;
+  parser_map["uint32"] = ParserFunctionT<::ccs::types::uint32>;
+  parser_map["uint64"] = ParserFunctionT<::ccs::types::uint64>;
+  parser_map["float32"] = ParserFunctionT<::ccs::types::float32>;
+  parser_map["float64"] = ParserFunctionT<::ccs::types::float64>;
+  parser_map["string"] = ParserFunctionT<::ccs::types::string>;
+  return parser_map;
+}
+
+static std::map<std::string, ParseFunction> &GetParserMap()
+{
+  static std::map<std::string, ParseFunction> parser_map = CreateParserMap();
+  return parser_map;
+}
+
+static bool ParseStringToScalarAnyvalue(::ccs::types::AnyValue &value, const std::string &str)
+{
+  std::string type_name = value.GetType()->GetName();
+
+  auto &parser_map = GetParserMap();
+  if (parser_map.find(type_name) == parser_map.end())
+  {
+    return false;
+  }
+  auto parse_function = parser_map[type_name];
+  return parse_function(value, str);
+}
+
+extern "C"
+{
+  // C API function definitions
+
+}  // extern C

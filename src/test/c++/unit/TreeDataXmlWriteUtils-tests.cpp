@@ -19,9 +19,11 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "TreeData.h"
-#include "TreeDataXmlWriteUtils.h"
 #include "UnitTestHelper.h"
+
+#include <sup/sequencer/parser/TreeDataXmlWriteUtils.h>
+
+#include <sup/sequencer/TreeData.h>
 
 #include <gtest/gtest.h>
 
@@ -32,7 +34,6 @@ class TreeDataXmlWriteUilsTest : public ::testing::Test
 };
 
 //! Write a single element.
-
 TEST_F(TreeDataXmlWriteUilsTest, WriteElement)
 {
   TreeData tree_data("Element");
@@ -52,7 +53,6 @@ TEST_F(TreeDataXmlWriteUilsTest, WriteElement)
 }
 
 //! Write a single element with attribute.
-
 TEST_F(TreeDataXmlWriteUilsTest, WriteElementWithAttribute)
 {
   TreeData tree_data("Element");
@@ -73,7 +73,6 @@ TEST_F(TreeDataXmlWriteUilsTest, WriteElementWithAttribute)
 }
 
 //! Write a single element with attribute.
-
 TEST_F(TreeDataXmlWriteUilsTest, WriteElementWithTwoAttributes)
 {
   TreeData tree_data("Element");
@@ -95,7 +94,6 @@ TEST_F(TreeDataXmlWriteUilsTest, WriteElementWithTwoAttributes)
 }
 
 //! Write a single element with content defined.
-
 TEST_F(TreeDataXmlWriteUilsTest, WriteElementContent)
 {
   TreeData tree_data("Element");
@@ -116,7 +114,6 @@ TEST_F(TreeDataXmlWriteUilsTest, WriteElementContent)
 }
 
 //! Write a single element with attribute and content defined.
-
 TEST_F(TreeDataXmlWriteUilsTest, WriteElementAttributeAndContent)
 {
   TreeData tree_data("Element");
@@ -138,7 +135,6 @@ TEST_F(TreeDataXmlWriteUilsTest, WriteElementAttributeAndContent)
 }
 
 //! Write a single element with attribute and content defined.
-
 TEST_F(TreeDataXmlWriteUilsTest, WriteElementWithChildren)
 {
   TreeData tree_data("Element");
@@ -163,7 +159,6 @@ TEST_F(TreeDataXmlWriteUilsTest, WriteElementWithChildren)
 }
 
 //! Write a single element with attribute and content defined.
-
 TEST_F(TreeDataXmlWriteUilsTest, WriteItemData)
 {
   TreeData tree_data("ItemData");

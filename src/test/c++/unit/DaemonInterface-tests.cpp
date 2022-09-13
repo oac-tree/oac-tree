@@ -19,26 +19,20 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
+#include <DaemonInterface.h>
+
+#include <sup/sequencer/log.h>
+#include <sup/sequencer/Instruction.h>
+#include <sup/sequencer/InstructionRegistry.h>
 
 #include <common/CompoundType.h>
 #include <common/StringTools.h>
-#include <gtest/gtest.h>  // Google test framework
+#include <gtest/gtest.h>
 
 #include <memory>
 #include <sstream>
 
-#include "log.h"  // Syslog wrapper routines
-
-// Local header files
-
-#include "DaemonInterface.h"
-#include "Instruction.h"
-#include "InstructionRegistry.h"
-
 static std::ostringstream out_stream;
-
-// Type definition
 
 using namespace sup::sequencer;
 
@@ -54,14 +48,8 @@ protected:
   ccs::log::Func_t old_cb;
 };
 
-// Function declaration
-
 static void log_cb(ccs::log::Severity_t severity, const ccs::types::char8* const source,
                    const ccs::types::char8* const message, va_list args);
-
-// Global variables
-
-// Function definition
 
 TEST_F(DaemonInterfaceTest, UpdateInstructionStatus)
 {

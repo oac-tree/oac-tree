@@ -19,27 +19,14 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
+#include <sup/sequencer/log.h>
+#include <sup/sequencer/ExecutionStatus.h>
 
-#include <gtest/gtest.h>  // Google test framework
+#include <gtest/gtest.h>
 
 #include <set>
 
-#include "log.h"  // Syslog wrapper routines
-
-// Local header files
-
-#include "ExecutionStatus.h"
-
-// Type definition
-
 using namespace sup::sequencer;
-
-// Function declaration
-
-// Global variables
-
-// Function definition
 
 TEST(ExecutionStatus, EnumeratorStrings)
 {

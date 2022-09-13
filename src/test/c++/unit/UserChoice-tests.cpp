@@ -21,8 +21,10 @@
 
 #include "UnitTestHelper.h"
 
-#include <SequenceParser.h>
+#include <sup/sequencer/SequenceParser.h>
+
 #include <common/BasicTypes.h>
+
 #include <gtest/gtest.h>
 
 TEST(UserChoice, GetUserChoice)

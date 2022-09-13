@@ -31,15 +31,7 @@
 #ifndef _SEQ_LogUI_h_
 #define _SEQ_LogUI_h_
 
-// Global header files
-
-// Local header files
-
-#include "UserInterface.h"
-
-// Constants
-
-// Type definition
+#include <sup/sequencer/UserInterface.h>
 
 #ifdef __cplusplus
 
@@ -73,12 +65,6 @@ public:
    */
   ~LogUI() override;
 };
-
-// Global variables
-
-// Function declarations
-
-// Function definitions
 
 }  // namespace sequencer
 

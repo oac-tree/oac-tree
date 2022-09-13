@@ -20,10 +20,12 @@
  ******************************************************************************/
 
 #include "UnitTestHelper.h"
-#include "UserInterface.h"
 
-#include <SequenceParser.h>
+#include <sup/sequencer/UserInterface.h>
+#include <sup/sequencer/SequenceParser.h>
+
 #include <common/BasicTypes.h>
+
 #include <gtest/gtest.h>
 
 TEST(Input, GetUserValue_success)

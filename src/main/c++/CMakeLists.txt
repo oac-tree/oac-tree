@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.5)
+
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -9,95 +11,96 @@ if(CMAKE_VERSION VERSION_LESS "3.7.0")
     set(CMAKE_INCLUDE_CURRENT_DIR ON)
 endif()
 
-add_library(sequencer-obj OBJECT)
-set_property(TARGET sequencer-obj PROPERTY POSITION_INDEPENDENT_CODE 1)
-
 add_executable(sequencer-cli)
 
 add_executable(sequencer-daemon)
 
-add_library(sequencer-shared SHARED)
-add_library(sequencer-static STATIC)
+add_library(sup-sequencer-obj OBJECT)
+set_property(TARGET sup-sequencer-obj PROPERTY POSITION_INDEPENDENT_CODE 1)
+
+add_library(sup-sequencer-shared SHARED)
+add_library(sup-sequencer-static STATIC)
 
 find_package(LibXml2 REQUIRED)
 
-add_subdirectory(include)
-add_subdirectory(base)
-add_subdirectory(parser)
-add_subdirectory(runner)
-add_subdirectory(procedure)
-add_subdirectory(instructions)
-add_subdirectory(variables)
-add_subdirectory(cli)
-add_subdirectory(daemon)
+add_subdirectory(sup)
 
-if(NOT DEFINED ENV{NO_PLUGINS})
-    add_subdirectory(plugins)
-endif()
+target_include_directories(sup-sequencer-obj
+    PRIVATE
+        ${LIBXML2_INCLUDE_DIR}
+        $ENV{CODAC_ROOT}/include
+    PUBLIC
+        ${CMAKE_CURRENT_LIST_DIR}
+)
 
-target_include_directories(sequencer-obj
-    PRIVATE ${LIBXML2_INCLUDE_DIR}
-    PRIVATE $ENV{CODAC_ROOT}/include
-    )
-
-set_target_properties(sequencer-shared PROPERTIES
+set_target_properties(sup-sequencer-shared PROPERTIES
     VERSION ${LIBVERSION}
     SOVERSION ${LIBSOVERSION}
     OUTPUT_NAME sequencer
 )
 
-target_link_directories(sequencer-shared
+target_link_directories(sup-sequencer-shared
     PUBLIC $ENV{CODAC_ROOT}/lib
-    )
+)
 
-target_link_libraries(sequencer-shared
+target_link_libraries(sup-sequencer-shared
     PRIVATE
         ${LIBXML2_LIBRARIES}
     PUBLIC
-        sequencer-obj
+        sup-sequencer-obj
         ccs-core
-    )
+)
 
-set_target_properties(sequencer-static PROPERTIES
+set_target_properties(sup-sequencer-static PROPERTIES
     OUTPUT_NAME sequencer
 )
 
-target_link_directories(sequencer-static
+target_link_directories(sup-sequencer-static
     PUBLIC $ENV{CODAC_ROOT}/lib
     )
 
-target_link_libraries(sequencer-static
+target_link_libraries(sup-sequencer-static
     PRIVATE
         ${LIBXML2_LIBRARIES}
     PUBLIC
-        sequencer-obj
-    )
+        sup-sequencer-obj
+)
 
 target_include_directories(sequencer-cli
-    PRIVATE $ENV{CODAC_ROOT}/include
-    )
-
-target_link_directories(sequencer-cli
-    PRIVATE $ENV{CODAC_ROOT}/lib
-    )
+    PRIVATE
+        $ENV{CODAC_ROOT}/include
+)
 
 target_link_libraries(sequencer-cli
     PRIVATE
-        sequencer-shared
-    )
+        sup-sequencer-shared
+)
 
 target_include_directories(sequencer-daemon
-    PRIVATE $ENV{CODAC_ROOT}/include
-    )
-
-target_link_directories(sequencer-daemon
-    PRIVATE $ENV{CODAC_ROOT}/lib
-    )
+    PRIVATE
+        $ENV{CODAC_ROOT}/include
+)
 
 target_link_libraries(sequencer-daemon
     PRIVATE
-        sequencer-shared
-    )
+        sup-sequencer-shared
+)
 
-install(DIRECTORY include/ DESTINATION include
-    FILES_MATCHING PATTERN "*.h")
+install(FILES
+        sup/sequencer/AttributeMap.h
+        sup/sequencer/Constants.h
+        sup/sequencer/ExecutionStatus.h
+        sup/sequencer/Instruction.h
+        sup/sequencer/InstructionRegistry.h
+        sup/sequencer/log.h
+        sup/sequencer/NamedCallbackManager.h
+        sup/sequencer/Procedure.h
+        sup/sequencer/Runner.h
+        sup/sequencer/SequenceParser.h
+        sup/sequencer/TreeData.h
+        sup/sequencer/UserInterface.h
+        sup/sequencer/Variable.h
+        sup/sequencer/VariableRegistry.h
+        sup/sequencer/Workspace.h
+        DESTINATION include/sup/sequencer
+)

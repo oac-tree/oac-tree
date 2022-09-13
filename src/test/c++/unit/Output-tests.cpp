@@ -19,16 +19,14 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
-
-#include <SequenceParser.h>
-#include <common/BasicTypes.h>
-#include <gtest/gtest.h>
-
-// Local header files
-
 #include "UnitTestHelper.h"
-#include "UserInterface.h"
+
+#include <sup/sequencer/SequenceParser.h>
+#include <sup/sequencer/UserInterface.h>
+
+#include <common/BasicTypes.h>
+
+#include <gtest/gtest.h>
 
 //! Testing Output instruction.
 class OutputTest : public ::testing::Test

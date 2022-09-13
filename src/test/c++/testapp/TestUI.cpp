@@ -1,12 +1,17 @@
+
 #include "TestUI.h"
 
+#include <sup/sequencer/Instruction.h>
+
 #include <iostream>
+
+using namespace sup::sequencer;
 
 TestUI::TestUI() = default;
 
 TestUI::~TestUI() = default;
 
-void TestUI::UpdateInstructionStatus(const Instruction* instruction)
+void TestUI::UpdateInstructionStatusImpl(const Instruction* instruction)
 {
   auto instruction_type = instruction->GetType();
   auto status = instruction->GetStatus();
@@ -15,12 +20,12 @@ void TestUI::UpdateInstructionStatus(const Instruction* instruction)
   std::cout << StatusToString(status) << std::endl;
 }
 
-void TestUI::StartSingleStep()
+void TestUI::StartSingleStepImpl()
 {
   std::cout << "Start single execution step" << std::endl;
 }
 
-void TestUI::EndSingleStep()
+void TestUI::EndSingleStepImpl()
 {
   std::cout << "End single execution step" << std::endl;
 }

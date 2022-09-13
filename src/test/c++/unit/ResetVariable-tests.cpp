@@ -19,12 +19,13 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "ExecutionStatus.h"
-#include "InstructionRegistry.h"
 #include "LogUI.h"
 #include "UnitTestHelper.h"
 
-#include <SequenceParser.h>
+#include <sup/sequencer/ExecutionStatus.h>
+#include <sup/sequencer/InstructionRegistry.h>
+#include <sup/sequencer/SequenceParser.h>
+
 #include <gtest/gtest.h>
 
 using namespace sup::sequencer;

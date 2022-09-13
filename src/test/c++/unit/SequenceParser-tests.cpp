@@ -19,12 +19,15 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "InstructionRegistry.h"
-#include "Sequence.h"
-#include "SequenceParser.h"
 #include "UnitTestHelper.h"
 
+#include <sup/sequencer/instructions/Sequence.h>
+
+#include <sup/sequencer/InstructionRegistry.h>
+#include <sup/sequencer/SequenceParser.h>
+
 #include <common/AnyValue.h>
+
 #include <gtest/gtest.h>
 
 class SequencerParserTest : public ::testing::Test
@@ -89,7 +92,7 @@ TEST_F(SequencerParserTest, IncorrectRoot)
           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
     <Wait name="Immediate Success"/>
     <Wait name="One" timeout="1.0"/>
-</Sequence>  
+</Sequence>
 )RAW";
 
   auto proc = ::sup::sequencer::ParseProcedureString(body);

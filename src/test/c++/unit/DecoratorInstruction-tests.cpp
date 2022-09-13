@@ -19,16 +19,18 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "DecoratorInstruction.h"
-#include "InstructionRegistry.h"
 #include "LogUI.h"
 #include "UnitTestHelper.h"
-#include "Wait.h"
 
-#include <Instruction.h>
-#include <InstructionRegistry.h>
-#include <SequenceParser.h>
+#include <sup/sequencer/instructions/DecoratorInstruction.h>
+#include <sup/sequencer/instructions/Wait.h>
+
+#include <sup/sequencer/Instruction.h>
+#include <sup/sequencer/InstructionRegistry.h>
+#include <sup/sequencer/SequenceParser.h>
+
 #include <common/BasicTypes.h>
+
 #include <gtest/gtest.h>
 
 using namespace sup::sequencer;

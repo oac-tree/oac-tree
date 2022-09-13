@@ -31,21 +31,12 @@
 #ifndef _SEQ_MockUserInterface_h_
 #define _SEQ_MockUserInterface_h_
 
-// Global header files
+#include <sup/sequencer/Instruction.h>
+#include <sup/sequencer/UserInterface.h>
 
 #include <gmock/gmock.h>
+
 #include <cstring>
-
-// Local header files
-
-#include "Instruction.h"
-#include "UserInterface.h"
-
-// Constants
-
-// Type definition
-
-#ifdef __cplusplus
 
 namespace sup
 {
@@ -84,24 +75,8 @@ MATCHER_P(HasSameValue, value, "")
   return (std::memcmp(arg.GetInstance(), value.GetInstance(), arg.GetSize()) == 0);
 }
 
-// Global variables
-
-// Function declarations
-
-// Function definitions
-
 }  // namespace sequencer
 
 }  // namespace sup
-
-extern "C"
-{
-#endif  // __cplusplus
-
-  // C API function declarations
-
-#ifdef __cplusplus
-}  // extern C
-#endif  // __cplusplus
 
 #endif  // _SEQ_MockUserInterface_h_

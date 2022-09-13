@@ -19,12 +19,14 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <SequenceParser.h>
-#include <common/BasicTypes.h>
-#include <gtest/gtest.h>
-
 #include "UnitTestHelper.h"
-#include "UserInterface.h"
+
+#include <sup/sequencer/SequenceParser.h>
+#include <sup/sequencer/UserInterface.h>
+
+#include <common/BasicTypes.h>
+
+#include <gtest/gtest.h>
 
 //! Testing Listen instruction.
 class ListenTest : public ::testing::Test

@@ -19,15 +19,6 @@
  * of the distribution package.
  ******************************************************************************/
 
-/**
- * @file Log.h
- * @brief Header file for logging.
- * @date 27/10/2021
- * @author Walter Van Herck (IO)
- * @copyright 2010-2022 ITER Organization
- * @details This header file contains the definition of the logging functions.
- */
-
 #ifndef SUP_SEQUENCER_LOG_H_
 #define SUP_SEQUENCER_LOG_H_
 

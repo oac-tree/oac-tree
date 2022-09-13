@@ -19,46 +19,24 @@
  * of the distribution package.
  ******************************************************************************/
 
-/**
- * @file VariableRegistry.h
- * @brief Header file for the VariableRegistry class.
- * @date 12/02/2021
- * @author Walter Van Herck (IO)
- * @copyright 2010-2022 ITER Organization
- * @details This header file contains the definition of the VariableRegistry class.
- */
-
-#ifndef _SEQ_VariableRegistry_h_
-#define _SEQ_VariableRegistry_h_
-
-// Global header files
+#ifndef SUP_SEQUENCER_VARIABLE_REGISTRY_H_
+#define SUP_SEQUENCER_VARIABLE_REGISTRY_H_
 
 #include <map>
 #include <memory>
 #include <string>
 #include <vector>
 
-// Local header files
-
-// Constants
-
-#ifdef __cplusplus
-
 namespace sup
 {
 namespace sequencer
 {
-// Forward declarations
-
 class Variable;
-
-// Type definition
 
 /**
  * @brief Registry holding a mapping between Variable names and
  * their constructors.
  */
-
 class VariableRegistry
 {
 private:
@@ -100,13 +78,7 @@ public:
   std::vector<std::string> RegisteredVariableNames() const;
 };
 
-// Global variables
-
-// Function declarations
-
 VariableRegistry &GlobalVariableRegistry();
-
-// Function definitions
 
 /**
  * @brief Template function for registering variables to a registry.
@@ -173,14 +145,4 @@ bool RegisterGlobalVariable()
 
 }  // namespace sup
 
-extern "C"
-{
-#endif  // __cplusplus
-
-  // C API function declarations
-
-#ifdef __cplusplus
-}  // extern C
-#endif  // __cplusplus
-
-#endif  // _SEQ_VariableRegistry_h_
+#endif  // SUP_SEQUENCER_VARIABLE_REGISTRY_H_

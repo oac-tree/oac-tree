@@ -24,8 +24,8 @@
 #include "UnitTestHelper.h"
 
 #include <sup/sequencer/log.h>
-#include <sup/sequencer/Runner.h>
-#include <sup/sequencer/SequenceParser.h>
+#include <sup/sequencer/runner.h>
+#include <sup/sequencer/sequence_parser.h>
 
 #include <gtest/gtest.h>
 

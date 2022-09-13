@@ -20,7 +20,7 @@
  ******************************************************************************/
 
 #include "Listen.h"
-#include <sup/sequencer/Constants.h>
+#include <sup/sequencer/constants.h>
 
 #include <chrono>
 #include <cstring>

@@ -26,7 +26,7 @@
 // Local header files
 
 #include "UserChoice.h"
-#include <sup/sequencer/UserInterface.h>
+#include <sup/sequencer/user_interface.h>
 
 // Type definition
 

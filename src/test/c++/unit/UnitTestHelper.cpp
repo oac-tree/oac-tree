@@ -22,10 +22,10 @@
 #include "UnitTestHelper.h"
 
 #include <sup/sequencer/log.h>
-#include <sup/sequencer/Instruction.h>
-#include <sup/sequencer/InstructionRegistry.h>
-#include <sup/sequencer/Procedure.h>
-#include <sup/sequencer/UserInterface.h>
+#include <sup/sequencer/instruction.h>
+#include <sup/sequencer/instruction_registry.h>
+#include <sup/sequencer/procedure.h>
+#include <sup/sequencer/user_interface.h>
 
 #include <common/BasicTypes.h>
 #include <common/SysTools.h>

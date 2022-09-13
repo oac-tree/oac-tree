@@ -87,20 +87,20 @@ target_link_libraries(sequencer-daemon
 )
 
 install(FILES
-        sup/sequencer/AttributeMap.h
-        sup/sequencer/Constants.h
-        sup/sequencer/ExecutionStatus.h
-        sup/sequencer/Instruction.h
-        sup/sequencer/InstructionRegistry.h
+        sup/sequencer/attribute_map.h
+        sup/sequencer/constants.h
+        sup/sequencer/execution_status.h
+        sup/sequencer/instruction.h
+        sup/sequencer/instruction_registry.h
         sup/sequencer/log.h
-        sup/sequencer/NamedCallbackManager.h
-        sup/sequencer/Procedure.h
-        sup/sequencer/Runner.h
-        sup/sequencer/SequenceParser.h
-        sup/sequencer/TreeData.h
-        sup/sequencer/UserInterface.h
-        sup/sequencer/Variable.h
-        sup/sequencer/VariableRegistry.h
-        sup/sequencer/Workspace.h
+        sup/sequencer/named_callback_manager.h
+        sup/sequencer/procedure.h
+        sup/sequencer/runner.h
+        sup/sequencer/sequence_parser.h
+        sup/sequencer/tree_data.h
+        sup/sequencer/user_interface.h
+        sup/sequencer/variable.h
+        sup/sequencer/variable_registry.h
+        sup/sequencer/workspace.h
         DESTINATION include/sup/sequencer
 )

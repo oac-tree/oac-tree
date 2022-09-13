@@ -22,8 +22,8 @@
 #include <DaemonInterface.h>
 
 #include <sup/sequencer/log.h>
-#include <sup/sequencer/Instruction.h>
-#include <sup/sequencer/InstructionRegistry.h>
+#include <sup/sequencer/instruction.h>
+#include <sup/sequencer/instruction_registry.h>
 
 #include <common/CompoundType.h>
 #include <common/StringTools.h>

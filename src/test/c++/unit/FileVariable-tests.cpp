@@ -22,9 +22,9 @@
 #include "LogUI.h"
 #include "UnitTestHelper.h"
 
-#include <sup/sequencer/SequenceParser.h>
-#include <sup/sequencer/Variable.h>
-#include <sup/sequencer/VariableRegistry.h>
+#include <sup/sequencer/sequence_parser.h>
+#include <sup/sequencer/variable.h>
+#include <sup/sequencer/variable_registry.h>
 
 #include <common/AnyValueHelper.h>
 

@@ -20,7 +20,7 @@
  ******************************************************************************/
 
 #include <sup/sequencer/log.h>
-#include <sup/sequencer/TreeData.h>
+#include <sup/sequencer/tree_data.h>
 
 #include <gtest/gtest.h>
 

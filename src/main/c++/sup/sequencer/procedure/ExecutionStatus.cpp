@@ -19,7 +19,7 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <sup/sequencer/ExecutionStatus.h>
+#include <sup/sequencer/execution_status.h>
 
 #include <sup/sequencer/log.h>
 

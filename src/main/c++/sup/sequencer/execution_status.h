@@ -19,17 +19,8 @@
  * of the distribution package.
  ******************************************************************************/
 
-/**
- * @file ExecutionStatus.h
- * @brief Header file for ExecutionStatus class.
- * @date 20/11/2020
- * @author Walter Van Herck (IO)
- * @copyright 2010-2022 ITER Organization
- * @details This header file contains the definition of the ExecutionStatus class.
- */
-
-#ifndef _SEQ_ExecutionStatus_h_
-#define _SEQ_ExecutionStatus_h_
+#ifndef SUP_SEQUENCER_EXECUTION_STATUS_H_
+#define SUP_SEQUENCER_EXECUTION_STATUS_H_
 
 #include <string>
 
@@ -70,4 +61,4 @@ bool NeedsExecute(const ExecutionStatus& status);
 
 }  // namespace sup
 
-#endif  // _SEQ_ExecutionStatus_h_
+#endif  // SUP_SEQUENCER_EXECUTION_STATUS_H_

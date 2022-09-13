@@ -20,7 +20,7 @@
  ******************************************************************************/
 
 #include <sup/sequencer/log.h>
-#include <sup/sequencer/ExecutionStatus.h>
+#include <sup/sequencer/execution_status.h>
 
 #include <gtest/gtest.h>
 

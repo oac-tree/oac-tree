@@ -19,19 +19,8 @@
  * of the distribution package.
  ******************************************************************************/
 
-/**
- * @file UserInterface.h
- * @brief Header file for UserInterface class.
- * @date 20/11/2020
- * @author Walter Van Herck (IO)
- * @copyright 2010-2022 ITER Organization
- * @details This header file contains the definition of the UserInterface class.
- */
-
-#ifndef _SEQ_UserInterface_h_
-#define _SEQ_UserInterface_h_
-
-// Global header files
+#ifndef SUP_SEQUENCER_USER_INTERFACE_H_
+#define SUP_SEQUENCER_USER_INTERFACE_H_
 
 #include <common/AnyValue.h>
 
@@ -39,21 +28,11 @@
 #include <string>
 #include <vector>
 
-// Local header files
-
-// Constants
-
-#ifdef __cplusplus
-
 namespace sup
 {
 namespace sequencer
 {
-// Forward declarations
-
 class Instruction;
-
-// Type definition
 
 /**
  * @brief Interface representing user interactions.
@@ -209,24 +188,8 @@ public:
   void Message(const std::string& message);
 };
 
-// Global variables
-
-// Function declarations
-
-// Function definitions
-
 }  // namespace sequencer
 
 }  // namespace sup
 
-extern "C"
-{
-#endif  // __cplusplus
-
-  // C API function declarations
-
-#ifdef __cplusplus
-}  // extern C
-#endif  // __cplusplus
-
-#endif  // _SEQ_UserInterface_h_
+#endif  // SUP_SEQUENCER_USER_INTERFACE_H_

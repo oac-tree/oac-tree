@@ -26,8 +26,8 @@
 // Local header files
 
 #include "Input.h"
-#include <sup/sequencer/UserInterface.h>
-#include <sup/sequencer/Workspace.h>
+#include <sup/sequencer/user_interface.h>
+#include <sup/sequencer/workspace.h>
 
 // Type definition
 

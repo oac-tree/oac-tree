@@ -25,11 +25,11 @@
 #include <sup/sequencer/variables/LocalVariable.h>
 #include <sup/sequencer/instructions/Wait.h>
 
-#include <sup/sequencer/InstructionRegistry.h>
-#include <sup/sequencer/Procedure.h>
-#include <sup/sequencer/SequenceParser.h>
-#include <sup/sequencer/Variable.h>
-#include <sup/sequencer/VariableRegistry.h>
+#include <sup/sequencer/instruction_registry.h>
+#include <sup/sequencer/procedure.h>
+#include <sup/sequencer/sequence_parser.h>
+#include <sup/sequencer/variable.h>
+#include <sup/sequencer/variable_registry.h>
 
 #include <gtest/gtest.h>
 

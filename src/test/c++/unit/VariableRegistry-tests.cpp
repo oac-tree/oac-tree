@@ -24,7 +24,7 @@
 #include <sup/sequencer/variables/LocalVariable.h>
 
 #include <sup/sequencer/log.h>
-#include <sup/sequencer/VariableRegistry.h>
+#include <sup/sequencer/variable_registry.h>
 
 #include <gtest/gtest.h>
 

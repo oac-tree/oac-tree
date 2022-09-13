@@ -32,7 +32,7 @@
 #define _SEQ_Listen_h_
 
 #include "DecoratorInstruction.h"
-#include <sup/sequencer/Workspace.h>
+#include <sup/sequencer/workspace.h>
 
 #include <condition_variable>
 #include <map>

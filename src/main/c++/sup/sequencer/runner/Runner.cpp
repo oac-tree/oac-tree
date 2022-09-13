@@ -28,10 +28,10 @@
 
 // Local header files
 
-#include <sup/sequencer/Constants.h>
-#include <sup/sequencer/Procedure.h>
-#include <sup/sequencer/Runner.h>
-#include <sup/sequencer/UserInterface.h>
+#include <sup/sequencer/constants.h>
+#include <sup/sequencer/procedure.h>
+#include <sup/sequencer/runner.h>
+#include <sup/sequencer/user_interface.h>
 
 // Type definition
 

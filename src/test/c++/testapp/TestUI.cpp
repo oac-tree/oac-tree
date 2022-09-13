@@ -1,7 +1,7 @@
 
 #include "TestUI.h"
 
-#include <sup/sequencer/Instruction.h>
+#include <sup/sequencer/instruction.h>
 
 #include <iostream>
 

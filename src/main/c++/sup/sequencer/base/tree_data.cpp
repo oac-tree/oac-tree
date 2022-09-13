@@ -19,25 +19,14 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
+#include <sup/sequencer/tree_data.h>
 
 #include <sup/sequencer/log.h>
-
-// Local header files
-
-#include <sup/sequencer/TreeData.h>
-
-// Type definition
 
 namespace sup
 {
 namespace sequencer
 {
-// Global variables
-
-// Function declaration
-
-// Function definition
 
 TreeData::TreeData(const std::string& type) : _type{type} {}
 
@@ -139,9 +128,3 @@ std::string TreeData::GetContent() const
 }  // namespace sequencer
 
 }  // namespace sup
-
-extern "C"
-{
-  // C API function definitions
-
-}  // extern C

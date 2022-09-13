@@ -35,8 +35,8 @@
 #include "ForceSuccess.h"
 #include "Include.h"
 #include "Input.h"
-#include <sup/sequencer/Instruction.h>
-#include <sup/sequencer/InstructionRegistry.h>
+#include <sup/sequencer/instruction.h>
+#include <sup/sequencer/instruction_registry.h>
 #include "Inverter.h"
 #include "Listen.h"
 #include "Message.h"

@@ -31,11 +31,11 @@
 #ifndef _SEQ_UnitTestHelper_h_
 #define _SEQ_UnitTestHelper_h_
 
-#include <sup/sequencer/ExecutionStatus.h>
-#include <sup/sequencer/Instruction.h>
-#include <sup/sequencer/Procedure.h>
-#include <sup/sequencer/UserInterface.h>
-#include <sup/sequencer/Workspace.h>
+#include <sup/sequencer/execution_status.h>
+#include <sup/sequencer/instruction.h>
+#include <sup/sequencer/procedure.h>
+#include <sup/sequencer/user_interface.h>
+#include <sup/sequencer/workspace.h>
 
 #include <string>
 

@@ -30,7 +30,7 @@
 // Local header files
 
 #include "Condition.h"
-#include <sup/sequencer/Workspace.h>
+#include <sup/sequencer/workspace.h>
 
 // Type definition
 

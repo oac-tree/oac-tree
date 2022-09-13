@@ -19,40 +19,19 @@
  * of the distribution package.
  ******************************************************************************/
 
-/**
- * @file InstructionRegistry.h
- * @brief Header file for the InstructionRegistry class.
- * @date 20/11/2020
- * @author Walter Van Herck (IO)
- * @copyright 2010-2022 ITER Organization
- * @details This header file contains the definition of the InstructionRegistry class.
- */
-
-#ifndef _SEQ_InstructionRegistry_h_
-#define _SEQ_InstructionRegistry_h_
-
-// Global header files
+#ifndef SUP_SEQUENCER_INSTRUCTION_REGISTRY_H_
+#define SUP_SEQUENCER_INSTRUCTION_REGISTRY_H_
 
 #include <map>
 #include <memory>
 #include <string>
 #include <vector>
 
-// Local header files
-
-// Constants
-
-#ifdef __cplusplus
-
 namespace sup
 {
 namespace sequencer
 {
-// Forward declarations
-
 class Instruction;
-
-// Type definition
 
 /**
  * @brief Registry holding a mapping between Instruction names and
@@ -100,13 +79,7 @@ public:
   std::vector<std::string> RegisteredInstructionNames() const;
 };
 
-// Global variables
-
-// Function declarations
-
 InstructionRegistry &GlobalInstructionRegistry();
-
-// Function definitions
 
 /**
  * @brief Template function for registering instructions to a registry.
@@ -173,14 +146,4 @@ bool RegisterGlobalInstruction()
 
 }  // namespace sup
 
-extern "C"
-{
-#endif  // __cplusplus
-
-  // C API function declarations
-
-#ifdef __cplusplus
-}  // extern C
-#endif  // __cplusplus
-
-#endif  // _SEQ_InstructionRegistry_h_
+#endif  // SUP_SEQUENCER_INSTRUCTION_REGISTRY_H_

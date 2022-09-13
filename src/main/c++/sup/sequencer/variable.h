@@ -19,35 +19,16 @@
  * of the distribution package.
  ******************************************************************************/
 
-/**
- * @file Variable.h
- * @brief Header file for Variable interface.
- * @date 20/11/2020
- * @author Walter Van Herck (IO)
- * @copyright 2010-2022 ITER Organization
- * @details This header file contains the definition of the Variable interface.
- */
+#ifndef SUP_SEQUENCER_VARIABLE_H_
+#define SUP_SEQUENCER_VARIABLE_H_
 
-#ifndef _SEQ_Variable_h_
-#define _SEQ_Variable_h_
-
-// Global header files
+#include <sup/sequencer/attribute_map.h>
 
 #include <common/AnyValue.h>
 
 #include <condition_variable>
 #include <functional>
 #include <mutex>
-
-// Local header files
-
-#include <sup/sequencer/AttributeMap.h>
-
-// Constants
-
-// Type definition
-
-#ifdef __cplusplus
 
 namespace sup
 {
@@ -259,24 +240,8 @@ public:
   bool AddAttributes(const AttributeMap& attributes);
 };
 
-// Global variables
-
-// Function declarations
-
-// Function definitions
-
 }  // namespace sequencer
 
 }  // namespace sup
 
-extern "C"
-{
-#endif  // __cplusplus
-
-  // C API function declarations
-
-#ifdef __cplusplus
-}  // extern C
-#endif  // __cplusplus
-
-#endif  // _SEQ_Variable_h_
+#endif  // SUP_SEQUENCER_VARIABLE_H_

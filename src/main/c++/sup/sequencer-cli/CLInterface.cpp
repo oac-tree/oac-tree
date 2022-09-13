@@ -32,7 +32,7 @@
 // Local header files
 
 #include "CLInterface.h"
-#include <sup/sequencer/Instruction.h>
+#include <sup/sequencer/instruction.h>
 
 // Type definition
 

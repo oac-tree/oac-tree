@@ -2,7 +2,7 @@
 #ifndef TESTPROCEDUREFACTORY_H
 #define TESTPROCEDUREFACTORY_H
 
-#include <sup/sequencer/Procedure.h>
+#include <sup/sequencer/procedure.h>
 
 #include <memory>
 

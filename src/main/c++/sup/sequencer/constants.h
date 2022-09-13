@@ -19,38 +19,15 @@
  * of the distribution package.
  ******************************************************************************/
 
-/**
- * @file Constants.h
- * @brief Header file for globally defined constants and default settings.
- * @date 16/03/2021
- * @author Walter Van Herck (IO)
- * @copyright 2010-2022 ITER Organization
- * @details This header file contains the definition of globally defined constants and default
- * settings.
- */
-
-#ifndef _SEQ_Constants_h_
-#define _SEQ_Constants_h_
-
-// Global header files
+#ifndef SUP_SEQUENCER_CONSTANTS_H_
+#define SUP_SEQUENCER_CONSTANTS_H_
 
 #include <string>
-// Local header files
-
-// Constants
-
-#ifdef __cplusplus
 
 namespace sup
 {
 namespace sequencer
 {
-// Forward declarations
-
-// Type definition
-
-// Global variables
-
 namespace DefaultSettings
 {
 /**
@@ -105,22 +82,8 @@ static const std::string REGISTERTYPE_ELEMENT_NAME = "RegisterType";
 
 } // namespace Constants
 
-// Function declarations
-
-// Function definitions
-
 }  // namespace sequencer
 
 }  // namespace sup
 
-extern "C"
-{
-#endif  // __cplusplus
-
-  // C API function declarations
-
-#ifdef __cplusplus
-}  // extern C
-#endif  // __cplusplus
-
-#endif  // _SEQ_Constants_h_
+#endif  // SUP_SEQUENCER_CONSTANTS_H_

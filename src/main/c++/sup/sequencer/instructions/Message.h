@@ -31,7 +31,7 @@
 #ifndef _SEQ_Message_h_
 #define _SEQ_Message_h_
 
-#include <sup/sequencer/Instruction.h>
+#include <sup/sequencer/instruction.h>
 
 namespace sup
 {

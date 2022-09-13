@@ -19,23 +19,14 @@
  * of the distribution package.
  ******************************************************************************/
 
-/**
- * @file Instruction.h
- * @brief Header file for Instruction interface.
- * @date 20/11/2020
- * @author Walter Van Herck (IO)
- * @copyright 2010-2022 ITER Organization
- * @details This header file contains the definition of the Instruction interface.
- */
-
-#ifndef _SEQ_Instruction_h_
-#define _SEQ_Instruction_h_
+#ifndef SUP_SEQUENCER_INSTRUCTION_H_
+#define SUP_SEQUENCER_INSTRUCTION_H_
 
 #include <atomic>
 #include <mutex>
 
-#include <sup/sequencer/AttributeMap.h>
-#include <sup/sequencer/ExecutionStatus.h>
+#include <sup/sequencer/attribute_map.h>
+#include <sup/sequencer/execution_status.h>
 
 namespace sup
 {
@@ -384,4 +375,4 @@ public:
 
 }  // namespace sup
 
-#endif  // _SEQ_Instruction_h_
+#endif  // SUP_SEQUENCER_INSTRUCTION_H_

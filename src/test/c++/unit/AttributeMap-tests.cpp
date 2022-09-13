@@ -19,7 +19,7 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <sup/sequencer/AttributeMap.h>
+#include <sup/sequencer/attribute_map.h>
 
 #include <gtest/gtest.h>
 

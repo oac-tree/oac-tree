@@ -37,7 +37,7 @@
 
 // Local header files
 
-#include <sup/sequencer/Variable.h>
+#include <sup/sequencer/variable.h>
 
 // Constants
 

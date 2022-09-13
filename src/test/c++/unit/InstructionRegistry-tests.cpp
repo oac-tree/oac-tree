@@ -19,9 +19,9 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <sup/sequencer/Instruction.h>
-#include <sup/sequencer/InstructionRegistry.h>
-#include <sup/sequencer/SequenceParser.h>
+#include <sup/sequencer/instruction.h>
+#include <sup/sequencer/instruction_registry.h>
+#include <sup/sequencer/sequence_parser.h>
 
 #include <common/BasicTypes.h>
 

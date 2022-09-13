@@ -25,14 +25,14 @@
 #include <sup/sequencer/instructions/Sequence.h>
 #include <sup/sequencer/instructions/Wait.h>
 
-#include <sup/sequencer/Constants.h>
-#include <sup/sequencer/Instruction.h>
-#include <sup/sequencer/InstructionRegistry.h>
-#include <sup/sequencer/Procedure.h>
-#include <sup/sequencer/TreeData.h>
-#include <sup/sequencer/Variable.h>
-#include <sup/sequencer/VariableRegistry.h>
-#include <sup/sequencer/Workspace.h>
+#include <sup/sequencer/constants.h>
+#include <sup/sequencer/instruction.h>
+#include <sup/sequencer/instruction_registry.h>
+#include <sup/sequencer/procedure.h>
+#include <sup/sequencer/tree_data.h>
+#include <sup/sequencer/variable.h>
+#include <sup/sequencer/variable_registry.h>
+#include <sup/sequencer/workspace.h>
 
 #include <gtest/gtest.h>
 

@@ -21,8 +21,8 @@
 
 #include "UnitTestHelper.h"
 
-#include <sup/sequencer/UserInterface.h>
-#include <sup/sequencer/SequenceParser.h>
+#include <sup/sequencer/user_interface.h>
+#include <sup/sequencer/sequence_parser.h>
 
 #include <common/BasicTypes.h>
 

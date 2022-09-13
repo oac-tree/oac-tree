@@ -19,38 +19,19 @@
  * of the distribution package.
  ******************************************************************************/
 
-/**
- * @file TreeData.h
- * @brief Header file for TreeData class.
- * @date 01/02/2021
- * @author Walter Van Herck (IO)
- * @copyright 2010-2022 ITER Organization
- * @details This header file contains the definition of the TreeData class.
- */
+#ifndef SUP_SEQUENCER_TREE_DATA_H_
+#define SUP_SEQUENCER_TREE_DATA_H_
 
-#ifndef _SEQ_TreeData_h_
-#define _SEQ_TreeData_h_
-
-// Global header files
+#include <sup/sequencer/attribute_map.h>
 
 #include <string>
 #include <utility>
 #include <vector>
 
-// Local header files
-
-#include <sup/sequencer/AttributeMap.h>
-
-// Constants
-
-#ifdef __cplusplus
-
 namespace sup
 {
 namespace sequencer
 {
-// Type definition
-
 /**
  * @brief Data representation of an XML tree.
  */
@@ -211,24 +192,8 @@ public:
   std::string GetContent() const;
 };
 
-// Global variables
-
-// Function declarations
-
-// Function definitions
-
 }  // namespace sequencer
 
 }  // namespace sup
 
-extern "C"
-{
-#endif  // __cplusplus
-
-  // C API function declarations
-
-#ifdef __cplusplus
-}  // extern C
-#endif  // __cplusplus
-
-#endif  // _SEQ_TreeData_h_
+#endif  // SUP_SEQUENCER_TREE_DATA_H_

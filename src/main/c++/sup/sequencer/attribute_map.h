@@ -19,17 +19,8 @@
  * of the distribution package.
  ******************************************************************************/
 
-/**
- * @file AttributeMap.h
- * @brief Header file for AttributeMap class.
- * @date 09/02/2021
- * @author Walter Van Herck (IO)
- * @copyright 2010-2022 ITER Organization
- * @details This header file contains the definition of the AttributeMap class.
- */
-
-#ifndef _SEQ_AttributeMap_h_
-#define _SEQ_AttributeMap_h_
+#ifndef SUP_SEQUENCER_ATTRIBUTE_MAP_H_
+#define SUP_SEQUENCER_ATTRIBUTE_MAP_H_
 
 #include <map>
 #include <string>
@@ -177,4 +168,4 @@ public:
 
 }  // namespace sup
 
-#endif  // _SEQ_AttributeMap_h_
+#endif  // SUP_SEQUENCER_ATTRIBUTE_MAP_H_

@@ -31,8 +31,8 @@
 #ifndef _SEQ_MockUserInterface_h_
 #define _SEQ_MockUserInterface_h_
 
-#include <sup/sequencer/Instruction.h>
-#include <sup/sequencer/UserInterface.h>
+#include <sup/sequencer/instruction.h>
+#include <sup/sequencer/user_interface.h>
 
 #include <gmock/gmock.h>
 

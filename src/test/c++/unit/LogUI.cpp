@@ -22,7 +22,7 @@
 #include "LogUI.h"
 
 #include <sup/sequencer/log.h>
-#include <sup/sequencer/Instruction.h>
+#include <sup/sequencer/instruction.h>
 
 namespace sup
 {

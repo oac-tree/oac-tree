@@ -22,7 +22,7 @@
 #ifndef _SEQ_ResetVariable_h_
 #define _SEQ_ResetVariable_h_
 
-#include <sup/sequencer/Instruction.h>
+#include <sup/sequencer/instruction.h>
 
 namespace sup
 {

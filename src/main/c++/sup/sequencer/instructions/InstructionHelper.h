@@ -35,7 +35,7 @@
 
 // Local header files
 
-#include <sup/sequencer/Instruction.h>
+#include <sup/sequencer/instruction.h>
 
 // Constants
 

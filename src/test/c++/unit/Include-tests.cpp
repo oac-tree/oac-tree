@@ -22,7 +22,7 @@
 #include "LogUI.h"
 #include "UnitTestHelper.h"
 
-#include <sup/sequencer/SequenceParser.h>
+#include <sup/sequencer/sequence_parser.h>
 
 #include <common/BasicTypes.h>
 #include <common/SysTools.h>

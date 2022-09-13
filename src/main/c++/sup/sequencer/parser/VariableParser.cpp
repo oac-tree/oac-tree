@@ -22,7 +22,7 @@
 #include "VariableParser.h"
 
 #include <sup/sequencer/log.h>
-#include <sup/sequencer/VariableRegistry.h>
+#include <sup/sequencer/variable_registry.h>
 
 #include <common/AnyTypeHelper.h>
 #include <common/AnyValueHelper.h>

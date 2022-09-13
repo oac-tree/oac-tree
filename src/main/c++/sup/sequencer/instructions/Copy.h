@@ -39,7 +39,7 @@
 
 // Type definition
 
-#include <sup/sequencer/Instruction.h>
+#include <sup/sequencer/instruction.h>
 
 #ifdef __cplusplus
 

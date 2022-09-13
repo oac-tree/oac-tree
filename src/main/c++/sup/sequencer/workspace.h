@@ -19,26 +19,17 @@
  * of the distribution package.
  ******************************************************************************/
 
-/**
- * @file Workspace.h
- * @brief Header file for Workspace class.
- * @date 14/12/20
- * @author Walter Van Herck (IO)
- * @copyright 2010-2022 ITER Organization
- * @details This header file contains the definition of the Workspace class.
- */
+#ifndef SUP_SEQUENCER_WORKSPACE_H_
+#define SUP_SEQUENCER_WORKSPACE_H_
 
-#ifndef _SEQ_Workspace_h_
-#define _SEQ_Workspace_h_
+#include "named_callback_manager.h"
+#include "variable.h"
+
+#include <common/AnyValue.h>
 
 #include <map>
 #include <memory>
 #include <vector>
-
-#include <common/AnyValue.h>
-
-#include <sup/sequencer/Variable.h>
-#include "NamedCallbackManager.h"
 
 namespace sup
 {
@@ -198,4 +189,4 @@ public:
 
 }  // namespace sup
 
-#endif  // _SEQ_Workspace_h_
+#endif  // SUP_SEQUENCER_WORKSPACE_H_

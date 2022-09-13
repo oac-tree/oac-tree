@@ -29,8 +29,8 @@
 
 #include "FileVariable.h"
 #include "LocalVariable.h"
-#include <sup/sequencer/Variable.h>
-#include <sup/sequencer/VariableRegistry.h>
+#include <sup/sequencer/variable.h>
+#include <sup/sequencer/variable_registry.h>
 
 // Type definition
 

@@ -22,8 +22,8 @@
 #include "Choice.h"
 
 #include <sup/sequencer/log.h>
-#include <sup/sequencer/Procedure.h>
-#include <sup/sequencer/Workspace.h>
+#include <sup/sequencer/procedure.h>
+#include <sup/sequencer/workspace.h>
 
 #include <common/AnyType.h>
 

@@ -19,7 +19,7 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <sup/sequencer/Workspace.h>
+#include <sup/sequencer/workspace.h>
 
 #include <algorithm>
 #include <utility>

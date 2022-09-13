@@ -37,8 +37,8 @@
 
 // Local header files
 
-#include <sup/sequencer/Procedure.h>
-#include <sup/sequencer/TreeData.h>
+#include <sup/sequencer/procedure.h>
+#include <sup/sequencer/tree_data.h>
 
 // Constants
 

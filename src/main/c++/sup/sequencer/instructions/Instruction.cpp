@@ -19,9 +19,9 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <sup/sequencer/Instruction.h>
+#include <sup/sequencer/instruction.h>
 #include <sup/sequencer/log.h>
-#include <sup/sequencer/UserInterface.h>
+#include <sup/sequencer/user_interface.h>
 
 namespace sup
 {

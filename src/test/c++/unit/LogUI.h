@@ -31,7 +31,7 @@
 #ifndef _SEQ_LogUI_h_
 #define _SEQ_LogUI_h_
 
-#include <sup/sequencer/UserInterface.h>
+#include <sup/sequencer/user_interface.h>
 
 #ifdef __cplusplus
 

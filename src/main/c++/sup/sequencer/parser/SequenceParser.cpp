@@ -28,7 +28,7 @@
 // Local header files
 
 #include "ProcedureParser.h"
-#include <sup/sequencer/SequenceParser.h>
+#include <sup/sequencer/sequence_parser.h>
 #include "SequenceParserImpl.h"
 #include "TreeDataXmlWriteUtils.h"
 #include "ProcedureToTreeDataUtils.h"

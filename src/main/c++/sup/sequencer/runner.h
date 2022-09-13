@@ -19,17 +19,8 @@
  * of the distribution package.
  ******************************************************************************/
 
-/**
- * @file Runner.h
- * @brief Header file for Runner class.
- * @date 20/11/2020
- * @author Walter Van Herck (IO)
- * @copyright 2010-2022 ITER Organization
- * @details This header file contains the definition of the Runner class.
- */
-
-#ifndef _SEQ_Runner_h_
-#define _SEQ_Runner_h_
+#ifndef SUP_SEQUENCER_RUNNER_H_
+#define SUP_SEQUENCER_RUNNER_H_
 
 #include <atomic>
 
@@ -102,14 +93,8 @@ public:
   bool IsRunning() const;
 };
 
-// Global variables
-
-// Function declarations
-
-// Function definitions
-
 }  // namespace sequencer
 
 }  // namespace sup
 
-#endif  // _SEQ_Runner_h_
+#endif  // SUP_SEQUENCER_RUNNER_H_

@@ -38,8 +38,8 @@
 
 // Local header files
 
-#include <sup/sequencer/TreeData.h>
-#include <sup/sequencer/Variable.h>
+#include <sup/sequencer/tree_data.h>
+#include <sup/sequencer/variable.h>
 
 // Constants
 

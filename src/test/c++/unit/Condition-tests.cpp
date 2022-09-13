@@ -25,8 +25,8 @@
 #include <sup/sequencer/instructions/Condition.h>
 #include <sup/sequencer/variables/LocalVariable.h>
 
-#include <sup/sequencer/SequenceParser.h>
-#include <sup/sequencer/Workspace.h>
+#include <sup/sequencer/sequence_parser.h>
+#include <sup/sequencer/workspace.h>
 
 #include <common/AnyType.h>
 #include <common/AnyValue.h>

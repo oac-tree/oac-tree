@@ -1,7 +1,7 @@
 #ifndef TESTUI_H
 #define TESTUI_H
 
-#include <sup/sequencer/UserInterface.h>
+#include <sup/sequencer/user_interface.h>
 
 class TestUI : public sup::sequencer::UserInterface
 {

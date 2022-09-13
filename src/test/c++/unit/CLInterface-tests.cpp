@@ -23,8 +23,8 @@
 
 #include <CLInterface.h>
 
-#include <sup/sequencer/Instruction.h>
-#include <sup/sequencer/InstructionRegistry.h>
+#include <sup/sequencer/instruction.h>
+#include <sup/sequencer/instruction_registry.h>
 #include <sup/sequencer/log.h>
 
 #include <common/CompoundType.h>

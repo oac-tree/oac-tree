@@ -19,17 +19,8 @@
  * of the distribution package.
  ******************************************************************************/
 
-/**
- * @file NamedCallbackManager.h
- * @brief Definition of NamedCallbackManager template class.
- * @date 03/02/22
- * @author Walter Van Herck (IO)
- * @copyright 2010-2022 ITER Organization
- * @details This header file contains the definition of the NamedCallbackManager template class.
- */
-
-#ifndef _SEQ_NamedCallbackManager_h_
-#define _SEQ_NamedCallbackManager_h_
+#ifndef SUP_SEQUENCER_NAMED_CALLBACK_MANAGER_H_
+#define SUP_SEQUENCER_NAMED_CALLBACK_MANAGER_H_
 
 #include <algorithm>
 #include <functional>
@@ -225,4 +216,4 @@ CallbackGuard<NamedCallbackManager<Args...>> NamedCallbackManager<Args...>::GetC
 
 }  // namespace sup
 
-#endif  // _SEQ_NamedCallbackManager_h_
+#endif  // SUP_SEQUENCER_NAMED_CALLBACK_MANAGER_H_

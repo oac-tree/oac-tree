@@ -21,7 +21,7 @@
 
 #include "ResetVariable.h"
 
-#include <sup/sequencer/Workspace.h>
+#include <sup/sequencer/workspace.h>
 
 namespace sup
 {

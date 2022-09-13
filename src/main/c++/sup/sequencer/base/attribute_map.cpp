@@ -19,8 +19,9 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <sup/sequencer/AttributeMap.h>
-#include <sup/sequencer/Constants.h>
+#include <sup/sequencer/attribute_map.h>
+
+#include <sup/sequencer/constants.h>
 #include <sup/sequencer/log.h>
 
 #include <algorithm>

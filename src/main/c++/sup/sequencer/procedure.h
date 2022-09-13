@@ -19,31 +19,17 @@
  * of the distribution package.
  ******************************************************************************/
 
-/**
- * @file Procedure.h
- * @brief Header file for Procedure class.
- * @date 20/11/2020
- * @author Walter Van Herck (IO)
- * @copyright 2010-2022 ITER Organization
- * @details This header file contains the definition of the Procedure class.
- */
+#ifndef SUP_SEQUENCER_PROCEDURE_H_
+#define SUP_SEQUENCER_PROCEDURE_H_
 
-#ifndef _SEQ_Procedure_h_
-#define _SEQ_Procedure_h_
-
-// Global header files
+#include <sup/sequencer/attribute_map.h>
+#include <sup/sequencer/execution_status.h>
 
 #include <functional>
 #include <map>
 #include <memory>
 #include <string>
 #include <vector>
-
-// Local header files
-
-#include <sup/sequencer/AttributeMap.h>
-#include <sup/sequencer/ExecutionStatus.h>
-
 namespace ccs
 {
 namespace types
@@ -52,22 +38,15 @@ class AnyValue;
 }
 }  // namespace ccs
 
-// Constants
-
-#ifdef __cplusplus
-
 namespace sup
 {
 namespace sequencer
 {
-// Forward declarations
 
 class Instruction;
 class UserInterface;
 class Variable;
 class Workspace;
-
-// Type definition
 
 /**
  * @brief Procedure contains a tree of instructions
@@ -317,24 +296,8 @@ public:
   static const std::string TICK_TIMEOUT_ATTRIBUTE_NAME;
 };
 
-// Global variables
-
-// Function declarations
-
-// Function definitions
-
 }  // namespace sequencer
 
 }  // namespace sup
 
-extern "C"
-{
-#endif  // __cplusplus
-
-  // C API function declarations
-
-#ifdef __cplusplus
-}  // extern C
-#endif  // __cplusplus
-
-#endif  // _SEQ_Procedure_h_
+#endif  // SUP_SEQUENCER_PROCEDURE_H_

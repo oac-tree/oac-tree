@@ -25,7 +25,7 @@
 
 // Local header files
 
-#include <sup/sequencer/UserInterface.h>
+#include <sup/sequencer/user_interface.h>
 
 // Type definition
 

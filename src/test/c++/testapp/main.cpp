@@ -1,7 +1,7 @@
 #include "TestProcedureFactory.h"
 #include "TestUI.h"
 
-#include <sup/sequencer/Runner.h>
+#include <sup/sequencer/runner.h>
 
 #include <iostream>
 

@@ -24,10 +24,10 @@
 
 #include <sup/sequencer/instructions/CompoundInstruction.h>
 
-#include <sup/sequencer/Instruction.h>
-#include <sup/sequencer/InstructionRegistry.h>
-#include <sup/sequencer/SequenceParser.h>
-#include <sup/sequencer/Workspace.h>
+#include <sup/sequencer/instruction.h>
+#include <sup/sequencer/instruction_registry.h>
+#include <sup/sequencer/sequence_parser.h>
+#include <sup/sequencer/workspace.h>
 
 #include <gtest/gtest.h>
 

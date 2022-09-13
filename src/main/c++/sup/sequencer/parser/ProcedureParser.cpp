@@ -24,9 +24,9 @@
 #include "InstructionParser.h"
 #include "VariableParser.h"
 
-#include <sup/sequencer/Constants.h>
+#include <sup/sequencer/constants.h>
 #include <sup/sequencer/log.h>
-#include <sup/sequencer/SequenceParser.h>
+#include <sup/sequencer/sequence_parser.h>
 
 #include <common/AnyTypeDatabase.h>
 

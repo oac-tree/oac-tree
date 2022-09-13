@@ -31,7 +31,7 @@
 
 // Local header files
 
-#include <sup/sequencer/Constants.h>
+#include <sup/sequencer/constants.h>
 #include "Wait.h"
 
 // Type definition

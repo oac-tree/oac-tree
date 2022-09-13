@@ -21,9 +21,9 @@
 
 #include <sup/sequencer/variables/LocalVariable.h>
 
-#include <sup/sequencer/SequenceParser.h>
-#include <sup/sequencer/VariableRegistry.h>
-#include <sup/sequencer/Workspace.h>
+#include <sup/sequencer/sequence_parser.h>
+#include <sup/sequencer/variable_registry.h>
+#include <sup/sequencer/workspace.h>
 
 #include <common/AnyValueHelper.h>
 

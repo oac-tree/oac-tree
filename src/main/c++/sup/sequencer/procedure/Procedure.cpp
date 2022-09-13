@@ -26,10 +26,10 @@
 
 // Local header files
 
-#include <sup/sequencer/Procedure.h>
+#include <sup/sequencer/procedure.h>
 #include "Sequence.h"
-#include <sup/sequencer/SequenceParser.h>
-#include <sup/sequencer/Workspace.h>
+#include <sup/sequencer/sequence_parser.h>
+#include <sup/sequencer/workspace.h>
 
 namespace sup
 {

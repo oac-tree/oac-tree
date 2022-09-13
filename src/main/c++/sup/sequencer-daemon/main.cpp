@@ -30,8 +30,8 @@
 // Local header files
 
 #include "DaemonInterface.h"
-#include <sup/sequencer/Runner.h>
-#include <sup/sequencer/SequenceParser.h>
+#include <sup/sequencer/runner.h>
+#include <sup/sequencer/sequence_parser.h>
 
 // Type definition
 

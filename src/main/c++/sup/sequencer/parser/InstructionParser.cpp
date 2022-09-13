@@ -28,7 +28,7 @@
 #include "DecoratorInstruction.h"
 #include "Include.h"
 #include "InstructionParser.h"
-#include <sup/sequencer/InstructionRegistry.h>
+#include <sup/sequencer/instruction_registry.h>
 
 // Type definition
 

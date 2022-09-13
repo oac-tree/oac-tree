@@ -26,8 +26,8 @@
 // Local header files
 
 #include "CompoundInstruction.h"
-#include <sup/sequencer/Constants.h>
-#include <sup/sequencer/InstructionRegistry.h>
+#include <sup/sequencer/constants.h>
+#include <sup/sequencer/instruction_registry.h>
 
 #include "DecoratorInstruction.h"
 #include "Include.h"

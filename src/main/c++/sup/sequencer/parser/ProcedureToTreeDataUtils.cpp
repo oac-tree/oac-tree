@@ -21,13 +21,13 @@
 
 #include "ProcedureToTreeDataUtils.h"
 
-#include <sup/sequencer/AttributeMap.h>
-#include <sup/sequencer/Constants.h>
-#include <sup/sequencer/Instruction.h>
-#include <sup/sequencer/Procedure.h>
-#include <sup/sequencer/TreeData.h>
-#include <sup/sequencer/Variable.h>
-#include <sup/sequencer/Workspace.h>
+#include <sup/sequencer/attribute_map.h>
+#include <sup/sequencer/constants.h>
+#include <sup/sequencer/instruction.h>
+#include <sup/sequencer/procedure.h>
+#include <sup/sequencer/tree_data.h>
+#include <sup/sequencer/variable.h>
+#include <sup/sequencer/workspace.h>
 
 #include <set>
 

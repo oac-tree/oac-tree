@@ -26,7 +26,7 @@
 // Local header files
 
 #include "DaemonInterface.h"
-#include <sup/sequencer/Instruction.h>
+#include <sup/sequencer/instruction.h>
 
 // Type definition
 

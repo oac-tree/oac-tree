@@ -21,10 +21,10 @@
 
 #include <sup/sequencer/instructions/Message.h>
 
-#include <sup/sequencer/InstructionRegistry.h>
-#include <sup/sequencer/Procedure.h>
-#include <sup/sequencer/UserInterface.h>
-#include <sup/sequencer/Workspace.h>
+#include <sup/sequencer/instruction_registry.h>
+#include <sup/sequencer/procedure.h>
+#include <sup/sequencer/user_interface.h>
+#include <sup/sequencer/workspace.h>
 
 #include <gtest/gtest.h>
 

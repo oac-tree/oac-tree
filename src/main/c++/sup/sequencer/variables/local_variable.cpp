@@ -27,7 +27,7 @@
 
 // Local header files
 
-#include "LocalVariable.h"
+#include "local_variable.h"
 
 // Type definition
 

@@ -22,7 +22,7 @@
 #include "MockUserInterface.h"
 #include "UnitTestHelper.h"
 
-#include <sup/sequencer/variables/LocalVariable.h>
+#include <sup/sequencer/variables/local_variable.h>
 #include <sup/sequencer/instructions/Wait.h>
 
 #include <sup/sequencer/instruction_registry.h>

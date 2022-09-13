@@ -23,7 +23,7 @@
 #include "UnitTestHelper.h"
 
 #include <sup/sequencer/instructions/Condition.h>
-#include <sup/sequencer/variables/LocalVariable.h>
+#include <sup/sequencer/variables/local_variable.h>
 
 #include <sup/sequencer/sequence_parser.h>
 #include <sup/sequencer/workspace.h>

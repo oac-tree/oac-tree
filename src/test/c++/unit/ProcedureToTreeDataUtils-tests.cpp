@@ -19,8 +19,8 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <sup/sequencer/variables/FileVariable.h>
-#include <sup/sequencer/variables/LocalVariable.h>
+#include <sup/sequencer/variables/file_variable.h>
+#include <sup/sequencer/variables/local_variable.h>
 #include <sup/sequencer/parser/ProcedureToTreeDataUtils.h>
 #include <sup/sequencer/instructions/Sequence.h>
 #include <sup/sequencer/instructions/Wait.h>

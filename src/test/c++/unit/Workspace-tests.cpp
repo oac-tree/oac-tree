@@ -19,7 +19,7 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <sup/sequencer/variables/LocalVariable.h>
+#include <sup/sequencer/variables/local_variable.h>
 
 #include <sup/sequencer/sequence_parser.h>
 #include <sup/sequencer/variable_registry.h>

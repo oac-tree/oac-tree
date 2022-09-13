@@ -19,31 +19,12 @@
  * of the distribution package.
  ******************************************************************************/
 
-/**
- * @file LocalVariable.h
- * @brief Header file for LocalVariable class.
- * @date 11/12/2020
- * @author Walter Van Herck (IO)
- * @copyright 2010-2022 ITER Organization
- * @details This header file contains the definition of the LocalVariable class.
- */
-
-#ifndef _SEQ_LocalVariable_h_
-#define _SEQ_LocalVariable_h_
-
-// Global header files
-
-#include <memory>
-
-// Local header files
+#ifndef SUP_SEQUENCER_LOCAL_VARIABLE_H_
+#define SUP_SEQUENCER_LOCAL_VARIABLE_H_
 
 #include <sup/sequencer/variable.h>
 
-// Constants
-
-// Type definition
-
-#ifdef __cplusplus
+#include <memory>
 
 namespace sup
 {
@@ -58,7 +39,6 @@ namespace sequencer
  * query an zero-initialized value and that this allows for triggering instruction
  * execution on availability of a workspace variable.
  */
-
 class LocalVariable : public Variable
 {
 private:
@@ -99,24 +79,8 @@ public:
   static const std::string JSON_VALUE;
 };
 
-// Global variables
-
-// Function declarations
-
-// Function definitions
-
 }  // namespace sequencer
 
 }  // namespace sup
 
-extern "C"
-{
-#endif  // __cplusplus
-
-  // C API function declarations
-
-#ifdef __cplusplus
-}  // extern C
-#endif  // __cplusplus
-
-#endif  // _SEQ_LocalVariable_h_
+#endif  // SUP_SEQUENCER_LOCAL_VARIABLE_H_

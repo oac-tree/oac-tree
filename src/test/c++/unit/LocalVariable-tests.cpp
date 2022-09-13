@@ -20,7 +20,7 @@
  ******************************************************************************/
 
 #include <sup/sequencer/log.h>
-#include <sup/sequencer/variables/LocalVariable.h>
+#include <sup/sequencer/variables/local_variable.h>
 
 #include <gtest/gtest.h>
 

@@ -20,8 +20,8 @@
  ******************************************************************************/
 
 
-#include <sup/sequencer/variables/FileVariable.h>
-#include <sup/sequencer/variables/LocalVariable.h>
+#include <sup/sequencer/variables/file_variable.h>
+#include <sup/sequencer/variables/local_variable.h>
 
 #include <sup/sequencer/log.h>
 #include <sup/sequencer/variable_registry.h>

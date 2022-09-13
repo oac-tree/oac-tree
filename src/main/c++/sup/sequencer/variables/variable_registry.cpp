@@ -27,8 +27,8 @@
 
 // Local header files
 
-#include "FileVariable.h"
-#include "LocalVariable.h"
+#include "file_variable.h"
+#include "local_variable.h"
 #include <sup/sequencer/variable.h>
 #include <sup/sequencer/variable_registry.h>
 

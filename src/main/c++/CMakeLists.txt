@@ -1,7 +1,3 @@
-cmake_minimum_required(VERSION 3.5)
-
-project(Sequencer LANGUAGES CXX)
-
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -103,9 +99,5 @@ target_link_libraries(sequencer-daemon
         sequencer-shared
     )
 
-install(TARGETS sequencer-cli DESTINATION bin)
-install(TARGETS sequencer-daemon DESTINATION bin)
-install(TARGETS sequencer-shared DESTINATION lib)
-install(TARGETS sequencer-static DESTINATION lib)
 install(DIRECTORY include/ DESTINATION include
     FILES_MATCHING PATTERN "*.h")

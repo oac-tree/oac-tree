@@ -69,6 +69,6 @@ target_link_libraries(unit-tests
         GTest::GTest
         GTest::Main
         gmock
-        sequencer
+        sequencer-shared
         ccs-core
     )

@@ -21,33 +21,34 @@
 
 #include "daemon_interface.h"
 
+#include <sup/sequencer/generic_utils.h>
 #include <sup/sequencer/log.h>
 #include <sup/sequencer/runner.h>
 #include <sup/sequencer/sequence_parser.h>
 
-#include <common/SysTools.h>
-
 #include <iostream>
+#include <string>
+#include <string.h>
 
 struct DaemonParams
 {
   bool print_usage;
-  char filepath[PATH_MAX_LENGTH];
+  std::string filepath;
   bool logging;
   int exit_code;
 };
+
+static const std::string kProgramName = "sequencer-daemon";
 
 DaemonParams ParseCommandLineArgs(int argc, char* argv[]);
 bool IsHelpOption(const char* option);
 bool IsFileOption(const char* option);
 bool IsLogOption(const char* option);
+bool IsEqualCString(const char* lhs, const char* rhs);
 
 void print_usage()
 {
-  char prog_name[STRING_MAX_LENGTH] = STRING_UNDEFINED;
-  ccs::HelperTools::GetProcessName(prog_name);
-
-  std::cout << "Usage: " << prog_name << " <options>" << std::endl;
+  std::cout << "Usage: " << kProgramName << " <options>" << std::endl;
   std::cout << "Options: -h|--help: Print usage." << std::endl;
   std::cout << "         -f|--file <filename>: Load, parse and execute <filename>." << std::endl;
   std::cout << "         -l|--logging: Enable logging." << std::endl;
@@ -69,31 +70,31 @@ int main(int argc, char* argv[])
     return params.exit_code;
   }
 
-  if (ccs::HelperTools::StringCompare(params.filepath, STRING_UNDEFINED))
+  if (params.filepath.empty())
   {
     sup::sequencer::log::Warning("sequencer-daemon called without filename");
     return 1;
   }
 
-  sup::sequencer::log::Debug("sequencer-daemon called with filename: %s", params.filepath);
+  sup::sequencer::log::Debug("sequencer-daemon called with filename: %s", params.filepath.c_str());
 
-  if (!ccs::HelperTools::Exist(params.filepath))
+  if (!sup::sequencer::utils::FileExists(params.filepath))
   {
-    sup::sequencer::log::Error("sequencer-daemon: file not found <%s>", params.filepath);
+    sup::sequencer::log::Error("sequencer-daemon: file not found <%s>", params.filepath.c_str());
     return 1;
   }
 
   auto proc = sup::sequencer::ParseProcedureFile(params.filepath);
   if (!proc)
   {
-    sup::sequencer::log::Error("sequencer-daemon couldn't parse file <%s>", params.filepath);
+    sup::sequencer::log::Error("sequencer-daemon couldn't parse file <%s>", params.filepath.c_str());
     return 1;
   }
 
   if (!proc->Setup())
   {
     sup::sequencer::log::Error("sequencer-daemon couldn't setup the parsed procedure from file: <%s>",
-              params.filepath);
+              params.filepath.c_str());
     return 1;
   }
 
@@ -107,7 +108,7 @@ int main(int argc, char* argv[])
 
 DaemonParams ParseCommandLineArgs(int argc, char* argv[])
 {
-  DaemonParams result = {false, STRING_UNDEFINED, false, 0};
+  DaemonParams result = {false, "", false, 0};
   if (argc <= 1)
   {
     result.print_usage = true;
@@ -127,8 +128,10 @@ DaemonParams ParseCommandLineArgs(int argc, char* argv[])
         result.print_usage = true;
         result.exit_code = 1;
       }
-      ccs::HelperTools::SafeStringCopy(result.filepath, argv[index + 1], PATH_MAX_LENGTH);
-      index += 1;
+      else
+      {
+        result.filepath = argv[++index];
+      }
     }
     else if (IsLogOption(argv[index]))
     {
@@ -146,21 +149,23 @@ DaemonParams ParseCommandLineArgs(int argc, char* argv[])
 
 bool IsHelpOption(const char* option)
 {
-  bool result = ccs::HelperTools::StringCompare(option, "-h")
-                || ccs::HelperTools::StringCompare(option, "--help");
+  bool result = IsEqualCString(option, "-h") || IsEqualCString(option, "--help");
   return result;
 }
 
 bool IsFileOption(const char* option)
 {
-  bool result = ccs::HelperTools::StringCompare(option, "-f")
-                || ccs::HelperTools::StringCompare(option, "--file");
+  bool result = IsEqualCString(option, "-f") || IsEqualCString(option, "--file");
   return result;
 }
 
 bool IsLogOption(const char* option)
 {
-  bool result = ccs::HelperTools::StringCompare(option, "-l")
-                || ccs::HelperTools::StringCompare(option, "--logging");
+  bool result = IsEqualCString(option, "-l") || IsEqualCString(option, "--logging");
   return result;
+}
+
+bool IsEqualCString(const char* lhs, const char* rhs)
+{
+  return strcmp(lhs, rhs) == 0;
 }

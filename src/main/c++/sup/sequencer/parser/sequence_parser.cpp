@@ -26,9 +26,8 @@
 #include "treedata_xml_write_utils.h"
 #include "procedure_to_treedata_utils.h"
 
+#include <sup/sequencer/generic_utils.h>
 #include <sup/sequencer/log.h>
-
-#include <common/SysTools.h>
 
 namespace sup
 {
@@ -37,7 +36,7 @@ namespace sequencer
 bool LoadPlugin(const std::string& name)
 {
   log::Debug("sup::sequencer::LoadPlugin('%s') - trying to load plugin..", name.c_str());
-  bool status = ::ccs::HelperTools::LoadSharedLibrary(name.c_str());
+  bool status = utils::LoadLibrary(name);
 
   if (!status)
   {

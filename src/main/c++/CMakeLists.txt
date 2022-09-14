@@ -17,6 +17,7 @@ install(FILES
         sup/sequencer/attribute_map.h
         sup/sequencer/constants.h
         sup/sequencer/execution_status.h
+        sup/sequencer/generic_utils.h
         sup/sequencer/instruction.h
         sup/sequencer/instruction_registry.h
         sup/sequencer/log.h

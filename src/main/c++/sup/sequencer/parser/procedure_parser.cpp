@@ -25,6 +25,7 @@
 #include "variable_parser.h"
 
 #include <sup/sequencer/constants.h>
+#include <sup/sequencer/generic_utils.h>
 #include <sup/sequencer/log.h>
 #include <sup/sequencer/sequence_parser.h>
 
@@ -110,7 +111,7 @@ std::string GetFileDirectory(const std::string &filename)
 
 static std::string ReadJSONFile(const std::string &filename)
 {
-  if (!::ccs::HelperTools::Exist(filename.c_str()))
+  if (!utils::FileExists(filename))
   {
     log::Warning("ReadJSONFile('%s') - file not found", filename.c_str());
     return {};

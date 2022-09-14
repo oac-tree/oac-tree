@@ -21,6 +21,8 @@
 
 #include "file_variable.h"
 
+#include <sup/sequencer/generic_utils.h>
+
 #include <common/AnyValueHelper.h>
 
 #include <fstream>
@@ -70,7 +72,7 @@ FileVariable::~FileVariable() = default;
 
 static std::string StripWhitespaceFromFile(const std::string& filename)
 {
-  if (!ccs::HelperTools::Exist(filename.c_str()))
+  if (!sup::sequencer::utils::FileExists(filename))
   {
     return {};
   }

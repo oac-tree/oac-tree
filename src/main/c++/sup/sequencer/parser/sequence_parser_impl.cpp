@@ -23,9 +23,9 @@
 
 #include "xml_utils.h"
 
+#include <sup/sequencer/generic_utils.h>
 #include <sup/sequencer/log.h>
 
-#include <common/SysTools.h>
 #include <libxml/parser.h>
 
 #include <stdio.h>
@@ -46,7 +46,7 @@ static void AddXMLChildren(TreeData *tree, xmlDocPtr doc, xmlNodePtr node);
 std::unique_ptr<TreeData> ParseXMLDataFile(const std::string &filename)
 {
   // Read file into xmlDocPtr
-  if (!::ccs::HelperTools::Exist(filename.c_str()))
+  if (!utils::FileExists(filename))
   {
     log::Warning("ParseXMLDataFile('%s') - file not found", filename.c_str());
     return {};

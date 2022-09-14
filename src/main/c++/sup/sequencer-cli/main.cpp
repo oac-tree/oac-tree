@@ -21,6 +21,7 @@
 
 #include "cl_interface.h"
 
+#include <sup/sequencer/generic_utils.h>
 #include <sup/sequencer/log.h>
 #include <sup/sequencer/runner.h>
 #include <sup/sequencer/sequence_parser.h>
@@ -71,7 +72,7 @@ int main(int argc, char* argv[])
   }
   sup::sequencer::log::Debug("sequencer-cli called with filename: %s", filename.c_str());
 
-  if (!ccs::HelperTools::Exist(filename.c_str()))
+  if (!sup::sequencer::utils::FileExists(filename.c_str()))
   {
     sup::sequencer::log::Error("sequencer-cli: file not found <%s>", filename.c_str());
     return 1;

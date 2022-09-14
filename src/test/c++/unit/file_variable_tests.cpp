@@ -22,6 +22,7 @@
 #include "log_ui.h"
 #include "unit_test_helper.h"
 
+#include <sup/sequencer/generic_utils.h>
 #include <sup/sequencer/sequence_parser.h>
 #include <sup/sequencer/variable.h>
 #include <sup/sequencer/variable_registry.h>
@@ -33,7 +34,7 @@
 static inline bool Terminate(void)
 {
   bool status = false;
-  if (ccs::HelperTools::Exist("variable.bck"))
+  if (sup::sequencer::utils::FileExists("variable.bck"))
   {
     status = (std::remove("variable.bck") == 0);
   }
@@ -69,7 +70,7 @@ TEST(FileVariable, File_write)
   proc->ExecuteSingle(&ui);
   EXPECT_EQ(proc->GetStatus(), sup::sequencer::ExecutionStatus::SUCCESS);
 
-  EXPECT_TRUE(ccs::HelperTools::Exist("variable.bck"));
+  EXPECT_TRUE(sup::sequencer::utils::FileExists("variable.bck"));
 
   ccs::types::AnyValue value;  // Placeholder
 
@@ -162,7 +163,7 @@ TEST(FileVariable, File_attr)
            && (sup::sequencer::ExecutionStatus::FAILURE != exec));
 
   EXPECT_EQ(exec, sup::sequencer::ExecutionStatus::SUCCESS);
-  EXPECT_TRUE(ccs::HelperTools::Exist("variable.bck"));
+  EXPECT_TRUE(sup::sequencer::utils::FileExists("variable.bck"));
 
   ccs::types::AnyValue value;  // Placeholder
   EXPECT_TRUE(ccs::HelperTools::ReadFromFile(&value, "variable.bck"));

@@ -1,5 +1,5 @@
-#include "TestProcedureFactory.h"
-#include "TestUI.h"
+#include "test_procedure_factory.h"
+#include "test_ui.h"
 
 #include <sup/sequencer/runner.h>
 

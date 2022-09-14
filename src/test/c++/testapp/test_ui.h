@@ -1,5 +1,5 @@
-#ifndef TESTUI_H
-#define TESTUI_H
+#ifndef SUP_SEQUENCER_TEST_UI_H_
+#define SUP_SEQUENCER_TEST_UI_H_
 
 #include <sup/sequencer/user_interface.h>
 
@@ -18,4 +18,4 @@ private:
   void EndSingleStepImpl() override;
 };
 
-#endif  // TESTUI_H
+#endif  // SUP_SEQUENCER_TEST_UI_H_

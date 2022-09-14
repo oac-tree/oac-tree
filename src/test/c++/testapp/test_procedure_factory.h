@@ -1,6 +1,6 @@
 
-#ifndef TESTPROCEDUREFACTORY_H
-#define TESTPROCEDUREFACTORY_H
+#ifndef SUP_SEQUENCER_TEST_PROCEDURE_FACTORY_H_
+#define SUP_SEQUENCER_TEST_PROCEDURE_FACTORY_H_
 
 #include <sup/sequencer/procedure.h>
 
@@ -16,4 +16,4 @@ public:
   std::unique_ptr<sup::sequencer::Procedure> CreateProcedure() const;
 };
 
-#endif  // TESTPROCEDUREFACTORY_H
+#endif  // SUP_SEQUENCER_TEST_PROCEDURE_FACTORY_H_

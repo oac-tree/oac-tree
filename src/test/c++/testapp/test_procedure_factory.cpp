@@ -1,4 +1,4 @@
-#include "TestProcedureFactory.h"
+#include "test_procedure_factory.h"
 
 #include <sup/sequencer/instructions/wait.h>
 #include <sup/sequencer/instructions/inverter.h>

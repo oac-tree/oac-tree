@@ -22,7 +22,7 @@
 #include "LogUI.h"
 #include "UnitTestHelper.h"
 
-#include <sup/sequencer/instructions/Condition.h>
+#include <sup/sequencer/instructions/condition.h>
 #include <sup/sequencer/variables/local_variable.h>
 
 #include <sup/sequencer/sequence_parser.h>

@@ -1,29 +1,29 @@
 target_sources(sup-sequencer-obj
     PRIVATE
-        ${CMAKE_CURRENT_LIST_DIR}/AsyncWrapper.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Choice.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/CompoundInstruction.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Condition.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Copy.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/DecoratorInstruction.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Equals.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Fallback.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/ForceSuccess.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Include.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Input.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Instruction.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/InstructionHelper.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/InstructionRegistry.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Inverter.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Listen.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Message.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Output.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/ParallelSequence.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Repeat.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/ResetVariable.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Sequence.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/UserChoice.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Wait.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/async_wrapper.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/choice.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/compound_instruction.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/condition.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/copy.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/decorator_instruction.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/equals.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/fallback.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/force_success.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/include.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/input.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/instruction.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/instruction_helper.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/instruction_registry.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/inverter.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/listen.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/message.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/output.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/parallel_sequence.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/repeat.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/reset_variable.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/sequence.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/user_choice.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/wait.cpp
     )
 
 target_include_directories(sup-sequencer-obj

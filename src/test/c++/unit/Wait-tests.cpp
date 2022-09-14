@@ -22,7 +22,7 @@
 #include "LogUI.h"
 #include "UnitTestHelper.h"
 
-#include <sup/sequencer/instructions/Wait.h>
+#include <sup/sequencer/instructions/wait.h>
 
 #include <sup/sequencer/instruction_registry.h>
 #include <sup/sequencer/sequence_parser.h>

@@ -6,7 +6,7 @@
  *
  * Description   : Sequencer for operational procedures
  *
- * Author        : Gennady Pospelov (IO)
+ * Author        : Walter Van Herck (IO)
  *
  * Copyright (c) : 2010-2022 ITER Organization,
  *                 CS 90 046
@@ -19,25 +19,36 @@
  * of the distribution package.
  ******************************************************************************/
 
-#ifndef SUP_SEQUENCER_XML_UTILS_H_
-#define SUP_SEQUENCER_XML_UTILS_H_
+#include "force_success.h"
 
-#include <libxml/xmlstring.h>
-
-#include <string>
+#include <sup/sequencer/log.h>
 
 namespace sup
 {
 namespace sequencer
 {
-//! Converts xmlChar to std::string.
-std::string ToString(const xmlChar *xml_name);
+const std::string ForceSuccess::Type = "ForceSuccess";
 
-//! Converts std::string to xmlChar.
-const xmlChar *FromString(const std::string &str);
+ForceSuccess::ForceSuccess() : DecoratorInstruction(Type) {}
+
+ForceSuccess::~ForceSuccess() = default;
+
+ExecutionStatus ForceSuccess::ExecuteSingleImpl(UserInterface *ui, Workspace *ws)
+{
+  if (!HasChild())
+  {
+    return ExecutionStatus::SUCCESS;
+  }
+  ExecuteChild(ui, ws);
+  auto status = GetChildStatus();
+
+  if (status == ExecutionStatus::FAILURE)
+  {
+    status = ExecutionStatus::SUCCESS;
+  }
+  return status;
+}
 
 }  // namespace sequencer
 
 }  // namespace sup
-
-#endif  // SUP_SEQUENCER_XML_UTILS_H_

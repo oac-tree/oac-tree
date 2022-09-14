@@ -19,7 +19,7 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <sup/sequencer/instructions/Message.h>
+#include <sup/sequencer/instructions/message.h>
 
 #include <sup/sequencer/instruction_registry.h>
 #include <sup/sequencer/procedure.h>

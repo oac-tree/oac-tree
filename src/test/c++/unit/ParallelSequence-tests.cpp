@@ -22,7 +22,7 @@
 #include "LogUI.h"
 #include "UnitTestHelper.h"
 
-#include <sup/sequencer/instructions/CompoundInstruction.h>
+#include <sup/sequencer/instructions/compound_instruction.h>
 
 #include <sup/sequencer/instruction.h>
 #include <sup/sequencer/instruction_registry.h>

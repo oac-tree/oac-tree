@@ -23,7 +23,7 @@
 #include "UnitTestHelper.h"
 
 #include <sup/sequencer/variables/local_variable.h>
-#include <sup/sequencer/instructions/Wait.h>
+#include <sup/sequencer/instructions/wait.h>
 
 #include <sup/sequencer/instruction_registry.h>
 #include <sup/sequencer/procedure.h>

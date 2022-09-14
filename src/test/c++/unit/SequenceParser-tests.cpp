@@ -21,7 +21,7 @@
 
 #include "UnitTestHelper.h"
 
-#include <sup/sequencer/instructions/Sequence.h>
+#include <sup/sequencer/instructions/sequence.h>
 
 #include <sup/sequencer/instruction_registry.h>
 #include <sup/sequencer/sequence_parser.h>

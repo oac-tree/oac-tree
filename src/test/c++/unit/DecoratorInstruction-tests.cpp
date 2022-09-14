@@ -22,8 +22,8 @@
 #include "LogUI.h"
 #include "UnitTestHelper.h"
 
-#include <sup/sequencer/instructions/DecoratorInstruction.h>
-#include <sup/sequencer/instructions/Wait.h>
+#include <sup/sequencer/instructions/decorator_instruction.h>
+#include <sup/sequencer/instructions/wait.h>
 
 #include <sup/sequencer/instruction.h>
 #include <sup/sequencer/instruction_registry.h>

@@ -21,9 +21,9 @@
 
 #include "instruction_parser.h"
 
-#include <sup/sequencer/instructions/CompoundInstruction.h>
-#include <sup/sequencer/instructions/DecoratorInstruction.h>
-#include <sup/sequencer/instructions/Include.h>
+#include <sup/sequencer/instructions/compound_instruction.h>
+#include <sup/sequencer/instructions/decorator_instruction.h>
+#include <sup/sequencer/instructions/include.h>
 #include <sup/sequencer/instruction_registry.h>
 
 #include <sup/sequencer/log.h>

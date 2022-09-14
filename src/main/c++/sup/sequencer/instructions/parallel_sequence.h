@@ -1,0 +1,89 @@
+/******************************************************************************
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP - Sequencer
+ *
+ * Description   : Sequencer for operational procedures
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2022 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
+
+#ifndef SUP_SEQUENCER_PARALLEL_SEQUENCE_H_
+#define SUP_SEQUENCER_PARALLEL_SEQUENCE_H_
+
+#include "async_wrapper.h"
+#include "compound_instruction.h"
+
+namespace sup
+{
+namespace sequencer
+{
+/**
+ * @brief Compound instruction representing a parallel sequence.
+ *
+ * @note ParallelSequence runs its child instructions concurrently and
+ * returns SUCCESS when enough child instructions finish successfully (greater
+ * than or equal to the success threshold). It fails when the failure threshold
+ * is reached or the success threshold can no longer be reached. It returns
+ * RUNNING otherwise.
+ */
+class ParallelSequence : public CompoundInstruction
+{
+private:
+  /**
+   * @brief See sup::sequencer::Instruction.
+   */
+  void InitHook() override;
+  ExecutionStatus ExecuteSingleImpl(UserInterface* ui, Workspace* ws) override;
+  void ResetHook() override;
+  bool SetupImpl(const Procedure& proc) override;
+
+  /**
+   * @brief Calculate this instruction's status from the status of its child instructions.
+   */
+  ExecutionStatus CalculateCompoundStatus() const;
+
+  /**
+   * @brief Initialize synchronous wrappers that encapsulate the asynchronous execution
+   * of each child instruction.
+   */
+  void InitWrappers();
+
+  std::vector<AsyncWrapper> _wrappers;
+
+  int _success_th, _failure_th;
+
+protected:
+public:
+  /**
+   * @brief Constructor.
+   */
+  ParallelSequence();
+
+  /**
+   * @brief Destructor.
+   */
+  ~ParallelSequence() override;
+
+  /**
+   * @brief The instruction's typename.
+   */
+  static const std::string Type;
+};
+
+}  // namespace sequencer
+
+}  // namespace sup
+
+#endif  // SUP_SEQUENCER_PARALLEL_SEQUENCE_H_

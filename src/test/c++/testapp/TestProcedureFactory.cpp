@@ -1,7 +1,7 @@
 #include "TestProcedureFactory.h"
 
-#include <sup/sequencer/instructions/Wait.h>
-#include <sup/sequencer/instructions/Inverter.h>
+#include <sup/sequencer/instructions/wait.h>
+#include <sup/sequencer/instructions/inverter.h>
 
 using namespace sup::sequencer;
 

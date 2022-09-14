@@ -6,7 +6,7 @@
  *
  * Description   : Sequencer for operational procedures
  *
- * Author        : Gennady Pospelov (IO)
+ * Author        : Walter Van Herck (IO)
  *
  * Copyright (c) : 2010-2022 ITER Organization,
  *                 CS 90 046
@@ -19,25 +19,48 @@
  * of the distribution package.
  ******************************************************************************/
 
-#ifndef SUP_SEQUENCER_XML_UTILS_H_
-#define SUP_SEQUENCER_XML_UTILS_H_
+#ifndef SUP_SEQUENCER_EQUALS_H_
+#define SUP_SEQUENCER_EQUALS_H_
 
-#include <libxml/xmlstring.h>
-
-#include <string>
+#include <sup/sequencer/instruction.h>
 
 namespace sup
 {
 namespace sequencer
 {
-//! Converts xmlChar to std::string.
-std::string ToString(const xmlChar *xml_name);
+/**
+ * @brief Instruction checking the equality of two variables
+ */
+class Equals : public Instruction
+{
+private:
+  /**
+   * @brief See sup::sequencer::Instruction.
+   *
+   * @details Check equality of variables identified with 'lhs' and 'rhs' attributes.
+   */
+  ExecutionStatus ExecuteSingleImpl(UserInterface* ui, Workspace* ws) override;
 
-//! Converts std::string to xmlChar.
-const xmlChar *FromString(const std::string &str);
+protected:
+public:
+  /**
+   * @brief Constructor.
+   */
+  Equals();
+
+  /**
+   * @brief Destructor.
+   */
+  ~Equals() override;
+
+  /**
+   * @brief The instruction's typename.
+   */
+  static const std::string Type;
+};
 
 }  // namespace sequencer
 
 }  // namespace sup
 
-#endif  // SUP_SEQUENCER_XML_UTILS_H_
+#endif  // SUP_SEQUENCER_EQUALS_H_

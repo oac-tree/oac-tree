@@ -6,7 +6,7 @@
  *
  * Description   : Sequencer for operational procedures
  *
- * Author        : Gennady Pospelov (IO)
+ * Author        : Bertrand Bauvir (IO)
  *
  * Copyright (c) : 2010-2022 ITER Organization,
  *                 CS 90 046
@@ -19,25 +19,48 @@
  * of the distribution package.
  ******************************************************************************/
 
-#ifndef SUP_SEQUENCER_XML_UTILS_H_
-#define SUP_SEQUENCER_XML_UTILS_H_
+#ifndef SUP_SEQUENCER_COPY_H_
+#define SUP_SEQUENCER_COPY_H_
 
-#include <libxml/xmlstring.h>
-
-#include <string>
+#include <sup/sequencer/instruction.h>
 
 namespace sup
 {
 namespace sequencer
 {
-//! Converts xmlChar to std::string.
-std::string ToString(const xmlChar *xml_name);
+/**
+ * @brief Instruction copying named variable from/to workspace
+ */
+class Copy : public Instruction
+{
+private:
+  /**
+   * @brief See sup::sequencer::Instruction.
+   *
+   * @details Copy variables identified with 'input' and 'output' attributes.
+   */
+  ExecutionStatus ExecuteSingleImpl(UserInterface* ui, Workspace* ws) override;
 
-//! Converts std::string to xmlChar.
-const xmlChar *FromString(const std::string &str);
+protected:
+public:
+  /**
+   * @brief Constructor.
+   */
+  Copy();
+
+  /**
+   * @brief Destructor.
+   */
+  ~Copy() override;
+
+  /**
+   * @brief The instruction's typename.
+   */
+  static const std::string Type;
+};
 
 }  // namespace sequencer
 
 }  // namespace sup
 
-#endif  // SUP_SEQUENCER_XML_UTILS_H_
+#endif  // SUP_SEQUENCER_COPY_H_

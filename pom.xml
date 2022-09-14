@@ -123,7 +123,6 @@
                         <package name="devel">
                             <!-- Libraries -->
                             <include type="file" source="lib" target="lib">
-                                <include>*.a</include>
                                 <include>*.so</include>
                             </include>
                             <!-- Public API headers -->

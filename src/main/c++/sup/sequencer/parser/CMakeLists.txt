@@ -1,4 +1,4 @@
-target_sources(sup-sequencer-obj
+target_sources(sup-sequencer-shared
     PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/instruction_parser.cpp
         ${CMAKE_CURRENT_LIST_DIR}/procedure_parser.cpp
@@ -9,8 +9,3 @@ target_sources(sup-sequencer-obj
         ${CMAKE_CURRENT_LIST_DIR}/variable_parser.cpp
         ${CMAKE_CURRENT_LIST_DIR}/xml_utils.cpp
 )
-
-target_include_directories(sup-sequencer-obj
-    PRIVATE
-        ${CMAKE_CURRENT_LIST_DIR}
-    )

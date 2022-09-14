@@ -1,4 +1,4 @@
-target_sources(sup-sequencer-obj
+target_sources(sup-sequencer-shared
     PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/attribute_map.cpp
         ${CMAKE_CURRENT_LIST_DIR}/log.cpp

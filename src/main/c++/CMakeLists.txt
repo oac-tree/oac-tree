@@ -15,28 +15,24 @@ add_executable(sequencer-cli)
 
 add_executable(sequencer-daemon)
 
-add_library(sup-sequencer-obj OBJECT)
-set_property(TARGET sup-sequencer-obj PROPERTY POSITION_INDEPENDENT_CODE 1)
-
 add_library(sup-sequencer-shared SHARED)
-add_library(sup-sequencer-static STATIC)
 
 find_package(LibXml2 REQUIRED)
 
 add_subdirectory(sup)
 
-target_include_directories(sup-sequencer-obj
+set_target_properties(sup-sequencer-shared PROPERTIES
+    VERSION ${LIBVERSION}
+    SOVERSION ${LIBSOVERSION}
+    OUTPUT_NAME sequencer
+)
+
+target_include_directories(sup-sequencer-shared
     PRIVATE
         ${LIBXML2_INCLUDE_DIR}
         $ENV{CODAC_ROOT}/include
     PUBLIC
         ${CMAKE_CURRENT_LIST_DIR}
-)
-
-set_target_properties(sup-sequencer-shared PROPERTIES
-    VERSION ${LIBVERSION}
-    SOVERSION ${LIBSOVERSION}
-    OUTPUT_NAME sequencer
 )
 
 target_link_directories(sup-sequencer-shared
@@ -47,23 +43,7 @@ target_link_libraries(sup-sequencer-shared
     PRIVATE
         ${LIBXML2_LIBRARIES}
     PUBLIC
-        sup-sequencer-obj
         ccs-core
-)
-
-set_target_properties(sup-sequencer-static PROPERTIES
-    OUTPUT_NAME sequencer
-)
-
-target_link_directories(sup-sequencer-static
-    PUBLIC $ENV{CODAC_ROOT}/lib
-    )
-
-target_link_libraries(sup-sequencer-static
-    PRIVATE
-        ${LIBXML2_LIBRARIES}
-    PUBLIC
-        sup-sequencer-obj
 )
 
 target_include_directories(sequencer-cli

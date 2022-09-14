@@ -19,27 +19,15 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
+#include "daemon_interface.h"
 
 #include <sup/sequencer/log.h>
-
-// Local header files
-
-#include "DaemonInterface.h"
 #include <sup/sequencer/instruction.h>
-
-// Type definition
-
-// Global variables
-
-// Function declaration
 
 namespace sup
 {
 namespace sequencer
 {
-// Function definition
-
 void DaemonInterface::UpdateInstructionStatusImpl(const Instruction *instruction)
 {
   if (_log_enabled)
@@ -96,9 +84,3 @@ DaemonInterface::~DaemonInterface() = default;
 }  // namespace sequencer
 
 }  // namespace sup
-
-extern "C"
-{
-  // C API function definitions
-
-}  // extern C

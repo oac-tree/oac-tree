@@ -19,10 +19,10 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "ProcedureParser.h"
+#include "procedure_parser.h"
 
-#include "InstructionParser.h"
-#include "VariableParser.h"
+#include "instruction_parser.h"
+#include "variable_parser.h"
 
 #include <sup/sequencer/constants.h>
 #include <sup/sequencer/log.h>
@@ -37,12 +37,8 @@ namespace sup
 {
 namespace sequencer
 {
-// Global variables
-
 static const std::string JSONTYPE_ATTRIBUTE_NAME = "jsontype";
 static const std::string JSONFILE_ATTRIBUTE_NAME = "jsonfile";
-
-// Function declaration
 
 static std::string ReadJSONFile(const std::string &filename);
 static bool ParsePreamble(const TreeData &data, const std::string &filename);
@@ -51,8 +47,6 @@ static bool RegisterTypeInformation(const TreeData &child, const std::string &fi
 static bool ParseProcedureChildren(Procedure *procedure, const TreeData &data);
 static bool AddWorkspaceVariables(Procedure *procedure, const TreeData &ws_data);
 static bool ParseAndAddInstruction(Procedure *procedure, const TreeData &instr_data);
-
-// Function definition
 
 std::unique_ptr<Procedure> ParseProcedure(const TreeData &data, const std::string &filename)
 {
@@ -256,9 +250,3 @@ static bool ParseAndAddInstruction(Procedure *procedure, const TreeData &instr_d
 }  // namespace sequencer
 
 }  // namespace sup
-
-extern "C"
-{
-  // C API function definitions
-
-}  // extern C

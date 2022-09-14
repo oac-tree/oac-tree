@@ -19,7 +19,10 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
+#include "cl_interface.h"
+
+#include <sup/sequencer/log.h>
+#include <sup/sequencer/instruction.h>
 
 #include <common/AnyValueHelper.h>
 
@@ -27,27 +30,12 @@
 #include <map>
 #include <sstream>
 
-#include <sup/sequencer/log.h>
-
-// Local header files
-
-#include "CLInterface.h"
-#include <sup/sequencer/instruction.h>
-
-// Type definition
-
-// Global variables
-
-// Function declaration
-
 static bool ParseStringToScalarAnyvalue(::ccs::types::AnyValue &value, const std::string &str);
 
 namespace sup
 {
 namespace sequencer
 {
-// Function definition
-
 void CLInterface::UpdateInstructionStatusImpl(const Instruction *instruction)
 {
   auto instruction_type = instruction->GetType();
@@ -255,9 +243,3 @@ static bool ParseStringToScalarAnyvalue(::ccs::types::AnyValue &value, const std
   auto parse_function = parser_map[type_name];
   return parse_function(value, str);
 }
-
-extern "C"
-{
-  // C API function definitions
-
-}  // extern C

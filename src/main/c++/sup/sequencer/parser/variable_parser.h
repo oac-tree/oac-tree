@@ -6,7 +6,7 @@
  *
  * Description   : Sequencer for operational procedures
  *
- * Author        : Gennady Pospelov (IO)
+ * Author        : Walter Van Herck (IO)
  *
  * Copyright (c) : 2010-2022 ITER Organization,
  *                 CS 90 046
@@ -19,32 +19,26 @@
  * of the distribution package.
  ******************************************************************************/
 
-#ifndef _SEQ_ProcedureToTreeDataUtils_h_
-#define _SEQ_ProcedureToTreeDataUtils_h_
+#ifndef SUP_SEQUENCER_VARIABLE_PARSER_H_
+#define SUP_SEQUENCER_VARIABLE_PARSER_H_
+
+#include <sup/sequencer/tree_data.h>
+#include <sup/sequencer/variable.h>
 
 #include <memory>
+#include <string>
 
 namespace sup
 {
 namespace sequencer
 {
-
-class TreeData;
-class Procedure;
-class Variable;
-class Instruction;
-class Workspace;
-
-std::unique_ptr<TreeData> ToTreeData(const Procedure& procedure);
-
-std::unique_ptr<TreeData> ToTreeData(const Variable& variable);
-
-std::unique_ptr<TreeData> ToTreeData(const Workspace& workspace);
-
-std::unique_ptr<TreeData> ToTreeData(const Instruction& instruction);
+/**
+ * @brief Parse to Variable.
+ */
+std::unique_ptr<Variable> ParseVariable(const TreeData& data);
 
 }  // namespace sequencer
 
 }  // namespace sup
 
-#endif  // _SEQ_ProcedureToTreeDataUtils_h_
+#endif  // SUP_SEQUENCER_VARIABLE_PARSER_H_

@@ -1,6 +1,6 @@
 target_sources(sequencer-daemon
     PRIVATE
-        ${CMAKE_CURRENT_LIST_DIR}/DaemonInterface.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/daemon_interface.cpp
         ${CMAKE_CURRENT_LIST_DIR}/main.cpp
     )
 

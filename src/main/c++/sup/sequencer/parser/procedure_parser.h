@@ -19,61 +19,25 @@
  * of the distribution package.
  ******************************************************************************/
 
-/**
- * @file VariableParser.h
- * @brief Header file for the VariableParser functions.
- * @date 04/02/2021
- * @author Walter Van Herck (IO)
- * @copyright 2010-2022 ITER Organization
- * @details This header file contains the definition of the VariableParser functions.
- */
+#ifndef SUP_SEQUENCER_PROCEDURE_PARSER_H_
+#define SUP_SEQUENCER_PROCEDURE_PARSER_H_
 
-#ifndef _SEQ_VariableParser_h_
-#define _SEQ_VariableParser_h_
-
-// Global header files
+#include <sup/sequencer/procedure.h>
+#include <sup/sequencer/tree_data.h>
 
 #include <memory>
-#include <string>
-
-// Local header files
-
-#include <sup/sequencer/tree_data.h>
-#include <sup/sequencer/variable.h>
-
-// Constants
-
-// Type definition
-
-#ifdef __cplusplus
 
 namespace sup
 {
 namespace sequencer
 {
-// Global variables
+std::unique_ptr<Procedure> ParseProcedure(const TreeData& data, const std::string& filename = {});
 
-// Function declarations
+std::string GetFullPathName(const std::string& directory, const std::string& filename);
 
-/**
- * @brief Parse to Variable.
- */
-std::unique_ptr<Variable> ParseVariable(const TreeData& data);
-
-// Function definitions
-
+std::string GetFileDirectory(const std::string& filename);
 }  // namespace sequencer
 
 }  // namespace sup
 
-extern "C"
-{
-#endif  // __cplusplus
-
-  // C API function declarations
-
-#ifdef __cplusplus
-}  // extern C
-#endif  // __cplusplus
-
-#endif  // _SEQ_VariableParser_h_
+#endif  // SUP_SEQUENCER_PROCEDURE_PARSER_H_

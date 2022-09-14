@@ -19,31 +19,24 @@
  * of the distribution package.
  ******************************************************************************/
 
-/**
- * @file XmlUtils.h
- * @brief Xml-related utility functions.
- */
-
-#ifndef _SEQ_XmlUtils_h_
-#define _SEQ_XmlUtils_h_
-
-#include <libxml/xmlstring.h>
-
-#include <string>
+#include "xml_utils.h"
 
 namespace sup
 {
 namespace sequencer
 {
-
 //! Converts xmlChar to std::string.
-std::string ToString(const xmlChar *xml_name);
+std::string ToString(const xmlChar *xml_name)
+{
+  return std::string(reinterpret_cast<const char *>(xml_name), xmlStrlen(xml_name));
+}
 
 //! Converts std::string to xmlChar.
-const xmlChar *FromString(const std::string &str);
+const xmlChar *FromString(const std::string &str)
+{
+  return reinterpret_cast<const xmlChar *>(str.c_str());
+}
 
 }  // namespace sequencer
 
 }  // namespace sup
-
-#endif  // _SEQ_TreeDataXmlWriteUtils_h_

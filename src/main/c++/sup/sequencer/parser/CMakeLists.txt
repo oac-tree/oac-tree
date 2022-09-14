@@ -1,13 +1,13 @@
 target_sources(sup-sequencer-obj
     PRIVATE
-        ${CMAKE_CURRENT_LIST_DIR}/InstructionParser.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/ProcedureParser.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/ProcedureToTreeDataUtils.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/SequenceParser.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/SequenceParserImpl.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/VariableParser.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/TreeDataXmlWriteUtils.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/XmlUtils.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/instruction_parser.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/procedure_parser.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/procedure_to_treedata_utils.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/sequence_parser.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/sequence_parser_impl.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/treedata_xml_write_utils.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/variable_parser.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/xml_utils.cpp
 )
 
 target_include_directories(sup-sequencer-obj

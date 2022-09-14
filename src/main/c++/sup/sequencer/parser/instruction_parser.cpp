@@ -19,27 +19,19 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
-#include <sup/sequencer/log.h>
+#include "instruction_parser.h"
 
-// Local header files
-
-#include "CompoundInstruction.h"
-#include "DecoratorInstruction.h"
-#include "Include.h"
-#include "InstructionParser.h"
+#include <sup/sequencer/instructions/CompoundInstruction.h>
+#include <sup/sequencer/instructions/DecoratorInstruction.h>
+#include <sup/sequencer/instructions/Include.h>
 #include <sup/sequencer/instruction_registry.h>
 
-// Type definition
+#include <sup/sequencer/log.h>
 
 namespace sup
 {
 namespace sequencer
 {
-// Global variables
-
-// Function declaration
-
 static bool AddChildInstructions(Instruction *instruction, const std::vector<TreeData> &children,
                                  const std::string &filename);
 static bool AddChildrenToDecorator(DecoratorInstruction *decorator,
@@ -48,8 +40,6 @@ static bool AddChildrenToDecorator(DecoratorInstruction *decorator,
 static bool AddChildrenToCompound(CompoundInstruction *compound,
                                   const std::vector<TreeData> &children,
                                   const std::string &filename);
-
-// Function definition
 
 std::unique_ptr<Instruction> ParseInstruction(const TreeData &data, const std::string &filename)
 {
@@ -169,9 +159,3 @@ static bool AddChildrenToCompound(CompoundInstruction *compound,
 }  // namespace sequencer
 
 }  // namespace sup
-
-extern "C"
-{
-  // C API function definitions
-
-}  // extern C

@@ -6,7 +6,7 @@
  *
  * Description   : Sequencer for operational procedures
  *
- * Author        : Gennady Pospelov (IO)
+ * Author        : Walter Van Herck (IO)
  *
  * Copyright (c) : 2010-2022 ITER Organization,
  *                 CS 90 046
@@ -19,24 +19,22 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "XmlUtils.h"
+#ifndef SUP_SEQUENCER_SEQUENCE_PARSER_IMPL_H_
+#define SUP_SEQUENCER_SEQUENCE_PARSER_IMPL_H_
+
+#include <sup/sequencer/tree_data.h>
+
+#include <memory>
 
 namespace sup
 {
 namespace sequencer
 {
-//! Converts xmlChar to std::string.
-std::string ToString(const xmlChar *xml_name)
-{
-  return std::string(reinterpret_cast<const char *>(xml_name), xmlStrlen(xml_name));
-}
+std::unique_ptr<TreeData> ParseXMLDataFile(const std::string& filename);
 
-//! Converts std::string to xmlChar.
-const xmlChar *FromString(const std::string &str)
-{
-  return reinterpret_cast<const xmlChar *>(str.c_str());
-}
-
+std::unique_ptr<TreeData> ParseXMLDataString(const std::string& xml_str);
 }  // namespace sequencer
 
 }  // namespace sup
+
+#endif  // SUP_SEQUENCER_SEQUENCE_PARSER_IMPL_H_

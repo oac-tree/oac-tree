@@ -21,7 +21,7 @@
 
 #include "UnitTestHelper.h"
 
-#include <sup/sequencer/parser/TreeDataXmlWriteUtils.h>
+#include <sup/sequencer/parser/treedata_xml_write_utils.h>
 
 #include <sup/sequencer/tree_data.h>
 

@@ -28,7 +28,7 @@
 #include "Include.h"
 #include "InstructionHelper.h"
 #include <sup/sequencer/procedure.h>
-#include "ProcedureParser.h"
+#include "procedure_parser.h"
 
 // Constants
 

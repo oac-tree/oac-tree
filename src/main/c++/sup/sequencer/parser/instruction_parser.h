@@ -19,41 +19,18 @@
  * of the distribution package.
  ******************************************************************************/
 
-/**
- * @file InstructionParser.h
- * @brief Header file for InstructionParser functions.
- * @date 04/02/2021
- * @author Walter Van Herck (IO)
- * @copyright 2010-2022 ITER Organization
- * @details This header file contains the definition of the InstructionParser functions.
- */
-
-#ifndef _SEQ_InstructionParser_h_
-#define _SEQ_InstructionParser_h_
-
-// Global header files
-
-#include <memory>
-
-// Local header files
+#ifndef SUP_SEQUENCER_INSTRUCTION_PARSER_H_
+#define SUP_SEQUENCER_INSTRUCTION_PARSER_H_
 
 #include <sup/sequencer/instruction.h>
 #include <sup/sequencer/tree_data.h>
 
-// Constants
-
-// Type definition
-
-#ifdef __cplusplus
+#include <memory>
 
 namespace sup
 {
 namespace sequencer
 {
-// Global variables
-
-// Function declarations
-
 /**
  * @brief Parse to Instruction.
  *
@@ -62,20 +39,8 @@ namespace sequencer
  */
 std::unique_ptr<Instruction> ParseInstruction(const TreeData& data, const std::string& filename);
 
-// Function definitions
-
 }  // namespace sequencer
 
 }  // namespace sup
 
-extern "C"
-{
-#endif  // __cplusplus
-
-  // C API function declarations
-
-#ifdef __cplusplus
-}  // extern C
-#endif  // __cplusplus
-
-#endif  // _SEQ_InstructionParser_h_
+#endif  // SUP_SEQUENCER_INSTRUCTION_PARSER_H_

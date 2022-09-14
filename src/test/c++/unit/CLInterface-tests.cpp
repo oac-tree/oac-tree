@@ -21,7 +21,7 @@
 
 #include "StdRedirectors.h"
 
-#include <CLInterface.h>
+#include <cl_interface.h>
 
 #include <sup/sequencer/instruction.h>
 #include <sup/sequencer/instruction_registry.h>

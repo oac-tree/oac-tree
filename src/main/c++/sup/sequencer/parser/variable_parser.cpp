@@ -19,7 +19,7 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "VariableParser.h"
+#include "variable_parser.h"
 
 #include <sup/sequencer/log.h>
 #include <sup/sequencer/variable_registry.h>
@@ -31,12 +31,6 @@ namespace sup
 {
 namespace sequencer
 {
-// Global variables
-
-// Function declaration
-
-// Function definition
-
 std::unique_ptr<Variable> ParseVariable(const TreeData& data)
 {
   auto var_type = data.GetType();
@@ -59,9 +53,3 @@ std::unique_ptr<Variable> ParseVariable(const TreeData& data)
 }  // namespace sequencer
 
 }  // namespace sup
-
-extern "C"
-{
-  // C API function definitions
-
-}  // extern C

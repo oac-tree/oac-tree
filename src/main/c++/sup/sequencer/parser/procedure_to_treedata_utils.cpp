@@ -19,7 +19,7 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "ProcedureToTreeDataUtils.h"
+#include "procedure_to_treedata_utils.h"
 
 #include <sup/sequencer/attribute_map.h>
 #include <sup/sequencer/constants.h>

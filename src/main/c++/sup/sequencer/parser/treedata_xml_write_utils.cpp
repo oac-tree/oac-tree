@@ -19,19 +19,16 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "TreeDataXmlWriteUtils.h"
+#include "treedata_xml_write_utils.h"
+
+#include "xml_utils.h"
+
+#include <sup/sequencer/tree_data.h>
 
 #include <libxml/encoding.h>
 #include <libxml/xmlwriter.h>
 
-#include <sup/sequencer/tree_data.h>
-#include "XmlUtils.h"
-
 #include <stdexcept>
-
-// ----------------------------------------------------------------------------
-// Declarations of helper methods and constants in anonymous namespace.
-// ----------------------------------------------------------------------------
 
 namespace
 {
@@ -44,10 +41,6 @@ void AddTreeAttributes(xmlTextWriterPtr writer, const ::sup::sequencer::TreeData
 //! Set-up identation.
 void SetupWriterIndentation(xmlTextWriterPtr writer);
 }  // namespace
-
-// ----------------------------------------------------------------------------
-// Implementations declared in the header.
-// ----------------------------------------------------------------------------
 
 namespace sup
 {
@@ -98,12 +91,10 @@ std::string GetXMLString(const TreeData &tree_data)
   xmlBufferFree(buf);
   return result;
 }
-}  // namespace sequencer
-}  // namespace sup
 
-// ----------------------------------------------------------------------------
-// Implementation of helper functions from anonymous namespace.
-// ----------------------------------------------------------------------------
+}  // namespace sequencer
+
+}  // namespace sup
 
 namespace
 {

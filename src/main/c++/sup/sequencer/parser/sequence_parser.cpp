@@ -19,30 +19,21 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
+#include <sup/sequencer/sequence_parser.h>
 
-#include <common/SysTools.h>
+#include "procedure_parser.h"
+#include "sequence_parser_impl.h"
+#include "treedata_xml_write_utils.h"
+#include "procedure_to_treedata_utils.h"
 
 #include <sup/sequencer/log.h>
 
-// Local header files
-
-#include "ProcedureParser.h"
-#include <sup/sequencer/sequence_parser.h>
-#include "SequenceParserImpl.h"
-#include "TreeDataXmlWriteUtils.h"
-#include "ProcedureToTreeDataUtils.h"
-
-// Type definition
+#include <common/SysTools.h>
 
 namespace sup
 {
 namespace sequencer
 {
-// Global variables
-
-// Function definition
-
 bool LoadPlugin(const std::string& name)
 {
   log::Debug("sup::sequencer::LoadPlugin('%s') - trying to load plugin..", name.c_str());
@@ -116,9 +107,3 @@ std::string GetXMLString(const Procedure& procedure)
 }  // namespace sequencer
 
 }  // namespace sup
-
-extern "C"
-{
-  // C API function definitions
-
-}  // extern C

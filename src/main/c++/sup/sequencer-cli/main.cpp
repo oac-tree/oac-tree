@@ -19,20 +19,14 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
+#include "cl_interface.h"
 
-#include <algorithm>
-#include <iostream>  // std::cout, etc.
-
-#include <sup/sequencer/log.h>  // CCS logging library
-
-// Local header files
-
-#include "CLInterface.h"
+#include <sup/sequencer/log.h>
 #include <sup/sequencer/runner.h>
 #include <sup/sequencer/sequence_parser.h>
 
-// Constants
+#include <algorithm>
+#include <iostream>
 
 namespace
 {
@@ -44,18 +38,10 @@ enum VerbosityLevels
 };
 }  // namespace
 
-// Type definition
-
-// Global variables
-
-// Function declaration
-
 bool IsVerboseOption(const char* option);
 bool HasHelpOption(const std::vector<std::string>& arguments);
 std::string GetFileName(const std::vector<std::string>& arguments);
 int GetVerbosityLevel(const std::vector<std::string>& arguments);
-
-// Function definition
 
 void print_usage(const std::string& prog_name)
 {

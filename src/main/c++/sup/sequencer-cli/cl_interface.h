@@ -19,29 +19,10 @@
  * of the distribution package.
  ******************************************************************************/
 
-/**
- * @file CLInterface.h
- * @brief Header file for CLInterface class.
- * @date 25/11/20
- * @author Walter Van Herck (IO)
- * @copyright 2010-2022 ITER Organization
- * @details This header file contains the definition of the CLInterface class.
- */
-
-#ifndef _SEQ_CLInterface_h_
-#define _SEQ_CLInterface_h_
-
-// Global header files
-
-// Local header files
+#ifndef SUP_SEQUENCER_CL_INTERFACE_H_
+#define SUP_SEQUENCER_CL_INTERFACE_H_
 
 #include <sup/sequencer/user_interface.h>
-
-// Constants
-
-// Type definition
-
-#ifdef __cplusplus
 
 namespace sup
 {
@@ -50,7 +31,6 @@ namespace sequencer
 /**
  * @brief Class implementing a command line user interface for the Sequencer.
  */
-
 class CLInterface : public UserInterface
 {
 private:
@@ -82,24 +62,8 @@ public:
   ~CLInterface() override;
 };
 
-// Global variables
-
-// Function declarations
-
-// Function definitions
-
 }  // namespace sequencer
 
 }  // namespace sup
 
-extern "C"
-{
-#endif  // __cplusplus
-
-  // C API function declarations
-
-#ifdef __cplusplus
-}  // extern C
-#endif  // __cplusplus
-
-#endif  // _SEQ_CLInterface_h_
+#endif  // SUP_SEQUENCER_CL_INTERFACE_H_

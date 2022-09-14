@@ -19,32 +19,22 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
+#include "sequence_parser_impl.h"
 
-#include <common/SysTools.h>
-#include <libxml/parser.h>
-#include <stdio.h>
-#include <string.h>
+#include "xml_utils.h"
 
 #include <sup/sequencer/log.h>
 
-// Local header files
+#include <common/SysTools.h>
+#include <libxml/parser.h>
 
-#include "SequenceParserImpl.h"
-#include "XmlUtils.h"
-
-// Unnamed namespace declarations
-
-// Type definition
+#include <stdio.h>
+#include <string.h>
 
 namespace sup
 {
 namespace sequencer
 {
-// Global variables
-
-// Function declaration
-
 static std::unique_ptr<TreeData> ParseXMLDoc(xmlDocPtr doc);
 
 static std::unique_ptr<TreeData> ParseDataTree(xmlDocPtr doc, xmlNodePtr node);
@@ -52,8 +42,6 @@ static std::unique_ptr<TreeData> ParseDataTree(xmlDocPtr doc, xmlNodePtr node);
 static void AddXMLAttributes(TreeData *tree, xmlNodePtr node);
 
 static void AddXMLChildren(TreeData *tree, xmlDocPtr doc, xmlNodePtr node);
-
-// Function definition
 
 std::unique_ptr<TreeData> ParseXMLDataFile(const std::string &filename)
 {
@@ -151,9 +139,3 @@ static void AddXMLChildren(TreeData *tree, xmlDocPtr doc, xmlNodePtr node)
 }  // namespace sequencer
 
 }  // namespace sup
-
-extern "C"
-{
-  // C API function definitions
-
-}  // extern C

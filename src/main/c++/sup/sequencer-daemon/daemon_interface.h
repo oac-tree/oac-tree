@@ -19,29 +19,10 @@
  * of the distribution package.
  ******************************************************************************/
 
-/**
- * @file DaemonInterface.h
- * @brief Header file for DaemonInterface class.
- * @date 05/05/21
- * @author Walter Van Herck (IO)
- * @copyright 2010-2022 ITER Organization
- * @details This header file contains the definition of the DaemonInterface class.
- */
-
-#ifndef _SEQ_DaemonInterface_h_
-#define _SEQ_DaemonInterface_h_
-
-// Global header files
-
-// Local header files
+#ifndef SUP_SEQUENCER_DAEMON_INTERFACE_H_
+#define SUP_SEQUENCER_DAEMON_INTERFACE_H_
 
 #include <sup/sequencer/user_interface.h>
-
-// Constants
-
-// Type definition
-
-#ifdef __cplusplus
 
 namespace sup
 {
@@ -50,7 +31,6 @@ namespace sequencer
 /**
  * @brief Class implementing a write-only user interface for the Sequencer daemon procedures.
  */
-
 class DaemonInterface : public UserInterface
 {
 private:
@@ -80,24 +60,8 @@ public:
   ~DaemonInterface() override;
 };
 
-// Global variables
-
-// Function declarations
-
-// Function definitions
-
 }  // namespace sequencer
 
 }  // namespace sup
 
-extern "C"
-{
-#endif  // __cplusplus
-
-  // C API function declarations
-
-#ifdef __cplusplus
-}  // extern C
-#endif  // __cplusplus
-
-#endif  // _SEQ_DaemonInterface_h_
+#endif  // SUP_SEQUENCER_DAEMON_INTERFACE_H_

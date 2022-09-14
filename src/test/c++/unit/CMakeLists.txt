@@ -40,13 +40,13 @@ target_sources(unit-tests
         ${CMAKE_CURRENT_LIST_DIR}/VariableRegistry-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Wait-tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Workspace-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++/sup/sequencer-cli/CLInterface.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++/sup/sequencer-daemon/DaemonInterface.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++/sup/sequencer-cli/cl_interface.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++/sup/sequencer-daemon/daemon_interface.cpp
 )
 
 target_include_directories(unit-tests
     PRIVATE
-        ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++
+        # ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++
         ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++/sup/sequencer-cli
         ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++/sup/sequencer-daemon
         $ENV{CODAC_ROOT}/include

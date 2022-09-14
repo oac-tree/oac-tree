@@ -19,28 +19,32 @@
  * of the distribution package.
  ******************************************************************************/
 
-/**
- * @file TreeDataXmlWriteUtils.h
- * @brief Utility functions to write TreeData to XML strings and XML files.
- */
+#ifndef SUP_SEQUENCER_PROCEDURE_TO_TREEDATA_UTILS_H_
+#define SUP_SEQUENCER_PROCEDURE_TO_TREEDATA_UTILS_H_
 
-#ifndef _SEQ_TreeDataXmlWriteUtils_h_
-#define _SEQ_TreeDataXmlWriteUtils_h_
-
-#include <string>
+#include <memory>
 
 namespace sup
 {
 namespace sequencer
 {
+
 class TreeData;
+class Procedure;
+class Variable;
+class Instruction;
+class Workspace;
 
-void WriteToXMLFile(const std::string& file_name, const TreeData& tree_data);
+std::unique_ptr<TreeData> ToTreeData(const Procedure& procedure);
 
-std::string GetXMLString(const TreeData& tree_data);
+std::unique_ptr<TreeData> ToTreeData(const Variable& variable);
+
+std::unique_ptr<TreeData> ToTreeData(const Workspace& workspace);
+
+std::unique_ptr<TreeData> ToTreeData(const Instruction& instruction);
 
 }  // namespace sequencer
 
 }  // namespace sup
 
-#endif  // _SEQ_TreeDataXmlWriteUtils_h_
+#endif  // SUP_SEQUENCER_PROCEDURE_TO_TREEDATA_UTILS_H_

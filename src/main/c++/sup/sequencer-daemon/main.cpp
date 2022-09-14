@@ -19,21 +19,15 @@
  * of the distribution package.
  ******************************************************************************/
 
-// Global header files
+#include "daemon_interface.h"
 
-#include <common/SysTools.h>  // Misc. helper functions
-
-#include <iostream>  // std::cout, etc.
-
-#include <sup/sequencer/log.h>  // CCS logging library
-
-// Local header files
-
-#include "DaemonInterface.h"
+#include <sup/sequencer/log.h>
 #include <sup/sequencer/runner.h>
 #include <sup/sequencer/sequence_parser.h>
 
-// Type definition
+#include <common/SysTools.h>
+
+#include <iostream>
 
 struct DaemonParams
 {
@@ -43,16 +37,10 @@ struct DaemonParams
   int exit_code;
 };
 
-// Global variables
-
-// Function declaration
-
 DaemonParams ParseCommandLineArgs(int argc, char* argv[]);
 bool IsHelpOption(const char* option);
 bool IsFileOption(const char* option);
 bool IsLogOption(const char* option);
-
-// Function definition
 
 void print_usage()
 {

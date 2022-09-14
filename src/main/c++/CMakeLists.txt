@@ -11,60 +11,7 @@ if(CMAKE_VERSION VERSION_LESS "3.7.0")
     set(CMAKE_INCLUDE_CURRENT_DIR ON)
 endif()
 
-add_executable(sequencer-cli)
-
-add_executable(sequencer-daemon)
-
-add_library(sup-sequencer-shared SHARED)
-
-find_package(LibXml2 REQUIRED)
-
 add_subdirectory(sup)
-
-set_target_properties(sup-sequencer-shared PROPERTIES
-    VERSION ${LIBVERSION}
-    SOVERSION ${LIBSOVERSION}
-    OUTPUT_NAME sequencer
-)
-
-target_include_directories(sup-sequencer-shared
-    PRIVATE
-        ${LIBXML2_INCLUDE_DIR}
-        $ENV{CODAC_ROOT}/include
-    PUBLIC
-        ${CMAKE_CURRENT_LIST_DIR}
-)
-
-target_link_directories(sup-sequencer-shared
-    PUBLIC $ENV{CODAC_ROOT}/lib
-)
-
-target_link_libraries(sup-sequencer-shared
-    PRIVATE
-        ${LIBXML2_LIBRARIES}
-    PUBLIC
-        ccs-core
-)
-
-target_include_directories(sequencer-cli
-    PRIVATE
-        $ENV{CODAC_ROOT}/include
-)
-
-target_link_libraries(sequencer-cli
-    PRIVATE
-        sup-sequencer-shared
-)
-
-target_include_directories(sequencer-daemon
-    PRIVATE
-        $ENV{CODAC_ROOT}/include
-)
-
-target_link_libraries(sequencer-daemon
-    PRIVATE
-        sup-sequencer-shared
-)
 
 install(FILES
         sup/sequencer/attribute_map.h

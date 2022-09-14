@@ -2,53 +2,50 @@ add_executable(unit-tests)
 
 target_sources(unit-tests
     PRIVATE
-        ${CMAKE_CURRENT_LIST_DIR}/LogUI.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/UnitTestHelper.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/AttributeMap-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Choice-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/CLInterface-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Condition-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/CompoundInstruction-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/DaemonInterface-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/DecoratorInstruction-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Equals-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/ExecutionStatus-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Fallback-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/FileVariable-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Include-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Input-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Instruction-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/InstructionRegistry-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Listen-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/LocalVariable-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Message-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/NamedCallbackManager-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Output-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/ParallelSequence-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Procedure-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/ProcedureToTreeDataUtils-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Repeat-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Runner-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/RegisterType-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/ResetVariable-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/SequenceParser-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/SequenceWorkspace-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/TreeData-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/TreeDataXmlWriteUtils-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/UserChoice-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/UserInterface-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/VariableRegistry-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Wait-tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/Workspace-tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/log_ui.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/unit_test_helper.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/attribute_map_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/choice_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/cl_interface_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/compound_instruction_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/condition_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/daemon_interface_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/decorator_instruction_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/equals_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/execution_status_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/fallback_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/file_variable_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/include_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/input_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/instruction_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/instruction_registry_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/listen_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/local_variable_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/message_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/named_callback_manager_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/output_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/parallel_sequence_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/procedure_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/procedure_to_treedata_utils_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/register_type_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/repeat_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/reset_variable_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/runner_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/sequence_parser_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/sequence_workspace_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/treedata_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/treedata_xml_write_utils_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/user_choice_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/user_interface_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/variable_registry_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/wait_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/workspace_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++/sup/sequencer-cli/cl_interface.cpp
         ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++/sup/sequencer-daemon/daemon_interface.cpp
 )
 
 target_include_directories(unit-tests
     PRIVATE
-        # ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++
-        ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++/sup/sequencer-cli
-        ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++/sup/sequencer-daemon
         $ENV{CODAC_ROOT}/include
 )
 

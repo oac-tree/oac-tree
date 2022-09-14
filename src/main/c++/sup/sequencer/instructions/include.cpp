@@ -110,7 +110,7 @@ ExecutionStatus Include::CalculateStatus() const
   return GetChildStatus();
 }
 
-Include::Include() : DecoratorInstruction(Type) {}
+Include::Include() : DecoratorInstruction(Include::Type) {}
 
 Include::~Include() = default;
 

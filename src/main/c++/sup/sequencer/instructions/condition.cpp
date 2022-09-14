@@ -34,7 +34,7 @@ namespace sequencer
 {
 const std::string Condition::Type = "Condition";
 
-Condition::Condition() : Instruction(Type) {}
+Condition::Condition() : Instruction(Condition::Type) {}
 
 Condition::~Condition() = default;
 

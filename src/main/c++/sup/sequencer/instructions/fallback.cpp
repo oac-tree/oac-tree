@@ -84,7 +84,7 @@ ExecutionStatus Fallback::CalculateCompoundStatus() const
   return ExecutionStatus::FAILURE;
 }
 
-Fallback::Fallback() : CompoundInstruction(Type) {}
+Fallback::Fallback() : CompoundInstruction(Fallback::Type) {}
 
 Fallback::~Fallback() = default;
 

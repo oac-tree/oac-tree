@@ -103,7 +103,7 @@ ExecutionStatus Repeat::CalculateStatus() const
   return child_status;
 }
 
-Repeat::Repeat() : DecoratorInstruction(Type), _max_count{0}, _count{0}, _init_ok{false} {}
+Repeat::Repeat() : DecoratorInstruction(Repeat::Type), _max_count{0}, _count{0}, _init_ok{false} {}
 
 Repeat::~Repeat() = default;
 

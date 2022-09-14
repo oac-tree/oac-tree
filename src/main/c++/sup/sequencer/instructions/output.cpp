@@ -56,7 +56,7 @@ ExecutionStatus Output::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
   return status ? ExecutionStatus::SUCCESS : ExecutionStatus::FAILURE;
 }
 
-Output::Output() : Instruction(Type) {}
+Output::Output() : Instruction(Output::Type) {}
 
 Output::~Output() = default;
 

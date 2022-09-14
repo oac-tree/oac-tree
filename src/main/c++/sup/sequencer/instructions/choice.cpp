@@ -35,7 +35,7 @@ namespace sequencer
 const std::string Choice::Type = "Choice";
 
 Choice::Choice()
-  : CompoundInstruction(Type)
+  : CompoundInstruction(Choice::Type)
   , numberOfElements{1u}
   , elementSize{0}
   , isMask{false}

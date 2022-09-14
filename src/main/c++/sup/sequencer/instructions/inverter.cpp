@@ -69,7 +69,7 @@ ExecutionStatus Inverter::CalculateStatus() const
   return status;
 }
 
-Inverter::Inverter() : DecoratorInstruction(Type) {}
+Inverter::Inverter() : DecoratorInstruction(Inverter::Type) {}
 
 Inverter::~Inverter() = default;
 

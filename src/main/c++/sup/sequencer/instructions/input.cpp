@@ -60,7 +60,7 @@ ExecutionStatus Input::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
   return ExecutionStatus::SUCCESS;
 }
 
-Input::Input() : Instruction(Type) {}
+Input::Input() : Instruction(Input::Type) {}
 
 Input::~Input() = default;
 

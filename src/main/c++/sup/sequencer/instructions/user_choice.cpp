@@ -79,7 +79,7 @@ std::vector<std::string> UserChoice::GetChoices() const
   return result;
 }
 
-UserChoice::UserChoice() : CompoundInstruction(Type) {}
+UserChoice::UserChoice() : CompoundInstruction(UserChoice::Type) {}
 
 UserChoice::~UserChoice() = default;
 

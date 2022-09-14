@@ -43,7 +43,7 @@ bool Equals(const ccs::types::AnyValue& lhs, const ccs::types::AnyValue& rhs);
 const std::string Listen::Type = "Listen";
 
 Listen::Listen()
-  : DecoratorInstruction(Type)
+  : DecoratorInstruction(Listen::Type)
   , force_success{false}
   , var_changed{false}
   , var_names{}

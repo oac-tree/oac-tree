@@ -77,7 +77,7 @@ bool Wait::SetupImpl(const Procedure& /*proc*/)
   return true;  // if timeout was not specified, Wait immediately returns SUCCESS.
 }
 
-Wait::Wait() : Instruction(Type), _timeout(0), _finish(0) {}
+Wait::Wait() : Instruction(Wait::Type), _timeout(0), _finish(0) {}
 
 Wait::~Wait() = default;
 

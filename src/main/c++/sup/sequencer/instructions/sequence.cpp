@@ -83,7 +83,7 @@ ExecutionStatus Sequence::CalculateCompoundStatus() const
   return ExecutionStatus::SUCCESS;
 }
 
-Sequence::Sequence() : CompoundInstruction(Type) {}
+Sequence::Sequence() : CompoundInstruction(Sequence::Type) {}
 
 Sequence::~Sequence() = default;
 

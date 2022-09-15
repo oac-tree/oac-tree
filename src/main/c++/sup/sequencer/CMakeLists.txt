@@ -4,6 +4,7 @@ add_library(sup-sequencer-shared SHARED)
 
 add_subdirectory(base)
 add_subdirectory(instructions)
+add_subdirectory(log)
 add_subdirectory(parser)
 add_subdirectory(procedure)
 add_subdirectory(runner)

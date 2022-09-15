@@ -19,8 +19,8 @@
  * of the distribution package.
  ******************************************************************************/
 
-#ifndef SUP_SEQUENCER_I_LOG_HANDLER_H_
-#define SUP_SEQUENCER_I_LOG_HANDLER_H_
+#ifndef SUP_SEQUENCER_LOG_SEVERITY_H_
+#define SUP_SEQUENCER_LOG_SEVERITY_H_
 
 #include <string>
 
@@ -30,18 +30,12 @@ namespace sequencer
 {
 namespace log
 {
-class ILogHandler
-{
-public:
-  virtual ~ILogHandler();
+std::string SeverityString(int severity);
 
-  virtual void LogMessage(int severity, const std::string& source,
-                          const std::string& message) const = 0;
-};
 }  // namespace log
 
 }  // namespace sequencer
 
 }  // namespace sup
 
-#endif  // SUP_SEQUENCER_I_LOG_HANDLER_H_
+#endif  // SUP_SEQUENCER_LOG_SEVERITY_H_

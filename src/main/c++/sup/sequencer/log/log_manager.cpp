@@ -24,6 +24,10 @@
 #include "stdout_log_handler.h"
 #include "sys_log_handler.h"
 
+#include <sup/sequencer/log.h>
+
+#include <algorithm>
+
 namespace
 {
 sup::sequencer::log::ILogHandler* GetStdoutLogHandler();
@@ -38,19 +42,41 @@ namespace log
 {
 LogManager::LogManager()
   : m_handler{GetSysLogHandler()}
+  , m_max_severity{SUP_LOG_DEBUG}
 {}
 
 LogManager::~LogManager() = default;
 
-void LogManager::LogMessage(const std::string& message) const
+void LogManager::LogMessage(int severity, const std::string& source, const std::string& message) const
 {
+  if (severity > m_max_severity.load())
+  {
+    return;
+  }
   auto handler = m_handler.load();
-  handler->LogMessage(message);
+  handler->LogMessage(severity, source, message);
 }
 
 ILogHandler* LogManager::SetHandler(ILogHandler* handler)
 {
   return m_handler.exchange(handler);
+}
+
+void LogManager::SetMaxSeverity(int max_severity)
+{
+  auto positive_bound = std::max(max_severity, 0);
+  auto bounded_max = std::min(positive_bound, NUMBER_OF_LOG_LEVELS - 1);
+  m_max_severity.store(bounded_max);
+}
+
+void LogManager::SetStdout()
+{
+  SetHandler(GetStdoutLogHandler());
+}
+
+void LogManager::SetSyslog()
+{
+  SetHandler(GetSysLogHandler());
 }
 
 }  // namespace log

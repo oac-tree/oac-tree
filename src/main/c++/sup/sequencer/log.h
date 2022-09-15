@@ -22,9 +22,10 @@
 #ifndef SUP_SEQUENCER_LOG_H_
 #define SUP_SEQUENCER_LOG_H_
 
-#include <string>
-#include <cstdarg>
+#include <memory>
+#include <ostream>
 #include <stdio.h>
+#include <string>
 
 namespace sup
 {
@@ -34,6 +35,23 @@ namespace log
 {
 constexpr size_t kBufferSize = 1024;
 const std::string kSource = "sup::sequencer";
+
+class LogStreamRedirectorImpl;
+
+/**
+ * @brief Temporarily redirects log output to the provided stream.
+ *
+ * @note Upon destruction, the previous log handler will be restored.
+ * It is NOT safe to change the log output during the lifetime of this object!
+ */
+class LogStreamRedirector
+{
+public:
+  LogStreamRedirector(std::ostream& out_stream);
+  ~LogStreamRedirector();
+private:
+  std::unique_ptr<LogStreamRedirectorImpl> m_impl;
+};
 
 enum Severity
 {

@@ -31,8 +31,6 @@
 #include <memory>
 #include <sstream>
 
-static std::ostringstream out_stream;
-
 using namespace sup::sequencer;
 
 class DaemonInterfaceTest : public ::testing::Test
@@ -44,14 +42,12 @@ protected:
   DaemonInterface daemon_interface;
   DaemonInterface daemon_interface_logging;
   std::unique_ptr<Instruction> wait;
-  ccs::log::Func_t old_cb;
+  std::ostringstream out_stream;
 };
-
-static void log_cb(ccs::log::Severity_t severity, const ccs::types::char8* const source,
-                   const ccs::types::char8* const message, va_list args);
 
 TEST_F(DaemonInterfaceTest, UpdateInstructionStatus)
 {
+  log::LogStreamRedirector redirector(out_stream);
   EXPECT_TRUE(out_stream.str().empty());
   daemon_interface.UpdateInstructionStatus(wait.get());
   auto logged = out_stream.str();
@@ -60,6 +56,7 @@ TEST_F(DaemonInterfaceTest, UpdateInstructionStatus)
 
 TEST_F(DaemonInterfaceTest, UpdateInstructionStatusLogged)
 {
+  log::LogStreamRedirector redirector(out_stream);
   EXPECT_TRUE(out_stream.str().empty());
   daemon_interface_logging.UpdateInstructionStatus(wait.get());
   auto logged = out_stream.str();
@@ -69,6 +66,7 @@ TEST_F(DaemonInterfaceTest, UpdateInstructionStatusLogged)
 
 TEST_F(DaemonInterfaceTest, StartSingleStep)
 {
+  log::LogStreamRedirector redirector(out_stream);
   EXPECT_TRUE(out_stream.str().empty());
   daemon_interface.StartSingleStep();
   EXPECT_TRUE(out_stream.str().empty());
@@ -76,6 +74,7 @@ TEST_F(DaemonInterfaceTest, StartSingleStep)
 
 TEST_F(DaemonInterfaceTest, StartSingleStepLogged)
 {
+  log::LogStreamRedirector redirector(out_stream);
   EXPECT_TRUE(out_stream.str().empty());
   daemon_interface_logging.StartSingleStep();
   EXPECT_FALSE(out_stream.str().empty());
@@ -83,6 +82,7 @@ TEST_F(DaemonInterfaceTest, StartSingleStepLogged)
 
 TEST_F(DaemonInterfaceTest, EndSingleStep)
 {
+  log::LogStreamRedirector redirector(out_stream);
   EXPECT_TRUE(out_stream.str().empty());
   daemon_interface.EndSingleStep();
   EXPECT_TRUE(out_stream.str().empty());
@@ -90,6 +90,7 @@ TEST_F(DaemonInterfaceTest, EndSingleStep)
 
 TEST_F(DaemonInterfaceTest, EndSingleStepLogged)
 {
+  log::LogStreamRedirector redirector(out_stream);
   EXPECT_TRUE(out_stream.str().empty());
   daemon_interface_logging.EndSingleStep();
   EXPECT_FALSE(out_stream.str().empty());
@@ -97,6 +98,7 @@ TEST_F(DaemonInterfaceTest, EndSingleStepLogged)
 
 TEST_F(DaemonInterfaceTest, GetUserValue)
 {
+  log::LogStreamRedirector redirector(out_stream);
   EXPECT_TRUE(out_stream.str().empty());
   ::ccs::types::AnyValue val(::ccs::types::UnsignedInteger32);
   val = 1234u;
@@ -108,6 +110,7 @@ TEST_F(DaemonInterfaceTest, GetUserValue)
 
 TEST_F(DaemonInterfaceTest, GetUserChoice)
 {
+  log::LogStreamRedirector redirector(out_stream);
   EXPECT_TRUE(out_stream.str().empty());
   std::vector<std::string> choices = {"one", "two"};
   EXPECT_EQ(daemon_interface.GetUserChoice(choices), -1);
@@ -118,36 +121,7 @@ DaemonInterfaceTest::DaemonInterfaceTest()
     : daemon_interface{}
     , daemon_interface_logging{true}
     , wait{GlobalInstructionRegistry().Create("Wait")}
-{
-  old_cb = ccs::log::SetCallback(log_cb);
-  out_stream.str("");
-}
+    , out_stream{}
+{}
 
-DaemonInterfaceTest::~DaemonInterfaceTest()
-{
-  (void)ccs::log::SetCallback(old_cb);
-}
-
-static void log_cb(ccs::log::Severity_t severity, const ccs::types::char8* const source,
-                   const ccs::types::char8* const message, va_list args)
-{
-  ccs::types::char8 buffer[1024];
-  ccs::types::char8* p_buf = static_cast<ccs::types::char8*>(buffer);
-  size_t size = 1024u;
-
-  (void)vsnprintf(p_buf, size, message, args);
-
-  // Re-align pointer
-  size -= strlen(p_buf);
-  p_buf += strlen(p_buf);
-
-  if (size > 0)
-  {
-    p_buf[0] = '\n';
-  }
-
-  // Ensure proper termination
-  buffer[1023] = '\0';
-
-  out_stream << buffer;
-}
+DaemonInterfaceTest::~DaemonInterfaceTest() = default;

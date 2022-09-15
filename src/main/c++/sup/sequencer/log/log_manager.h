@@ -38,10 +38,14 @@ public:
   LogManager();
   ~LogManager();
 
-  void LogMessage(const std::string& message) const;
+  void LogMessage(int severity, const std::string& source, const std::string& message) const;
   ILogHandler* SetHandler(ILogHandler* handler);
+  void SetMaxSeverity(int max_severity);
+  void SetStdout();
+  void SetSyslog();
 private:
   std::atomic<ILogHandler*> m_handler;
+  std::atomic_int m_max_severity;
 };
 
 }  // namespace log

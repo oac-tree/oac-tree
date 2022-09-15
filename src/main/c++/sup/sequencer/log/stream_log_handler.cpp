@@ -21,6 +21,10 @@
 
 #include "stream_log_handler.h"
 
+#include "log_severity.h"
+
+#include <sstream>
+
 namespace sup
 {
 namespace sequencer
@@ -33,9 +37,18 @@ StreamLogHandler::StreamLogHandler(std::ostream& out_stream)
 
 StreamLogHandler::~StreamLogHandler() = default;
 
-void StreamLogHandler::LogMessage(const std::string& message) const
+void StreamLogHandler::LogMessage(int severity, const std::string& source,
+                                  const std::string& message) const
 {
-  m_out_stream << message << std::endl;
+  std::ostringstream oss;
+  oss << "[" << SeverityString(severity) << "] ";
+  oss << message;
+  if (!source.empty())
+  {
+    oss << " [" << source << "]";
+  }
+  oss << std::endl;
+  m_out_stream << oss.str();
 }
 }  // namespace log
 

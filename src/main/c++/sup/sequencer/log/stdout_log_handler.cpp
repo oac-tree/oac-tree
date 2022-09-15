@@ -21,7 +21,10 @@
 
 #include "stdout_log_handler.h"
 
+#include "log_severity.h"
+
 #include <iostream>
+#include <sstream>
 
 namespace sup
 {
@@ -33,9 +36,18 @@ StdoutLogHandler::StdoutLogHandler() = default;
 
 StdoutLogHandler::~StdoutLogHandler() = default;
 
-void StdoutLogHandler::LogMessage(const std::string& message) const
+void StdoutLogHandler::LogMessage(int severity, const std::string& source,
+                                  const std::string& message) const
 {
-  std::cout << message << std::endl;
+  std::ostringstream oss;
+  oss << "[" << SeverityString(severity) << "] ";
+  oss << message;
+  if (!source.empty())
+  {
+    oss << " [" << source << "]";
+  }
+  oss << std::endl;
+  std::cout << oss.str();
 }
 }  // namespace log
 

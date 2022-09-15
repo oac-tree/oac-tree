@@ -21,7 +21,13 @@
 
 #include "sys_log_handler.h"
 
+#include "log_severity.h"
+
 #include <iostream>
+#include <sstream>
+
+#include <syslog.h>
+#include <unistd.h>
 
 namespace sup
 {
@@ -33,9 +39,15 @@ SysLogHandler::SysLogHandler() = default;
 
 SysLogHandler::~SysLogHandler() = default;
 
-void SysLogHandler::LogMessage(const std::string& message) const
+void SysLogHandler::LogMessage(int severity, const std::string& source,
+                               const std::string& message) const
 {
-  std::cout << message << std::endl;
+  std::ostringstream oss;
+  oss << "sup-log-lib:" << getpid();
+  oss << "[" << source << "]";
+  oss << "[" << SeverityString(severity) << "] ";
+  oss << message << std::endl;
+  syslog(severity, oss.str().c_str());
 }
 }  // namespace log
 

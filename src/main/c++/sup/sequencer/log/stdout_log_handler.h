@@ -37,7 +37,8 @@ public:
   StdoutLogHandler();
   ~StdoutLogHandler();
 
-  void LogMessage(const std::string& message) const override;
+  void LogMessage(int severity, const std::string& source,
+                  const std::string& message) const override;
 };
 
 }  // namespace log

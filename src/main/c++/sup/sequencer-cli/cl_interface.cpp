@@ -26,6 +26,7 @@
 
 #include <common/AnyValueHelper.h>
 
+#include <cstring>
 #include <iostream>
 #include <map>
 #include <sstream>
@@ -202,7 +203,8 @@ template <>
 bool ParserFunctionT<::ccs::types::string>(::ccs::types::AnyValue &value, const std::string &str)
 {
   ::ccs::types::string buffer;
-  ::ccs::HelperTools::SafeStringCopy(buffer, str.c_str(), 64);
+  std::strncpy(buffer, str.c_str(), STRING_MAX_LENGTH);
+  buffer[STRING_MAX_LENGTH-1] = '\0';
   value = buffer;
   return true;
 }

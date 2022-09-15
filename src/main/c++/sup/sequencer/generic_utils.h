@@ -43,6 +43,8 @@ char* GetEnvironmentVariable(const std::string& varname);
  */
 unsigned long StringToUnsigned(const std::string& str);
 
+unsigned long long GetNanosecsSinceEpoch();
+
 }  // namespace utils
 
 }  // namespace sequencer

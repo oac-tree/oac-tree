@@ -21,6 +21,7 @@
 
 #include <sup/sequencer/generic_utils.h>
 
+#include <chrono>
 #include <cstdlib>
 #include <dlfcn.h>
 #include <fstream>
@@ -111,6 +112,14 @@ unsigned long StringToUnsigned(const std::string& str)
   {
     return 0;
   }
+}
+
+unsigned long long GetNanosecsSinceEpoch()
+{
+  auto now = std::chrono::system_clock::now();
+  auto ns = std::chrono::duration_cast<std::chrono::duration<unsigned long long, std::nano>>(
+    now.time_since_epoch());
+  return ns.count();
 }
 
 }  // namespace utils

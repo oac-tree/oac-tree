@@ -22,9 +22,8 @@
 #include "wait.h"
 
 #include <sup/sequencer/constants.h>
+#include <sup/sequencer/generic_utils.h>
 #include <sup/sequencer/log.h>
-
-#include <common/TimeTools.h>
 
 #include <chrono>
 #include <cmath>
@@ -40,7 +39,7 @@ static unsigned long ToNanoSeconds(double sec);
 
 void Wait::InitHook()
 {
-  unsigned long _now = ::ccs::HelperTools::GetCurrentTime();
+  unsigned long _now = utils::GetNanosecsSinceEpoch();
   _finish = _now + _timeout;
 }
 
@@ -48,7 +47,7 @@ ExecutionStatus Wait::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
 {
   (void)ui;
   (void)ws;
-  while (!_halt_requested.load() && _finish > ::ccs::HelperTools::GetCurrentTime())
+  while (!_halt_requested.load() && _finish > utils::GetNanosecsSinceEpoch())
   {
     std::this_thread::sleep_for(std::chrono::milliseconds(DefaultSettings::TIMING_ACCURACY_MS));
   }

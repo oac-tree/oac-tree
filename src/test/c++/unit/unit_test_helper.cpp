@@ -134,8 +134,8 @@ std::string GetFullTestFilePath(const std::string &filename)
   {
     return filename;
   }
-  std::string resources_path(
-    sup::sequencer::utils::GetEnvironmentVariable(ENV_TEST_RESOURCES_PATH_NAME));
+  std::string resources_path =
+    sup::sequencer::utils::GetEnvironmentVariable(ENV_TEST_RESOURCES_PATH_NAME);
   if (resources_path.empty())
   {
     return filename;

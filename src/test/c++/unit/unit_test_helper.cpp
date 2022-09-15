@@ -21,25 +21,26 @@
 
 #include "unit_test_helper.h"
 
-#include <sup/sequencer/log.h>
+#include <sup/sequencer/generic_utils.h>
 #include <sup/sequencer/instruction.h>
 #include <sup/sequencer/instruction_registry.h>
+#include <sup/sequencer/log.h>
 #include <sup/sequencer/procedure.h>
 #include <sup/sequencer/user_interface.h>
 
 #include <common/BasicTypes.h>
-#include <common/SysTools.h>
 
 #include <cstdio>
 #include <fstream>
 #include <sstream>
+#include <string>
 
 namespace sup
 {
 namespace UnitTestHelper
 {
 
-static const char *ENV_TEST_RESOURCES_PATH_NAME = "TEST_RESOURCES_PATH";
+static const std::string ENV_TEST_RESOURCES_PATH_NAME = "TEST_RESOURCES_PATH";
 
 const std::string CounterInstruction::Type = "Counter";
 ccs::types::uint32 CounterInstruction::counter = 0u;
@@ -57,8 +58,8 @@ sup::sequencer::ExecutionStatus CounterInstruction::ExecuteSingleImpl(
 {
   if (sup::sequencer::Instruction::HasAttribute("incr"))
   {
-    ccs::types::uint32 incr =
-        ccs::HelperTools::ToInteger(sup::sequencer::Instruction::GetAttribute("incr").c_str());
+    ccs::types::uint32 incr = sup::sequencer::utils::StringToUnsigned(
+      sup::sequencer::Instruction::GetAttribute("incr"));
     counter += incr;
   }
   else
@@ -134,7 +135,7 @@ std::string GetFullTestFilePath(const std::string &filename)
     return filename;
   }
   std::string resources_path(
-      ::ccs::HelperTools::GetEnvironmentVariable(ENV_TEST_RESOURCES_PATH_NAME));
+    sup::sequencer::utils::GetEnvironmentVariable(ENV_TEST_RESOURCES_PATH_NAME));
   if (resources_path.empty())
   {
     return filename;

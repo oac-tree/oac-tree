@@ -34,6 +34,15 @@ bool FileExists(const std::string& filename);
 
 bool LoadLibrary(const std::string& libname);
 
+bool CreateDir(const std::string& pathname, unsigned mode = 0755);
+
+char* GetEnvironmentVariable(const std::string& varname);
+
+/**
+ * @brief Convert string to unsigned long or return zero if conversion failed
+ */
+unsigned long StringToUnsigned(const std::string& str);
+
 }  // namespace utils
 
 }  // namespace sequencer

@@ -22,10 +22,10 @@
 #include "log_ui.h"
 #include "unit_test_helper.h"
 
+#include <sup/sequencer/generic_utils.h>
 #include <sup/sequencer/sequence_parser.h>
 
 #include <common/BasicTypes.h>
-#include <common/SysTools.h>
 
 #include <gtest/gtest.h>
 
@@ -151,8 +151,7 @@ TEST(Include, Procedure_extern)
 TEST(Include, Procedure_nested)
 {
   // preparing files for recursive inclusion
-  ccs::HelperTools::CreatePath("instruction_definitions");
-  ccs::HelperTools::CreatePath("instruction_definitions/waits");
+  ASSERT_TRUE(sup::sequencer::utils::CreateDir("instruction_definitions/waits"));
 
   const std::string single_waits_body{R"(
     <Wait name="OneTenthSecond" timeout="0.1" />

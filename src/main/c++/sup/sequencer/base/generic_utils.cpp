@@ -21,9 +21,12 @@
 
 #include <sup/sequencer/generic_utils.h>
 
+#include <cstdlib>
 #include <dlfcn.h>
 #include <fstream>
-#include <stdio.h>
+
+#include <sys/types.h>
+#include <sys/stat.h>
 
 namespace
 {
@@ -61,6 +64,54 @@ bool LoadLibrary(const std::string& libname)
   return lib_handle != nullptr;
 }
 
+// Adpted from https://stackoverflow.com/a/11366985
+bool CreateDir(const std::string& pathname, unsigned mode)
+{
+  if (pathname.empty())
+  {
+    return false;
+  }
+  if (::mkdir(pathname.c_str(), mode) == -1)
+  {
+    switch (errno)
+    {
+      case ENOENT:
+        // parent folder doesn't exist, so try to create it
+        if (CreateDir(pathname.substr(0, pathname.find_last_of('/'))))
+        {
+          return ::mkdir(pathname.c_str(), mode) == 0;
+        }
+        break;
+      case EEXIST:
+        // the folder already exists, so success
+        return true;
+      default:
+        return false;
+    }
+  }
+  else
+  {
+    return true;
+  }
+  return false;
+}
+
+char* GetEnvironmentVariable(const std::string& varname)
+{
+  return getenv(varname.c_str());
+}
+
+unsigned long StringToUnsigned(const std::string& str)
+{
+  try
+  {
+    return std::stoul(str);
+  }
+  catch(const std::exception&)
+  {
+    return 0;
+  }
+}
 
 }  // namespace utils
 

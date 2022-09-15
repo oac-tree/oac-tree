@@ -43,7 +43,7 @@ void SysLogHandler::LogMessage(int severity, const std::string& source,
                                const std::string& message) const
 {
   std::ostringstream oss;
-  oss << "sup-log-lib:" << getpid();
+  oss << "sup-log-lib:" << getpid() << "]";
   oss << "[" << source << "]";
   oss << "[" << SeverityString(severity) << "] ";
   oss << message << std::endl;

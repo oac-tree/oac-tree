@@ -28,10 +28,10 @@
 #include <sup/sequencer/log.h>
 
 #include <common/CompoundType.h>
-#include <common/StringTools.h>
 
 #include <gtest/gtest.h>
 
+#include <cstring>
 #include <memory>
 #include <sstream>
 
@@ -121,7 +121,7 @@ TEST_F(CLInterfaceTest, GetUserValueString)
   EXPECT_TRUE(cli.GetUserValue(val));
   char buffer[STRING_MAX_LENGTH];
   EXPECT_TRUE(val.SerialiseInstance(buffer, STRING_MAX_LENGTH));
-  EXPECT_EQ(::ccs::HelperTools::StringCompare("Test string", buffer), 0);
+  EXPECT_EQ(std::strcmp("\"Test string\"", buffer), 0);
 }
 
 TEST_F(CLInterfaceTest, GetUserValueParseError)

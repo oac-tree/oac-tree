@@ -32,7 +32,6 @@
 #include <common/AnyType.h>
 #include <common/AnyValue.h>
 #include <common/BasicTypes.h>
-#include <common/SharedReference.h>
 
 #include <gtest/gtest.h>
 

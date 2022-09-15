@@ -26,7 +26,6 @@
 #include <sup/sequencer/instruction_registry.h>
 
 #include <common/CompoundType.h>
-#include <common/StringTools.h>
 #include <gtest/gtest.h>
 
 #include <memory>
@@ -142,7 +141,10 @@ static void log_cb(ccs::log::Severity_t severity, const ccs::types::char8* const
   size -= strlen(p_buf);
   p_buf += strlen(p_buf);
 
-  (void)ccs::HelperTools::SafeStringCopy(p_buf, "\n", size);
+  if (size > 0)
+  {
+    p_buf[0] = '\n';
+  }
 
   // Ensure proper termination
   buffer[1023] = '\0';

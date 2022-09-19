@@ -10,4 +10,4 @@ if(CMAKE_VERSION VERSION_LESS "3.7.0")
 endif()
 
 add_subdirectory(unit)
-# add_subdirectory(testapp)
+add_subdirectory(testapp)

@@ -244,8 +244,8 @@ TEST_F(RunnerTest, UICalls)
 TEST_F(RunnerTest, UIVariableCalls)
 {
   // Set Expectations on mock UserInterface calls
-  ccs::types::AnyValue val(ccs::types::UnsignedInteger64);
-  val = ccs::types::uint64(1729);
+  sup::dto::AnyValue val(sup::dto::UnsignedInteger64Type);
+  val = sup::dto::uint64(1729);
   EXPECT_CALL(mock_ui, VariableUpdatedImpl("var2", HasSameValue(val))).Times(Exactly(1));
   EXPECT_CALL(mock_ui, StartSingleStepImpl()).Times(AtLeast(1));
   EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(_)).Times(AtLeast(4));

@@ -45,13 +45,13 @@ private:
   /**
    * @brief Encapsulated AnyValue.
    */
-  std::unique_ptr<::ccs::types::AnyValue> val;
+  std::unique_ptr<sup::dto::AnyValue> m_value;
 
   /**
    * @brief See sup::sequencer::Variable.
    */
-  bool GetValueImpl(::ccs::types::AnyValue& value) const override;
-  bool SetValueImpl(const ::ccs::types::AnyValue& value) override;
+  bool GetValueImpl(sup::dto::AnyValue& value) const override;
+  bool SetValueImpl(const sup::dto::AnyValue& value) override;
   bool SetupImpl() override;
   void ResetImpl() override;
 

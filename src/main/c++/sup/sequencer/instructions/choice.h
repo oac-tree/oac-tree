@@ -24,7 +24,7 @@
 
 #include "compound_instruction.h"
 
-#include <common/AnyValue.h>
+#include <sup/dto/anyvalue.h>
 #include <common/BasicTypes.h>
 
 namespace sup
@@ -44,29 +44,29 @@ private:
   /**
    * @brief child execution
    */
-  ExecutionStatus ExecuteChild(::ccs::types::uint32 idx, UserInterface *ui, Workspace *ws);
+  ExecutionStatus ExecuteChild(sup::dto::uint32 idx, UserInterface *ui, Workspace *ws);
 
-  bool CheckIfSelectorArray(const ::ccs::types::AnyValue &_val);
+  bool CheckIfSelectorArray(const sup::dto::AnyValue &_val);
 
   bool CheckSelectorType(const Procedure &proc);
 
-  ExecutionStatus ExecuteBitChild(const ::ccs::types::uint64 value,
-                                  const ::ccs::types::uint32 remained, UserInterface *ui,
+  ExecutionStatus ExecuteBitChild(const sup::dto::uint64 value,
+                                  const sup::dto::uint32 remained, UserInterface *ui,
                                   Workspace *ws);
 
-  ExecutionStatus ExecuteMaskSelector(::ccs::types::uint8 *valPtr, UserInterface *ui,
+  ExecutionStatus ExecuteMaskSelector(sup::dto::uint8 *valPtr, UserInterface *ui,
                                       Workspace *ws);
 
-  ExecutionStatus ExecuteArraySelector(::ccs::types::uint8 *valPtr, UserInterface *ui,
+  ExecutionStatus ExecuteArraySelector(sup::dto::uint8 *valPtr, UserInterface *ui,
                                        Workspace *ws);
 
   bool SetupImpl(const Procedure &proc) override;
 
   std::string varName;
 
-  ::ccs::types::uint32 numberOfElements;
+  sup::dto::uint32 numberOfElements;
 
-  ::ccs::types::uint32 elementSize;
+  sup::dto::uint32 elementSize;
 
   bool isMask;
 

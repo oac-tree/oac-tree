@@ -27,7 +27,7 @@
 
 #include <sup/sequencer/instruction_registry.h>
 
-#include <common/AnyValue.h>
+#include <sup/dto/anyvalue.h>
 
 #include <gtest/gtest.h>
 

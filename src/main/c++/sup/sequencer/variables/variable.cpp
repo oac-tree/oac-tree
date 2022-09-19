@@ -23,7 +23,7 @@
 
 #include <sup/sequencer/log.h>
 
-#include <common/AnyValueHelper.h>
+#include <sup/dto/anyvalue_helper.h>
 
 #include <chrono>
 #include <cmath>
@@ -60,12 +60,11 @@ void Variable::Setup()
   _setup_successful = SetupImpl();
 }
 
-bool Variable::GetValue(::ccs::types::AnyValue &value, const std::string &fieldname) const
+bool Variable::GetValue(sup::dto::AnyValue &value, const std::string &fieldname) const
 {
   std::lock_guard<std::mutex> lock(_access_mutex);
   if (!_setup_successful)
   {
-    log::Warning("Variable::GetValue() - Variable was not successfully set up..");
     return false;
   }
   if (fieldname.empty())
@@ -73,62 +72,50 @@ bool Variable::GetValue(::ccs::types::AnyValue &value, const std::string &fieldn
     return GetValueImpl(value);
   }
 
-  ::ccs::types::AnyValue var_copy;
-  bool status = GetValueImpl(var_copy);
-
-  if (status)
+  sup::dto::AnyValue var_copy;
+  if (GetValueImpl(var_copy))
   {
-    auto attr_size = ::ccs::HelperTools::GetAttributeSize(var_copy.GetType(), fieldname.c_str());
-    status = (!value.GetType() || value.GetSize() == attr_size);
+    try
+    {
+      value = var_copy[fieldname];
+    }
+    catch(const sup::dto::InvalidOperationException&)
+    {
+      return false;
+    }
+    return true;
   }
-  if (status)
-  {
-    status = ::ccs::HelperTools::GetAttributeValue(&var_copy, fieldname.c_str(), value);
-  }
-  if (!status)
-  {
-    log::Error("Variable::GetValue() - Failed with field name '%s'", fieldname.c_str());
-  }
-  return status;
+  return false;
 }
 
-bool Variable::SetValue(const ::ccs::types::AnyValue &value, const std::string &fieldname)
+bool Variable::SetValue(const sup::dto::AnyValue &value, const std::string &fieldname)
 {
   std::lock_guard<std::mutex> lk(_access_mutex);
   if (!_setup_successful)
   {
-    log::Warning("Variable::SetValue() - Variable was not successfully set up..");
     return false;
   }
-
-  bool status = false;
   if (fieldname.empty())
   {
-    status = SetValueImpl(value);
+    return SetValueImpl(value);
   }
-  else
+  sup::dto::AnyValue var_copy;
+  if (GetValueImpl(var_copy))
   {
-    ::ccs::types::AnyValue var_copy;
-    status = GetValueImpl(var_copy);
-    if (status)
+    try
     {
-      status = ::ccs::HelperTools::SetAttributeValue(&var_copy, fieldname.c_str(), value);
+      var_copy[fieldname] = value;
+      return SetValueImpl(var_copy);
     }
-    if (status)
+    catch(const sup::dto::InvalidOperationException&)
     {
-      // need to update it in the Variable
-      status = SetValueImpl(var_copy);
+      return false;
     }
   }
-  if (!status)
-  {
-    log::Error("Variable::SetValue() - Failed with field name '%s'", fieldname.c_str());
-    return false;
-  }
-  return true;
+  return false;
 }
 
-void Variable::Notify(const ccs::types::AnyValue& value)
+void Variable::Notify(const sup::dto::AnyValue& value)
 {
   std::lock_guard<std::mutex> lk(notify_mutex);
   if (notify_cb)
@@ -137,7 +124,7 @@ void Variable::Notify(const ccs::types::AnyValue& value)
   }
 }
 
-void Variable::SetNotifyCallback(std::function<void(const ccs::types::AnyValue&)> func)
+void Variable::SetNotifyCallback(std::function<void(const sup::dto::AnyValue&)> func)
 {
   std::lock_guard<std::mutex> lk(notify_mutex);
   notify_cb = std::move(func);

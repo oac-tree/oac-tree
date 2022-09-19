@@ -23,12 +23,8 @@
 
 #include <sup/sequencer/generic_utils.h>
 
-#include <common/AnyValueHelper.h>
-
 #include <fstream>
 #include <sstream>
-
-static std::string StripWhitespaceFromFile(const std::string& filename);
 
 namespace sup
 {
@@ -42,25 +38,35 @@ bool FileVariable::SetupImpl(void)
   return status;
 }
 
-bool FileVariable::GetValueImpl(::ccs::types::AnyValue& value) const
+bool FileVariable::GetValueImpl(sup::dto::AnyValue& value) const
 {
-  auto str = StripWhitespaceFromFile(GetAttribute("file"));
-  if (str.empty())
+  try
+  {
+    sup::dto::AnyValue parsed_val = sup::dto::AnyValueFromJSONFile(GetAttribute("file"));
+    value = std::move(parsed_val);
+  }
+  catch(const sup::dto::ParseException&)
   {
     return false;
   }
-  bool status = ccs::HelperTools::ParseFromJSONStream(&value, str.c_str());
-  return status;
+  catch(const sup::dto::InvalidConversionException&)
+  {
+    return false;
+  }
+  return true;
 }
 
-bool FileVariable::SetValueImpl(const ::ccs::types::AnyValue& value)
+bool FileVariable::SetValueImpl(const sup::dto::AnyValue& value)
 {
-  bool status = static_cast<bool>(value.GetType());  // Valid variable
-  if (status)
+  try
   {
-    status = ::ccs::HelperTools::DumpToFile(&value, Variable::GetAttribute("file").c_str());
+    sup::dto::AnyValueToJSONFile(value, GetAttribute("file"));
   }
-  return status;
+  catch(const sup::dto::SerializeException&)
+  {
+    return false;
+  }
+  return true;
 }
 
 FileVariable::FileVariable() : Variable(FileVariable::Type) {}
@@ -69,19 +75,3 @@ FileVariable::~FileVariable() = default;
 }  // namespace sequencer
 
 }  // namespace sup
-
-static std::string StripWhitespaceFromFile(const std::string& filename)
-{
-  if (!sup::sequencer::utils::FileExists(filename))
-  {
-    return {};
-  }
-  std::ostringstream result;
-  std::ifstream fin(filename);
-  std::string s;
-  while (fin >> s)
-  {
-    result << s;
-  }
-  return result.str();
-}

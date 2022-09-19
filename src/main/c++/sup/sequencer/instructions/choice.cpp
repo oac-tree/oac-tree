@@ -25,7 +25,7 @@
 #include <sup/sequencer/procedure.h>
 #include <sup/sequencer/workspace.h>
 
-#include <common/AnyType.h>
+#include <sup/dto/anytype.h>
 
 namespace sup
 {
@@ -44,13 +44,13 @@ Choice::Choice()
 Choice::~Choice()
 {}
 
-bool Choice::CheckIfSelectorArray(const ::ccs::types::AnyValue &_val)
+bool Choice::CheckIfSelectorArray(const sup::dto::AnyValue &_val)
 {
   // check if array
   bool ret = true;
   if (!isMask)
   {
-    ::ccs::base::SharedReference<const ::ccs::types::ArrayType> myArrayType = _val.GetType();
+    ::ccs::base::SharedReference<const sup::dto::ArrayType> myArrayType = _val.GetType();
     if (myArrayType.IsValid())
     {
       numberOfElements = myArrayType->GetElementNumber();
@@ -69,7 +69,7 @@ bool Choice::CheckIfSelectorArray(const ::ccs::types::AnyValue &_val)
 bool Choice::CheckSelectorType(const Procedure &proc)
 {
   varName = GetAttribute("var_name");
-  ::ccs::types::AnyValue _val;
+  sup::dto::AnyValue _val;
   bool ret = proc.GetVariableValue(varName, _val);
   if (ret)
   {
@@ -105,14 +105,14 @@ bool Choice::SetupImpl(const Procedure &proc)
   return ret;
 }
 
-ExecutionStatus Choice::ExecuteBitChild(const ::ccs::types::uint64 value,
-                                        const ::ccs::types::uint32 remained, UserInterface *ui,
+ExecutionStatus Choice::ExecuteBitChild(const sup::dto::uint64 value,
+                                        const sup::dto::uint32 remained, UserInterface *ui,
                                         Workspace *ws)
 {
   ExecutionStatus child_status = ExecutionStatus::SUCCESS;
 
   bool exit = false;
-  for (::ccs::types::uint32 i = 0u; (i < remained) && (!exit); i++)
+  for (sup::dto::uint32 i = 0u; (i < remained) && (!exit); i++)
   {
     log::Debug("Choice::ExecuteSingleImpl - Considering bit %d of %d", i, remained);
     if (((value >> i) & (0x1u)))
@@ -126,37 +126,37 @@ ExecutionStatus Choice::ExecuteBitChild(const ::ccs::types::uint64 value,
   return child_status;
 }
 
-ExecutionStatus Choice::ExecuteMaskSelector(::ccs::types::uint8 *valPtr, UserInterface *ui,
+ExecutionStatus Choice::ExecuteMaskSelector(sup::dto::uint8 *valPtr, UserInterface *ui,
                                             Workspace *ws)
 {
   ExecutionStatus child_status = ExecutionStatus::SUCCESS;
 
-  ::ccs::types::uint32 nElems = (elementSize * sizeof(::ccs::types::uint64));
+  sup::dto::uint32 nElems = (elementSize * sizeof(sup::dto::uint64));
   log::Debug("Choice::ExecuteSingleImpl - isMask nElems=%d", nElems);
   bool exit = false;
   // generic...can consider very big elements
   while ((nElems > 0u) && (!exit))
   {
-    ::ccs::types::uint32 remained = (nElems > 64u) ? (64u) : (nElems);
-    ::ccs::types::uint64 value = 0u;
+    sup::dto::uint32 remained = (nElems > 64u) ? (64u) : (nElems);
+    sup::dto::uint64 value = 0u;
     memcpy(&value, valPtr, (remained / 8u));
     log::Debug("Choice::ExecuteSingleImpl - isMask value=%d", value);
     child_status = ExecuteBitChild(value, remained, ui, ws);
     exit = (child_status != ExecutionStatus::SUCCESS);
     nElems -= remained;
-    valPtr += sizeof(::ccs::types::uint64);
+    valPtr += sizeof(sup::dto::uint64);
   }
   return child_status;
 }
 
-ExecutionStatus Choice::ExecuteArraySelector(::ccs::types::uint8 *valPtr, UserInterface *ui,
+ExecutionStatus Choice::ExecuteArraySelector(sup::dto::uint8 *valPtr, UserInterface *ui,
                                              Workspace *ws)
 {
   ExecutionStatus child_status = ExecutionStatus::SUCCESS;
 
-  for (::ccs::types::uint32 i = 0u; i < numberOfElements; i++)
+  for (sup::dto::uint32 i = 0u; i < numberOfElements; i++)
   {
-    ::ccs::types::uint32 value = 0u;
+    sup::dto::uint32 value = 0u;
 
     memcpy(&value, valPtr, elementSize);
 
@@ -175,9 +175,9 @@ ExecutionStatus Choice::ExecuteArraySelector(::ccs::types::uint8 *valPtr, UserIn
 ExecutionStatus Choice::ExecuteSingleImpl(UserInterface *ui, Workspace *ws)
 {
   ExecutionStatus child_status = ExecutionStatus::SUCCESS;
-  ::ccs::types::AnyValue _val;
+  sup::dto::AnyValue _val;
   ws->GetValue(varName, _val);
-  auto valPtr = reinterpret_cast<::ccs::types::uint8 *>(_val.GetInstance());
+  auto valPtr = reinterpret_cast<sup::dto::uint8 *>(_val.GetInstance());
 
   if (isMask)
   {
@@ -190,7 +190,7 @@ ExecutionStatus Choice::ExecuteSingleImpl(UserInterface *ui, Workspace *ws)
   return child_status;
 }
 
-ExecutionStatus Choice::ExecuteChild(::ccs::types::uint32 idx, UserInterface *ui, Workspace *ws)
+ExecutionStatus Choice::ExecuteChild(sup::dto::uint32 idx, UserInterface *ui, Workspace *ws)
 {
   ExecutionStatus child_status = ExecutionStatus::SUCCESS;
   if (idx < ChildInstructions().size())

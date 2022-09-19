@@ -40,7 +40,7 @@ ExecutionStatus Output::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
 {
   bool status = HasAttribute(from_attribute_name);
 
-  ccs::types::AnyValue value;
+  sup::dto::AnyValue value;
 
   if (status)
   {  // Read from workspace

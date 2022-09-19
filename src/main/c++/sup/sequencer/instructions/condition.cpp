@@ -24,8 +24,8 @@
 #include <sup/sequencer/log.h>
 #include <sup/sequencer/workspace.h>
 
-#include <common/AnyType.h>
-#include <common/AnyValue.h>
+#include <sup/dto/anytype.h>
+#include <sup/dto/anyvalue.h>
 #include <common/BasicTypes.h>
 
 namespace sup
@@ -40,17 +40,17 @@ Condition::~Condition() = default;
 
 ExecutionStatus Condition::ExecuteSingleImpl(UserInterface * /*ui*/, Workspace *ws)
 {
-  ::ccs::types::AnyValue var;
+  sup::dto::AnyValue var;
   std::string varName = GetAttribute("var_name");
   bool ret = ws->GetValue(varName, var);
 
   if (ret)
   {
-    ::ccs::base::SharedReference<const ::ccs::types::ScalarType> varType = var.GetType();
+    ::ccs::base::SharedReference<const sup::dto::ScalarType> varType = var.GetType();
     ret = varType.IsValid();
     if (ret)
     {
-      ::ccs::types::uint64 check = 0;
+      sup::dto::uint64 check = 0;
       // var size must be less than 64 bit
       ret = (memcmp(var.GetInstance(), &check, var.GetSize()) != 0);
     }

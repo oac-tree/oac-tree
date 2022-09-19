@@ -65,8 +65,8 @@ TEST_F(CLInterfaceTest, VariableUpdated)
 {
   std::ostringstream output;
   CoutRedirector redirect(output);
-  ::ccs::types::AnyValue val(::ccs::types::UnsignedInteger32);
-  val = (ccs::types::uint32)1234;
+  sup::dto::AnyValue val(sup::dto::UnsignedInteger32);
+  val = (sup::dto::uint32)1234;
   std::string name = "TestUpdated";
   EXPECT_TRUE(output.str().empty());
   cli.VariableUpdated(name, val);
@@ -95,17 +95,17 @@ TEST_F(CLInterfaceTest, EndSingleStep)
 
 TEST_F(CLInterfaceTest, GetUserValue)
 {
-  ::ccs::types::AnyValue val(::ccs::types::UnsignedInteger32);
+  sup::dto::AnyValue val(sup::dto::UnsignedInteger32);
   std::istringstream input("567890");
   CinRedirector redirect(input);
   EXPECT_TRUE(cli.GetUserValue(val));
-  ::ccs::types::uint32 result = val;
+  sup::dto::uint32 result = val;
   EXPECT_EQ(result, 567890u);
 }
 
 TEST_F(CLInterfaceTest, GetUserValueBool)
 {
-  ::ccs::types::AnyValue val(::ccs::types::Boolean);
+  sup::dto::AnyValue val(sup::dto::BooleanType);
   std::istringstream input("true");
   CinRedirector redirect(input);
   EXPECT_TRUE(cli.GetUserValue(val));
@@ -115,7 +115,7 @@ TEST_F(CLInterfaceTest, GetUserValueBool)
 
 TEST_F(CLInterfaceTest, GetUserValueString)
 {
-  ::ccs::types::AnyValue val(::ccs::types::String);
+  sup::dto::AnyValue val(sup::dto::String);
   std::istringstream input("Test string");
   CinRedirector redirect(input);
   EXPECT_TRUE(cli.GetUserValue(val));
@@ -126,7 +126,7 @@ TEST_F(CLInterfaceTest, GetUserValueString)
 
 TEST_F(CLInterfaceTest, GetUserValueParseError)
 {
-  ::ccs::types::AnyValue val(::ccs::types::UnsignedInteger32);
+  sup::dto::AnyValue val(sup::dto::UnsignedInteger32);
   std::istringstream input("twenty-four");
   CinRedirector redirect(input);
   EXPECT_FALSE(cli.GetUserValue(val));
@@ -134,10 +134,10 @@ TEST_F(CLInterfaceTest, GetUserValueParseError)
 
 TEST_F(CLInterfaceTest, GetUserValueUnsupportedType)
 {
-  auto test_type = (new ::ccs::types::CompoundType("CompoundTestType"))
+  auto test_type = (new sup::dto::CompoundType("CompoundTestType"))
                        ->AddAttribute("timestamp", "uint64")
                        ->AddAttribute("count", "uint16");
-  ::ccs::types::AnyValue val(test_type);
+  sup::dto::AnyValue val(test_type);
   std::istringstream input("17");
   CinRedirector redirect(input);
   EXPECT_FALSE(cli.GetUserValue(val));

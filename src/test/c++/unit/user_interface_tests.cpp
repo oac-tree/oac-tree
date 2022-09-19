@@ -67,7 +67,7 @@ TEST_F(UserInterfaceTest, UpdateInstructionStatusDispatch)
 
 TEST_F(UserInterfaceTest, PutValueDispatch)
 {
-  ::ccs::types::AnyValue val;
+  sup::dto::AnyValue val;
   std::string description = "TestPutValue";
   EXPECT_CALL(mock_ui, PutValueImpl(_, description))
       .Times(2)
@@ -81,7 +81,7 @@ TEST_F(UserInterfaceTest, PutValueDispatch)
 
 TEST_F(UserInterfaceTest, GetUserValueDispatch)
 {
-  ::ccs::types::AnyValue val;
+  sup::dto::AnyValue val;
   std::string description = "TestGetUserValue";
   EXPECT_CALL(mock_ui, PutValueImpl(_, _)).Times(0);
   EXPECT_CALL(mock_ui, GetUserValueImpl(_, description))
@@ -127,14 +127,14 @@ TEST_F(UserInterfaceTest, EndSingleStepDispatch)
 
 TEST_F(UserInterfaceTest, PutValueDefault)
 {
-  ::ccs::types::AnyValue val;
+  sup::dto::AnyValue val;
   std::string description;
   EXPECT_FALSE(empty_ui.PutValue(val, description));
 }
 
 TEST_F(UserInterfaceTest, GetUserValueDefault)
 {
-  ::ccs::types::AnyValue val;
+  sup::dto::AnyValue val;
   std::string description;
   EXPECT_FALSE(empty_ui.GetUserValue(val, description));
 }

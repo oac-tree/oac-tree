@@ -81,7 +81,7 @@ CopyNode::CopyNode() : Instruction(Type) {}
 
 ExecutionStatus CopyNode::ExecuteSingleImpl(UserInterface *ui, Workspace *ws)
 {
-  ::ccs::types::AnyValue val;
+  sup::dto::AnyValue val;
 
   bool status = HasAttribute("input");
 

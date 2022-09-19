@@ -29,15 +29,15 @@
 #include <sup/sequencer/sequence_parser.h>
 #include <sup/sequencer/workspace.h>
 
-#include <common/AnyType.h>
-#include <common/AnyValue.h>
+#include <sup/dto/anytype.h>
+#include <sup/dto/anyvalue.h>
 #include <common/BasicTypes.h>
 
 #include <gtest/gtest.h>
 
 using namespace sup::sequencer;
 
-static const ccs::types::char8 *conditionTable[][14] = {
+static const sup::dto::char8 *conditionTable[][14] = {
     {"c", "{\"type\":\"uint8\"}", "0", "c", "false", NULL},
     {"c", "{\"type\":\"uint8\"}", "255", "c", "true", NULL},
     {"c", "{\"type\":\"uint64\"}", "10", "c", "true", NULL},
@@ -90,14 +90,14 @@ TEST(Condition, Default1)
 {
   bool status(true);
 
-  ccs::types::uint32 i = 0u;
+  sup::dto::uint32 i = 0u;
   while ((conditionTable[i][0] != NULL) && status)
   {
     std::unique_ptr<Procedure> proc(new Procedure);
     std::unique_ptr<Condition> myCondNode(new Condition);
     myCondNode->AddAttribute("var_name", conditionTable[i][0]);
 
-    ccs::types::AnyValue resVal;
+    sup::dto::AnyValue resVal;
 
     std::unique_ptr<Variable> varX(new LocalVariable);
     varX->AddAttribute("type", conditionTable[i][1]);

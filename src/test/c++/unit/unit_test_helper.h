@@ -62,8 +62,8 @@ public:
    */
   static const std::string Type;
 
-  static ccs::types::uint32 counter;
-  static ccs::types::uint32 GetCount();
+  static sup::dto::uint32 counter;
+  static sup::dto::uint32 GetCount();
 };
 
 class MockUI : public sup::sequencer::UserInterface
@@ -71,24 +71,24 @@ class MockUI : public sup::sequencer::UserInterface
 private:
   bool _status = false;
   int _choice = -1;
-  ::ccs::types::AnyValue _value;
-  ::ccs::base::SharedReference<const ::ccs::types::AnyType> _type;
+  sup::dto::AnyValue _value;
+  ::ccs::base::SharedReference<const sup::dto::AnyType> _type;
 
   /**
    * @brief See sup::sequencer::UserInterface.
    */
   void UpdateInstructionStatusImpl(const sup::sequencer::Instruction* instruction) override;
-  bool GetUserValueImpl(::ccs::types::AnyValue& value, const std::string& description) override;
+  bool GetUserValueImpl(sup::dto::AnyValue& value, const std::string& description) override;
   int GetUserChoiceImpl(const std::vector<std::string>& choices,
                         const std::string& description) override;
 
 protected:
 public:
-  ::ccs::base::SharedReference<const ::ccs::types::AnyType> GetType() const;
+  ::ccs::base::SharedReference<const sup::dto::AnyType> GetType() const;
 
   void SetChoice(int choice);
   void SetStatus(bool status);
-  void SetValue(::ccs::types::AnyValue& value);
+  void SetValue(sup::dto::AnyValue& value);
 
   MockUI();
   virtual ~MockUI();

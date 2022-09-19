@@ -35,7 +35,7 @@ ExecutionStatus Input::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
 {
   bool status = HasAttribute("output");
 
-  ccs::types::AnyValue value;
+  sup::dto::AnyValue value;
 
   if (status)
   {  // Read from workspace

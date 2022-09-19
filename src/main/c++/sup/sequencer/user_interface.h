@@ -22,7 +22,7 @@
 #ifndef SUP_SEQUENCER_USER_INTERFACE_H_
 #define SUP_SEQUENCER_USER_INTERFACE_H_
 
-#include <common/AnyValue.h>
+#include <sup/dto/anyvalue.h>
 
 #include <mutex>
 #include <string>
@@ -48,9 +48,9 @@ private:
 
   /**
    * @brief Private virtual implementation of
-   * UserInterface::VariableUpdated(const std::string& name, const ccs::types::AnyValue& value).
+   * UserInterface::VariableUpdated(const std::string& name, const sup::dto::AnyValue& value).
    */
-  virtual void VariableUpdatedImpl(const std::string& name, const ccs::types::AnyValue& value);
+  virtual void VariableUpdatedImpl(const std::string& name, const sup::dto::AnyValue& value);
 
   /**
    * @brief Private virtual implementation of
@@ -58,7 +58,7 @@ private:
    *
    * @note Default implementation returns false.
    */
-  virtual bool PutValueImpl(const ::ccs::types::AnyValue& value, const std::string& description);
+  virtual bool PutValueImpl(const sup::dto::AnyValue& value, const std::string& description);
 
   /**
    * @brief Private virtual implementation of
@@ -66,7 +66,7 @@ private:
    *
    * @note Default implementation returns false.
    */
-  virtual bool GetUserValueImpl(::ccs::types::AnyValue& value, const std::string& description);
+  virtual bool GetUserValueImpl(sup::dto::AnyValue& value, const std::string& description);
 
   /**
    * @brief Private virtual implementation of
@@ -134,7 +134,7 @@ public:
    * @param value New value of the Variable.
    * @note Non-Virtual Interface.
    */
-  void VariableUpdated(const std::string& name, const ccs::types::AnyValue& value);
+  void VariableUpdated(const std::string& name, const sup::dto::AnyValue& value);
 
   /**
    * @brief Method to put the value.
@@ -144,7 +144,7 @@ public:
    * @return true on successful retrieval of a value, false otherwise.
    * @note Non-Virtual Interface.
    */
-  bool PutValue(const ::ccs::types::AnyValue& value, const std::string& description = {});
+  bool PutValue(const sup::dto::AnyValue& value, const std::string& description = {});
 
   /**
    * @brief Method to request the user to input a value.
@@ -154,7 +154,7 @@ public:
    * @return true on successful retrieval of a value, false otherwise.
    * @note Non-Virtual Interface.
    */
-  bool GetUserValue(::ccs::types::AnyValue& value, const std::string& description = {});
+  bool GetUserValue(sup::dto::AnyValue& value, const std::string& description = {});
 
   /**
    * @brief Method to request the user to choose one of the given options.

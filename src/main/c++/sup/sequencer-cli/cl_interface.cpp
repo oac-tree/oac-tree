@@ -24,14 +24,14 @@
 #include <sup/sequencer/log.h>
 #include <sup/sequencer/instruction.h>
 
-#include <common/AnyValueHelper.h>
+#include <sup/dto/anyvalue_helper.h>
 
 #include <cstring>
 #include <iostream>
 #include <map>
 #include <sstream>
 
-static bool ParseStringToScalarAnyvalue(::ccs::types::AnyValue &value, const std::string &str);
+static bool ParseStringToScalarAnyvalue(sup::dto::AnyValue &value, const std::string &str);
 
 namespace sup
 {
@@ -50,14 +50,14 @@ void CLInterface::UpdateInstructionStatusImpl(const Instruction *instruction)
   }
 }
 
-void CLInterface::VariableUpdatedImpl(const std::string& name, const ccs::types::AnyValue& value)
+void CLInterface::VariableUpdatedImpl(const std::string& name, const sup::dto::AnyValue& value)
 {
   if (!_verbose)
   {
     return;
   }
   std::cout << "Variable (" << name << ") updated: ";
-  ccs::types::char8 buffer[4096] = STRING_UNDEFINED;
+  sup::dto::char8 buffer[4096] = STRING_UNDEFINED;
   auto result = ccs::HelperTools::SerialiseToJSONStream(&value, buffer, 4096u);
   if (result)
   {
@@ -69,10 +69,10 @@ void CLInterface::VariableUpdatedImpl(const std::string& name, const ccs::types:
   }
 }
 
-bool CLInterface::PutValueImpl(const ::ccs::types::AnyValue &value, const std::string &description)
+bool CLInterface::PutValueImpl(const sup::dto::AnyValue &value, const std::string &description)
 {
   std::cout << description << " (" << value.GetType()->GetName() << "): ";
-  ccs::types::char8 buffer[4096] = STRING_UNDEFINED;
+  sup::dto::char8 buffer[4096] = STRING_UNDEFINED;
   auto result = ccs::HelperTools::SerialiseToJSONStream(&value, buffer, 4096u);
   if (result)
   {
@@ -85,9 +85,9 @@ bool CLInterface::PutValueImpl(const ::ccs::types::AnyValue &value, const std::s
   return result;
 }
 
-bool CLInterface::GetUserValueImpl(::ccs::types::AnyValue &value, const std::string &description)
+bool CLInterface::GetUserValueImpl(sup::dto::AnyValue &value, const std::string &description)
 {
-  if (!::ccs::HelperTools::Is<::ccs::types::ScalarType>(&value))
+  if (!::ccs::HelperTools::Is<::sup::dto::ScalarType>(&value))
   {
     log::Warning("CLInterface::GetUserValueImpl(value, '%s') only supports scalar values..",
                 description.c_str());
@@ -161,10 +161,10 @@ CLInterface::~CLInterface() = default;
 
 }  // namespace sup
 
-using ParseFunction = bool (*)(::ccs::types::AnyValue &value, const std::string &str);
+using ParseFunction = bool (*)(sup::dto::AnyValue &value, const std::string &str);
 
 template <typename T>
-bool ParserFunctionT(::ccs::types::AnyValue &value, const std::string &str)
+bool ParserFunctionT(sup::dto::AnyValue &value, const std::string &str)
 {
   std::istringstream istr(str);
   T val;
@@ -184,10 +184,10 @@ bool ParserFunctionT(::ccs::types::AnyValue &value, const std::string &str)
  * are integers (zero is false), case insensitive true/false, yes/no, etc.
  */
 template <>
-bool ParserFunctionT<::ccs::types::boolean>(::ccs::types::AnyValue &value, const std::string &str)
+bool ParserFunctionT<sup::dto::boolean>(sup::dto::AnyValue &value, const std::string &str)
 {
   std::istringstream istr(str);
-  ::ccs::types::boolean val;
+  sup::dto::boolean val;
   istr >> std::boolalpha >> val;
   if (istr.fail())
   {
@@ -200,9 +200,9 @@ bool ParserFunctionT<::ccs::types::boolean>(::ccs::types::AnyValue &value, const
 }
 
 template <>
-bool ParserFunctionT<::ccs::types::string>(::ccs::types::AnyValue &value, const std::string &str)
+bool ParserFunctionT<sup::dto::string>(sup::dto::AnyValue &value, const std::string &str)
 {
-  ::ccs::types::string buffer;
+  sup::dto::string buffer;
   std::strncpy(buffer, str.c_str(), STRING_MAX_LENGTH);
   buffer[STRING_MAX_LENGTH-1] = '\0';
   value = buffer;
@@ -212,18 +212,18 @@ bool ParserFunctionT<::ccs::types::string>(::ccs::types::AnyValue &value, const 
 static std::map<std::string, ParseFunction> CreateParserMap()
 {
   std::map<std::string, ParseFunction> parser_map;
-  parser_map["bool"] = ParserFunctionT<::ccs::types::boolean>;
-  parser_map["char8"] = ParserFunctionT<::ccs::types::char8>;
-  parser_map["int8"] = ParserFunctionT<::ccs::types::int8>;
-  parser_map["uint8"] = ParserFunctionT<::ccs::types::uint8>;
-  parser_map["int16"] = ParserFunctionT<::ccs::types::int16>;
-  parser_map["uint16"] = ParserFunctionT<::ccs::types::uint16>;
-  parser_map["int32"] = ParserFunctionT<::ccs::types::int32>;
-  parser_map["uint32"] = ParserFunctionT<::ccs::types::uint32>;
-  parser_map["uint64"] = ParserFunctionT<::ccs::types::uint64>;
-  parser_map["float32"] = ParserFunctionT<::ccs::types::float32>;
-  parser_map["float64"] = ParserFunctionT<::ccs::types::float64>;
-  parser_map["string"] = ParserFunctionT<::ccs::types::string>;
+  parser_map["bool"] = ParserFunctionT<sup::dto::boolean>;
+  parser_map["char8"] = ParserFunctionT<sup::dto::char8>;
+  parser_map["int8"] = ParserFunctionT<sup::dto::int8>;
+  parser_map["uint8"] = ParserFunctionT<sup::dto::uint8>;
+  parser_map["int16"] = ParserFunctionT<sup::dto::int16>;
+  parser_map["uint16"] = ParserFunctionT<sup::dto::uint16>;
+  parser_map["int32"] = ParserFunctionT<sup::dto::int32>;
+  parser_map["uint32"] = ParserFunctionT<sup::dto::uint32>;
+  parser_map["uint64"] = ParserFunctionT<sup::dto::uint64>;
+  parser_map["float32"] = ParserFunctionT<sup::dto::float32>;
+  parser_map["float64"] = ParserFunctionT<sup::dto::float64>;
+  parser_map["string"] = ParserFunctionT<sup::dto::string>;
   return parser_map;
 }
 
@@ -233,7 +233,7 @@ static std::map<std::string, ParseFunction> &GetParserMap()
   return parser_map;
 }
 
-static bool ParseStringToScalarAnyvalue(::ccs::types::AnyValue &value, const std::string &str)
+static bool ParseStringToScalarAnyvalue(sup::dto::AnyValue &value, const std::string &str)
 {
   std::string type_name = value.GetType()->GetName();
 

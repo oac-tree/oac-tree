@@ -41,7 +41,7 @@ void DaemonInterface::UpdateInstructionStatusImpl(const Instruction *instruction
   }
 }
 
-bool DaemonInterface::GetUserValueImpl(::ccs::types::AnyValue &, const std::string &)
+bool DaemonInterface::GetUserValueImpl(sup::dto::AnyValue &, const std::string &)
 {
   log::Warning("DaemonInterface::GetUserValueImpl() - not implemented");
   return false;

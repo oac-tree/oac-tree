@@ -30,20 +30,20 @@
 #include <sup/sequencer/sequence_parser.h>
 #include <sup/sequencer/workspace.h>
 
-#include <common/AnyType.h>
-#include <common/AnyValue.h>
+#include <sup/dto/anytype.h>
+#include <sup/dto/anyvalue.h>
 #include <common/BasicTypes.h>
 
 #include <gtest/gtest.h>
 
 using namespace sup::sequencer;
 
-static const ccs::types::char8 *testTable[][2] = {{"{\"type\":\"uint8\"}", "0"},
+static const sup::dto::char8 *testTable[][2] = {{"{\"type\":\"uint8\"}", "0"},
                                                   {"{\"type\":\"uint8\"}", "1"},
                                                   {"{\"type\":\"uint8\"}", "2"},
                                                   {"{\"type\":\"uint8\"}", "3"},
                                                   {NULL}};
-static ::ccs::types::uint8 resVal[] = {1, 2, 3, 0};
+static sup::dto::uint8 resVal[] = {1, 2, 3, 0};
 
 TEST(Choice, Default)  // Static initialisation
 {
@@ -74,7 +74,7 @@ TEST(Choice, Default)  // Static initialisation
       file_name, ::sup::UnitTestHelper::CreateProcedureString(body));
 
   bool status(true);
-  ccs::types::uint32 i = 0u;
+  sup::dto::uint32 i = 0u;
   while ((testTable[i][0] != NULL) && status)
   {
     auto proc = sup::sequencer::ParseProcedureFile(file_name);
@@ -100,9 +100,9 @@ TEST(Choice, Default)  // Static initialisation
 
     if (status)
     {
-      ::ccs::types::AnyValue result;
+      sup::dto::AnyValue result;
       proc->GetVariableValue("res", result);
-      ::ccs::types::uint8 checkVal = *(::ccs::types::uint8 *)(result.GetInstance());
+      sup::dto::uint8 checkVal = *(sup::dto::uint8 *)(result.GetInstance());
       status = checkVal == resVal[i];
 
       if (!status)

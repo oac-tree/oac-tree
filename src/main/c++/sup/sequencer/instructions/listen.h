@@ -57,14 +57,14 @@ public:
   static const std::string Type;
 
 private:
-  using CBGuard = CallbackGuard<NamedCallbackManager<const ccs::types::AnyValue&>>;
+  using CBGuard = CallbackGuard<NamedCallbackManager<const sup::dto::AnyValue&>>;
 
   bool force_success;
   bool var_changed;
   std::mutex mx;
   std::condition_variable cv;
   std::vector<std::string> var_names;
-  std::map<std::string, ccs::types::AnyValue> var_cache;
+  std::map<std::string, sup::dto::AnyValue> var_cache;
   CBGuard cb_guard;
 
   /**
@@ -90,7 +90,7 @@ private:
 
   std::vector<std::string> VariableNames() const;
 
-  void UpdateCallback(const std::string& name, const ccs::types::AnyValue& val);
+  void UpdateCallback(const std::string& name, const sup::dto::AnyValue& val);
 
   void RegisterCallbacks(Workspace* ws, std::vector<std::string> var_names);
   void ClearCallbacks();

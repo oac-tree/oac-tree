@@ -27,7 +27,7 @@
 #include <sup/sequencer/variable.h>
 #include <sup/sequencer/variable_registry.h>
 
-#include <common/AnyValueHelper.h>
+#include <sup/dto/anyvalue_helper.h>
 
 #include <gtest/gtest.h>
 
@@ -72,7 +72,7 @@ TEST(FileVariable, File_write)
 
   EXPECT_TRUE(sup::sequencer::utils::FileExists("variable.bck"));
 
-  ccs::types::AnyValue value;  // Placeholder
+  sup::dto::AnyValue value;  // Placeholder
 
   EXPECT_TRUE(ccs::HelperTools::ReadFromFile(&value, "variable.bck"));
 
@@ -91,7 +91,7 @@ TEST(FileVariable, Setup_error)
   EXPECT_TRUE(variable->AddAttribute("irrelevant", "undefined"));
   variable->Setup();
 
-  ccs::types::AnyValue value;  // Placeholder
+  sup::dto::AnyValue value;  // Placeholder
 
   EXPECT_FALSE(variable->GetValue(value));
   EXPECT_FALSE(static_cast<bool>(value.GetType()));
@@ -106,7 +106,7 @@ TEST(FileVariable, File_error)
   EXPECT_TRUE(variable->AddAttribute("file", "undefined"));
   variable->Setup();
 
-  ccs::types::AnyValue value;  // Placeholder
+  sup::dto::AnyValue value;  // Placeholder
 
   EXPECT_FALSE(variable->GetValue(value));
   EXPECT_FALSE(static_cast<bool>(value.GetType()));
@@ -165,14 +165,14 @@ TEST(FileVariable, File_attr)
   EXPECT_EQ(exec, sup::sequencer::ExecutionStatus::SUCCESS);
   EXPECT_TRUE(sup::sequencer::utils::FileExists("variable.bck"));
 
-  ccs::types::AnyValue value;  // Placeholder
+  sup::dto::AnyValue value;  // Placeholder
   EXPECT_TRUE(ccs::HelperTools::ReadFromFile(&value, "variable.bck"));
   EXPECT_TRUE(static_cast<bool>(value.GetType()));
 
   // Test variable
   EXPECT_TRUE(ccs::HelperTools::HasAttribute(&value, "severity"));
-  EXPECT_EQ(ccs::HelperTools::GetAttributeType(&value, "severity"), ccs::types::UnsignedInteger32);
-  EXPECT_EQ(ccs::HelperTools::GetAttributeValue<ccs::types::uint32>(&value, "severity"), 7u);
+  EXPECT_EQ(ccs::HelperTools::GetAttributeType(&value, "severity"), sup::dto::UnsignedInteger32);
+  EXPECT_EQ(ccs::HelperTools::GetAttributeValue<sup::dto::uint32>(&value, "severity"), 7u);
 
   Terminate();
 }

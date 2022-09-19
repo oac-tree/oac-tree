@@ -43,12 +43,12 @@ TEST(Input, GetUserValue_success)
   auto proc =
       sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
 
-  ccs::types::AnyValue value(1234u);
+  sup::dto::AnyValue value(1234u);
   ui.SetStatus(true);
   ui.SetValue(value);
 
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
-  EXPECT_TRUE(ccs::types::UnsignedInteger32 == ui.GetType());
+  EXPECT_TRUE(sup::dto::UnsignedInteger32 == ui.GetType());
 
   // ToDo - Test workspace variable
 }
@@ -88,7 +88,7 @@ TEST(Input, Variable_uninitialised)
   auto proc =
       sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
 
-  ccs::types::AnyValue value(1234u);
+  sup::dto::AnyValue value(1234u);
   ui.SetStatus(true);
   ui.SetValue(value);
   EXPECT_TRUE(
@@ -109,7 +109,7 @@ TEST(Input, Variable_undefined)
   auto proc =
       sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
 
-  ccs::types::AnyValue value(1234u);
+  sup::dto::AnyValue value(1234u);
   ui.SetStatus(true);
   ui.SetValue(value);
 

@@ -24,7 +24,7 @@
 
 #include <sup/sequencer/attribute_map.h>
 
-#include <common/AnyValue.h>
+#include <sup/dto/anyvalue.h>
 
 #include <condition_variable>
 #include <functional>
@@ -83,7 +83,7 @@ private:
    * it's the responsibility of the listener to prevent deadlock (e.g. by pushing the value to a
    * queue and processing it after returning from the callback).
    */
-  std::function<void(const ccs::types::AnyValue&)> notify_cb;
+  std::function<void(const sup::dto::AnyValue&)> notify_cb;
 
   /**
    * @brief Get value of variable.
@@ -93,7 +93,7 @@ private:
    *
    * @note Private virtual implementation.
    */
-  virtual bool GetValueImpl(::ccs::types::AnyValue& value) const = 0;
+  virtual bool GetValueImpl(sup::dto::AnyValue& value) const = 0;
 
   /**
    * @brief Set value of variable.
@@ -103,7 +103,7 @@ private:
    *
    * @note Private virtual implementation.
    */
-  virtual bool SetValueImpl(const ::ccs::types::AnyValue& value) = 0;
+  virtual bool SetValueImpl(const sup::dto::AnyValue& value) = 0;
 
   /**
    * @brief Setup value of variable.
@@ -163,7 +163,7 @@ public:
    *
    * @note Non-virtual interface.
    */
-  bool GetValue(::ccs::types::AnyValue& value, const std::string& fieldname = {}) const;
+  bool GetValue(sup::dto::AnyValue& value, const std::string& fieldname = {}) const;
 
   /**
    * @brief Set value of variable.
@@ -173,14 +173,14 @@ public:
    *
    * @note Non-virtual interface.
    */
-  bool SetValue(const ::ccs::types::AnyValue& value, const std::string& fieldname = {});
+  bool SetValue(const sup::dto::AnyValue& value, const std::string& fieldname = {});
 
   /**
    * @brief Notify waiting threads of an update to the variable.
    * @note Needs to be called whenever the variable is updated with a different mechanism as
    * SetValue. It has to be called without holding the mutex lock.
    */
-  void Notify(const ccs::types::AnyValue& value);
+  void Notify(const sup::dto::AnyValue& value);
 
   /**
    * @brief Set callback for value update notifications
@@ -190,7 +190,7 @@ public:
    *
    * @note This method will overwrite an existing callback if there was one.
    */
-  void SetNotifyCallback(std::function<void(const ccs::types::AnyValue&)> func);
+  void SetNotifyCallback(std::function<void(const sup::dto::AnyValue&)> func);
 
   /**
    * @brief Reset variable

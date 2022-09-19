@@ -61,11 +61,11 @@ static const std::string BOOL_TYPE = R"RAW({"type":"bool"})RAW";
 static const std::string UINT64_TYPE = R"RAW({"type":"uint64"})RAW";
 static const std::string FLOAT32_TYPE = R"RAW({"type":"float32"})RAW";
 
-static const ::ccs::types::boolean BOOL_VALUE = true;
+static const sup::dto::boolean BOOL_VALUE = true;
 static const std::string BOOL_VALUE_STR = stob(BOOL_VALUE);
-static const ::ccs::types::uint64 UINT64_VALUE = 98765;
+static const sup::dto::uint64 UINT64_VALUE = 98765;
 static const std::string UINT64_VALUE_STR = std::to_string(UINT64_VALUE);
-static const ::ccs::types::float32 FLOAT32_VALUE = 0.5772f;
+static const sup::dto::float32 FLOAT32_VALUE = 0.5772f;
 static const std::string FLOAT32_VALUE_STR = std::to_string(FLOAT32_VALUE);
 
 // Function definition
@@ -85,7 +85,7 @@ TEST_F(LocalVariableTest, DefaultConstructed)
   EXPECT_EQ(empty_var.GetName(), empty_var.GetAttribute(attributes::NAME_ATTRIBUTE));
 
   // Test GetValue
-  ::ccs::types::AnyValue any_value;
+  sup::dto::AnyValue any_value;
   EXPECT_FALSE(empty_var.GetValue(any_value));
 
   // Test SetValue: should pass even if both are unitialized.
@@ -106,7 +106,7 @@ TEST_F(LocalVariableTest, AddAttributesPartial)
   // Preconditions
   EXPECT_FALSE(empty_var.HasAttribute(attributes::NAME_ATTRIBUTE));
   EXPECT_FALSE(empty_var.HasAttribute(LocalVariable::JSON_TYPE));
-  ::ccs::types::AnyValue any_value;
+  sup::dto::AnyValue any_value;
   EXPECT_FALSE(empty_var.GetValue(any_value));
 
   // Add attributes
@@ -120,9 +120,9 @@ TEST_F(LocalVariableTest, AddAttributesPartial)
   EXPECT_EQ(empty_var.GetName(), empty_var.GetAttribute(attributes::NAME_ATTRIBUTE));
   EXPECT_EQ(empty_var.GetAttribute(LocalVariable::JSON_TYPE), UINT64_TYPE);
   EXPECT_TRUE(empty_var.GetValue(any_value));  // zero initialized
-  EXPECT_EQ(any_value, static_cast<::ccs::types::uint64>(0));
-  ::ccs::types::AnyValue val(::ccs::types::UnsignedInteger64);
-  ::ccs::types::uint64 val_n = 5555ul;
+  EXPECT_EQ(any_value, static_cast<sup::dto::uint64>(0));
+  sup::dto::AnyValue val(sup::dto::UnsignedInteger64Type);
+  sup::dto::uint64 val_n = 5555ul;
   val = val_n;
   EXPECT_TRUE(empty_var.SetValue(val));
   EXPECT_TRUE(empty_var.GetValue(any_value));
@@ -136,7 +136,7 @@ TEST_F(LocalVariableTest, AddAttributesFull)
   EXPECT_FALSE(empty_var.HasAttribute(LocalVariable::JSON_TYPE));
   EXPECT_FALSE(empty_var.HasAttribute(LocalVariable::JSON_VALUE));
   EXPECT_NO_THROW(empty_var.Setup());
-  ::ccs::types::AnyValue any_value;
+  sup::dto::AnyValue any_value;
   EXPECT_FALSE(empty_var.GetValue(any_value));
 
   // Add attributes
@@ -155,23 +155,23 @@ TEST_F(LocalVariableTest, AddAttributesFull)
   EXPECT_EQ(empty_var.GetAttribute(LocalVariable::JSON_TYPE), UINT64_TYPE);
   EXPECT_EQ(empty_var.GetAttribute(LocalVariable::JSON_VALUE), UINT64_VALUE_STR);
   EXPECT_TRUE(empty_var.GetValue(any_value));
-  ::ccs::types::uint64 val = any_value;
+  sup::dto::uint64 val = any_value;
   EXPECT_EQ(val, UINT64_VALUE);
 }
 
 TEST_F(LocalVariableTest, NotifyCallback)
 {
-  ccs::types::int32 value = 0;
+  sup::dto::int32 value = 0;
   LocalVariable int32_var{};
   EXPECT_TRUE(int32_var.AddAttribute(LocalVariable::JSON_TYPE, R"RAW({"type":"int32"})RAW"));
   EXPECT_TRUE(int32_var.AddAttribute(LocalVariable::JSON_VALUE, std::to_string(value)));
   int32_var.SetNotifyCallback(
-    [&value](const ccs::types::AnyValue& val)
+    [&value](const sup::dto::AnyValue& val)
     {
       value = val;
     });
   EXPECT_NO_THROW(int32_var.Setup());
-  ccs::types::AnyValue new_value(ccs::types::SignedInteger32);
+  sup::dto::AnyValue new_value(sup::dto::SignedInteger32Type);
   new_value = 1234;
   EXPECT_TRUE(int32_var.SetValue(new_value));
   EXPECT_EQ(value, 1234);
@@ -185,13 +185,13 @@ TEST_F(LocalVariableTest, BooleanType)
   EXPECT_TRUE(bool_var.HasAttribute(LocalVariable::JSON_TYPE));
   EXPECT_EQ(bool_var.GetAttribute(LocalVariable::JSON_TYPE), BOOL_TYPE);
   EXPECT_NO_THROW(bool_var.Setup());
-  ::ccs::types::AnyValue any_value;
+  sup::dto::AnyValue any_value;
   EXPECT_TRUE(bool_var.GetValue(any_value));
   bool b = any_value;
   EXPECT_EQ(b, BOOL_VALUE);
 
   // Set compatible value
-  ::ccs::types::AnyValue compatible(::ccs::types::Boolean);
+  sup::dto::AnyValue compatible(sup::dto::BooleanType);
   compatible = false;
   EXPECT_TRUE(bool_var.SetValue(compatible));
   EXPECT_TRUE(bool_var.GetValue(any_value));
@@ -199,7 +199,7 @@ TEST_F(LocalVariableTest, BooleanType)
   EXPECT_EQ(b, false);
 
   // Set incompatible value
-  ::ccs::types::AnyValue incompatible(::ccs::types::Float64);
+  sup::dto::AnyValue incompatible(sup::dto::Float64Type);
   incompatible = 3.14;
   EXPECT_FALSE(bool_var.SetValue(incompatible));
   EXPECT_TRUE(bool_var.GetValue(any_value));
@@ -208,7 +208,7 @@ TEST_F(LocalVariableTest, BooleanType)
 
   // Get incompatible value
   EXPECT_FALSE(bool_var.GetValue(incompatible));
-  ::ccs::types::float64 val = incompatible;
+  sup::dto::float64 val = incompatible;
   EXPECT_EQ(val, 3.14);  // unchanged
   EXPECT_TRUE(bool_var.GetValue(any_value));
   b = any_value;
@@ -223,14 +223,14 @@ TEST_F(LocalVariableTest, UnsignedInteger64Type)
   EXPECT_TRUE(uint64_var.HasAttribute(LocalVariable::JSON_TYPE));
   EXPECT_EQ(uint64_var.GetAttribute(LocalVariable::JSON_TYPE), UINT64_TYPE);
   EXPECT_NO_THROW(uint64_var.Setup());
-  ::ccs::types::AnyValue any_value;
+  sup::dto::AnyValue any_value;
   EXPECT_TRUE(uint64_var.GetValue(any_value));
-  ::ccs::types::uint64 val = any_value;
+  sup::dto::uint64 val = any_value;
   EXPECT_EQ(val, UINT64_VALUE);
 
   // Set compatible value
-  ::ccs::types::uint64 val_2 = 244998ul;
-  ::ccs::types::AnyValue compatible(::ccs::types::UnsignedInteger64);
+  sup::dto::uint64 val_2 = 244998ul;
+  sup::dto::AnyValue compatible(sup::dto::UnsignedInteger64Type);
   compatible = val_2;
   EXPECT_TRUE(uint64_var.SetValue(compatible));
   EXPECT_TRUE(uint64_var.GetValue(any_value));
@@ -238,8 +238,8 @@ TEST_F(LocalVariableTest, UnsignedInteger64Type)
   EXPECT_EQ(val, val_2);
 
   // Set incompatible value
-  ::ccs::types::AnyValue incompatible(::ccs::types::SignedInteger8);
-  ::ccs::types::int8 inc_val = -18;
+  sup::dto::AnyValue incompatible(sup::dto::SignedInteger8Type);
+  sup::dto::int8 inc_val = -18;
   incompatible = inc_val;
   EXPECT_FALSE(uint64_var.SetValue(incompatible));
   EXPECT_TRUE(uint64_var.GetValue(any_value));
@@ -248,7 +248,7 @@ TEST_F(LocalVariableTest, UnsignedInteger64Type)
 
   // Get incompatible value
   EXPECT_FALSE(uint64_var.GetValue(incompatible));
-  ::ccs::types::int8 val_3 = incompatible;
+  sup::dto::int8 val_3 = incompatible;
   EXPECT_EQ(val_3, inc_val);  // unchanged
   EXPECT_TRUE(uint64_var.GetValue(any_value));
   val = any_value;
@@ -263,14 +263,14 @@ TEST_F(LocalVariableTest, Float32Type)
   EXPECT_TRUE(float32_var.HasAttribute(LocalVariable::JSON_TYPE));
   EXPECT_EQ(float32_var.GetAttribute(LocalVariable::JSON_TYPE), FLOAT32_TYPE);
   EXPECT_NO_THROW(float32_var.Setup());
-  ::ccs::types::AnyValue any_value;
+  sup::dto::AnyValue any_value;
   EXPECT_TRUE(float32_var.GetValue(any_value));
-  ::ccs::types::float32 val = any_value;
+  sup::dto::float32 val = any_value;
   EXPECT_EQ(val, FLOAT32_VALUE);
 
   // Set compatible value
-  ::ccs::types::float32 val_2 = 2.718f;
-  ::ccs::types::AnyValue compatible(::ccs::types::Float32);
+  sup::dto::float32 val_2 = 2.718f;
+  sup::dto::AnyValue compatible(sup::dto::Float32Type);
   compatible = val_2;
   EXPECT_TRUE(float32_var.SetValue(compatible));
   EXPECT_TRUE(float32_var.GetValue(any_value));
@@ -278,8 +278,8 @@ TEST_F(LocalVariableTest, Float32Type)
   EXPECT_EQ(val, val_2);
 
   // Set incompatible value
-  ::ccs::types::AnyValue incompatible(::ccs::types::SignedInteger8);
-  ::ccs::types::int8 inc_val = -18;
+  sup::dto::AnyValue incompatible(sup::dto::SignedInteger8Type);
+  sup::dto::int8 inc_val = -18;
   incompatible = inc_val;
   EXPECT_FALSE(float32_var.SetValue(incompatible));
   EXPECT_TRUE(float32_var.GetValue(any_value));
@@ -288,7 +288,7 @@ TEST_F(LocalVariableTest, Float32Type)
 
   // Get incompatible value
   EXPECT_FALSE(float32_var.GetValue(incompatible));
-  ::ccs::types::int8 val_3 = incompatible;
+  sup::dto::int8 val_3 = incompatible;
   EXPECT_EQ(val_3, inc_val);  // unchanged
   EXPECT_TRUE(float32_var.GetValue(any_value));
   val = any_value;
@@ -306,7 +306,7 @@ TEST_F(LocalVariableTest, Float32Type)
 //   auto result = std::async(std::launch::async, wait_activity);
 //   ready.get_future().wait();
 //   std::this_thread::sleep_for(std::chrono::milliseconds(250));
-//   ::ccs::types::AnyValue val(::ccs::types::UnsignedInteger64);
+//   sup::dto::AnyValue val(sup::dto::UnsignedInteger64Type);
 //   val = 5;
 //   EXPECT_TRUE(uint64_var.SetValue(val));
 //   EXPECT_TRUE(result.get());

@@ -25,7 +25,7 @@
 #include "named_callback_manager.h"
 #include "variable.h"
 
-#include <common/AnyValue.h>
+#include <sup/dto/anyvalue.h>
 
 #include <map>
 #include <memory>
@@ -51,7 +51,7 @@ private:
   /**
    * @brief Threadsafe list of callback objects.
    */
-  NamedCallbackManager<const ccs::types::AnyValue&> callbacks;
+  NamedCallbackManager<const sup::dto::AnyValue&> callbacks;
 
   /**
    * @brief Check if the given Variable name is already present.
@@ -75,7 +75,7 @@ private:
    * @param name Variable name.
    * @param name Variable's new value.
    */
-  void VariableUpdated(const std::string name, const ccs::types::AnyValue& value);
+  void VariableUpdated(const std::string name, const sup::dto::AnyValue& value);
 
 public:
   Workspace();
@@ -117,7 +117,7 @@ public:
    *
    * @param name Variable name.
    */
-  bool GetValue(std::string name, ::ccs::types::AnyValue& value) const;
+  bool GetValue(std::string name, sup::dto::AnyValue& value) const;
 
   /**
    * @brief Set variable value
@@ -125,7 +125,7 @@ public:
    * @param name Variable name.
    * @param name Variable value.
    */
-  bool SetValue(std::string name, const ::ccs::types::AnyValue& value);
+  bool SetValue(std::string name, const sup::dto::AnyValue& value);
 
   std::vector<const Variable*> GetVariables() const;
 
@@ -155,7 +155,7 @@ public:
    * for creating such an object before registering callback as there is no other way to unregister
    * them.
    */
-  CallbackGuard<NamedCallbackManager<const ccs::types::AnyValue&>> GetCallbackGuard(void* listener);
+  CallbackGuard<NamedCallbackManager<const sup::dto::AnyValue&>> GetCallbackGuard(void* listener);
 
   /**
    * @brief Add callback for variable updates
@@ -168,7 +168,7 @@ public:
    * required to outlive the Workspace.
    */
   bool RegisterGenericCallback(
-      const std::function<void(const std::string&, const ccs::types::AnyValue&)>& cb,
+      const std::function<void(const std::string&, const sup::dto::AnyValue&)>& cb,
       void* listener = nullptr);
 
   /**
@@ -182,7 +182,7 @@ public:
    * @note The pointer is only used as an id to allow for later removal (unregister).
    */
   bool RegisterCallback(const std::string& name,
-                        const std::function<void(const ccs::types::AnyValue&)>& cb, void* listener);
+                        const std::function<void(const sup::dto::AnyValue&)>& cb, void* listener);
 };
 
 }  // namespace sequencer

@@ -23,7 +23,15 @@
 
 #include <sup/sequencer/log.h>
 
+#include <sup/dto/anytype_helper.h>
+#include <sup/dto/anyvalue_helper.h>
+
 #include <memory>
+
+namespace
+{
+std::string FullJSONRepresentation(const std::string& json_type, const std::string& json_value);
+}  // unnamed namespace
 
 namespace sup
 {
@@ -36,93 +44,96 @@ const std::string LocalVariable::JSON_VALUE = "value";
 
 LocalVariable::LocalVariable()
   : Variable(LocalVariable::Type)
-  , val{}
+  , m_value{}
 {}
 
 LocalVariable::~LocalVariable() {}
 
-bool LocalVariable::GetValueImpl(::ccs::types::AnyValue& value) const
+bool LocalVariable::GetValueImpl(sup::dto::AnyValue& value) const
 {
-  if (!val->GetType())
+  if (!m_value)
   {
-    log::Warning("sup::sequencer::LocalVariable::GetValue() - not initialized..");
     return false;
   }
-
-  if (!value.GetType() || value.GetSize() == val->GetSize())
+  try
   {
-    log::Debug("sup::sequencer::LocalVariable::GetValue() - copying value..");
-    value = *val;
+    value = *m_value;
   }
-  else
+  catch(const sup::dto::InvalidConversionException&)
   {
-    log::Warning("sup::sequencer::LocalVariable::GetValue() - incompatible types..");
     return false;
   }
   return true;
 }
 
-bool LocalVariable::SetValueImpl(const ::ccs::types::AnyValue& value)
+bool LocalVariable::SetValueImpl(const sup::dto::AnyValue& value)
 {
-  if (!val->GetType() || val->GetSize() == value.GetSize())
+  if (!m_value)
   {
-    log::Debug("sup::sequencer::LocalVariable::SetValue() - copying value..");
-    *val = value;
-    Notify(value);
-    return true;
+    return false;
   }
-  log::Warning("sup::sequencer::LocalVariable::SetValue() - incompatible types..");
-  return false;
+  try
+  {
+    *m_value = value;
+    Notify(value);
+  }
+  catch(const sup::dto::InvalidConversionException&)
+  {
+    return false;
+  }
+  return true;
 }
 
 bool LocalVariable::SetupImpl()
 {
-  val.reset(new ::ccs::types::AnyValue());
-  bool status = HasAttribute(JSON_TYPE);
+  m_value.reset(new sup::dto::AnyValue());
 
-  ::ccs::base::SharedReference<::ccs::types::AnyType> local_type;
-  std::unique_ptr<::ccs::types::AnyValue> local_value;
-  if (status)
+  if (HasAttribute(JSON_TYPE))
   {
-    log::Debug("LocalVariable::Setup() - parsing json type info..");
-    std::string json_type = GetAttribute(JSON_TYPE);
-    auto read = ::ccs::HelperTools::Parse(local_type, json_type.c_str());
-    status = read > 0;
-  }
-  else
-  {
-    log::Debug("LocalVariable::Setup() - no json type info..");
-    return true;
-  }
-
-  if (status)
-  {
-    log::Debug("LocalVariable::Setup() - create local AnyValue");
-    ::ccs::base::SharedReference<const ::ccs::types::AnyType> const_type(local_type);
-    val.reset(new ::ccs::types::AnyValue(const_type));
-    local_value.reset(new ::ccs::types::AnyValue(const_type));
-  }
-
-  if (status && HasAttribute(JSON_VALUE))
-  {
-    log::Debug("LocalVariable::Setup() - parsing json value info..");
-    std::string json_value = GetAttribute(JSON_VALUE);
-    status = local_value->ParseInstance(json_value.c_str());
-    if (status)
+    if (HasAttribute(JSON_VALUE))
     {
-      log::Debug("LocalVariable::Setup() - copying parsed value..");
-      status = SetValueImpl(*local_value);
+      try
+      {
+        *m_value = sup::dto::AnyValueFromJSONString(
+          FullJSONRepresentation(GetAttribute(JSON_TYPE), GetAttribute(JSON_VALUE)));
+      }
+      catch(const sup::dto::ParseException&)
+      {
+        return false;
+      }
+    }
+    else
+    {
+      try
+      {
+        sup::dto::AnyType parsed_type = sup::dto::AnyTypeFromJSONString(GetAttribute(JSON_TYPE));
+        m_value.reset(new sup::dto::AnyValue(parsed_type));
+      }
+      catch (const sup::dto::ParseException&)
+      {
+        return false;
+      }
     }
   }
-
-  return status;  // empty AnyValue is allowed for setting.
+  return true;  // empty AnyValue is allowed for setting
 }
 
 void LocalVariable::ResetImpl()
 {
-  val.reset();
+  m_value.reset();
 }
 
 }  // namespace sequencer
 
 }  // namespace sup
+
+namespace
+{
+std::string FullJSONRepresentation(const std::string& json_type, const std::string& json_value)
+{
+  const std::string prelude = R"RAW([{"encoding":"sup-dto/v1.0/JSON"},{"datatype":)RAW";
+  const std::string interlude = R"RAW(},{"instance":)RAW";
+  const std::string ending = R"RAW(}])RAW";
+  return prelude + json_type + interlude + json_value + ending;
+}
+}  // unnamed namespace

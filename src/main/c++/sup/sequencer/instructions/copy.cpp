@@ -38,7 +38,7 @@ ExecutionStatus Copy::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
 
   bool status = (Instruction::HasAttribute("input") && Instruction::HasAttribute("output"));
 
-  ccs::types::AnyValue _value;
+  sup::dto::AnyValue _value;
 
   if (status)
   {  // Read from workspace

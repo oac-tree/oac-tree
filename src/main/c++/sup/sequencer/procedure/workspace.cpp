@@ -55,7 +55,7 @@ bool Workspace::ContainsVariablePointer(Variable* var) const
   return true;
 }
 
-void Workspace::VariableUpdated(const std::string name, const ccs::types::AnyValue& value)
+void Workspace::VariableUpdated(const std::string name, const sup::dto::AnyValue& value)
 {
   callbacks.ExecuteCallbacks(name, value);
 }
@@ -87,7 +87,7 @@ bool Workspace::AddVariable(std::string name, Variable *var)
   log::Debug("sup::sequencer::Workspace::AddVariable('%s', var) - add variable to workspace..",
             name.c_str());
   var_owned->SetNotifyCallback(
-    [this, name](const ccs::types::AnyValue& value)
+    [this, name](const sup::dto::AnyValue& value)
     {
       VariableUpdated(name, value);
     });
@@ -127,7 +127,7 @@ bool Workspace::ResetVariable(const std::string& varname)
   return true;
 }
 
-bool Workspace::GetValue(std::string name, ::ccs::types::AnyValue &value) const
+bool Workspace::GetValue(std::string name, sup::dto::AnyValue &value) const
 {
   auto splitname = SplitToNameField(name);
   auto varname = splitname.first;
@@ -149,7 +149,7 @@ bool Workspace::GetValue(std::string name, ::ccs::types::AnyValue &value) const
   return it->second->GetValue(value, fieldname);
 }
 
-bool Workspace::SetValue(std::string name, const ::ccs::types::AnyValue &value)
+bool Workspace::SetValue(std::string name, const sup::dto::AnyValue &value)
 {
   auto splitname = SplitToNameField(name);
   auto varname = splitname.first;
@@ -195,21 +195,21 @@ bool Workspace::HasVariable(const std::string& name) const
   return _var_map.find(name) != _var_map.end();
 }
 
-CallbackGuard<NamedCallbackManager<const ccs::types::AnyValue &>> Workspace::GetCallbackGuard(
+CallbackGuard<NamedCallbackManager<const sup::dto::AnyValue &>> Workspace::GetCallbackGuard(
     void *listener)
 {
   return callbacks.GetCallbackGuard(this);
 }
 
 bool Workspace::RegisterGenericCallback(
-    const std::function<void(const std::string &, const ccs::types::AnyValue &)> &cb,
+    const std::function<void(const std::string &, const sup::dto::AnyValue &)> &cb,
     void *listener)
 {
   return callbacks.RegisterGenericCallback(cb, listener);
 }
 
 bool Workspace::RegisterCallback(const std::string &name,
-                                 const std::function<void(const ccs::types::AnyValue &)> &cb,
+                                 const std::function<void(const sup::dto::AnyValue &)> &cb,
                                  void *listener)
 {
   return callbacks.RegisterCallback(name, cb, listener);

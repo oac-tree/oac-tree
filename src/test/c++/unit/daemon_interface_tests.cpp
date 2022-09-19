@@ -100,11 +100,11 @@ TEST_F(DaemonInterfaceTest, GetUserValue)
 {
   log::LogStreamRedirector redirector(out_stream);
   EXPECT_TRUE(out_stream.str().empty());
-  ::ccs::types::AnyValue val(::ccs::types::UnsignedInteger32);
+  sup::dto::AnyValue val(sup::dto::UnsignedInteger32);
   val = 1234u;
   EXPECT_EQ(daemon_interface.GetUserValue(val), false);
   EXPECT_FALSE(out_stream.str().empty());
-  ::ccs::types::uint32 result = val;
+  sup::dto::uint32 result = val;
   EXPECT_EQ(result, 1234u);
 }
 

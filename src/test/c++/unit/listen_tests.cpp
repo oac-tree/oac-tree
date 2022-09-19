@@ -79,9 +79,9 @@ R"RAW(
   // check result variable
   auto ws = proc->GetWorkspace();
   ASSERT_NE(ws, nullptr);
-  ccs::types::AnyValue result{ccs::types::UnsignedInteger64};
+  sup::dto::AnyValue result{sup::dto::UnsignedInteger64Type};
   EXPECT_TRUE(ws->GetValue("monitor", result));
-  EXPECT_EQ(result, (ccs::types::uint64)1729);
+  EXPECT_EQ(result, (sup::dto::uint64)1729);
   proc->Reset();
 }
 
@@ -131,9 +131,9 @@ R"RAW(
   // check result variable
   auto ws = proc->GetWorkspace();
   ASSERT_NE(ws, nullptr);
-  ccs::types::AnyValue result{ccs::types::UnsignedInteger64};
+  sup::dto::AnyValue result{sup::dto::UnsignedInteger64Type};
   EXPECT_TRUE(ws->GetValue("result", result));
-  EXPECT_EQ(result, (ccs::types::uint64)1729);
+  EXPECT_EQ(result, (sup::dto::uint64)1729);
   proc->Reset();
 }
 
@@ -188,8 +188,8 @@ R"RAW(
   // check result variable
   auto ws = proc->GetWorkspace();
   ASSERT_NE(ws, nullptr);
-  ccs::types::AnyValue result{ccs::types::UnsignedInteger64};
+  sup::dto::AnyValue result{sup::dto::UnsignedInteger64Type};
   EXPECT_TRUE(ws->GetValue("result", result));
-  EXPECT_EQ(result, (ccs::types::uint64)1);
+  EXPECT_EQ(result, (sup::dto::uint64)1);
   proc->Reset();
 }

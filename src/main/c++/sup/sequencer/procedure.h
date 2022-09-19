@@ -30,19 +30,13 @@
 #include <memory>
 #include <string>
 #include <vector>
-namespace ccs
-{
-namespace types
-{
-class AnyValue;
-}
-}  // namespace ccs
 
 namespace sup
 {
 namespace sequencer
 {
 
+class AnyValue;
 class Instruction;
 class UserInterface;
 class Variable;
@@ -200,7 +194,7 @@ public:
    *
    * @return true on successful retrieval.
    */
-  bool GetVariableValue(std::string name, ::ccs::types::AnyValue& value) const;
+  bool GetVariableValue(std::string name, sup::dto::AnyValue& value) const;
 
   /**
    * @brief Setup the procedure.
@@ -288,7 +282,7 @@ public:
    * @note Users are responsible for ensuring the callback outlives the underlying workspace.
    */
   bool RegisterGenericCallback(
-    const std::function<void(const std::string&, const ccs::types::AnyValue&)>& cb);
+    const std::function<void(const std::string&, const sup::dto::AnyValue&)>& cb);
 
   /**
    * @brief Name of attribute that defines the timeout between ticks.

@@ -48,7 +48,7 @@ void Runner::SetProcedure(Procedure* procedure)
   _proc = procedure;
   UserInterface* ui = _ui;
   _proc->RegisterGenericCallback(
-    [ui](const std::string& name, const ccs::types::AnyValue& value)
+    [ui](const std::string& name, const sup::dto::AnyValue& value)
     {
       ui->VariableUpdated(name, value);
     });

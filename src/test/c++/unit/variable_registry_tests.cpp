@@ -45,8 +45,8 @@ protected:
 class TestVariable : public Variable
 {
 private:
-  bool GetValueImpl(::ccs::types::AnyValue &) const override { return true; }
-  bool SetValueImpl(const ::ccs::types::AnyValue &) override { return true; }
+  bool GetValueImpl(sup::dto::AnyValue &) const override { return true; }
+  bool SetValueImpl(const sup::dto::AnyValue &) override { return true; }
 
 public:
   TestVariable() : Variable{Type} {}

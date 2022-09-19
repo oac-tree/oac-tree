@@ -36,21 +36,21 @@ public:
   class TestInterface : public ::sup::sequencer::UserInterface
   {
   public:
-    TestInterface(unsigned par) : m_value(ccs::types::UnsignedInteger32)
+    TestInterface(unsigned par) : m_value(sup::dto::UnsignedInteger32)
     {
-      m_value = static_cast<ccs::types::uint32>(par);
+      m_value = static_cast<sup::dto::uint32>(par);
     }
 
-    bool PutValueImpl(const ::ccs::types::AnyValue &value, const std::string &description) override
+    bool PutValueImpl(const sup::dto::AnyValue &value, const std::string &description) override
     {
       m_value = value;
       return true;
     }
 
-    bool GetUserValueImpl(::ccs::types::AnyValue &, const std::string &) override { return true; }
+    bool GetUserValueImpl(sup::dto::AnyValue &, const std::string &) override { return true; }
 
     void UpdateInstructionStatusImpl(const sup::sequencer::Instruction *instruction) override {}
-    ::ccs::types::AnyValue m_value;
+    sup::dto::AnyValue m_value;
   };
 };
 
@@ -73,7 +73,7 @@ TEST_F(OutputTest, PutInteger)
   const unsigned expected{22};
   TestInterface ui{expected};
   // initial state
-  EXPECT_EQ(static_cast<ccs::types::uint32>(ui.m_value), static_cast<ccs::types::uint32>(expected));
+  EXPECT_EQ(static_cast<sup::dto::uint32>(ui.m_value), static_cast<sup::dto::uint32>(expected));
 
   auto proc = sup::sequencer::ParseProcedureString(procedure_string);
   ASSERT_TRUE(proc.get() != nullptr);
@@ -81,5 +81,5 @@ TEST_F(OutputTest, PutInteger)
       sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::SUCCESS));
 
   // checking that Output instruction has propagated the value to the interface
-  EXPECT_EQ(static_cast<ccs::types::uint32>(ui.m_value), static_cast<ccs::types::uint32>(42));
+  EXPECT_EQ(static_cast<sup::dto::uint32>(ui.m_value), static_cast<sup::dto::uint32>(42));
 }

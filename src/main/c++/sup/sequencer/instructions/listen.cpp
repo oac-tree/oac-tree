@@ -37,7 +37,7 @@ namespace sequencer
 
 namespace
 {
-bool Equals(const ccs::types::AnyValue& lhs, const ccs::types::AnyValue& rhs);
+bool Equals(const sup::dto::AnyValue& lhs, const sup::dto::AnyValue& rhs);
 }
 
 const std::string Listen::Type = "Listen";
@@ -147,7 +147,7 @@ std::vector<std::string> Listen::VariableNames() const
   return result;
 }
 
-void Listen::UpdateCallback(const std::string& name, const ccs::types::AnyValue& val)
+void Listen::UpdateCallback(const std::string& name, const sup::dto::AnyValue& val)
 {
   std::lock_guard<std::mutex> lk(mx);
   auto it = var_cache.find(name);
@@ -168,7 +168,7 @@ void Listen::RegisterCallbacks(
   {
     ws->RegisterCallback(
         var_name,
-        [this, var_name](const ccs::types::AnyValue& val) { UpdateCallback(var_name, val); },
+        [this, var_name](const sup::dto::AnyValue& val) { UpdateCallback(var_name, val); },
         this);
   }
 }
@@ -180,7 +180,7 @@ void Listen::ClearCallbacks()
 
 namespace
 {
-bool Equals(const ccs::types::AnyValue& lhs, const ccs::types::AnyValue& rhs)
+bool Equals(const sup::dto::AnyValue& lhs, const sup::dto::AnyValue& rhs)
 {
   // Very rudimentary, but false negatives are not an issue here.
   if (lhs.GetSize() != rhs.GetSize())

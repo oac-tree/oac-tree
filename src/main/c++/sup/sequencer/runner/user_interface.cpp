@@ -28,16 +28,16 @@ namespace sup
 namespace sequencer
 {
 
-void UserInterface::VariableUpdatedImpl(const std::string& name, const ccs::types::AnyValue& value)
+void UserInterface::VariableUpdatedImpl(const std::string& name, const sup::dto::AnyValue& value)
 {}
 
-bool UserInterface::PutValueImpl(const ::ccs::types::AnyValue& value,
+bool UserInterface::PutValueImpl(const sup::dto::AnyValue& value,
                                  const std::string& description)
 {
   return false;
 }
 
-bool UserInterface::GetUserValueImpl(::ccs::types::AnyValue& value, const std::string& description)
+bool UserInterface::GetUserValueImpl(sup::dto::AnyValue& value, const std::string& description)
 {
   return false;
 }
@@ -60,18 +60,18 @@ void UserInterface::UpdateInstructionStatus(const Instruction* instruction)
   UpdateInstructionStatusImpl(instruction);
 }
 
-void UserInterface::VariableUpdated(const std::string& name, const ccs::types::AnyValue& value)
+void UserInterface::VariableUpdated(const std::string& name, const sup::dto::AnyValue& value)
 {
   VariableUpdatedImpl(name, value);
 }
 
-bool UserInterface::PutValue(const ::ccs::types::AnyValue& value, const std::string& description)
+bool UserInterface::PutValue(const sup::dto::AnyValue& value, const std::string& description)
 {
   std::lock_guard<std::mutex> lock(_ui_mutex);
   return PutValueImpl(value, description);
 }
 
-bool UserInterface::GetUserValue(::ccs::types::AnyValue& value, const std::string& description)
+bool UserInterface::GetUserValue(sup::dto::AnyValue& value, const std::string& description)
 {
   std::lock_guard<std::mutex> lock(_ui_mutex);
   return GetUserValueImpl(value, description);

@@ -43,12 +43,12 @@ namespace UnitTestHelper
 static const std::string ENV_TEST_RESOURCES_PATH_NAME = "TEST_RESOURCES_PATH";
 
 const std::string CounterInstruction::Type = "Counter";
-ccs::types::uint32 CounterInstruction::counter = 0u;
+sup::dto::uint32 CounterInstruction::counter = 0u;
 
 static bool _initialise_instruction =
     sup::sequencer::RegisterGlobalInstruction<CounterInstruction>();
 
-ccs::types::uint32 CounterInstruction::GetCount(void)
+sup::dto::uint32 CounterInstruction::GetCount(void)
 {
   return counter;
 }
@@ -58,7 +58,7 @@ sup::sequencer::ExecutionStatus CounterInstruction::ExecuteSingleImpl(
 {
   if (sup::sequencer::Instruction::HasAttribute("incr"))
   {
-    ccs::types::uint32 incr = sup::sequencer::utils::StringToUnsigned(
+    sup::dto::uint32 incr = sup::sequencer::utils::StringToUnsigned(
       sup::sequencer::Instruction::GetAttribute("incr"));
     counter += incr;
   }
@@ -87,7 +87,7 @@ int MockUI::GetUserChoiceImpl(const std::vector<std::string> &choices,
   return _choice;
 }
 
-bool MockUI::GetUserValueImpl(::ccs::types::AnyValue &value, const std::string &description)
+bool MockUI::GetUserValueImpl(sup::dto::AnyValue &value, const std::string &description)
 {
   sup::sequencer::log::Debug("TestUI::GetUserValueImpl - Description '%s'", description.c_str());
   _type = value.GetType();
@@ -95,7 +95,7 @@ bool MockUI::GetUserValueImpl(::ccs::types::AnyValue &value, const std::string &
   return _status;
 }
 
-::ccs::base::SharedReference<const ::ccs::types::AnyType> MockUI::GetType(void) const
+::ccs::base::SharedReference<const sup::dto::AnyType> MockUI::GetType(void) const
 {
   return _type;
 }
@@ -108,7 +108,7 @@ void MockUI::SetStatus(bool status)
 {
   _status = status;
 }
-void MockUI::SetValue(::ccs::types::AnyValue &value)
+void MockUI::SetValue(sup::dto::AnyValue &value)
 {
   _value = value;
 }
@@ -164,10 +164,10 @@ std::string CreateProcedureString(const std::string &body)
 void PrintProcedureWorkspace(::sup::sequencer::Procedure *procedure)
 {
   auto var_names = procedure->VariableNames();
-  ::ccs::types::char8 val_string[1024];
+  sup::dto::char8 val_string[1024];
   for (const auto &var_name : var_names)
   {
-    ::ccs::types::AnyValue val;
+    sup::dto::AnyValue val;
     sup::sequencer::log::Debug("Variable '%s'", var_name.c_str());
 
     bool var_initialized = procedure->GetVariableValue(var_name, val);

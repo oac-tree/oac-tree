@@ -26,7 +26,7 @@
 #include <sup/sequencer/sequence_parser.h>
 #include <sup/sequencer/workspace.h>
 
-#include <common/AnyValue.h>
+#include <sup/dto/anyvalue.h>
 
 namespace sup
 {
@@ -175,7 +175,7 @@ std::vector<std::string> Procedure::VariableNames() const
   return _workspace->VariableNames();
 }
 
-bool Procedure::GetVariableValue(std::string name, ::ccs::types::AnyValue &value) const
+bool Procedure::GetVariableValue(std::string name, sup::dto::AnyValue &value) const
 {
   return _workspace->GetValue(name, value);
 }
@@ -259,7 +259,7 @@ const Workspace *Procedure::GetWorkspace() const
 }
 
 bool Procedure::RegisterGenericCallback(
-    const std::function<void(const std::string&, const ccs::types::AnyValue&)>& cb)
+    const std::function<void(const std::string&, const sup::dto::AnyValue&)>& cb)
 {
   return _workspace->RegisterGenericCallback(cb);
 }

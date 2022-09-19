@@ -40,8 +40,8 @@ ExecutionStatus Equals::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
 
   bool status = (Instruction::HasAttribute("lhs") && Instruction::HasAttribute("rhs"));
 
-  ccs::types::AnyValue lhs;
-  ccs::types::AnyValue rhs;
+  sup::dto::AnyValue lhs;
+  sup::dto::AnyValue rhs;
 
   if (status)
   {  // Read lhs from workspace

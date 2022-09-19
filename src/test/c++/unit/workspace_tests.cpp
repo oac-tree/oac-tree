@@ -26,7 +26,7 @@
 #include <sup/sequencer/sequence_parser.h>
 #include <sup/sequencer/variable_registry.h>
 
-#include <common/AnyValueHelper.h>
+#include <sup/dto/anyvalue_helper.h>
 
 #include <gtest/gtest.h>
 
@@ -60,7 +60,7 @@ TEST_F(WorkspaceTest, DefaultConstructed)
   auto variables = ws.VariableNames();
   EXPECT_EQ(variables.size(), 0);
 
-  ::ccs::types::AnyValue val;
+  sup::dto::AnyValue val;
   EXPECT_FALSE(ws.GetValue(var1_name, val));
   EXPECT_FALSE(ws.SetValue(var1_name, val));
 }
@@ -91,7 +91,7 @@ TEST_F(WorkspaceTest, GetValue)
   EXPECT_EQ(variables.size(), 0);
 
   // Add all variables
-  ::ccs::types::AnyValue val2;
+  sup::dto::AnyValue val2;
   ws.Setup();
   EXPECT_FALSE(ws.GetValue(var2_name, val2));
   EXPECT_FALSE(ws.SetValue(var2_name, val2));
@@ -108,13 +108,13 @@ TEST_F(WorkspaceTest, GetValue)
   ws.Setup();
   EXPECT_FALSE(ws.GetValue(var1_name, val2)) << "GetValue should fail for untyped variable!";
   EXPECT_TRUE(ws.GetValue(var2_name, val2));  // zero-initialized
-  ::ccs::types::uint64 value_field;
-  ::ccs::types::boolean status_field;
+  sup::dto::uint64 value_field;
+  sup::dto::boolean status_field;
   EXPECT_TRUE(::ccs::HelperTools::GetAttributeValue(&val2, "value", value_field));
   EXPECT_TRUE(::ccs::HelperTools::GetAttributeValue(&val2, "status", status_field));
   EXPECT_EQ(value_field, 0ul);
   EXPECT_EQ(status_field, false);
-  ::ccs::types::AnyValue val3;
+  sup::dto::AnyValue val3;
   EXPECT_TRUE(ws.GetValue(var3_name, val3));  // zero-initialized
   EXPECT_TRUE(::ccs::HelperTools::GetAttributeValue(&val3, "value", value_field));
   EXPECT_TRUE(::ccs::HelperTools::GetAttributeValue(&val3, "status", status_field));
@@ -124,8 +124,8 @@ TEST_F(WorkspaceTest, GetValue)
   // Read variable fields
   std::string var3_value_field_name = var3_name + ".value";
   std::string var3_status_field_name = var3_name + ".status";
-  ::ccs::types::AnyValue var3_value_field;
-  ::ccs::types::AnyValue var3_status_field(::ccs::types::Boolean);
+  sup::dto::AnyValue var3_value_field;
+  sup::dto::AnyValue var3_status_field(sup::dto::BooleanType);
   EXPECT_TRUE(ws.GetValue(var3_value_field_name, var3_value_field));
   EXPECT_TRUE(ws.GetValue(var3_status_field_name, var3_status_field));
   value_field = var3_value_field;
@@ -145,7 +145,7 @@ TEST_F(WorkspaceTest, SetValue)
   EXPECT_EQ(variables.size(), 0);
 
   // Add all variables
-  ::ccs::types::AnyValue val2;
+  sup::dto::AnyValue val2;
   EXPECT_FALSE(ws.GetValue(var2_name, val2));
   EXPECT_FALSE(ws.SetValue(var2_name, val2));
   EXPECT_TRUE(ws.AddVariable(var1_name, var1.release()));
@@ -159,11 +159,11 @@ TEST_F(WorkspaceTest, SetValue)
 
   // Set complete variable
   ws.Setup();
-  ::ccs::types::AnyValue val1(::ccs::types::Boolean);
+  sup::dto::AnyValue val1(sup::dto::BooleanType);
   val1 = true;
   EXPECT_TRUE(ws.SetValue(var1_name, val1));
   EXPECT_TRUE(ws.GetValue(var2_name, val2));  // zero-initialized
-  ::ccs::types::boolean status_field;
+  sup::dto::boolean status_field;
   EXPECT_TRUE(::ccs::HelperTools::GetAttributeValue(&val2, "status", status_field));
   EXPECT_EQ(status_field, false);
   EXPECT_TRUE(::ccs::HelperTools::SetAttributeValue(&val2, "status", true));
@@ -174,7 +174,7 @@ TEST_F(WorkspaceTest, SetValue)
 
   // Set variable fields
   std::string var3_status_field_name = var3_name + ".status";
-  ::ccs::types::AnyValue var3_status_field;
+  sup::dto::AnyValue var3_status_field;
   EXPECT_TRUE(ws.GetValue(var3_status_field_name, var3_status_field));
   status_field = var3_status_field;
   EXPECT_EQ(status_field, true);
@@ -210,9 +210,9 @@ TEST_F(WorkspaceTest, GetVariables)
 TEST_F(WorkspaceTest, NotifyCallback)
 {
   std::string var_name;
-  ccs::types::AnyValue var_value;
+  sup::dto::AnyValue var_value;
   EXPECT_TRUE(ws.RegisterGenericCallback(
-    [&var_name, &var_value](const std::string& name, const ccs::types::AnyValue& value)
+    [&var_name, &var_value](const std::string& name, const sup::dto::AnyValue& value)
     {
       var_name = name;
       var_value = value;
@@ -222,9 +222,9 @@ TEST_F(WorkspaceTest, NotifyCallback)
   EXPECT_TRUE(var->AddAttribute(LocalVariable::JSON_TYPE, R"RAW({"type":"uint16"})RAW"));
   EXPECT_TRUE(ws.AddVariable(name, var.release()));
   ws.Setup();
-  ccs::types::AnyValue new_value(ccs::types::UnsignedInteger16);
-  ccs::types::uint16 raw_value = 123;
-  new_value = ccs::types::uint16(raw_value);
+  sup::dto::AnyValue new_value(sup::dto::UnsignedInteger16);
+  sup::dto::uint16 raw_value = 123;
+  new_value = sup::dto::uint16(raw_value);
   EXPECT_TRUE(ws.SetValue(name, new_value));
   EXPECT_EQ(var_name, name);
   EXPECT_EQ(var_value, raw_value);
@@ -236,7 +236,7 @@ TEST_F(WorkspaceTest, ResetVariable)
   EXPECT_EQ(variables.size(), 0);
 
   // Add all variables
-  ::ccs::types::AnyValue val;
+  sup::dto::AnyValue val;
   EXPECT_FALSE(ws.GetValue(var1_name, val));
   EXPECT_TRUE(ws.AddVariable(var1_name, var1.release()));
   variables = ws.VariableNames();
@@ -244,7 +244,7 @@ TEST_F(WorkspaceTest, ResetVariable)
 
   // Set complete variable
   ws.Setup();
-  ::ccs::types::AnyValue val1(::ccs::types::Boolean);
+  sup::dto::AnyValue val1(sup::dto::BooleanType);
   val1 = true;
   EXPECT_TRUE(ws.SetValue(var1_name, val1));
   EXPECT_TRUE(ws.GetValue(var1_name, val));

@@ -38,8 +38,8 @@ private:
   /**
    * @brief See sup::sequencer::Variable.
    */
-  bool GetValueImpl(::ccs::types::AnyValue& value) const override;
-  bool SetValueImpl(const ::ccs::types::AnyValue& value) override;
+  bool GetValueImpl(sup::dto::AnyValue& value) const override;
+  bool SetValueImpl(const sup::dto::AnyValue& value) override;
   bool SetupImpl() override;
 
 protected:

@@ -213,7 +213,7 @@ TEST_F(ProcedureTest, ConstructedFromString)
   EXPECT_NE(std::find(variables.begin(), variables.end(), var1_name), variables.end());
   EXPECT_NE(std::find(variables.begin(), variables.end(), var2_name), variables.end());
   EXPECT_NE(std::find(variables.begin(), variables.end(), var3_name), variables.end());
-  ::ccs::types::AnyValue val;
+  sup::dto::AnyValue val;
   EXPECT_TRUE(loaded_proc->GetVariableValue(var1_name, val));
 }
 

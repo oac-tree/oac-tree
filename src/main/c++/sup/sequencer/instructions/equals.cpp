@@ -21,11 +21,7 @@
 
 #include "equals.h"
 
-#include <sup/sequencer/instruction.h>
-#include <sup/sequencer/instruction_registry.h>
 #include <sup/sequencer/workspace.h>
-
-#include <cstring>
 
 namespace sup
 {
@@ -33,37 +29,19 @@ namespace sequencer
 {
 const std::string Equals::Type = "Equals";
 
-ExecutionStatus Equals::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
+ExecutionStatus Equals::ExecuteSingleImpl(UserInterface*, Workspace* ws)
 {
-  (void)ui;
-  (void)ws;
-
-  bool status = (Instruction::HasAttribute("lhs") && Instruction::HasAttribute("rhs"));
-
+  if (!HasAttribute("lhs") || !HasAttribute("rhs"))
+  {
+    return ExecutionStatus::FAILURE;
+  }
   sup::dto::AnyValue lhs;
   sup::dto::AnyValue rhs;
-
-  if (status)
-  {  // Read lhs from workspace
-    status = ws->GetValue(Instruction::GetAttribute("lhs"), lhs);
-  }
-
-  if (status)
-  {  // Read rhs from workspace
-    status = ws->GetValue(Instruction::GetAttribute("rhs"), rhs);
-  }
-
-  if (status)
+  if (!ws->GetValue(GetAttribute("lhs"), lhs) || !ws->GetValue(GetAttribute("rhs"), rhs))
   {
-    status = (lhs.GetSize() == rhs.GetSize());
+    return ExecutionStatus::FAILURE;
   }
-
-  if (status)
-  {
-    status = (std::memcmp(lhs.GetInstance(), rhs.GetInstance(), lhs.GetSize()) == 0);
-  }
-
-  return (status ? ExecutionStatus::SUCCESS : ExecutionStatus::FAILURE);
+  return lhs == rhs ? ExecutionStatus::SUCCESS : ExecutionStatus::FAILURE;
 }
 
 Equals::Equals() : Instruction(Equals::Type) {}

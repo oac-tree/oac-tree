@@ -24,8 +24,6 @@
 #include <sup/sequencer/log.h>
 #include <sup/sequencer/instruction.h>
 
-#include <sup/dto/anyvalue_helper.h>
-
 #include <cstring>
 #include <iostream>
 #include <map>
@@ -43,7 +41,7 @@ void CLInterface::UpdateInstructionStatusImpl(const Instruction *instruction)
   auto instruction_name = instruction->GetName();
   auto status = instruction->GetStatus();
 
-  if (_verbose)
+  if (m_verbose)
   {
     std::cout << "Instruction: (" << instruction_type << ":" << instruction_name << ") : ";
     std::cout << StatusToString(status) << std::endl;
@@ -52,48 +50,39 @@ void CLInterface::UpdateInstructionStatusImpl(const Instruction *instruction)
 
 void CLInterface::VariableUpdatedImpl(const std::string& name, const sup::dto::AnyValue& value)
 {
-  if (!_verbose)
+  if (!m_verbose)
   {
     return;
   }
   std::cout << "Variable (" << name << ") updated: ";
-  sup::dto::char8 buffer[4096] = STRING_UNDEFINED;
-  auto result = ccs::HelperTools::SerialiseToJSONStream(&value, buffer, 4096u);
-  if (result)
+  std::string json_rep = sup::dto::ValuesToJSONString(value);
+  if (!json_rep.empty())
   {
-    std::cout << buffer << "\n";
-  }
-  else
-  {
-    log::Warning("CLInterface::VariableUpdatedImpl() could not serialize the value");
+    std::cout << json_rep << std::endl;
   }
 }
 
 bool CLInterface::PutValueImpl(const sup::dto::AnyValue &value, const std::string &description)
 {
-  std::cout << description << " (" << value.GetType()->GetName() << "): ";
-  sup::dto::char8 buffer[4096] = STRING_UNDEFINED;
-  auto result = ccs::HelperTools::SerialiseToJSONStream(&value, buffer, 4096u);
-  if (result)
+  std::cout << description << " (" << value.GetTypeName() << "): ";
+  std::string json_rep = sup::dto::ValuesToJSONString(value);
+  if (json_rep.empty())
   {
-    std::cout << buffer << "\n";
+    return false;
   }
-  else
-  {
-    log::Warning("CLInterface::PutValueImpl() could not serialize the value");
-  }
-  return result;
+  std::cout << json_rep << std::endl;
+  return true;
 }
 
 bool CLInterface::GetUserValueImpl(sup::dto::AnyValue &value, const std::string &description)
 {
-  if (!::ccs::HelperTools::Is<::sup::dto::ScalarType>(&value))
+  if (!sup::dto::IsScalarValue(value))
   {
     log::Warning("CLInterface::GetUserValueImpl(value, '%s') only supports scalar values..",
                 description.c_str());
     return false;
   }
-  std::cout << description << " (" << value.GetType()->GetName() << "): ";
+  std::cout << description << " (" << value.GetTypeName() << "): ";
   std::string input;
   std::getline(std::cin, input);
   bool result = ParseStringToScalarAnyvalue(value, input);
@@ -134,7 +123,7 @@ int CLInterface::GetUserChoiceImpl(const std::vector<std::string> &choices,
 
 void CLInterface::StartSingleStepImpl()
 {
-  if (_verbose)
+  if (m_verbose)
   {
     std::cout << "Start single execution step" << std::endl;
   }
@@ -147,13 +136,13 @@ void CLInterface::MessageImpl(const std::string& message)
 
 void CLInterface::EndSingleStepImpl()
 {
-  if (_verbose)
+  if (m_verbose)
   {
     std::cout << "End single execution step" << std::endl;
   }
 }
 
-CLInterface::CLInterface(bool verbose) : _verbose{verbose} {}
+CLInterface::CLInterface(bool verbose) : m_verbose{verbose} {}
 
 CLInterface::~CLInterface() = default;
 
@@ -161,7 +150,7 @@ CLInterface::~CLInterface() = default;
 
 }  // namespace sup
 
-using ParseFunction = bool (*)(sup::dto::AnyValue &value, const std::string &str);
+using ParseFunction = bool (*)(sup::dto::AnyValue &, const std::string &);
 
 template <typename T>
 bool ParserFunctionT(sup::dto::AnyValue &value, const std::string &str)
@@ -172,7 +161,7 @@ bool ParserFunctionT(sup::dto::AnyValue &value, const std::string &str)
   if (istr.fail())
   {
     sup::sequencer::log::Warning("ParseStringToScalarAnyvalue() - could not parse ('%s') in type ('%s)", str.c_str(),
-                value.GetType()->GetName());
+                value.GetTypeName());
     return false;
   }
   value = val;
@@ -191,8 +180,9 @@ bool ParserFunctionT<sup::dto::boolean>(sup::dto::AnyValue &value, const std::st
   istr >> std::boolalpha >> val;
   if (istr.fail())
   {
-    sup::sequencer::log::Warning("ParseStringToScalarAnyvalue() - could not parse ('%s') in type ('%s)", str.c_str(),
-                value.GetType()->GetName());
+    sup::sequencer::log::Warning(
+      "ParseStringToScalarAnyvalue() - could not parse ('%s') in type ('%s)", str.c_str(),
+       value.GetTypeName());
     return false;
   }
   value = val;
@@ -200,12 +190,9 @@ bool ParserFunctionT<sup::dto::boolean>(sup::dto::AnyValue &value, const std::st
 }
 
 template <>
-bool ParserFunctionT<sup::dto::string>(sup::dto::AnyValue &value, const std::string &str)
+bool ParserFunctionT<std::string>(sup::dto::AnyValue &value, const std::string &str)
 {
-  sup::dto::string buffer;
-  std::strncpy(buffer, str.c_str(), STRING_MAX_LENGTH);
-  buffer[STRING_MAX_LENGTH-1] = '\0';
-  value = buffer;
+  value = str;
   return true;
 }
 
@@ -223,7 +210,7 @@ static std::map<std::string, ParseFunction> CreateParserMap()
   parser_map["uint64"] = ParserFunctionT<sup::dto::uint64>;
   parser_map["float32"] = ParserFunctionT<sup::dto::float32>;
   parser_map["float64"] = ParserFunctionT<sup::dto::float64>;
-  parser_map["string"] = ParserFunctionT<sup::dto::string>;
+  parser_map["string"] = ParserFunctionT<std::string>;
   return parser_map;
 }
 
@@ -235,7 +222,7 @@ static std::map<std::string, ParseFunction> &GetParserMap()
 
 static bool ParseStringToScalarAnyvalue(sup::dto::AnyValue &value, const std::string &str)
 {
-  std::string type_name = value.GetType()->GetName();
+  std::string type_name = value.GetTypeName();
 
   auto &parser_map = GetParserMap();
   if (parser_map.find(type_name) == parser_map.end())

@@ -33,10 +33,14 @@
 
 namespace sup
 {
+namespace dto
+{
+class AnyValue;
+class AnyTypeRegistry;
+}  // namespace dto
+
 namespace sequencer
 {
-
-class AnyValue;
 class Instruction;
 class UserInterface;
 class Variable;
@@ -54,20 +58,22 @@ class Workspace;
 class Procedure
 {
 private:
-  std::vector<std::unique_ptr<Instruction>> _instructions;
-  std::unique_ptr<Workspace> _workspace;
+  std::vector<std::unique_ptr<Instruction>> m_instructions;
+  std::unique_ptr<Workspace> m_workspace;
 
-  AttributeMap _attributes;
+  AttributeMap m_attributes;
 
   /**
    * @brief Name of file from which this procedure was loaded (if loaded form file).
    *
    * @note This filename may include the relative or absolute paths.
    */
-  std::string _filename;
+  std::string m_filename;
 
   // Cache for other procedures loaded from files and to be used by include nodes.
-  mutable std::map<std::string, std::unique_ptr<Procedure>> _procedure_cache;
+  mutable std::map<std::string, std::unique_ptr<Procedure>> m_procedure_cache;
+
+  std::unique_ptr<sup::dto::AnyTypeRegistry> m_type_registry;
 
   /**
    * @brief Load a procedure from file or cache.

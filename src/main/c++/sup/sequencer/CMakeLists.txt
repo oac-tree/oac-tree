@@ -36,5 +36,5 @@ target_link_libraries(sup-sequencer-shared
     PRIVATE
         ${LIBXML2_LIBRARIES}
     PUBLIC
-        ccs-core
+        sup-dto
 )

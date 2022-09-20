@@ -21,8 +21,6 @@
 
 #include "copy.h"
 
-#include <sup/sequencer/instruction.h>
-#include <sup/sequencer/instruction_registry.h>
 #include <sup/sequencer/workspace.h>
 
 namespace sup
@@ -31,26 +29,19 @@ namespace sequencer
 {
 const std::string Copy::Type = "Copy";
 
-ExecutionStatus Copy::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
+ExecutionStatus Copy::ExecuteSingleImpl(UserInterface*, Workspace* ws)
 {
-  (void)ui;
-  (void)ws;
-
-  bool status = (Instruction::HasAttribute("input") && Instruction::HasAttribute("output"));
-
-  sup::dto::AnyValue _value;
-
-  if (status)
-  {  // Read from workspace
-    status = ws->GetValue(Instruction::GetAttribute("input"), _value);
+  if (!HasAttribute("input") || !HasAttribute("output"))
+  {
+    return ExecutionStatus::FAILURE;
   }
-
-  if (status)
-  {  // Write to workspace
-    status = ws->SetValue(Instruction::GetAttribute("output"), _value);
+  sup::dto::AnyValue value;
+  if (!ws->GetValue(GetAttribute("input"), value))
+  {
+    return ExecutionStatus::FAILURE;
   }
-
-  return (status ? ExecutionStatus::SUCCESS : ExecutionStatus::FAILURE);
+  return ws->SetValue(GetAttribute("output"), value) ? ExecutionStatus::SUCCESS
+                                                     : ExecutionStatus::FAILURE;
 }
 
 Copy::Copy() : Instruction(Copy::Type) {}

@@ -17,4 +17,4 @@ file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 option(COVERAGE "Generate unit test coverage information" FALSE)
 
 add_subdirectory(main/c++)
-add_subdirectory(test/c++)
+# add_subdirectory(test/c++)

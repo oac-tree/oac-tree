@@ -24,9 +24,7 @@
 #include <sup/sequencer/log.h>
 #include <sup/sequencer/workspace.h>
 
-#include <sup/dto/anytype.h>
 #include <sup/dto/anyvalue.h>
-#include <common/BasicTypes.h>
 
 namespace sup
 {
@@ -38,32 +36,16 @@ Condition::Condition() : Instruction(Condition::Type) {}
 
 Condition::~Condition() = default;
 
-ExecutionStatus Condition::ExecuteSingleImpl(UserInterface * /*ui*/, Workspace *ws)
+ExecutionStatus Condition::ExecuteSingleImpl(UserInterface *, Workspace *ws)
 {
   sup::dto::AnyValue var;
   std::string varName = GetAttribute("var_name");
-  bool ret = ws->GetValue(varName, var);
-
-  if (ret)
+  sup::dto::boolean result = false;
+  if (ws->GetValue(varName, var) && var.As(result))
   {
-    ::ccs::base::SharedReference<const sup::dto::ScalarType> varType = var.GetType();
-    ret = varType.IsValid();
-    if (ret)
-    {
-      sup::dto::uint64 check = 0;
-      // var size must be less than 64 bit
-      ret = (memcmp(var.GetInstance(), &check, var.GetSize()) != 0);
-    }
-    else
-    {
-      log::Error("Condition::ExecuteSingleImpl - The variable %s is not scalar", varName.c_str());
-    }
+    return result ? ExecutionStatus::SUCCESS : ExecutionStatus::FAILURE;
   }
-  else
-  {
-    log::Error("Condition::ExecuteSingleImpl - Failed WorkSpace::GetValue(%s)", varName.c_str());
-  }
-  return ret ? (ExecutionStatus::SUCCESS) : (ExecutionStatus::FAILURE);
+  return ExecutionStatus::FAILURE;
 }
 
 }  // namespace sequencer

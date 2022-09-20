@@ -82,7 +82,9 @@ int main(int argc, char* argv[])
   if (verbosity > 0)
   {
     sup::sequencer::log::SetStdOut();
-    sup::sequencer::log::SetMaxSeverity(verbosity == kMinimal ? LOG_NOTICE : LOG_DEBUG);
+    sup::sequencer::log::SetMaxSeverity(verbosity == kMinimal ?
+                                        sup::sequencer::log::SUP_LOG_NOTICE :
+                                        sup::sequencer::log::SUP_LOG_DEBUG);
   }
 
   auto proc = sup::sequencer::ParseProcedureFile(filename.c_str());

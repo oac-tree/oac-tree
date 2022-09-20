@@ -21,7 +21,6 @@
 
 #include "input.h"
 
-#include <sup/sequencer/log.h>
 #include <sup/sequencer/user_interface.h>
 #include <sup/sequencer/workspace.h>
 
@@ -33,27 +32,20 @@ const std::string Input::Type = "Input";
 
 ExecutionStatus Input::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
 {
-  bool status = HasAttribute("output");
-
+  if (!HasAttribute("output"))
+  {
+    return ExecutionStatus::FAILURE;
+  }
   sup::dto::AnyValue value;
-
-  if (status)
-  {  // Read from workspace
-    ws->GetValue(GetAttribute("output"), value);
-    status = value.GetSize() > 0;
+  if (!ws->GetValue(GetAttribute("output"), value))
+  {
+    return ExecutionStatus::FAILURE;
   }
-
-  if (status)
-  {  // Read from workspace
-    status = ui->GetUserValue(value, GetAttribute("description"));
+  if (!ui->GetUserValue(value, GetAttribute("description")))
+  {
+    return ExecutionStatus::FAILURE;
   }
-
-  if (status)
-  {  // Write back to workspace
-    status = ws->SetValue(GetAttribute("output"), value);
-  }
-
-  if (!status)
+  if (!ws->SetValue(GetAttribute("output"), value))
   {
     return ExecutionStatus::FAILURE;
   }

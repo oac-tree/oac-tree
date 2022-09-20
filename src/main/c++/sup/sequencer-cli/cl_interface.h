@@ -47,7 +47,7 @@ private:
   void EndSingleStepImpl() override;
   void MessageImpl(const std::string& message) override;
 
-  bool _verbose;
+  bool m_verbose;
 
 protected:
 public:

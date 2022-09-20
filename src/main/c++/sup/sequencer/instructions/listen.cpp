@@ -34,12 +34,6 @@ namespace sup
 {
 namespace sequencer
 {
-
-namespace
-{
-bool Equals(const sup::dto::AnyValue& lhs, const sup::dto::AnyValue& rhs);
-}
-
 const std::string Listen::Type = "Listen";
 
 Listen::Listen()
@@ -151,7 +145,7 @@ void Listen::UpdateCallback(const std::string& name, const sup::dto::AnyValue& v
 {
   std::lock_guard<std::mutex> lk(mx);
   auto it = var_cache.find(name);
-  if (it == var_cache.end() || Equals(it->second, val))
+  if (it == var_cache.end() || it->second == val)
   {
     return;
   }
@@ -177,19 +171,6 @@ void Listen::ClearCallbacks()
 {
   cb_guard = CBGuard(nullptr, nullptr);
 }
-
-namespace
-{
-bool Equals(const sup::dto::AnyValue& lhs, const sup::dto::AnyValue& rhs)
-{
-  // Very rudimentary, but false negatives are not an issue here.
-  if (lhs.GetSize() != rhs.GetSize())
-  {
-    return false;
-  }
-  return std::memcmp(lhs.GetInstance(), rhs.GetInstance(), lhs.GetSize()) == 0;
-}
-}  // unnamed namespace
 
 }  // namespace sequencer
 

@@ -38,22 +38,17 @@ const std::string Output::Type = "Output";
 
 ExecutionStatus Output::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
 {
-  bool status = HasAttribute(from_attribute_name);
-
+  if (!HasAttribute(from_attribute_name))
+  {
+    return ExecutionStatus::FAILURE;
+  }
   sup::dto::AnyValue value;
-
-  if (status)
-  {  // Read from workspace
-    ws->GetValue(GetAttribute(from_attribute_name), value);
-    status = value.GetSize() > 0;
+  if (!ws->GetValue(GetAttribute(from_attribute_name), value))
+  {
+    return ExecutionStatus::FAILURE;
   }
-
-  if (status)
-  {  // Read from workspace
-    status = ui->PutValue(value, GetAttribute(descr_attribute_name));
-  }
-
-  return status ? ExecutionStatus::SUCCESS : ExecutionStatus::FAILURE;
+  return ui->PutValue(value, GetAttribute(descr_attribute_name)) ? ExecutionStatus::SUCCESS
+                                                                 : ExecutionStatus::FAILURE;
 }
 
 Output::Output() : Instruction(Output::Type) {}

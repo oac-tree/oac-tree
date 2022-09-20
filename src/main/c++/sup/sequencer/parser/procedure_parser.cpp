@@ -29,7 +29,7 @@
 #include <sup/sequencer/log.h>
 #include <sup/sequencer/sequence_parser.h>
 
-#include <common/AnyTypeDatabase.h>
+#include <sup/dto/anytype_helper.h>
 
 #include <fstream>
 #include <sstream>
@@ -42,9 +42,10 @@ static const std::string JSONTYPE_ATTRIBUTE_NAME = "jsontype";
 static const std::string JSONFILE_ATTRIBUTE_NAME = "jsonfile";
 
 static std::string ReadJSONFile(const std::string &filename);
-static bool ParsePreamble(const TreeData &data, const std::string &filename);
+static bool ParsePreamble(Procedure *procedure, const TreeData &data, const std::string &filename);
 static bool ParseAndLoadPlugin(const TreeData &child);
-static bool RegisterTypeInformation(const TreeData &child, const std::string &filename);
+static bool RegisterTypeInformation(Procedure *procedure, const TreeData &child,
+                                    const std::string &filename);
 static bool ParseProcedureChildren(Procedure *procedure, const TreeData &data);
 static bool AddWorkspaceVariables(Procedure *procedure, const TreeData &ws_data);
 static bool ParseAndAddInstruction(Procedure *procedure, const TreeData &instr_data);
@@ -66,7 +67,7 @@ std::unique_ptr<Procedure> ParseProcedure(const TreeData &data, const std::strin
   result->SetFilename(filename);
 
   // Load plugins and register types first
-  bool status = ParsePreamble(data, filename);
+  bool status = ParsePreamble(result.get(), data, filename);
 
   // Add attributes
   result->AddAttributes(data.Attributes());
@@ -127,7 +128,7 @@ static std::string ReadJSONFile(const std::string &filename)
   return result;
 }
 
-static bool ParsePreamble(const TreeData &data, const std::string &filename)
+static bool ParsePreamble(Procedure *procedure, const TreeData &data, const std::string &filename)
 {
   bool result = true;
   for (const auto &child : data.Children())
@@ -141,7 +142,7 @@ static bool ParsePreamble(const TreeData &data, const std::string &filename)
     }
     else if (child.GetType() == Constants::REGISTERTYPE_ELEMENT_NAME)
     {
-      if (!RegisterTypeInformation(child, filename))
+      if (!RegisterTypeInformation(procedure, child, filename))
       {
         result = false;
       }
@@ -166,32 +167,38 @@ static bool ParseAndLoadPlugin(const TreeData &child)
   return success;
 }
 
-static bool RegisterTypeInformation(const TreeData &child, const std::string &filename)
+static bool RegisterTypeInformation(Procedure *procedure, const TreeData &child,
+                                    const std::string &filename)
 {
-  bool status = true;
+  sup::dto::AnyType parsed_type;
   if (child.HasAttribute(JSONTYPE_ATTRIBUTE_NAME))
   {
-    log::Debug("RegisterTypeInformation() - function called with json type '%s' ..",
-              child.GetAttribute(JSONTYPE_ATTRIBUTE_NAME).c_str());
-    status = ::ccs::base::GlobalTypeDatabase::Register(
-        child.GetAttribute(JSONTYPE_ATTRIBUTE_NAME).c_str());
+    try
+    {
+      parsed_type = sup::dto::AnyTypeFromJSONString(child.GetAttribute(JSONTYPE_ATTRIBUTE_NAME));
+    }
+    catch(const sup::dto::ParseException& e)
+    {
+      return false;
+    }
   }
   else if (child.HasAttribute(JSONFILE_ATTRIBUTE_NAME))
   {
-    log::Debug("RegisterTypeInformation() - function called with json file '%s' ..",
-              child.GetAttribute(JSONFILE_ATTRIBUTE_NAME).c_str());
-    std::string jsonfile =
-        GetFullPathName(GetFileDirectory(filename), child.GetAttribute(JSONFILE_ATTRIBUTE_NAME));
-    auto type_string = ReadJSONFile(jsonfile);
-    log::Debug("RegisterTypeInformation() - json file '%s', type string '%s' ..", jsonfile.c_str(),
-              type_string.c_str());
-    status = ::ccs::base::GlobalTypeDatabase::Register(type_string.c_str());
+    try
+    {
+      parsed_type = sup::dto::AnyTypeFromJSONFile(child.GetAttribute(JSONFILE_ATTRIBUTE_NAME));
+    }
+    catch(const sup::dto::ParseException& e)
+    {
+      return false;
+    }
   }
-  if (!status)
+  else
   {
-    log::Warning("RegisterTypeInformation() - could not register type");
+    return false;
   }
-  return status;
+  // TODO: register the type
+  return true;
 }
 
 static bool ParseProcedureChildren(Procedure *procedure, const TreeData &data)

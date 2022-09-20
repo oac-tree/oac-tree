@@ -26,6 +26,7 @@
 #include <sup/sequencer/sequence_parser.h>
 #include <sup/sequencer/workspace.h>
 
+#include <sup/dto/anytype_registry.h>
 #include <sup/dto/anyvalue.h>
 
 namespace sup
@@ -40,30 +41,37 @@ static bool HasRootAttributeSet(const Instruction &instruction);
 
 const Procedure *Procedure::LoadProcedure(const std::string &filename) const
 {
-  if (_procedure_cache.find(filename) == _procedure_cache.end())
+  if (m_procedure_cache.find(filename) == m_procedure_cache.end())
   {
     log::Debug("Procedure::LoadProcedure('%s') - Loading procedure from file..", filename.c_str());
     auto loaded_proc = ParseProcedureFile(filename);
     if (loaded_proc)
     {
-      _procedure_cache[filename] = std::move(loaded_proc);
+      m_procedure_cache[filename] = std::move(loaded_proc);
     }
   }
-  if (_procedure_cache.find(filename) == _procedure_cache.end())
+  if (m_procedure_cache.find(filename) == m_procedure_cache.end())
   {
     log::Warning("Procedure::LoadProcedure('%s') - Could not load procedure from file..",
                 filename.c_str());
     return nullptr;
   }
-  return _procedure_cache[filename].get();
+  return m_procedure_cache[filename].get();
 }
 
 void Procedure::ClearProcedureCache() const
 {
-  _procedure_cache.clear();
+  m_procedure_cache.clear();
 }
 
-Procedure::Procedure() : _workspace{new Workspace()} {}
+Procedure::Procedure()
+  : m_instructions{}
+  , m_workspace{new Workspace()}
+  , m_attributes{}
+  , m_filename{}
+  , m_procedure_cache{}
+  , m_type_registry{new sup::dto::AnyTypeRegistry()}
+{}
 
 Procedure::~Procedure()
 {
@@ -73,12 +81,12 @@ Procedure::~Procedure()
 
 void Procedure::SetFilename(const std::string &filename)
 {
-  _filename = filename;
+  m_filename = filename;
 }
 
 std::string Procedure::GetFilename() const
 {
-  return _filename;
+  return m_filename;
 }
 
 Instruction *Procedure::RootInstruction()
@@ -89,15 +97,15 @@ Instruction *Procedure::RootInstruction()
 
 const Instruction *Procedure::RootInstruction() const
 {
-  if (_instructions.empty())
+  if (m_instructions.empty())
   {
     return nullptr;
   }
-  if (_instructions.size() == 1)
+  if (m_instructions.size() == 1)
   {
-    return _instructions[0].get();
+    return m_instructions[0].get();
   }
-  for (auto &instr : _instructions)
+  for (auto &instr : m_instructions)
   {
     if (HasRootAttributeSet(*instr))
     {
@@ -112,7 +120,7 @@ std::vector<const Instruction *> Procedure::GetInstructions(const std::string &f
   std::vector<const Instruction *> result;
   if (filename.empty() || filename == GetFilename())
   {
-    for (auto &instr : _instructions)
+    for (auto &instr : m_instructions)
     {
       result.push_back(instr.get());
     }
@@ -132,7 +140,7 @@ std::vector<const Instruction *> Procedure::GetInstructions(const std::string &f
 
 int Procedure::GetInstructionCount() const
 {
-  return static_cast<int>(_instructions.size());
+  return static_cast<int>(m_instructions.size());
 }
 
 bool Procedure::PushInstruction(Instruction *instruction)
@@ -142,47 +150,47 @@ bool Procedure::PushInstruction(Instruction *instruction)
     log::Warning("Procedure::PushInstruction() - trying to add null pointer");
     return false;
   }
-  _instructions.emplace_back(instruction);
+  m_instructions.emplace_back(instruction);
   return true;
 }
 
 bool Procedure::InsertInstruction(Instruction *instruction, int index)
 {
-  if (index < 0 || index > _instructions.size())
+  if (index < 0 || index > m_instructions.size())
     return false;
-  _instructions.emplace(std::next(_instructions.begin(), index), instruction);
+  m_instructions.emplace(std::next(m_instructions.begin(), index), instruction);
   return true;
 }
 
 Instruction *Procedure::TakeInstruction(int index)
 {
-  if (index < 0 || index >= _instructions.size())
+  if (index < 0 || index >= m_instructions.size())
     return nullptr;
 
-  auto it = std::next(_instructions.begin(), index);
+  auto it = std::next(m_instructions.begin(), index);
   auto retval = std::move(*it);
-  _instructions.erase(it);
+  m_instructions.erase(it);
   return retval.release();
 }
 
 bool Procedure::AddVariable(std::string name, Variable *var)
 {
-  return _workspace->AddVariable(name, var);
+  return m_workspace->AddVariable(name, var);
 }
 
 std::vector<std::string> Procedure::VariableNames() const
 {
-  return _workspace->VariableNames();
+  return m_workspace->VariableNames();
 }
 
 bool Procedure::GetVariableValue(std::string name, sup::dto::AnyValue &value) const
 {
-  return _workspace->GetValue(name, value);
+  return m_workspace->GetValue(name, value);
 }
 
 bool Procedure::Setup()
 {
-  _workspace->Setup();
+  m_workspace->Setup();
   if (RootInstruction() == nullptr)
   {
     return true;
@@ -197,7 +205,7 @@ void Procedure::ExecuteSingle(UserInterface *ui)
   {
     return;
   }
-  RootInstruction()->ExecuteSingle(ui, _workspace.get());
+  RootInstruction()->ExecuteSingle(ui, m_workspace.get());
 }
 
 void Procedure::Halt()
@@ -211,7 +219,7 @@ void Procedure::Halt()
 
 void Procedure::Reset()
 {
-  _workspace->Reset();
+  m_workspace->Reset();
   if (RootInstruction() == nullptr)
   {
     return;
@@ -230,17 +238,17 @@ ExecutionStatus Procedure::GetStatus() const
 
 bool Procedure::HasAttribute(const std::string &name) const
 {
-  return _attributes.HasAttribute(name);
+  return m_attributes.HasAttribute(name);
 }
 
 std::string Procedure::GetAttribute(const std::string &name) const
 {
-  return _attributes.GetAttribute(name);
+  return m_attributes.GetAttribute(name);
 }
 
 bool Procedure::AddAttribute(const std::string &name, const std::string &value)
 {
-  return _attributes.AddAttribute(name, value);
+  return m_attributes.AddAttribute(name, value);
 }
 
 bool Procedure::AddAttributes(const AttributeMap &attributes)
@@ -255,13 +263,13 @@ bool Procedure::AddAttributes(const AttributeMap &attributes)
 
 const Workspace *Procedure::GetWorkspace() const
 {
-  return _workspace.get();
+  return m_workspace.get();
 }
 
 bool Procedure::RegisterGenericCallback(
     const std::function<void(const std::string&, const sup::dto::AnyValue&)>& cb)
 {
-  return _workspace->RegisterGenericCallback(cb);
+  return m_workspace->RegisterGenericCallback(cb);
 }
 
 static bool HasRootAttributeSet(const Instruction &instruction)

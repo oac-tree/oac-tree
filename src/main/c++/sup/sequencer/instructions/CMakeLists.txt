@@ -1,7 +1,7 @@
 target_sources(sup-sequencer-shared
     PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/async_wrapper.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/choice.cpp
+        # ${CMAKE_CURRENT_LIST_DIR}/choice.cpp
         ${CMAKE_CURRENT_LIST_DIR}/compound_instruction.cpp
         ${CMAKE_CURRENT_LIST_DIR}/condition.cpp
         ${CMAKE_CURRENT_LIST_DIR}/copy.cpp

@@ -31,7 +31,7 @@
 
 #include <gtest/gtest.h>
 
-static inline bool Terminate(void)
+static inline bool Terminate()
 {
   bool status = false;
   if (sup::sequencer::utils::FileExists("variable.bck"))

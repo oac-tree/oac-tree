@@ -28,6 +28,8 @@
 #include <sup/sequencer/user_interface.h>
 #include <sup/sequencer/workspace.h>
 
+#include <sup/dto/anyvalue.h>
+
 #include <chrono>
 #include <string>
 #include <thread>
@@ -62,17 +64,17 @@ public:
    */
   static const std::string Type;
 
-  static sup::dto::uint32 counter;
-  static sup::dto::uint32 GetCount();
+  static unsigned counter;
+  static unsigned GetCount();
 };
 
 class MockUI : public sup::sequencer::UserInterface
 {
 private:
-  bool _status = false;
-  int _choice = -1;
-  sup::dto::AnyValue _value;
-  ::ccs::base::SharedReference<const sup::dto::AnyType> _type;
+  bool m_status = false;
+  int m_choice = -1;
+  sup::dto::AnyValue m_value;
+  sup::dto::AnyType m_type;
 
   /**
    * @brief See sup::sequencer::UserInterface.
@@ -84,7 +86,7 @@ private:
 
 protected:
 public:
-  ::ccs::base::SharedReference<const sup::dto::AnyType> GetType() const;
+  sup::dto::AnyType GetType() const;
 
   void SetChoice(int choice);
   void SetStatus(bool status);

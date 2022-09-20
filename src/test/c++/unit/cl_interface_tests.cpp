@@ -27,8 +27,6 @@
 #include <sup/sequencer/instruction_registry.h>
 #include <sup/sequencer/log.h>
 
-#include <common/CompoundType.h>
-
 #include <gtest/gtest.h>
 
 #include <cstring>
@@ -48,8 +46,6 @@ protected:
   std::unique_ptr<Instruction> wait;
 };
 
-static const bool kLogToStdOut = (log::SetStdOut(), true);
-
 TEST_F(CLInterfaceTest, UpdateInstructionStatus)
 {
   std::ostringstream output;
@@ -65,8 +61,7 @@ TEST_F(CLInterfaceTest, VariableUpdated)
 {
   std::ostringstream output;
   CoutRedirector redirect(output);
-  sup::dto::AnyValue val(sup::dto::UnsignedInteger32);
-  val = (sup::dto::uint32)1234;
+  sup::dto::AnyValue val(sup::dto::UnsignedInteger32Type, 1234);
   std::string name = "TestUpdated";
   EXPECT_TRUE(output.str().empty());
   cli.VariableUpdated(name, val);
@@ -95,11 +90,11 @@ TEST_F(CLInterfaceTest, EndSingleStep)
 
 TEST_F(CLInterfaceTest, GetUserValue)
 {
-  sup::dto::AnyValue val(sup::dto::UnsignedInteger32);
+  sup::dto::AnyValue val(sup::dto::UnsignedInteger32Type);
   std::istringstream input("567890");
   CinRedirector redirect(input);
   EXPECT_TRUE(cli.GetUserValue(val));
-  sup::dto::uint32 result = val;
+  auto result = val.As<sup::dto::uint32>();
   EXPECT_EQ(result, 567890u);
 }
 
@@ -109,24 +104,23 @@ TEST_F(CLInterfaceTest, GetUserValueBool)
   std::istringstream input("true");
   CinRedirector redirect(input);
   EXPECT_TRUE(cli.GetUserValue(val));
-  bool result = val;
+  auto result = val.As<sup::dto::boolean>();
   EXPECT_EQ(result, true);
 }
 
 TEST_F(CLInterfaceTest, GetUserValueString)
 {
-  sup::dto::AnyValue val(sup::dto::String);
+  sup::dto::AnyValue val(sup::dto::StringType);
   std::istringstream input("Test string");
   CinRedirector redirect(input);
   EXPECT_TRUE(cli.GetUserValue(val));
-  char buffer[STRING_MAX_LENGTH];
-  EXPECT_TRUE(val.SerialiseInstance(buffer, STRING_MAX_LENGTH));
-  EXPECT_EQ(std::strcmp("\"Test string\"", buffer), 0);
+  auto val_str = val.As<std::string>();
+  EXPECT_TRUE(val_str == "Test string");
 }
 
 TEST_F(CLInterfaceTest, GetUserValueParseError)
 {
-  sup::dto::AnyValue val(sup::dto::UnsignedInteger32);
+  sup::dto::AnyValue val(sup::dto::UnsignedInteger32Type);
   std::istringstream input("twenty-four");
   CinRedirector redirect(input);
   EXPECT_FALSE(cli.GetUserValue(val));
@@ -134,9 +128,10 @@ TEST_F(CLInterfaceTest, GetUserValueParseError)
 
 TEST_F(CLInterfaceTest, GetUserValueUnsupportedType)
 {
-  auto test_type = (new sup::dto::CompoundType("CompoundTestType"))
-                       ->AddAttribute("timestamp", "uint64")
-                       ->AddAttribute("count", "uint16");
+  sup::dto::AnyType test_type{{
+    {"timestamp", sup::dto::UnsignedInteger64Type},
+    {"count", sup::dto::UnsignedInteger16Type}
+  }, "CompoundTestType"};
   sup::dto::AnyValue val(test_type);
   std::istringstream input("17");
   CinRedirector redirect(input);

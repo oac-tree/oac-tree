@@ -25,8 +25,6 @@
 #include "named_callback_manager.h"
 #include "variable.h"
 
-#include <sup/dto/anyvalue.h>
-
 #include <map>
 #include <memory>
 #include <vector>
@@ -35,6 +33,7 @@ namespace sup
 {
 namespace dto
 {
+class AnyValue;
 class AnyTypeRegistry;
 }  // namespace dto
 

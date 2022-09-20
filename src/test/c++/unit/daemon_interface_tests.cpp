@@ -25,7 +25,6 @@
 #include <sup/sequencer/instruction.h>
 #include <sup/sequencer/instruction_registry.h>
 
-#include <common/CompoundType.h>
 #include <gtest/gtest.h>
 
 #include <memory>
@@ -100,11 +99,10 @@ TEST_F(DaemonInterfaceTest, GetUserValue)
 {
   log::LogStreamRedirector redirector(out_stream);
   EXPECT_TRUE(out_stream.str().empty());
-  sup::dto::AnyValue val(sup::dto::UnsignedInteger32);
-  val = 1234u;
+  sup::dto::AnyValue val(sup::dto::UnsignedInteger32Type, 1234);
   EXPECT_EQ(daemon_interface.GetUserValue(val), false);
   EXPECT_FALSE(out_stream.str().empty());
-  sup::dto::uint32 result = val;
+  auto result = val.As<sup::dto::uint32>();
   EXPECT_EQ(result, 1234u);
 }
 

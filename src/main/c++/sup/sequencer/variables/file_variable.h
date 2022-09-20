@@ -40,7 +40,7 @@ private:
    */
   bool GetValueImpl(sup::dto::AnyValue& value) const override;
   bool SetValueImpl(const sup::dto::AnyValue& value) override;
-  bool SetupImpl() override;
+  bool SetupImpl(const sup::dto::AnyTypeRegistry& registry) override;
 
 protected:
 public:

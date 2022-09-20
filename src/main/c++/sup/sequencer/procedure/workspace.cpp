@@ -23,6 +23,8 @@
 
 #include <sup/sequencer/log.h>
 
+#include <sup/dto/anytype_registry.h>
+
 #include <algorithm>
 #include <utility>
 
@@ -34,7 +36,7 @@ static std::pair<std::string, std::string> SplitToNameField(const std::string &f
 
 bool Workspace::ContainsVariableName(const std::string& name) const
 {
-  if (_var_map.find(name) == _var_map.end())
+  if (m_var_map.find(name) == m_var_map.end())
   {
     return false;
   }
@@ -43,12 +45,12 @@ bool Workspace::ContainsVariableName(const std::string& name) const
 
 bool Workspace::ContainsVariablePointer(Variable* var) const
 {
-  auto it = std::find_if(_var_map.begin(), _var_map.end(),
-                         [var](const decltype(_var_map)::value_type &pair)
+  auto it = std::find_if(m_var_map.begin(), m_var_map.end(),
+                         [var](const decltype(m_var_map)::value_type &pair)
                          {
                            return pair.second.get() == var;
                          });
-  if (it == _var_map.end())
+  if (it == m_var_map.end())
   {
     return false;
   }
@@ -57,11 +59,13 @@ bool Workspace::ContainsVariablePointer(Variable* var) const
 
 void Workspace::VariableUpdated(const std::string name, const sup::dto::AnyValue& value)
 {
-  callbacks.ExecuteCallbacks(name, value);
+  m_callbacks.ExecuteCallbacks(name, value);
 }
 
 Workspace::Workspace()
-   : _var_map{}
+   : m_var_map{}
+   , m_callbacks{}
+   , m_type_registry{new sup::dto::AnyTypeRegistry()}
 {}
 
 Workspace::~Workspace() = default;
@@ -91,39 +95,42 @@ bool Workspace::AddVariable(std::string name, Variable *var)
     {
       VariableUpdated(name, value);
     });
-  _var_map[name] = std::move(var_owned);
+  m_var_map[name] = std::move(var_owned);
   return true;
 }
 
 std::vector<std::string> Workspace::VariableNames() const
 {
   std::vector<std::string> result;
-  std::transform(_var_map.begin(), _var_map.end(), std::back_inserter(result),
-                 [](const decltype(_var_map)::value_type &pair) { return pair.first; });
+  std::transform(m_var_map.begin(), m_var_map.end(), std::back_inserter(result),
+                 [](const decltype(m_var_map)::value_type &pair) { return pair.first; });
   return result;
 }
 
 void Workspace::Setup()
 {
-  std::for_each(_var_map.begin(), _var_map.end(), [](const decltype(_var_map)::value_type &pair) {
-     return pair.second->Setup(); });
+  const sup::dto::AnyTypeRegistry* registry = m_type_registry.get();
+  std::for_each(m_var_map.begin(), m_var_map.end(),
+                [registry](const decltype(m_var_map)::value_type &pair) {
+                  return pair.second->Setup(registry);
+                });
 }
 
 void Workspace::Reset()
 {
-  std::for_each(_var_map.begin(), _var_map.end(), [](const decltype(_var_map)::value_type &pair) {
+  std::for_each(m_var_map.begin(), m_var_map.end(), [](const decltype(m_var_map)::value_type &pair) {
      return pair.second->Reset(); });
 }
 
 bool Workspace::ResetVariable(const std::string& varname)
 {
-  auto it = _var_map.find(varname);
-  if (it == _var_map.end())
+  auto it = m_var_map.find(varname);
+  if (it == m_var_map.end())
   {
     return false;
   }
   it->second->Reset();
-  it->second->Setup();
+  it->second->Setup(m_type_registry.get());
   return true;
 }
 
@@ -133,8 +140,8 @@ bool Workspace::GetValue(std::string name, sup::dto::AnyValue &value) const
   auto varname = splitname.first;
   auto fieldname = splitname.second;
 
-  auto it = _var_map.find(varname);
-  if (it == _var_map.end())
+  auto it = m_var_map.find(varname);
+  if (it == m_var_map.end())
   {
     log::Warning(
         "sup::sequencer::Workspace::GetValue('%s', value) - variable with name '%s' "
@@ -155,8 +162,8 @@ bool Workspace::SetValue(std::string name, const sup::dto::AnyValue &value)
   auto varname = splitname.first;
   auto fieldname = splitname.second;
 
-  auto it = _var_map.find(varname);
-  if (it == _var_map.end())
+  auto it = m_var_map.find(varname);
+  if (it == m_var_map.end())
   {
     log::Warning(
         "sup::sequencer::Workspace::SetValue('%s', value) - variable with name '%s' "
@@ -175,15 +182,15 @@ bool Workspace::SetValue(std::string name, const sup::dto::AnyValue &value)
 std::vector<const Variable *> Workspace::GetVariables() const
 {
   std::vector<const Variable *> result;
-  std::transform(std::begin(_var_map), std::end(_var_map), std::back_inserter(result),
-                 [](const decltype(_var_map)::value_type &pair) { return pair.second.get(); });
+  std::transform(std::begin(m_var_map), std::end(m_var_map), std::back_inserter(result),
+                 [](const decltype(m_var_map)::value_type &pair) { return pair.second.get(); });
   return result;
 }
 
 const Variable* Workspace::GetVariable(const std::string& name) const
 {
-  auto it = _var_map.find(name);
-  if (it == _var_map.end())
+  auto it = m_var_map.find(name);
+  if (it == m_var_map.end())
   {
     return nullptr;
   }
@@ -192,27 +199,40 @@ const Variable* Workspace::GetVariable(const std::string& name) const
 
 bool Workspace::HasVariable(const std::string& name) const
 {
-  return _var_map.find(name) != _var_map.end();
+  return m_var_map.find(name) != m_var_map.end();
+}
+
+bool Workspace::RegisterType(const sup::dto::AnyType& anytype)
+{
+  try
+  {
+    m_type_registry->RegisterType(anytype);
+  }
+  catch(const sup::dto::InvalidOperationException&)
+  {
+    return false;
+  }
+  return true;
 }
 
 CallbackGuard<NamedCallbackManager<const sup::dto::AnyValue &>> Workspace::GetCallbackGuard(
     void *listener)
 {
-  return callbacks.GetCallbackGuard(this);
+  return m_callbacks.GetCallbackGuard(this);
 }
 
 bool Workspace::RegisterGenericCallback(
     const std::function<void(const std::string &, const sup::dto::AnyValue &)> &cb,
     void *listener)
 {
-  return callbacks.RegisterGenericCallback(cb, listener);
+  return m_callbacks.RegisterGenericCallback(cb, listener);
 }
 
 bool Workspace::RegisterCallback(const std::string &name,
                                  const std::function<void(const sup::dto::AnyValue &)> &cb,
                                  void *listener)
 {
-  return callbacks.RegisterCallback(name, cb, listener);
+  return m_callbacks.RegisterCallback(name, cb, listener);
 }
 
 static std::pair<std::string, std::string> SplitToNameField(const std::string &fullname)

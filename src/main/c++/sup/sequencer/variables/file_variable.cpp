@@ -32,7 +32,7 @@ namespace sequencer
 {
 const std::string FileVariable::Type = "FileVariable";
 
-bool FileVariable::SetupImpl(void)
+bool FileVariable::SetupImpl(const sup::dto::AnyTypeRegistry&)
 {
   bool status = Variable::HasAttribute("file");
   return status;

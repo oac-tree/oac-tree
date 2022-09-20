@@ -36,7 +36,7 @@ namespace sup
 namespace dto
 {
 class AnyValue;
-class AnyTypeRegistry;
+class AnyType;
 }  // namespace dto
 
 namespace sequencer
@@ -72,8 +72,6 @@ private:
 
   // Cache for other procedures loaded from files and to be used by include nodes.
   mutable std::map<std::string, std::unique_ptr<Procedure>> m_procedure_cache;
-
-  std::unique_ptr<sup::dto::AnyTypeRegistry> m_type_registry;
 
   /**
    * @brief Load a procedure from file or cache.
@@ -278,6 +276,15 @@ public:
    * @return workspace.
    */
   const Workspace* GetWorkspace() const;
+
+  /**
+   * @brief Register an AnyType instance under its own name.
+   *
+   * @param anytype AnyType instance to register.
+   *
+   * @return true on successful registration.
+   */
+  bool RegisterType(const sup::dto::AnyType& anytype);
 
   /**
    * @brief Add a generic callback for variable updates.

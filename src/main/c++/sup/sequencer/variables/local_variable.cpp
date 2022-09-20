@@ -22,6 +22,7 @@
 #include "local_variable.h"
 
 #include <sup/sequencer/log.h>
+#include <sup/sequencer/procedure.h>
 
 #include <sup/dto/anytype_helper.h>
 #include <sup/dto/anyvalue_helper.h>
@@ -84,7 +85,7 @@ bool LocalVariable::SetValueImpl(const sup::dto::AnyValue& value)
   return true;
 }
 
-bool LocalVariable::SetupImpl()
+bool LocalVariable::SetupImpl(const sup::dto::AnyTypeRegistry& registry)
 {
   m_value.reset(new sup::dto::AnyValue());
 
@@ -94,7 +95,7 @@ bool LocalVariable::SetupImpl()
     {
       try
       {
-        *m_value = sup::dto::AnyValueFromJSONString(
+        *m_value = sup::dto::AnyValueFromJSONString(&registry,
           FullJSONRepresentation(GetAttribute(JSON_TYPE), GetAttribute(JSON_VALUE)));
       }
       catch(const sup::dto::ParseException&)
@@ -106,7 +107,8 @@ bool LocalVariable::SetupImpl()
     {
       try
       {
-        sup::dto::AnyType parsed_type = sup::dto::AnyTypeFromJSONString(GetAttribute(JSON_TYPE));
+        sup::dto::AnyType parsed_type = sup::dto::AnyTypeFromJSONString(&registry,
+                                                                        GetAttribute(JSON_TYPE));
         m_value.reset(new sup::dto::AnyValue(parsed_type));
       }
       catch (const sup::dto::ParseException&)

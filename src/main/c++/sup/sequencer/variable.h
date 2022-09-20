@@ -32,6 +32,11 @@
 
 namespace sup
 {
+namespace dto
+{
+class AnyTypeRegistry;
+}  // namespace dto
+
 namespace sequencer
 {
 /**
@@ -43,36 +48,36 @@ private:
   /**
    * @brief Typename of this variable
    */
-  const std::string _type;
+  const std::string m_type;
 
   /**
    * @brief Mutex for concurrent access of Variable.
    * @details This mutex protects access to all other private member data, unless explicitly
    * mentioned otherwise.
    */
-  mutable std::mutex _access_mutex;
+  mutable std::mutex m_access_mutex;
 
   /**
    * @brief List of attributes.
    */
-  AttributeMap _attributes;
+  AttributeMap m_attributes;
 
   /**
    * @brief Indicates if the Variable was correctly setup from its attributes.
    */
-  bool _setup_successful;
+  bool m_setup_successful;
 
   /**
    * @brief Mutex for concurrent access of the update counter.
    * @details This mutex protects only access to the update counter.
    */
-  mutable std::mutex notify_mutex;
+  mutable std::mutex m_notify_mutex;
 
   /**
    * @brief Used to track updates of the underlying value.
    * @details This condition variable is notified after an update.
    */
-  mutable std::condition_variable _update_cond;
+  mutable std::condition_variable m_update_cond;
 
   /**
    * @brief Callback function to call when value was updated.
@@ -108,9 +113,12 @@ private:
   /**
    * @brief Setup value of variable.
    *
+   * @param registry Type registry.
+   * @return true on successful instruction setup.
+   *
    * @note Private virtual implementation.
    */
-  virtual bool SetupImpl();
+  virtual bool SetupImpl(const sup::dto::AnyTypeRegistry& registry);
 
   /**
    * @brief Reset variable.
@@ -152,8 +160,11 @@ public:
 
   /**
    * @brief Setup variable method.
+   *
+   * @param registry Type registry.
+   * @return true on successful variable setup.
    */
-  void Setup();
+  void Setup(const sup::dto::AnyTypeRegistry* registry = nullptr);
 
   /**
    * @brief Get value of variable.

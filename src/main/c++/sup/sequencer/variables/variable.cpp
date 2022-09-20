@@ -23,7 +23,7 @@
 
 #include <sup/sequencer/log.h>
 
-#include <sup/dto/anyvalue_helper.h>
+#include <sup/dto/anytype_registry.h>
 
 #include <chrono>
 #include <cmath>
@@ -34,15 +34,15 @@ namespace sequencer
 {
 
 Variable::Variable(const std::string &type)
-  : _type{type}
-  , _setup_successful{false}
+  : m_type{type}
+  , m_setup_successful{false}
 {}
 
 Variable::~Variable() = default;
 
 std::string Variable::GetType() const
 {
-  return _type;
+  return m_type;
 }
 
 std::string Variable::GetName() const
@@ -55,15 +55,23 @@ void Variable::SetName(const std::string &name)
   AddAttribute(attributes::NAME_ATTRIBUTE, name);
 }
 
-void Variable::Setup()
+void Variable::Setup(const sup::dto::AnyTypeRegistry* registry)
 {
-  _setup_successful = SetupImpl();
+  if (registry == nullptr)
+  {
+    sup::dto::AnyTypeRegistry local_registry{};
+    m_setup_successful = SetupImpl(local_registry);
+  }
+  else
+  {
+    m_setup_successful = SetupImpl(*registry);
+  }
 }
 
 bool Variable::GetValue(sup::dto::AnyValue &value, const std::string &fieldname) const
 {
-  std::lock_guard<std::mutex> lock(_access_mutex);
-  if (!_setup_successful)
+  std::lock_guard<std::mutex> lock(m_access_mutex);
+  if (!m_setup_successful)
   {
     return false;
   }
@@ -90,8 +98,8 @@ bool Variable::GetValue(sup::dto::AnyValue &value, const std::string &fieldname)
 
 bool Variable::SetValue(const sup::dto::AnyValue &value, const std::string &fieldname)
 {
-  std::lock_guard<std::mutex> lk(_access_mutex);
-  if (!_setup_successful)
+  std::lock_guard<std::mutex> lk(m_access_mutex);
+  if (!m_setup_successful)
   {
     return false;
   }
@@ -117,7 +125,7 @@ bool Variable::SetValue(const sup::dto::AnyValue &value, const std::string &fiel
 
 void Variable::Notify(const sup::dto::AnyValue& value)
 {
-  std::lock_guard<std::mutex> lk(notify_mutex);
+  std::lock_guard<std::mutex> lk(m_notify_mutex);
   if (notify_cb)
   {
     notify_cb(value);
@@ -126,51 +134,51 @@ void Variable::Notify(const sup::dto::AnyValue& value)
 
 void Variable::SetNotifyCallback(std::function<void(const sup::dto::AnyValue&)> func)
 {
-  std::lock_guard<std::mutex> lk(notify_mutex);
+  std::lock_guard<std::mutex> lk(m_notify_mutex);
   notify_cb = std::move(func);
 }
 
 void Variable::Reset()
 {
   ResetImpl();
-  _setup_successful = false;
+  m_setup_successful = false;
 }
 
 bool Variable::HasAttribute(const std::string &name) const
 {
-  return _attributes.HasAttribute(name);
+  return m_attributes.HasAttribute(name);
 }
 
 std::string Variable::GetAttribute(const std::string &name) const
 {
-  return _attributes.GetAttribute(name);
+  return m_attributes.GetAttribute(name);
 }
 
 AttributeMap Variable::GetAttributes() const
 {
-  return _attributes;
+  return m_attributes;
 }
 
 bool Variable::AddAttribute(const std::string &name, const std::string &value)
 {
-  std::lock_guard<std::mutex> lock(_access_mutex);
-  bool status = _attributes.AddAttribute(name, value);
+  std::lock_guard<std::mutex> lock(m_access_mutex);
+  bool status = m_attributes.AddAttribute(name, value);
   return status;
 }
 
 bool Variable::AddAttributes(const AttributeMap &attributes)
 {
-  std::lock_guard<std::mutex> lock(_access_mutex);
+  std::lock_guard<std::mutex> lock(m_access_mutex);
   bool status = true;
   for (auto &attr : attributes)
   {
     // Order in AND matters: add all attributes, even if previous adding failed.
-    status = _attributes.AddAttribute(attr.first, attr.second) && status;
+    status = m_attributes.AddAttribute(attr.first, attr.second) && status;
   }
   return status;
 }
 
-bool Variable::SetupImpl()
+bool Variable::SetupImpl(const sup::dto::AnyTypeRegistry&)
 {
   return true;
 }

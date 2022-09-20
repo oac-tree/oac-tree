@@ -197,8 +197,7 @@ static bool RegisterTypeInformation(Procedure *procedure, const TreeData &child,
   {
     return false;
   }
-  // TODO: register the type
-  return true;
+  return procedure->RegisterType(parsed_type);
 }
 
 static bool ParseProcedureChildren(Procedure *procedure, const TreeData &data)

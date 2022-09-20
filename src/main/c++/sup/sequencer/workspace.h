@@ -33,6 +33,11 @@
 
 namespace sup
 {
+namespace dto
+{
+class AnyTypeRegistry;
+}  // namespace dto
+
 namespace sequencer
 {
 /**
@@ -46,12 +51,14 @@ private:
    *
    * @note Workspace owns its Variable objects.
    */
-  std::map<std::string, std::unique_ptr<Variable>> _var_map;
+  std::map<std::string, std::unique_ptr<Variable>> m_var_map;
 
   /**
    * @brief Threadsafe list of callback objects.
    */
-  NamedCallbackManager<const sup::dto::AnyValue&> callbacks;
+  NamedCallbackManager<const sup::dto::AnyValue&> m_callbacks;
+
+  std::unique_ptr<sup::dto::AnyTypeRegistry> m_type_registry;
 
   /**
    * @brief Check if the given Variable name is already present.
@@ -144,6 +151,15 @@ public:
    * @return true if variable exists.
    */
   bool HasVariable(const std::string& name) const;
+
+  /**
+   * @brief Register an AnyType instance under its own name.
+   *
+   * @param anytype AnyType instance to register.
+   *
+   * @return true on successful registration.
+   */
+  bool RegisterType(const sup::dto::AnyType& anytype);
 
   /**
    * @brief Get a callback guard object.

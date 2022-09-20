@@ -26,7 +26,6 @@
 #include <sup/sequencer/sequence_parser.h>
 #include <sup/sequencer/workspace.h>
 
-#include <sup/dto/anytype_registry.h>
 #include <sup/dto/anyvalue.h>
 
 namespace sup
@@ -70,7 +69,6 @@ Procedure::Procedure()
   , m_attributes{}
   , m_filename{}
   , m_procedure_cache{}
-  , m_type_registry{new sup::dto::AnyTypeRegistry()}
 {}
 
 Procedure::~Procedure()
@@ -264,6 +262,11 @@ bool Procedure::AddAttributes(const AttributeMap &attributes)
 const Workspace *Procedure::GetWorkspace() const
 {
   return m_workspace.get();
+}
+
+bool Procedure::RegisterType(const sup::dto::AnyType& anytype)
+{
+  return m_workspace->RegisterType(anytype);
 }
 
 bool Procedure::RegisterGenericCallback(

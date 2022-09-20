@@ -9,16 +9,16 @@ target_sources(unit-tests
         ${CMAKE_CURRENT_LIST_DIR}/compound_instruction_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/condition_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/daemon_interface_tests.cpp
-        # ${CMAKE_CURRENT_LIST_DIR}/decorator_instruction_tests.cpp
-        # ${CMAKE_CURRENT_LIST_DIR}/equals_tests.cpp
-        # ${CMAKE_CURRENT_LIST_DIR}/execution_status_tests.cpp
-        # ${CMAKE_CURRENT_LIST_DIR}/fallback_tests.cpp
-        # ${CMAKE_CURRENT_LIST_DIR}/file_variable_tests.cpp
-        # ${CMAKE_CURRENT_LIST_DIR}/include_tests.cpp
-        # ${CMAKE_CURRENT_LIST_DIR}/input_tests.cpp
-        # ${CMAKE_CURRENT_LIST_DIR}/instruction_tests.cpp
-        # ${CMAKE_CURRENT_LIST_DIR}/instruction_registry_tests.cpp
-        # ${CMAKE_CURRENT_LIST_DIR}/listen_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/decorator_instruction_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/equals_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/execution_status_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/fallback_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/file_variable_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/include_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/input_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/instruction_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/instruction_registry_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/listen_tests.cpp
         # ${CMAKE_CURRENT_LIST_DIR}/local_variable_tests.cpp
         # ${CMAKE_CURRENT_LIST_DIR}/message_tests.cpp
         # ${CMAKE_CURRENT_LIST_DIR}/named_callback_manager_tests.cpp

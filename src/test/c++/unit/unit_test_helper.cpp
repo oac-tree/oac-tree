@@ -91,7 +91,18 @@ bool MockUI::GetUserValueImpl(sup::dto::AnyValue &value, const std::string &desc
 {
   sup::sequencer::log::Debug("TestUI::GetUserValueImpl - Description '%s'", description.c_str());
   m_type = value.GetType();
-  value = m_value;
+  if (sup::dto::IsEmptyType(m_type))
+  {
+    return false;
+  }
+  try
+  {
+    value = m_value;
+  }
+  catch(const sup::dto::InvalidConversionException&)
+  {
+    return false;
+  }
   return m_status;
 }
 

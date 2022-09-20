@@ -47,10 +47,12 @@ TEST(Input, GetUserValue_success)
   ui.SetStatus(true);
   ui.SetValue(value);
 
-  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
-  EXPECT_TRUE(sup::dto::UnsignedInteger32 == ui.GetType());
-
-  // ToDo - Test workspace variable
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecuteNoReset(proc, &ui,
+    sup::sequencer::ExecutionStatus::SUCCESS));
+  EXPECT_TRUE(sup::dto::UnsignedInteger32Type == ui.GetType());
+  sup::dto::AnyValue var_value;
+  EXPECT_TRUE(proc->GetVariableValue("uint32", var_value));
+  EXPECT_EQ(var_value.As<sup::dto::uint32>(), 1234u);
 }
 
 TEST(Input, GetUserValue_failure)

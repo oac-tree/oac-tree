@@ -27,21 +27,16 @@
 #include <sup/sequencer/variable.h>
 #include <sup/sequencer/variable_registry.h>
 
-#include <sup/dto/anyvalue_helper.h>
-
 #include <gtest/gtest.h>
 
-static inline bool Terminate()
+class FileVariableTest : public ::testing::Test
 {
-  bool status = false;
-  if (sup::sequencer::utils::FileExists("variable.bck"))
-  {
-    status = (std::remove("variable.bck") == 0);
-  }
-  return status;
-}
+protected:
+  FileVariableTest();
+  virtual ~FileVariableTest();
+};
 
-TEST(FileVariable, File_write)
+TEST_F(FileVariableTest, File_write)
 {
   const std::string body{R"(
     <Sequence>
@@ -72,17 +67,14 @@ TEST(FileVariable, File_write)
 
   EXPECT_TRUE(sup::sequencer::utils::FileExists("variable.bck"));
 
-  sup::dto::AnyValue value;  // Placeholder
+  sup::dto::AnyValue value = sup::dto::AnyValueFromJSONFile("variable.bck");
 
-  EXPECT_TRUE(ccs::HelperTools::ReadFromFile(&value, "variable.bck"));
-
-  ASSERT_TRUE(static_cast<bool>(value.GetType()));
-  // TODO check variable
-
-  Terminate();
+  EXPECT_TRUE(sup::dto::IsStructValue(value));
+  EXPECT_EQ(std::string("MyStruct"), value.GetTypeName());
+  EXPECT_EQ(value["value"], 0.0f);
 }
 
-TEST(FileVariable, Setup_error)
+TEST_F(FileVariableTest, Setup_error)
 {
   auto variable = sup::sequencer::GlobalVariableRegistry().Create("FileVariable");
 
@@ -92,12 +84,11 @@ TEST(FileVariable, Setup_error)
   variable->Setup();
 
   sup::dto::AnyValue value;  // Placeholder
-
   EXPECT_FALSE(variable->GetValue(value));
-  EXPECT_FALSE(static_cast<bool>(value.GetType()));
+  EXPECT_TRUE(sup::dto::IsEmptyValue(value));
 }
 
-TEST(FileVariable, File_error)
+TEST_F(FileVariableTest, File_error)
 {
   auto variable = sup::sequencer::GlobalVariableRegistry().Create("FileVariable");
 
@@ -107,12 +98,11 @@ TEST(FileVariable, File_error)
   variable->Setup();
 
   sup::dto::AnyValue value;  // Placeholder
-
   EXPECT_FALSE(variable->GetValue(value));
-  EXPECT_FALSE(static_cast<bool>(value.GetType()));
+  EXPECT_TRUE(sup::dto::IsEmptyValue(value));
 }
 
-TEST(FileVariable, File_attr)
+TEST_F(FileVariableTest, File_attr)
 {
   const std::string body{R"(
     <Sequence>
@@ -165,14 +155,21 @@ TEST(FileVariable, File_attr)
   EXPECT_EQ(exec, sup::sequencer::ExecutionStatus::SUCCESS);
   EXPECT_TRUE(sup::sequencer::utils::FileExists("variable.bck"));
 
-  sup::dto::AnyValue value;  // Placeholder
-  EXPECT_TRUE(ccs::HelperTools::ReadFromFile(&value, "variable.bck"));
-  EXPECT_TRUE(static_cast<bool>(value.GetType()));
+  sup::dto::AnyValue value = sup::dto::AnyValueFromJSONFile("variable.bck");
 
   // Test variable
-  EXPECT_TRUE(ccs::HelperTools::HasAttribute(&value, "severity"));
-  EXPECT_EQ(ccs::HelperTools::GetAttributeType(&value, "severity"), sup::dto::UnsignedInteger32);
-  EXPECT_EQ(ccs::HelperTools::GetAttributeValue<sup::dto::uint32>(&value, "severity"), 7u);
+  EXPECT_EQ(value["timestamp"], 0);
+  EXPECT_EQ(value["value"], 0.1f);
+  EXPECT_EQ(value["severity"], 7);
+}
 
-  Terminate();
+
+FileVariableTest::FileVariableTest() = default;
+
+FileVariableTest::~FileVariableTest()
+{
+  if (sup::sequencer::utils::FileExists("variable.bck"))
+  {
+    std::remove("variable.bck");
+  }
 }

@@ -175,7 +175,8 @@ static bool RegisterTypeInformation(Procedure *procedure, const TreeData &child,
   {
     try
     {
-      parsed_type = sup::dto::AnyTypeFromJSONString(child.GetAttribute(JSONTYPE_ATTRIBUTE_NAME));
+      parsed_type = sup::dto::AnyTypeFromJSONString(procedure->GetTypeRegistry(),
+                                                    child.GetAttribute(JSONTYPE_ATTRIBUTE_NAME));
     }
     catch(const sup::dto::ParseException& e)
     {
@@ -186,7 +187,8 @@ static bool RegisterTypeInformation(Procedure *procedure, const TreeData &child,
   {
     try
     {
-      parsed_type = sup::dto::AnyTypeFromJSONFile(child.GetAttribute(JSONFILE_ATTRIBUTE_NAME));
+      parsed_type = sup::dto::AnyTypeFromJSONFile(procedure->GetTypeRegistry(),
+                                                  child.GetAttribute(JSONFILE_ATTRIBUTE_NAME));
     }
     catch(const sup::dto::ParseException& e)
     {

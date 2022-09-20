@@ -51,8 +51,6 @@ static std::string stob(bool b);
 
 // Global variables
 
-static const bool kLogToStdOut = (log::SetStdOut(), true);
-
 static const std::string EMPTY_VAR_NAME = "Empty LocalVariable";
 static const std::string TEST_ATTRIBUTE_NAME = "Test Attribute Name";
 static const std::string TEST_ATTRIBUTE_VALUE = "Test Attribute Value";
@@ -155,7 +153,7 @@ TEST_F(LocalVariableTest, AddAttributesFull)
   EXPECT_EQ(empty_var.GetAttribute(LocalVariable::JSON_TYPE), UINT64_TYPE);
   EXPECT_EQ(empty_var.GetAttribute(LocalVariable::JSON_VALUE), UINT64_VALUE_STR);
   EXPECT_TRUE(empty_var.GetValue(any_value));
-  sup::dto::uint64 val = any_value;
+  auto val = any_value.As<sup::dto::uint64>();
   EXPECT_EQ(val, UINT64_VALUE);
 }
 
@@ -168,7 +166,7 @@ TEST_F(LocalVariableTest, NotifyCallback)
   int32_var.SetNotifyCallback(
     [&value](const sup::dto::AnyValue& val)
     {
-      value = val;
+      value = val.As<sup::dto::int32>();
     });
   EXPECT_NO_THROW(int32_var.Setup());
   sup::dto::AnyValue new_value(sup::dto::SignedInteger32Type);
@@ -187,7 +185,7 @@ TEST_F(LocalVariableTest, BooleanType)
   EXPECT_NO_THROW(bool_var.Setup());
   sup::dto::AnyValue any_value;
   EXPECT_TRUE(bool_var.GetValue(any_value));
-  bool b = any_value;
+  bool b = any_value.As<sup::dto::boolean>();
   EXPECT_EQ(b, BOOL_VALUE);
 
   // Set compatible value
@@ -195,23 +193,22 @@ TEST_F(LocalVariableTest, BooleanType)
   compatible = false;
   EXPECT_TRUE(bool_var.SetValue(compatible));
   EXPECT_TRUE(bool_var.GetValue(any_value));
-  b = any_value;
+  b = any_value.As<sup::dto::boolean>();
   EXPECT_EQ(b, false);
 
   // Set incompatible value
-  sup::dto::AnyValue incompatible(sup::dto::Float64Type);
-  incompatible = 3.14;
+  sup::dto::AnyValue incompatible(sup::dto::StringType, "incompatible");
   EXPECT_FALSE(bool_var.SetValue(incompatible));
   EXPECT_TRUE(bool_var.GetValue(any_value));
-  b = any_value;
+  b = any_value.As<sup::dto::boolean>();
   EXPECT_EQ(b, false);  // unchanged
 
   // Get incompatible value
   EXPECT_FALSE(bool_var.GetValue(incompatible));
-  sup::dto::float64 val = incompatible;
-  EXPECT_EQ(val, 3.14);  // unchanged
+  std::string val = incompatible.As<std::string>();
+  EXPECT_EQ(val, "incompatible");  // unchanged
   EXPECT_TRUE(bool_var.GetValue(any_value));
-  b = any_value;
+  b = any_value.As<sup::dto::boolean>();
   EXPECT_EQ(b, false);  // unchanged
 }
 
@@ -225,7 +222,7 @@ TEST_F(LocalVariableTest, UnsignedInteger64Type)
   EXPECT_NO_THROW(uint64_var.Setup());
   sup::dto::AnyValue any_value;
   EXPECT_TRUE(uint64_var.GetValue(any_value));
-  sup::dto::uint64 val = any_value;
+  sup::dto::uint64 val = any_value.As<sup::dto::uint64>();
   EXPECT_EQ(val, UINT64_VALUE);
 
   // Set compatible value
@@ -234,7 +231,7 @@ TEST_F(LocalVariableTest, UnsignedInteger64Type)
   compatible = val_2;
   EXPECT_TRUE(uint64_var.SetValue(compatible));
   EXPECT_TRUE(uint64_var.GetValue(any_value));
-  val = any_value;
+  val = any_value.As<sup::dto::uint64>();
   EXPECT_EQ(val, val_2);
 
   // Set incompatible value
@@ -243,15 +240,15 @@ TEST_F(LocalVariableTest, UnsignedInteger64Type)
   incompatible = inc_val;
   EXPECT_FALSE(uint64_var.SetValue(incompatible));
   EXPECT_TRUE(uint64_var.GetValue(any_value));
-  val = any_value;
+  val = any_value.As<sup::dto::uint64>();
   EXPECT_EQ(val, val_2);  // unchanged
 
   // Get incompatible value
   EXPECT_FALSE(uint64_var.GetValue(incompatible));
-  sup::dto::int8 val_3 = incompatible;
+  sup::dto::int8 val_3 = incompatible.As<sup::dto::int8>();
   EXPECT_EQ(val_3, inc_val);  // unchanged
   EXPECT_TRUE(uint64_var.GetValue(any_value));
-  val = any_value;
+  val = any_value.As<sup::dto::uint64>();
   EXPECT_EQ(val, val_2);  // unchanged
 }
 
@@ -265,7 +262,7 @@ TEST_F(LocalVariableTest, Float32Type)
   EXPECT_NO_THROW(float32_var.Setup());
   sup::dto::AnyValue any_value;
   EXPECT_TRUE(float32_var.GetValue(any_value));
-  sup::dto::float32 val = any_value;
+  sup::dto::float32 val = any_value.As<sup::dto::float32>();
   EXPECT_EQ(val, FLOAT32_VALUE);
 
   // Set compatible value
@@ -274,24 +271,23 @@ TEST_F(LocalVariableTest, Float32Type)
   compatible = val_2;
   EXPECT_TRUE(float32_var.SetValue(compatible));
   EXPECT_TRUE(float32_var.GetValue(any_value));
-  val = any_value;
+  val = any_value.As<sup::dto::float32>();
   EXPECT_EQ(val, val_2);
 
   // Set incompatible value
-  sup::dto::AnyValue incompatible(sup::dto::SignedInteger8Type);
-  sup::dto::int8 inc_val = -18;
-  incompatible = inc_val;
+  std::string inc_val = "incompatible";
+  sup::dto::AnyValue incompatible(sup::dto::StringType, inc_val);
   EXPECT_FALSE(float32_var.SetValue(incompatible));
   EXPECT_TRUE(float32_var.GetValue(any_value));
-  val = any_value;
+  val = any_value.As<sup::dto::float32>();
   EXPECT_EQ(val, val_2);  // unchanged
 
   // Get incompatible value
   EXPECT_FALSE(float32_var.GetValue(incompatible));
-  sup::dto::int8 val_3 = incompatible;
+  std::string val_3 = incompatible.As<std::string>();
   EXPECT_EQ(val_3, inc_val);  // unchanged
   EXPECT_TRUE(float32_var.GetValue(any_value));
-  val = any_value;
+  val = any_value.As<sup::dto::float32>();
   EXPECT_EQ(val, val_2);  // unchanged
 }
 

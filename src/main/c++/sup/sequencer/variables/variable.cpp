@@ -75,25 +75,27 @@ bool Variable::GetValue(sup::dto::AnyValue &value, const std::string &fieldname)
   {
     return false;
   }
-  if (fieldname.empty())
-  {
-    return GetValueImpl(value);
-  }
-
   sup::dto::AnyValue var_copy;
-  if (GetValueImpl(var_copy))
+  if (!GetValueImpl(var_copy) || sup::dto::IsEmptyValue(var_copy))
   {
-    try
+    return false;
+  }
+  try
+  {
+    if (fieldname.empty())
+    {
+      value = var_copy;
+    }
+    else
     {
       value = var_copy[fieldname];
     }
-    catch(const sup::dto::InvalidOperationException&)
-    {
-      return false;
-    }
-    return true;
   }
-  return false;
+  catch(const std::exception& e)
+  {
+    return false;
+  }
+  return true;
 }
 
 bool Variable::SetValue(const sup::dto::AnyValue &value, const std::string &fieldname)

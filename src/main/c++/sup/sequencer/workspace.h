@@ -161,6 +161,13 @@ public:
   bool RegisterType(const sup::dto::AnyType& anytype);
 
   /**
+   * @brief Get the current type registry.
+   *
+   * @return Pointer to type registry.
+   */
+  const sup::dto::AnyTypeRegistry* GetTypeRegistry() const;
+
+  /**
    * @brief Get a callback guard object.
    *
    * @param listener Pointer to object that listens to updates.

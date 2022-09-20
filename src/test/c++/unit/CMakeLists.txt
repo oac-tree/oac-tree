@@ -19,16 +19,16 @@ target_sources(unit-tests
         ${CMAKE_CURRENT_LIST_DIR}/instruction_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/instruction_registry_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/listen_tests.cpp
-        # ${CMAKE_CURRENT_LIST_DIR}/local_variable_tests.cpp
-        # ${CMAKE_CURRENT_LIST_DIR}/message_tests.cpp
-        # ${CMAKE_CURRENT_LIST_DIR}/named_callback_manager_tests.cpp
-        # ${CMAKE_CURRENT_LIST_DIR}/output_tests.cpp
-        # ${CMAKE_CURRENT_LIST_DIR}/parallel_sequence_tests.cpp
-        # ${CMAKE_CURRENT_LIST_DIR}/procedure_tests.cpp
-        # ${CMAKE_CURRENT_LIST_DIR}/procedure_to_treedata_utils_tests.cpp
-        # ${CMAKE_CURRENT_LIST_DIR}/register_type_tests.cpp
-        # ${CMAKE_CURRENT_LIST_DIR}/repeat_tests.cpp
-        # ${CMAKE_CURRENT_LIST_DIR}/reset_variable_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/local_variable_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/message_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/named_callback_manager_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/output_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/parallel_sequence_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/procedure_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/procedure_to_treedata_utils_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/register_type_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/repeat_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/reset_variable_tests.cpp
         # ${CMAKE_CURRENT_LIST_DIR}/runner_tests.cpp
         # ${CMAKE_CURRENT_LIST_DIR}/sequence_parser_tests.cpp
         # ${CMAKE_CURRENT_LIST_DIR}/sequence_workspace_tests.cpp

@@ -35,8 +35,9 @@ namespace sup
 {
 namespace dto
 {
-class AnyValue;
 class AnyType;
+class AnyTypeRegistry;
+class AnyValue;
 }  // namespace dto
 
 namespace sequencer
@@ -285,6 +286,13 @@ public:
    * @return true on successful registration.
    */
   bool RegisterType(const sup::dto::AnyType& anytype);
+
+  /**
+   * @brief Get the current type registry.
+   *
+   * @return Pointer to type registry.
+   */
+  const sup::dto::AnyTypeRegistry* GetTypeRegistry() const;
 
   /**
    * @brief Add a generic callback for variable updates.

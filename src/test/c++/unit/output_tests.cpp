@@ -24,8 +24,6 @@
 #include <sup/sequencer/sequence_parser.h>
 #include <sup/sequencer/user_interface.h>
 
-#include <common/BasicTypes.h>
-
 #include <gtest/gtest.h>
 
 //! Testing Output instruction.
@@ -36,9 +34,9 @@ public:
   class TestInterface : public ::sup::sequencer::UserInterface
   {
   public:
-    TestInterface(unsigned par) : m_value(sup::dto::UnsignedInteger32)
+    TestInterface(unsigned par) : m_value(sup::dto::UnsignedInteger32Type)
     {
-      m_value = static_cast<sup::dto::uint32>(par);
+      m_value = par;
     }
 
     bool PutValueImpl(const sup::dto::AnyValue &value, const std::string &description) override
@@ -73,7 +71,7 @@ TEST_F(OutputTest, PutInteger)
   const unsigned expected{22};
   TestInterface ui{expected};
   // initial state
-  EXPECT_EQ(static_cast<sup::dto::uint32>(ui.m_value), static_cast<sup::dto::uint32>(expected));
+  EXPECT_EQ(ui.m_value.As<unsigned>(), expected);
 
   auto proc = sup::sequencer::ParseProcedureString(procedure_string);
   ASSERT_TRUE(proc.get() != nullptr);
@@ -81,5 +79,5 @@ TEST_F(OutputTest, PutInteger)
       sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::SUCCESS));
 
   // checking that Output instruction has propagated the value to the interface
-  EXPECT_EQ(static_cast<sup::dto::uint32>(ui.m_value), static_cast<sup::dto::uint32>(42));
+  EXPECT_EQ(ui.m_value.As<unsigned>(), 42);
 }

@@ -215,6 +215,11 @@ bool Workspace::RegisterType(const sup::dto::AnyType& anytype)
   return true;
 }
 
+const sup::dto::AnyTypeRegistry* Workspace::GetTypeRegistry() const
+{
+  return m_type_registry.get();
+}
+
 CallbackGuard<NamedCallbackManager<const sup::dto::AnyValue &>> Workspace::GetCallbackGuard(
     void *listener)
 {

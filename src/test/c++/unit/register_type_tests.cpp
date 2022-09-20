@@ -96,8 +96,8 @@ static const std::string JSONRangeRepresentation =
 TEST(RegisterType, string_success)
 {
   sup::sequencer::LogUI ui;
-  auto proc = sup::sequencer::ParseProcedureString(
-      ::sup::UnitTestHelper::CreateProcedureString(RegisterTypeProcedureString));
+  auto proc_str = sup::UnitTestHelper::CreateProcedureString(RegisterTypeProcedureString);
+  auto proc = sup::sequencer::ParseProcedureString(proc_str);
   ASSERT_TRUE(static_cast<bool>(proc));
 
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
@@ -105,8 +105,8 @@ TEST(RegisterType, string_success)
 
 TEST(RegisterType, string_failed)
 {
-  auto proc = sup::sequencer::ParseProcedureString(
-      ::sup::UnitTestHelper::CreateProcedureString(FailedRegisterTypeProcedureString));
+  auto proc_str = sup::UnitTestHelper::CreateProcedureString(FailedRegisterTypeProcedureString);
+  auto proc = sup::sequencer::ParseProcedureString(proc_str);
   EXPECT_FALSE(static_cast<bool>(proc));
 }
 
@@ -114,8 +114,8 @@ TEST(RegisterType, file_success)
 {
   sup::UnitTestHelper::TemporaryTestFile json_file(JSON_FILE_NAME, JSONRangeRepresentation);
   sup::sequencer::LogUI ui;
-  auto proc = sup::sequencer::ParseProcedureString(
-      ::sup::UnitTestHelper::CreateProcedureString(RegisterTypeFromFileProcedureString));
+  auto proc_str = sup::UnitTestHelper::CreateProcedureString(RegisterTypeFromFileProcedureString);
+  auto proc = sup::sequencer::ParseProcedureString(proc_str);
   ASSERT_TRUE(static_cast<bool>(proc));
 
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
@@ -123,7 +123,8 @@ TEST(RegisterType, file_success)
 
 TEST(RegisterType, file_failed)
 {
-  auto proc = sup::sequencer::ParseProcedureString(
-      ::sup::UnitTestHelper::CreateProcedureString(FailedRegisterTypeFromFileProcedureString));
+  auto proc_str = sup::UnitTestHelper::CreateProcedureString(
+    FailedRegisterTypeFromFileProcedureString);
+  auto proc = sup::sequencer::ParseProcedureString(proc_str);
   EXPECT_FALSE(static_cast<bool>(proc));
 }

@@ -24,8 +24,6 @@
 #include <sup/sequencer/sequence_parser.h>
 #include <sup/sequencer/user_interface.h>
 
-#include <common/BasicTypes.h>
-
 #include <gtest/gtest.h>
 
 //! Testing Listen instruction.

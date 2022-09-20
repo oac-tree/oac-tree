@@ -25,7 +25,6 @@
 #include "compound_instruction.h"
 
 #include <sup/dto/anyvalue.h>
-#include <common/BasicTypes.h>
 
 namespace sup
 {

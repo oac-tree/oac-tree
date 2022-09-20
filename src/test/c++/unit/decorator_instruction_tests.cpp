@@ -30,8 +30,6 @@
 #include <sup/sequencer/instruction_registry.h>
 #include <sup/sequencer/sequence_parser.h>
 
-#include <common/BasicTypes.h>
-
 #include <gtest/gtest.h>
 
 using namespace sup::sequencer;

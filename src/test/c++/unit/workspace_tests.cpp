@@ -26,8 +26,6 @@
 #include <sup/sequencer/sequence_parser.h>
 #include <sup/sequencer/variable_registry.h>
 
-#include <sup/dto/anyvalue_helper.h>
-
 #include <gtest/gtest.h>
 
 #include <algorithm>
@@ -50,9 +48,9 @@ static const std::string var2_name = "var2";
 static const std::string var3_name = "var3";
 
 static const std::string var2_type =
-    R"RAW({"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}},{"status":{"type":"bool"}}]})RAW";
+    R"RAW({"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}},{"status":{"type":"bool"}},{"message":{"type":"string"}}]})RAW";
 static const std::string var3_type =
-    R"RAW({"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}},{"status":{"type":"bool"}}]})RAW";
+    R"RAW({"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}},{"status":{"type":"bool"}},{"message":{"type":"string"}}]})RAW";
 static const std::string var3_val = R"RAW({"value":55,"status":1})RAW";
 
 TEST_F(WorkspaceTest, DefaultConstructed)
@@ -110,14 +108,14 @@ TEST_F(WorkspaceTest, GetValue)
   EXPECT_TRUE(ws.GetValue(var2_name, val2));  // zero-initialized
   sup::dto::uint64 value_field;
   sup::dto::boolean status_field;
-  EXPECT_TRUE(::ccs::HelperTools::GetAttributeValue(&val2, "value", value_field));
-  EXPECT_TRUE(::ccs::HelperTools::GetAttributeValue(&val2, "status", status_field));
+  EXPECT_NO_THROW(value_field = val2["value"].As<sup::dto::uint64>());
+  EXPECT_NO_THROW(status_field = val2["status"].As<sup::dto::boolean>());
   EXPECT_EQ(value_field, 0ul);
   EXPECT_EQ(status_field, false);
   sup::dto::AnyValue val3;
   EXPECT_TRUE(ws.GetValue(var3_name, val3));  // zero-initialized
-  EXPECT_TRUE(::ccs::HelperTools::GetAttributeValue(&val3, "value", value_field));
-  EXPECT_TRUE(::ccs::HelperTools::GetAttributeValue(&val3, "status", status_field));
+  EXPECT_NO_THROW(value_field = val3["value"].As<sup::dto::uint64>());
+  EXPECT_NO_THROW(status_field = val3["status"].As<sup::dto::boolean>());
   EXPECT_EQ(value_field, 55ul);
   EXPECT_EQ(status_field, true);
 
@@ -128,14 +126,15 @@ TEST_F(WorkspaceTest, GetValue)
   sup::dto::AnyValue var3_status_field(sup::dto::BooleanType);
   EXPECT_TRUE(ws.GetValue(var3_value_field_name, var3_value_field));
   EXPECT_TRUE(ws.GetValue(var3_status_field_name, var3_status_field));
-  value_field = var3_value_field;
-  status_field = var3_status_field;
+  value_field = var3_value_field.As<sup::dto::uint64>();
+  status_field = var3_status_field.As<sup::dto::boolean>();
   EXPECT_EQ(value_field, 55ul);
   EXPECT_EQ(status_field, true);
 
-  // Read fields with wrong size or unknown field
+  // Read fields with wrong type or unknown field
+  std::string var3_message_field_name = var3_name + ".message";
   std::string var3_unknown_field_name = var3_name + ".unknown";
-  EXPECT_FALSE(ws.GetValue(var3_value_field_name, var3_status_field));
+  EXPECT_FALSE(ws.GetValue(var3_message_field_name, var3_status_field));
   EXPECT_FALSE(ws.GetValue(var3_unknown_field_name, var3_status_field));
 }
 
@@ -162,32 +161,32 @@ TEST_F(WorkspaceTest, SetValue)
   sup::dto::AnyValue val1(sup::dto::BooleanType);
   val1 = true;
   EXPECT_TRUE(ws.SetValue(var1_name, val1));
-  EXPECT_TRUE(ws.GetValue(var2_name, val2));  // zero-initialized
+  EXPECT_TRUE(ws.GetValue(var2_name, val2));
   sup::dto::boolean status_field;
-  EXPECT_TRUE(::ccs::HelperTools::GetAttributeValue(&val2, "status", status_field));
+  EXPECT_NO_THROW(status_field = val2["status"].As<sup::dto::boolean>());
   EXPECT_EQ(status_field, false);
-  EXPECT_TRUE(::ccs::HelperTools::SetAttributeValue(&val2, "status", true));
+  EXPECT_NO_THROW(val2["status"] = true);
   EXPECT_TRUE(ws.SetValue(var2_name, val2));
-  EXPECT_TRUE(ws.GetValue(var2_name, val2));  // zero-initialized
-  EXPECT_TRUE(::ccs::HelperTools::GetAttributeValue(&val2, "status", status_field));
+  EXPECT_TRUE(ws.GetValue(var2_name, val2));
+  EXPECT_NO_THROW(status_field = val2["status"].As<sup::dto::boolean>());
   EXPECT_EQ(status_field, true);
 
   // Set variable fields
   std::string var3_status_field_name = var3_name + ".status";
   sup::dto::AnyValue var3_status_field;
   EXPECT_TRUE(ws.GetValue(var3_status_field_name, var3_status_field));
-  status_field = var3_status_field;
+  status_field = var3_status_field.As<sup::dto::boolean>();
   EXPECT_EQ(status_field, true);
   status_field = false;
   EXPECT_TRUE(ws.SetValue(var3_status_field_name, status_field));
   EXPECT_TRUE(ws.GetValue(var3_status_field_name, var3_status_field));
-  status_field = var3_status_field;
+  status_field = var3_status_field.As<sup::dto::boolean>();
   EXPECT_EQ(status_field, false);
 
-  // Set fields with wrong size or unknown field
-  std::string var3_value_field_name = var3_name + ".value";
+  // Set fields with wrong type or unknown field
+  std::string var3_message_field_name = var3_name + ".message";
   std::string var3_unknown_field_name = var3_name + ".unknown";
-  EXPECT_FALSE(ws.SetValue(var3_value_field_name, var3_status_field));
+  EXPECT_FALSE(ws.SetValue(var3_message_field_name, var3_status_field));
   EXPECT_FALSE(ws.GetValue(var3_unknown_field_name, var3_status_field));
 }
 
@@ -222,7 +221,7 @@ TEST_F(WorkspaceTest, NotifyCallback)
   EXPECT_TRUE(var->AddAttribute(LocalVariable::JSON_TYPE, R"RAW({"type":"uint16"})RAW"));
   EXPECT_TRUE(ws.AddVariable(name, var.release()));
   ws.Setup();
-  sup::dto::AnyValue new_value(sup::dto::UnsignedInteger16);
+  sup::dto::AnyValue new_value(sup::dto::UnsignedInteger16Type);
   sup::dto::uint16 raw_value = 123;
   new_value = sup::dto::uint16(raw_value);
   EXPECT_TRUE(ws.SetValue(name, new_value));

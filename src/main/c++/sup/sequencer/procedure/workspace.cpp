@@ -176,7 +176,7 @@ bool Workspace::SetValue(std::string name, const sup::dto::AnyValue &value)
       "'value' into found workspace variable..",
       name.c_str());
 
-  return  it->second->SetValue(value, fieldname);
+  return it->second->SetValue(value, fieldname);
 }
 
 std::vector<const Variable *> Workspace::GetVariables() const

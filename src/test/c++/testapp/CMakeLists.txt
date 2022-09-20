@@ -20,5 +20,4 @@ target_link_directories(testapp
 target_link_libraries(testapp
     PRIVATE
         sup-sequencer-shared
-        ccs-common
 )

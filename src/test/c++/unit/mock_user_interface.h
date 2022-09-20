@@ -59,11 +59,7 @@ MATCHER_P(HasExecutionStatus, expected, "")
 
 MATCHER_P(HasSameValue, value, "")
 {
-  if (arg.GetSize() != value.GetSize())
-  {
-    return false;
-  }
-  return (std::memcmp(arg.GetInstance(), value.GetInstance(), arg.GetSize()) == 0);
+  return arg == value;
 }
 
 }  // namespace sequencer

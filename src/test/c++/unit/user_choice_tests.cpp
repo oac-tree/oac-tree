@@ -23,8 +23,6 @@
 
 #include <sup/sequencer/sequence_parser.h>
 
-#include <common/BasicTypes.h>
-
 #include <gtest/gtest.h>
 
 TEST(UserChoice, GetUserChoice)

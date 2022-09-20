@@ -29,17 +29,17 @@ target_sources(unit-tests
         ${CMAKE_CURRENT_LIST_DIR}/register_type_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/repeat_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/reset_variable_tests.cpp
-        # ${CMAKE_CURRENT_LIST_DIR}/runner_tests.cpp
-        # ${CMAKE_CURRENT_LIST_DIR}/sequence_parser_tests.cpp
-        # ${CMAKE_CURRENT_LIST_DIR}/sequence_workspace_tests.cpp
-        # ${CMAKE_CURRENT_LIST_DIR}/treedata_tests.cpp
-        # ${CMAKE_CURRENT_LIST_DIR}/treedata_xml_write_utils_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/runner_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/sequence_parser_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/sequence_workspace_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/treedata_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/treedata_xml_write_utils_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/unit_test_helper.cpp
-        # ${CMAKE_CURRENT_LIST_DIR}/user_choice_tests.cpp
-        # ${CMAKE_CURRENT_LIST_DIR}/user_interface_tests.cpp
-        # ${CMAKE_CURRENT_LIST_DIR}/variable_registry_tests.cpp
-        # ${CMAKE_CURRENT_LIST_DIR}/wait_tests.cpp
-        # ${CMAKE_CURRENT_LIST_DIR}/workspace_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/user_choice_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/user_interface_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/variable_registry_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/wait_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/workspace_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++/sup/sequencer-cli/cl_interface.cpp
         ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++/sup/sequencer-daemon/daemon_interface.cpp
 )

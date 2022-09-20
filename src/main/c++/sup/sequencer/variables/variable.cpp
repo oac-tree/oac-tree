@@ -121,6 +121,10 @@ bool Variable::SetValue(const sup::dto::AnyValue &value, const std::string &fiel
     {
       return false;
     }
+    catch(const sup::dto::InvalidConversionException&)
+    {
+      return false;
+    }
   }
   return false;
 }

@@ -28,8 +28,6 @@
 #include <sup/sequencer/procedure.h>
 #include <sup/sequencer/user_interface.h>
 
-#include <common/BasicTypes.h>
-
 #include <cstdio>
 #include <fstream>
 #include <sstream>

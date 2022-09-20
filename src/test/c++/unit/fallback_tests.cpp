@@ -26,8 +26,6 @@
 #include <sup/sequencer/instruction_registry.h>
 #include <sup/sequencer/sequence_parser.h>
 
-#include <common/BasicTypes.h>
-
 #include <gtest/gtest.h>
 
 // ToDo - Should implement test-specific instruction class to verify if called multiple times, or

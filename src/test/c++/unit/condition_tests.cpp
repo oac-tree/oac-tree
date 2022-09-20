@@ -31,7 +31,6 @@
 
 #include <sup/dto/anytype.h>
 #include <sup/dto/anyvalue.h>
-#include <common/BasicTypes.h>
 
 #include <gtest/gtest.h>
 

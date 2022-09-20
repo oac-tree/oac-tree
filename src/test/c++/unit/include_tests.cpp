@@ -25,8 +25,6 @@
 #include <sup/sequencer/generic_utils.h>
 #include <sup/sequencer/sequence_parser.h>
 
-#include <common/BasicTypes.h>
-
 #include <gtest/gtest.h>
 
 TEST(Include, Procedure_local)

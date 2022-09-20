@@ -24,8 +24,6 @@
 #include <sup/sequencer/instruction.h>
 #include <sup/sequencer/sequence_parser.h>
 
-#include <common/BasicTypes.h>
-
 #include <gtest/gtest.h>
 
 #include <algorithm>

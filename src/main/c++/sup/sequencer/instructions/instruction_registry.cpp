@@ -110,7 +110,7 @@ void InitInstructionRegistry(InstructionRegistry& registry)
   (void)RegisterInstruction<Repeat>(registry);
 
   // Register leaf instructions:
-  // (void)RegisterInstruction<Choice>(registry);
+  (void)RegisterInstruction<Choice>(registry);
   (void)RegisterInstruction<Condition>(registry);
   (void)RegisterInstruction<Copy>(registry);
   (void)RegisterInstruction<Equals>(registry);

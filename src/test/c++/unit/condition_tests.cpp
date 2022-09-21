@@ -73,8 +73,8 @@ TEST(Condition, Default)
 )"};
 
   const std::string file_name = "workspaceCondition.xml";
-  ::sup::UnitTestHelper::TemporaryTestFile test_file(
-      file_name, ::sup::UnitTestHelper::CreateProcedureString(body));
+  sup::UnitTestHelper::TemporaryTestFile test_file(
+      file_name, sup::UnitTestHelper::CreateProcedureString(body));
 
   auto proc = sup::sequencer::ParseProcedureFile(file_name);
   ASSERT_TRUE(proc.get() != nullptr);
@@ -144,7 +144,7 @@ TEST(Condition, NonScalarVariable_success)
 
   sup::sequencer::LogUI ui;
   auto proc =
-      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
+      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
   ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
 }
 
@@ -163,7 +163,7 @@ TEST(Condition, NonScalarVariable_failure)
 
   sup::sequencer::LogUI ui;
   auto proc =
-      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
+      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
   ASSERT_TRUE(
       sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE));
 }
@@ -180,7 +180,7 @@ TEST(Condition, NoSuchVariable_name)
 
   sup::sequencer::LogUI ui;
   auto proc =
-      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
+      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
   ASSERT_TRUE(
       sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE));
 }
@@ -200,7 +200,7 @@ TEST(Condition, NoSuchVariable_attr)
 
   sup::sequencer::LogUI ui;
   auto proc =
-      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
+      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
   ASSERT_TRUE(
       sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE));
 }

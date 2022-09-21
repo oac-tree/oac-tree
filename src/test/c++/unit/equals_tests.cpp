@@ -40,7 +40,7 @@ TEST(Equals, Equals_success)
 
   sup::sequencer::LogUI ui;
   auto proc =
-      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
+      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
@@ -58,7 +58,7 @@ TEST(Equals, Equals_failure)
 
   sup::sequencer::LogUI ui;
   auto proc =
-      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
+      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
   // Should have expect failure in Setup but the exception does not cause SetupImpl to fail ..

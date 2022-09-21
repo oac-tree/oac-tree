@@ -31,7 +31,7 @@ class OutputTest : public ::testing::Test
 {
 public:
   //! Test interface which accepts values from the workspace.
-  class TestInterface : public ::sup::sequencer::UserInterface
+  class TestInterface : public sup::sequencer::UserInterface
   {
   public:
     TestInterface(unsigned par) : m_value(sup::dto::UnsignedInteger32Type)
@@ -66,7 +66,7 @@ TEST_F(OutputTest, PutInteger)
   </Workspace>
 )RAW"};
 
-  const auto procedure_string = ::sup::UnitTestHelper::CreateProcedureString(procedure_body);
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
 
   const unsigned expected{22};
   TestInterface ui{expected};

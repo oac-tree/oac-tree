@@ -170,7 +170,7 @@ std::string CreateProcedureString(const std::string &body)
   return header + body + footer;
 }
 
-void PrintProcedureWorkspace(::sup::sequencer::Procedure *procedure)
+void PrintProcedureWorkspace(sup::sequencer::Procedure *procedure)
 {
   auto var_names = procedure->VariableNames();
   sup::dto::char8 val_string[1024];

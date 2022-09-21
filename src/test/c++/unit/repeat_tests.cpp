@@ -49,7 +49,7 @@ TEST(Repeat, Procedure_success)
 
   sup::sequencer::LogUI ui;
   auto proc =
-      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
+      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
   ASSERT_TRUE(proc.get() != nullptr);
 
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
@@ -70,7 +70,7 @@ TEST(Repeat, Procedure_failure)
 
   sup::sequencer::LogUI ui;
   auto proc =
-      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
+      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
   ASSERT_TRUE(proc.get() != nullptr);
   EXPECT_TRUE(
       sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE));

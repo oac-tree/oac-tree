@@ -25,7 +25,11 @@
 #include <sup/sequencer/procedure.h>
 #include <sup/sequencer/workspace.h>
 
-#include <sup/dto/anytype.h>
+namespace
+{
+std::size_t ValueToIndex(const sup::dto::AnyValue& value);
+std::vector<std::size_t> GetIndexListFromVariable(const sup::dto::AnyValue& var);
+}  // unnamed namespace
 
 namespace sup
 {
@@ -36,186 +40,109 @@ const std::string Choice::Type = "Choice";
 
 Choice::Choice()
   : CompoundInstruction(Choice::Type)
-  , numberOfElements{1u}
-  , elementSize{0}
-  , isMask{false}
+  , m_var_name{}
 {}
 
 Choice::~Choice()
 {}
 
-bool Choice::CheckIfSelectorArray(const sup::dto::AnyValue &_val)
-{
-  // check if array
-  bool ret = true;
-  if (!isMask)
-  {
-    ::ccs::base::SharedReference<const sup::dto::ArrayType> myArrayType = _val.GetType();
-    if (myArrayType.IsValid())
-    {
-      numberOfElements = myArrayType->GetElementNumber();
-      elementSize = myArrayType->GetElementType()->GetSize();
-    }
-    // they must be arrays of uint32 or positive int32
-    ret = (elementSize <= 4u);
-    if (!ret)
-    {
-      log::Error("Choice::Setup - element size must be <= 4");
-    }
-  }
-  return ret;
-}
-
-bool Choice::CheckSelectorType(const Procedure &proc)
-{
-  varName = GetAttribute("var_name");
-  sup::dto::AnyValue _val;
-  bool ret = proc.GetVariableValue(varName, _val);
-  if (ret)
-  {
-    elementSize = _val.GetSize();
-    isMask = HasAttribute("is_mask");
-    if (isMask)
-    {
-      isMask = (GetAttribute("is_mask") == "true");
-    }
-    ret = CheckIfSelectorArray(_val);
-  }
-  return ret;
-}
-
 bool Choice::SetupImpl(const Procedure &proc)
 {
-  bool ret = SetupChildren(proc);
-  if (ret)
+  if (!SetupChildren(proc))
   {
-    ret = HasAttribute("var_name");
-    if (ret)
-    {
-      ret = CheckSelectorType(proc);
-    }
-    else
-    {
-      log::Error("Choice::Setup - No attribute var_name found");
-    }
-
-    log::Debug("Choice::Setup - With var_name=%s numberOfElements=%u elementSize=%u isMask=%u",
-              varName.c_str(), numberOfElements, elementSize, isMask);
+    return false;
   }
-  return ret;
-}
-
-ExecutionStatus Choice::ExecuteBitChild(const sup::dto::uint64 value,
-                                        const sup::dto::uint32 remained, UserInterface *ui,
-                                        Workspace *ws)
-{
-  ExecutionStatus child_status = ExecutionStatus::SUCCESS;
-
-  bool exit = false;
-  for (sup::dto::uint32 i = 0u; (i < remained) && (!exit); i++)
+  if (!HasAttribute("var_name"))
   {
-    log::Debug("Choice::ExecuteSingleImpl - Considering bit %d of %d", i, remained);
-    if (((value >> i) & (0x1u)))
-    {
-      child_status = ExecuteChild(i, ui, ws);
-      // continue only if success
-      exit = (child_status != ExecutionStatus::SUCCESS);
-      // child_status = _children[i]->GetStatus();
-    }
+    return false;
   }
-  return child_status;
-}
-
-ExecutionStatus Choice::ExecuteMaskSelector(sup::dto::uint8 *valPtr, UserInterface *ui,
-                                            Workspace *ws)
-{
-  ExecutionStatus child_status = ExecutionStatus::SUCCESS;
-
-  sup::dto::uint32 nElems = (elementSize * sizeof(sup::dto::uint64));
-  log::Debug("Choice::ExecuteSingleImpl - isMask nElems=%d", nElems);
-  bool exit = false;
-  // generic...can consider very big elements
-  while ((nElems > 0u) && (!exit))
-  {
-    sup::dto::uint32 remained = (nElems > 64u) ? (64u) : (nElems);
-    sup::dto::uint64 value = 0u;
-    memcpy(&value, valPtr, (remained / 8u));
-    log::Debug("Choice::ExecuteSingleImpl - isMask value=%d", value);
-    child_status = ExecuteBitChild(value, remained, ui, ws);
-    exit = (child_status != ExecutionStatus::SUCCESS);
-    nElems -= remained;
-    valPtr += sizeof(sup::dto::uint64);
-  }
-  return child_status;
-}
-
-ExecutionStatus Choice::ExecuteArraySelector(sup::dto::uint8 *valPtr, UserInterface *ui,
-                                             Workspace *ws)
-{
-  ExecutionStatus child_status = ExecutionStatus::SUCCESS;
-
-  for (sup::dto::uint32 i = 0u; i < numberOfElements; i++)
-  {
-    sup::dto::uint32 value = 0u;
-
-    memcpy(&value, valPtr, elementSize);
-
-    child_status = ExecuteChild(value, ui, ws);
-    // continue only if success
-    if (child_status != ExecutionStatus::SUCCESS)
-    {
-      // child_status = _children[value]->GetStatus();
-      break;
-    }
-    valPtr += elementSize;
-  }
-  return child_status;
+  m_var_name = GetAttribute("var_name");
+  return true;
 }
 
 ExecutionStatus Choice::ExecuteSingleImpl(UserInterface *ui, Workspace *ws)
 {
-  ExecutionStatus child_status = ExecutionStatus::SUCCESS;
-  sup::dto::AnyValue _val;
-  ws->GetValue(varName, _val);
-  auto valPtr = reinterpret_cast<sup::dto::uint8 *>(_val.GetInstance());
-
-  if (isMask)
+  sup::dto::AnyValue selector;
+  if (!ws->GetValue(m_var_name, selector))
   {
-    child_status = ExecuteMaskSelector(valPtr, ui, ws);
+    return ExecutionStatus::FAILURE;
   }
-  else
+  std::vector<std::size_t> indices;
+  try
   {
-    child_status = ExecuteArraySelector(valPtr, ui, ws);
+    indices = GetIndexListFromVariable(selector);
+  }
+  catch(const sup::dto::InvalidConversionException&)
+  {
+    return ExecutionStatus::FAILURE;
+  }
+  catch(const sup::dto::SerializeException&)
+  {
+    return ExecutionStatus::FAILURE;
+  }
+  return ExecuteArraySelector(indices, ui, ws);
+}
+
+ExecutionStatus Choice::ExecuteArraySelector(std::vector<std::size_t> indices, UserInterface *ui,
+                                             Workspace *ws)
+{
+  // TODO: change logic like in Sequence, because this will fail when child returns running
+  ExecutionStatus child_status = ExecutionStatus::SUCCESS;
+  for (auto idx : indices)
+  {
+    child_status = ExecuteChild(idx, ui, ws);
+    // continue only if success
+    if (child_status != ExecutionStatus::SUCCESS)
+    {
+      break;
+    }
   }
   return child_status;
 }
 
-ExecutionStatus Choice::ExecuteChild(sup::dto::uint32 idx, UserInterface *ui, Workspace *ws)
+ExecutionStatus Choice::ExecuteChild(std::size_t idx, UserInterface *ui, Workspace *ws)
 {
-  ExecutionStatus child_status = ExecutionStatus::SUCCESS;
-  if (idx < ChildInstructions().size())
+  auto child_instructions = ChildInstructions();
+  if (idx < child_instructions.size())
   {
-    child_status = ChildInstructions()[idx]->GetStatus();
-
-    if (NeedsExecute(child_status))
+    auto child_instr = child_instructions[idx];
+    if (NeedsExecute(child_instr->GetStatus()))
     {
-      auto childName = ChildInstructions()[idx]->GetName();
+      auto childName = child_instr->GetName();
       log::Debug("Choice::ExecuteChild - Executing child[%u]=%s", idx, childName.c_str());
 
-      ChildInstructions()[idx]->ExecuteSingle(ui, ws);
-      child_status = ExecutionStatus::NOT_FINISHED;
+      child_instr->ExecuteSingle(ui, ws);
     }
+    return child_instr->GetStatus();
   }
-  else
-  {
-    log::Warning(
-        "Status Choice::ExecuteSingleImpl - child[%u] not executed because exceeding children size "
-        "(%u)",
-        idx, ChildInstructions().size());
-  }
-  return child_status;
+  return ExecutionStatus::FAILURE;
 }
 
 }  // namespace sequencer
 
 }  // namespace sup
+
+namespace
+{
+std::size_t ValueToIndex(const sup::dto::AnyValue& value)
+{
+  return value.As<std::size_t>();
+}
+
+std::vector<std::size_t> GetIndexListFromVariable(const sup::dto::AnyValue& var)
+{
+  std::vector<std::size_t> result;
+  if (sup::dto::IsArrayValue(var))
+  {
+    for (std::size_t i = 0; i < var.NumberOfElements(); ++i)
+    {
+      result.push_back(ValueToIndex(var[i]));
+    }
+  }
+  else
+  {
+    result.push_back(ValueToIndex(var));
+  }
+  return result;
+}
+}  // unnamed namespace

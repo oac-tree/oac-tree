@@ -54,8 +54,8 @@ TEST_F(FileVariableTest, File_write)
 )"};
 
   const std::string file_name = "variable_file.xml";
-  ::sup::UnitTestHelper::TemporaryTestFile test_file(
-      file_name, ::sup::UnitTestHelper::CreateProcedureString(body));
+  sup::UnitTestHelper::TemporaryTestFile test_file(
+      file_name, sup::UnitTestHelper::CreateProcedureString(body));
 
   auto proc = sup::sequencer::ParseProcedureFile(file_name);
   ASSERT_TRUE(proc.get() != nullptr);
@@ -134,8 +134,8 @@ TEST_F(FileVariableTest, File_attr)
 )"};
 
   const std::string file_name = "variable_attr.xml";
-  ::sup::UnitTestHelper::TemporaryTestFile test_file(
-      file_name, ::sup::UnitTestHelper::CreateProcedureString(body));
+  sup::UnitTestHelper::TemporaryTestFile test_file(
+      file_name, sup::UnitTestHelper::CreateProcedureString(body));
 
   auto proc = sup::sequencer::ParseProcedureFile(file_name);
 

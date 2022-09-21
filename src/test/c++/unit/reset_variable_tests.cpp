@@ -46,7 +46,7 @@ TEST(ResetVariable, CopyWithReset)
 )"};
 
   LogUI ui;
-  auto proc = ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
@@ -67,7 +67,7 @@ TEST(ResetVariable, CopyWithoutReset)
 )"};
 
   LogUI ui;
-  auto proc = ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui, ExecutionStatus::FAILURE));

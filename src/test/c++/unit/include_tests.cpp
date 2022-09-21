@@ -43,7 +43,7 @@ TEST(Include, Procedure_local)
 
   sup::sequencer::LogUI ui;
   auto proc =
-      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
+      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
   EXPECT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 20);
@@ -64,7 +64,7 @@ TEST(Include, Procedure_param)
 
   sup::sequencer::LogUI ui;
   auto proc =
-      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
+      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
   ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
@@ -87,7 +87,7 @@ incr="2"/>
 
   sup::sequencer::LogUI ui;
   auto proc =
-      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
+      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
   ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
@@ -108,7 +108,7 @@ TEST(Include, Procedure_undefined)
 
   sup::sequencer::LogUI ui;
   auto proc =
-      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
+      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
   ASSERT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
@@ -128,8 +128,8 @@ TEST(Include, Procedure_extern)
 )"};
 
   const std::string file_name = "parallel_sequence.xml";
-  ::sup::UnitTestHelper::TemporaryTestFile test_file(
-      file_name, ::sup::UnitTestHelper::CreateProcedureString(body));
+  sup::UnitTestHelper::TemporaryTestFile test_file(
+      file_name, sup::UnitTestHelper::CreateProcedureString(body));
 
   const std::string procedure_body{R"(
     <Repeat isRoot="true" maxCount="10">
@@ -141,7 +141,7 @@ TEST(Include, Procedure_extern)
 
   sup::sequencer::LogUI ui;
   auto proc = sup::sequencer::ParseProcedureString(
-      ::sup::UnitTestHelper::CreateProcedureString(procedure_body));
+      sup::UnitTestHelper::CreateProcedureString(procedure_body));
   ASSERT_TRUE(proc.get() != nullptr);
   ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
 }
@@ -159,8 +159,8 @@ TEST(Include, Procedure_nested)
 )"};
 
   const std::string single_wait_file_name = "instruction_definitions/waits/single_waits.xml";
-  ::sup::UnitTestHelper::TemporaryTestFile single_waits_test_file(
-      single_wait_file_name, ::sup::UnitTestHelper::CreateProcedureString(single_waits_body));
+  sup::UnitTestHelper::TemporaryTestFile single_waits_test_file(
+      single_wait_file_name, sup::UnitTestHelper::CreateProcedureString(single_waits_body));
 
   const std::string compound_waits_body{R"(
     <Sequence name="SerialWait">
@@ -174,8 +174,8 @@ TEST(Include, Procedure_nested)
 )"};
 
   const std::string compound_waits_file_name = "instruction_definitions/compound_waits.xml";
-  ::sup::UnitTestHelper::TemporaryTestFile compound_waits_test_file(
-      compound_waits_file_name, ::sup::UnitTestHelper::CreateProcedureString(compound_waits_body));
+  sup::UnitTestHelper::TemporaryTestFile compound_waits_test_file(
+      compound_waits_file_name, sup::UnitTestHelper::CreateProcedureString(compound_waits_body));
 
   const std::string main_body{R"(
     <Sequence isRoot="True">
@@ -187,8 +187,8 @@ TEST(Include, Procedure_nested)
 )"};
 
   const std::string file_name = "recursive_include.xml";
-  ::sup::UnitTestHelper::TemporaryTestFile test_file(
-      file_name, ::sup::UnitTestHelper::CreateProcedureString(main_body));
+  sup::UnitTestHelper::TemporaryTestFile test_file(
+      file_name, sup::UnitTestHelper::CreateProcedureString(main_body));
 
   sup::sequencer::LogUI ui;
   auto proc = sup::sequencer::ParseProcedureFile(file_name);

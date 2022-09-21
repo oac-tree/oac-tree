@@ -43,6 +43,12 @@ static const sup::dto::char8 *testTable[][2] = {{"{\"type\":\"uint8\"}", "0"},
                                                   {"{\"type\":\"uint8\"}", "3"},
                                                   {NULL}};
 static sup::dto::uint8 resVal[] = {1, 2, 3, 0};
+static ExecutionStatus statuses[] = {
+  ExecutionStatus::SUCCESS,
+  ExecutionStatus::SUCCESS,
+  ExecutionStatus::SUCCESS,
+  ExecutionStatus::FAILURE,
+};
 
 TEST(Choice, Default)  // Static initialisation
 {
@@ -69,12 +75,11 @@ TEST(Choice, Default)  // Static initialisation
 )"};
 
   const std::string file_name = "workspace_choice.xml";
-  ::sup::UnitTestHelper::TemporaryTestFile test_file(
-      file_name, ::sup::UnitTestHelper::CreateProcedureString(body));
+  sup::UnitTestHelper::TemporaryTestFile test_file(
+    file_name, sup::UnitTestHelper::CreateProcedureString(body));
 
-  bool status(true);
-  sup::dto::uint32 i = 0u;
-  while ((testTable[i][0] != NULL) && status)
+  std::size_t i = 0u;
+  while ((testTable[i][0] != NULL))
   {
     auto proc = sup::sequencer::ParseProcedureFile(file_name);
 
@@ -84,42 +89,28 @@ TEST(Choice, Default)  // Static initialisation
     varX->AddAttribute("value", testTable[i][1]);
     proc->AddVariable("sel", varX.release());
 
-    if (status)
+    LogUI ui;
+    proc->Setup();
+    while ((proc->GetStatus() != ExecutionStatus::SUCCESS)
+           && (proc->GetStatus() != ExecutionStatus::FAILURE))
     {
-      LogUI ui;
-      proc->Setup();
-      while ((proc->GetStatus() != ExecutionStatus::SUCCESS)
-             && (proc->GetStatus() != ExecutionStatus::FAILURE))
-      {
-        proc->ExecuteSingle(&ui);
-      }
-
-      status = (proc->GetStatus() == ExecutionStatus::SUCCESS);
+      proc->ExecuteSingle(&ui);
     }
+    EXPECT_EQ(proc->GetStatus(), statuses[i]);
 
-    if (status)
-    {
-      sup::dto::AnyValue result;
-      proc->GetVariableValue("res", result);
-      sup::dto::uint8 checkVal = *(sup::dto::uint8 *)(result.GetInstance());
-      status = checkVal == resVal[i];
-
-      if (!status)
-      {
-        printf("Failed %u!=%u\n", checkVal, resVal[i]);
-      }
-    }
+    sup::dto::AnyValue result;
+    proc->GetVariableValue("res", result);
+    auto checkVal = result.As<sup::dto::uint8>();
+    EXPECT_EQ(checkVal, resVal[i]);
 
     i++;
   }
-
-  ASSERT_EQ(true, status);
 }
 
-TEST(Choice, BitMask_success)
+TEST(Choice, ArraySuccess)
 {
   const std::string body{R"(
-    <Choice is_mask="true" var_name="choice">
+    <Choice var_name="choice">
         <Counter/>
         <Counter incr="2"/>
         <Wait timeout="0.1"/>
@@ -128,21 +119,21 @@ TEST(Choice, BitMask_success)
         </Inverter>
     </Choice>
     <Workspace>
-        <Local name="choice" type='{"type":"uint32"}' value="7"/>
+        <Local name="choice" type='{"type":"uint32_arr","multiplicity":3,"element":{"type":"uint32"}}' value="[0,1,2]"/>
     </Workspace>
 )"};
 
   sup::UnitTestHelper::MockUI ui;
   auto proc =
-      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
+      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
   ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
   ASSERT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 3);
 }
 
-TEST(Choice, BitMask_failure)
+TEST(Choice, ArrayFailure)
 {
   const std::string body{R"(
-    <Choice is_mask="true" var_name="choice">
+    <Choice var_name="choice">
         <Counter/>
         <Counter incr="2"/>
         <Wait timeout="0.1"/>
@@ -151,13 +142,13 @@ TEST(Choice, BitMask_failure)
         </Inverter>
     </Choice>
     <Workspace>
-        <Local name="choice" type='{"type":"uint32"}' value="14"/>
+        <Local name="choice" type='{"type":"uint32_arr","multiplicity":3,"element":{"type":"uint32"}}' value="[1,2,3]"/>
     </Workspace>
 )"};
 
   sup::UnitTestHelper::MockUI ui;
   auto proc =
-      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
+      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
   // Instruction called and return failure
   ASSERT_TRUE(
       sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE));
@@ -176,8 +167,8 @@ TEST(Choice, NoSuchVariable)
 
   sup::UnitTestHelper::MockUI ui;
   auto proc =
-      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
-  // Expect failure in Setup
+      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  // Expect failure during execution
   ASSERT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
 }
 
@@ -193,7 +184,7 @@ TEST(Choice, NoAttribute)
 
   sup::UnitTestHelper::MockUI ui;
   auto proc =
-      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
+      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
   // Expect failure in Setup
   ASSERT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
 }

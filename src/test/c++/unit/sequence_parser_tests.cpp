@@ -45,10 +45,10 @@ protected:
     return header + body + footer;
   }
 
-  std::unique_ptr<::sup::sequencer::Procedure> CreateProcedure(const std::string& body)
+  std::unique_ptr<sup::sequencer::Procedure> CreateProcedure(const std::string& body)
   {
-    return ::sup::sequencer::ParseProcedureString(
-        ::sup::UnitTestHelper::CreateProcedureString(body));
+    return sup::sequencer::ParseProcedureString(
+        sup::UnitTestHelper::CreateProcedureString(body));
   }
 };
 
@@ -63,7 +63,7 @@ TEST_F(SequencerParserTest, ProcedureOnlyString)
 
   auto proc = CreateProcedure(body);
   ASSERT_TRUE(static_cast<bool>(proc));
-  EXPECT_EQ(proc->RootInstruction()->GetType(), ::sup::sequencer::Sequence::Type);
+  EXPECT_EQ(proc->RootInstruction()->GetType(), sup::sequencer::Sequence::Type);
   EXPECT_EQ(proc->RootInstruction()->ChildrenCount(), 2);
   ASSERT_NE(proc->GetWorkspace(), nullptr);
   ASSERT_EQ(proc->GetWorkspace()->GetVariables().size(), 0);
@@ -96,14 +96,14 @@ TEST_F(SequencerParserTest, IncorrectRoot)
 </Sequence>
 )RAW";
 
-  auto proc = ::sup::sequencer::ParseProcedureString(body);
+  auto proc = sup::sequencer::ParseProcedureString(body);
   ASSERT_FALSE(static_cast<bool>(proc));
 
   // same via file on disk
   const std::string file_name("incorrect_root.xml");
-  ::sup::UnitTestHelper::TemporaryTestFile test_file(
-      file_name, ::sup::UnitTestHelper::CreateProcedureString(body));
-  proc = ::sup::sequencer::ParseProcedureFile(file_name);
+  sup::UnitTestHelper::TemporaryTestFile test_file(
+      file_name, sup::UnitTestHelper::CreateProcedureString(body));
+  proc = sup::sequencer::ParseProcedureFile(file_name);
   EXPECT_FALSE(static_cast<bool>(proc));
 }
 
@@ -121,13 +121,13 @@ TEST_F(SequencerParserTest, XMLSyntaxError)
     </Sequence>
 )RAW";
 
-  auto proc = ::sup::sequencer::ParseProcedureString(body);
+  auto proc = sup::sequencer::ParseProcedureString(body);
   ASSERT_FALSE(static_cast<bool>(proc));
 
   const std::string file_name("syntax_error.xml");
-  ::sup::UnitTestHelper::TemporaryTestFile test_file(
-      file_name, ::sup::UnitTestHelper::CreateProcedureString(body));
-  proc = ::sup::sequencer::ParseProcedureFile(file_name);
+  sup::UnitTestHelper::TemporaryTestFile test_file(
+      file_name, sup::UnitTestHelper::CreateProcedureString(body));
+  proc = sup::sequencer::ParseProcedureFile(file_name);
   EXPECT_FALSE(static_cast<bool>(proc));
 }
 
@@ -198,8 +198,8 @@ TEST_F(SequencerParserTest, SequenceWithInverter)
 )"};
 
   const std::string file_name = "sequence_with_inverter.xml";
-  ::sup::UnitTestHelper::TemporaryTestFile test_file(
-      file_name, ::sup::UnitTestHelper::CreateProcedureString(body));
+  sup::UnitTestHelper::TemporaryTestFile test_file(
+      file_name, sup::UnitTestHelper::CreateProcedureString(body));
 
   auto proc = sup::sequencer::ParseProcedureFile(file_name);
   ASSERT_TRUE(proc.get() != nullptr);
@@ -225,8 +225,8 @@ TEST_F(SequencerParserTest, Workspace)
 )"};
 
   const std::string file_name = "workspace.xml";
-  ::sup::UnitTestHelper::TemporaryTestFile test_file(
-      file_name, ::sup::UnitTestHelper::CreateProcedureString(body));
+  sup::UnitTestHelper::TemporaryTestFile test_file(
+      file_name, sup::UnitTestHelper::CreateProcedureString(body));
 
   auto proc = sup::sequencer::ParseProcedureFile(file_name);
   auto variables = proc->GetWorkspace()->GetVariables();
@@ -244,7 +244,7 @@ TEST_F(SequencerParserTest, EmptyProcedureFromXMLAndBack)
 
   auto xml_string = CreateProcedureString(body);
   auto procedure = sup::sequencer::ParseProcedureString(xml_string);
-  EXPECT_EQ(xml_string, ::sup::sequencer::GetXMLString(*procedure));
+  EXPECT_EQ(xml_string, sup::sequencer::GetXMLString(*procedure));
 }
 
 TEST_F(SequencerParserTest, ProcedureWithSequenceAndVariableFromXMLAndBack)
@@ -260,5 +260,5 @@ TEST_F(SequencerParserTest, ProcedureWithSequenceAndVariableFromXMLAndBack)
 
   auto xml_string = CreateProcedureString(body);
   auto procedure = sup::sequencer::ParseProcedureString(xml_string);
-  EXPECT_EQ(xml_string, ::sup::sequencer::GetXMLString(*procedure));
+  EXPECT_EQ(xml_string, sup::sequencer::GetXMLString(*procedure));
 }

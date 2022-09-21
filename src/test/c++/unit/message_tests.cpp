@@ -35,7 +35,7 @@ class MessageTest : public ::testing::Test
 {
 public:
   //! Test interface for Message method.
-  class TestInterface : public ::sup::sequencer::UserInterface
+  class TestInterface : public sup::sequencer::UserInterface
   {
   public:
     TestInterface() = default;

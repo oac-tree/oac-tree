@@ -26,55 +26,38 @@
 
 #include <sup/dto/anyvalue.h>
 
+#include <vector>
+
 namespace sup
 {
 namespace sequencer
 {
+/**
+ * @brief Executes a subset of children depending on a variable value
+ *
+ * @note The variable either needs to encode a single index for the child to be executed
+ * (i.e. a scalar positive integer) or an array of such indices.
+ */
 class Choice : public CompoundInstruction
 {
-private:
-  /**
-   * @brief Executes a subset of children depending on a variable value
-   *
-   * @return SUCCESS if all the selected children return SUCCESS.
-   */
-  ExecutionStatus ExecuteSingleImpl(UserInterface *ui, Workspace *ws) override;
-
-  /**
-   * @brief child execution
-   */
-  ExecutionStatus ExecuteChild(sup::dto::uint32 idx, UserInterface *ui, Workspace *ws);
-
-  bool CheckIfSelectorArray(const sup::dto::AnyValue &_val);
-
-  bool CheckSelectorType(const Procedure &proc);
-
-  ExecutionStatus ExecuteBitChild(const sup::dto::uint64 value,
-                                  const sup::dto::uint32 remained, UserInterface *ui,
-                                  Workspace *ws);
-
-  ExecutionStatus ExecuteMaskSelector(sup::dto::uint8 *valPtr, UserInterface *ui,
-                                      Workspace *ws);
-
-  ExecutionStatus ExecuteArraySelector(sup::dto::uint8 *valPtr, UserInterface *ui,
-                                       Workspace *ws);
-
-  bool SetupImpl(const Procedure &proc) override;
-
-  std::string varName;
-
-  sup::dto::uint32 numberOfElements;
-
-  sup::dto::uint32 elementSize;
-
-  bool isMask;
-
 public:
   Choice();
 
   virtual ~Choice();
 
   static const std::string Type;
+
+private:
+  std::string m_var_name;
+
+  bool SetupImpl(const Procedure &proc) override;
+
+  ExecutionStatus ExecuteSingleImpl(UserInterface *ui, Workspace *ws) override;
+
+  ExecutionStatus ExecuteArraySelector(std::vector<std::size_t> indices, UserInterface *ui,
+                                       Workspace *ws);
+
+  ExecutionStatus ExecuteChild(std::size_t idx, UserInterface *ui, Workspace *ws);
 };
 
 }  // namespace sequencer

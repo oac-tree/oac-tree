@@ -42,13 +42,13 @@ TEST_F(TreeDataXmlWriteUilsTest, WriteElement)
 )"};
 
   // writing to string and checking content
-  auto str = ::sup::sequencer::GetXMLString(tree_data);
+  auto str = sup::sequencer::GetXMLString(tree_data);
   EXPECT_EQ(GetXMLString(tree_data), expected);
 
   // writing to file and checking its content
   const std::string file_name = "WriteElement.xml";
   WriteToXMLFile(file_name, tree_data);
-  EXPECT_EQ(::sup::UnitTestHelper::GetTextFileContent(file_name), expected);
+  EXPECT_EQ(sup::UnitTestHelper::GetTextFileContent(file_name), expected);
   std::remove(file_name.c_str());
 }
 
@@ -62,13 +62,13 @@ TEST_F(TreeDataXmlWriteUilsTest, WriteElementWithAttribute)
 )"};
 
   // writing to string and checking content
-  auto str = ::sup::sequencer::GetXMLString(tree_data);
+  auto str = sup::sequencer::GetXMLString(tree_data);
   EXPECT_EQ(GetXMLString(tree_data), expected);
 
   // writing to file and checking its content
   const std::string file_name = "WriteElementWithAttribute.xml";
   WriteToXMLFile(file_name, tree_data);
-  EXPECT_EQ(::sup::UnitTestHelper::GetTextFileContent(file_name), expected);
+  EXPECT_EQ(sup::UnitTestHelper::GetTextFileContent(file_name), expected);
   std::remove(file_name.c_str());
 }
 
@@ -83,13 +83,13 @@ TEST_F(TreeDataXmlWriteUilsTest, WriteElementWithTwoAttributes)
 )"};
 
   // writing to string and checking content
-  auto str = ::sup::sequencer::GetXMLString(tree_data);
+  auto str = sup::sequencer::GetXMLString(tree_data);
   EXPECT_EQ(GetXMLString(tree_data), expected);
 
   // writing to file and checking its content
   const std::string file_name = "WriteElementWithTwoAttributes.xml";
   WriteToXMLFile(file_name, tree_data);
-  EXPECT_EQ(::sup::UnitTestHelper::GetTextFileContent(file_name), expected);
+  EXPECT_EQ(sup::UnitTestHelper::GetTextFileContent(file_name), expected);
   std::remove(file_name.c_str());
 }
 
@@ -103,13 +103,13 @@ TEST_F(TreeDataXmlWriteUilsTest, WriteElementContent)
 )"};
 
   // writing to string and checking content
-  auto str = ::sup::sequencer::GetXMLString(tree_data);
+  auto str = sup::sequencer::GetXMLString(tree_data);
   EXPECT_EQ(GetXMLString(tree_data), expected);
 
   // writing to file and checking its content
   const std::string file_name = "WriteElementContent.xml";
   WriteToXMLFile(file_name, tree_data);
-  EXPECT_EQ(::sup::UnitTestHelper::GetTextFileContent(file_name), expected);
+  EXPECT_EQ(sup::UnitTestHelper::GetTextFileContent(file_name), expected);
   std::remove(file_name.c_str());
 }
 
@@ -124,13 +124,13 @@ TEST_F(TreeDataXmlWriteUilsTest, WriteElementAttributeAndContent)
 )"};
 
   // writing to string and checking content
-  auto str = ::sup::sequencer::GetXMLString(tree_data);
+  auto str = sup::sequencer::GetXMLString(tree_data);
   EXPECT_EQ(GetXMLString(tree_data), expected);
 
   // writing to file and checking its content
   const std::string file_name = "WriteElementAttributeAndContent.xml";
   WriteToXMLFile(file_name, tree_data);
-  EXPECT_EQ(::sup::UnitTestHelper::GetTextFileContent(file_name), expected);
+  EXPECT_EQ(sup::UnitTestHelper::GetTextFileContent(file_name), expected);
   std::remove(file_name.c_str());
 }
 
@@ -148,13 +148,13 @@ TEST_F(TreeDataXmlWriteUilsTest, WriteElementWithChildren)
 )"};
 
   // writing to string and checking content
-  auto str = ::sup::sequencer::GetXMLString(tree_data);
+  auto str = sup::sequencer::GetXMLString(tree_data);
   EXPECT_EQ(GetXMLString(tree_data), expected);
 
   // writing to file and checking its content
   const std::string file_name = "WriteElementWithChildren.xml";
   WriteToXMLFile(file_name, tree_data);
-  EXPECT_EQ(::sup::UnitTestHelper::GetTextFileContent(file_name), expected);
+  EXPECT_EQ(sup::UnitTestHelper::GetTextFileContent(file_name), expected);
   std::remove(file_name.c_str());
 }
 
@@ -181,12 +181,12 @@ TEST_F(TreeDataXmlWriteUilsTest, WriteItemData)
 )"};
 
   // writing to string and checking content
-  auto str = ::sup::sequencer::GetXMLString(tree_data);
+  auto str = sup::sequencer::GetXMLString(tree_data);
   EXPECT_EQ(GetXMLString(tree_data), expected);
 
   // writing to file and checking its content
   const std::string file_name = "WriteItemData.xml";
   WriteToXMLFile(file_name, tree_data);
-  EXPECT_EQ(::sup::UnitTestHelper::GetTextFileContent(file_name), expected);
+  EXPECT_EQ(sup::UnitTestHelper::GetTextFileContent(file_name), expected);
   std::remove(file_name.c_str());
 }

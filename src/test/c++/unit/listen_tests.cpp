@@ -65,9 +65,9 @@ R"RAW(
   </Workspace>
 )RAW"};
 
-  const auto procedure_string = ::sup::UnitTestHelper::CreateProcedureString(procedure_body);
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
 
-  ::sup::UnitTestHelper::EmptyUserInterface ui{};
+  sup::UnitTestHelper::EmptyUserInterface ui{};
 
   auto proc = sup::sequencer::ParseProcedureString(procedure_string);
   ASSERT_NE(proc.get(), nullptr);
@@ -117,9 +117,9 @@ R"RAW(
   </Workspace>
 )RAW"};
 
-  const auto procedure_string = ::sup::UnitTestHelper::CreateProcedureString(procedure_body);
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
 
-  ::sup::UnitTestHelper::EmptyUserInterface ui{};
+  sup::UnitTestHelper::EmptyUserInterface ui{};
 
   auto proc = sup::sequencer::ParseProcedureString(procedure_string);
   ASSERT_NE(proc.get(), nullptr);
@@ -174,9 +174,9 @@ R"RAW(
     </Workspace>
 )RAW"};
 
-  const auto procedure_string = ::sup::UnitTestHelper::CreateProcedureString(procedure_body);
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
 
-  ::sup::UnitTestHelper::EmptyUserInterface ui{};
+  sup::UnitTestHelper::EmptyUserInterface ui{};
 
   auto proc = sup::sequencer::ParseProcedureString(procedure_string);
   ASSERT_NE(proc.get(), nullptr);

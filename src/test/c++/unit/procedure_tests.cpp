@@ -232,9 +232,9 @@ TEST_F(ProcedureTest, ExternalInclude)
 )"};
 
   const std::string external_include_file_name = "external_include.xml";
-  ::sup::UnitTestHelper::TemporaryTestFile external_include_file(
+  sup::UnitTestHelper::TemporaryTestFile external_include_file(
       external_include_file_name,
-      ::sup::UnitTestHelper::CreateProcedureString(external_include_body));
+      sup::UnitTestHelper::CreateProcedureString(external_include_body));
 
   const std::string parallel_sequence_body{R"(
     <ParallelSequence name="Parallel Wait" successThreshold="2">
@@ -247,9 +247,9 @@ TEST_F(ProcedureTest, ExternalInclude)
 )"};
 
   const std::string parallel_sequence_file_name = "parallel_sequence.xml";
-  ::sup::UnitTestHelper::TemporaryTestFile parallel_sequence_file(
+  sup::UnitTestHelper::TemporaryTestFile parallel_sequence_file(
       parallel_sequence_file_name,
-      ::sup::UnitTestHelper::CreateProcedureString(parallel_sequence_body));
+      sup::UnitTestHelper::CreateProcedureString(parallel_sequence_body));
 
   auto proc = ParseProcedureFile(external_include_file_name);
   ASSERT_TRUE(static_cast<bool>(proc));
@@ -264,7 +264,7 @@ ProcedureTest::ProcedureTest()
     : mock_ui{}
     , empty_proc{}
     , loaded_proc{ParseProcedureString(
-          ::sup::UnitTestHelper::CreateProcedureString(ProcedureString))}
+          sup::UnitTestHelper::CreateProcedureString(ProcedureString))}
     , wait{GlobalInstructionRegistry().Create("Wait")}
     , var1{GlobalVariableRegistry().Create("Local")}
     , var2{GlobalVariableRegistry().Create("Local")}

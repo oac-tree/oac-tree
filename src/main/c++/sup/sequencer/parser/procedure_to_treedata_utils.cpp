@@ -39,10 +39,10 @@ std::unique_ptr<T> make_unique(Args&&... args)
   return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
 }
 
-std::unique_ptr<::sup::sequencer::TreeData> CreateTreeData(
-    const ::sup::sequencer::Instruction* instruction)
+std::unique_ptr<sup::sequencer::TreeData> CreateTreeData(
+    const sup::sequencer::Instruction* instruction)
 {
-  auto tree_data = make_unique<::sup::sequencer::TreeData>(instruction->GetType());
+  auto tree_data = make_unique<sup::sequencer::TreeData>(instruction->GetType());
   for (const auto& it : instruction->GetAttributes())
   {
     tree_data->AddAttribute(it.first, it.second);
@@ -50,7 +50,7 @@ std::unique_ptr<::sup::sequencer::TreeData> CreateTreeData(
   return tree_data;
 }
 
-void Iterate(const ::sup::sequencer::Instruction* instruction, ::sup::sequencer::TreeData* parent)
+void Iterate(const sup::sequencer::Instruction* instruction, sup::sequencer::TreeData* parent)
 {
   for (auto& child : instruction->ChildInstructions())
   {

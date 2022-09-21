@@ -44,7 +44,7 @@ TEST(UserChoice, GetUserChoice)
 )"};
 
   auto proc =
-      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
+      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
   ASSERT_TRUE(proc.get() != nullptr);
 
   ui.SetChoice(0);

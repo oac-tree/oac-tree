@@ -33,10 +33,10 @@
 namespace
 {
 //! Main method for recursive writing of XML from TreeData.
-void AddTreeData(xmlTextWriterPtr writer, const ::sup::sequencer::TreeData &tree_data);
+void AddTreeData(xmlTextWriterPtr writer, const sup::sequencer::TreeData &tree_data);
 
 //! Adds to currently opened XML element all attributes defined in TreeData.
-void AddTreeAttributes(xmlTextWriterPtr writer, const ::sup::sequencer::TreeData &tree_data);
+void AddTreeAttributes(xmlTextWriterPtr writer, const sup::sequencer::TreeData &tree_data);
 
 //! Set-up identation.
 void SetupWriterIndentation(xmlTextWriterPtr writer);
@@ -98,9 +98,9 @@ std::string GetXMLString(const TreeData &tree_data)
 
 namespace
 {
-void AddTreeData(xmlTextWriterPtr writer, const ::sup::sequencer::TreeData &tree_data)
+void AddTreeData(xmlTextWriterPtr writer, const sup::sequencer::TreeData &tree_data)
 {
-  using ::sup::sequencer::FromString;
+  using sup::sequencer::FromString;
 
   if (tree_data.GetType().empty())
     throw std::runtime_error("Error in AddTreeData: missed type in TreeData.");
@@ -133,11 +133,11 @@ void AddTreeData(xmlTextWriterPtr writer, const ::sup::sequencer::TreeData &tree
     throw std::runtime_error("Error at xmlTextWriterEndElement");
 }
 
-void AddTreeAttributes(xmlTextWriterPtr writer, const ::sup::sequencer::TreeData &tree_data)
+void AddTreeAttributes(xmlTextWriterPtr writer, const sup::sequencer::TreeData &tree_data)
 {
   for (const auto &attr : tree_data.Attributes())
   {
-    int rc = xmlTextWriterWriteAttribute(writer, ::sup::sequencer::FromString(attr.first), ::sup::sequencer::FromString(attr.second));
+    int rc = xmlTextWriterWriteAttribute(writer, sup::sequencer::FromString(attr.first), sup::sequencer::FromString(attr.second));
     if (rc < 0)
       throw std::runtime_error("Error at xmlTextWriterWriteAttribute");
   }
@@ -147,7 +147,7 @@ void SetupWriterIndentation(xmlTextWriterPtr writer)
 {
   const int indentation_on = 1;
   xmlTextWriterSetIndent(writer, indentation_on);
-  xmlTextWriterSetIndentString(writer, ::sup::sequencer::FromString(std::string("  ")));
+  xmlTextWriterSetIndentString(writer, sup::sequencer::FromString(std::string("  ")));
 }
 
 }  // namespace

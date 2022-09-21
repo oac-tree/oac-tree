@@ -39,7 +39,7 @@ TEST(Input, GetUserValue_success)
 
   sup::UnitTestHelper::MockUI ui;
   auto proc =
-      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
+      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   sup::dto::AnyValue value(1234u);
   ui.SetStatus(true);
@@ -66,7 +66,7 @@ TEST(Input, GetUserValue_failure)
 
   sup::UnitTestHelper::MockUI ui;
   auto proc =
-      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
+      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ui.SetStatus(false);
   EXPECT_TRUE(
@@ -86,7 +86,7 @@ TEST(Input, Variable_uninitialised)
 
   sup::UnitTestHelper::MockUI ui;
   auto proc =
-      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
+      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   sup::dto::AnyValue value(1234u);
   ui.SetStatus(true);
@@ -107,7 +107,7 @@ TEST(Input, Variable_undefined)
 
   sup::UnitTestHelper::MockUI ui;
   auto proc =
-      sup::sequencer::ParseProcedureString(::sup::UnitTestHelper::CreateProcedureString(body));
+      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   sup::dto::AnyValue value(1234u);
   ui.SetStatus(true);

@@ -171,7 +171,7 @@ std::string CreateProcedureString(const std::string& body);
 /**
  * Prints variables in a workspace.
  */
-void PrintProcedureWorkspace(::sup::sequencer::Procedure* procedure);
+void PrintProcedureWorkspace(sup::sequencer::Procedure* procedure);
 
 
 /**

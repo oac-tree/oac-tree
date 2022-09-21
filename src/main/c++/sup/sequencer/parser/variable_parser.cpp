@@ -24,8 +24,6 @@
 #include <sup/sequencer/log.h>
 #include <sup/sequencer/variable_registry.h>
 
-#include <sup/dto/anyvalue_helper.h>
-
 namespace sup
 {
 namespace sequencer

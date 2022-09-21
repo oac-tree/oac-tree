@@ -30,7 +30,7 @@ namespace sup
 {
 namespace sequencer
 {
-const std::string FileVariable::Type = "FileVariable";
+const std::string FileVariable::Type = "File";
 
 bool FileVariable::SetupImpl(const sup::dto::AnyTypeRegistry&)
 {

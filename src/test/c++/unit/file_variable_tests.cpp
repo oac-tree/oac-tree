@@ -48,7 +48,7 @@ TEST_F(FileVariableTest, File_write)
         <Local name="input"
             type='{"type":"MyStruct","attributes":[{"value":{"type":"float32"}}]}'
             value='{"value":0.0}'/>
-        <FileVariable name="file"
+        <File name="file"
             file="variable.bck"/>
     </Workspace>
 )"};
@@ -76,7 +76,7 @@ TEST_F(FileVariableTest, File_write)
 
 TEST_F(FileVariableTest, Setup_error)
 {
-  auto variable = sup::sequencer::GlobalVariableRegistry().Create("FileVariable");
+  auto variable = sup::sequencer::GlobalVariableRegistry().Create("File");
 
   ASSERT_NE(variable.get(), nullptr);
 
@@ -90,7 +90,7 @@ TEST_F(FileVariableTest, Setup_error)
 
 TEST_F(FileVariableTest, File_error)
 {
-  auto variable = sup::sequencer::GlobalVariableRegistry().Create("FileVariable");
+  auto variable = sup::sequencer::GlobalVariableRegistry().Create("File");
 
   ASSERT_NE(variable.get(), nullptr);
 
@@ -128,7 +128,7 @@ TEST_F(FileVariableTest, File_attr)
         <Local name="severity"
             type='{"type":"uint32"}'
             value='7'/>
-        <FileVariable name="file"
+        <File name="file"
             file="variable.bck"/>
     </Workspace>
 )"};

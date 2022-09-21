@@ -12,7 +12,7 @@
         <Local name="input"
             type='{"type":"MyStruct","attributes":[{"value":{"type":"float32"}}]}'
             value='{"value":0.0}'/>
-        <FileVariable name="file"
+        <File name="file"
             file="/tmp/variable.bck"/>
     </Workspace>
 </Procedure>

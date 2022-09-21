@@ -26,7 +26,7 @@
         <Local name="severity"
             type='{"type":"uint32"}'
             value='7'/>
-        <FileVariable name="file"
+        <File name="file"
             file="/tmp/variable.bck"/>
     </Workspace>
 </Procedure>

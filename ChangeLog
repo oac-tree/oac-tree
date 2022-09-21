@@ -1,5 +1,6 @@
 Changes for 2.0.0:
 
+- API breaking: replace old AnyValue with new one (dependency ccs-core replaced by sup-dto)
 - Isolate logging implementation behind a single interface
 
 Changes for 1.2.0:

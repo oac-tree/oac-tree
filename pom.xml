@@ -24,7 +24,7 @@
     <groupId>org.iter.codac.units</groupId>
     <artifactId>sequencer</artifactId>
     <packaging>codac</packaging>
-    <version>1.2.0</version>
+    <version>2.0.0</version>
     <name>SUP sequencer module</name>
     <description>The engine for the SUP sequencer</description>
     <url>http://www.iter.org/</url>
@@ -89,10 +89,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <init>
-                        <expand source="-" file="main/VERSION">
-                            <![CDATA[${project.version}]]>
-                        </expand>
-                        <expand source="ld.so.conf" file="main/codac-${project.artifactId}.conf"
+                        <expand source="ld.so.conf" file="main/sup-${project.artifactId}.conf"
                                 rpmeval="true" mvneval="true" />
                     </init>
                     <packaging>
@@ -101,9 +98,9 @@
                             <include type="file" source="lib" target="lib">
                                 <include>*.so.*</include>
                             </include>
-                            <include type="config" source="main/codac-${project.artifactId}.conf"
-                                     target="ld.so.conf.d/codac-${project.artifactId}.conf"
-                                     altpath="%{_sysconfdir}/ld.so.conf.d/codac-${project.artifactId}.conf" />
+                            <include type="config" source="main/sup-${project.artifactId}.conf"
+                                     target="ld.so.conf.d/sup-${project.artifactId}.conf"
+                                     altpath="%{_sysconfdir}/ld.so.conf.d/sup-${project.artifactId}.conf" />
                             <!-- Programs -->
                             <include type="file" source="bin" target="bin">
                                 <include>sequencer-cli</include>
@@ -111,10 +108,9 @@
                             </include>
                             <!-- Package dependencies -->
                             <requires version="current">libxml2</requires>
-                            <requires codac="true">cpp-common</requires>
+                            <requires codac="true">sup-dto</requires>
                             <requires version="current" buildOnly="true">cmake</requires>
                             <requires version="current" buildOnly="true">libxml2-devel</requires>
-                            <requires codac="true" buildOnly="true">cpp-common-devel</requires>
                             <!-- RPM scriptlet -->
                             <scriptlet type="posttrans">
                                 <![CDATA[ ldconfig ]]>

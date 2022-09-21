@@ -89,7 +89,7 @@ TEST(Condition, Default1)
 {
   bool status(true);
 
-  sup::dto::uint32 i = 0u;
+  std::size_t i = 0u;
   while ((conditionTable[i][0] != NULL) && status)
   {
     std::unique_ptr<Procedure> proc(new Procedure);

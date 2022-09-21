@@ -28,6 +28,15 @@
 #include <chrono>
 #include <cmath>
 
+namespace
+{
+bool SafeStrictAssign(sup::dto::AnyValue& dest, const sup::dto::AnyValue& src);
+bool SafeStrictAssignSrcField(sup::dto::AnyValue& dest, const sup::dto::AnyValue& src,
+                              const std::string& fieldname);
+bool SafeStrictAssignDestField(sup::dto::AnyValue& dest, const sup::dto::AnyValue& src,
+                               const std::string& fieldname);
+}  // unnamed namespace
+
 namespace sup
 {
 namespace sequencer
@@ -76,26 +85,11 @@ bool Variable::GetValue(sup::dto::AnyValue &value, const std::string &fieldname)
     return false;
   }
   sup::dto::AnyValue var_copy;
-  if (!GetValueImpl(var_copy) || sup::dto::IsEmptyValue(var_copy))
+  if (!GetValueImpl(var_copy))
   {
     return false;
   }
-  try
-  {
-    if (fieldname.empty())
-    {
-      value = var_copy;
-    }
-    else
-    {
-      value = var_copy[fieldname];
-    }
-  }
-  catch(const std::exception& e)
-  {
-    return false;
-  }
-  return true;
+  return SafeStrictAssignSrcField(value, var_copy, fieldname);
 }
 
 bool Variable::SetValue(const sup::dto::AnyValue &value, const std::string &fieldname)
@@ -110,23 +104,15 @@ bool Variable::SetValue(const sup::dto::AnyValue &value, const std::string &fiel
     return SetValueImpl(value);
   }
   sup::dto::AnyValue var_copy;
-  if (GetValueImpl(var_copy))
+  if (!GetValueImpl(var_copy))
   {
-    try
-    {
-      var_copy[fieldname] = value;
-      return SetValueImpl(var_copy);
-    }
-    catch(const sup::dto::InvalidOperationException&)
-    {
-      return false;
-    }
-    catch(const sup::dto::InvalidConversionException&)
-    {
-      return false;
-    }
+    return false;
   }
-  return false;
+  if (!SafeStrictAssignDestField(var_copy, value, fieldname))
+  {
+    return false;
+  }
+  return SetValueImpl(var_copy);
 }
 
 void Variable::Notify(const sup::dto::AnyValue& value)
@@ -194,3 +180,52 @@ void Variable::ResetImpl() {}
 }  // namespace sequencer
 
 }  // namespace sup
+
+namespace
+{
+bool SafeStrictAssign(sup::dto::AnyValue& dest, const sup::dto::AnyValue& src)
+{
+  if (sup::dto::IsEmptyValue(dest) || dest.GetType() == src.GetType())
+  {
+    dest = src;
+    return true;
+  }
+  return false;
+}
+
+bool SafeStrictAssignSrcField(sup::dto::AnyValue& dest, const sup::dto::AnyValue& src,
+                              const std::string& fieldname)
+{
+  try
+  {
+    if (fieldname.empty())
+    {
+      return SafeStrictAssign(dest, src);
+    }
+    const auto& field = src[fieldname];
+    return SafeStrictAssign(dest, field);
+  }
+  catch(const sup::dto::InvalidOperationException&)
+  {
+    return false;
+  }
+}
+
+bool SafeStrictAssignDestField(sup::dto::AnyValue& dest, const sup::dto::AnyValue& src,
+                               const std::string& fieldname)
+{
+  try
+  {
+    if (fieldname.empty())
+    {
+      return SafeStrictAssign(dest, src);
+    }
+    auto& field = dest[fieldname];
+    return SafeStrictAssign(field, src);
+  }
+  catch(const sup::dto::InvalidOperationException&)
+  {
+    return false;
+  }
+}
+}  // unnamed namespace

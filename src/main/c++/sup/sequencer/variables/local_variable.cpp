@@ -52,7 +52,7 @@ LocalVariable::~LocalVariable() {}
 
 bool LocalVariable::GetValueImpl(sup::dto::AnyValue& value) const
 {
-  if (!m_value)
+  if (sup::dto::IsEmptyValue(*m_value))
   {
     return false;
   }
@@ -69,10 +69,6 @@ bool LocalVariable::GetValueImpl(sup::dto::AnyValue& value) const
 
 bool LocalVariable::SetValueImpl(const sup::dto::AnyValue& value)
 {
-  if (!m_value)
-  {
-    return false;
-  }
   try
   {
     *m_value = value;

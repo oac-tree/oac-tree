@@ -137,7 +137,10 @@ static inline bool TryAndExecuteNoReset(std::unique_ptr<sup::sequencer::Procedur
 
     do
     {
-      std::this_thread::sleep_for(std::chrono::milliseconds(100));
+      if (exec == sup::sequencer::ExecutionStatus::RUNNING)
+      {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+      }
       proc->ExecuteSingle(ui);
       exec = proc->GetStatus();
     } while ((sup::sequencer::ExecutionStatus::SUCCESS != exec)

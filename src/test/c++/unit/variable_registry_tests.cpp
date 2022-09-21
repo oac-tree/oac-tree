@@ -55,7 +55,6 @@ public:
   static const std::string Type;
 };
 
-static const bool kLogToStdOut = (log::SetStdOut(), true);
 const std::string TestVariable::Type = "TestVariable";
 
 TEST_F(VariableRegistryTest, DefaultConstructed)

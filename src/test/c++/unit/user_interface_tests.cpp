@@ -50,8 +50,6 @@ protected:
   std::unique_ptr<Instruction> wait;
 };
 
-static const bool kLogToStdOut = (log::SetStdOut(), true);
-
 static const std::string TREE_TYPE = "TestData";
 
 using ::testing::_;

@@ -118,22 +118,21 @@ TEST(Include, Procedure_extern)
 {
   // preparing test file for inclusion
   const std::string body{R"(
-    <ParallelSequence name="Parallel Wait" successThreshold="2">
-        <Wait name="One" timeout="0.1" />
-        <Wait name="Two" timeout="0.2" />
-        <Wait name="Three" timeout="3.0" />
-    </ParallelSequence>
+    <Sequence name="Double Wait">
+        <Wait name="One"/>
+        <Wait name="Two"/>
+    </Sequence>
     <Workspace>
     </Workspace>
 )"};
 
-  const std::string file_name = "parallel_sequence.xml";
+  const std::string file_name = "sequence.xml";
   sup::UnitTestHelper::TemporaryTestFile test_file(
       file_name, sup::UnitTestHelper::CreateProcedureString(body));
 
   const std::string procedure_body{R"(
-    <Repeat isRoot="true" maxCount="10">
-        <Include name="Waits" path="Parallel Wait" file="parallel_sequence.xml"/>
+    <Repeat isRoot="true" maxCount="5">
+        <Include name="Waits" path="Double Wait" file="sequence.xml"/>
     </Repeat>
     <Workspace>
     </Workspace>
@@ -152,9 +151,9 @@ TEST(Include, Procedure_nested)
   ASSERT_TRUE(sup::sequencer::utils::CreateDir("instruction_definitions/waits"));
 
   const std::string single_waits_body{R"(
-    <Wait name="OneTenthSecond" timeout="0.1" />
-    <Wait name="TwoTenthSeconds" timeout="0.2" />
-    <Wait name="ThreeTenthSeconds" timeout="0.3" />
+    <Wait name="OneTenthSecond"/>
+    <Wait name="TwoTenthSeconds"/>
+    <Wait name="ThreeTenthSeconds"/>
     <Wait name="ParametrizedWait" timeout="$timeout" />
 )"};
 
@@ -163,14 +162,14 @@ TEST(Include, Procedure_nested)
       single_wait_file_name, sup::UnitTestHelper::CreateProcedureString(single_waits_body));
 
   const std::string compound_waits_body{R"(
-    <Sequence name="SerialWait">
+    <Sequence name="FirstSerialWait">
         <Include name="One" path="OneTenthSecond" file="waits/single_waits.xml" />
         <Include name="Two" path="ParametrizedWait" file="waits/single_waits.xml" timeout="$par1" />
     </Sequence>
-    <ParallelSequence name="ParallelWait">
+    <Sequence name="SecondSerialWait">
         <Include name="One" path="TwoTenthSeconds" file="waits/single_waits.xml" />
         <Include name="Two" path="ParametrizedWait" file="waits/single_waits.xml" timeout="$par1" />
-    </ParallelSequence>
+    </Sequence>
 )"};
 
   const std::string compound_waits_file_name = "instruction_definitions/compound_waits.xml";
@@ -179,19 +178,17 @@ TEST(Include, Procedure_nested)
 
   const std::string main_body{R"(
     <Sequence isRoot="True">
-        <Include name="First wait" path="SerialWait"
-                 file="instruction_definitions/compound_waits.xml" par1="0.4" />
-        <Include name="Second Wait" path="ParallelWait"
-                 file="instruction_definitions/compound_waits.xml" par1="0.4" />
+        <Include name="First wait" path="FirstSerialWait"
+                 file="instruction_definitions/compound_waits.xml" par1="0.01" />
+        <Include name="Second Wait" path="SecondSerialWait"
+                 file="instruction_definitions/compound_waits.xml" par1="0.01" />
     </Sequence>
 )"};
 
-  const std::string file_name = "recursive_include.xml";
-  sup::UnitTestHelper::TemporaryTestFile test_file(
-      file_name, sup::UnitTestHelper::CreateProcedureString(main_body));
+  auto proc_str = sup::UnitTestHelper::CreateProcedureString(main_body);
 
   sup::sequencer::LogUI ui;
-  auto proc = sup::sequencer::ParseProcedureFile(file_name);
+  auto proc = sup::sequencer::ParseProcedureString(proc_str);
 
   ASSERT_TRUE(proc.get() != nullptr);
   ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));

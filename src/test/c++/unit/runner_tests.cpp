@@ -51,18 +51,17 @@ protected:
   std::unique_ptr<Procedure> async_wait_proc;
 };
 
-static const bool kLogToStdOut = (log::SetStdOut(), true);
-
 static const std::string AsyncProcedureString =
     R"RAW(<?xml version="1.0" encoding="UTF-8"?>
 <Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
            name="Asynchronous procedure for testing purposes"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd"
+           tickTimeout="0.01">
     <Sequence name="Main Sequence">
         <Wait name="Immediate Success"/>
         <ParallelSequence name="Parallel Wait" successThreshold="1">
-            <Wait name="One" timeout="1.0"/>
+            <Wait name="One"/>
             <Wait name="Two" timeout="2.0"/>
         </ParallelSequence>
     </Sequence>
@@ -74,14 +73,13 @@ static const std::string SyncProcedureString =
 <Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
            name="Synchronous procedure for testing purposes"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd"
-           tickTimeout="0.05">
+           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
     <Sequence name="Main Sequence">
         <Wait name="Immediate Success"/>
         <Inverter name="Invert success">
-            <Wait name="Fail after delay" timeout="0.2"/>
+            <Wait name="Fail immediately"/>
         </Inverter>
-        <Wait name="Will never be called"/>
+        <Wait name="Will never be called" timeout="2.0"/>
     </Sequence>
 </Procedure>
 )RAW";
@@ -111,7 +109,7 @@ static const std::string AsyncWaitProcedureString =
            name="Synchronous procedure for testing purposes"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd"
-           tickTimeout="0.05">
+           tickTimeout="0.01">
     <ParallelSequence name="Main Sequence">
         <Wait name="Immediate Success" timeout="5.0"/>
         <Wait name="Immediate Success" timeout="10.0"/>
@@ -170,7 +168,7 @@ TEST_F(RunnerTest, ExecuteSingle)
   // Wait for non-running state and test if finished
   while (runner.IsRunning())
   {
-    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
     EXPECT_NO_THROW(runner.ExecuteSingle());
   }
   EXPECT_TRUE(runner.IsFinished());
@@ -291,7 +289,7 @@ TEST_F(RunnerTest, Halt)
       go_future.get();
       while(async_wait_proc->GetStatus() != ExecutionStatus::RUNNING)
       {
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
       }
       runner.Halt();
     });
@@ -305,10 +303,10 @@ TEST_F(RunnerTest, Halt)
   EXPECT_FALSE(runner.IsFinished());
   EXPECT_TRUE(runner.IsRunning());
   runner.ExecuteSingle();  // retrieves statuses of asynchronous instructions
-  int max_waits = 10;
+  int max_waits = 100;
   while (async_wait_proc->GetStatus() == ExecutionStatus::RUNNING && max_waits > 0)
   {
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
     --max_waits;
   }
   EXPECT_EQ(async_wait_proc->GetStatus(), ExecutionStatus::FAILURE);

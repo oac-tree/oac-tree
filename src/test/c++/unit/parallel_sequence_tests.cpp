@@ -41,15 +41,11 @@ static const std::string ProcedureSequenceString =
            name="Trivial procedure for testing purposes"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
-    <Repeat maxCount="3">
-        <Sequence>
-            <Wait name="wait" timeout="0.1"/>
-            <Wait name="again" timeout="0.01"/>
-        </Sequence>
-    </Repeat>
+    <Sequence>
+        <Wait name="wait"/>
+        <Wait name="again"/>
+    </Sequence>
     <Workspace>
-        <Local name="input" type='{"type":"string"}' value='"undefined"'/>
-        <Local name="output" type='{"type":"string"}' value='"denifednu"'/>
     </Workspace>
 </Procedure>
 )RAW";
@@ -60,15 +56,11 @@ static const std::string ProcedureParallelString =
            name="Trivial procedure for testing purposes"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
-    <Repeat maxCount="3">
-        <ParallelSequence name="parallel" successThreshold="1" failureThreshold="2">
-            <Wait name="wait" timeout="0.01"/>
-            <Wait name="again" timeout="0.1"/>
-        </ParallelSequence>
-    </Repeat>
+    <ParallelSequence name="parallel" successThreshold="1" failureThreshold="2">
+        <Wait name="wait"/>
+        <Wait name="again" timeout="0.1"/>
+    </ParallelSequence>
     <Workspace>
-        <Local name="input" type='{"type":"string"}' value='"undefined"'/>
-        <Local name="output" type='{"type":"string"}' value='"denifednu"'/>
     </Workspace>
 </Procedure>
 )RAW";
@@ -79,112 +71,43 @@ static const std::string ProcedureParallelBuiltinString =
            name="Trivial procedure for testing purposes"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
-    <Repeat maxCount="3">
-        <ParallelSequence name="parallel" successThreshold="1" failureThreshold="3">
-            <Wait name="wait" timeout="0.01"/>
-            <Copy name="copy" input="input" output="output"/>
-            <Wait name="again" timeout="0.1"/>
-        </ParallelSequence>
-    </Repeat>
+    <ParallelSequence name="parallel" successThreshold="1" failureThreshold="3">
+        <Wait name="wait" timeout="2.0"/>
+        <Copy name="copy" input="input" output="output"/>
+        <Wait name="again" timeout="2.0"/>
+    </ParallelSequence>
     <Workspace>
         <Local name="input" type='{"type":"string"}' value='"undefined"'/>
         <Local name="output" type='{"type":"string"}' value='"denifednu"'/>
-    </Workspace>
-</Procedure>
-)RAW";
-
-static const std::string ProcedureParallelUserCodeString =
-    R"RAW(<?xml version="1.0" encoding="UTF-8"?>
-<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
-           name="Trivial procedure for testing purposes"
-           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
-    <Repeat maxCount="3">
-        <ParallelSequence name="parallel" successThreshold="1" failureThreshold="3">
-            <Wait name="wait" timeout="0.01"/>
-            <Copy name="copy" input="input" output="output"/>
-            <Wait name="again" timeout="0.1"/>
-        </ParallelSequence>
-    </Repeat>
-    <Workspace>
-        <Local name="input" type='{"type":"string"}' value='"undefined"'/>
-        <Local name="output" type='{"type":"string"}' value='"denifednu"'/>
-    </Workspace>
-</Procedure>
-)RAW";
-
-static const std::string ProcedureThresholdsString =
-    R"RAW(<?xml version="1.0" encoding="UTF-8"?>
-<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
-           name="Trivial procedure for testing purposes"
-           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
-    <Repeat maxCount="3">
-        <ParallelSequence name="parallel" successThreshold="undefined" failureThreshold="undefined">
-            <Wait name="wait" timeout="0.1"/>
-        </ParallelSequence>
-    </Repeat>
-    <Workspace>
     </Workspace>
 </Procedure>
 )RAW";
 
 TEST(ParallelSequence, Procedure_sequence)
 {
-  bool status = true;
-  try
-  {
-    sup::sequencer::LogUI ui;
-    auto proc = sup::sequencer::ParseProcedureString(ProcedureSequenceString);
-    status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
-  }
-  catch (...)
-  {
-    status = false;
-  }
-  ASSERT_EQ(true, status);
+  sup::sequencer::LogUI ui;
+  auto proc = sup::sequencer::ParseProcedureString(ProcedureSequenceString);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
 }
 
 TEST(ParallelSequence, Procedure_parallel)
 {
-  bool status = true;
-  try
-  {
-    sup::sequencer::LogUI ui;
-    auto proc = sup::sequencer::ParseProcedureString(ProcedureParallelString);
-
-    status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
-  }
-  catch (...)
-  {
-    status = false;
-  }
-  ASSERT_EQ(true, status);
+  sup::sequencer::LogUI ui;
+  auto proc = sup::sequencer::ParseProcedureString(ProcedureParallelString);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
 }
 
 TEST(ParallelSequence, WithBuiltinCode)
 {
-  bool status = true;
-  try
-  {
-    sup::sequencer::LogUI ui;
-    auto proc = sup::sequencer::ParseProcedureString(ProcedureParallelBuiltinString);
-
-    status = sup::UnitTestHelper::TryAndExecute(proc, &ui);
-  }
-  catch (...)
-  {
-    status = false;
-  }
-  ASSERT_EQ(true, status);
+  sup::sequencer::LogUI ui;
+  auto proc = sup::sequencer::ParseProcedureString(ProcedureParallelBuiltinString);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
 }
 
 TEST(ParallelSequence, SetupImpl_thresholds)
 {
-  auto names = sup::sequencer::GlobalInstructionRegistry().RegisteredInstructionNames();
-  ASSERT_TRUE(std::find(names.begin(), names.end(), "ParallelSequence") != names.end());
-
   auto parallel = sup::sequencer::GlobalInstructionRegistry().Create("ParallelSequence");
+  ASSERT_NE(parallel.get(), nullptr);
   auto compound = dynamic_cast<sup::sequencer::CompoundInstruction *>(parallel.get());
   EXPECT_TRUE(compound);
 

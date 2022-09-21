@@ -48,7 +48,7 @@ static const int MAX_BLOCKING_TIME_MS = 100;
  * @note This value should not be considered as a strict requirement but rather as
  * a guideline.
  */
-static const int TIMING_ACCURACY_MS = 50;
+static const int TIMING_ACCURACY_MS = 10;
 
 /**
  * @brief When used as the first character of an attribute's value, this character

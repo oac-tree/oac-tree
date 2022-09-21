@@ -74,14 +74,12 @@ TEST(Choice, Default)  // Static initialisation
     </Workspace>
 )"};
 
-  const std::string file_name = "workspace_choice.xml";
-  sup::UnitTestHelper::TemporaryTestFile test_file(
-    file_name, sup::UnitTestHelper::CreateProcedureString(body));
+  auto proc_str = sup::UnitTestHelper::CreateProcedureString(body);
 
   std::size_t i = 0u;
   while ((testTable[i][0] != NULL))
   {
-    auto proc = sup::sequencer::ParseProcedureFile(file_name);
+    auto proc = sup::sequencer::ParseProcedureString(proc_str);
 
     std::unique_ptr<Variable> varX(new LocalVariable);
 
@@ -113,7 +111,7 @@ TEST(Choice, ArraySuccess)
     <Choice var_name="choice">
         <Counter/>
         <Counter incr="2"/>
-        <Wait timeout="0.1"/>
+        <Wait/>
         <Inverter>
             <Counter/>
         </Inverter>
@@ -136,7 +134,7 @@ TEST(Choice, ArrayFailure)
     <Choice var_name="choice">
         <Counter/>
         <Counter incr="2"/>
-        <Wait timeout="0.1"/>
+        <Wait/>
         <Inverter>
             <Counter/>
         </Inverter>
@@ -160,7 +158,7 @@ TEST(Choice, NoSuchVariable)
   const std::string body{R"(
     <Choice var_name="undefined">"
         <Counter/>"
-        <Wait timeout="0.1"/>"
+        <Wait/>"
     </Choice>"
     <Workspace/>"
 )"};
@@ -177,7 +175,7 @@ TEST(Choice, NoAttribute)
   const std::string body{R"(
     <Choice>"
         <Counter/>"
-        <Wait timeout="0.1"/>"
+        <Wait/>"
     </Choice>"
     <Workspace/>"
 )"};

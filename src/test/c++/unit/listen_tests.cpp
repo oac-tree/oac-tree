@@ -46,7 +46,6 @@ R"RAW(
         </Inverter>
       </Listen>
       <Sequence>
-        <Wait timeout="0.2"/>
         <Copy input="update" output="monitor"/>
       </Sequence>
       <Inverter>
@@ -79,8 +78,7 @@ R"RAW(
   ASSERT_NE(ws, nullptr);
   sup::dto::AnyValue result{sup::dto::UnsignedInteger64Type};
   EXPECT_TRUE(ws->GetValue("monitor", result));
-  EXPECT_EQ(result, (sup::dto::uint64)1729);
-  proc->Reset();
+  EXPECT_EQ(result.As<sup::dto::uint64>(), 1729u);
 }
 
 TEST_F(ListenTest, ForceSuccess)
@@ -89,31 +87,25 @@ TEST_F(ListenTest, ForceSuccess)
 R"RAW(
   <Fallback>
     <ParallelSequence>
-      <Listen varNames="monitor" forceSuccess="On">
-        <Sequence>
-          <Copy input="monitor" output="result"/>
+      <Listen varNames="result" forceSuccess="On">
           <Equals lhs="result" rhs="update"/>
-        </Sequence>
       </Listen>
-      <Sequence>
-        <Wait timeout="0.2"/>
-        <Copy input="update" output="monitor"/>
-      </Sequence>
       <Inverter>
-        <Wait timeout="0.5"/>
+        <Sequence>
+          <Wait timeout="0.1"/>
+          <Copy input="update" output="result"/>
+        </Sequence>
       </Inverter>
     </ParallelSequence>
     <Equals lhs="result" rhs="update"/>
   </Fallback>
   <Workspace>
-    <Local name="monitor"
-           type='{"type":"uint64"}'
-           value='0'/>
     <Local name="update"
            type='{"type":"uint64"}'
            value='1729'/>
     <Local name="result"
-           type='{"type":"uint64"}'/>
+           type='{"type":"uint64"}'
+           value='0'/>
   </Workspace>
 )RAW"};
 
@@ -131,8 +123,7 @@ R"RAW(
   ASSERT_NE(ws, nullptr);
   sup::dto::AnyValue result{sup::dto::UnsignedInteger64Type};
   EXPECT_TRUE(ws->GetValue("result", result));
-  EXPECT_EQ(result, (sup::dto::uint64)1729);
-  proc->Reset();
+  EXPECT_EQ(result.As<sup::dto::uint64>(), 1729u);
 }
 
 TEST_F(ListenTest, PropagateSetup)
@@ -153,7 +144,6 @@ R"RAW(
             </Fallback>
         </Listen>
         <Sequence>
-            <Wait timeout="0.2" />
             <Copy input="one" output="monitor"/>
         </Sequence>
         <Inverter>
@@ -188,6 +178,5 @@ R"RAW(
   ASSERT_NE(ws, nullptr);
   sup::dto::AnyValue result{sup::dto::UnsignedInteger64Type};
   EXPECT_TRUE(ws->GetValue("result", result));
-  EXPECT_EQ(result, (sup::dto::uint64)1);
-  proc->Reset();
+  EXPECT_EQ(result.As<sup::dto::uint64>(), 1u);
 }

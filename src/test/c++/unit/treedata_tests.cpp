@@ -41,8 +41,6 @@ protected:
   TreeData child_1;
 };
 
-static const bool kLogToStdOut = (log::SetStdOut(), true);
-
 static const std::string TREE_TYPE = "TestData";
 static const std::string CHILD0_TYPE = "Child_0";
 static const std::string CHILD1_TYPE = "Child_1";

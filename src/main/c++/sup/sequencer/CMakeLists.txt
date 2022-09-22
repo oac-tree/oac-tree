@@ -20,6 +20,8 @@ set_target_properties(sup-sequencer-shared PROPERTIES
     OUTPUT_NAME sequencer
 )
 
+if (DEFINED ENV{CODAC_ROOT})
+
 target_include_directories(sup-sequencer-shared
     PRIVATE
         ${LIBXML2_INCLUDE_DIR}
@@ -38,3 +40,21 @@ target_link_libraries(sup-sequencer-shared
     PUBLIC
         sup-dto
 )
+else()
+find_package(sup-dto REQUIRED)
+
+target_include_directories(sup-sequencer-shared
+    PRIVATE
+        ${LIBXML2_INCLUDE_DIR}
+    PUBLIC
+        ${CMAKE_CURRENT_LIST_DIR}/../..
+)
+
+target_link_libraries(sup-sequencer-shared
+    PRIVATE
+        ${LIBXML2_LIBRARIES}
+    PUBLIC
+        sup-dto::sup-dto
+)
+
+endif()

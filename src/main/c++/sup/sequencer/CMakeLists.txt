@@ -20,41 +20,14 @@ set_target_properties(sup-sequencer-shared PROPERTIES
     OUTPUT_NAME sequencer
 )
 
+target_include_directories(sup-sequencer-shared PRIVATE ${LIBXML2_INCLUDE_DIR} PUBLIC ${CMAKE_CURRENT_LIST_DIR}/../..)
+target_link_libraries(sup-sequencer-shared PRIVATE ${LIBXML2_LIBRARIES})
+
 if (DEFINED ENV{CODAC_ROOT})
-
-target_include_directories(sup-sequencer-shared
-    PRIVATE
-        ${LIBXML2_INCLUDE_DIR}
-        $ENV{CODAC_ROOT}/include
-    PUBLIC
-        ${CMAKE_CURRENT_LIST_DIR}/../..
-)
-
-target_link_directories(sup-sequencer-shared
-    PUBLIC $ENV{CODAC_ROOT}/lib
-)
-
-target_link_libraries(sup-sequencer-shared
-    PRIVATE
-        ${LIBXML2_LIBRARIES}
-    PUBLIC
-        sup-dto
-)
+  target_include_directories(sup-sequencer-shared PRIVATE $ENV{CODAC_ROOT}/include)
+  target_link_directories(sup-sequencer-shared PUBLIC $ENV{CODAC_ROOT}/lib)
+  target_link_libraries(sup-sequencer-shared PUBLIC sup-dto)
 else()
-find_package(sup-dto REQUIRED)
-
-target_include_directories(sup-sequencer-shared
-    PRIVATE
-        ${LIBXML2_INCLUDE_DIR}
-    PUBLIC
-        ${CMAKE_CURRENT_LIST_DIR}/../..
-)
-
-target_link_libraries(sup-sequencer-shared
-    PRIVATE
-        ${LIBXML2_LIBRARIES}
-    PUBLIC
-        sup-dto::sup-dto
-)
-
+  find_package(sup-dto REQUIRED)
+  target_link_libraries(sup-sequencer-shared PUBLIC sup-dto::sup-dto)
 endif()

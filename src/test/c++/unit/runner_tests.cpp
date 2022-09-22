@@ -299,14 +299,12 @@ TEST_F(RunnerTest, Halt)
   go.set_value();
   EXPECT_NO_THROW(runner.ExecuteProcedure());
   halt_future.get();
-  EXPECT_EQ(async_wait_proc->GetStatus(), ExecutionStatus::RUNNING);
-  EXPECT_FALSE(runner.IsFinished());
-  EXPECT_TRUE(runner.IsRunning());
   runner.ExecuteSingle();  // retrieves statuses of asynchronous instructions
   int max_waits = 100;
   while (async_wait_proc->GetStatus() == ExecutionStatus::RUNNING && max_waits > 0)
   {
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    runner.ExecuteSingle();  // retrieves statuses of asynchronous instructions
     --max_waits;
   }
   EXPECT_EQ(async_wait_proc->GetStatus(), ExecutionStatus::FAILURE);

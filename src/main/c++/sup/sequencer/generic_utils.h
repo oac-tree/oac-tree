@@ -39,9 +39,19 @@ bool CreateDir(const std::string& pathname, unsigned mode = 0755);
 std::string GetEnvironmentVariable(const std::string& varname);
 
 /**
- * @brief Convert string to unsigned long or return zero if conversion failed
+ * @brief Try to convert string to an int or return false if failed.
  */
-unsigned long StringToUnsigned(const std::string& str);
+bool SafeStringToInt(int& result, const std::string& str);
+
+/**
+ * @brief Try to convert string to unsigned long or return false if failed.
+ */
+bool SafeStringToUnsigned(unsigned long& result, const std::string& str);
+
+/**
+ * @brief Try to convert string to a double or return false if failed.
+ */
+bool SafeStringToDouble(double& result, const std::string& str);
 
 unsigned long long GetNanosecsSinceEpoch();
 

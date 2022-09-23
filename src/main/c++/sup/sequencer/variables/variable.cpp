@@ -24,18 +24,10 @@
 #include <sup/sequencer/log.h>
 
 #include <sup/dto/anytype_registry.h>
+#include <sup/dto/anyvalue_helper.h>
 
 #include <chrono>
 #include <cmath>
-
-namespace
-{
-bool SafeStrictAssign(sup::dto::AnyValue& dest, const sup::dto::AnyValue& src);
-bool SafeStrictAssignSrcField(sup::dto::AnyValue& dest, const sup::dto::AnyValue& src,
-                              const std::string& fieldname);
-bool SafeStrictAssignDestField(sup::dto::AnyValue& dest, const sup::dto::AnyValue& src,
-                               const std::string& fieldname);
-}  // unnamed namespace
 
 namespace sup
 {
@@ -89,7 +81,7 @@ bool Variable::GetValue(sup::dto::AnyValue &value, const std::string &fieldname)
   {
     return false;
   }
-  return SafeStrictAssignSrcField(value, var_copy, fieldname);
+  return sup::dto::SafeAssignFields(value, {}, var_copy, fieldname, true);
 }
 
 bool Variable::SetValue(const sup::dto::AnyValue &value, const std::string &fieldname)
@@ -108,7 +100,7 @@ bool Variable::SetValue(const sup::dto::AnyValue &value, const std::string &fiel
   {
     return false;
   }
-  if (!SafeStrictAssignDestField(var_copy, value, fieldname))
+  if (!sup::dto::SafeAssignFields(var_copy, fieldname, value, {}, true))
   {
     return false;
   }
@@ -180,52 +172,3 @@ void Variable::ResetImpl() {}
 }  // namespace sequencer
 
 }  // namespace sup
-
-namespace
-{
-bool SafeStrictAssign(sup::dto::AnyValue& dest, const sup::dto::AnyValue& src)
-{
-  if (sup::dto::IsEmptyValue(dest) || dest.GetType() == src.GetType())
-  {
-    dest = src;
-    return true;
-  }
-  return false;
-}
-
-bool SafeStrictAssignSrcField(sup::dto::AnyValue& dest, const sup::dto::AnyValue& src,
-                              const std::string& fieldname)
-{
-  try
-  {
-    if (fieldname.empty())
-    {
-      return SafeStrictAssign(dest, src);
-    }
-    const auto& field = src[fieldname];
-    return SafeStrictAssign(dest, field);
-  }
-  catch(const sup::dto::InvalidOperationException&)
-  {
-    return false;
-  }
-}
-
-bool SafeStrictAssignDestField(sup::dto::AnyValue& dest, const sup::dto::AnyValue& src,
-                               const std::string& fieldname)
-{
-  try
-  {
-    if (fieldname.empty())
-    {
-      return SafeStrictAssign(dest, src);
-    }
-    auto& field = dest[fieldname];
-    return SafeStrictAssign(field, src);
-  }
-  catch(const sup::dto::InvalidOperationException&)
-  {
-    return false;
-  }
-}
-}  // unnamed namespace

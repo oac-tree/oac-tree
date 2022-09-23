@@ -63,12 +63,12 @@ bool Wait::SetupImpl(const Procedure& /*proc*/)
   if (HasAttribute("timeout"))
   {
     auto timeout = GetAttribute("timeout");
-    try
+    double t{};
+    if (utils::SafeStringToDouble(t, timeout))
     {
-      double t = std::stod(timeout);
       _timeout = ToNanoSeconds(t);
     }
-    catch (const std::exception&)
+    else
     {
       log::Warning("Wait::SetupImpl() - could not parse timeout attribute!");
     }

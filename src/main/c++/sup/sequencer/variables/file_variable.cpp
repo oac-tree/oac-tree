@@ -45,17 +45,12 @@ bool FileVariable::GetValueImpl(sup::dto::AnyValue& value) const
   try
   {
     sup::dto::AnyValue parsed_val = sup::dto::AnyValueFromJSONFile(GetAttribute("file"));
-    value = std::move(parsed_val);
+    return sup::dto::SafeAssign(value, parsed_val);
   }
   catch(const sup::dto::ParseException&)
   {
     return false;
   }
-  catch(const sup::dto::InvalidConversionException&)
-  {
-    return false;
-  }
-  return true;
 }
 
 bool FileVariable::SetValueImpl(const sup::dto::AnyValue& value)

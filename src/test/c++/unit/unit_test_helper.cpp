@@ -35,31 +35,32 @@
 #include <sstream>
 #include <string>
 
+
 namespace sup
 {
 namespace UnitTestHelper
 {
+using namespace sup::sequencer;
 
 static const std::string ENV_TEST_RESOURCES_PATH_NAME = "TEST_RESOURCES_PATH";
 
 const std::string CounterInstruction::Type = "Counter";
-unsigned CounterInstruction::counter = 0u;
+unsigned long CounterInstruction::counter = 0u;
 
-static bool _initialise_instruction =
-    sup::sequencer::RegisterGlobalInstruction<CounterInstruction>();
+static bool _initialise_instruction = RegisterGlobalInstruction<CounterInstruction>();
 
-unsigned CounterInstruction::GetCount()
+unsigned long CounterInstruction::GetCount()
 {
   return counter;
 }
 
-sup::sequencer::ExecutionStatus CounterInstruction::ExecuteSingleImpl(
-    sup::sequencer::UserInterface *ui, sup::sequencer::Workspace *ws)
+ExecutionStatus CounterInstruction::ExecuteSingleImpl(
+    UserInterface *ui, Workspace *ws)
 {
-  if (sup::sequencer::Instruction::HasAttribute("incr"))
+  if (Instruction::HasAttribute("incr"))
   {
-    unsigned incr = sup::sequencer::utils::StringToUnsigned(
-      sup::sequencer::Instruction::GetAttribute("incr"));
+    unsigned long incr{};
+    (void)utils::SafeStringToUnsigned(incr, Instruction::GetAttribute("incr"));
     counter += incr;
   }
   else
@@ -67,10 +68,10 @@ sup::sequencer::ExecutionStatus CounterInstruction::ExecuteSingleImpl(
     counter++;
   }
 
-  return sup::sequencer::ExecutionStatus::SUCCESS;
+  return ExecutionStatus::SUCCESS;
 }
 
-CounterInstruction::CounterInstruction() : sup::sequencer::Instruction(CounterInstruction::Type)
+CounterInstruction::CounterInstruction() : Instruction(CounterInstruction::Type)
 {
   counter = 0u;
 }
@@ -79,27 +80,23 @@ CounterInstruction::~CounterInstruction()
   counter = 0u;
 }
 
-void MockUI::UpdateInstructionStatusImpl(const sup::sequencer::Instruction *instruction) {}
+void MockUI::UpdateInstructionStatusImpl(const Instruction *instruction) {}
 int MockUI::GetUserChoiceImpl(const std::vector<std::string> &choices,
                               const std::string &description)
 {
-  sup::sequencer::log::Debug("TestUI::GetUserChoiceImpl - Description '%s'", description.c_str());
+  log::Debug("TestUI::GetUserChoiceImpl - Description '%s'", description.c_str());
   return m_choice;
 }
 
 bool MockUI::GetUserValueImpl(sup::dto::AnyValue &value, const std::string &description)
 {
-  sup::sequencer::log::Debug("TestUI::GetUserValueImpl - Description '%s'", description.c_str());
+  log::Debug("TestUI::GetUserValueImpl - Description '%s'", description.c_str());
   m_type = value.GetType();
   if (sup::dto::IsEmptyType(m_type))
   {
     return false;
   }
-  try
-  {
-    value = m_value;
-  }
-  catch(const sup::dto::InvalidConversionException&)
+  if (!sup::dto::SafeAssign(value, m_value))
   {
     return false;
   }
@@ -146,7 +143,7 @@ std::string GetFullTestFilePath(const std::string &filename)
     return filename;
   }
   std::string resources_path =
-    sup::sequencer::utils::GetEnvironmentVariable(ENV_TEST_RESOURCES_PATH_NAME);
+    utils::GetEnvironmentVariable(ENV_TEST_RESOURCES_PATH_NAME);
   if (resources_path.empty())
   {
     return filename;
@@ -172,25 +169,25 @@ std::string CreateProcedureString(const std::string &body)
   return header + body + footer;
 }
 
-void PrintProcedureWorkspace(sup::sequencer::Procedure *procedure)
+void PrintProcedureWorkspace(Procedure *procedure)
 {
   auto var_names = procedure->VariableNames();
   sup::dto::char8 val_string[1024];
   for (const auto &var_name : var_names)
   {
     sup::dto::AnyValue val;
-    sup::sequencer::log::Debug("Variable '%s'", var_name.c_str());
+    log::Debug("Variable '%s'", var_name.c_str());
 
     bool var_initialized = procedure->GetVariableValue(var_name, val);
     if (var_initialized)
     {
       std::string json_rep = sup::dto::ValuesToJSONString(val);
-      sup::sequencer::log::Debug("Variable '%s', with value\n  %s", var_name.c_str(),
+      log::Debug("Variable '%s', with value\n  %s", var_name.c_str(),
                                  json_rep.c_str());
     }
     else
     {
-      sup::sequencer::log::Debug("Variable '%s' uninitialized", var_name.c_str());
+      log::Debug("Variable '%s' uninitialized", var_name.c_str());
     }
   }
 }

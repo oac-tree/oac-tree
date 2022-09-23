@@ -64,8 +64,8 @@ public:
    */
   static const std::string Type;
 
-  static unsigned counter;
-  static unsigned GetCount();
+  static unsigned long counter;
+  static unsigned long GetCount();
 };
 
 class MockUI : public sup::sequencer::UserInterface

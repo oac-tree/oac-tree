@@ -56,28 +56,16 @@ bool LocalVariable::GetValueImpl(sup::dto::AnyValue& value) const
   {
     return false;
   }
-  try
-  {
-    value = *m_value;
-  }
-  catch(const sup::dto::InvalidConversionException&)
-  {
-    return false;
-  }
-  return true;
+  return sup::dto::SafeAssign(value, *m_value);
 }
 
 bool LocalVariable::SetValueImpl(const sup::dto::AnyValue& value)
 {
-  try
-  {
-    *m_value = value;
-    Notify(value);
-  }
-  catch(const sup::dto::InvalidConversionException&)
+  if (!sup::dto::SafeAssign(*m_value, value))
   {
     return false;
   }
+  Notify(value);
   return true;
 }
 

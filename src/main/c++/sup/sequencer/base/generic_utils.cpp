@@ -25,6 +25,7 @@
 #include <cstdlib>
 #include <dlfcn.h>
 #include <fstream>
+#include <stdexcept>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -102,16 +103,55 @@ std::string GetEnvironmentVariable(const std::string& varname)
   return std::string(getenv(varname.c_str()));
 }
 
-unsigned long StringToUnsigned(const std::string& str)
+bool SafeStringToInt(int& result, const std::string& str)
 {
   try
   {
-    return std::stoul(str);
+    result = std::stoi(str);
   }
-  catch(const std::exception&)
+  catch(const std::invalid_argument&)
   {
-    return 0;
+    return false;
   }
+  catch(const std::out_of_range&)
+  {
+    return false;
+  }
+  return true;
+}
+
+bool SafeStringToUnsigned(unsigned long& result, const std::string& str)
+{
+  try
+  {
+    result = std::stoul(str);
+  }
+  catch(const std::invalid_argument&)
+  {
+    return false;
+  }
+  catch(const std::out_of_range&)
+  {
+    return false;
+  }
+  return true;
+}
+
+bool SafeStringToDouble(double& result, const std::string& str)
+{
+  try
+  {
+    result = std::stod(str);
+  }
+  catch(const std::invalid_argument&)
+  {
+    return false;
+  }
+  catch(const std::out_of_range&)
+  {
+    return false;
+  }
+  return true;
 }
 
 unsigned long long GetNanosecsSinceEpoch()

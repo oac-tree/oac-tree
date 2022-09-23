@@ -204,14 +204,11 @@ bool Workspace::HasVariable(const std::string& name) const
 
 bool Workspace::RegisterType(const sup::dto::AnyType& anytype)
 {
-  try
+  if (m_type_registry->HasType(anytype.GetTypeName()))
   {
-    m_type_registry->RegisterType(anytype);
+    return anytype == m_type_registry->GetType(anytype.GetTypeName());
   }
-  catch(const sup::dto::InvalidOperationException&)
-  {
-    return false;
-  }
+  m_type_registry->RegisterType(anytype);
   return true;
 }
 

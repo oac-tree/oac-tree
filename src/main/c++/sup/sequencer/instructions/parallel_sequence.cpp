@@ -21,6 +21,7 @@
 
 #include "parallel_sequence.h"
 
+#include <sup/sequencer/generic_utils.h>
 #include <sup/sequencer/log.h>
 
 namespace sup
@@ -88,13 +89,11 @@ bool ParallelSequence::SetupImpl(const Procedure &proc)
     bool success_th_from_attributes = false;
     if (HasAttribute(SUCCESS_THRESHOLD_ATTRIBUTE))
     {
-      auto success_th = GetAttribute(SUCCESS_THRESHOLD_ATTRIBUTE);
-      try
+      if (utils::SafeStringToInt(_success_th, GetAttribute(SUCCESS_THRESHOLD_ATTRIBUTE)))
       {
-        _success_th = std::stoi(success_th);
         success_th_from_attributes = true;
       }
-      catch (const std::exception &)
+      else
       {
         log::Warning(
             "ParallelSequence::InitThresholds() - could not parse successThreshold attribute!");
@@ -104,10 +103,9 @@ bool ParallelSequence::SetupImpl(const Procedure &proc)
 
     if (HasAttribute(FAILURE_THRESHOLD_ATTRIBUTE))
     {
-      auto failure_th = GetAttribute(FAILURE_THRESHOLD_ATTRIBUTE);
-      try
+      int th{};
+      if (utils::SafeStringToInt(th, GetAttribute(FAILURE_THRESHOLD_ATTRIBUTE)))
       {
-        int th = std::stoi(failure_th);
         if (success_th_from_attributes)
         {
           _failure_th = std::min(th, N - _success_th + 1);
@@ -118,7 +116,7 @@ bool ParallelSequence::SetupImpl(const Procedure &proc)
           _success_th = N - th + 1;
         }
       }
-      catch (const std::exception &)
+      else
       {
         log::Warning(
             "ParallelSequence::InitThresholds() - could not parse failureThreshold attribute!");

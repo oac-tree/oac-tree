@@ -21,6 +21,7 @@
 
 #include "repeat.h"
 
+#include <sup/sequencer/generic_utils.h>
 #include <sup/sequencer/log.h>
 
 namespace sup
@@ -67,15 +68,14 @@ bool Repeat::SetupImpl(const Procedure& proc)
   if (status)
   {
     auto max_str = GetAttribute("maxCount");
-    try
+    if (utils::SafeStringToInt(_max_count, max_str))
     {
-      _max_count = std::stoi(max_str);
       if (_max_count < 0)
       {
         _max_count = -1;
       }
     }
-    catch (const std::exception&)
+    else
     {
       log::Warning("Repeat::InitMaxCount() - could not parse maxCount attribute!");
       status = false;

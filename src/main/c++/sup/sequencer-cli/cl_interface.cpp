@@ -24,6 +24,8 @@
 #include <sup/sequencer/log.h>
 #include <sup/sequencer/instruction.h>
 
+#include <sup/dto/anyvalue_helper.h>
+
 #include <cstring>
 #include <iostream>
 #include <map>

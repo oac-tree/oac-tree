@@ -28,6 +28,8 @@
 #include <sup/sequencer/procedure.h>
 #include <sup/sequencer/user_interface.h>
 
+#include <sup/dto/anyvalue_helper.h>
+
 #include <cstdio>
 #include <fstream>
 #include <sstream>

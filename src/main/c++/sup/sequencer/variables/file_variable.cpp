@@ -23,6 +23,8 @@
 
 #include <sup/sequencer/generic_utils.h>
 
+#include <sup/dto/anyvalue_helper.h>
+
 #include <fstream>
 #include <sstream>
 

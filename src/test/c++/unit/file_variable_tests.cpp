@@ -27,6 +27,8 @@
 #include <sup/sequencer/variable.h>
 #include <sup/sequencer/variable_registry.h>
 
+#include <sup/dto/anyvalue_helper.h>
+
 #include <gtest/gtest.h>
 
 class FileVariableTest : public ::testing::Test

@@ -29,6 +29,8 @@
 #include <cmath>
 #include <thread>
 
+const std::string TIMEOUT_ATTR_NAME = "timeout";
+
 namespace sup
 {
 namespace sequencer
@@ -60,9 +62,9 @@ ExecutionStatus Wait::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
 
 bool Wait::SetupImpl(const Procedure& /*proc*/)
 {
-  if (HasAttribute("timeout"))
+  if (HasAttribute(TIMEOUT_ATTR_NAME))
   {
-    auto timeout = GetAttribute("timeout");
+    auto timeout = GetAttribute(TIMEOUT_ATTR_NAME);
     double t{};
     if (utils::SafeStringToDouble(t, timeout))
     {

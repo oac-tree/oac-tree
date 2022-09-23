@@ -24,11 +24,8 @@
 #include <sup/sequencer/user_interface.h>
 #include <sup/sequencer/workspace.h>
 
-namespace
-{
-const std::string from_attribute_name{"from"};
-const std::string descr_attribute_name{"description"};
-}  // namespace
+const std::string FROM_ATTRIBUTE_NAME{"from"};
+const std::string DESCR_ATTRIBUTE_NAME{"description"};
 
 namespace sup
 {
@@ -38,16 +35,16 @@ const std::string Output::Type = "Output";
 
 ExecutionStatus Output::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
 {
-  if (!HasAttribute(from_attribute_name))
+  if (!HasAttribute(FROM_ATTRIBUTE_NAME))
   {
     return ExecutionStatus::FAILURE;
   }
   sup::dto::AnyValue value;
-  if (!ws->GetValue(GetAttribute(from_attribute_name), value))
+  if (!ws->GetValue(GetAttribute(FROM_ATTRIBUTE_NAME), value))
   {
     return ExecutionStatus::FAILURE;
   }
-  return ui->PutValue(value, GetAttribute(descr_attribute_name)) ? ExecutionStatus::SUCCESS
+  return ui->PutValue(value, GetAttribute(DESCR_ATTRIBUTE_NAME)) ? ExecutionStatus::SUCCESS
                                                                  : ExecutionStatus::FAILURE;
 }
 

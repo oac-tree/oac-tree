@@ -23,6 +23,9 @@
 
 #include <sup/sequencer/workspace.h>
 
+const std::string INPUT_VARIABLE_ATTR_NAME = "input";
+const std::string OUTPUT_VARIABLE_ATTR_NAME = "output";
+
 namespace sup
 {
 namespace sequencer
@@ -31,17 +34,17 @@ const std::string Copy::Type = "Copy";
 
 ExecutionStatus Copy::ExecuteSingleImpl(UserInterface*, Workspace* ws)
 {
-  if (!HasAttribute("input") || !HasAttribute("output"))
+  if (!HasAttribute(INPUT_VARIABLE_ATTR_NAME) || !HasAttribute(OUTPUT_VARIABLE_ATTR_NAME))
   {
     return ExecutionStatus::FAILURE;
   }
   sup::dto::AnyValue value;
-  if (!ws->GetValue(GetAttribute("input"), value))
+  if (!ws->GetValue(GetAttribute(INPUT_VARIABLE_ATTR_NAME), value))
   {
     return ExecutionStatus::FAILURE;
   }
-  return ws->SetValue(GetAttribute("output"), value) ? ExecutionStatus::SUCCESS
-                                                     : ExecutionStatus::FAILURE;
+  return ws->SetValue(GetAttribute(OUTPUT_VARIABLE_ATTR_NAME), value) ? ExecutionStatus::SUCCESS
+                                                                      : ExecutionStatus::FAILURE;
 }
 
 Copy::Copy() : Instruction(Copy::Type) {}

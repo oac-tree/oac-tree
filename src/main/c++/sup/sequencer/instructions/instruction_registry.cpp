@@ -119,7 +119,6 @@ void InitInstructionRegistry(InstructionRegistry& registry)
   (void)RegisterInstruction<Output>(registry);
   (void)RegisterInstruction<ResetVariable>(registry);
   (void)RegisterInstruction<Wait>(registry);
-  // (void)RegisterInstruction<WaitForUpdateInstruction>(registry);
 }
 
 }  // namespace sequencer

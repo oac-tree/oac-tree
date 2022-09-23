@@ -23,6 +23,9 @@
 
 #include <sup/sequencer/workspace.h>
 
+const std::string LEFT_VARIABLE_ATTR_NAME = "lhs";
+const std::string RIGHT_VARIABLE_ATTR_NAME = "rhs";
+
 namespace sup
 {
 namespace sequencer
@@ -31,13 +34,14 @@ const std::string Equals::Type = "Equals";
 
 ExecutionStatus Equals::ExecuteSingleImpl(UserInterface*, Workspace* ws)
 {
-  if (!HasAttribute("lhs") || !HasAttribute("rhs"))
+  if (!HasAttribute(LEFT_VARIABLE_ATTR_NAME) || !HasAttribute(RIGHT_VARIABLE_ATTR_NAME))
   {
     return ExecutionStatus::FAILURE;
   }
   sup::dto::AnyValue lhs;
   sup::dto::AnyValue rhs;
-  if (!ws->GetValue(GetAttribute("lhs"), lhs) || !ws->GetValue(GetAttribute("rhs"), rhs))
+  if (!ws->GetValue(GetAttribute(LEFT_VARIABLE_ATTR_NAME), lhs) ||
+      !ws->GetValue(GetAttribute(RIGHT_VARIABLE_ATTR_NAME), rhs))
   {
     return ExecutionStatus::FAILURE;
   }

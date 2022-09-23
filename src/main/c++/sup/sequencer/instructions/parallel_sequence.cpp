@@ -30,8 +30,8 @@ namespace sequencer
 {
 const std::string ParallelSequence::Type = "ParallelSequence";
 
-static const std::string SUCCESS_THRESHOLD_ATTRIBUTE = "successThreshold";
-static const std::string FAILURE_THRESHOLD_ATTRIBUTE = "failureThreshold";
+const std::string SUCCESS_THRESHOLD_ATTRIBUTE = "successThreshold";
+const std::string FAILURE_THRESHOLD_ATTRIBUTE = "failureThreshold";
 
 void ParallelSequence::InitHook()
 {

@@ -26,6 +26,8 @@
 
 #include <sup/dto/anyvalue.h>
 
+const std::string CONDITION_VARIABLE_ATTR_NAME = "var_name";
+
 namespace sup
 {
 namespace sequencer
@@ -39,7 +41,7 @@ Condition::~Condition() = default;
 ExecutionStatus Condition::ExecuteSingleImpl(UserInterface *, Workspace *ws)
 {
   sup::dto::AnyValue var;
-  std::string varName = GetAttribute("var_name");
+  std::string varName = GetAttribute(CONDITION_VARIABLE_ATTR_NAME);
   sup::dto::boolean result = false;
   if (ws->GetValue(varName, var) && var.As(result))
   {

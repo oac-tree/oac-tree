@@ -24,6 +24,8 @@
 #include <sup/sequencer/generic_utils.h>
 #include <sup/sequencer/log.h>
 
+const std::string MAXCOUNT_ATTR_NAME = "maxCount";
+
 namespace sup
 {
 namespace sequencer
@@ -64,10 +66,10 @@ ExecutionStatus Repeat::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
 
 bool Repeat::SetupImpl(const Procedure& proc)
 {
-  bool status = HasAttribute("maxCount");
+  bool status = HasAttribute(MAXCOUNT_ATTR_NAME);
   if (status)
   {
-    auto max_str = GetAttribute("maxCount");
+    auto max_str = GetAttribute(MAXCOUNT_ATTR_NAME);
     if (utils::SafeStringToInt(_max_count, max_str))
     {
       if (_max_count < 0)

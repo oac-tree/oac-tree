@@ -30,6 +30,8 @@ namespace
 bool GetIndexListFromVariable(std::vector<std::size_t>& list, const sup::dto::AnyValue& var);
 }  // unnamed namespace
 
+const std::string SELECTOR_VARIABLE_ATTR_NAME = "var_name";
+
 namespace sup
 {
 namespace sequencer
@@ -51,11 +53,11 @@ bool Choice::SetupImpl(const Procedure &proc)
   {
     return false;
   }
-  if (!HasAttribute("var_name"))
+  if (!HasAttribute(SELECTOR_VARIABLE_ATTR_NAME))
   {
     return false;
   }
-  m_var_name = GetAttribute("var_name");
+  m_var_name = GetAttribute(SELECTOR_VARIABLE_ATTR_NAME);
   return true;
 }
 

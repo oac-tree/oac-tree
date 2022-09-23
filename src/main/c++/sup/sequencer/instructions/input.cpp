@@ -24,6 +24,8 @@
 #include <sup/sequencer/user_interface.h>
 #include <sup/sequencer/workspace.h>
 
+const std::string OUTPUT_VARIABLE_ATTR_NAME = "output";
+
 namespace sup
 {
 namespace sequencer
@@ -32,12 +34,12 @@ const std::string Input::Type = "Input";
 
 ExecutionStatus Input::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
 {
-  if (!HasAttribute("output"))
+  if (!HasAttribute(OUTPUT_VARIABLE_ATTR_NAME))
   {
     return ExecutionStatus::FAILURE;
   }
   sup::dto::AnyValue value;
-  if (!ws->GetValue(GetAttribute("output"), value))
+  if (!ws->GetValue(GetAttribute(OUTPUT_VARIABLE_ATTR_NAME), value))
   {
     return ExecutionStatus::FAILURE;
   }
@@ -45,7 +47,7 @@ ExecutionStatus Input::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
   {
     return ExecutionStatus::FAILURE;
   }
-  if (!ws->SetValue(GetAttribute("output"), value))
+  if (!ws->SetValue(GetAttribute(OUTPUT_VARIABLE_ATTR_NAME), value))
   {
     return ExecutionStatus::FAILURE;
   }

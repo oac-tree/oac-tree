@@ -26,7 +26,7 @@
 
 #include <sup/dto/anyvalue.h>
 
-const std::string CONDITION_VARIABLE_ATTR_NAME = "var_name";
+const std::string CONDITION_VARIABLE_ATTR_NAME = "varName";
 
 namespace sup
 {

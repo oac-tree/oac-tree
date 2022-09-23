@@ -54,7 +54,7 @@ TEST(Condition, Default)
 {
   const std::string body{R"(
     <Sequence>
-        <Condition name="Condition" var_name="a" />
+        <Condition name="Condition" varName="a" />
     </Sequence>
     <Workspace>
         <Local name="a"
@@ -94,7 +94,7 @@ TEST(Condition, Default1)
   {
     std::unique_ptr<Procedure> proc(new Procedure);
     std::unique_ptr<Condition> myCondNode(new Condition);
-    myCondNode->AddAttribute("var_name", conditionTable[i][0]);
+    myCondNode->AddAttribute("varName", conditionTable[i][0]);
 
     sup::dto::AnyValue resVal;
 
@@ -133,7 +133,7 @@ TEST(Condition, NonScalarVariable_success)
 {
   const std::string body{R"(
     <Repeat maxCount="10">
-        <Condition name="struct" var_name="struct.timestamp"/>
+        <Condition name="struct" varName="struct.timestamp"/>
     </Repeat>
     <Workspace>
         <Local name="struct"
@@ -152,7 +152,7 @@ TEST(Condition, NonScalarVariable_failure)
 {
   const std::string body{R"(
     <Repeat maxCount="10">
-        <Condition name="struct" var_name="struct"/>
+        <Condition name="struct" varName="struct"/>
     </Repeat>
     <Workspace>
         <Local name="struct"
@@ -172,7 +172,7 @@ TEST(Condition, NoSuchVariable_name)
 {
   const std::string body{R"(
     <Repeat maxCount="10">
-        <Condition name="struct" var_name="undefined"/>
+        <Condition name="struct" varName="undefined"/>
     </Repeat>
     <Workspace>
     </Workspace>
@@ -189,7 +189,7 @@ TEST(Condition, NoSuchVariable_attr)
 {
   const std::string body{R"(
     <Repeat maxCount="10">
-        <Condition name="struct" var_name="struct.array[0].node"/>
+        <Condition name="struct" varName="struct.array[0].node"/>
     </Repeat>
     <Workspace>
         <Local name="struct"

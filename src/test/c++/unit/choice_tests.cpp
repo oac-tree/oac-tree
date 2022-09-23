@@ -53,7 +53,7 @@ static ExecutionStatus statuses[] = {
 TEST(Choice, Default)  // Static initialisation
 {
   const std::string body{R"(
-   <Choice var_name="sel">
+   <Choice varName="sel">
         <Copy name="zero" input="a" output="res" />
         <Copy name="one" input="b" output="res" />
         <Copy name="two" input="c" output="res" />
@@ -108,7 +108,7 @@ TEST(Choice, Default)  // Static initialisation
 TEST(Choice, ArraySuccess)
 {
   const std::string body{R"(
-    <Choice var_name="choice">
+    <Choice varName="choice">
         <Counter/>
         <Counter incr="2"/>
         <Wait/>
@@ -131,7 +131,7 @@ TEST(Choice, ArraySuccess)
 TEST(Choice, ArrayFailure)
 {
   const std::string body{R"(
-    <Choice var_name="choice">
+    <Choice varName="choice">
         <Counter/>
         <Counter incr="2"/>
         <Wait/>
@@ -156,7 +156,7 @@ TEST(Choice, ArrayFailure)
 TEST(Choice, NoSuchVariable)
 {
   const std::string body{R"(
-    <Choice var_name="undefined">"
+    <Choice varName="undefined">"
         <Counter/>"
         <Wait/>"
     </Choice>"

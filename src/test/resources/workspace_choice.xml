@@ -3,7 +3,7 @@
            name="Trivial procedure for testing purposes"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
-    <Choice var_name="sel">
+    <Choice varName="sel">
         <Copy name="zero" input="a" output="res" />
         <Copy name="one" input="b" output="res" />
         <Copy name="two" input="c" output="res" />

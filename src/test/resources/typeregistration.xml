@@ -17,6 +17,6 @@
         <Local name="var3" type='{"type":"ranges_uint32"}'
                value='[{"min":0,"max":10},{"min":10,"max":20},{"min":20,"max":40}]' />
         <Local name="var4" type='{"type":"ranges_uint32"}' />
-        <File name="file" file="ranges_uint32.bck"/>
+        <File name="file" fileName="ranges_uint32.bck"/>
     </Workspace>
 </Procedure>

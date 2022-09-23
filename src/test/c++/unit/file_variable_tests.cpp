@@ -51,7 +51,7 @@ TEST_F(FileVariableTest, File_write)
             type='{"type":"MyStruct","attributes":[{"value":{"type":"float32"}}]}'
             value='{"value":0.0}'/>
         <File name="file"
-            file="variable.bck"/>
+            fileName="variable.bck"/>
     </Workspace>
 )"};
 
@@ -131,7 +131,7 @@ TEST_F(FileVariableTest, File_attr)
             type='{"type":"uint32"}'
             value='7'/>
         <File name="file"
-            file="variable.bck"/>
+            fileName="variable.bck"/>
     </Workspace>
 )"};
 

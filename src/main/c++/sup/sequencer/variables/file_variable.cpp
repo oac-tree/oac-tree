@@ -28,6 +28,8 @@
 #include <fstream>
 #include <sstream>
 
+const std::string FILENAME_ATTR_NAME = "fileName";
+
 namespace sup
 {
 namespace sequencer
@@ -36,7 +38,7 @@ const std::string FileVariable::Type = "File";
 
 bool FileVariable::SetupImpl(const sup::dto::AnyTypeRegistry&)
 {
-  bool status = Variable::HasAttribute("file");
+  bool status = Variable::HasAttribute(FILENAME_ATTR_NAME);
   return status;
 }
 
@@ -44,7 +46,7 @@ bool FileVariable::GetValueImpl(sup::dto::AnyValue& value) const
 {
   try
   {
-    sup::dto::AnyValue parsed_val = sup::dto::AnyValueFromJSONFile(GetAttribute("file"));
+    sup::dto::AnyValue parsed_val = sup::dto::AnyValueFromJSONFile(GetAttribute(FILENAME_ATTR_NAME));
     return sup::dto::SafeAssign(value, parsed_val);
   }
   catch(const sup::dto::ParseException&)
@@ -57,7 +59,7 @@ bool FileVariable::SetValueImpl(const sup::dto::AnyValue& value)
 {
   try
   {
-    sup::dto::AnyValueToJSONFile(value, GetAttribute("file"));
+    sup::dto::AnyValueToJSONFile(value, GetAttribute(FILENAME_ATTR_NAME));
     Notify(value);
   }
   catch(const sup::dto::SerializeException&)

@@ -27,8 +27,7 @@
 
 namespace
 {
-std::size_t ValueToIndex(const sup::dto::AnyValue& value);
-std::vector<std::size_t> GetIndexListFromVariable(const sup::dto::AnyValue& var);
+bool GetIndexListFromVariable(std::vector<std::size_t>& list, const sup::dto::AnyValue& var);
 }  // unnamed namespace
 
 namespace sup
@@ -68,15 +67,7 @@ ExecutionStatus Choice::ExecuteSingleImpl(UserInterface *ui, Workspace *ws)
     return ExecutionStatus::FAILURE;
   }
   std::vector<std::size_t> indices;
-  try
-  {
-    indices = GetIndexListFromVariable(selector);
-  }
-  catch(const sup::dto::InvalidConversionException&)
-  {
-    return ExecutionStatus::FAILURE;
-  }
-  catch(const sup::dto::SerializeException&)
+  if (!GetIndexListFromVariable(indices, selector))
   {
     return ExecutionStatus::FAILURE;
   }
@@ -124,25 +115,30 @@ ExecutionStatus Choice::ExecuteChild(std::size_t idx, UserInterface *ui, Workspa
 
 namespace
 {
-std::size_t ValueToIndex(const sup::dto::AnyValue& value)
-{
-  return value.As<std::size_t>();
-}
-
-std::vector<std::size_t> GetIndexListFromVariable(const sup::dto::AnyValue& var)
+bool GetIndexListFromVariable(std::vector<std::size_t>& list, const sup::dto::AnyValue& var)
 {
   std::vector<std::size_t> result;
+  std::size_t idx;
   if (sup::dto::IsArrayValue(var))
   {
     for (std::size_t i = 0; i < var.NumberOfElements(); ++i)
     {
-      result.push_back(ValueToIndex(var[i]));
+      if (!var[i].As(idx))
+      {
+        return false;
+      }
+      result.push_back(idx);
     }
   }
   else
   {
-    result.push_back(ValueToIndex(var));
+    if (!var.As(idx))
+    {
+      return false;
+    }
+    result.push_back(idx);
   }
-  return result;
+  list = std::move(result);
+  return true;
 }
 }  // unnamed namespace

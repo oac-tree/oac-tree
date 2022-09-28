@@ -30,5 +30,5 @@ install(FILES
         sup/sequencer/variable.h
         sup/sequencer/variable_registry.h
         sup/sequencer/workspace.h
-        DESTINATION include/sup/sequencer
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/sup/sequencer
 )

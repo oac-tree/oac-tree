@@ -2,23 +2,24 @@
 
 include(GNUInstallDirs)
 
-# Detecting CODAC environment
+# detecting CODAC environment
 if (DEFINED ENV{CODAC_ROOT})
   message(STATUS "CODAC environment detected at $ENV{CODAC_ROOT}")
   set(SEQUENCER_CODAC ON)
+  set(TARGET_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/../../target)
 else()
   message(STATUS "No CODAC environment detected")
   set(SEQUENCER_CODAC OFF)
+  set(TARGET_DIRECTORY ${CMAKE_BINARY_DIR})
 endif()
 
-# Build settings
+# build settings
 if (NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "RelWithDebInfo")
 endif()
 set(LIBVERSION ${CMAKE_PROJECT_VERSION})
 set(LIBSOVERSION ${CMAKE_PROJECT_VERSION_MAJOR})
 
-
+# place for binary output during the build
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TARGET_DIRECTORY}/bin)
-
 file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})

@@ -20,8 +20,8 @@ set_target_properties(sup-sequencer-shared PROPERTIES
     OUTPUT_NAME sequencer
 )
 
-target_include_directories(sup-sequencer-shared PRIVATE ${LIBXML2_INCLUDE_DIR} PUBLIC ${CMAKE_CURRENT_LIST_DIR}/../..)
-target_link_libraries(sup-sequencer-shared PRIVATE ${LIBXML2_LIBRARIES})
+target_include_directories(sup-sequencer-shared PRIVATE PUBLIC ${CMAKE_CURRENT_LIST_DIR}/../..)
+target_link_libraries(sup-sequencer-shared PRIVATE LibXml2::LibXml2)
 
 if (SEQUENCER_CODAC)
   target_include_directories(sup-sequencer-shared PRIVATE $ENV{CODAC_ROOT}/include)

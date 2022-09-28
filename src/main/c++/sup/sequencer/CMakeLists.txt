@@ -31,3 +31,5 @@ else()
   find_package(sup-dto REQUIRED)
   target_link_libraries(sup-sequencer-shared PUBLIC sup-dto::sup-dto)
 endif()
+
+install(TARGETS sup-sequencer-shared LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})

@@ -95,7 +95,7 @@
                     <packaging>
                         <package>
                             <!-- Libraries -->
-                            <include type="file" source="lib" target="lib">
+                            <include type="file" source="lib64" target="lib">
                                 <include>*.so.*</include>
                             </include>
                             <include type="config" source="main/sup-${project.artifactId}.conf"
@@ -118,7 +118,7 @@
                         </package>
                         <package name="devel">
                             <!-- Libraries -->
-                            <include type="file" source="lib" target="lib">
+                            <include type="file" source="lib64" target="lib">
                                 <include>*.so</include>
                             </include>
                             <!-- Public API headers -->

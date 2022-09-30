@@ -1,6 +1,7 @@
 # Settings of CMake project
 
 include(GNUInstallDirs)
+include(CTest)
 
 get_filename_component(SEQUENCER_PROJECT_DIR "${CMAKE_CURRENT_LIST_DIR}/../.." ABSOLUTE)
 

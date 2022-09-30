@@ -15,3 +15,5 @@ target_link_libraries(sequencer-cli
     PRIVATE
         sup-sequencer-shared
 )
+
+install(TARGETS sequencer-cli RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})

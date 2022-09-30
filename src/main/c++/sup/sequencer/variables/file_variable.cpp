@@ -44,15 +44,21 @@ bool FileVariable::SetupImpl(const sup::dto::AnyTypeRegistry&)
 
 bool FileVariable::GetValueImpl(sup::dto::AnyValue& value) const
 {
+  sup::dto::AnyValue parsed_val;
   try
   {
-    sup::dto::AnyValue parsed_val = sup::dto::AnyValueFromJSONFile(GetAttribute(FILENAME_ATTR_NAME));
-    return sup::dto::SafeAssign(value, parsed_val);
+    parsed_val = sup::dto::AnyValueFromJSONFile(GetAttribute(FILENAME_ATTR_NAME));
   }
   catch(const sup::dto::ParseException&)
   {
     return false;
   }
+  if (!sup::dto::IsEmptyValue(value) && value.GetType() != parsed_val.GetType())
+  {
+    return false;
+  }
+  value = parsed_val;
+  return true;
 }
 
 bool FileVariable::SetValueImpl(const sup::dto::AnyValue& value)

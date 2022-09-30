@@ -91,21 +91,21 @@ int MockUI::GetUserChoiceImpl(const std::vector<std::string> &choices,
 bool MockUI::GetUserValueImpl(sup::dto::AnyValue &value, const std::string &description)
 {
   log::Debug("TestUI::GetUserValueImpl - Description '%s'", description.c_str());
-  m_type = value.GetType();
-  if (sup::dto::IsEmptyType(m_type))
+  if (sup::dto::IsEmptyValue(value))
   {
     return false;
   }
-  if (!sup::dto::SafeAssign(value, m_value))
+  if (value.GetType() != m_value.GetType())
   {
     return false;
   }
+  value = m_value;
   return m_status;
 }
 
 sup::dto::AnyType MockUI::GetType() const
 {
-  return m_type;
+  return m_value.GetType();
 }
 
 void MockUI::SetChoice(int choice)

@@ -56,15 +56,21 @@ bool LocalVariable::GetValueImpl(sup::dto::AnyValue& value) const
   {
     return false;
   }
-  return sup::dto::SafeAssign(value, *m_value);
+  if (!sup::dto::IsEmptyValue(value) && value.GetType() != m_value->GetType())
+  {
+    return false;
+  }
+  value = *m_value;
+  return true;
 }
 
 bool LocalVariable::SetValueImpl(const sup::dto::AnyValue& value)
 {
-  if (!sup::dto::SafeAssign(*m_value, value))
+  if (!sup::dto::IsEmptyValue(*m_value) && value.GetType() != m_value->GetType())
   {
     return false;
   }
+  *m_value = value;
   Notify(value);
   return true;
 }

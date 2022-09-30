@@ -74,7 +74,6 @@ private:
   bool m_status = false;
   int m_choice = -1;
   sup::dto::AnyValue m_value;
-  sup::dto::AnyType m_type;
 
   /**
    * @brief See sup::sequencer::UserInterface.

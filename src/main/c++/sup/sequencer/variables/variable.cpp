@@ -29,6 +29,12 @@
 #include <chrono>
 #include <cmath>
 
+namespace
+{
+bool TryStrictAssignment(sup::dto::AnyValue& dest, const std::string& dest_field,
+                         const sup::dto::AnyValue& src, const std::string& src_field);
+}  // unnamed namespace
+
 namespace sup
 {
 namespace sequencer
@@ -81,7 +87,7 @@ bool Variable::GetValue(sup::dto::AnyValue &value, const std::string &fieldname)
   {
     return false;
   }
-  return sup::dto::SafeAssignFields(value, {}, var_copy, fieldname, true);
+  return TryStrictAssignment(value, {}, var_copy, fieldname);
 }
 
 bool Variable::SetValue(const sup::dto::AnyValue &value, const std::string &fieldname)
@@ -100,7 +106,7 @@ bool Variable::SetValue(const sup::dto::AnyValue &value, const std::string &fiel
   {
     return false;
   }
-  if (!sup::dto::SafeAssignFields(var_copy, fieldname, value, {}, true))
+  if (!TryStrictAssignment(var_copy, fieldname, value, {}))
   {
     return false;
   }
@@ -172,3 +178,27 @@ void Variable::ResetImpl() {}
 }  // namespace sequencer
 
 }  // namespace sup
+
+namespace
+{
+bool TryStrictAssignment(sup::dto::AnyValue& dest, const std::string& dest_field,
+                         const sup::dto::AnyValue& src, const std::string& src_field)
+{
+  if (!dest_field.empty() && !dest.HasField(dest_field))
+  {
+    return false;
+  }
+  if (!src_field.empty() && !src.HasField(src_field))
+  {
+    return false;
+  }
+  auto& dest_val = dest_field.empty() ? dest : dest[dest_field];
+  const auto& src_val = src_field.empty() ? src : src[src_field];
+  if (!sup::dto::IsEmptyValue(dest_val) && dest_val.GetType() != src_val.GetType())
+  {
+    return false;
+  }
+  dest_val = src_val;
+  return true;
+}
+}  // unnamed namespace

@@ -9,3 +9,5 @@ include(configuration)
 
 add_subdirectory(main/c++)
 add_subdirectory(test/c++)
+
+include(installation)

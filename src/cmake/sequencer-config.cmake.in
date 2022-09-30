@@ -14,7 +14,7 @@ else()
  include("${SEQUENCER_CMAKE_DIR}/sequencer-targets.cmake")
 endif()
 
-set(sequencer_LIBRARIES sequencer::sequencer)
+set(SEQUENCER_LIBRARIES sequencer::sequencer)
 
 message(STATUS "sequencer-config.cmake in ${CMAKE_CURRENT_LIST_FILE}")
 message(STATUS "SEQUENCER_LIBRARIES ${SEQUENCER_LIBRARIES}")

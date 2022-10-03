@@ -1,0 +1,94 @@
+/******************************************************************************
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP Sequencer
+ *
+ * Description   : Unit test code
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2022 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
+
+#include "unit_test_helper.h"
+
+#include <sup/sequencer/generic_utils.h>
+
+#include <gtest/gtest.h>
+
+using namespace sup::sequencer;
+
+const std::string TEST_FILE_NAME = "GenericUtilsTestFile";
+
+class GenericUtilsTest : public ::testing::Test
+{
+protected:
+  GenericUtilsTest();
+  virtual ~GenericUtilsTest();
+
+  sup::UnitTestHelper::TemporaryTestFile m_test_file;
+};
+
+TEST_F(GenericUtilsTest, FileExists)
+{
+  EXPECT_TRUE(utils::FileExists(TEST_FILE_NAME));
+  EXPECT_FALSE(utils::FileExists("DoesNotExist"));
+}
+
+TEST_F(GenericUtilsTest, GetEnvironmentVariable)
+{
+  auto env_var = utils::GetEnvironmentVariable("PATH");
+  EXPECT_FALSE(env_var.empty());
+  env_var = utils::GetEnvironmentVariable("THIS_ENVIRONMENT_VARIABLE_DOES_NOT_EXIST");
+  EXPECT_TRUE(env_var.empty());
+}
+
+TEST_F(GenericUtilsTest, SafeStringToInt)
+{
+  int result = 0;
+  EXPECT_TRUE(utils::SafeStringToInt(result, "123"));
+  EXPECT_EQ(result, 123);
+  EXPECT_TRUE(utils::SafeStringToInt(result, "-25"));
+  EXPECT_EQ(result, -25);
+  EXPECT_FALSE(utils::SafeStringToInt(result, "five"));
+  EXPECT_FALSE(utils::SafeStringToInt(result, "3000000000"));
+}
+
+TEST_F(GenericUtilsTest, SafeStringToUnsigned)
+{
+  unsigned long result = 0;
+  EXPECT_TRUE(utils::SafeStringToUnsigned(result, "123"));
+  EXPECT_EQ(result, 123u);
+  EXPECT_FALSE(utils::SafeStringToUnsigned(result, "five"));
+  EXPECT_FALSE(utils::SafeStringToUnsigned(result, "20000000000000000000"));
+}
+
+TEST_F(GenericUtilsTest, SafeStringToDouble)
+{
+  double result = 0.0;
+  EXPECT_TRUE(utils::SafeStringToDouble(result, "123"));
+  EXPECT_EQ(result, 123.0);
+  EXPECT_TRUE(utils::SafeStringToDouble(result, "3.5"));
+  EXPECT_EQ(result, 3.5);
+  EXPECT_TRUE(utils::SafeStringToDouble(result, "-10.1"));
+  EXPECT_EQ(result, -10.1);
+  EXPECT_TRUE(utils::SafeStringToDouble(result, "2.3e19"));
+  EXPECT_EQ(result, 2.3e19);
+  EXPECT_FALSE(utils::SafeStringToDouble(result, "five"));
+  EXPECT_FALSE(utils::SafeStringToDouble(result, "2e308"));
+}
+
+GenericUtilsTest::GenericUtilsTest()
+    : m_test_file(TEST_FILE_NAME, "test")
+{}
+
+GenericUtilsTest::~GenericUtilsTest() = default;

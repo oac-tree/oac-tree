@@ -14,6 +14,7 @@ target_sources(unit-tests
         ${CMAKE_CURRENT_LIST_DIR}/execution_status_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/fallback_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/file_variable_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/generic_utils_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/include_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/input_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/instruction_tests.cpp

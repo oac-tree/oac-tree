@@ -58,15 +58,15 @@ namespace
 const std::map<int, std::string>& GetSeverityMap()
 {
   static std::map<int, std::string> severity_map = {
-    { sup::sequencer::log::SUP_LOG_EMERG, "EMERGENCY"},
-    { sup::sequencer::log::SUP_LOG_ALERT, "ALERT"},
-    { sup::sequencer::log::SUP_LOG_CRIT, "CRITICAL"},
-    { sup::sequencer::log::SUP_LOG_ERR, "ERROR"},
-    { sup::sequencer::log::SUP_LOG_WARNING, "WARNING"},
-    { sup::sequencer::log::SUP_LOG_NOTICE, "NOTICE"},
-    { sup::sequencer::log::SUP_LOG_INFO, "INFO"},
-    { sup::sequencer::log::SUP_LOG_DEBUG, "DEBUG"},
-    { sup::sequencer::log::SUP_LOG_TRACE, "TRACE"}
+    { sup::sequencer::log::SUP_LOG_EMERG, sup::sequencer::log::EmergencyString},
+    { sup::sequencer::log::SUP_LOG_ALERT, sup::sequencer::log::AlertString},
+    { sup::sequencer::log::SUP_LOG_CRIT, sup::sequencer::log::CriticalString},
+    { sup::sequencer::log::SUP_LOG_ERR, sup::sequencer::log::ErrorString},
+    { sup::sequencer::log::SUP_LOG_WARNING, sup::sequencer::log::WarningString},
+    { sup::sequencer::log::SUP_LOG_NOTICE, sup::sequencer::log::NoticeString},
+    { sup::sequencer::log::SUP_LOG_INFO, sup::sequencer::log::InfoString},
+    { sup::sequencer::log::SUP_LOG_DEBUG, sup::sequencer::log::DebugString},
+    { sup::sequencer::log::SUP_LOG_TRACE, sup::sequencer::log::TraceString}
   };
   return severity_map;
 }

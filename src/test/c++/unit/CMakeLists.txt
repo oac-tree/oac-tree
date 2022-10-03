@@ -21,6 +21,7 @@ target_sources(unit-tests
         ${CMAKE_CURRENT_LIST_DIR}/instruction_registry_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/listen_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/local_variable_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/log_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/message_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/named_callback_manager_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/output_tests.cpp

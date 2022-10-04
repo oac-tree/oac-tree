@@ -117,7 +117,7 @@ public:
   /**
    * @brief Destructor.
    */
-  virtual ~UserInterface() = default;
+  virtual ~UserInterface();
 
   /**
    * @brief Method called when instruction's execution status changes.

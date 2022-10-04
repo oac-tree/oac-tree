@@ -120,10 +120,18 @@ TEST_F(CLInterfaceTest, GetUserValueString)
 
 TEST_F(CLInterfaceTest, GetUserValueParseError)
 {
-  sup::dto::AnyValue val(sup::dto::UnsignedInteger32Type);
-  std::istringstream input("twenty-four");
-  CinRedirector redirect(input);
-  EXPECT_FALSE(cli.GetUserValue(val));
+  {
+    sup::dto::AnyValue val(sup::dto::UnsignedInteger32Type);
+    std::istringstream input("twenty-four");
+    CinRedirector redirect(input);
+    EXPECT_FALSE(cli.GetUserValue(val));
+  }
+  {
+    sup::dto::AnyValue val(sup::dto::BooleanType);
+    std::istringstream input("nottrue");
+    CinRedirector redirect(input);
+    EXPECT_FALSE(cli.GetUserValue(val));
+  }
 }
 
 TEST_F(CLInterfaceTest, GetUserValueUnsupportedType)
@@ -163,6 +171,24 @@ TEST_F(CLInterfaceTest, GetUserChoiceOutOfBounds)
   CinRedirector redirect(input);
   auto choice = cli.GetUserChoice(choices);
   EXPECT_EQ(choice, -1);
+}
+
+TEST_F(CLInterfaceTest, PutValue)
+{
+  sup::dto::AnyValue val = 23;
+  std::ostringstream oss;
+  CoutRedirector redirect(oss);
+  EXPECT_TRUE(cli.PutValue(val));
+  EXPECT_NE(oss.str().find("23"), std::string::npos);
+}
+
+TEST_F(CLInterfaceTest, Message)
+{
+  std::string message = "Hello message";
+  std::ostringstream oss;
+  CoutRedirector redirect(oss);
+  EXPECT_NO_THROW(cli.Message(message));
+  EXPECT_NE(oss.str().find(message), std::string::npos);
 }
 
 CLInterfaceTest::CLInterfaceTest()

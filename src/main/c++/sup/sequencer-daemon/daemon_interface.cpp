@@ -24,6 +24,10 @@
 #include <sup/sequencer/log.h>
 #include <sup/sequencer/instruction.h>
 
+#include <sup/dto/anyvalue_helper.h>
+
+#include <sstream>
+
 namespace sup
 {
 namespace sequencer
@@ -39,6 +43,24 @@ void DaemonInterface::UpdateInstructionStatusImpl(const Instruction *instruction
     log::Info("Instruction: (%s:%s) : %s", instruction_type.c_str(), instruction_name.c_str(),
              StatusToString(status).c_str());
   }
+}
+
+bool DaemonInterface::PutValueImpl(const sup::dto::AnyValue &value, const std::string &description)
+{
+  if (!_log_enabled)
+  {
+    return true;
+  }
+  std::ostringstream oss;
+  oss << description << " (" << value.GetTypeName() << "): ";
+  std::string json_rep = sup::dto::ValuesToJSONString(value);
+  if (json_rep.empty())
+  {
+    return false;
+  }
+  oss << json_rep << std::endl;
+  log::Info(oss.str());
+  return true;
 }
 
 bool DaemonInterface::GetUserValueImpl(sup::dto::AnyValue &, const std::string &)

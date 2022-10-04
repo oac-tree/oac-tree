@@ -115,6 +115,22 @@ TEST_F(DaemonInterfaceTest, GetUserChoice)
   EXPECT_FALSE(out_stream.str().empty());
 }
 
+TEST_F(DaemonInterfaceTest, PutValue)
+{
+  log::LogStreamRedirector redirector(out_stream);
+  sup::dto::AnyValue val = 23;
+  EXPECT_TRUE(daemon_interface_logging.PutValue(val));
+  EXPECT_NE(out_stream.str().find("23"), std::string::npos);
+}
+
+TEST_F(DaemonInterfaceTest, Message)
+{
+  log::LogStreamRedirector redirector(out_stream);
+  std::string message = "Hello message";
+  EXPECT_NO_THROW(daemon_interface_logging.Message(message));
+  EXPECT_NE(out_stream.str().find(message), std::string::npos);
+}
+
 DaemonInterfaceTest::DaemonInterfaceTest()
     : daemon_interface{}
     , daemon_interface_logging{true}

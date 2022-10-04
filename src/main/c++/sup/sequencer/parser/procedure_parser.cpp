@@ -41,7 +41,6 @@ namespace sequencer
 static const std::string JSONTYPE_ATTRIBUTE_NAME = "jsontype";
 static const std::string JSONFILE_ATTRIBUTE_NAME = "jsonfile";
 
-static std::string ReadJSONFile(const std::string &filename);
 static bool ParsePreamble(Procedure *procedure, const TreeData &data, const std::string &filename);
 static bool ParseAndLoadPlugin(const TreeData &child);
 static bool RegisterTypeInformation(Procedure *procedure, const TreeData &child,
@@ -108,24 +107,6 @@ std::string GetFileDirectory(const std::string &filename)
     return {};
   }
   return filename.substr(0, pos + 1);
-}
-
-static std::string ReadJSONFile(const std::string &filename)
-{
-  if (!utils::FileExists(filename))
-  {
-    log::Warning("ReadJSONFile('%s') - file not found", filename.c_str());
-    return {};
-  }
-  std::ifstream ifstr(filename);
-  std::string result;
-  while (!ifstr.eof())
-  {
-    std::string tmp;
-    ifstr >> tmp;
-    result.append(tmp);
-  }
-  return result;
 }
 
 static bool ParsePreamble(Procedure *procedure, const TreeData &data, const std::string &filename)

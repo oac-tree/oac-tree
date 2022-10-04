@@ -28,6 +28,8 @@ namespace sup
 namespace sequencer
 {
 
+UserInterface::~UserInterface() = default;
+
 void UserInterface::VariableUpdatedImpl(const std::string& name, const sup::dto::AnyValue& value)
 {}
 

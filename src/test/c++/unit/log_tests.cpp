@@ -42,7 +42,6 @@ protected:
 
 TEST_F(LogTest, Redirect)
 {
-  log::SetMaxSeverity(log::SUP_LOG_DEBUG);
   {
     std::ostringstream oss;
     log::LogStreamRedirector redirector(oss);
@@ -99,23 +98,60 @@ TEST_F(LogTest, Redirect)
     EXPECT_NE(oss.str().find(log_message), std::string::npos);
     EXPECT_NE(oss.str().find(log::InfoString), std::string::npos);
   }
+  // Test debug and trace functions through different interface since they can be disabled
   {
     std::ostringstream oss;
     log::LogStreamRedirector redirector(oss);
     std::string log_message = "logtest debug";
-    log::Debug(log_message);
-    EXPECT_TRUE(oss.str().empty());
+    log::SimpleDebug("LogTest", log_message);
+    EXPECT_NE(oss.str().find(log_message), std::string::npos);
+    EXPECT_NE(oss.str().find(log::DebugString), std::string::npos);
   }
   {
     std::ostringstream oss;
     log::LogStreamRedirector redirector(oss);
     std::string log_message = "logtest trace";
-    log::Trace(log_message);
-    EXPECT_TRUE(oss.str().empty());
+    log::SimpleTrace("LogTest", log_message);
+    EXPECT_NE(oss.str().find(log_message), std::string::npos);
+    EXPECT_NE(oss.str().find(log::TraceString), std::string::npos);
   }
 }
 
-LogTest::LogTest()
-{}
+TEST_F(LogTest, StdOut)
+{
+  log::SetStdOut();
+  EXPECT_NO_THROW(log::Emergency("To standard output"));
+  EXPECT_NO_THROW(log::Alert("To standard output"));
+  EXPECT_NO_THROW(log::Critical("To standard output"));
+  EXPECT_NO_THROW(log::Error("To standard output"));
+  EXPECT_NO_THROW(log::Warning("To standard output"));
+  EXPECT_NO_THROW(log::Notice("To standard output"));
+  EXPECT_NO_THROW(log::Info("To standard output"));
+  EXPECT_NO_THROW(log::Debug("To standard output"));
+  EXPECT_NO_THROW(log::Trace("To standard output"));
+}
 
-LogTest::~LogTest() = default;
+TEST_F(LogTest, Systemlog)
+{
+  log::SetSysLog();
+  EXPECT_NO_THROW(log::Emergency("To system log"));
+  EXPECT_NO_THROW(log::Alert("To system log"));
+  EXPECT_NO_THROW(log::Critical("To system log"));
+  EXPECT_NO_THROW(log::Error("To system log"));
+  EXPECT_NO_THROW(log::Warning("To system log"));
+  EXPECT_NO_THROW(log::Notice("To system log"));
+  EXPECT_NO_THROW(log::Info("To system log"));
+  EXPECT_NO_THROW(log::Debug("To system log"));
+  EXPECT_NO_THROW(log::Trace("To system log"));
+}
+
+
+LogTest::LogTest()
+{
+  log::SetMaxSeverity(log::SUP_LOG_TRACE);
+}
+
+LogTest::~LogTest()
+{
+  log::SetMaxSeverity(log::SUP_LOG_DEBUG);
+}

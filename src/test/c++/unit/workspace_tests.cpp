@@ -71,6 +71,8 @@ TEST_F(WorkspaceTest, AddVariable)
   Variable *var1_address = var1.get();  // cache address for later
   EXPECT_TRUE(ws.AddVariable(var1_name, var1.release()));
   EXPECT_TRUE(ws.AddVariable(var2_name, var2.release()));
+  EXPECT_TRUE(ws.HasVariable(var1_name));
+  EXPECT_TRUE(ws.HasVariable(var2_name));
   variables = ws.VariableNames();
   EXPECT_EQ(variables.size(), 2);
   EXPECT_NE(std::find(variables.begin(), variables.end(), var1_name), variables.end());
@@ -206,6 +208,39 @@ TEST_F(WorkspaceTest, GetVariables)
   EXPECT_EQ(workspace.GetVariables(), expected);
 }
 
+TEST_F(WorkspaceTest, GetVariable)
+{
+  Workspace workspace;
+  EXPECT_TRUE(workspace.GetVariables().empty());
+
+  auto v1 = GlobalVariableRegistry().Create("Local");
+  auto v2 = GlobalVariableRegistry().Create("Local");
+  auto p_v1 = v1.get();
+  auto p_v2 = v2.get();
+
+  workspace.AddVariable("v1", v1.release());
+  workspace.AddVariable("v2", v2.release());
+
+  EXPECT_EQ(workspace.GetVariable("v1"), p_v1);
+  EXPECT_EQ(workspace.GetVariable("v2"), p_v2);
+  EXPECT_EQ(workspace.GetVariable("v3"), nullptr);
+}
+
+TEST_F(WorkspaceTest, HasVariable)
+{
+  auto variables = ws.VariableNames();
+  EXPECT_EQ(variables.size(), 0);
+
+  EXPECT_FALSE(ws.HasVariable(var1_name));
+  EXPECT_FALSE(ws.HasVariable(var2_name));
+  EXPECT_FALSE(ws.HasVariable(var3_name));
+  EXPECT_TRUE(ws.AddVariable(var1_name, var1.release()));
+  EXPECT_TRUE(ws.AddVariable(var2_name, var2.release()));
+  EXPECT_TRUE(ws.HasVariable(var1_name));
+  EXPECT_TRUE(ws.HasVariable(var2_name));
+  EXPECT_FALSE(ws.HasVariable(var3_name));
+}
+
 TEST_F(WorkspaceTest, NotifyCallback)
 {
   std::string var_name;
@@ -229,6 +264,19 @@ TEST_F(WorkspaceTest, NotifyCallback)
   EXPECT_EQ(var_value, raw_value);
 }
 
+TEST_F(WorkspaceTest, RegisterType)
+{
+  std::string struct_type_name = "structured_type_test_name";
+  sup::dto::AnyType structtype{{
+    {"first", sup::dto::UnsignedInteger16Type},
+    {"second", sup::dto::Float32Type}
+  }, struct_type_name};
+  EXPECT_TRUE(ws.RegisterType(structtype));
+  sup::dto::AnyType array_type(2, sup::dto::StringType, struct_type_name);
+  EXPECT_FALSE(ws.RegisterType(array_type));
+}
+
+
 TEST_F(WorkspaceTest, ResetVariable)
 {
   auto variables = ws.VariableNames();
@@ -251,6 +299,9 @@ TEST_F(WorkspaceTest, ResetVariable)
   // Reset variable
   EXPECT_TRUE(ws.ResetVariable(var1_name));
   EXPECT_FALSE(ws.GetValue(var1_name, val));
+
+  // Reset non-existing variable
+  EXPECT_FALSE(ws.ResetVariable(var2_name));
 }
 
 WorkspaceTest::WorkspaceTest()

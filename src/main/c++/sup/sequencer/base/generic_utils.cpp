@@ -101,11 +101,7 @@ bool CreateDir(const std::string& pathname, unsigned mode)
 std::string GetEnvironmentVariable(const std::string& varname)
 {
   auto result_c = getenv(varname.c_str());
-  if (result_c == nullptr)
-  {
-    return {};
-  }
-  return std::string(result_c);
+  return result_c ? std::string(result_c) : std::string{};
 }
 
 bool SafeStringToInt(int& result, const std::string& str)

@@ -21,6 +21,10 @@
 
 #include <sup/sequencer/generic_utils.h>
 
+#include <sup/dto/anytype.h>
+#include <sup/dto/anyvalue.h>
+#include <sup/dto/json_value_parser.h>
+
 #include <chrono>
 #include <cstdlib>
 #include <dlfcn.h>
@@ -106,53 +110,22 @@ std::string GetEnvironmentVariable(const std::string& varname)
 
 bool SafeStringToInt(int& result, const std::string& str)
 {
-  try
-  {
-    result = std::stoi(str);
-  }
-  catch(const std::invalid_argument&)
+  sup::dto::JSONAnyValueParser parser;
+  if (!parser.TypedParseString(sup::dto::SignedInteger32Type, str))
   {
     return false;
   }
-  catch(const std::out_of_range&)
-  {
-    return false;
-  }
-  return true;
-}
-
-bool SafeStringToUnsigned(unsigned long& result, const std::string& str)
-{
-  try
-  {
-    result = std::stoul(str);
-  }
-  catch(const std::invalid_argument&)
-  {
-    return false;
-  }
-  catch(const std::out_of_range&)
-  {
-    return false;
-  }
-  return true;
+  return parser.MoveAnyValue().As(result);
 }
 
 bool SafeStringToDouble(double& result, const std::string& str)
 {
-  try
-  {
-    result = std::stod(str);
-  }
-  catch(const std::invalid_argument&)
+  sup::dto::JSONAnyValueParser parser;
+  if (!parser.TypedParseString(sup::dto::Float64Type, str))
   {
     return false;
   }
-  catch(const std::out_of_range&)
-  {
-    return false;
-  }
-  return true;
+  return parser.MoveAnyValue().As(result);
 }
 
 unsigned long long GetNanosecsSinceEpoch()

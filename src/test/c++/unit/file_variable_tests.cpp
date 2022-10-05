@@ -27,7 +27,8 @@
 #include <sup/sequencer/variable.h>
 #include <sup/sequencer/variable_registry.h>
 
-#include <sup/dto/anyvalue_helper.h>
+#include <sup/dto/anyvalue.h>
+#include <sup/dto/json_value_parser.h>
 
 #include <gtest/gtest.h>
 
@@ -69,7 +70,9 @@ TEST_F(FileVariableTest, File_write)
 
   EXPECT_TRUE(sup::sequencer::utils::FileExists("variable.bck"));
 
-  sup::dto::AnyValue value = sup::dto::AnyValueFromJSONFile("variable.bck");
+  sup::dto::JSONAnyValueParser parser;
+  EXPECT_TRUE(parser.ParseFile("variable.bck"));
+  auto value = parser.MoveAnyValue();
 
   EXPECT_TRUE(sup::dto::IsStructValue(value));
   EXPECT_EQ(std::string("MyStruct"), value.GetTypeName());
@@ -157,7 +160,9 @@ TEST_F(FileVariableTest, File_attr)
   EXPECT_EQ(exec, sup::sequencer::ExecutionStatus::SUCCESS);
   EXPECT_TRUE(sup::sequencer::utils::FileExists("variable.bck"));
 
-  sup::dto::AnyValue value = sup::dto::AnyValueFromJSONFile("variable.bck");
+  sup::dto::JSONAnyValueParser parser;
+  EXPECT_TRUE(parser.ParseFile("variable.bck"));
+  auto value = parser.MoveAnyValue();
 
   // Test variable
   EXPECT_EQ(value["timestamp"], 0);

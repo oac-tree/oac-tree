@@ -44,11 +44,6 @@ std::string GetEnvironmentVariable(const std::string& varname);
 bool SafeStringToInt(int& result, const std::string& str);
 
 /**
- * @brief Try to convert string to unsigned long or return false if failed.
- */
-bool SafeStringToUnsigned(unsigned long& result, const std::string& str);
-
-/**
  * @brief Try to convert string to a double or return false if failed.
  */
 bool SafeStringToDouble(double& result, const std::string& str);

@@ -24,6 +24,7 @@
 #include <sup/sequencer/generic_utils.h>
 
 #include <sup/dto/anyvalue_helper.h>
+#include <sup/dto/json_value_parser.h>
 
 #include <fstream>
 #include <sstream>
@@ -44,15 +45,12 @@ bool FileVariable::SetupImpl(const sup::dto::AnyTypeRegistry&)
 
 bool FileVariable::GetValueImpl(sup::dto::AnyValue& value) const
 {
-  sup::dto::AnyValue parsed_val;
-  try
-  {
-    parsed_val = sup::dto::AnyValueFromJSONFile(GetAttribute(FILENAME_ATTR_NAME));
-  }
-  catch(const sup::dto::ParseException&)
+  sup::dto::JSONAnyValueParser parser;
+  if (!parser.ParseFile(GetAttribute(FILENAME_ATTR_NAME)))
   {
     return false;
   }
+  auto parsed_val = parser.MoveAnyValue();
   if (!sup::dto::IsEmptyValue(value) && value.GetType() != parsed_val.GetType())
   {
     return false;

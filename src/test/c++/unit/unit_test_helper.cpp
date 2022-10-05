@@ -29,6 +29,7 @@
 #include <sup/sequencer/user_interface.h>
 
 #include <sup/dto/anyvalue_helper.h>
+#include <sup/dto/json_value_parser.h>
 
 #include <cstdio>
 #include <fstream>
@@ -57,11 +58,13 @@ unsigned long CounterInstruction::GetCount()
 ExecutionStatus CounterInstruction::ExecuteSingleImpl(
     UserInterface *ui, Workspace *ws)
 {
-  if (Instruction::HasAttribute("incr"))
+  if (HasAttribute("incr"))
   {
-    unsigned long incr{};
-    (void)utils::SafeStringToUnsigned(incr, Instruction::GetAttribute("incr"));
-    counter += incr;
+    sup::dto::JSONAnyValueParser parser;
+    if (parser.TypedParseString(sup::dto::UnsignedInteger64Type, GetAttribute("incr")))
+    {
+      counter += parser.MoveAnyValue().As<sup::dto::uint64>();
+    }
   }
   else
   {

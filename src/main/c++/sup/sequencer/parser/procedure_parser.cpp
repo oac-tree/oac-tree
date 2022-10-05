@@ -29,7 +29,8 @@
 #include <sup/sequencer/log.h>
 #include <sup/sequencer/sequence_parser.h>
 
-#include <sup/dto/anytype_helper.h>
+#include <sup/dto/anytype.h>
+#include <sup/dto/json_type_parser.h>
 
 #include <fstream>
 #include <sstream>
@@ -157,29 +158,24 @@ bool RegisterTypeInformation(Procedure *procedure, const TreeData &child,
                                     const std::string &filename)
 {
   sup::dto::AnyType parsed_type;
+  sup::dto::JSONAnyTypeParser parser;
   if (child.HasAttribute(JSONTYPE_ATTRIBUTE_NAME))
   {
-    try
-    {
-      parsed_type = sup::dto::AnyTypeFromJSONString(procedure->GetTypeRegistry(),
-                                                    child.GetAttribute(JSONTYPE_ATTRIBUTE_NAME));
-    }
-    catch(const sup::dto::ParseException& e)
+    if (!parser.ParseString(child.GetAttribute(JSONTYPE_ATTRIBUTE_NAME),
+                            procedure->GetTypeRegistry()))
     {
       return false;
     }
+    parsed_type = parser.MoveAnyType();
   }
   else if (child.HasAttribute(JSONFILE_ATTRIBUTE_NAME))
   {
-    try
-    {
-      parsed_type = sup::dto::AnyTypeFromJSONFile(procedure->GetTypeRegistry(),
-                                                  child.GetAttribute(JSONFILE_ATTRIBUTE_NAME));
-    }
-    catch(const sup::dto::ParseException& e)
+    if (!parser.ParseFile(child.GetAttribute(JSONFILE_ATTRIBUTE_NAME),
+                          procedure->GetTypeRegistry()))
     {
       return false;
     }
+    parsed_type = parser.MoveAnyType();
   }
   else
   {

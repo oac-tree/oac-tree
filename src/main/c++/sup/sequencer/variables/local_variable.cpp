@@ -24,15 +24,12 @@
 #include <sup/sequencer/log.h>
 #include <sup/sequencer/procedure.h>
 
-#include <sup/dto/anytype_helper.h>
-#include <sup/dto/anyvalue_helper.h>
+#include <sup/dto/anytype.h>
+#include <sup/dto/anyvalue.h>
+#include <sup/dto/json_type_parser.h>
+#include <sup/dto/json_value_parser.h>
 
 #include <memory>
-
-namespace
-{
-std::string FullJSONRepresentation(const std::string& json_type, const std::string& json_value);
-}  // unnamed namespace
 
 namespace sup
 {
@@ -81,30 +78,24 @@ bool LocalVariable::SetupImpl(const sup::dto::AnyTypeRegistry& registry)
 
   if (HasAttribute(JSON_TYPE))
   {
+    sup::dto::JSONAnyTypeParser type_parser;
+    if (!type_parser.ParseString(GetAttribute(JSON_TYPE), &registry))
+    {
+      return false;
+    }
+    auto parsed_type = type_parser.MoveAnyType();
     if (HasAttribute(JSON_VALUE))
     {
-      try
-      {
-        *m_value = sup::dto::AnyValueFromJSONString(&registry,
-          FullJSONRepresentation(GetAttribute(JSON_TYPE), GetAttribute(JSON_VALUE)));
-      }
-      catch(const sup::dto::ParseException&)
+      sup::dto::JSONAnyValueParser value_parser;
+      if (!value_parser.TypedParseString(parsed_type, GetAttribute(JSON_VALUE)))
       {
         return false;
       }
+      m_value.reset(new sup::dto::AnyValue(value_parser.MoveAnyValue()));
     }
     else
     {
-      try
-      {
-        sup::dto::AnyType parsed_type = sup::dto::AnyTypeFromJSONString(&registry,
-                                                                        GetAttribute(JSON_TYPE));
-        m_value.reset(new sup::dto::AnyValue(parsed_type));
-      }
-      catch (const sup::dto::ParseException&)
-      {
-        return false;
-      }
+      m_value.reset(new sup::dto::AnyValue(parsed_type));
     }
   }
   return true;  // empty AnyValue is allowed for setting
@@ -118,14 +109,3 @@ void LocalVariable::ResetImpl()
 }  // namespace sequencer
 
 }  // namespace sup
-
-namespace
-{
-std::string FullJSONRepresentation(const std::string& json_type, const std::string& json_value)
-{
-  const std::string prelude = R"RAW([{"encoding":"sup-dto/v1.0/JSON"},{"datatype":)RAW";
-  const std::string interlude = R"RAW(},{"instance":)RAW";
-  const std::string ending = R"RAW(}])RAW";
-  return prelude + json_type + interlude + json_value + ending;
-}
-}  // unnamed namespace

@@ -52,6 +52,17 @@ TEST_F(GenericUtilsTest, GetEnvironmentVariable)
   EXPECT_TRUE(env_var.empty());
 }
 
+TEST_F(GenericUtilsTest, SafeStringToInt)
+{
+  int result = 0;
+  EXPECT_TRUE(utils::SafeStringToInt(result, "123"));
+  EXPECT_EQ(result, 123);
+  EXPECT_TRUE(utils::SafeStringToInt(result, "-25"));
+  EXPECT_EQ(result, -25);
+  EXPECT_FALSE(utils::SafeStringToInt(result, "five"));
+  EXPECT_FALSE(utils::SafeStringToInt(result, "3000000000"));
+}
+
 TEST_F(GenericUtilsTest, SafeStringToDouble)
 {
   double result = 0.0;

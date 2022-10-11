@@ -111,6 +111,17 @@ private:
   virtual bool SetValueImpl(const sup::dto::AnyValue& value) = 0;
 
   /**
+   * @brief Check if variable is available.
+   *
+   * @return true on success.
+   *
+   * @note Private virtual implementation.
+   * @note Availability is context-dependent: e.g. a network variable is available when it is
+   * connected. The default implementation always returns true.
+   */
+  virtual bool IsAvailableImpl() const;
+
+  /**
    * @brief Setup value of variable.
    *
    * @param registry Type registry.
@@ -185,6 +196,17 @@ public:
    * @note Non-virtual interface.
    */
   bool SetValue(const sup::dto::AnyValue& value, const std::string& fieldname = {});
+
+  /**
+   * @brief Check if variable is available.
+   *
+   * @return true on success.
+   *
+   * @note Non-virtual interface.
+   * @note Availability is context-dependent: e.g. a network variable is available when it is
+   * connected.
+   */
+  bool IsAvailable() const;
 
   /**
    * @brief Notify waiting threads of an update to the variable.

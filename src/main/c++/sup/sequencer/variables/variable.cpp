@@ -113,6 +113,16 @@ bool Variable::SetValue(const sup::dto::AnyValue &value, const std::string &fiel
   return SetValueImpl(var_copy);
 }
 
+bool Variable::IsAvailable() const
+{
+  std::lock_guard<std::mutex> lk(m_access_mutex);
+  if (!m_setup_successful)
+  {
+    return false;
+  }
+  return IsAvailableImpl();
+}
+
 void Variable::Notify(const sup::dto::AnyValue& value)
 {
   std::lock_guard<std::mutex> lk(m_notify_mutex);
@@ -166,6 +176,11 @@ bool Variable::AddAttributes(const AttributeMap &attributes)
     status = m_attributes.AddAttribute(attr.first, attr.second) && status;
   }
   return status;
+}
+
+bool Variable::IsAvailableImpl() const
+{
+  return true;
 }
 
 bool Variable::SetupImpl(const sup::dto::AnyTypeRegistry&)

@@ -74,7 +74,9 @@ TEST_F(LocalVariableTest, DefaultConstructed)
   EXPECT_EQ(empty_var.GetType(), LocalVariable::Type);
   EXPECT_TRUE(empty_var.GetName().empty());
   EXPECT_FALSE(empty_var.HasAttribute(attributes::NAME_ATTRIBUTE));
+  EXPECT_FALSE(empty_var.IsAvailable());
   EXPECT_NO_THROW(empty_var.Setup());
+  EXPECT_TRUE(empty_var.IsAvailable());
 
   // Test Get/SetName
   empty_var.SetName(EMPTY_VAR_NAME);

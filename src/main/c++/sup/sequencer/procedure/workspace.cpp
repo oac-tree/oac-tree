@@ -26,6 +26,7 @@
 #include <sup/dto/anytype_registry.h>
 
 #include <algorithm>
+#include <cmath>
 #include <condition_variable>
 #include <mutex>
 #include <utility>
@@ -188,7 +189,7 @@ bool Workspace::WaitForVariable(const std::string& name, double timeout_sec, boo
   {
     return false;
   }
-  long timeout_ns = static_cast<long>(timeout_sec * 1e9);
+  long timeout_ns = std::lround(timeout_sec * 1e9);
   auto time_end = std::chrono::system_clock::now() + std::chrono::nanoseconds(timeout_ns);
   int dummy_listener; // to get a unique address
   std::mutex mx;

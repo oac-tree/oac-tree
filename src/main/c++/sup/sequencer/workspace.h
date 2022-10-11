@@ -138,8 +138,10 @@ public:
    *
    * @param name Variable name.
    * @param timeout_sec Timeout in seconds.
+   * @param availability If true, wait for variable to become available, otherwise wait for
+   * inavailability.
    */
-  bool WaitForVariable(const std::string& name, double timeout_sec);
+  bool WaitForVariable(const std::string& name, double timeout_sec, bool availability = true);
 
   std::vector<const Variable*> GetVariables() const;
 

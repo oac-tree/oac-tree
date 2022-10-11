@@ -181,7 +181,7 @@ bool Workspace::SetValue(const std::string& name, const sup::dto::AnyValue &valu
   return it->second->SetValue(value, fieldname);
 }
 
-bool Workspace::WaitForVariable(const std::string& name, double timeout_sec)
+bool Workspace::WaitForVariable(const std::string& name, double timeout_sec, bool availability)
 {
   auto it = m_var_map.find(name);
   if (it == m_var_map.end())
@@ -196,8 +196,10 @@ bool Workspace::WaitForVariable(const std::string& name, double timeout_sec)
   std::condition_variable cv;
   auto cb_guard = GetCallbackGuard(&dummy_listener);
   RegisterCallback(name, [&cv](const sup::dto::AnyValue&){ cv.notify_one(); }, &dummy_listener);
-  cv.wait_until(lk, time_end, [&it]{ return it->second->IsAvailable(); });
-  return it->second->IsAvailable();
+  cv.wait_until(lk, time_end, [&it, availability]{
+    return it->second->IsAvailable() == availability;
+    });
+  return it->second->IsAvailable() == availability;
 }
 
 std::vector<const Variable *> Workspace::GetVariables() const

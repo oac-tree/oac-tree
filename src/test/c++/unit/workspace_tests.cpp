@@ -204,6 +204,7 @@ TEST_F(WorkspaceTest, WaitForVariable)
 
   workspace.Setup();
   EXPECT_TRUE(workspace.WaitForVariable("v1", 0.0));
+  EXPECT_FALSE(workspace.WaitForVariable("v1", 0.2, false));
 }
 
 TEST_F(WorkspaceTest, GetVariables)

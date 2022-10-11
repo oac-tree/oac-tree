@@ -93,7 +93,7 @@ public:
    * @param name Variable name.
    * @param var Variable pointer.
    */
-  bool AddVariable(std::string name, Variable* var);
+  bool AddVariable(const std::string& name, Variable* var);
 
   /**
    * @brief List all variable names.
@@ -123,15 +123,23 @@ public:
    *
    * @param name Variable name.
    */
-  bool GetValue(std::string name, sup::dto::AnyValue& value) const;
+  bool GetValue(const std::string& name, sup::dto::AnyValue& value) const;
 
   /**
    * @brief Set variable value
    *
    * @param name Variable name.
-   * @param name Variable value.
+   * @param value Variable value.
    */
-  bool SetValue(std::string name, const sup::dto::AnyValue& value);
+  bool SetValue(const std::string& name, const sup::dto::AnyValue& value);
+
+  /**
+   * @brief Wait with timeout for variable to become available.
+   *
+   * @param name Variable name.
+   * @param timeout_sec Timeout in seconds.
+   */
+  bool WaitForVariable(const std::string& name, double timeout_sec);
 
   std::vector<const Variable*> GetVariables() const;
 

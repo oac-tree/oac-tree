@@ -26,6 +26,8 @@
 #include <sup/dto/anytype_registry.h>
 
 #include <algorithm>
+#include <condition_variable>
+#include <mutex>
 #include <utility>
 
 namespace sup
@@ -70,7 +72,7 @@ Workspace::Workspace()
 
 Workspace::~Workspace() = default;
 
-bool Workspace::AddVariable(std::string name, Variable *var)
+bool Workspace::AddVariable(const std::string& name, Variable *var)
 {
   std::unique_ptr<Variable> var_owned(var);  // take ownership immediately
   if (ContainsVariablePointer(var))
@@ -134,7 +136,7 @@ bool Workspace::ResetVariable(const std::string& varname)
   return true;
 }
 
-bool Workspace::GetValue(std::string name, sup::dto::AnyValue &value) const
+bool Workspace::GetValue(const std::string& name, sup::dto::AnyValue &value) const
 {
   auto splitname = SplitToNameField(name);
   auto varname = splitname.first;
@@ -156,7 +158,7 @@ bool Workspace::GetValue(std::string name, sup::dto::AnyValue &value) const
   return it->second->GetValue(value, fieldname);
 }
 
-bool Workspace::SetValue(std::string name, const sup::dto::AnyValue &value)
+bool Workspace::SetValue(const std::string& name, const sup::dto::AnyValue &value)
 {
   auto splitname = SplitToNameField(name);
   auto varname = splitname.first;
@@ -177,6 +179,25 @@ bool Workspace::SetValue(std::string name, const sup::dto::AnyValue &value)
       name.c_str());
 
   return it->second->SetValue(value, fieldname);
+}
+
+bool Workspace::WaitForVariable(const std::string& name, double timeout_sec)
+{
+  auto it = m_var_map.find(name);
+  if (it == m_var_map.end())
+  {
+    return false;
+  }
+  long timeout_ns = static_cast<long>(timeout_sec * 1e9);
+  auto time_end = std::chrono::system_clock::now() + std::chrono::nanoseconds(timeout_ns);
+  int dummy_listener; // to get a unique address
+  std::mutex mx;
+  std::unique_lock<std::mutex> lk(mx);
+  std::condition_variable cv;
+  auto cb_guard = GetCallbackGuard(&dummy_listener);
+  RegisterCallback(name, [&cv](const sup::dto::AnyValue&){ cv.notify_one(); }, &dummy_listener);
+  cv.wait_until(lk, time_end, [&it]{ return it->second->IsAvailable(); });
+  return it->second->IsAvailable();
 }
 
 std::vector<const Variable *> Workspace::GetVariables() const
@@ -220,7 +241,7 @@ const sup::dto::AnyTypeRegistry* Workspace::GetTypeRegistry() const
 CallbackGuard<NamedCallbackManager<const sup::dto::AnyValue &>> Workspace::GetCallbackGuard(
     void *listener)
 {
-  return m_callbacks.GetCallbackGuard(this);
+  return m_callbacks.GetCallbackGuard(listener);
 }
 
 bool Workspace::RegisterGenericCallback(

@@ -192,6 +192,20 @@ TEST_F(WorkspaceTest, SetValue)
   EXPECT_FALSE(ws.GetValue(var3_unknown_field_name, var3_status_field));
 }
 
+TEST_F(WorkspaceTest, WaitForVariable)
+{
+  Workspace workspace;
+  EXPECT_TRUE(workspace.GetVariables().empty());
+  EXPECT_FALSE(workspace.WaitForVariable("v1", 1.0));
+
+  auto v1 = GlobalVariableRegistry().Create("Local");
+  workspace.AddVariable("v1", v1.release());
+  EXPECT_FALSE(workspace.WaitForVariable("v1", 0.0));
+
+  workspace.Setup();
+  EXPECT_TRUE(workspace.WaitForVariable("v1", 0.0));
+}
+
 TEST_F(WorkspaceTest, GetVariables)
 {
   Workspace workspace;

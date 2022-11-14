@@ -2,7 +2,7 @@
 
 TARGET=../../../target
 
-BUILD_DIR := ./build
+BUILD_DIR := $(TARGET)/build
 
 CMAKE_FLAGS += -DCMAKE_INSTALL_PREFIX=$(TARGET)
 

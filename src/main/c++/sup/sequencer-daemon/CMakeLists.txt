@@ -15,5 +15,3 @@ target_link_libraries(sequencer-daemon
     PRIVATE
         sup-sequencer-shared
 )
-
-install(TARGETS sequencer-daemon RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})

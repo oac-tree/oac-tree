@@ -67,8 +67,4 @@ target_link_libraries(unit-tests
         sup-sequencer-shared
 )
 
-if (SEQUENCER_CODAC)
-  set_target_properties(unit-tests PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${SEQUENCER_PROJECT_DIR}/target/bin")
-endif()
-
 gtest_discover_tests(unit-tests)

@@ -21,7 +21,3 @@ target_link_libraries(testapp
     PRIVATE
         sup-sequencer-shared
 )
-
-if (SEQUENCER_CODAC)
-  set_target_properties(testapp PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${SEQUENCER_PROJECT_DIR}/target/bin")
-endif()

@@ -60,10 +60,7 @@ target_link_directories(unit-tests
 find_package(GTest REQUIRED)
 
 target_link_libraries(unit-tests
-    PRIVATE
-        GTest::GTest
-        GTest::Main
-        gmock
+    PRIVATE GTest::gtest GTest::gmock GTest::gtest
         sup-sequencer-shared
 )
 

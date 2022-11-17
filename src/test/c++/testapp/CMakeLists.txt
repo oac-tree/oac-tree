@@ -7,17 +7,4 @@ target_sources(testapp
         ${CMAKE_CURRENT_LIST_DIR}/test_ui.cpp
 )
 
-target_include_directories(testapp
-    PRIVATE
-        $ENV{CODAC_ROOT}/include
-)
-
-target_link_directories(testapp
-    PRIVATE
-        $ENV{CODAC_ROOT}/lib
-)
-
-target_link_libraries(testapp
-    PRIVATE
-        sup-sequencer-shared
-)
+target_link_libraries(testapp PRIVATE sup-sequencer-shared)

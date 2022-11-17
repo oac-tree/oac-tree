@@ -46,16 +46,7 @@ target_sources(unit-tests
         ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++/sup/sequencer-daemon/daemon_interface.cpp
 )
 
-target_include_directories(unit-tests
-    PRIVATE
-        ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++
-        $ENV{CODAC_ROOT}/include
-)
-
-target_link_directories(unit-tests
-    PRIVATE
-        $ENV{CODAC_ROOT}/lib
-)
+target_include_directories(unit-tests PRIVATE ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++)
 
 find_package(GTest REQUIRED)
 

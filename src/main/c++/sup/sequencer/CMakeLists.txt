@@ -28,7 +28,7 @@ target_include_directories(sup-sequencer-shared PUBLIC
 target_link_libraries(sup-sequencer-shared PRIVATE LibXml2::LibXml2)
 
 if (SEQUENCER_CODAC)
-  target_include_directories(sup-sequencer-shared PRIVATE $ENV{CODAC_ROOT}/include)
+  target_include_directories(sup-sequencer-shared PUBLIC $ENV{CODAC_ROOT}/include)
   target_link_directories(sup-sequencer-shared PUBLIC $ENV{CODAC_ROOT}/lib)
   target_link_libraries(sup-sequencer-shared PUBLIC sup-dto)
 else()

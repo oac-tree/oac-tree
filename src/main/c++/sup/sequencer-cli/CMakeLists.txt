@@ -6,12 +6,4 @@ target_sources(sequencer-cli
         ${CMAKE_CURRENT_LIST_DIR}/main.cpp
 )
 
-target_include_directories(sequencer-cli
-    PRIVATE
-        $ENV{CODAC_ROOT}/include
-)
-
-target_link_libraries(sequencer-cli
-    PRIVATE
-        sup-sequencer-shared
-)
+target_link_libraries(sequencer-cli PRIVATE sup-sequencer-shared)

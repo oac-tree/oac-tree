@@ -7,3 +7,7 @@ target_sources(sequencer-daemon
 )
 
 target_link_libraries(sequencer-daemon PRIVATE sup-sequencer-shared)
+
+if(NOT SEQUENCER_CODAC)
+  install(TARGETS sequencer-daemon RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+endif()

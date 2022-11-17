@@ -7,3 +7,8 @@ target_sources(sequencer-cli
 )
 
 target_link_libraries(sequencer-cli PRIVATE sup-sequencer-shared)
+
+if(NOT SEQUENCER_CODAC)
+  install(TARGETS sequencer-cli RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+endif()
+

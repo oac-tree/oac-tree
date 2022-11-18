@@ -63,7 +63,6 @@ std::unique_ptr<Procedure> ParseProcedure(const TreeData &data, const std::strin
                 data.GetType().c_str());
     return {};
   }
-
   auto result = std::unique_ptr<Procedure>(new Procedure());
 
   // Add current filename
@@ -155,7 +154,7 @@ bool ParseAndLoadPlugin(const TreeData &child)
 }
 
 bool RegisterTypeInformation(Procedure *procedure, const TreeData &child,
-                                    const std::string &filename)
+                             const std::string &filename)
 {
   sup::dto::AnyType parsed_type;
   sup::dto::JSONAnyTypeParser parser;

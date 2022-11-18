@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+           name="Procedure to monitor a pulse"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+    <RegisterType jsonfile="pcs_config_t.json"/>
+    <Sequence isRoot="True">
+        <Wait timeout="1.0"/>
+        <Output from="pps-config" description="PCS configuration: " />
+    </Sequence>
+    <Workspace>
+        <Local name="pps-config" type='{"type":"pcs_config_t"}'/>
+    </Workspace>
+</Procedure>

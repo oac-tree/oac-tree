@@ -1,0 +1,289 @@
+{
+  "type": "pcs_config_t",
+  "attributes": [
+    {
+      "pcs_config": {
+        "type": "segment_config_t",
+        "attributes": [
+          {
+            "segments" : {
+              "type": "segments_t",
+              "attributes": [
+                {
+                  "segment01": {
+                    "type": "segment01_t",
+                    "attributes": [
+                      {
+                        "segment_id": {
+                          "type": "uint32"
+                        }
+                      },
+                      {
+                        "duration": {
+                          "type": "uint32"
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "segment02": {
+                    "type": "segment02_t",
+                    "attributes": [
+                      {
+                        "segment_id": {
+                          "type": "uint32"
+                        }
+                      },
+                      {
+                        "duration": {
+                          "type": "uint32"
+                        }
+                      },
+                      {
+                        "ip_reference": {
+                          "type": "ip_ref02_t",
+                          "attributes": [
+                            {
+                              "x_vector": {
+                                "type": "vec2",
+                                "multiplicity": 2,
+                                "element": {
+                                  "type": "float64"
+                                }
+                              }
+                            },
+                            {
+                              "y_vector": {
+                                "type": "vec2",
+                                "multiplicity": 2,
+                                "element": {
+                                  "type": "float64"
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "gas_puff": {
+                          "type": "gas_puff02_t",
+                          "attributes": [
+                            {
+                              "amplitude": {
+                                "type": "vec1",
+                                "multiplicity": 1,
+                                "element": {
+                                  "type": "float64"
+                                }
+                              }
+                            },
+                            {
+                              "offset": {
+                                "type": "vec1",
+                                "multiplicity": 1,
+                                "element": {
+                                  "type": "float64"
+                                }
+                              }
+                            },
+                            {
+                              "width": {
+                                "type": "vec1",
+                                "multiplicity": 1,
+                                "element": {
+                                  "type": "float64"
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "segment03": {
+                    "type": "segment03_t",
+                    "attributes": [
+                      {
+                        "segment_id": {
+                          "type": "uint32"
+                        }
+                      },
+                      {
+                        "duration": {
+                          "type": "uint32"
+                        }
+                      },
+                      {
+                        "ip_reference": {
+                          "type": "ip_ref03_t",
+                          "attributes": [
+                            {
+                              "x_vector": {
+                                "type": "vec3",
+                                "multiplicity": 3,
+                                "element": {
+                                  "type": "float64"
+                                }
+                              }
+                            },
+                            {
+                              "y_vector": {
+                                "type": "vec3",
+                                "multiplicity": 3,
+                                "element": {
+                                  "type": "float64"
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "gas_puff": {
+                          "type": "gas_puff03_t",
+                          "attributes": [
+                            {
+                              "amplitude": {
+                                "type": "vec2",
+                                "multiplicity": 2,
+                                "element": {
+                                  "type": "float64"
+                                }
+                              }
+                            },
+                            {
+                              "offset": {
+                                "type": "vec2",
+                                "multiplicity": 2,
+                                "element": {
+                                  "type": "float64"
+                                }
+                              }
+                            },
+                            {
+                              "width": {
+                                "type": "vec2",
+                                "multiplicity": 2,
+                                "element": {
+                                  "type": "float64"
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "segment04": {
+                    "type": "segment04_t",
+                    "attributes": [
+                      {
+                        "segment_id": {
+                          "type": "uint32"
+                        }
+                      },
+                      {
+                        "duration": {
+                          "type": "uint32"
+                        }
+                      },
+                      {
+                        "ip_reference": {
+                          "type": "ip_ref04_t",
+                          "attributes": [
+                            {
+                              "x_vector": {
+                                "type": "vec8",
+                                "multiplicity": 8,
+                                "element": {
+                                  "type": "float64"
+                                }
+                              }
+                            },
+                            {
+                              "y_vector": {
+                                "type": "vec8",
+                                "multiplicity": 8,
+                                "element": {
+                                  "type": "float64"
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "segment05": {
+                    "type": "segment05_t",
+                    "attributes": [
+                      {
+                        "segment_id": {
+                          "type": "uint32"
+                        }
+                      },
+                      {
+                        "duration": {
+                          "type": "uint32"
+                        }
+                      },
+                      {
+                        "ip_reference": {
+                          "type": "ip_ref05_t",
+                          "attributes": [
+                            {
+                              "x_vector": {
+                                "type": "vec2",
+                                "multiplicity": 2,
+                                "element": {
+                                  "type": "float64"
+                                }
+                              }
+                            },
+                            {
+                              "y_vector": {
+                                "type": "vec2",
+                                "multiplicity": 2,
+                                "element": {
+                                  "type": "float64"
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "segment99": {
+                    "type": "segment99_t",
+                    "attributes": [
+                      {
+                        "segment_id": {
+                          "type": "uint32"
+                        }
+                      },
+                      {
+                        "duration": {
+                          "type": "uint32"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

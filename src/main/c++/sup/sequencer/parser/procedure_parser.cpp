@@ -170,8 +170,9 @@ bool RegisterTypeInformation(Procedure *procedure, const TreeData &child,
   }
   else if (child.HasAttribute(JSONFILE_ATTRIBUTE_NAME))
   {
-    if (!parser.ParseFile(child.GetAttribute(JSONFILE_ATTRIBUTE_NAME),
-                          procedure->GetTypeRegistry()))
+    auto json_filename = GetFullPathName(GetFileDirectory(filename),
+                                         child.GetAttribute(JSONFILE_ATTRIBUTE_NAME));
+    if (!parser.ParseFile(json_filename, procedure->GetTypeRegistry()))
     {
       return false;
     }

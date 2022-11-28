@@ -33,7 +33,7 @@
     <properties>
         <unit.type>module</unit.type>
         <integrity.level>1</integrity.level>
-        <pluginpath>lib/sup/sequencer/plugins</pluginpath>
+        <pluginpath>lib/sequencer/plugins</pluginpath>
         <cppcheck.args>--enable=all --suppress=missingInclude --inline-suppr</cppcheck.args>
         <sonar.exclusions>src/main/c++/sup/sequencer-cli/main.cpp, src/main/c++/sup/sequencer-daemon/main.cpp, src/test/**</sonar.exclusions>
     </properties>

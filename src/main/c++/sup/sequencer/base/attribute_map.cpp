@@ -139,10 +139,6 @@ bool AttributeMap::InitialiseVariableAttributes(const AttributeMap &source)
     auto attr_value = GetAttribute(attr_name);
     if (StartsWith(attr_value, DefaultSettings::VAR_ATTRIBUTE_CHAR))
     {
-      log::Debug(
-          "AttributeMap::InitialiseVariableAttributes() - attr_name('%s'), "
-          "attr_value('%s')",
-          attr_name.c_str(), attr_value.c_str());
       auto var_name = attr_value.substr(1);
       if (!source.HasAttribute(var_name))
       {
@@ -150,10 +146,6 @@ bool AttributeMap::InitialiseVariableAttributes(const AttributeMap &source)
         continue;
       }
       auto var_value = source.GetAttribute(var_name);
-      log::Debug(
-          "AttributeMap::InitialiseVariableAttributes() - set attr_name('%s') "
-          "to '%s'",
-          attr_name.c_str(), var_value.c_str());
       _attributes[attr_name] = var_value;
     }
   }

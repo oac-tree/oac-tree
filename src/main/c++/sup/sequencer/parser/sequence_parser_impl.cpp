@@ -128,7 +128,6 @@ static void AddXMLChildren(TreeData *tree, xmlDocPtr doc, xmlNodePtr node)
     }
     else if (child_node->type == XML_ELEMENT_NODE)
     {
-      log::Debug("Add child Data: %s", reinterpret_cast<const char *>(child_node->name));
       auto child_data = ParseDataTree(doc, child_node);
       tree->AddChild(*child_data);
     }

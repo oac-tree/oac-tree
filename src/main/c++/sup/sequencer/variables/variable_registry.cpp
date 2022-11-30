@@ -59,7 +59,6 @@ std::unique_ptr<Variable> VariableRegistry::Create(std::string name)
     log::Error("VariableRegistry::Create('%s') - Variable not registered", name.c_str());
     return {};
   }
-  log::Debug("VariableRegistry::Create('%s') - Create variable ..", name.c_str());
   return std::unique_ptr<Variable>(entry->second());
 }
 

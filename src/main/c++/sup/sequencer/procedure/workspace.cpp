@@ -91,8 +91,6 @@ bool Workspace::AddVariable(const std::string& name, Variable *var)
         name.c_str());
     return false;
   }
-  log::Debug("sup::sequencer::Workspace::AddVariable('%s', var) - add variable to workspace..",
-            name.c_str());
   var_owned->SetNotifyCallback(
     [this, name](const sup::dto::AnyValue& value)
     {
@@ -152,10 +150,6 @@ bool Workspace::GetValue(const std::string& name, sup::dto::AnyValue &value) con
         name.c_str(), varname.c_str());
     return false;
   }
-  log::Debug(
-      "sup::sequencer::Workspace::GetValue('%s', 'value') - trying to copy found "
-      "workspace variable to 'value'..",
-      name.c_str());
   return it->second->GetValue(value, fieldname);
 }
 
@@ -174,11 +168,6 @@ bool Workspace::SetValue(const std::string& name, const sup::dto::AnyValue &valu
         name.c_str(), varname.c_str());
     return false;
   }
-  log::Debug(
-      "sup::sequencer::Workspace::SetValue('%s', 'value') - trying to copy "
-      "'value' into found workspace variable..",
-      name.c_str());
-
   return it->second->SetValue(value, fieldname);
 }
 

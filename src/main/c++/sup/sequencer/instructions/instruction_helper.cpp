@@ -50,10 +50,6 @@ const Instruction *FindInstruction(const std::vector<const Instruction *> &instr
 {
   const Instruction *result = nullptr;
   auto names = StripPath(name_path);
-  log::Debug(
-      "sup::sequencer::InstructionHelper::FindInstruction(): checking "
-      "names ('%s','%s')..",
-      names.first.c_str(), names.second.c_str());
   for (auto inst : instructions)
   {
     if (inst->GetName() == names.first)

@@ -35,23 +35,16 @@ namespace sequencer
 {
 bool LoadPlugin(const std::string& name)
 {
-  log::Debug("sup::sequencer::LoadPlugin('%s') - trying to load plugin..", name.c_str());
-  bool status = utils::LoadLibrary(name);
-
-  if (!status)
+  if (!utils::LoadLibrary(name))
   {
     log::Warning("sup::sequencer::LoadPlugin('%s') - could not load plugin", name.c_str());
+    return false;
   }
-  else
-  {
-    log::Debug("sup::sequencer::LoadPlugin('%s') - successfully loaded plugin", name.c_str());
-  }
-  return status;
+  return true;
 }
 
 std::unique_ptr<Procedure> ParseProcedureFile(const std::string& filename)
 {
-  log::Debug("sup::sequencer::ParseProcedureFile('%s') - load file..", filename.c_str());
   auto data = ParseXMLDataFile(filename);
 
   if (!data)
@@ -75,7 +68,6 @@ std::unique_ptr<Procedure> ParseProcedureFile(const std::string& filename)
 std::unique_ptr<Procedure> ParseProcedureString(const std::string& xml_str)
 {
   auto xml_head = xml_str.substr(0, 1024);
-  log::Debug("sup::sequencer::ParseProcedureString('%s') - parsing string..", xml_head.c_str());
   auto data = ParseXMLDataString(xml_str);
 
   if (!data)

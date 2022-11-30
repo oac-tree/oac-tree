@@ -87,13 +87,11 @@ void MockUI::UpdateInstructionStatusImpl(const Instruction *instruction) {}
 int MockUI::GetUserChoiceImpl(const std::vector<std::string> &choices,
                               const std::string &description)
 {
-  log::Debug("TestUI::GetUserChoiceImpl - Description '%s'", description.c_str());
   return m_choice;
 }
 
 bool MockUI::GetUserValueImpl(sup::dto::AnyValue &value, const std::string &description)
 {
-  log::Debug("TestUI::GetUserValueImpl - Description '%s'", description.c_str());
   if (sup::dto::IsEmptyValue(value))
   {
     return false;
@@ -179,18 +177,11 @@ void PrintProcedureWorkspace(Procedure *procedure)
   for (const auto &var_name : var_names)
   {
     sup::dto::AnyValue val;
-    log::Debug("Variable '%s'", var_name.c_str());
 
     bool var_initialized = procedure->GetVariableValue(var_name, val);
     if (var_initialized)
     {
       std::string json_rep = sup::dto::ValuesToJSONString(val);
-      log::Debug("Variable '%s', with value\n  %s", var_name.c_str(),
-                                 json_rep.c_str());
-    }
-    else
-    {
-      log::Debug("Variable '%s' uninitialized", var_name.c_str());
     }
   }
 }

@@ -55,10 +55,6 @@ std::unique_ptr<Instruction> ParseInstruction(const TreeData &data, const std::s
   {
     instr->AddAttribute(attr.first, attr.second);
   }
-  log::Debug(
-      "sup::sequencer::ParseInstruction() - "
-      "parsing child instructions for instruction of type: '%s'",
-      instr_type.c_str());
   bool status = AddChildInstructions(instr.get(), data.Children(), filename);
   if (!status)
   {
@@ -88,14 +84,12 @@ static bool AddChildInstructions(Instruction *instruction, const std::vector<Tre
   auto decorator = dynamic_cast<DecoratorInstruction *>(instruction);
   if (decorator)
   {
-    log::Debug("AddChildInstructions() - (%s:%s)", instr_type.c_str(), instr_name.c_str());
     return AddChildrenToDecorator(decorator, children, filename);
   }
 
   auto compound = dynamic_cast<CompoundInstruction *>(instruction);
   if (compound)
   {
-    log::Debug("AddChildInstructions() - (%s:%s)", instr_type.c_str(), instr_name.c_str());
     if (AddChildrenToCompound(compound, children, filename))
     {
       return true;
@@ -123,8 +117,6 @@ static bool AddChildrenToDecorator(DecoratorInstruction *decorator,
     if (child_instr)
     {
       auto child_type = child_instr->GetType();
-      log::Debug("AddChildrenToDecorator() - calling Decorator->SetInstruction(%s)",
-                child_type.c_str());
       decorator->SetInstruction(child_instr.release());
       return true;
     }
@@ -145,7 +137,6 @@ static bool AddChildrenToCompound(CompoundInstruction *compound,
       if (child_instr)
       {
         auto child_type = child_instr->GetType();
-        log::Debug("AddChildrenToCompound() - calling Compound->PushBack(%s)", child_type.c_str());
         compound->PushBack(child_instr.release());
         continue;
       }

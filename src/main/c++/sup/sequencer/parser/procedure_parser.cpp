@@ -55,8 +55,6 @@ bool ParseAndAddInstruction(Procedure *procedure, const TreeData &instr_data);
 
 std::unique_ptr<Procedure> ParseProcedure(const TreeData &data, const std::string &filename)
 {
-  log::Debug("sup::sequencer::ParseProcedure() - entering function..");
-
   if (data.GetType() != Constants::PROCEDURE_ELEMENT_NAME)
   {
     log::Warning("sup::sequencer::ParseProcedure() - incorrect root element type: '%s'",
@@ -88,8 +86,6 @@ std::unique_ptr<Procedure> ParseProcedure(const TreeData &data, const std::strin
 
 std::string GetFullPathName(const std::string &directory, const std::string &filename)
 {
-  log::Debug("sup::sequencer::GetFullPathName(%s, %s) - entering function..", directory.c_str(),
-            filename.c_str());
   if (filename.empty())
   {
     log::Warning("sup::sequencer::GetFullPathName() - empty filename as argument");
@@ -144,7 +140,6 @@ bool ParseAndLoadPlugin(const TreeData &child)
   {
     return true;
   }
-  log::Debug("ParseAndLoadPlugin() - parsing plugin '%s'", plugin_name.c_str());
   bool success = LoadPlugin(plugin_name);
   if (!success)
   {
@@ -210,11 +205,9 @@ bool ParseProcedureChildren(Procedure *procedure, const TreeData &data)
 bool AddWorkspaceVariables(Procedure *procedure, const TreeData &ws_data)
 {
   bool result = true;
-  log::Debug("AddWorkspaceVariables() - generating workspace variables..");
   for (auto &var_data : ws_data.Children())
   {
     auto name = var_data.GetName();
-    log::Debug("AddWorkspaceVariables() - generate variable: '%s'", name.c_str());
     if (!name.empty())
     {
       auto var = ParseVariable(var_data);

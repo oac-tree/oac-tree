@@ -102,8 +102,6 @@ ExecutionStatus Choice::ExecuteChild(std::size_t idx, UserInterface *ui, Workspa
     if (NeedsExecute(child_instr->GetStatus()))
     {
       auto childName = child_instr->GetName();
-      log::Debug("Choice::ExecuteChild - Executing child[%u]=%s", idx, childName.c_str());
-
       child_instr->ExecuteSingle(ui, ws);
     }
     return child_instr->GetStatus();

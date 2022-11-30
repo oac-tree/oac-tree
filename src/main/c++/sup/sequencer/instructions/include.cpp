@@ -85,7 +85,6 @@ bool Include::SetupImpl(const Procedure& proc)
   std::unique_ptr<Instruction> clone(InstructionHelper::CloneInstruction(instr));
   if (InstructionHelper::InitialiseVariableAttributes(*clone, GetAttributes()))
   {
-    log::Debug("Include::SetupImpl(): variable attributes successfully set");
     SetInstruction(clone.release());
     return SetupChild(proc);
   }

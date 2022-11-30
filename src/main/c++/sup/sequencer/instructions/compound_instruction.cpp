@@ -78,7 +78,6 @@ bool CompoundInstruction::SetupImpl(const Procedure& proc)
 
 bool CompoundInstruction::SetupChildren(const Procedure& proc)
 {
-  log::Debug("CompoundInstruction::SetupChildren - entering function..");
   bool result = true;
   for (auto instruction : _children)
   {

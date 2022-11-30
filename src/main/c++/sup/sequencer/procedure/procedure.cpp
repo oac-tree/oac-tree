@@ -42,7 +42,6 @@ const Procedure *Procedure::LoadProcedure(const std::string &filename) const
 {
   if (m_procedure_cache.find(filename) == m_procedure_cache.end())
   {
-    log::Debug("Procedure::LoadProcedure('%s') - Loading procedure from file..", filename.c_str());
     auto loaded_proc = ParseProcedureFile(filename);
     if (loaded_proc)
     {

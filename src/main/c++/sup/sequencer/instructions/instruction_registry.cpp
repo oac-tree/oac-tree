@@ -80,7 +80,6 @@ std::unique_ptr<Instruction> InstructionRegistry::Create(std::string name)
     log::Error("InstructionRegistry::Create('%s') - Instruction not registered", name.c_str());
     return {};
   }
-  log::Debug("InstructionRegistry::Create('%s') - Create instruction ..", name.c_str());
   return std::unique_ptr<Instruction>(entry->second());
 }
 

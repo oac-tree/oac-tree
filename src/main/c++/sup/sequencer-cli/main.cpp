@@ -70,8 +70,6 @@ int main(int argc, char* argv[])
     print_usage(arguments.at(0));
     return 0;
   }
-  sup::sequencer::log::Debug("sequencer-cli called with filename: %s", filename.c_str());
-
   if (!sup::sequencer::utils::FileExists(filename.c_str()))
   {
     sup::sequencer::log::Error("sequencer-cli: file not found <%s>", filename.c_str());

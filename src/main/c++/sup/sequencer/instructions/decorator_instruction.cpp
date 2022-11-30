@@ -72,7 +72,6 @@ bool DecoratorInstruction::SetupImpl(const Procedure &proc)
 
 bool DecoratorInstruction::SetupChild(const Procedure &proc)
 {
-  log::Debug("DecoratorInstruction::SetupChild - entering function..");
   bool status = true;
   if (_child)
   {

@@ -75,9 +75,6 @@ int main(int argc, char* argv[])
     sup::sequencer::log::Warning("sequencer-daemon called without filename");
     return 1;
   }
-
-  sup::sequencer::log::Debug("sequencer-daemon called with filename: %s", params.filepath.c_str());
-
   if (!sup::sequencer::utils::FileExists(params.filepath))
   {
     sup::sequencer::log::Error("sequencer-daemon: file not found <%s>", params.filepath.c_str());

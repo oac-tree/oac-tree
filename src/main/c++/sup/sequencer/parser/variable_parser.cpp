@@ -22,7 +22,6 @@
 #include "variable_parser.h"
 
 #include <sup/sequencer/exceptions.h>
-#include <sup/sequencer/log.h>
 #include <sup/sequencer/variable_registry.h>
 
 namespace sup

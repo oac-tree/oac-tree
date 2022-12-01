@@ -27,7 +27,6 @@
 #include <sup/sequencer/constants.h>
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/generic_utils.h>
-#include <sup/sequencer/log.h>
 #include <sup/sequencer/sequence_parser.h>
 
 #include <sup/dto/anytype.h>

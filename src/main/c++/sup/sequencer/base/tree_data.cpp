@@ -21,8 +21,6 @@
 
 #include <sup/sequencer/tree_data.h>
 
-#include <sup/sequencer/log.h>
-
 namespace sup
 {
 namespace sequencer

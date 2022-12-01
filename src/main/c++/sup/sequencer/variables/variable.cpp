@@ -21,8 +21,6 @@
 
 #include <sup/sequencer/variable.h>
 
-#include <sup/sequencer/log.h>
-
 #include <sup/dto/anytype_registry.h>
 #include <sup/dto/anyvalue_helper.h>
 

@@ -21,8 +21,6 @@
 
 #include <sup/sequencer/execution_status.h>
 
-#include <sup/sequencer/log.h>
-
 namespace sup
 {
 namespace sequencer

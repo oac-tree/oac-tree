@@ -22,7 +22,6 @@
 #include <sup/sequencer/procedure.h>
 
 #include <sup/sequencer/exceptions.h>
-#include <sup/sequencer/log.h>
 #include <sup/sequencer/instruction.h>
 #include <sup/sequencer/sequence_parser.h>
 #include <sup/sequencer/workspace.h>
@@ -121,7 +120,6 @@ std::vector<const Instruction *> Procedure::GetInstructions(const std::string &f
       "sup::sequencer::Procedure::GetInstructions: could not load procedure with filename [" +
       filename + "]";
     throw ParseException(error_message);
-
   }
   return loaded_proc->GetInstructions();
 }

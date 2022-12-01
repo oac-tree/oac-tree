@@ -21,8 +21,6 @@
 
 #include <sup/sequencer/user_interface.h>
 
-#include <sup/sequencer/log.h>
-
 namespace sup
 {
 namespace sequencer

@@ -27,7 +27,6 @@
 #include <sup/sequencer/instruction_registry.h>
 
 #include <sup/sequencer/exceptions.h>
-#include <sup/sequencer/log.h>
 
 namespace sup
 {

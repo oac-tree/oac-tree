@@ -23,6 +23,7 @@
 
 #include <sup/sequencer/variables/local_variable.h>
 
+#include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/sequence_parser.h>
 #include <sup/sequencer/variable_registry.h>
 
@@ -80,9 +81,9 @@ TEST_F(WorkspaceTest, AddVariable)
   EXPECT_EQ(std::find(variables.begin(), variables.end(), var3_name), variables.end());
 
   // Test failure of adding variable with duplicate name or address
-  EXPECT_FALSE(ws.AddVariable(var1_name, var3.release()));
+  EXPECT_THROW(ws.AddVariable(var1_name, var3.release()), InvalidOperationException);
   std::string var4_name = "var4";
-  EXPECT_FALSE(ws.AddVariable(var4_name, var1_address));
+  EXPECT_THROW(ws.AddVariable(var4_name, var1_address), InvalidOperationException);
 }
 
 TEST_F(WorkspaceTest, GetValue)

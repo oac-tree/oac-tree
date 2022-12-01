@@ -21,7 +21,7 @@
 
 #include <sup/sequencer/workspace.h>
 
-#include <sup/sequencer/log.h>
+#include <sup/sequencer/exceptions.h>
 
 #include <sup/dto/anytype_registry.h>
 
@@ -78,18 +78,19 @@ bool Workspace::AddVariable(const std::string& name, Variable *var)
   std::unique_ptr<Variable> var_owned(var);  // take ownership immediately
   if (ContainsVariablePointer(var))
   {
-    log::Warning(
-        "sup::sequencer::Workspace::AddVariable('%s', var) - variable pointer already exists!",
-        name.c_str());
+    auto vartype = var_owned->GetType();
     var_owned.release(); // do not delete this variable!
-    return false;
+    std::string error_message =
+      "sup::sequencer::Workspace::AddVariable(): trying to add variable that already exists, "
+      "with type [" + vartype + "] and name [" + name + "]";
+    throw InvalidOperationException(error_message);
   }
   if (ContainsVariableName(name))
   {
-    log::Warning(
-        "sup::sequencer::Workspace::AddVariable('%s', var) - variable name already exists!",
-        name.c_str());
-    return false;
+    std::string error_message =
+      "sup::sequencer::Workspace::AddVariable(): trying to add variable with name that already "
+      "exists: [" + name + "]";
+    throw InvalidOperationException(error_message);
   }
   var_owned->SetNotifyCallback(
     [this, name](const sup::dto::AnyValue& value)
@@ -144,10 +145,6 @@ bool Workspace::GetValue(const std::string& name, sup::dto::AnyValue &value) con
   auto it = m_var_map.find(varname);
   if (it == m_var_map.end())
   {
-    log::Warning(
-        "sup::sequencer::Workspace::GetValue('%s', value) - variable with name '%s' "
-        "not in workspace!",
-        name.c_str(), varname.c_str());
     return false;
   }
   return it->second->GetValue(value, fieldname);
@@ -162,10 +159,6 @@ bool Workspace::SetValue(const std::string& name, const sup::dto::AnyValue &valu
   auto it = m_var_map.find(varname);
   if (it == m_var_map.end())
   {
-    log::Warning(
-        "sup::sequencer::Workspace::SetValue('%s', value) - variable with name '%s' "
-        "not in workspace!",
-        name.c_str(), varname.c_str());
     return false;
   }
   return it->second->SetValue(value, fieldname);

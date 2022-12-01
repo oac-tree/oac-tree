@@ -28,7 +28,6 @@
 
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/generic_utils.h>
-#include <sup/sequencer/log.h>
 
 namespace sup
 {

@@ -21,7 +21,6 @@
 
 #include "local_variable.h"
 
-#include <sup/sequencer/log.h>
 #include <sup/sequencer/procedure.h>
 
 #include <sup/dto/anytype.h>

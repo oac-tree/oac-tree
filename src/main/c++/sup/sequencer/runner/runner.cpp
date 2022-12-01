@@ -22,7 +22,6 @@
 #include <sup/sequencer/runner.h>
 
 #include <sup/sequencer/constants.h>
-#include <sup/sequencer/log.h>
 #include <sup/sequencer/procedure.h>
 #include <sup/sequencer/user_interface.h>
 

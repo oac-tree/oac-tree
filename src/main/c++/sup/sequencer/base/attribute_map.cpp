@@ -22,7 +22,6 @@
 #include <sup/sequencer/attribute_map.h>
 
 #include <sup/sequencer/constants.h>
-#include <sup/sequencer/log.h>
 
 #include <algorithm>
 #include <cctype>

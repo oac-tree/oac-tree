@@ -50,9 +50,9 @@ void ParsePreamble(Procedure *procedure, const TreeData &data, const std::string
 void ParseAndLoadPlugin(const TreeData &child);
 void RegisterTypeInformation(Procedure *procedure, const TreeData &child,
                              const std::string &filename);
-bool ParseProcedureChildren(Procedure *procedure, const TreeData &data);
-bool AddWorkspaceVariables(Procedure *procedure, const TreeData &ws_data);
-bool ParseAndAddInstruction(Procedure *procedure, const TreeData &instr_data);
+void ParseProcedureChildren(Procedure *procedure, const TreeData &data);
+void AddWorkspaceVariables(Procedure *procedure, const TreeData &ws_data);
+void ParseAndAddInstruction(Procedure *procedure, const TreeData &instr_data);
 }  // unnamed namespace
 
 std::unique_ptr<Procedure> ParseProcedure(const TreeData &data, const std::string &filename)
@@ -76,19 +76,16 @@ std::unique_ptr<Procedure> ParseProcedure(const TreeData &data, const std::strin
   result->AddAttributes(data.Attributes());
 
   // Parse child elements
-  if (ParseProcedureChildren(result.get(), data))
-  {
-    return result;
-  }
-  return {};
+  ParseProcedureChildren(result.get(), data);
+  return result;
 }
 
 std::string GetFullPathName(const std::string &directory, const std::string &filename)
 {
   if (filename.empty())
   {
-    log::Warning("sup::sequencer::GetFullPathName() - empty filename as argument");
-    return {};
+    std::string error_message = "sup::sequencer::GetFullPathName(): empty filename passed";
+    throw ParseException(error_message);
   }
   if (filename.front() == '/')
   {
@@ -134,12 +131,7 @@ void ParseAndLoadPlugin(const TreeData &child)
       Constants::PLUGIN_ELEMENT_NAME + ">";
     throw ParseException(error_message);
   }
-  if (!LoadPlugin(plugin_name))
-  {
-    std::string error_message =
-      "sup::sequencer::ParseAndLoadPlugin(): could not load plugin with name: [" + plugin_name + "]";
-    throw ParseException(error_message);
-  }
+  LoadPlugin(plugin_name);
 }
 
 void RegisterTypeInformation(Procedure *procedure, const TreeData &child,
@@ -187,15 +179,14 @@ void RegisterTypeInformation(Procedure *procedure, const TreeData &child,
   }
 }
 
-bool ParseProcedureChildren(Procedure *procedure, const TreeData &data)
+void ParseProcedureChildren(Procedure *procedure, const TreeData &data)
 {
-  bool status = true;
-  for (auto it = data.Children().begin(); status && it != data.Children().end(); ++it)
+  for (auto it = data.Children().begin(); it != data.Children().end(); ++it)
   {
     auto element_type = it->GetType();
     if (element_type == Constants::WORKSPACE_ELEMENT_NAME)
     {
-      status = AddWorkspaceVariables(procedure, *it);
+      AddWorkspaceVariables(procedure, *it);
     }
     else if (element_type == Constants::PLUGIN_ELEMENT_NAME || element_type == Constants::REGISTERTYPE_ELEMENT_NAME)
     {
@@ -204,15 +195,13 @@ bool ParseProcedureChildren(Procedure *procedure, const TreeData &data)
     else
     {
       // Every non workspace element of the Procedure node should be an instruction node
-      status = ParseAndAddInstruction(procedure, *it);
+      ParseAndAddInstruction(procedure, *it);
     }
   }
-  return status;
 }
 
-bool AddWorkspaceVariables(Procedure *procedure, const TreeData &ws_data)
+void AddWorkspaceVariables(Procedure *procedure, const TreeData &ws_data)
 {
-  bool result = true;
   for (auto &var_data : ws_data.Children())
   {
     auto name = var_data.GetName();
@@ -224,23 +213,20 @@ bool AddWorkspaceVariables(Procedure *procedure, const TreeData &ws_data)
       throw ParseException(error_message);
     }
     auto var = ParseVariable(var_data);
-    if (!var)
+    if (!procedure->AddVariable(name, var.release()))
     {
-      return false;
+      std::string error_message =
+        "sup::sequencer::AddWorkspaceVariables(): adding variable with type [" +
+        var_data.GetType() + "] and name [" + name + "] to procedure failed";
+      throw ParseException(error_message);
     }
-    result = procedure->AddVariable(name, var.release()) && result;
   }
-  return result;
 }
 
-bool ParseAndAddInstruction(Procedure *procedure, const TreeData &instr_data)
+void ParseAndAddInstruction(Procedure *procedure, const TreeData &instr_data)
 {
   auto instr = ParseInstruction(instr_data, procedure->GetFilename());
-  if (instr)
-  {
-    return procedure->PushInstruction(instr.release());
-  }
-  return false;
+  procedure->PushInstruction(instr.release());
 }
 
 }  // unnamed namespace

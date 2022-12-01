@@ -30,9 +30,13 @@ namespace sequencer
 {
 namespace utils
 {
+using LibraryHandle = void*;
+
 bool FileExists(const std::string& filename);
 
-bool LoadLibrary(const std::string& libname);
+LibraryHandle LoadLibrary(const std::string& libname);
+
+bool UnloadLibrary(LibraryHandle handle);
 
 bool CreateDir(const std::string& pathname, unsigned mode = 0755);
 

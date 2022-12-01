@@ -35,7 +35,7 @@ const char* MessageException::what() const noexcept
   return message.c_str();
 }
 
-InvalidConversionException::InvalidConversionException(const std::string& message)
+RuntimeException::RuntimeException(const std::string& message)
   : MessageException{message}
 {}
 

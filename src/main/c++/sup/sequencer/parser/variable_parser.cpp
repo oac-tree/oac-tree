@@ -21,6 +21,7 @@
 
 #include "variable_parser.h"
 
+#include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/log.h>
 #include <sup/sequencer/variable_registry.h>
 
@@ -35,9 +36,10 @@ std::unique_ptr<Variable> ParseVariable(const TreeData& data)
 
   if (!var)
   {
-    log::Warning("sup::sequencer::ParseVariable() - couldn't parse variable with type: '%s'",
-                var_type.c_str());
-    return {};
+    std::string error_message =
+      "sup::sequencer::ParseVariable(): could not create variable with typename [" +
+      var_type + "]";
+    throw ParseException(error_message);
   }
   var->AddAttributes(data.Attributes());
 

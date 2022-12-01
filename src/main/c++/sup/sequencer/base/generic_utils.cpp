@@ -21,6 +21,8 @@
 
 #include <sup/sequencer/generic_utils.h>
 
+#include <sup/sequencer/exceptions.h>
+
 #include <sup/dto/anytype.h>
 #include <sup/dto/anyvalue.h>
 #include <sup/dto/json_value_parser.h>
@@ -60,14 +62,27 @@ bool FileExists(const std::string& filename)
   return handle.IsValid();
 }
 
-bool LoadLibrary(const std::string& libname)
+LibraryHandle LoadLibrary(const std::string& libname)
 {
   if (libname.empty())
   {
-    return false;
+    std::string error_message =
+    "sup::sequencer::utils::LoadLibrary(): trying to load library with empty name";
+    throw InvalidOperationException(error_message);
   }
-  auto lib_handle = dlopen(libname.c_str(), RTLD_NOW);
-  return lib_handle != nullptr;
+  LibraryHandle handle = dlopen(libname.c_str(), RTLD_NOW);
+  if (handle == nullptr)
+  {
+    std::string error_message =
+    "sup::sequencer::utils::LoadLibrary(): could not load library with name [" + libname + "]";
+    throw RuntimeException(error_message);
+  }
+  return handle;
+}
+
+bool UnloadLibrary(LibraryHandle handle)
+{
+  return dlclose(handle) == 0;
 }
 
 // Adpted from https://stackoverflow.com/a/11366985

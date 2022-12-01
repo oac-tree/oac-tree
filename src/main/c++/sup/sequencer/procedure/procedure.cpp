@@ -21,6 +21,7 @@
 
 #include <sup/sequencer/procedure.h>
 
+#include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/log.h>
 #include <sup/sequencer/instruction.h>
 #include <sup/sequencer/sequence_parser.h>
@@ -140,15 +141,15 @@ int Procedure::GetInstructionCount() const
   return static_cast<int>(m_instructions.size());
 }
 
-bool Procedure::PushInstruction(Instruction *instruction)
+void Procedure::PushInstruction(Instruction *instruction)
 {
   if (instruction == nullptr)
   {
-    log::Warning("Procedure::PushInstruction() - trying to add null pointer");
-    return false;
+    std::string error_message =
+      "sup::sequencer::Procedure::PushInstruction(): trying to add nullptr";
+    throw InvalidOperationException(error_message);
   }
   m_instructions.emplace_back(instruction);
-  return true;
 }
 
 bool Procedure::InsertInstruction(Instruction *instruction, int index)

@@ -157,8 +157,10 @@ public:
    * @note Procedure takes ownership of the instruction and will take care of its timely
    * destruction. This implies that the client code should NEVER push the same
    * instruction more than once.
+   *
+   * @throw InvalidOperationException when trying to push a nullptr.
    */
-  bool PushInstruction(Instruction* instruction);
+  void PushInstruction(Instruction* instruction);
 
   /**
    * @brief Inserts Instruction at the specified position.

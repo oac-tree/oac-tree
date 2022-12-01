@@ -42,12 +42,13 @@ private:
 };
 
 /**
- * @brief Exception thrown when trying to perform an invalid conversion.
+ * @brief Generic exception thrown when an operation fails without clear reason, e.g. during a call
+ * to a library method that is not under control.
  */
-class InvalidConversionException : public MessageException
+class RuntimeException : public MessageException
 {
 public:
-  InvalidConversionException(const std::string& message);
+  RuntimeException(const std::string& message);
 };
 
 /**

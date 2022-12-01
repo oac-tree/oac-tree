@@ -33,14 +33,9 @@ namespace sup
 {
 namespace sequencer
 {
-bool LoadPlugin(const std::string& name)
+void LoadPlugin(const std::string& name)
 {
-  if (!utils::LoadLibrary(name))
-  {
-    log::Warning("sup::sequencer::LoadPlugin('%s') - could not load plugin", name.c_str());
-    return false;
-  }
-  return true;
+  utils::LoadLibrary(name);
 }
 
 std::unique_ptr<Procedure> ParseProcedureFile(const std::string& filename)

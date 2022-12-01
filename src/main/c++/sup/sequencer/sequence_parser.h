@@ -31,7 +31,7 @@ namespace sup
 {
 namespace sequencer
 {
-bool LoadPlugin(const std::string& name);
+void LoadPlugin(const std::string& name);
 
 std::unique_ptr<Procedure> ParseProcedureFile(const std::string& filename);
 

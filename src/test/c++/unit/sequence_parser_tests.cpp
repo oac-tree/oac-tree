@@ -150,8 +150,7 @@ TEST_F(SequencerParserTest, NonExistentVariableError)
     </Workspace>
 )"};
 
-  auto proc = CreateProcedure(body);
-  ASSERT_FALSE(static_cast<bool>(proc));
+  EXPECT_THROW(CreateProcedure(body), ParseException);
 }
 
 TEST_F(SequencerParserTest, NonExistentPluginError)
@@ -164,7 +163,7 @@ TEST_F(SequencerParserTest, NonExistentPluginError)
     </Sequence>
 )"};
 
-  EXPECT_THROW(CreateProcedure(body), ParseException);
+  EXPECT_THROW(CreateProcedure(body), RuntimeException);
 }
 
 TEST_F(SequencerParserTest, InvalidChildError)

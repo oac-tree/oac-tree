@@ -27,6 +27,7 @@
 #include <sup/sequencer/variables/local_variable.h>
 #include <sup/sequencer/instructions/wait.h>
 
+#include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/instruction_registry.h>
 #include <sup/sequencer/sequence_parser.h>
 #include <sup/sequencer/variable.h>
@@ -90,9 +91,9 @@ TEST_F(ProcedureTest, DefaultConstructed)
   EXPECT_EQ(empty_proc.GetInstructionCount(), 0);
 
   // Add one instruction
-  EXPECT_FALSE(empty_proc.PushInstruction(nullptr));
+  EXPECT_THROW(empty_proc.PushInstruction(nullptr), InvalidOperationException);
   Instruction *p_wait = wait.get();
-  EXPECT_TRUE(empty_proc.PushInstruction(wait.release()));
+  EXPECT_NO_THROW(empty_proc.PushInstruction(wait.release()));
   EXPECT_EQ(empty_proc.RootInstruction(), p_wait);
   instructions = empty_proc.GetInstructions();
   EXPECT_EQ(instructions.size(), 1);
@@ -199,7 +200,7 @@ TEST_F(ProcedureTest, ConstructedFromString)
 
   // Add one instruction
   Instruction *p_wait = wait.get();
-  EXPECT_TRUE(loaded_proc->PushInstruction(wait.release()));
+  EXPECT_NO_THROW(loaded_proc->PushInstruction(wait.release()));
   instructions = loaded_proc->GetInstructions();
   EXPECT_EQ(instructions.size(), 3);
   EXPECT_EQ(loaded_proc->RootInstruction(), root);

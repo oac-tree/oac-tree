@@ -43,17 +43,7 @@ const Procedure *Procedure::LoadProcedure(const std::string &filename) const
 {
   if (m_procedure_cache.find(filename) == m_procedure_cache.end())
   {
-    auto loaded_proc = ParseProcedureFile(filename);
-    if (loaded_proc)
-    {
-      m_procedure_cache[filename] = std::move(loaded_proc);
-    }
-  }
-  if (m_procedure_cache.find(filename) == m_procedure_cache.end())
-  {
-    log::Warning("Procedure::LoadProcedure('%s') - Could not load procedure from file..",
-                filename.c_str());
-    return nullptr;
+    m_procedure_cache[filename] = ParseProcedureFile(filename);
   }
   return m_procedure_cache[filename].get();
 }
@@ -115,25 +105,25 @@ const Instruction *Procedure::RootInstruction() const
 
 std::vector<const Instruction *> Procedure::GetInstructions(const std::string &filename) const
 {
-  std::vector<const Instruction *> result;
   if (filename.empty() || filename == GetFilename())
   {
+    std::vector<const Instruction *> result;
     for (auto &instr : m_instructions)
     {
       result.push_back(instr.get());
     }
+    return result;
   }
-  else
+  auto loaded_proc = LoadProcedure(filename);
+  if (!loaded_proc)
   {
-    auto loaded_proc = LoadProcedure(filename);
-    if (loaded_proc)
-    {
-      return loaded_proc->GetInstructions();
-    }
-    log::Warning("Procedure::GetInstructions('%s') - finding instructions failed..",
-                filename.c_str());
+    std::string error_message =
+      "sup::sequencer::Procedure::GetInstructions: could not load procedure with filename [" +
+      filename + "]";
+    throw ParseException(error_message);
+
   }
-  return result;
+  return loaded_proc->GetInstructions();
 }
 
 int Procedure::GetInstructionCount() const

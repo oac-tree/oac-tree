@@ -22,11 +22,14 @@
 #include "log_ui.h"
 #include "unit_test_helper.h"
 
+#include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/execution_status.h>
 #include <sup/sequencer/instruction_registry.h>
 #include <sup/sequencer/sequence_parser.h>
 
 #include <gtest/gtest.h>
+
+using namespace sup::sequencer;
 
 static const std::string RegisterTypeProcedureString{R"(
     <RegisterType jsontype='{"type":"range_uint32","attributes":[{"min":{"type":"uint32"}},{"max":{"type":"uint32"}}]}'/>
@@ -95,9 +98,9 @@ static const std::string JSONRangeRepresentation =
 
 TEST(RegisterType, string_success)
 {
-  sup::sequencer::LogUI ui;
+  LogUI ui;
   auto proc_str = sup::UnitTestHelper::CreateProcedureString(RegisterTypeProcedureString);
-  auto proc = sup::sequencer::ParseProcedureString(proc_str);
+  auto proc = ParseProcedureString(proc_str);
   ASSERT_TRUE(static_cast<bool>(proc));
 
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
@@ -106,16 +109,15 @@ TEST(RegisterType, string_success)
 TEST(RegisterType, string_failed)
 {
   auto proc_str = sup::UnitTestHelper::CreateProcedureString(FailedRegisterTypeProcedureString);
-  auto proc = sup::sequencer::ParseProcedureString(proc_str);
-  EXPECT_FALSE(static_cast<bool>(proc));
+  EXPECT_THROW(ParseProcedureString(proc_str), ParseException);
 }
 
 TEST(RegisterType, file_success)
 {
   sup::UnitTestHelper::TemporaryTestFile json_file(JSON_FILE_NAME, JSONRangeRepresentation);
-  sup::sequencer::LogUI ui;
+  LogUI ui;
   auto proc_str = sup::UnitTestHelper::CreateProcedureString(RegisterTypeFromFileProcedureString);
-  auto proc = sup::sequencer::ParseProcedureString(proc_str);
+  auto proc = ParseProcedureString(proc_str);
   ASSERT_TRUE(static_cast<bool>(proc));
 
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
@@ -125,6 +127,5 @@ TEST(RegisterType, file_failed)
 {
   auto proc_str = sup::UnitTestHelper::CreateProcedureString(
     FailedRegisterTypeFromFileProcedureString);
-  auto proc = sup::sequencer::ParseProcedureString(proc_str);
-  EXPECT_FALSE(static_cast<bool>(proc));
+  EXPECT_THROW(ParseProcedureString(proc_str), ParseException);
 }

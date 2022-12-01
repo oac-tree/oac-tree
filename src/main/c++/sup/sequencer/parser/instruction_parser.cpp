@@ -49,7 +49,7 @@ std::unique_ptr<Instruction> ParseInstruction(const TreeData &data, const std::s
   if (!instr)
   {
     std::string error_message = "sup::sequencer::ParseInstruction(): could not create instruction "
-                                "with typename: " + instr_type;
+                                "with typename [" + instr_type + "]";
     throw ParseException(error_message);
   }
   for (auto &attr : data.Attributes())
@@ -114,8 +114,8 @@ static void AddChildrenToDecorator(DecoratorInstruction *decorator,
   {
     std::string error_message =
       "sup::sequencer::AddChildrenToDecorator(): could not create instruction from TreeData "
-      "of type: " + children[0].GetType() +
-      "] and name [" + children[0].GetName() + "]";
+      "of type: <" + children[0].GetType() +
+      "> and name [" + children[0].GetName() + "]";
     throw ParseException(error_message);
   }
   decorator->SetInstruction(child_instr.release());
@@ -132,8 +132,8 @@ static void AddChildrenToCompound(CompoundInstruction *compound,
     {
       std::string error_message =
         "sup::sequencer::AddChildrenToCompound(): could not create instruction from TreeData "
-        "of type: " + child.GetType() +
-        "] and name [" + child.GetName() + "]";
+        "of type: <" + child.GetType() +
+        "> and name [" + child.GetName() + "]";
       throw ParseException(error_message);
     }
     compound->PushBack(child_instr.release());

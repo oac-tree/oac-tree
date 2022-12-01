@@ -25,11 +25,13 @@
 #include "variable_parser.h"
 
 #include <sup/sequencer/constants.h>
+#include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/generic_utils.h>
 #include <sup/sequencer/log.h>
 #include <sup/sequencer/sequence_parser.h>
 
 #include <sup/dto/anytype.h>
+#include <sup/dto/anytype_helper.h>
 #include <sup/dto/json_type_parser.h>
 
 #include <fstream>
@@ -44,9 +46,9 @@ static const std::string JSONFILE_ATTRIBUTE_NAME = "jsonfile";
 
 namespace
 {
-bool ParsePreamble(Procedure *procedure, const TreeData &data, const std::string &filename);
-bool ParseAndLoadPlugin(const TreeData &child);
-bool RegisterTypeInformation(Procedure *procedure, const TreeData &child,
+void ParsePreamble(Procedure *procedure, const TreeData &data, const std::string &filename);
+void ParseAndLoadPlugin(const TreeData &child);
+void RegisterTypeInformation(Procedure *procedure, const TreeData &child,
                              const std::string &filename);
 bool ParseProcedureChildren(Procedure *procedure, const TreeData &data);
 bool AddWorkspaceVariables(Procedure *procedure, const TreeData &ws_data);
@@ -57,9 +59,10 @@ std::unique_ptr<Procedure> ParseProcedure(const TreeData &data, const std::strin
 {
   if (data.GetType() != Constants::PROCEDURE_ELEMENT_NAME)
   {
-    log::Warning("sup::sequencer::ParseProcedure() - incorrect root element type: '%s'",
-                data.GetType().c_str());
-    return {};
+    std::string error_message =
+      "sup::sequencer::ParseProcedure(): root element of type <" + data.GetType() +
+      "> instead of: <" + Constants::PROCEDURE_ELEMENT_NAME + ">";
+    throw ParseException(error_message);
   }
   auto result = std::unique_ptr<Procedure>(new Procedure());
 
@@ -67,17 +70,13 @@ std::unique_ptr<Procedure> ParseProcedure(const TreeData &data, const std::strin
   result->SetFilename(filename);
 
   // Load plugins and register types first
-  bool status = ParsePreamble(result.get(), data, filename);
+  ParsePreamble(result.get(), data, filename);
 
   // Add attributes
   result->AddAttributes(data.Attributes());
 
   // Parse child elements
-  if (status)
-  {
-    status = ParseProcedureChildren(result.get(), data);
-  }
-  if (status)
+  if (ParseProcedureChildren(result.get(), data))
   {
     return result;
   }
@@ -110,73 +109,82 @@ std::string GetFileDirectory(const std::string &filename)
 
 namespace
 {
-bool ParsePreamble(Procedure *procedure, const TreeData &data, const std::string &filename)
+void ParsePreamble(Procedure* procedure, const TreeData& data, const std::string& filename)
 {
-  bool result = true;
   for (const auto &child : data.Children())
   {
     if (child.GetType() == Constants::PLUGIN_ELEMENT_NAME)
     {
-      if (!ParseAndLoadPlugin(child))
-      {
-        result = false;
-      }
+      ParseAndLoadPlugin(child);
     }
     else if (child.GetType() == Constants::REGISTERTYPE_ELEMENT_NAME)
     {
-      if (!RegisterTypeInformation(procedure, child, filename))
-      {
-        result = false;
-      }
+      RegisterTypeInformation(procedure, child, filename);
     }
   }
-  return result;
 }
 
-bool ParseAndLoadPlugin(const TreeData &child)
+void ParseAndLoadPlugin(const TreeData &child)
 {
   auto plugin_name = child.GetContent();
   if (plugin_name.empty())
   {
-    return true;
+    std::string error_message =
+      "sup::sequencer::ParseAndLoadPlugin(): mandatory content missing for element of type: <" +
+      Constants::PLUGIN_ELEMENT_NAME + ">";
+    throw ParseException(error_message);
   }
-  bool success = LoadPlugin(plugin_name);
-  if (!success)
+  if (!LoadPlugin(plugin_name))
   {
-    log::Warning("ParseAndLoadPlugin() - could not load plugin '%s'", plugin_name.c_str());
+    std::string error_message =
+      "sup::sequencer::ParseAndLoadPlugin(): could not load plugin with name: [" + plugin_name + "]";
+    throw ParseException(error_message);
   }
-  return success;
 }
 
-bool RegisterTypeInformation(Procedure *procedure, const TreeData &child,
+void RegisterTypeInformation(Procedure *procedure, const TreeData &child,
                              const std::string &filename)
 {
   sup::dto::AnyType parsed_type;
   sup::dto::JSONAnyTypeParser parser;
+  if (child.HasAttribute(JSONTYPE_ATTRIBUTE_NAME) == child.HasAttribute(JSONFILE_ATTRIBUTE_NAME))
+  {
+    std::string error_message =
+      "sup::sequencer::RegisterTypeInformation(): element should contain exactly one attribute out "
+      "of (" + JSONTYPE_ATTRIBUTE_NAME + ", " + JSONFILE_ATTRIBUTE_NAME + ")";
+    throw ParseException(error_message);
+  }
   if (child.HasAttribute(JSONTYPE_ATTRIBUTE_NAME))
   {
     if (!parser.ParseString(child.GetAttribute(JSONTYPE_ATTRIBUTE_NAME),
                             procedure->GetTypeRegistry()))
     {
-      return false;
+      std::string error_message =
+        "sup::sequencer::RegisterTypeInformation(): could not parse type: [" +
+        child.GetAttribute(JSONTYPE_ATTRIBUTE_NAME) + "]";
+      throw ParseException(error_message);
     }
     parsed_type = parser.MoveAnyType();
   }
-  else if (child.HasAttribute(JSONFILE_ATTRIBUTE_NAME))
+  if (child.HasAttribute(JSONFILE_ATTRIBUTE_NAME))
   {
     auto json_filename = GetFullPathName(GetFileDirectory(filename),
                                          child.GetAttribute(JSONFILE_ATTRIBUTE_NAME));
     if (!parser.ParseFile(json_filename, procedure->GetTypeRegistry()))
     {
-      return false;
+      std::string error_message =
+        "sup::sequencer::RegisterTypeInformation(): could not parse file: [" + json_filename + "]";
+      throw ParseException(error_message);
     }
     parsed_type = parser.MoveAnyType();
   }
-  else
+  if (!procedure->RegisterType(parsed_type))
   {
-    return false;
+    std::string error_message =
+      "sup::sequencer::RegisterTypeInformation(): type could not be added to the registry: [" +
+      sup::dto::AnyTypeToJSONString(parsed_type) + "]";
+    throw ParseException(error_message);
   }
-  return procedure->RegisterType(parsed_type);
 }
 
 bool ParseProcedureChildren(Procedure *procedure, const TreeData &data)
@@ -208,15 +216,19 @@ bool AddWorkspaceVariables(Procedure *procedure, const TreeData &ws_data)
   for (auto &var_data : ws_data.Children())
   {
     auto name = var_data.GetName();
-    if (!name.empty())
+    if (name.empty())
     {
-      auto var = ParseVariable(var_data);
-      if (!var)
-      {
-        return false;
-      }
-      result = procedure->AddVariable(name, var.release()) && result;
+      std::string error_message =
+        "sup::sequencer::AddWorkspaceVariables(): variable with type <" + var_data.GetType() +
+        "> has no or an empty name";
+      throw ParseException(error_message);
     }
+    auto var = ParseVariable(var_data);
+    if (!var)
+    {
+      return false;
+    }
+    result = procedure->AddVariable(name, var.release()) && result;
   }
   return result;
 }

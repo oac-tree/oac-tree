@@ -99,15 +99,12 @@ TEST_F(SequencerParserTest, IncorrectRoot)
 </Sequence>
 )RAW";
 
-  auto proc = ParseProcedureString(body);
-  ASSERT_FALSE(static_cast<bool>(proc));
+  EXPECT_THROW(ParseProcedureString(body), ParseException);
 
   // same via file on disk
   const std::string file_name("incorrect_root.xml");
-  sup::UnitTestHelper::TemporaryTestFile test_file(
-      file_name, sup::UnitTestHelper::CreateProcedureString(body));
-  proc = ParseProcedureFile(file_name);
-  EXPECT_FALSE(static_cast<bool>(proc));
+  sup::UnitTestHelper::TemporaryTestFile test_file(file_name, body);
+  EXPECT_THROW(ParseProcedureFile(file_name), ParseException);
 }
 
 TEST_F(SequencerParserTest, XMLSyntaxError)
@@ -128,8 +125,7 @@ TEST_F(SequencerParserTest, XMLSyntaxError)
   ASSERT_FALSE(static_cast<bool>(proc));
 
   const std::string file_name("syntax_error.xml");
-  sup::UnitTestHelper::TemporaryTestFile test_file(
-      file_name, sup::UnitTestHelper::CreateProcedureString(body));
+  sup::UnitTestHelper::TemporaryTestFile test_file(file_name, body);
   proc = ParseProcedureFile(file_name);
   EXPECT_FALSE(static_cast<bool>(proc));
 }
@@ -168,8 +164,7 @@ TEST_F(SequencerParserTest, NonExistentPluginError)
     </Sequence>
 )"};
 
-  auto proc = CreateProcedure(body);
-  ASSERT_FALSE(static_cast<bool>(proc));
+  EXPECT_THROW(CreateProcedure(body), ParseException);
 }
 
 TEST_F(SequencerParserTest, InvalidChildError)
@@ -201,7 +196,7 @@ TEST_F(SequencerParserTest, SequenceWithInverter)
       file_name, sup::UnitTestHelper::CreateProcedureString(body));
 
   auto proc = ParseProcedureFile(file_name);
-  ASSERT_TRUE(proc.get() != nullptr);
+  ASSERT_TRUE(static_cast<bool>(proc));
   EXPECT_EQ(proc->GetInstructionCount(), 1);
   EXPECT_EQ(proc->RootInstruction()->ChildrenCount(), 3);
 }
@@ -228,6 +223,7 @@ TEST_F(SequencerParserTest, Workspace)
       file_name, sup::UnitTestHelper::CreateProcedureString(body));
 
   auto proc = ParseProcedureFile(file_name);
+  ASSERT_TRUE(static_cast<bool>(proc));
   auto variables = proc->GetWorkspace()->GetVariables();
   ASSERT_EQ(variables.size(), 3);
   EXPECT_EQ(variables.at(0)->GetAttribute("name"), "var1");
@@ -243,6 +239,7 @@ TEST_F(SequencerParserTest, EmptyProcedureFromXMLAndBack)
 
   auto xml_string = CreateProcedureString(body);
   auto procedure = ParseProcedureString(xml_string);
+  ASSERT_TRUE(static_cast<bool>(procedure));
   EXPECT_EQ(xml_string, GetXMLString(*procedure));
 }
 
@@ -259,5 +256,6 @@ TEST_F(SequencerParserTest, ProcedureWithSequenceAndVariableFromXMLAndBack)
 
   auto xml_string = CreateProcedureString(body);
   auto procedure = ParseProcedureString(xml_string);
+  ASSERT_TRUE(static_cast<bool>(procedure));
   EXPECT_EQ(xml_string, GetXMLString(*procedure));
 }

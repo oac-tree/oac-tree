@@ -22,10 +22,13 @@
 #include "log_ui.h"
 #include "unit_test_helper.h"
 
+#include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/generic_utils.h>
 #include <sup/sequencer/sequence_parser.h>
 
 #include <gtest/gtest.h>
+
+using namespace sup::sequencer;
 
 TEST(Include, Procedure_local)
 {
@@ -41,9 +44,9 @@ TEST(Include, Procedure_local)
     </Workspace>
 )"};
 
-  sup::sequencer::LogUI ui;
+  LogUI ui;
   auto proc =
-      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+      ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
   EXPECT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 20);
@@ -62,9 +65,9 @@ TEST(Include, Procedure_param)
     </Workspace>
 )"};
 
-  sup::sequencer::LogUI ui;
+  LogUI ui;
   auto proc =
-      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+      ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
   ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
@@ -85,9 +88,9 @@ incr="2"/>
     </Workspace>
 )"};
 
-  sup::sequencer::LogUI ui;
+  LogUI ui;
   auto proc =
-      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+      ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
   ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
@@ -106,12 +109,12 @@ TEST(Include, Procedure_undefined)
     </Workspace>
 )"};
 
-  sup::sequencer::LogUI ui;
+  LogUI ui;
   auto proc =
-      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+      ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
-  ASSERT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+  EXPECT_THROW(sup::UnitTestHelper::TryAndExecute(proc, &ui), ParseException);
 }
 
 TEST(Include, Procedure_extern)
@@ -138,8 +141,8 @@ TEST(Include, Procedure_extern)
     </Workspace>
 )"};
 
-  sup::sequencer::LogUI ui;
-  auto proc = sup::sequencer::ParseProcedureString(
+  LogUI ui;
+  auto proc = ParseProcedureString(
       sup::UnitTestHelper::CreateProcedureString(procedure_body));
   ASSERT_TRUE(proc.get() != nullptr);
   ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
@@ -148,7 +151,7 @@ TEST(Include, Procedure_extern)
 TEST(Include, Procedure_nested)
 {
   // preparing files for recursive inclusion
-  ASSERT_TRUE(sup::sequencer::utils::CreateDir("instruction_definitions/waits"));
+  ASSERT_TRUE(utils::CreateDir("instruction_definitions/waits"));
 
   const std::string single_waits_body{R"(
     <Wait name="OneTenthSecond"/>
@@ -187,8 +190,8 @@ TEST(Include, Procedure_nested)
 
   auto proc_str = sup::UnitTestHelper::CreateProcedureString(main_body);
 
-  sup::sequencer::LogUI ui;
-  auto proc = sup::sequencer::ParseProcedureString(proc_str);
+  LogUI ui;
+  auto proc = ParseProcedureString(proc_str);
 
   ASSERT_TRUE(proc.get() != nullptr);
   ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));

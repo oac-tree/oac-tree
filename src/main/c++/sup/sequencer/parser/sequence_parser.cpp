@@ -26,6 +26,7 @@
 #include "treedata_xml_write_utils.h"
 #include "procedure_to_treedata_utils.h"
 
+#include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/generic_utils.h>
 #include <sup/sequencer/log.h>
 
@@ -44,43 +45,28 @@ std::unique_ptr<Procedure> ParseProcedureFile(const std::string& filename)
 
   if (!data)
   {
-    log::Warning("sup::sequencer::ParseProcedureFile('%s') - could not parse file",
-                filename.c_str());
-    return {};
+    std::string error_message =
+      "sup::sequencer::ParseProcedureFile(): could not parse file [" + filename + "] to TreeData";
+    throw ParseException(error_message);
   }
 
-  auto proc = ParseProcedure(*data, filename);
-
-  if (!proc)
-  {
-    log::Warning("sup::sequencer::ParseProcedureFile('%s') - could not parse structure in file!",
-                filename.c_str());
-  }
-
-  return proc;
+  return ParseProcedure(*data, filename);
 }
 
 std::unique_ptr<Procedure> ParseProcedureString(const std::string& xml_str)
 {
-  auto xml_head = xml_str.substr(0, 1024);
   auto data = ParseXMLDataString(xml_str);
 
   if (!data)
   {
-    log::Warning("sup::sequencer::ParseProcedureString('%s') - could not parse string",
-                xml_head.c_str());
-    return {};
+    auto xml_head = xml_str.substr(0, 1024);
+    std::string error_message =
+      "sup::sequencer::ParseProcedureFile(): could not parse xml string to TreeData:\n" +
+       xml_head + "\n...";
+    throw ParseException(error_message);
   }
 
-  auto proc = ParseProcedure(*data);
-
-  if (!proc)
-  {
-    log::Warning("sup::sequencer::ParseProcedureString('%s') - could not parse structure in string!",
-                xml_head.c_str());
-  }
-
-  return proc;
+  return ParseProcedure(*data);
 }
 
 //! Returns XML string representing Procedure.

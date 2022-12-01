@@ -121,13 +121,11 @@ TEST_F(SequencerParserTest, XMLSyntaxError)
     </Sequence>
 )RAW";
 
-  auto proc = ParseProcedureString(body);
-  ASSERT_FALSE(static_cast<bool>(proc));
+  EXPECT_THROW(ParseProcedureString(body), ParseException);
 
   const std::string file_name("syntax_error.xml");
   sup::UnitTestHelper::TemporaryTestFile test_file(file_name, body);
-  proc = ParseProcedureFile(file_name);
-  EXPECT_FALSE(static_cast<bool>(proc));
+  EXPECT_THROW(ParseProcedureFile(file_name), ParseException);
 }
 
 TEST_F(SequencerParserTest, NonExistentInstructionError)

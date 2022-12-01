@@ -23,6 +23,7 @@
 
 #include "xml_utils.h"
 
+#include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/generic_utils.h>
 #include <sup/sequencer/log.h>
 
@@ -48,14 +49,16 @@ std::unique_ptr<TreeData> ParseXMLDataFile(const std::string &filename)
   // Read file into xmlDocPtr
   if (!utils::FileExists(filename))
   {
-    log::Warning("ParseXMLDataFile('%s') - file not found", filename.c_str());
-    return {};
+    std::string error_message =
+      "sup::sequencer::ParseXMLDataFile(): file not found [" + filename + "]";
+    throw ParseException(error_message);
   }
-  xmlDocPtr doc = xmlParseFile(filename.c_str());
+  xmlDocPtr doc = xmlReadFile(filename.c_str(), nullptr, 0);
   if (doc == nullptr)
   {
-    log::Warning("ParseXMLDataFile('%s') - Couldn't parse file", filename.c_str());
-    return {};
+    std::string error_message =
+      "sup::sequencer::ParseXMLDataFile(): libxml2 failed parsing the file [" + filename + "]";
+    throw ParseException(error_message);
   }
   return ParseXMLDoc(doc);
 }
@@ -64,11 +67,13 @@ std::unique_ptr<TreeData> ParseXMLDataString(const std::string &xml_str)
 {
   // Read the string into xmlDocPtr
   xmlDocPtr doc = xmlParseDoc(reinterpret_cast<const xmlChar *>(xml_str.c_str()));
-  auto xml_head = xml_str.substr(0, 1024);
   if (doc == nullptr)
   {
-    log::Warning("ParseXMLDataString('%s') - Couldn't parse file", xml_head.c_str());
-    return {};
+    auto xml_head = xml_str.substr(0, 1024);
+    std::string error_message =
+      "sup::sequencer::ParseXMLDataString(): libxml2 failed parsing the string:\n" +
+      xml_head + "\n...";
+    throw ParseException(error_message);
   }
   return ParseXMLDoc(doc);
 }
@@ -79,9 +84,10 @@ static std::unique_ptr<TreeData> ParseXMLDoc(xmlDocPtr doc)
   xmlNodePtr root_node = xmlDocGetRootElement(doc);
   if (root_node == nullptr)
   {
-    log::Warning("ParseXMLDoc() - Couldn't retrieve root element");
     xmlFreeDoc(doc);
-    return {};
+    std::string error_message =
+      "sup::sequencer::ParseXMLDoc(): failed to retrieve root element";
+    throw ParseException(error_message);
   }
   auto data_tree = ParseDataTree(doc, root_node);
   xmlFreeDoc(doc);

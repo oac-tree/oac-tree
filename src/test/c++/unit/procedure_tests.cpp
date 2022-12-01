@@ -100,8 +100,7 @@ TEST_F(ProcedureTest, DefaultConstructed)
   instructions = empty_proc.GetInstructions(filename);
   EXPECT_EQ(instructions.size(), 1);
   std::string wrong_filename = "WrongFile.xml";
-  instructions = empty_proc.GetInstructions(wrong_filename);
-  EXPECT_EQ(instructions.size(), 0);
+  EXPECT_THROW(empty_proc.GetInstructions(wrong_filename), ParseException);
 
   // Variables
   auto variables = empty_proc.VariableNames();

@@ -3,6 +3,8 @@ Changes for 2.0.0:
 - API breaking: replace old AnyValue with new one (dependency ccs-core replaced by sup-dto)
 - API breaking: attribute name 'var_name' -> 'varName' (Choice and Condition instruction)
 - API breaking: FileVariable: typename 'FileVariable' -> 'File', attribute 'file' -> 'fileName'
+- API breaking: Procedure::PushInstruction now returns void and throws when trying to add nullptr
+- Parsing procedures from XML now throws on failure with a clear message indicating the problem
 - Isolate logging implementation behind a single interface
 
 Changes for 1.2.0:

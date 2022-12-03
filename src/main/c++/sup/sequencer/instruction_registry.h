@@ -40,22 +40,9 @@ class Instruction;
 
 class InstructionRegistry
 {
-private:
-  /**
-   * @brief Definition of Instruction constructor.
-   */
+public:
   using InstructionConstructor = Instruction *(*)();
 
-  /**
-   * @brief Map between instruction typename and its constructor.
-   */
-  std::map<std::string, InstructionConstructor> _instruction_map;
-
-protected:
-public:
-  /**
-   * @brief Constructor.
-   */
   InstructionRegistry() = default;
 
   /**
@@ -71,12 +58,24 @@ public:
    *
    * @param name Name under which the instruction was registered.
    */
-  std::unique_ptr<Instruction> Create(std::string name);
+  std::unique_ptr<Instruction> Create(const std::string& name);
 
   /**
    * @brief List names of registered instructions.
    */
   std::vector<std::string> RegisteredInstructionNames() const;
+
+  /**
+   * @brief List names of registered instructions.
+   */
+  bool IsRegisteredInstructionName(const std::string& name) const;
+
+private:
+  /**
+   * @brief Map between instruction typename and its constructor.
+   */
+  std::map<std::string, InstructionConstructor> m_instruction_map;
+
 };
 
 InstructionRegistry &GlobalInstructionRegistry();

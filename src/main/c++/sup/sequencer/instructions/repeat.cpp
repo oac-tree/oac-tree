@@ -32,7 +32,12 @@ namespace sequencer
 {
 const std::string Repeat::Type = "Repeat";
 
-Repeat::Repeat() : DecoratorInstruction(Repeat::Type), _max_count{0}, _count{0}, _init_ok{false} {}
+Repeat::Repeat()
+  : DecoratorInstruction(Repeat::Type)
+  , _max_count{0}
+  , _count{0}
+  , _init_ok{false}
+{}
 
 Repeat::~Repeat() = default;
 

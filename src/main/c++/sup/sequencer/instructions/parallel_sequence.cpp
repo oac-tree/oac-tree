@@ -71,7 +71,7 @@ void ParallelSequence::SetupImpl(const Procedure &proc)
   if (HasAttribute(FAILURE_THRESHOLD_ATTRIBUTE))
   {
     int th{};
-    if (utils::SafeStringToInt(th, GetAttribute(FAILURE_THRESHOLD_ATTRIBUTE)))
+    if (!utils::SafeStringToInt(th, GetAttribute(FAILURE_THRESHOLD_ATTRIBUTE)))
     {
       std::string error_message =
         "sup::sequencer::ParallelSequence::SetupImpl(): could not parse value of attribute with "

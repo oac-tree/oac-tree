@@ -30,21 +30,6 @@ namespace sup
 {
 namespace sequencer
 {
-void AsyncWrapper::LaunchChild(UserInterface* ui, Workspace* ws)
-{
-  _child_result = std::async(std::launch::async, &Instruction::ExecuteSingle, _instruction, ui, ws);
-}
-
-bool AsyncWrapper::ChildIsRunning() const
-{
-  if (!_child_result.valid())
-  {
-    return false;
-  }
-  auto result_status = _child_result.wait_for(std::chrono::seconds(0));
-  return result_status == std::future_status::timeout;
-}
-
 AsyncWrapper::AsyncWrapper(Instruction* instruction)
     : _instruction{instruction}, _status{ExecutionStatus::NOT_STARTED}
 {
@@ -76,6 +61,21 @@ void AsyncWrapper::Tick(UserInterface* ui, Workspace* ws)
 ExecutionStatus AsyncWrapper::GetStatus() const
 {
   return _status;
+}
+
+void AsyncWrapper::LaunchChild(UserInterface* ui, Workspace* ws)
+{
+  _child_result = std::async(std::launch::async, &Instruction::ExecuteSingle, _instruction, ui, ws);
+}
+
+bool AsyncWrapper::ChildIsRunning() const
+{
+  if (!_child_result.valid())
+  {
+    return false;
+  }
+  auto result_status = _child_result.wait_for(std::chrono::seconds(0));
+  return result_status == std::future_status::timeout;
 }
 
 }  // namespace sequencer

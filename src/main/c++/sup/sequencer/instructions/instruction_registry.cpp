@@ -63,22 +63,22 @@ InstructionRegistry& GlobalInstructionRegistry()
 
 bool InstructionRegistry::RegisterInstruction(std::string name, InstructionConstructor constructor)
 {
-  auto it = _instruction_map.find(name);
-  if (it != _instruction_map.end())
+  auto it = m_instruction_map.find(name);
+  if (it != m_instruction_map.end())
   {
     std::string error_message =
       "sup::sequencer::InstructionRegistry::RegisterInstruction(): trying to register instruction "
       "with name [" + name + "] twice";
     throw InvalidOperationException(error_message);
   }
-  _instruction_map.insert(it, {name, constructor});
+  m_instruction_map.insert(it, {name, constructor});
   return true;
 }
 
-std::unique_ptr<Instruction> InstructionRegistry::Create(std::string name)
+std::unique_ptr<Instruction> InstructionRegistry::Create(const std::string& name)
 {
-  auto entry = _instruction_map.find(name);
-  if (entry == _instruction_map.end())
+  auto entry = m_instruction_map.find(name);
+  if (entry == m_instruction_map.end())
   {
     std::string error_message =
       "sup::sequencer::InstructionRegistry::Create(): trying to create unregistered instruction "
@@ -91,11 +91,17 @@ std::unique_ptr<Instruction> InstructionRegistry::Create(std::string name)
 std::vector<std::string> InstructionRegistry::RegisteredInstructionNames() const
 {
   std::vector<std::string> result;
-  for (const auto& elem : _instruction_map)
+  for (const auto& elem : m_instruction_map)
   {
     result.push_back(elem.first);
   }
   return result;
+}
+
+bool InstructionRegistry::IsRegisteredInstructionName(const std::string& name) const
+{
+  auto it = m_instruction_map.find(name);
+  return it != m_instruction_map.end();
 }
 
 void InitInstructionRegistry(InstructionRegistry& registry)

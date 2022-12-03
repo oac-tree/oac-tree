@@ -21,6 +21,7 @@
 
 #include <sup/sequencer/instructions/message.h>
 
+#include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/instruction_registry.h>
 #include <sup/sequencer/procedure.h>
 #include <sup/sequencer/user_interface.h>
@@ -35,12 +36,12 @@ class MessageTest : public ::testing::Test
 {
 public:
   //! Test interface for Message method.
-  class TestInterface : public sup::sequencer::UserInterface
+  class TestInterface : public UserInterface
   {
   public:
     TestInterface() = default;
 
-    void UpdateInstructionStatusImpl(const sup::sequencer::Instruction *instruction) override {}
+    void UpdateInstructionStatusImpl(const Instruction *instruction) override {}
     void MessageImpl(const std::string& message) override { ui_message = message; }
 
     std::string ui_message;
@@ -54,13 +55,13 @@ protected:
 TEST_F(MessageTest, Setup)
 {
   Message message_instr{};
-  EXPECT_TRUE(message_instr.Setup(proc));
+  EXPECT_THROW(message_instr.Setup(proc), InstructionSetupException);
 
   message_instr.AddAttribute("name", "MyMessageInstruction");
-  EXPECT_TRUE(message_instr.Setup(proc));
+  EXPECT_THROW(message_instr.Setup(proc), InstructionSetupException);
 
   message_instr.AddAttribute("text", "Hello world!");
-  EXPECT_TRUE(message_instr.Setup(proc));
+  EXPECT_NO_THROW(message_instr.Setup(proc));
 }
 
 TEST_F(MessageTest, Execute)
@@ -68,7 +69,7 @@ TEST_F(MessageTest, Execute)
   std::string message("Hello Sequencer!");
   Message message_instr{};
   message_instr.AddAttribute("text", message);
-  EXPECT_TRUE(message_instr.Setup(proc));
+  EXPECT_NO_THROW(message_instr.Setup(proc));
 
   message_instr.ExecuteSingle(&ui, &ws);
   EXPECT_EQ(message_instr.GetStatus(), ExecutionStatus::SUCCESS);
@@ -79,11 +80,15 @@ TEST_F(MessageTest, Execute)
 TEST_F(MessageTest, FromRegistry)
 {
   auto message_instr = GlobalInstructionRegistry().Create("Message");
-  EXPECT_TRUE(message_instr->Setup(proc));
+  EXPECT_THROW(message_instr->Setup(proc), InstructionSetupException);
+
+  std::string message = "Hello world!";
+  message_instr->AddAttribute("text", message);
+  EXPECT_NO_THROW(message_instr->Setup(proc));
   ui.ui_message = "UNDEFINED";
 
   message_instr->ExecuteSingle(&ui, &ws);
   EXPECT_EQ(message_instr->GetStatus(), ExecutionStatus::SUCCESS);
 
-  EXPECT_EQ(ui.ui_message, "");
+  EXPECT_EQ(ui.ui_message, message);
 }

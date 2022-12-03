@@ -29,6 +29,10 @@ namespace sequencer
 {
 const std::string Fallback::Type = "Fallback";
 
+Fallback::Fallback() : CompoundInstruction(Fallback::Type) {}
+
+Fallback::~Fallback() = default;
+
 ExecutionStatus Fallback::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
 {
   if (!HasChildren())
@@ -79,10 +83,6 @@ ExecutionStatus Fallback::CalculateCompoundStatus() const
   }
   return ExecutionStatus::FAILURE;
 }
-
-Fallback::Fallback() : CompoundInstruction(Fallback::Type) {}
-
-Fallback::~Fallback() = default;
 
 }  // namespace sequencer
 

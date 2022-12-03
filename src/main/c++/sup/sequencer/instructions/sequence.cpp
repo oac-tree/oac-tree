@@ -29,6 +29,12 @@ namespace sequencer
 {
 const std::string Sequence::Type = "Sequence";
 
+Sequence::Sequence()
+  : CompoundInstruction(Sequence::Type)
+{}
+
+Sequence::~Sequence() = default;
+
 ExecutionStatus Sequence::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
 {
   if (!HasChildren())
@@ -80,10 +86,6 @@ ExecutionStatus Sequence::CalculateCompoundStatus() const
   }
   return ExecutionStatus::SUCCESS;
 }
-
-Sequence::Sequence() : CompoundInstruction(Sequence::Type) {}
-
-Sequence::~Sequence() = default;
 
 }  // namespace sequencer
 

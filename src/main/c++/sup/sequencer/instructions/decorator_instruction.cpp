@@ -27,47 +27,16 @@ namespace sup
 {
 namespace sequencer
 {
-void DecoratorInstruction::ResetHook()
-{
-  ResetChild();
-}
+DecoratorInstruction::DecoratorInstruction(const std::string &type)
+  : Instruction(type)
+  , _child{}
+{}
 
-void DecoratorInstruction::HaltImpl()
-{
-  HaltChild();
-}
+DecoratorInstruction::~DecoratorInstruction() = default;
 
-std::vector<const Instruction *> DecoratorInstruction::ChildInstructionsImpl() const
+void DecoratorInstruction::SetInstruction(Instruction *instruction)
 {
-  std::vector<const Instruction *> result;
-  if (_child)
-  {
-    result.push_back(_child.get());
-  }
-  return result;
-}
-
-int DecoratorInstruction::ChildrenCountImpl() const
-{
-  return _child ? 1 : 0;
-}
-
-bool DecoratorInstruction::InsertInstructionImpl(Instruction *child, int index)
-{
-  if (index != 0)
-    return false;
-  _child.reset(child);
-  return true;
-}
-
-Instruction *DecoratorInstruction::TakeInstructionImpl(int index)
-{
-  return _child && index == 0 ? _child.release() : nullptr;
-}
-
-void DecoratorInstruction::SetupImpl(const Procedure &proc)
-{
-  SetupChild(proc);
+  _child.reset(instruction);
 }
 
 void DecoratorInstruction::SetupChild(const Procedure &proc)
@@ -116,13 +85,47 @@ void DecoratorInstruction::HaltChild()
   }
 }
 
-DecoratorInstruction::DecoratorInstruction(const std::string &type) : Instruction(type), _child{} {}
-
-DecoratorInstruction::~DecoratorInstruction() = default;
-
-void DecoratorInstruction::SetInstruction(Instruction *instruction)
+void DecoratorInstruction::ResetHook()
 {
-  _child.reset(instruction);
+  ResetChild();
+}
+
+void DecoratorInstruction::HaltImpl()
+{
+  HaltChild();
+}
+
+std::vector<const Instruction *> DecoratorInstruction::ChildInstructionsImpl() const
+{
+  std::vector<const Instruction *> result;
+  if (_child)
+  {
+    result.push_back(_child.get());
+  }
+  return result;
+}
+
+int DecoratorInstruction::ChildrenCountImpl() const
+{
+  return _child ? 1 : 0;
+}
+
+bool DecoratorInstruction::InsertInstructionImpl(Instruction *child, int index)
+{
+  if (index != 0)
+    return false;
+  _child.reset(child);
+  return true;
+}
+
+Instruction *DecoratorInstruction::TakeInstructionImpl(int index)
+{
+  return _child && index == 0 ? _child.release() : nullptr;
+}
+
+void DecoratorInstruction::SetupImpl(const Procedure &proc)
+{
+  SetupChild(proc);
 }
 
 }  // namespace sequencer

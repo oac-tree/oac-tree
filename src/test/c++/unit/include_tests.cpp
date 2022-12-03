@@ -114,7 +114,7 @@ TEST(Include, Procedure_undefined)
       ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
-  EXPECT_THROW(sup::UnitTestHelper::TryAndExecute(proc, &ui), ParseException);
+  EXPECT_THROW(sup::UnitTestHelper::TryAndExecute(proc, &ui), InstructionSetupException);
 }
 
 TEST(Include, Procedure_extern)

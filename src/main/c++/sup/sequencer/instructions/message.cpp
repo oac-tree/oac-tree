@@ -34,7 +34,9 @@ const std::string Message::Type = "Message";
 
 static const std::string TEXT_ATTRIBUTE = "text";
 
-Message::Message() : Instruction(Message::Type) {}
+Message::Message() : Instruction(Message::Type)
+{}
+
 Message::~Message() = default;
 
 void Message::SetupImpl(const Procedure &proc)

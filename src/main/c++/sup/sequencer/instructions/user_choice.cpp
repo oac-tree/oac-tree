@@ -21,6 +21,7 @@
 
 #include "user_choice.h"
 
+#include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/log.h>
 #include <sup/sequencer/user_interface.h>
 
@@ -31,6 +32,12 @@ namespace sequencer
 const std::string UserChoice::Type = "UserChoice";
 
 static const std::string DESCRIPTION_ATTRIBUTE = "description";
+
+UserChoice::UserChoice()
+  : CompoundInstruction(UserChoice::Type)
+{}
+
+UserChoice::~UserChoice() = default;
 
 ExecutionStatus UserChoice::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
 {
@@ -78,10 +85,6 @@ std::vector<std::string> UserChoice::GetChoices() const
   }
   return result;
 }
-
-UserChoice::UserChoice() : CompoundInstruction(UserChoice::Type) {}
-
-UserChoice::~UserChoice() = default;
 
 }  // namespace sequencer
 

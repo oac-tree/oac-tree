@@ -36,8 +36,36 @@ namespace sequencer
  */
 class AsyncWrapper
 {
+public:
+  /**
+   * @brief Constructor.
+   * @param instruction The wrapped Instruction.
+   */
+  AsyncWrapper(Instruction* instruction);
+
+  /**
+   * @brief Move constructor.
+   *
+   * @note The move constructor is needed for storage in STL containers.
+   */
+  AsyncWrapper(AsyncWrapper&& other);
+
+  ~AsyncWrapper();
+
+  /**
+   * @brief Execution method.
+   *
+   * @details Launches the ExecuteSingle method on the wrapped instruction
+   * asynchronously if it is not already running.
+   */
+  void Tick(UserInterface* ui, Workspace* ws);
+
+  /**
+   * @brief Get execution status
+   */
+  ExecutionStatus GetStatus() const;
+
 private:
-protected:
   /**
    * @brief Wrapped instruction (not owned!)
    */
@@ -62,38 +90,6 @@ protected:
    * @brief Check if child is still running
    */
   bool ChildIsRunning() const;
-
-public:
-  /**
-   * @brief Constructor.
-   * @param instruction The wrapped Instruction.
-   */
-  AsyncWrapper(Instruction* instruction);
-
-  /**
-   * @brief Move constructor.
-   *
-   * @note The move constructor is needed for storage in STL containers.
-   */
-  AsyncWrapper(AsyncWrapper&& other);
-
-  /**
-   * @brief Destructor.
-   */
-  ~AsyncWrapper();
-
-  /**
-   * @brief Execution method.
-   *
-   * @details Launches the ExecuteSingle method on the wrapped instruction
-   * asynchronously if it is not already running.
-   */
-  void Tick(UserInterface* ui, Workspace* ws);
-
-  /**
-   * @brief Get execution status
-   */
-  ExecutionStatus GetStatus() const;
 };
 
 }  // namespace sequencer

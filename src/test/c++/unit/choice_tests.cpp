@@ -24,6 +24,7 @@
 
 #include <sup/sequencer/variables/local_variable.h>
 
+#include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/instruction.h>
 #include <sup/sequencer/instruction_registry.h>
 #include <sup/sequencer/log.h>
@@ -79,7 +80,7 @@ TEST(Choice, Default)  // Static initialisation
   std::size_t i = 0u;
   while ((testTable[i][0] != NULL))
   {
-    auto proc = sup::sequencer::ParseProcedureString(proc_str);
+    auto proc = ParseProcedureString(proc_str);
 
     std::unique_ptr<Variable> varX(new LocalVariable);
 
@@ -123,9 +124,9 @@ TEST(Choice, ArraySuccess)
 
   sup::UnitTestHelper::MockUI ui;
   auto proc =
-      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
-  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
-  ASSERT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 3);
+      ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+  EXPECT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 3);
 }
 
 TEST(Choice, ArrayFailure)
@@ -146,11 +147,11 @@ TEST(Choice, ArrayFailure)
 
   sup::UnitTestHelper::MockUI ui;
   auto proc =
-      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+      ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
   // Instruction called and return failure
-  ASSERT_TRUE(
-      sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE));
-  ASSERT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 3);
+  EXPECT_TRUE(
+      sup::UnitTestHelper::TryAndExecute(proc, &ui, ExecutionStatus::FAILURE));
+  EXPECT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 3);
 }
 
 TEST(Choice, NoSuchVariable)
@@ -165,9 +166,9 @@ TEST(Choice, NoSuchVariable)
 
   sup::UnitTestHelper::MockUI ui;
   auto proc =
-      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+      ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
   // Expect failure during execution
-  ASSERT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+  EXPECT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
 }
 
 TEST(Choice, NoAttribute)
@@ -182,7 +183,7 @@ TEST(Choice, NoAttribute)
 
   sup::UnitTestHelper::MockUI ui;
   auto proc =
-      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+      ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
   // Expect failure in Setup
-  ASSERT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+  EXPECT_THROW(sup::UnitTestHelper::TryAndExecute(proc, &ui), InstructionSetupException);
 }

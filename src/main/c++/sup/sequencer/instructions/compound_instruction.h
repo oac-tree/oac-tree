@@ -35,22 +35,23 @@ namespace sequencer
  */
 class CompoundInstruction : public Instruction
 {
-private:
+public:
   /**
-   * @brief See sup::sequencer::Instruction.
+   * @brief Constructor.
+   *
+   * @param type The type of instruction.
    */
-  void ResetHook() override;
-  void HaltImpl() override;
-  std::vector<const Instruction *> ChildInstructionsImpl() const override;
-  int ChildrenCountImpl() const override;
-  bool InsertInstructionImpl(Instruction *child, int index) override;
-  Instruction *TakeInstructionImpl(int index) override;
-  void SetupImpl(const Procedure &proc) override;
+  CompoundInstruction(const std::string &type);
+
+  ~CompoundInstruction() override;
 
   /**
-   * @brief Container for child instructions.
+   * @brief Add child instruction.
+   *
+   * @param instruction Pointer to instruction.
+   * @note CompoundInstruction takes ownership of the added instruction.
    */
-  std::vector<Instruction *> _children;
+  void PushBack(Instruction *instruction);
 
 protected:
   /**
@@ -76,26 +77,16 @@ protected:
    */
   void HaltChildren();
 
-public:
-  /**
-   * @brief Constructor.
-   *
-   * @param type The type of instruction.
-   */
-  CompoundInstruction(const std::string &type);
+private:
+  void ResetHook() override;
+  void HaltImpl() override;
+  std::vector<const Instruction *> ChildInstructionsImpl() const override;
+  int ChildrenCountImpl() const override;
+  bool InsertInstructionImpl(Instruction *child, int index) override;
+  Instruction *TakeInstructionImpl(int index) override;
+  void SetupImpl(const Procedure &proc) override;
 
-  /**
-   * @brief Destructor.
-   */
-  ~CompoundInstruction() override;
-
-  /**
-   * @brief Add child instruction.
-   *
-   * @param instruction Pointer to instruction.
-   * @note CompoundInstruction takes ownership of the added instruction.
-   */
-  void PushBack(Instruction *instruction);
+  std::vector<Instruction *> _children;
 };
 
 }  // namespace sequencer

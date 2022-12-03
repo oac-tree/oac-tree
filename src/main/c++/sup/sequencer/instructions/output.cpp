@@ -34,7 +34,9 @@ namespace sequencer
 {
 const std::string Output::Type = "Output";
 
-Output::Output() : Instruction(Output::Type) {}
+Output::Output()
+  : Instruction(Output::Type)
+{}
 
 Output::~Output() = default;
 

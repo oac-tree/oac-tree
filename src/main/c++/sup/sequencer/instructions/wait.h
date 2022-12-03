@@ -30,53 +30,36 @@ namespace sequencer
 {
 /**
  * @brief Instruction node that returns SUCCESS after a given timeout.
+ *
+ * @details The 'timeout' attribute is optional. When this attribute is not present,
+ * the instruction returns SUCCESS immediately.
  */
 class Wait : public Instruction
 {
+public:
+  Wait();
+
+  ~Wait() override;
+
+  static const std::string Type;
+
 private:
-  /**
-   * @brief See sup::sequencer::Instruction.
-   */
   void InitHook() override;
 
-  /**
-   * @brief See sup::sequencer::Instruction.
-   *
-   * @details Execution always returns SUCCESS after an optional timeout.
-   */
-  ExecutionStatus ExecuteSingleImpl(UserInterface* ui, Workspace* ws) override;
+  void SetupImpl(const Procedure& proc) override;
 
-  /**
-   * @brief See sup::sequencer::Instruction.
-   */
-  bool SetupImpl(const Procedure& proc) override;
+  ExecutionStatus ExecuteSingleImpl(UserInterface* ui, Workspace* ws) override;
 
   /**
    * @brief Timeout (in nanoseconds).
    */
-  unsigned long _timeout;
+  unsigned long m_timeout;
 
   /**
    * @brief End of wait in absolute time.
    */
-  unsigned long _finish;
+  unsigned long m_finish;
 
-protected:
-public:
-  /**
-   * @brief Constructor.
-   */
-  Wait();
-
-  /**
-   * @brief Destructor.
-   */
-  ~Wait() override;
-
-  /**
-   * @brief The instruction's typename.
-   */
-  static const std::string Type;
 };
 
 }  // namespace sequencer

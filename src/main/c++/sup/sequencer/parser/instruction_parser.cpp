@@ -44,6 +44,12 @@ static void AddChildrenToCompound(CompoundInstruction *compound,
 std::unique_ptr<Instruction> ParseInstruction(const TreeData &data, const std::string &filename)
 {
   auto instr_type = data.GetType();
+  if (!GlobalInstructionRegistry().IsRegisteredInstructionName(instr_type))
+  {
+    std::string error_message = "sup::sequencer::ParseInstruction(): trying to create unregistered "
+                                "instruction with typename [" + instr_type + "]";
+    throw ParseException(error_message);
+  }
   auto instr = GlobalInstructionRegistry().Create(instr_type);
   if (!instr)
   {

@@ -25,6 +25,50 @@ namespace sup
 {
 namespace sequencer
 {
+CompoundInstruction::CompoundInstruction(const std::string& type) : Instruction(type) {}
+
+CompoundInstruction::~CompoundInstruction()
+{
+  for (auto instruction : _children)
+  {
+    delete instruction;
+  }
+}
+
+void CompoundInstruction::PushBack(Instruction* instruction)
+{
+  _children.push_back(instruction);
+}
+
+void CompoundInstruction::SetupChildren(const Procedure& proc)
+{
+  for (auto instruction : _children)
+  {
+    instruction->Setup(proc);
+  }
+}
+
+bool CompoundInstruction::HasChildren() const
+{
+  return !_children.empty();
+}
+
+void CompoundInstruction::ResetChildren()
+{
+  for (auto instruction : _children)
+  {
+    instruction->Reset();
+  }
+}
+
+void CompoundInstruction::HaltChildren()
+{
+  for (auto instruction : _children)
+  {
+    instruction->Halt();
+  }
+}
+
 void CompoundInstruction::ResetHook()
 {
   ResetChildren();
@@ -72,50 +116,6 @@ Instruction* CompoundInstruction::TakeInstructionImpl(int index)
 void CompoundInstruction::SetupImpl(const Procedure& proc)
 {
   SetupChildren(proc);
-}
-
-void CompoundInstruction::SetupChildren(const Procedure& proc)
-{
-  for (auto instruction : _children)
-  {
-    instruction->Setup(proc);
-  }
-}
-
-bool CompoundInstruction::HasChildren() const
-{
-  return !_children.empty();
-}
-
-void CompoundInstruction::ResetChildren()
-{
-  for (auto instruction : _children)
-  {
-    instruction->Reset();
-  }
-}
-
-void CompoundInstruction::HaltChildren()
-{
-  for (auto instruction : _children)
-  {
-    instruction->Halt();
-  }
-}
-
-CompoundInstruction::CompoundInstruction(const std::string& type) : Instruction(type) {}
-
-CompoundInstruction::~CompoundInstruction()
-{
-  for (auto instruction : _children)
-  {
-    delete instruction;
-  }
-}
-
-void CompoundInstruction::PushBack(Instruction* instruction)
-{
-  _children.push_back(instruction);
 }
 
 }  // namespace sequencer

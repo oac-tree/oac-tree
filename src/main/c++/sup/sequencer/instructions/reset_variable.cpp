@@ -33,7 +33,10 @@ const std::string ResetVariable::Type = "ResetVariable";
 
 static const std::string VARNAME_ATTRIBUTE = "varName";
 
-ResetVariable::ResetVariable() : Instruction(ResetVariable::Type) {}
+ResetVariable::ResetVariable()
+  : Instruction(ResetVariable::Type)
+{}
+
 ResetVariable::~ResetVariable() = default;
 
 void ResetVariable::SetupImpl(const Procedure &proc)

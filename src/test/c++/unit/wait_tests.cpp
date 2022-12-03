@@ -24,6 +24,7 @@
 #include "log_ui.h"
 #include "unit_test_helper.h"
 
+#include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/instruction_registry.h>
 #include <sup/sequencer/sequence_parser.h>
 
@@ -31,28 +32,30 @@
 
 #include <algorithm>
 
+using namespace sup::sequencer;
+
 TEST(Wait, InitialState)
 {
-  sup::sequencer::Wait instruction;
+  Wait instruction;
   EXPECT_EQ(instruction.ChildrenCount(), 0);
 
-  sup::sequencer::Wait child;
+  Wait child;
   EXPECT_FALSE(instruction.InsertInstruction(&child, 0));
   EXPECT_FALSE(instruction.TakeInstruction(0));
 }
 
 TEST(Wait, Registration)
 {
-  auto existing_names = sup::sequencer::GlobalInstructionRegistry().RegisteredInstructionNames();
+  auto existing_names = GlobalInstructionRegistry().RegisteredInstructionNames();
 
   auto it = std::find(existing_names.begin(), existing_names.end(), "Wait");
-  ASSERT_TRUE(it != existing_names.end());
+  EXPECT_TRUE(it != existing_names.end());
 }
 
 TEST(Wait, Procedure_success)
 {
-  sup::sequencer::LogUI ui;
-  auto proc = sup::sequencer::ParseProcedureString(
+  LogUI ui;
+  auto proc = ParseProcedureString(
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
       "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
       "           name=\"Trivial procedure for testing purposes\"\n"
@@ -62,13 +65,13 @@ TEST(Wait, Procedure_success)
       "    <Workspace/>\n"
       "</Procedure>");
 
-  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
 }
 
 TEST(Wait, SetupImpl_throw)
 {
-  sup::sequencer::LogUI ui;
-  auto proc = sup::sequencer::ParseProcedureString(
+  LogUI ui;
+  auto proc = ParseProcedureString(
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
       "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
       "           name=\"Trivial procedure for testing purposes\"\n"
@@ -79,5 +82,5 @@ TEST(Wait, SetupImpl_throw)
       "</Procedure>");
 
   // Should have expect failure in Setup but the exception does not cause SetupImpl to fail.
-  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+  EXPECT_THROW(sup::UnitTestHelper::TryAndExecute(proc, &ui), InstructionSetupException);
 }

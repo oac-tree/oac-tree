@@ -22,8 +22,8 @@
 #include "wait.h"
 
 #include <sup/sequencer/constants.h>
+#include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/generic_utils.h>
-#include <sup/sequencer/log.h>
 
 #include <chrono>
 #include <cmath>
@@ -39,17 +39,42 @@ const std::string Wait::Type = "Wait";
 
 static unsigned long ToNanoSeconds(double sec);
 
+Wait::Wait()
+  : Instruction(Wait::Type)
+  , m_timeout(0)
+  , m_finish(0)
+{}
+
+Wait::~Wait() = default;
+
 void Wait::InitHook()
 {
   unsigned long _now = utils::GetNanosecsSinceEpoch();
-  _finish = _now + _timeout;
+  m_finish = _now + m_timeout;
+}
+
+void Wait::SetupImpl(const Procedure&)
+{
+  if (HasAttribute(TIMEOUT_ATTR_NAME))
+  {
+    auto timeout_str = GetAttribute(TIMEOUT_ATTR_NAME);
+    double t{};
+    if (!utils::SafeStringToDouble(t, timeout_str))
+    {
+      std::string error_message =
+        "sup::sequencer::Wait::SetupImpl(): could not parse attribute [" +
+         TIMEOUT_ATTR_NAME + "], with value [" + timeout_str + "] to double";
+      throw InstructionSetupException(error_message);
+    }
+      m_timeout = ToNanoSeconds(t);
+  }
 }
 
 ExecutionStatus Wait::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
 {
   (void)ui;
   (void)ws;
-  while (!_halt_requested.load() && _finish > utils::GetNanosecsSinceEpoch())
+  while (!_halt_requested.load() && m_finish > utils::GetNanosecsSinceEpoch())
   {
     std::this_thread::sleep_for(std::chrono::milliseconds(DefaultSettings::TIMING_ACCURACY_MS));
   }
@@ -59,28 +84,6 @@ ExecutionStatus Wait::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
   }
   return ExecutionStatus::SUCCESS;
 }
-
-bool Wait::SetupImpl(const Procedure& /*proc*/)
-{
-  if (HasAttribute(TIMEOUT_ATTR_NAME))
-  {
-    auto timeout = GetAttribute(TIMEOUT_ATTR_NAME);
-    double t{};
-    if (utils::SafeStringToDouble(t, timeout))
-    {
-      _timeout = ToNanoSeconds(t);
-    }
-    else
-    {
-      log::Warning("Wait::SetupImpl() - could not parse timeout attribute!");
-    }
-  }
-  return true;  // if timeout was not specified, Wait immediately returns SUCCESS.
-}
-
-Wait::Wait() : Instruction(Wait::Type), _timeout(0), _finish(0) {}
-
-Wait::~Wait() = default;
 
 static unsigned long ToNanoSeconds(double sec)
 {

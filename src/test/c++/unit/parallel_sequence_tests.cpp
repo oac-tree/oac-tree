@@ -24,6 +24,7 @@
 
 #include <sup/sequencer/instructions/compound_instruction.h>
 
+#include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/instruction.h>
 #include <sup/sequencer/instruction_registry.h>
 #include <sup/sequencer/sequence_parser.h>
@@ -85,42 +86,42 @@ static const std::string ProcedureParallelBuiltinString =
 
 TEST(ParallelSequence, Procedure_sequence)
 {
-  sup::sequencer::LogUI ui;
-  auto proc = sup::sequencer::ParseProcedureString(ProcedureSequenceString);
+  LogUI ui;
+  auto proc = ParseProcedureString(ProcedureSequenceString);
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
 }
 
 TEST(ParallelSequence, Procedure_parallel)
 {
-  sup::sequencer::LogUI ui;
-  auto proc = sup::sequencer::ParseProcedureString(ProcedureParallelString);
+  LogUI ui;
+  auto proc = ParseProcedureString(ProcedureParallelString);
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
 }
 
 TEST(ParallelSequence, WithBuiltinCode)
 {
-  sup::sequencer::LogUI ui;
-  auto proc = sup::sequencer::ParseProcedureString(ProcedureParallelBuiltinString);
+  LogUI ui;
+  auto proc = ParseProcedureString(ProcedureParallelBuiltinString);
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
 }
 
 TEST(ParallelSequence, SetupImpl_thresholds)
 {
-  auto parallel = sup::sequencer::GlobalInstructionRegistry().Create("ParallelSequence");
+  auto parallel = GlobalInstructionRegistry().Create("ParallelSequence");
   ASSERT_NE(parallel.get(), nullptr);
-  auto compound = dynamic_cast<sup::sequencer::CompoundInstruction *>(parallel.get());
+  auto compound = dynamic_cast<CompoundInstruction *>(parallel.get());
   EXPECT_TRUE(compound);
 
   EXPECT_TRUE(parallel->ChildInstructions().empty());
   EXPECT_TRUE(parallel->AddAttribute("successThreshold", "undefined")
               && parallel->AddAttribute("failureThreshold", "undefined"));
 
-  auto child = sup::sequencer::GlobalInstructionRegistry().Create("Wait");
+  auto child = GlobalInstructionRegistry().Create("Wait");
   EXPECT_TRUE(child->AddAttribute("timeout", "1.0"));
 
   compound->PushBack(child.release());
   EXPECT_FALSE(parallel->ChildInstructions().empty());
 
-  sup::sequencer::Procedure proc;
-  EXPECT_FALSE(parallel->Setup(proc));
+  Procedure proc;
+  EXPECT_THROW(parallel->Setup(proc), InstructionSetupException);
 }

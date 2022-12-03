@@ -35,22 +35,23 @@ namespace sequencer
  */
 class DecoratorInstruction : public Instruction
 {
-private:
+public:
   /**
-   * @brief See sup::sequencer::Instruction.
+   * @brief Constructor.
+   *
+   * @param type The type of instruction.
    */
-  void ResetHook() override;
-  void HaltImpl() override;
-  std::vector<const Instruction *> ChildInstructionsImpl() const override;
-  int ChildrenCountImpl() const override;
-  bool InsertInstructionImpl(Instruction *child, int index) override;
-  Instruction *TakeInstructionImpl(int index) override;
-  void SetupImpl(const Procedure &proc) override;
+  DecoratorInstruction(const std::string &type);
+
+  ~DecoratorInstruction() override;
 
   /**
-   * @brief Decorated instruction.
+   * @brief Set the decorated child instruction.
+   *
+   * @param instruction Pointer to decorated instruction.
+   * @note DecoratorInstruction takes ownership of the decorated instruction.
    */
-  std::unique_ptr<Instruction> _child;
+  void SetInstruction(Instruction *instruction);
 
 protected:
   /**
@@ -86,26 +87,16 @@ protected:
    */
   void HaltChild();
 
-public:
-  /**
-   * @brief Constructor.
-   *
-   * @param type The type of instruction.
-   */
-  DecoratorInstruction(const std::string &type);
+private:
+  void ResetHook() override;
+  void HaltImpl() override;
+  std::vector<const Instruction *> ChildInstructionsImpl() const override;
+  int ChildrenCountImpl() const override;
+  bool InsertInstructionImpl(Instruction *child, int index) override;
+  Instruction *TakeInstructionImpl(int index) override;
+  void SetupImpl(const Procedure &proc) override;
 
-  /**
-   * @brief Destructor.
-   */
-  ~DecoratorInstruction() override;
-
-  /**
-   * @brief Set the decorated child instruction.
-   *
-   * @param instruction Pointer to decorated instruction.
-   * @note DecoratorInstruction takes ownership of the decorated instruction.
-   */
-  void SetInstruction(Instruction *instruction);
+  std::unique_ptr<Instruction> _child;
 };
 
 }  // namespace sequencer

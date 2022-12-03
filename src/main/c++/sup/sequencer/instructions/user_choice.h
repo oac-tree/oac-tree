@@ -39,36 +39,20 @@ namespace sequencer
  */
 class UserChoice : public CompoundInstruction
 {
+public:
+  UserChoice();
+
+  ~UserChoice() override;
+
+  static const std::string Type;
+
 private:
-  /**
-   * @brief See sup::sequencer::Instruction.
-   *
-   * @details Ask the user to select which of its child instructions should execute.
-   * The returned ExecutionStatus is the one from the selected child or FAILURE if no
-   * child was selected.
-   */
   ExecutionStatus ExecuteSingleImpl(UserInterface* ui, Workspace* ws) override;
 
   /**
    * @brief Construct a list of choices from the available child instructions.
    */
   std::vector<std::string> GetChoices() const;
-
-public:
-  /**
-   * @brief Constructor.
-   */
-  UserChoice();
-
-  /**
-   * @brief Destructor.
-   */
-  ~UserChoice() override;
-
-  /**
-   * @brief The instruction's typename.
-   */
-  static const std::string Type;
 };
 
 }  // namespace sequencer

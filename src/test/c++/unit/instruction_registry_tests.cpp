@@ -21,6 +21,7 @@
 
 #include <sup/sequencer/instruction_registry.h>
 
+#include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/instruction.h>
 #include <sup/sequencer/sequence_parser.h>
 
@@ -28,17 +29,18 @@
 
 #include <algorithm>
 
-class TestInstruction : public sup::sequencer::Instruction
+using namespace sup::sequencer;
+
+class TestInstruction : public Instruction
 {
 public:
-  TestInstruction() : sup::sequencer::Instruction(TestInstruction::Type) {}
+  TestInstruction() : Instruction(TestInstruction::Type) {}
   static const std::string Type;
 
 private:
-  sup::sequencer::ExecutionStatus ExecuteSingleImpl(sup::sequencer::UserInterface* ui,
-                                                    sup::sequencer::Workspace* ws) override
+  ExecutionStatus ExecuteSingleImpl(UserInterface*, Workspace*) override
   {
-    return sup::sequencer::ExecutionStatus::SUCCESS;
+    return ExecutionStatus::SUCCESS;
   }
 };
 
@@ -47,32 +49,32 @@ const std::string TestInstruction::Type = "TestInstruction";
 TEST(InstructionRegistry, RegisterInstruction)
 {
   // no such name
-  auto registered_names = sup::sequencer::GlobalInstructionRegistry().RegisteredInstructionNames();
+  auto registered_names = GlobalInstructionRegistry().RegisteredInstructionNames();
   auto it = std::find(registered_names.begin(), registered_names.end(), TestInstruction::Type);
   EXPECT_TRUE(it == registered_names.end());
 
   // not possible to create instruction
-  auto inst = sup::sequencer::GlobalInstructionRegistry().Create(TestInstruction::Type);
-  EXPECT_FALSE(inst.get());
+  EXPECT_THROW(GlobalInstructionRegistry().Create(TestInstruction::Type),
+               InvalidOperationException);
 
   // registration
-  EXPECT_TRUE(sup::sequencer::RegisterGlobalInstruction<TestInstruction>());
+  EXPECT_TRUE(RegisterGlobalInstruction<TestInstruction>());
 
   // second registration with the same name is not allowed
-  EXPECT_THROW(sup::sequencer::RegisterGlobalInstruction<TestInstruction>(), std::runtime_error);
+  EXPECT_THROW(RegisterGlobalInstruction<TestInstruction>(), InvalidOperationException);
 
   // there is a name
-  registered_names = sup::sequencer::GlobalInstructionRegistry().RegisteredInstructionNames();
+  registered_names = GlobalInstructionRegistry().RegisteredInstructionNames();
   it = std::find(registered_names.begin(), registered_names.end(), TestInstruction::Type);
-  EXPECT_TRUE(it != registered_names.end());
+  EXPECT_FALSE(it == registered_names.end());
 
   // can create instruction
-  inst = sup::sequencer::GlobalInstructionRegistry().Create(TestInstruction::Type);
-  EXPECT_TRUE(inst.get());
+  auto inst = GlobalInstructionRegistry().Create(TestInstruction::Type);
+  EXPECT_TRUE(static_cast<bool>(inst));
 }
 
 TEST(InstructionRegistry, CreateFailure)
 {
-  auto inst = sup::sequencer::GlobalInstructionRegistry().Create("UndefinedInstructionName");
-  EXPECT_FALSE(inst.get());
+  EXPECT_THROW(GlobalInstructionRegistry().Create("UndefinedInstructionName"),
+               InvalidOperationException);
 }

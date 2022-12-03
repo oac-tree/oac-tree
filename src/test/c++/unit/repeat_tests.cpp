@@ -22,6 +22,7 @@
 #include "log_ui.h"
 #include "unit_test_helper.h"
 
+#include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/instruction_registry.h>
 #include <sup/sequencer/sequence_parser.h>
 
@@ -29,9 +30,11 @@
 
 #include <algorithm>
 
+using namespace sup::sequencer;
+
 TEST(Repeat, Registration)
 {
-  sup::sequencer::InstructionRegistry registry = sup::sequencer::GlobalInstructionRegistry();
+  InstructionRegistry registry = GlobalInstructionRegistry();
   auto names = registry.RegisteredInstructionNames();
   auto it = std::find(names.begin(), names.end(), "Repeat");
   ASSERT_TRUE(it != names.end());
@@ -47,9 +50,9 @@ TEST(Repeat, Procedure_success)
     </Workspace>
 )"};
 
-  sup::sequencer::LogUI ui;
+  LogUI ui;
   auto proc =
-      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+      ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
   ASSERT_TRUE(proc.get() != nullptr);
 
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
@@ -68,12 +71,12 @@ TEST(Repeat, Procedure_failure)
     </Workspace>
 )"};
 
-  sup::sequencer::LogUI ui;
+  LogUI ui;
   auto proc =
-      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+      ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
   ASSERT_TRUE(proc.get() != nullptr);
   EXPECT_TRUE(
-      sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE));
+      sup::UnitTestHelper::TryAndExecute(proc, &ui, ExecutionStatus::FAILURE));
   EXPECT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 1);
 }
 
@@ -87,12 +90,12 @@ TEST(Repeat, Procedure_attribute)
     </Workspace>
 )"};
 
-  sup::sequencer::LogUI ui;
+  LogUI ui;
   auto proc =
-      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+      ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
   ASSERT_TRUE(proc.get() != nullptr);
 
   // Expect failure during Setup
-  EXPECT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+  EXPECT_THROW(sup::UnitTestHelper::TryAndExecute(proc, &ui), InstructionSetupException);
   EXPECT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 0);
 }

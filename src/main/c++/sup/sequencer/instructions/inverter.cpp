@@ -29,19 +29,21 @@ namespace sequencer
 {
 const std::string Inverter::Type = "Inverter";
 
+Inverter::Inverter() : DecoratorInstruction(Inverter::Type) {}
+
+Inverter::~Inverter() = default;
+
 ExecutionStatus Inverter::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
 {
   if (!HasChild())
   {
     return ExecutionStatus::SUCCESS;
   }
-
   auto child_status = GetChildStatus();
   if (NeedsExecute(child_status))
   {
     ExecuteChild(ui, ws);
   }
-
   return CalculateStatus();
 }
 
@@ -51,7 +53,6 @@ ExecutionStatus Inverter::CalculateStatus() const
   {
     return ExecutionStatus::SUCCESS;
   }
-
   auto child_status = GetChildStatus();
   auto status = child_status;
 
@@ -68,10 +69,6 @@ ExecutionStatus Inverter::CalculateStatus() const
   }
   return status;
 }
-
-Inverter::Inverter() : DecoratorInstruction(Inverter::Type) {}
-
-Inverter::~Inverter() = default;
 
 }  // namespace sequencer
 

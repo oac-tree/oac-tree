@@ -54,10 +54,8 @@ void Instruction::Postamble(UserInterface* ui)
   PostExecuteHook(ui);
 }
 
-bool Instruction::SetupImpl(const Procedure&)
-{
-  return true;
-}
+void Instruction::SetupImpl(const Procedure&)
+{}
 
 void Instruction::PreExecuteHook(UserInterface*) {}
 
@@ -128,7 +126,7 @@ ExecutionStatus Instruction::GetStatus() const
   return _status;
 }
 
-bool Instruction::Setup(const Procedure& proc)
+void Instruction::Setup(const Procedure& proc)
 {
   return SetupImpl(proc);
 }

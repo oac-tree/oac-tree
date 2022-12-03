@@ -36,41 +36,9 @@ namespace sequencer
  */
 class Include : public DecoratorInstruction
 {
-private:
-  /**
-   * @brief See sup::sequencer::Instruction.
-   */
-  ExecutionStatus ExecuteSingleImpl(UserInterface* ui, Workspace* ws) override;
-  bool PostInitialiseVariables(const AttributeMap& source) override;
-
-  /**
-   * @brief See sup::sequencer::Instruction.
-   *
-   * @details Tries to load and copy an instruction tree as its child.
-   */
-  bool SetupImpl(const Procedure& proc) override;
-
-  std::string GetPath() const;
-
-  ExecutionStatus CalculateStatus() const;
-
-  /**
-   * @brief Name of file from which this include instruction was loaded (if loaded form file).
-   *
-   * @note This filename may include the relative or absolute paths.
-   */
-  std::string _filename;
-
-protected:
 public:
-  /**
-   * @brief Constructor.
-   */
   Include();
 
-  /**
-   * @brief Destructor.
-   */
   ~Include() override;
 
   /**
@@ -89,10 +57,21 @@ public:
    */
   std::string GetFilename() const;
 
-  /**
-   * @brief The instruction's typename.
-   */
   static const std::string Type;
+
+private:
+  ExecutionStatus ExecuteSingleImpl(UserInterface* ui, Workspace* ws) override;
+
+  bool PostInitialiseVariables(const AttributeMap& source) override;
+
+  void SetupImpl(const Procedure& proc) override;
+
+  ExecutionStatus CalculateStatus() const;
+
+  /**
+   * @brief Name of file from which this include instruction was loaded (if loaded form file).
+   */
+  std::string _filename;
 };
 
 }  // namespace sequencer

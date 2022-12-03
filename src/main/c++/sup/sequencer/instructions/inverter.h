@@ -29,40 +29,25 @@ namespace sup
 namespace sequencer
 {
 /**
- * @brief Decorator that inverts the execution status of its child.
+ * @brief Decorator that inverts the execution status of its child, interchanging
+ * SUCCESS and FAILURE.
  */
 class Inverter : public DecoratorInstruction
 {
+public:
+  Inverter();
+
+  ~Inverter() override;
+
+  static const std::string Type;
+
 private:
-  /**
-   * @brief See sup::sequencer::Instruction.
-   *
-   * @details Inverts the execution status of its child instruction, interchanging
-   * SUCCESS and FAILURE.
-   */
   ExecutionStatus ExecuteSingleImpl(UserInterface* ui, Workspace* ws) override;
 
   /**
    * @brief Calculate this instruction's status from the status of its child instruction.
    */
   ExecutionStatus CalculateStatus() const;
-
-protected:
-public:
-  /**
-   * @brief Constructor.
-   */
-  Inverter();
-
-  /**
-   * @brief Destructor.
-   */
-  ~Inverter() override;
-
-  /**
-   * @brief The instruction's typename.
-   */
-  static const std::string Type;
 };
 
 }  // namespace sequencer

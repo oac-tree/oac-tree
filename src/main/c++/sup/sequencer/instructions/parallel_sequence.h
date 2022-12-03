@@ -40,14 +40,21 @@ namespace sequencer
  */
 class ParallelSequence : public CompoundInstruction
 {
+public:
+  ParallelSequence();
+
+  ~ParallelSequence() override;
+
+  static const std::string Type;
+
 private:
-  /**
-   * @brief See sup::sequencer::Instruction.
-   */
   void InitHook() override;
+
+  void SetupImpl(const Procedure& proc) override;
+
   ExecutionStatus ExecuteSingleImpl(UserInterface* ui, Workspace* ws) override;
+
   void ResetHook() override;
-  bool SetupImpl(const Procedure& proc) override;
 
   /**
    * @brief Calculate this instruction's status from the status of its child instructions.
@@ -63,23 +70,6 @@ private:
   std::vector<AsyncWrapper> _wrappers;
 
   int _success_th, _failure_th;
-
-protected:
-public:
-  /**
-   * @brief Constructor.
-   */
-  ParallelSequence();
-
-  /**
-   * @brief Destructor.
-   */
-  ~ParallelSequence() override;
-
-  /**
-   * @brief The instruction's typename.
-   */
-  static const std::string Type;
 };
 
 }  // namespace sequencer

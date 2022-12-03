@@ -21,8 +21,6 @@
 
 #include "compound_instruction.h"
 
-#include <sup/sequencer/log.h>
-
 namespace sup
 {
 namespace sequencer
@@ -71,19 +69,17 @@ Instruction* CompoundInstruction::TakeInstructionImpl(int index)
   return retval;
 }
 
-bool CompoundInstruction::SetupImpl(const Procedure& proc)
+void CompoundInstruction::SetupImpl(const Procedure& proc)
 {
-  return SetupChildren(proc);
+  SetupChildren(proc);
 }
 
-bool CompoundInstruction::SetupChildren(const Procedure& proc)
+void CompoundInstruction::SetupChildren(const Procedure& proc)
 {
-  bool result = true;
   for (auto instruction : _children)
   {
-    result = instruction->Setup(proc) && result;
+    instruction->Setup(proc);
   }
-  return result;
 }
 
 bool CompoundInstruction::HasChildren() const

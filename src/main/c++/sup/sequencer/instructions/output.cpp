@@ -21,6 +21,7 @@
 
 #include "output.h"
 
+#include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/user_interface.h>
 #include <sup/sequencer/workspace.h>
 
@@ -33,12 +34,23 @@ namespace sequencer
 {
 const std::string Output::Type = "Output";
 
-ExecutionStatus Output::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
+Output::Output() : Instruction(Output::Type) {}
+
+Output::~Output() = default;
+
+void Output::SetupImpl(const Procedure &proc)
 {
   if (!HasAttribute(FROM_ATTRIBUTE_NAME))
   {
-    return ExecutionStatus::FAILURE;
+    std::string error_message =
+      "sup::sequencer::Output::SetupImpl(): missing mandatory attribute [" +
+       FROM_ATTRIBUTE_NAME + "]";
+    throw InstructionSetupException(error_message);
   }
+}
+
+ExecutionStatus Output::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
+{
   sup::dto::AnyValue value;
   if (!ws->GetValue(GetAttribute(FROM_ATTRIBUTE_NAME), value))
   {
@@ -47,10 +59,6 @@ ExecutionStatus Output::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
   return ui->PutValue(value, GetAttribute(DESCR_ATTRIBUTE_NAME)) ? ExecutionStatus::SUCCESS
                                                                  : ExecutionStatus::FAILURE;
 }
-
-Output::Output() : Instruction(Output::Type) {}
-
-Output::~Output() = default;
 
 }  // namespace sequencer
 

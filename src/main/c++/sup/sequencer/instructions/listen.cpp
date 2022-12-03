@@ -22,6 +22,7 @@
 #include "listen.h"
 
 #include <sup/sequencer/constants.h>
+#include <sup/sequencer/exceptions.h>
 
 #include <chrono>
 #include <cstring>
@@ -87,7 +88,7 @@ void Listen::HaltImpl()
   cv.notify_one();
 }
 
-bool Listen::SetupImpl(const Procedure& proc)
+void Listen::SetupImpl(const Procedure& proc)
 {
   force_success = false;
   var_changed = true;
@@ -98,7 +99,10 @@ bool Listen::SetupImpl(const Procedure& proc)
   }
   if (!HasAttribute(VARNAMES_ATTRIBUTE_NAME))
   {
-    return false;
+    std::string error_message =
+      "sup::sequencer::Listen::SetupImpl(): missing mandatory attribute [" +
+       VARNAMES_ATTRIBUTE_NAME + "]";
+    throw InstructionSetupException(error_message);
   }
   var_names = VariableNames();
   var_cache.clear();

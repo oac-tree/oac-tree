@@ -21,8 +21,8 @@
 
 #include "parallel_sequence.h"
 
+#include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/generic_utils.h>
-#include <sup/sequencer/log.h>
 
 namespace sup
 {
@@ -33,9 +33,61 @@ const std::string ParallelSequence::Type = "ParallelSequence";
 const std::string SUCCESS_THRESHOLD_ATTRIBUTE = "successThreshold";
 const std::string FAILURE_THRESHOLD_ATTRIBUTE = "failureThreshold";
 
+ParallelSequence::ParallelSequence()
+  : CompoundInstruction(ParallelSequence::Type)
+  , _success_th{0}
+  , _failure_th{0}
+{}
+
+ParallelSequence::~ParallelSequence() = default;
+
+
 void ParallelSequence::InitHook()
 {
   InitWrappers();
+}
+
+void ParallelSequence::SetupImpl(const Procedure &proc)
+{
+  SetupChildren(proc);
+
+  // default values for thresholds:
+  int N = static_cast<int>(ChildInstructions().size());
+  _success_th = N;
+  _failure_th = 1;
+  bool success_th_from_attributes = false;
+  if (HasAttribute(SUCCESS_THRESHOLD_ATTRIBUTE))
+  {
+    if (!utils::SafeStringToInt(_success_th, GetAttribute(SUCCESS_THRESHOLD_ATTRIBUTE)))
+    {
+      std::string error_message =
+        "sup::sequencer::ParallelSequence::SetupImpl(): could not parse value of attribute with "
+        "name [" + SUCCESS_THRESHOLD_ATTRIBUTE + "]";
+      throw InstructionSetupException(error_message);
+    }
+    success_th_from_attributes = true;
+  }
+
+  if (HasAttribute(FAILURE_THRESHOLD_ATTRIBUTE))
+  {
+    int th{};
+    if (utils::SafeStringToInt(th, GetAttribute(FAILURE_THRESHOLD_ATTRIBUTE)))
+    {
+      std::string error_message =
+        "sup::sequencer::ParallelSequence::SetupImpl(): could not parse value of attribute with "
+        "name [" + FAILURE_THRESHOLD_ATTRIBUTE + "]";
+      throw InstructionSetupException(error_message);
+    }
+    if (success_th_from_attributes)
+    {
+      _failure_th = std::min(th, N - _success_th + 1);
+    }
+    else
+    {
+      _failure_th = th;
+      _success_th = N - th + 1;
+    }
+  }
 }
 
 ExecutionStatus ParallelSequence::ExecuteSingleImpl(UserInterface *ui, Workspace *ws)
@@ -44,7 +96,6 @@ ExecutionStatus ParallelSequence::ExecuteSingleImpl(UserInterface *ui, Workspace
   {
     return ExecutionStatus::SUCCESS;
   }
-
   for (auto &wrapper : _wrappers)
   {
     auto wrapper_status = wrapper.GetStatus();
@@ -75,58 +126,6 @@ void ParallelSequence::ResetHook()
   ResetChildren();
 }
 
-bool ParallelSequence::SetupImpl(const Procedure &proc)
-{
-  bool status = SetupChildren(proc);
-  if (status)
-  {
-    int N = static_cast<int>(ChildInstructions().size());
-
-    // default values for thresholds:
-    _success_th = N;
-    _failure_th = 1;
-
-    bool success_th_from_attributes = false;
-    if (HasAttribute(SUCCESS_THRESHOLD_ATTRIBUTE))
-    {
-      if (utils::SafeStringToInt(_success_th, GetAttribute(SUCCESS_THRESHOLD_ATTRIBUTE)))
-      {
-        success_th_from_attributes = true;
-      }
-      else
-      {
-        log::Warning(
-            "ParallelSequence::InitThresholds() - could not parse successThreshold attribute!");
-        status = false;
-      }
-    }
-
-    if (HasAttribute(FAILURE_THRESHOLD_ATTRIBUTE))
-    {
-      int th{};
-      if (utils::SafeStringToInt(th, GetAttribute(FAILURE_THRESHOLD_ATTRIBUTE)))
-      {
-        if (success_th_from_attributes)
-        {
-          _failure_th = std::min(th, N - _success_th + 1);
-        }
-        else
-        {
-          _failure_th = th;
-          _success_th = N - th + 1;
-        }
-      }
-      else
-      {
-        log::Warning(
-            "ParallelSequence::InitThresholds() - could not parse failureThreshold attribute!");
-        status = false;
-      }
-    }
-  }
-  return status;
-}
-
 ExecutionStatus ParallelSequence::CalculateCompoundStatus() const
 {
   int n_success = 0;
@@ -145,7 +144,6 @@ ExecutionStatus ParallelSequence::CalculateCompoundStatus() const
       n_failure++;
     }
   }
-
   if (n_success >= _success_th)
   {
     return ExecutionStatus::SUCCESS;
@@ -165,14 +163,6 @@ void ParallelSequence::InitWrappers()
     _wrappers.emplace_back(child);
   }
 }
-
-ParallelSequence::ParallelSequence()
-  : CompoundInstruction(ParallelSequence::Type)
-  , _success_th{0}
-  , _failure_th{0}
-{}
-
-ParallelSequence::~ParallelSequence() = default;
 
 }  // namespace sequencer
 

@@ -21,8 +21,8 @@
 
 #include "repeat.h"
 
+#include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/generic_utils.h>
-#include <sup/sequencer/log.h>
 
 const std::string MAXCOUNT_ATTR_NAME = "maxCount";
 
@@ -32,9 +32,33 @@ namespace sequencer
 {
 const std::string Repeat::Type = "Repeat";
 
+Repeat::Repeat() : DecoratorInstruction(Repeat::Type), _max_count{0}, _count{0}, _init_ok{false} {}
+
+Repeat::~Repeat() = default;
+
 void Repeat::InitHook()
 {
   _count = 0;
+}
+
+void Repeat::SetupImpl(const Procedure& proc)
+{
+  if (HasAttribute(MAXCOUNT_ATTR_NAME))
+  {
+    auto max_str = GetAttribute(MAXCOUNT_ATTR_NAME);
+    if (!utils::SafeStringToInt(_max_count, max_str))
+    {
+      std::string error_message =
+        "sup::sequencer::Repeat::SetupImpl(): could not parse value of attribute with "
+        "name [" + MAXCOUNT_ATTR_NAME + "]";
+      throw InstructionSetupException(error_message);
+    }
+    if (_max_count < 0)
+    {
+      _max_count = -1;
+    }
+  }
+  SetupChild(proc);
 }
 
 ExecutionStatus Repeat::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
@@ -64,28 +88,6 @@ ExecutionStatus Repeat::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
   return CalculateStatus();
 }
 
-bool Repeat::SetupImpl(const Procedure& proc)
-{
-  bool status = HasAttribute(MAXCOUNT_ATTR_NAME);
-  if (status)
-  {
-    auto max_str = GetAttribute(MAXCOUNT_ATTR_NAME);
-    if (utils::SafeStringToInt(_max_count, max_str))
-    {
-      if (_max_count < 0)
-      {
-        _max_count = -1;
-      }
-    }
-    else
-    {
-      log::Warning("Repeat::InitMaxCount() - could not parse maxCount attribute!");
-      status = false;
-    }
-  }
-  return SetupChild(proc) && status;
-}
-
 ExecutionStatus Repeat::CalculateStatus() const
 {
   auto child_status = GetChildStatus();
@@ -104,10 +106,6 @@ ExecutionStatus Repeat::CalculateStatus() const
 
   return child_status;
 }
-
-Repeat::Repeat() : DecoratorInstruction(Repeat::Type), _max_count{0}, _count{0}, _init_ok{false} {}
-
-Repeat::~Repeat() = default;
 
 }  // namespace sequencer
 

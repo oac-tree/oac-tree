@@ -26,8 +26,10 @@
 #include "include.h"
 
 #include <sup/sequencer/constants.h>
+#include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/instruction_registry.h>
-#include <sup/sequencer/log.h>
+
+#include <algorithm>
 
 namespace
 {
@@ -48,24 +50,20 @@ namespace InstructionHelper
 const Instruction *FindInstruction(const std::vector<const Instruction *> &instructions,
                                    const std::string &name_path)
 {
-  const Instruction *result = nullptr;
   auto names = StripPath(name_path);
-  for (auto inst : instructions)
+  auto it = std::find_if(instructions.begin(), instructions.end(),
+                         [&names](const Instruction* instr)
+                         {
+                           return instr->GetName() == names.first;
+                         });
+  if (it == instructions.end())
   {
-    if (inst->GetName() == names.first)
-    {
-      result = inst;
-      break;
-    }
+    std::string error_message =
+      "sup::sequencer::InstructionHelper::FindInstruction(): could not find instruction with path "
+      "[" + name_path + "]";
+    throw InstructionSetupException(error_message);
   }
-  if (result == nullptr)
-  {
-    log::Warning(
-        "sup::sequencer::InstructionHelper::FindInstruction(): could not "
-        "find instruction with name_path '%s'",
-        name_path.c_str());
-    return result;
-  }
+  auto result = *it;
   if (names.second.empty())
   {
     return result;

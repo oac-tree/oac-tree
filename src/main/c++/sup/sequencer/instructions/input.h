@@ -29,36 +29,25 @@ namespace sup
 namespace sequencer
 {
 /**
- * @brief Instruction node that writes a user defined value into a workspace
+ * @brief Instruction node that writes a user defined value (from UserInterface) into a workspace
  * variable.
+ *
+ * @details Execution returns SUCCESS if user defined value was successfully
+ * written to the workspace variable.
  */
 class Input : public Instruction
 {
-private:
-  /**
-   * @brief See sup::sequencer::Instruction.
-   *
-   * @details Execution returns SUCCESS if user defined value was successfully
-   * written to the workspace variable.
-   */
-  ExecutionStatus ExecuteSingleImpl(UserInterface* ui, Workspace* ws) override;
-
-protected:
 public:
-  /**
-   * @brief Constructor.
-   */
   Input();
 
-  /**
-   * @brief Destructor.
-   */
   ~Input() override;
 
-  /**
-   * @brief The instruction's typename.
-   */
   static const std::string Type;
+
+private:
+  void SetupImpl(const Procedure &proc) override;
+
+  ExecutionStatus ExecuteSingleImpl(UserInterface* ui, Workspace* ws) override;
 };
 
 }  // namespace sequencer

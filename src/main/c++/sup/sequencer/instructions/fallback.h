@@ -31,40 +31,25 @@ namespace sequencer
 /**
  * @brief Compound instruction representing a list of alternative actions.
  *
- * @note Fallback keeps on executing its children until one
- * returns successfully. The fallback sequence fails when all children fail.
+ * @note Fallback keeps on executing its children until one returns successfully.
+ * The fallback sequence fails when all children fail.
  */
 class Fallback : public CompoundInstruction
 {
+public:
+  Fallback();
+
+  ~Fallback() override;
+
+  static const std::string Type;
+
 private:
-  /**
-   * @brief See sup::sequencer::Instruction.
-   *
-   * @details Execute the child instructions in order until one succeeds (SUCCESS)
-   * or all fail (FAILURE).
-   */
   ExecutionStatus ExecuteSingleImpl(UserInterface* ui, Workspace* ws) override;
 
   /**
    * @brief Calculate this instruction's status from the status of its child instructions.
    */
   ExecutionStatus CalculateCompoundStatus() const;
-
-public:
-  /**
-   * @brief Constructor.
-   */
-  Fallback();
-
-  /**
-   * @brief Destructor.
-   */
-  ~Fallback() override;
-
-  /**
-   * @brief The instruction's typename.
-   */
-  static const std::string Type;
 };
 
 }  // namespace sequencer

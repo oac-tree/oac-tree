@@ -21,7 +21,7 @@
 
 #include "choice.h"
 
-#include <sup/sequencer/log.h>
+#include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/procedure.h>
 #include <sup/sequencer/workspace.h>
 
@@ -41,30 +41,27 @@ const std::string Choice::Type = "Choice";
 
 Choice::Choice()
   : CompoundInstruction(Choice::Type)
-  , m_var_name{}
 {}
 
 Choice::~Choice()
 {}
 
-bool Choice::SetupImpl(const Procedure &proc)
+void Choice::SetupImpl(const Procedure &proc)
 {
-  if (!SetupChildren(proc))
-  {
-    return false;
-  }
+  SetupChildren(proc);
   if (!HasAttribute(SELECTOR_VARIABLE_ATTR_NAME))
   {
-    return false;
+    std::string error_message =
+      "sup::sequencer::Choice::SetupImpl(): missing mandatory attribute [" +
+       SELECTOR_VARIABLE_ATTR_NAME + "]";
+    throw InstructionSetupException(error_message);
   }
-  m_var_name = GetAttribute(SELECTOR_VARIABLE_ATTR_NAME);
-  return true;
 }
 
 ExecutionStatus Choice::ExecuteSingleImpl(UserInterface *ui, Workspace *ws)
 {
   sup::dto::AnyValue selector;
-  if (!ws->GetValue(m_var_name, selector))
+  if (!ws->GetValue(GetAttribute(SELECTOR_VARIABLE_ATTR_NAME), selector))
   {
     return ExecutionStatus::FAILURE;
   }

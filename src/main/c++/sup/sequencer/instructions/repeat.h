@@ -30,27 +30,25 @@ namespace sequencer
 {
 /**
  * @brief Instruction decorator that repeats its child a fixed number of times while successful.
+ *
+ * @details Repeatedly executes the child instruction, until either: the child fails (FAILURE)
+ * or maximum number of repetitions is reached (SUCCESS).
  */
 class Repeat : public DecoratorInstruction
 {
+public:
+  Repeat();
+
+  ~Repeat() override;
+
+  static const std::string Type;
+
 private:
-  /**
-   * @brief See sup::sequencer::Instruction.
-   */
   void InitHook() override;
 
-  /**
-   * @brief See sup::sequencer::Instruction.
-   *
-   * @details Repeatedly execute the child instruction, until either: the child fails (FAILURE)
-   * or maximum number of repetitions is reached (SUCCESS).
-   */
-  ExecutionStatus ExecuteSingleImpl(UserInterface* ui, Workspace* ws) override;
+  void SetupImpl(const Procedure& proc) override;
 
-  /**
-   * @brief See sup::sequencer::Instruction.
-   */
-  bool SetupImpl(const Procedure& proc) override;
+  ExecutionStatus ExecuteSingleImpl(UserInterface* ui, Workspace* ws) override;
 
   /**
    * @brief Calculate this instruction's status from the status of its child instruction
@@ -59,25 +57,7 @@ private:
   ExecutionStatus CalculateStatus() const;
 
   int _max_count, _count;
-
   bool _init_ok;
-
-protected:
-public:
-  /**
-   * @brief Constructor.
-   */
-  Repeat();
-
-  /**
-   * @brief Destructor.
-   */
-  ~Repeat() override;
-
-  /**
-   * @brief The instruction's typename.
-   */
-  static const std::string Type;
 };
 
 }  // namespace sequencer

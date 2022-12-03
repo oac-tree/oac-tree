@@ -48,9 +48,7 @@ public:
   static const std::string Type;
 
 private:
-  std::string m_var_name;
-
-  bool SetupImpl(const Procedure &proc) override;
+  void SetupImpl(const Procedure &proc) override;
 
   ExecutionStatus ExecuteSingleImpl(UserInterface *ui, Workspace *ws) override;
 

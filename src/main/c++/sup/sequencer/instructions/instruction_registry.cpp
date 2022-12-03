@@ -40,8 +40,8 @@
 #include "user_choice.h"
 #include "wait.h"
 
+#include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/instruction.h>
-#include <sup/sequencer/log.h>
 
 #include <mutex>
 
@@ -66,7 +66,10 @@ bool InstructionRegistry::RegisterInstruction(std::string name, InstructionConst
   auto it = _instruction_map.find(name);
   if (it != _instruction_map.end())
   {
-    throw std::runtime_error("Already registered instruction with the name '"+name+"'");
+    std::string error_message =
+      "sup::sequencer::InstructionRegistry::RegisterInstruction(): trying to register instruction "
+      "with name [" + name + "] twice";
+    throw InvalidOperationException(error_message);
   }
   _instruction_map.insert(it, {name, constructor});
   return true;
@@ -77,8 +80,10 @@ std::unique_ptr<Instruction> InstructionRegistry::Create(std::string name)
   auto entry = _instruction_map.find(name);
   if (entry == _instruction_map.end())
   {
-    log::Error("InstructionRegistry::Create('%s') - Instruction not registered", name.c_str());
-    return {};
+    std::string error_message =
+      "sup::sequencer::InstructionRegistry::Create(): trying to create unregistered instruction "
+      "with name [" + name + "]";
+    throw InvalidOperationException(error_message);
   }
   return std::unique_ptr<Instruction>(entry->second());
 }

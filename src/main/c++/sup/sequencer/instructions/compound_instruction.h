@@ -45,7 +45,7 @@ private:
   int ChildrenCountImpl() const override;
   bool InsertInstructionImpl(Instruction *child, int index) override;
   Instruction *TakeInstructionImpl(int index) override;
-  bool SetupImpl(const Procedure &proc) override;
+  void SetupImpl(const Procedure &proc) override;
 
   /**
    * @brief Container for child instructions.
@@ -57,7 +57,7 @@ protected:
    * @brief Call Instruction::Setup(const Procedure & proc) on all child instructions
    * and aggregate result.
    */
-  bool SetupChildren(const Procedure &proc);
+  void SetupChildren(const Procedure &proc);
 
   /**
    * @brief Check if this compound instruction has child instructions.

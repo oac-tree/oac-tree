@@ -45,7 +45,7 @@ private:
   int ChildrenCountImpl() const override;
   bool InsertInstructionImpl(Instruction *child, int index) override;
   Instruction *TakeInstructionImpl(int index) override;
-  bool SetupImpl(const Procedure &proc) override;
+  void SetupImpl(const Procedure &proc) override;
 
   /**
    * @brief Decorated instruction.
@@ -57,7 +57,7 @@ protected:
    * @brief Call Instruction::Setup(const Procedure & proc) on child instruction
    * and return result.
    */
-  bool SetupChild(const Procedure &proc);
+  void SetupChild(const Procedure &proc);
 
   /**
    * @brief Check if this decorator has a child.

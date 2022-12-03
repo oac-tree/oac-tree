@@ -21,7 +21,7 @@
 
 #include "condition.h"
 
-#include <sup/sequencer/log.h>
+#include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/workspace.h>
 
 #include <sup/dto/anyvalue.h>
@@ -37,6 +37,17 @@ const std::string Condition::Type = "Condition";
 Condition::Condition() : Instruction(Condition::Type) {}
 
 Condition::~Condition() = default;
+
+void Condition::SetupImpl(const Procedure &proc)
+{
+  if (!HasAttribute(CONDITION_VARIABLE_ATTR_NAME))
+  {
+    std::string error_message =
+      "sup::sequencer::Condition::SetupImpl(): missing mandatory attribute [" +
+       CONDITION_VARIABLE_ATTR_NAME + "]";
+    throw InstructionSetupException(error_message);
+  }
+}
 
 ExecutionStatus Condition::ExecuteSingleImpl(UserInterface *, Workspace *ws)
 {

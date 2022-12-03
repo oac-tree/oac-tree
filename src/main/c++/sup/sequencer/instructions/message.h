@@ -33,28 +33,17 @@ namespace sequencer
  */
 class Message : public Instruction
 {
-private:
-  /**
-   * @brief See sup::sequencer::Instruction.
-   */
-  ExecutionStatus ExecuteSingleImpl(UserInterface* ui, Workspace* ws) override;
-
-protected:
 public:
-  /**
-   * @brief Constructor.
-   */
   Message();
 
-  /**
-   * @brief Destructor.
-   */
   ~Message() override;
 
-  /**
-   * @brief The instruction's typename.
-   */
   static const std::string Type;
+
+private:
+  void SetupImpl(const Procedure &proc) override;
+
+  ExecutionStatus ExecuteSingleImpl(UserInterface* ui, Workspace* ws) override;
 };
 
 }  // namespace sequencer

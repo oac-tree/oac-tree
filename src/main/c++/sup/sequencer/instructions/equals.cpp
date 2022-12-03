@@ -21,6 +21,7 @@
 
 #include "equals.h"
 
+#include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/workspace.h>
 
 const std::string LEFT_VARIABLE_ATTR_NAME = "lhs";
@@ -32,12 +33,22 @@ namespace sequencer
 {
 const std::string Equals::Type = "Equals";
 
-ExecutionStatus Equals::ExecuteSingleImpl(UserInterface*, Workspace* ws)
+Equals::Equals() : Instruction(Equals::Type) {}
+Equals::~Equals() = default;
+
+void Equals::SetupImpl(const Procedure &proc)
 {
   if (!HasAttribute(LEFT_VARIABLE_ATTR_NAME) || !HasAttribute(RIGHT_VARIABLE_ATTR_NAME))
   {
-    return ExecutionStatus::FAILURE;
+    std::string error_message =
+      "sup::sequencer::Equals::SetupImpl(): missing mandatory attributes [" +
+       LEFT_VARIABLE_ATTR_NAME + ", " + RIGHT_VARIABLE_ATTR_NAME + "]";
+    throw InstructionSetupException(error_message);
   }
+}
+
+ExecutionStatus Equals::ExecuteSingleImpl(UserInterface*, Workspace* ws)
+{
   sup::dto::AnyValue lhs;
   sup::dto::AnyValue rhs;
   if (!ws->GetValue(GetAttribute(LEFT_VARIABLE_ATTR_NAME), lhs) ||
@@ -47,9 +58,6 @@ ExecutionStatus Equals::ExecuteSingleImpl(UserInterface*, Workspace* ws)
   }
   return lhs == rhs ? ExecutionStatus::SUCCESS : ExecutionStatus::FAILURE;
 }
-
-Equals::Equals() : Instruction(Equals::Type) {}
-Equals::~Equals() = default;
 
 }  // namespace sequencer
 

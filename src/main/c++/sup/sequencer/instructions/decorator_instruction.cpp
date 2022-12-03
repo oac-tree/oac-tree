@@ -65,19 +65,17 @@ Instruction *DecoratorInstruction::TakeInstructionImpl(int index)
   return _child && index == 0 ? _child.release() : nullptr;
 }
 
-bool DecoratorInstruction::SetupImpl(const Procedure &proc)
+void DecoratorInstruction::SetupImpl(const Procedure &proc)
 {
-  return SetupChild(proc);
+  SetupChild(proc);
 }
 
-bool DecoratorInstruction::SetupChild(const Procedure &proc)
+void DecoratorInstruction::SetupChild(const Procedure &proc)
 {
-  bool status = true;
   if (_child)
   {
-    status = _child->Setup(proc);
+    _child->Setup(proc);
   }
-  return status;
 }
 
 bool DecoratorInstruction::HasChild() const

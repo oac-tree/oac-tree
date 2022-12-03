@@ -38,12 +38,10 @@ ExecutionStatus Sequence::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
   for (auto instruction : ChildInstructions())
   {
     auto child_status = instruction->GetStatus();
-
     if (child_status == ExecutionStatus::SUCCESS)
     {
       continue;
     }
-
     if (NeedsExecute(child_status))
     {
       instruction->ExecuteSingle(ui, ws);

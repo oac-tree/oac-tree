@@ -21,6 +21,7 @@
 
 #include "reset_variable.h"
 
+#include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/workspace.h>
 
 namespace sup
@@ -32,17 +33,28 @@ const std::string ResetVariable::Type = "ResetVariable";
 
 static const std::string VARNAME_ATTRIBUTE = "varName";
 
+ResetVariable::ResetVariable() : Instruction(ResetVariable::Type) {}
+ResetVariable::~ResetVariable() = default;
+
+void ResetVariable::SetupImpl(const Procedure &proc)
+{
+  if (!HasAttribute(VARNAME_ATTRIBUTE))
+  {
+    std::string error_message =
+      "sup::sequencer::Copy::SetupImpl(): missing mandatory attribute [" +
+       VARNAME_ATTRIBUTE + "]";
+    throw InstructionSetupException(error_message);
+  }
+}
+
 ExecutionStatus ResetVariable::ExecuteSingleImpl(UserInterface*, Workspace* ws)
 {
-  if (HasAttribute(VARNAME_ATTRIBUTE) && ws->ResetVariable(GetAttribute(VARNAME_ATTRIBUTE)))
+  if (ws->ResetVariable(GetAttribute(VARNAME_ATTRIBUTE)))
   {
     return ExecutionStatus::SUCCESS;
   }
   return ExecutionStatus::FAILURE;
 }
-
-ResetVariable::ResetVariable() : Instruction(ResetVariable::Type) {}
-ResetVariable::~ResetVariable() = default;
 
 }  // namespace sequencer
 

@@ -47,6 +47,14 @@ ParseException::ParseException(const std::string& message)
   : MessageException{message}
 {}
 
+InstructionSetupException::InstructionSetupException(const std::string& message)
+  : MessageException{message}
+{}
+
+VariableSetupException::VariableSetupException(const std::string& message)
+  : MessageException{message}
+{}
+
 }  // namespace sequencer
 
 }  // namespace sup

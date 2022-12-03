@@ -106,7 +106,7 @@ private:
    * was able to configure itself from its attributes and (possibly) data from the Procedure.
    * This method is called from the Instruction::Setup(const Procedure & proc) method.
    */
-  virtual bool SetupImpl(const Procedure& proc);
+  virtual void SetupImpl(const Procedure& proc);
 
   /**
    * @brief Private hook that is always called at the start of each execution request.
@@ -247,7 +247,7 @@ public:
    * @param proc Procedure containing Workspace and instruction declarations.
    * @return true on successful instruction setup.
    */
-  bool Setup(const Procedure& proc);
+  void Setup(const Procedure& proc);
 
   /**
    * @brief Execution method.

@@ -182,7 +182,8 @@ bool Procedure::Setup()
     return true;
   }
   ClearProcedureCache();
-  return RootInstruction()->Setup(*this);
+  RootInstruction()->Setup(*this);
+  return true;
 }
 
 void Procedure::ExecuteSingle(UserInterface *ui)

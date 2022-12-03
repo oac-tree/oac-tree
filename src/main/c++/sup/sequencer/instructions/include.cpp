@@ -25,7 +25,7 @@
 
 #include <sup/sequencer/parser/procedure_parser.h>
 
-#include <sup/sequencer/log.h>
+#include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/procedure.h>
 
 static const std::string PATH_ATTRIBUTE_NAME = "path";
@@ -37,19 +37,31 @@ namespace sequencer
 {
 const std::string Include::Type = "Include";
 
+Include::Include() : DecoratorInstruction(Include::Type) {}
+
+Include::~Include() = default;
+
+void Include::SetFilename(const std::string& filename)
+{
+  _filename = filename;
+}
+
+std::string Include::GetFilename() const
+{
+  return _filename;
+}
+
 ExecutionStatus Include::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
 {
   if (!HasChild())
   {
     return ExecutionStatus::SUCCESS;
   }
-
   auto child_status = GetChildStatus();
   if (NeedsExecute(child_status))
   {
     ExecuteChild(ui, ws);
   }
-
   return CalculateStatus();
 }
 
@@ -66,8 +78,15 @@ bool Include::PostInitialiseVariables(const AttributeMap& source)
   return result;
 }
 
-bool Include::SetupImpl(const Procedure& proc)
+void Include::SetupImpl(const Procedure& proc)
 {
+  if (!HasAttribute(PATH_ATTRIBUTE_NAME))
+  {
+    std::string error_message =
+      "sup::sequencer::Include::SetupImpl(): missing mandatory attribute [" +
+       PATH_ATTRIBUTE_NAME + "]";
+    throw InstructionSetupException(error_message);
+  }
   std::string proc_filename = GetFilename();
   if (HasAttribute(FILE_ATTRIBUTE_NAME))
   {
@@ -75,29 +94,24 @@ bool Include::SetupImpl(const Procedure& proc)
     proc_filename = GetFullPathName(GetFileDirectory(proc_filename), filename);
   }
   auto instructions = proc.GetInstructions(proc_filename);
-  auto path = GetPath();
+  auto path = GetAttribute(PATH_ATTRIBUTE_NAME);
   auto instr = InstructionHelper::FindInstruction(instructions, path);
   if (instr == nullptr)
   {
-    log::Warning("Include::SetupImpl(): instruction with path '%s' not found", path.c_str());
-    return false;
+    std::string error_message =
+      "sup::sequencer::Include::SetupImpl(): instruction not found, path: [" + path + "]";
+    throw InstructionSetupException(error_message);
   }
   std::unique_ptr<Instruction> clone(InstructionHelper::CloneInstruction(instr));
-  if (InstructionHelper::InitialiseVariableAttributes(*clone, GetAttributes()))
+  if (!InstructionHelper::InitialiseVariableAttributes(*clone, GetAttributes()))
   {
-    SetInstruction(clone.release());
-    return SetupChild(proc);
+    std::string error_message =
+      "sup::sequencer::Include::SetupImpl(): could not initialise variable attributes for include "
+      "instruction with name: [" + GetName() + "]";
+    throw InstructionSetupException(error_message);
   }
-  log::Warning(
-      "Include::SetupImpl(): instruction with path '%s' could not be "
-      "properly initialised with the given attributes",
-      path.c_str());
-  return false;
-}
-
-std::string Include::GetPath() const
-{
-  return GetAttribute(PATH_ATTRIBUTE_NAME);
+  SetInstruction(clone.release());
+  SetupChild(proc);
 }
 
 ExecutionStatus Include::CalculateStatus() const
@@ -107,20 +121,6 @@ ExecutionStatus Include::CalculateStatus() const
     return ExecutionStatus::SUCCESS;
   }
   return GetChildStatus();
-}
-
-Include::Include() : DecoratorInstruction(Include::Type) {}
-
-Include::~Include() = default;
-
-void Include::SetFilename(const std::string& filename)
-{
-  _filename = filename;
-}
-
-std::string Include::GetFilename() const
-{
-  return _filename;
 }
 
 }  // namespace sequencer

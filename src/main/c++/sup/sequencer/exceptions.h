@@ -69,6 +69,24 @@ public:
   ParseException(const std::string& message);
 };
 
+/**
+ * @brief Exception thrown when setting up an instruction failed.
+ */
+class InstructionSetupException : public MessageException
+{
+public:
+  InstructionSetupException(const std::string& message);
+};
+
+/**
+ * @brief Exception thrown when setting up a workspace variable failed.
+ */
+class VariableSetupException : public MessageException
+{
+public:
+  VariableSetupException(const std::string& message);
+};
+
 }  // namespace sequencer
 
 }  // namespace sup

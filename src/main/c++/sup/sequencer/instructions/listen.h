@@ -41,19 +41,10 @@ namespace sequencer
 class Listen : public DecoratorInstruction
 {
 public:
-  /**
-   * @brief Constructor.
-   */
   Listen();
 
-  /**
-   * @brief Destructor.
-   */
   ~Listen() override;
 
-  /**
-   * @brief The instruction's typename.
-   */
   static const std::string Type;
 
 private:
@@ -68,20 +59,15 @@ private:
   CBGuard cb_guard;
 
   /**
-   * @brief See sup::sequencer::Instruction.
-   *
-   * @details Repeatedly execute the child instruction when specific variables are updated.
+   * @brief Repeatedly execute the child instruction when specific variables are updated.
    * When forceSuccess is not set, the instruction only ends on the child's FAILURE and returns
    * FAILURE accordingly.
    * The instruction also immediately returns SUCCESS in the absence of a child instruction.
    */
   ExecutionStatus ExecuteSingleImpl(UserInterface* ui, Workspace* ws) override;
 
-  /**
-   * @brief See sup::sequencer::Instruction.
-   */
   void HaltImpl() override;
-  bool SetupImpl(const Procedure& proc) override;
+  void SetupImpl(const Procedure& proc) override;
 
   /**
    * @brief Calculate this instruction's status from the status of its child instruction.

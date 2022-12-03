@@ -21,6 +21,7 @@
 
 #include "message.h"
 
+#include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/instruction.h>
 #include <sup/sequencer/user_interface.h>
 
@@ -33,19 +34,26 @@ const std::string Message::Type = "Message";
 
 static const std::string TEXT_ATTRIBUTE = "text";
 
+Message::Message() : Instruction(Message::Type) {}
+Message::~Message() = default;
+
+void Message::SetupImpl(const Procedure &proc)
+{
+  if (!HasAttribute(TEXT_ATTRIBUTE))
+  {
+    std::string error_message =
+      "sup::sequencer::Message::SetupImpl(): missing mandatory attribute [" +
+       TEXT_ATTRIBUTE + "]";
+    throw InstructionSetupException(error_message);
+  }
+}
+
 ExecutionStatus Message::ExecuteSingleImpl(UserInterface* ui, Workspace*)
 {
-  std::string message;
-  if (HasAttribute(TEXT_ATTRIBUTE))
-  {
-    message = GetAttribute(TEXT_ATTRIBUTE);
-  }
+  std::string message = GetAttribute(TEXT_ATTRIBUTE);
   ui->Message(message);
   return ExecutionStatus::SUCCESS;
 }
-
-Message::Message() : Instruction(Message::Type) {}
-Message::~Message() = default;
 
 }  // namespace sequencer
 

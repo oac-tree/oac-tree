@@ -38,12 +38,10 @@ ExecutionStatus Fallback::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
   for (auto instruction : ChildInstructions())
   {
     auto child_status = instruction->GetStatus();
-
     if (child_status == ExecutionStatus::FAILURE)
     {
       continue;
     }
-
     if (NeedsExecute(child_status))
     {
       instruction->ExecuteSingle(ui, ws);
@@ -64,12 +62,10 @@ ExecutionStatus Fallback::CalculateCompoundStatus() const
   for (auto instruction : ChildInstructions())
   {
     auto child_status = instruction->GetStatus();
-
     if (child_status == ExecutionStatus::FAILURE)
     {
       continue;
     }
-
     if (child_status == ExecutionStatus::NOT_STARTED
         || child_status == ExecutionStatus::NOT_FINISHED)
     {

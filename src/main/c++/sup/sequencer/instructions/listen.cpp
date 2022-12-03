@@ -69,6 +69,7 @@ ExecutionStatus Listen::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
     lk.unlock();
     if (_halt_requested)
     {
+      ClearCallbacks();
       return ExecutionStatus::FAILURE;
     }
   }
@@ -166,8 +167,10 @@ void Listen::RegisterCallbacks(
   {
     ws->RegisterCallback(
         var_name,
-        [this, var_name](const sup::dto::AnyValue& val) { UpdateCallback(var_name, val); },
-        this);
+        [this, var_name](const sup::dto::AnyValue& val)
+        {
+          UpdateCallback(var_name, val);
+        }, this);
   }
 }
 

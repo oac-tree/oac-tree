@@ -84,7 +84,6 @@ ExecutionStatus Listen::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
 
 void Listen::HaltImpl()
 {
-  ClearCallbacks();
   HaltChild();
   cv.notify_one();
 }

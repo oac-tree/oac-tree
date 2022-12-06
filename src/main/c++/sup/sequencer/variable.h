@@ -125,7 +125,8 @@ private:
    * @brief Setup value of variable.
    *
    * @param registry Type registry.
-   * @return true on successful instruction setup.
+   *
+   * @throw VariableSetupException when the variable could not be setup properly.
    *
    * @note Private virtual implementation.
    */

@@ -101,7 +101,9 @@ private:
    * @brief Setup implementation.
    *
    * @param proc Procedure containing Workspace and instruction declarations.
-   * @return true on successful instruction setup.
+   *
+   * @throw InstructionSetupException when the instruction could not be setup properly.
+   *
    * @details Successful completion of this instruction means that the instruction
    * was able to configure itself from its attributes and (possibly) data from the Procedure.
    * This method is called from the Instruction::Setup(const Procedure & proc) method.

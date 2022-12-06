@@ -5,6 +5,7 @@ Changes for 2.0.0:
 - API breaking: FileVariable: typename 'FileVariable' -> 'File', attribute 'file' -> 'fileName'
 - API breaking: Procedure::PushInstruction now returns void and throws when trying to add nullptr
 - API breaking: Instruction::SetupImpl returns void instead of bool and needs to throw InstructionSetupException when setup failed
+- API breaking: Variable::SetupImpl returns void instead of bool and needs to throw VariableSetupException when setup failed
 - Parsing procedures from XML now throws on failure with a clear message indicating the problem
 - Isolate logging implementation behind a single interface
 

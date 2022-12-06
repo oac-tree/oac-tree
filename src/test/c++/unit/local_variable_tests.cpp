@@ -21,7 +21,7 @@
 
 #include <sup/sequencer/variables/local_variable.h>
 
-#include <sup/sequencer/log.h>
+#include <sup/sequencer/exceptions.h>
 
 #include <gtest/gtest.h>
 
@@ -90,6 +90,40 @@ TEST_F(LocalVariableTest, DefaultConstructed)
 
   // Test SetValue: should pass even if both are unitialized.
   EXPECT_TRUE(empty_var.SetValue(any_value));
+}
+
+TEST_F(LocalVariableTest, Setup)
+{
+  // Setup without type/value attributes succeeds
+  LocalVariable var_no_attr{};
+  EXPECT_NO_THROW(var_no_attr.Setup());
+
+  // Setup with only type attribute succeeds if parsing was successful
+  LocalVariable var_type_ok{};
+  EXPECT_TRUE(var_type_ok.AddAttribute("type", BOOL_TYPE));
+  EXPECT_NO_THROW(var_type_ok.Setup());
+
+  // Setup with type and value attributea succeeds if parsing was successful
+  LocalVariable var_val_ok{};
+  EXPECT_TRUE(var_val_ok.AddAttribute("type", BOOL_TYPE));
+  EXPECT_TRUE(var_val_ok.AddAttribute("value", "true"));
+  EXPECT_NO_THROW(var_val_ok.Setup());
+
+  // Setup with only type attribute throws if parsing failed
+  LocalVariable var_type_not_ok{};
+  EXPECT_TRUE(var_type_not_ok.AddAttribute("type", "not_a_type"));
+  EXPECT_THROW(var_type_not_ok.Setup(), VariableSetupException);
+
+  // Setup with type and value attributea throws if parsing failed
+  LocalVariable var_val_not_ok{};
+  EXPECT_TRUE(var_val_not_ok.AddAttribute("type", BOOL_TYPE));
+  EXPECT_TRUE(var_val_not_ok.AddAttribute("value", "on"));
+  EXPECT_THROW(var_val_not_ok.Setup(), VariableSetupException);
+
+  // Setup with only value attribute fails
+  LocalVariable var_value_only{};
+  EXPECT_TRUE(var_value_only.AddAttribute("value", "some_val"));
+  EXPECT_THROW(var_value_only.Setup(), VariableSetupException);
 }
 
 TEST_F(LocalVariableTest, AddAttribute)

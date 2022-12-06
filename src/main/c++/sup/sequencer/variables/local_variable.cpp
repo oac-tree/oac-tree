@@ -105,6 +105,13 @@ void LocalVariable::SetupImpl(const sup::dto::AnyTypeRegistry& registry)
       m_value.reset(new sup::dto::AnyValue(parsed_type));
     }
   }
+  else if (HasAttribute(JSON_VALUE))
+  {
+    std::string error_message =
+      "sup::sequencer::LocalVariable::SetupImpl(): attribute [" +
+       JSON_VALUE + "] present without attribute [" + JSON_TYPE + "]";
+    throw VariableSetupException(error_message);
+  }
 }
 
 void LocalVariable::ResetImpl()

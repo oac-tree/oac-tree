@@ -44,111 +44,9 @@ namespace sequencer
  */
 class Variable
 {
-private:
-  /**
-   * @brief Typename of this variable
-   */
-  const std::string m_type;
-
-  /**
-   * @brief Mutex for concurrent access of Variable.
-   * @details This mutex protects access to all other private member data, unless explicitly
-   * mentioned otherwise.
-   */
-  mutable std::mutex m_access_mutex;
-
-  /**
-   * @brief List of attributes.
-   */
-  AttributeMap m_attributes;
-
-  /**
-   * @brief Indicates if the Variable was correctly setup from its attributes.
-   */
-  bool m_setup_successful;
-
-  /**
-   * @brief Mutex for concurrent access of the update counter.
-   * @details This mutex protects only access to the update counter.
-   */
-  mutable std::mutex m_notify_mutex;
-
-  /**
-   * @brief Used to track updates of the underlying value.
-   * @details This condition variable is notified after an update.
-   */
-  mutable std::condition_variable m_update_cond;
-
-  /**
-   * @brief Callback function to call when value was updated.
-   *
-   * @note There is currently no option to set multiple callback functions.
-   * This is on purpose, while the workspace will register itself here and can provide more
-   * complex use cases. This callback is typically called while holding locks on the variable, so
-   * it's the responsibility of the listener to prevent deadlock (e.g. by pushing the value to a
-   * queue and processing it after returning from the callback).
-   */
-  std::function<void(const sup::dto::AnyValue&)> notify_cb;
-
-  /**
-   * @brief Get value of variable.
-   *
-   * @param value variable reference to contain the value.
-   * @return true on success.
-   *
-   * @note Private virtual implementation.
-   */
-  virtual bool GetValueImpl(sup::dto::AnyValue& value) const = 0;
-
-  /**
-   * @brief Set value of variable.
-   *
-   * @param value value to set.
-   * @return true on success.
-   *
-   * @note Private virtual implementation.
-   */
-  virtual bool SetValueImpl(const sup::dto::AnyValue& value) = 0;
-
-  /**
-   * @brief Check if variable is available.
-   *
-   * @return true on success.
-   *
-   * @note Private virtual implementation.
-   * @note Availability is context-dependent: e.g. a network variable is available when it is
-   * connected. The default implementation always returns true.
-   */
-  virtual bool IsAvailableImpl() const;
-
-  /**
-   * @brief Setup value of variable.
-   *
-   * @param registry Type registry.
-   *
-   * @throw VariableSetupException when the variable could not be setup properly.
-   *
-   * @note Private virtual implementation.
-   */
-  virtual bool SetupImpl(const sup::dto::AnyTypeRegistry& registry);
-
-  /**
-   * @brief Reset variable.
-   *
-   * @note Private virtual implementation.
-   */
-  virtual void ResetImpl();
-
-protected:
 public:
-  /**
-   * @brief Constructor.
-   */
   Variable(const std::string& type);
 
-  /**
-   * @brief Destructor.
-   */
   virtual ~Variable();
 
   /**
@@ -165,6 +63,7 @@ public:
 
   /**
    * @brief Set variable name
+   *
    * @param name Name to set
    * @return void
    */
@@ -272,6 +171,101 @@ public:
    * @return true when successful.
    */
   bool AddAttributes(const AttributeMap& attributes);
+
+private:
+  /**
+   * @brief Typename of this variable
+   */
+  const std::string m_type;
+
+  /**
+   * @brief Mutex for concurrent access of Variable.
+   * @details This mutex protects access to all other private member data, unless explicitly
+   * mentioned otherwise.
+   */
+  mutable std::mutex m_access_mutex;
+
+  /**
+   * @brief List of attributes.
+   */
+  AttributeMap m_attributes;
+
+  /**
+   * @brief Indicates if the Variable was correctly setup from its attributes.
+   */
+  bool m_setup_successful;
+
+  /**
+   * @brief Mutex for concurrent access of the update counter.
+   * @details This mutex protects only access to the update counter.
+   */
+  mutable std::mutex m_notify_mutex;
+
+  /**
+   * @brief Used to track updates of the underlying value.
+   * @details This condition variable is notified after an update.
+   */
+  mutable std::condition_variable m_update_cond;
+
+  /**
+   * @brief Callback function to call when value was updated.
+   *
+   * @note There is currently no option to set multiple callback functions.
+   * This is on purpose, while the workspace will register itself here and can provide more
+   * complex use cases. This callback is typically called while holding locks on the variable, so
+   * it's the responsibility of the listener to prevent deadlock (e.g. by pushing the value to a
+   * queue and processing it after returning from the callback).
+   */
+  std::function<void(const sup::dto::AnyValue&)> notify_cb;
+
+  /**
+   * @brief Get value of variable.
+   *
+   * @param value variable reference to contain the value.
+   * @return true on success.
+   *
+   * @note Private virtual implementation.
+   */
+  virtual bool GetValueImpl(sup::dto::AnyValue& value) const = 0;
+
+  /**
+   * @brief Set value of variable.
+   *
+   * @param value value to set.
+   * @return true on success.
+   *
+   * @note Private virtual implementation.
+   */
+  virtual bool SetValueImpl(const sup::dto::AnyValue& value) = 0;
+
+  /**
+   * @brief Check if variable is available.
+   *
+   * @return true on success.
+   *
+   * @note Private virtual implementation.
+   * @note Availability is context-dependent: e.g. a network variable is available when it is
+   * connected. The default implementation always returns true.
+   */
+  virtual bool IsAvailableImpl() const;
+
+  /**
+   * @brief Setup value of variable.
+   *
+   * @param registry Type registry.
+   *
+   * @throw VariableSetupException when the variable could not be setup properly.
+   *
+   * @note Private virtual implementation.
+   */
+  virtual void SetupImpl(const sup::dto::AnyTypeRegistry& registry);
+
+  /**
+   * @brief Reset variable.
+   *
+   * @note Private virtual implementation.
+   */
+  virtual void ResetImpl();
 };
 
 }  // namespace sequencer

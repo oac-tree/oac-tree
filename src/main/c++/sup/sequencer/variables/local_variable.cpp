@@ -21,6 +21,7 @@
 
 #include "local_variable.h"
 
+#include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/procedure.h>
 
 #include <sup/dto/anytype.h>
@@ -71,16 +72,20 @@ bool LocalVariable::SetValueImpl(const sup::dto::AnyValue& value)
   return true;
 }
 
-bool LocalVariable::SetupImpl(const sup::dto::AnyTypeRegistry& registry)
+void LocalVariable::SetupImpl(const sup::dto::AnyTypeRegistry& registry)
 {
   m_value.reset(new sup::dto::AnyValue());
 
+  // empty AnyValue is allowed for setting
   if (HasAttribute(JSON_TYPE))
   {
     sup::dto::JSONAnyTypeParser type_parser;
     if (!type_parser.ParseString(GetAttribute(JSON_TYPE), &registry))
     {
-      return false;
+      std::string error_message =
+        "sup::sequencer::LocalVariable::SetupImpl(): could not parse attribute [" +
+         JSON_TYPE + "] with value [" + GetAttribute(JSON_TYPE) + "]";
+      throw VariableSetupException(error_message);
     }
     auto parsed_type = type_parser.MoveAnyType();
     if (HasAttribute(JSON_VALUE))
@@ -88,7 +93,10 @@ bool LocalVariable::SetupImpl(const sup::dto::AnyTypeRegistry& registry)
       sup::dto::JSONAnyValueParser value_parser;
       if (!value_parser.TypedParseString(parsed_type, GetAttribute(JSON_VALUE)))
       {
-        return false;
+      std::string error_message =
+        "sup::sequencer::LocalVariable::SetupImpl(): could not parse attribute [" +
+         JSON_VALUE + "] with value [" + GetAttribute(JSON_VALUE) + "]";
+      throw VariableSetupException(error_message);
       }
       m_value.reset(new sup::dto::AnyValue(value_parser.MoveAnyValue()));
     }
@@ -97,7 +105,6 @@ bool LocalVariable::SetupImpl(const sup::dto::AnyTypeRegistry& registry)
       m_value.reset(new sup::dto::AnyValue(parsed_type));
     }
   }
-  return true;  // empty AnyValue is allowed for setting
 }
 
 void LocalVariable::ResetImpl()

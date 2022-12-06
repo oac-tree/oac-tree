@@ -21,6 +21,7 @@
 
 #include "file_variable.h"
 
+#include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/generic_utils.h>
 
 #include <sup/dto/anyvalue_helper.h>
@@ -37,10 +38,15 @@ namespace sequencer
 {
 const std::string FileVariable::Type = "File";
 
-bool FileVariable::SetupImpl(const sup::dto::AnyTypeRegistry&)
+void FileVariable::SetupImpl(const sup::dto::AnyTypeRegistry&)
 {
-  bool status = Variable::HasAttribute(FILENAME_ATTR_NAME);
-  return status;
+  if (!HasAttribute(FILENAME_ATTR_NAME))
+  {
+    std::string error_message =
+      "sup::sequencer::FileVariable::SetupImpl(): missing attribute [" +
+       FILENAME_ATTR_NAME + "]";
+    throw VariableSetupException(error_message);
+  }
 }
 
 bool FileVariable::GetValueImpl(sup::dto::AnyValue& value) const

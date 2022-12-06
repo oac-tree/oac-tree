@@ -22,6 +22,7 @@
 #include "log_ui.h"
 #include "unit_test_helper.h"
 
+#include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/generic_utils.h>
 #include <sup/sequencer/sequence_parser.h>
 #include <sup/sequencer/variable.h>
@@ -31,6 +32,8 @@
 #include <sup/dto/json_value_parser.h>
 
 #include <gtest/gtest.h>
+
+using namespace sup::sequencer;
 
 class FileVariableTest : public ::testing::Test
 {
@@ -43,9 +46,7 @@ TEST_F(FileVariableTest, File_write)
 {
   const std::string body{R"(
     <Sequence>
-        <Copy name="copy"
-            input="input"
-            output="file"/>
+        <Copy name="copy" input="input" output="file"/>
     </Sequence>
     <Workspace>
         <Local name="input"
@@ -56,19 +57,17 @@ TEST_F(FileVariableTest, File_write)
     </Workspace>
 )"};
 
-  const std::string file_name = "variable_file.xml";
-  sup::UnitTestHelper::TemporaryTestFile test_file(
-      file_name, sup::UnitTestHelper::CreateProcedureString(body));
+  auto proc_str = sup::UnitTestHelper::CreateProcedureString(body);
 
-  auto proc = sup::sequencer::ParseProcedureFile(file_name);
+  auto proc = ParseProcedureString(proc_str);
   ASSERT_TRUE(proc.get() != nullptr);
   ASSERT_TRUE(proc->Setup());
 
-  sup::sequencer::LogUI ui;
+  LogUI ui;
   proc->ExecuteSingle(&ui);
-  EXPECT_EQ(proc->GetStatus(), sup::sequencer::ExecutionStatus::SUCCESS);
+  EXPECT_EQ(proc->GetStatus(), ExecutionStatus::SUCCESS);
 
-  EXPECT_TRUE(sup::sequencer::utils::FileExists("variable.bck"));
+  EXPECT_TRUE(utils::FileExists("variable.bck"));
 
   sup::dto::JSONAnyValueParser parser;
   EXPECT_TRUE(parser.ParseFile("variable.bck"));
@@ -81,12 +80,12 @@ TEST_F(FileVariableTest, File_write)
 
 TEST_F(FileVariableTest, Setup_error)
 {
-  auto variable = sup::sequencer::GlobalVariableRegistry().Create("File");
+  auto variable = GlobalVariableRegistry().Create("File");
 
   ASSERT_NE(variable.get(), nullptr);
 
   EXPECT_TRUE(variable->AddAttribute("irrelevant", "undefined"));
-  variable->Setup();
+  EXPECT_THROW(variable->Setup(), VariableSetupException);
 
   sup::dto::AnyValue value;  // Placeholder
   EXPECT_FALSE(variable->GetValue(value));
@@ -95,12 +94,12 @@ TEST_F(FileVariableTest, Setup_error)
 
 TEST_F(FileVariableTest, File_error)
 {
-  auto variable = sup::sequencer::GlobalVariableRegistry().Create("File");
+  auto variable = GlobalVariableRegistry().Create("File");
 
   ASSERT_NE(variable.get(), nullptr);
 
-  EXPECT_TRUE(variable->AddAttribute("file", "undefined"));
-  variable->Setup();
+  EXPECT_TRUE(variable->AddAttribute("fileName", "does_not_exist"));
+  EXPECT_NO_THROW(variable->Setup());
 
   sup::dto::AnyValue value;  // Placeholder
   EXPECT_FALSE(variable->GetValue(value));
@@ -112,16 +111,10 @@ TEST_F(FileVariableTest, File_attr)
   const std::string body{R"(
     <Sequence>
         <!-- Expected datatype -->
-        <Copy name="default"
-            input="input"
-            output="file"/>
-        <Copy name="value"
-            input="value"
-            output="file.value"/>
+        <Copy name="default" input="input" output="file"/>
+        <Copy name="value" input="value" output="file.value"/>
         <!-- Should be math expression -->
-        <Copy name="severity"
-            input="severity"
-            output="file.severity"/>
+        <Copy name="severity" input="severity" output="file.severity"/>
     </Sequence>
     <Workspace>
         <Local name="input"
@@ -138,27 +131,25 @@ TEST_F(FileVariableTest, File_attr)
     </Workspace>
 )"};
 
-  const std::string file_name = "variable_attr.xml";
-  sup::UnitTestHelper::TemporaryTestFile test_file(
-      file_name, sup::UnitTestHelper::CreateProcedureString(body));
+  auto proc_str = sup::UnitTestHelper::CreateProcedureString(body);
 
-  auto proc = sup::sequencer::ParseProcedureFile(file_name);
+  auto proc = ParseProcedureString(proc_str);
 
   ASSERT_NE(proc.get(), nullptr);
   ASSERT_TRUE(proc->Setup());
 
-  sup::sequencer::LogUI ui;
-  sup::sequencer::ExecutionStatus exec = sup::sequencer::ExecutionStatus::FAILURE;
+  LogUI ui;
+  ExecutionStatus exec = ExecutionStatus::FAILURE;
 
   do
   {
     proc->ExecuteSingle(&ui);
     exec = proc->GetStatus();
-  } while ((sup::sequencer::ExecutionStatus::SUCCESS != exec)
-           && (sup::sequencer::ExecutionStatus::FAILURE != exec));
+  } while ((ExecutionStatus::SUCCESS != exec)
+           && (ExecutionStatus::FAILURE != exec));
 
-  EXPECT_EQ(exec, sup::sequencer::ExecutionStatus::SUCCESS);
-  EXPECT_TRUE(sup::sequencer::utils::FileExists("variable.bck"));
+  EXPECT_EQ(exec, ExecutionStatus::SUCCESS);
+  EXPECT_TRUE(utils::FileExists("variable.bck"));
 
   sup::dto::JSONAnyValueParser parser;
   EXPECT_TRUE(parser.ParseFile("variable.bck"));
@@ -175,7 +166,7 @@ FileVariableTest::FileVariableTest() = default;
 
 FileVariableTest::~FileVariableTest()
 {
-  if (sup::sequencer::utils::FileExists("variable.bck"))
+  if (utils::FileExists("variable.bck"))
   {
     std::remove("variable.bck");
   }

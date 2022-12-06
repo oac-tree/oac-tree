@@ -62,15 +62,10 @@ void Variable::SetName(const std::string &name)
 
 void Variable::Setup(const sup::dto::AnyTypeRegistry* registry)
 {
-  if (registry == nullptr)
-  {
-    sup::dto::AnyTypeRegistry local_registry{};
-    m_setup_successful = SetupImpl(local_registry);
-  }
-  else
-  {
-    m_setup_successful = SetupImpl(*registry);
-  }
+  sup::dto::AnyTypeRegistry local_registry{};
+  auto& reg = registry == nullptr ? local_registry : *registry;
+  SetupImpl(reg);
+  m_setup_successful = true;
 }
 
 bool Variable::GetValue(sup::dto::AnyValue &value, const std::string &fieldname) const
@@ -181,12 +176,11 @@ bool Variable::IsAvailableImpl() const
   return true;
 }
 
-bool Variable::SetupImpl(const sup::dto::AnyTypeRegistry&)
-{
-  return true;
-}
+void Variable::SetupImpl(const sup::dto::AnyTypeRegistry&)
+{}
 
-void Variable::ResetImpl() {}
+void Variable::ResetImpl()
+{}
 
 }  // namespace sequencer
 

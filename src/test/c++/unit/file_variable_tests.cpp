@@ -42,7 +42,7 @@ protected:
   virtual ~FileVariableTest();
 };
 
-TEST_F(FileVariableTest, File_write)
+TEST_F(FileVariableTest, FileWrite)
 {
   const std::string body{R"(
     <Sequence>
@@ -78,21 +78,25 @@ TEST_F(FileVariableTest, File_write)
   EXPECT_EQ(value["value"], 0.0f);
 }
 
-TEST_F(FileVariableTest, Setup_error)
+TEST_F(FileVariableTest, Setup)
 {
   auto variable = GlobalVariableRegistry().Create("File");
 
   ASSERT_NE(variable.get(), nullptr);
+  EXPECT_THROW(variable->Setup(), VariableSetupException);
 
   EXPECT_TRUE(variable->AddAttribute("irrelevant", "undefined"));
   EXPECT_THROW(variable->Setup(), VariableSetupException);
 
-  sup::dto::AnyValue value;  // Placeholder
+  sup::dto::AnyValue value;
   EXPECT_FALSE(variable->GetValue(value));
   EXPECT_TRUE(sup::dto::IsEmptyValue(value));
+
+  EXPECT_TRUE(variable->AddAttribute("fileName", "some_file"));
+  EXPECT_NO_THROW(variable->Setup());
 }
 
-TEST_F(FileVariableTest, File_error)
+TEST_F(FileVariableTest, FileDoesNotExist)
 {
   auto variable = GlobalVariableRegistry().Create("File");
 
@@ -106,7 +110,7 @@ TEST_F(FileVariableTest, File_error)
   EXPECT_TRUE(sup::dto::IsEmptyValue(value));
 }
 
-TEST_F(FileVariableTest, File_attr)
+TEST_F(FileVariableTest, FileSuccess)
 {
   const std::string body{R"(
     <Sequence>

@@ -23,12 +23,88 @@
 #include "unit_test_helper.h"
 
 #include <sup/sequencer/exceptions.h>
+#include <sup/sequencer/instruction_registry.h>
 #include <sup/sequencer/generic_utils.h>
 #include <sup/sequencer/sequence_parser.h>
 
 #include <gtest/gtest.h>
 
 using namespace sup::sequencer;
+
+TEST(Include, SetupSuccessful)
+{
+  const std::string body{R"(
+    <Sequence name="DontWait">
+        <Wait/>
+    </Sequence>
+    <Include isRoot="true" name="Counts" path="DontWait"/>
+    <Workspace>
+    </Workspace>
+)"};
+
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  EXPECT_NO_THROW(proc->Setup());
+}
+
+TEST(Include, VariableFromInclude)
+{
+  const std::string body{R"(
+    <Sequence name="DontWait">
+        <Wait timeout="$to" />
+    </Sequence>
+    <Include isRoot="true" name="Counts" path="DontWait" to="0.2"/>
+    <Workspace>
+    </Workspace>
+)"};
+
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  EXPECT_NO_THROW(proc->Setup());
+}
+
+TEST(Include, MissingPath)
+{
+  const std::string body{R"(
+    <Sequence name="DontWait">
+        <Wait/>
+    </Sequence>
+    <Include isRoot="true" name="Counts"/>
+    <Workspace>
+    </Workspace>
+)"};
+
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  EXPECT_THROW(proc->Setup(), InstructionSetupException);
+}
+
+TEST(Include, WrongPath)
+{
+  const std::string body{R"(
+    <Sequence name="DontWait">
+        <Wait/>
+    </Sequence>
+    <Include isRoot="true" name="Counts" path="DoesNotExist"/>
+    <Workspace>
+    </Workspace>
+)"};
+
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  EXPECT_THROW(proc->Setup(), InstructionSetupException);
+}
+
+TEST(Include, MissingVariableFromInclude)
+{
+  const std::string body{R"(
+    <Sequence name="DontWait">
+        <Wait timeout="$to" />
+    </Sequence>
+    <Include isRoot="true" name="Counts" path="DontWait"/>
+    <Workspace>
+    </Workspace>
+)"};
+
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  EXPECT_THROW(proc->Setup(), InstructionSetupException);
+}
 
 TEST(Include, Procedure_local)
 {
@@ -45,8 +121,7 @@ TEST(Include, Procedure_local)
 )"};
 
   LogUI ui;
-  auto proc =
-      ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
   EXPECT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 20);
@@ -66,8 +141,7 @@ TEST(Include, Procedure_param)
 )"};
 
   LogUI ui;
-  auto proc =
-      ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
   ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
@@ -89,8 +163,7 @@ incr="2"/>
 )"};
 
   LogUI ui;
-  auto proc =
-      ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
   ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
@@ -110,8 +183,7 @@ TEST(Include, Procedure_undefined)
 )"};
 
   LogUI ui;
-  auto proc =
-      ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
   EXPECT_THROW(sup::UnitTestHelper::TryAndExecute(proc, &ui), InstructionSetupException);
@@ -142,8 +214,7 @@ TEST(Include, Procedure_extern)
 )"};
 
   LogUI ui;
-  auto proc = ParseProcedureString(
-      sup::UnitTestHelper::CreateProcedureString(procedure_body));
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(procedure_body));
   ASSERT_TRUE(proc.get() != nullptr);
   ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
 }

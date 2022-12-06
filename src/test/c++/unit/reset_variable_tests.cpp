@@ -22,6 +22,7 @@
 #include "log_ui.h"
 #include "unit_test_helper.h"
 
+#include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/execution_status.h>
 #include <sup/sequencer/instruction_registry.h>
 #include <sup/sequencer/sequence_parser.h>
@@ -29,6 +30,16 @@
 #include <gtest/gtest.h>
 
 using namespace sup::sequencer;
+
+TEST(ResetVariable, Setup)
+{
+  Procedure proc;
+  auto instr = GlobalInstructionRegistry().Create("ResetVariable");
+  EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
+
+  EXPECT_TRUE(instr->AddAttribute("varName", "var"));
+  EXPECT_NO_THROW(instr->Setup(proc));
+}
 
 TEST(ResetVariable, CopyWithReset)
 {

@@ -106,6 +106,16 @@ TEST(Choice, Default)  // Static initialisation
   }
 }
 
+TEST(Choice, Setup)
+{
+  Procedure proc;
+  auto instr = GlobalInstructionRegistry().Create("Choice");
+  EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
+
+  EXPECT_TRUE(instr->AddAttribute("varName", "var"));
+  EXPECT_NO_THROW(instr->Setup(proc));
+}
+
 TEST(Choice, ArraySuccess)
 {
   const std::string body{R"(

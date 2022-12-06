@@ -21,17 +21,21 @@
 
 #include "unit_test_helper.h"
 
+#include <sup/sequencer/exceptions.h>
+#include <sup/sequencer/instruction_registry.h>
 #include <sup/sequencer/sequence_parser.h>
 #include <sup/sequencer/user_interface.h>
 
 #include <gtest/gtest.h>
+
+using namespace sup::sequencer;
 
 //! Testing Output instruction.
 class OutputTest : public ::testing::Test
 {
 public:
   //! Test interface which accepts values from the workspace.
-  class TestInterface : public sup::sequencer::UserInterface
+  class TestInterface : public UserInterface
   {
   public:
     TestInterface(unsigned par) : m_value(sup::dto::UnsignedInteger32Type)
@@ -47,10 +51,20 @@ public:
 
     bool GetUserValueImpl(sup::dto::AnyValue &, const std::string &) override { return true; }
 
-    void UpdateInstructionStatusImpl(const sup::sequencer::Instruction *instruction) override {}
+    void UpdateInstructionStatusImpl(const Instruction *instruction) override {}
     sup::dto::AnyValue m_value;
   };
 };
+
+TEST_F(OutputTest, Setup)
+{
+  Procedure proc;
+  auto instr = GlobalInstructionRegistry().Create("Output");
+  EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
+
+  EXPECT_TRUE(instr->AddAttribute("from", "var"));
+  EXPECT_NO_THROW(instr->Setup(proc));
+}
 
 // Takes integer value from the workspace and put in into TestInterface.
 
@@ -73,10 +87,9 @@ TEST_F(OutputTest, PutInteger)
   // initial state
   EXPECT_EQ(ui.m_value.As<unsigned>(), expected);
 
-  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  auto proc = ParseProcedureString(procedure_string);
   ASSERT_TRUE(proc.get() != nullptr);
-  ASSERT_TRUE(
-      sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::SUCCESS));
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui, ExecutionStatus::SUCCESS));
 
   // checking that Output instruction has propagated the value to the interface
   EXPECT_EQ(ui.m_value.As<unsigned>(), 42);

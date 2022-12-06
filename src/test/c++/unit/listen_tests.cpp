@@ -21,10 +21,14 @@
 
 #include "unit_test_helper.h"
 
+#include <sup/sequencer/exceptions.h>
+#include <sup/sequencer/instruction_registry.h>
 #include <sup/sequencer/sequence_parser.h>
 #include <sup/sequencer/user_interface.h>
 
 #include <gtest/gtest.h>
+
+using namespace sup::sequencer;
 
 //! Testing Listen instruction.
 class ListenTest : public ::testing::Test
@@ -33,6 +37,16 @@ protected:
   ListenTest() = default;
   ~ListenTest() = default;
 };
+
+TEST_F(ListenTest, Setup)
+{
+  Procedure proc;
+  auto instr = GlobalInstructionRegistry().Create("Listen");
+  EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
+
+  EXPECT_TRUE(instr->AddAttribute("varNames", "var1,var2"));
+  EXPECT_NO_THROW(instr->Setup(proc));
+}
 
 TEST_F(ListenTest, StopOnFailure)
 {

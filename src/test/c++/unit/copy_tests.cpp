@@ -6,7 +6,7 @@
  *
  * Description   : Unit test code
  *
- * Author        : B.Bauvir (IO)
+ * Author        : Walter Van Herck (IO)
  *
  * Copyright (c) : 2010-2022 ITER Organization,
  *                 CS 90 046
@@ -19,109 +19,96 @@
  * of the distribution package.
  ******************************************************************************/
 
+#include <sup/sequencer/instructions/copy.h>
+
 #include "unit_test_helper.h"
+
+#include <sup/sequencer/variables/local_variable.h>
 
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/instruction_registry.h>
-#include <sup/sequencer/user_interface.h>
 #include <sup/sequencer/sequence_parser.h>
+
+#include <sup/dto/anytype.h>
+#include <sup/dto/anyvalue.h>
 
 #include <gtest/gtest.h>
 
 using namespace sup::sequencer;
 
-TEST(Input, Setup)
+TEST(Copy, Setup)
 {
   Procedure proc;
-  auto instr = GlobalInstructionRegistry().Create("Input");
+  auto instr = GlobalInstructionRegistry().Create("Copy");
   EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
 
+  EXPECT_TRUE(instr->AddAttribute("input", "in_var"));
+  EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
   EXPECT_TRUE(instr->AddAttribute("output", "out_var"));
   EXPECT_NO_THROW(instr->Setup(proc));
 }
 
-TEST(Input, GetUserValue_success)
+TEST(Copy, Success)
 {
   const std::string body{R"(
-    <Sequence>
-        <Input description="Put some uint32 here" output="uint32"/>
-    </Sequence>
+    <Copy name="copy_test" input="in_var" output="out_var"/>
     <Workspace>
-        <Local name="uint32" type='{"type":"uint32"}'/>
+        <Local name="in_var"
+               type='{"type":"sup::test::MyType/v1.0","attributes":[{"timestamp":{"type":"uint64"}}]}'
+               value='{"timestamp":1}'/>
+        <Local name="out_var"/>
     </Workspace>
 )"};
 
-  sup::UnitTestHelper::MockUI ui;
+  sup::UnitTestHelper::EmptyUserInterface ui;
   auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
-
-  sup::dto::AnyValue value(1234u);
-  ui.SetStatus(true);
-  ui.SetValue(value);
-
-  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecuteNoReset(proc, &ui,
-    ExecutionStatus::SUCCESS));
-  EXPECT_TRUE(sup::dto::UnsignedInteger32Type == ui.GetType());
-  sup::dto::AnyValue var_value;
-  EXPECT_TRUE(proc->GetVariableValue("uint32", var_value));
-  EXPECT_EQ(var_value.As<sup::dto::uint32>(), 1234u);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
 }
 
-TEST(Input, GetUserValue_failure)
+TEST(Copy, MissingInputVariable)
 {
   const std::string body{R"(
-    <Sequence>
-        <Input description="Put some uint32 here" output="uint32"/>
-    </Sequence>
+    <Copy name="copy_test" input="in_var" output="out_var"/>
     <Workspace>
-        <Local name="uint32" type='{"type":"uint32"}'/>
+        <Local name="out_var"/>
     </Workspace>
 )"};
 
-  sup::UnitTestHelper::MockUI ui;
+  sup::UnitTestHelper::EmptyUserInterface ui;
   auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
-
-  ui.SetStatus(false);
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui, ExecutionStatus::FAILURE));
 }
 
-TEST(Input, Variable_uninitialised)
+TEST(Copy, MissingOutputVariable)
 {
   const std::string body{R"(
-    <Sequence>
-        <Input description="Put some uint32 here" output="uint32"/>
-    </Sequence>
+    <Copy name="copy_test" input="in_var" output="out_var"/>
     <Workspace>
-        <Local name="uint32"/>
+        <Local name="in_var"
+               type='{"type":"sup::test::MyType/v1.0","attributes":[{"timestamp":{"type":"uint64"}}]}'
+               value='{"timestamp":1}'/>
     </Workspace>
 )"};
 
-  sup::UnitTestHelper::MockUI ui;
+  sup::UnitTestHelper::EmptyUserInterface ui;
   auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
-
-  sup::dto::AnyValue value(1234u);
-  ui.SetStatus(true);
-  ui.SetValue(value);
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui, ExecutionStatus::FAILURE));
 }
 
-TEST(Input, Variable_undefined)
+TEST(Copy, IncompatibleVariables)
 {
   const std::string body{R"(
-    <Sequence>
-        <Input description="Put some uint32 here" output="uint32"/>
-    </Sequence>
+    <Copy name="copy_test" input="in_var" output="out_var"/>
     <Workspace>
+        <Local name="in_var"
+               type='{"type":"sup::test::MyType/v1.0","attributes":[{"timestamp":{"type":"uint64"}}]}'
+               value='{"timestamp":1}'/>
+        <Local name="out_var"
+               type='{"type":"bool"}'/>
     </Workspace>
 )"};
 
-  sup::UnitTestHelper::MockUI ui;
+  sup::UnitTestHelper::EmptyUserInterface ui;
   auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
-
-  sup::dto::AnyValue value(1234u);
-  ui.SetStatus(true);
-  ui.SetValue(value);
-
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui, ExecutionStatus::FAILURE));
 }
-
-// ToDo - Workspace variable not updated

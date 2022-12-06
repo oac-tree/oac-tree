@@ -8,6 +8,7 @@ target_sources(unit-tests
         ${CMAKE_CURRENT_LIST_DIR}/cl_interface_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/compound_instruction_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/condition_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/copy_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/daemon_interface_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/decorator_instruction_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/equals_tests.cpp

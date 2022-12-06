@@ -22,11 +22,26 @@
 #include "log_ui.h"
 #include "unit_test_helper.h"
 
+#include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/execution_status.h>
 #include <sup/sequencer/instruction_registry.h>
 #include <sup/sequencer/sequence_parser.h>
 
 #include <gtest/gtest.h>
+
+using namespace sup::sequencer;
+
+TEST(Equals, Setup)
+{
+  Procedure proc;
+  auto instr = GlobalInstructionRegistry().Create("Equals");
+  EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
+
+  EXPECT_TRUE(instr->AddAttribute("lhs", "left_var"));
+  EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
+  EXPECT_TRUE(instr->AddAttribute("rhs", "right_var"));
+  EXPECT_NO_THROW(instr->Setup(proc));
+}
 
 TEST(Equals, Equals_success)
 {
@@ -38,9 +53,8 @@ TEST(Equals, Equals_success)
     </Workspace>
 )"};
 
-  sup::sequencer::LogUI ui;
-  auto proc =
-      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  LogUI ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
@@ -56,12 +70,12 @@ TEST(Equals, Equals_failure)
     </Workspace>
 )"};
 
-  sup::sequencer::LogUI ui;
+  LogUI ui;
   auto proc =
-      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+      ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
   // Should have expect failure in Setup but the exception does not cause SetupImpl to fail ..
   EXPECT_TRUE(
-      sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE));
+      sup::UnitTestHelper::TryAndExecute(proc, &ui, ExecutionStatus::FAILURE));
 }

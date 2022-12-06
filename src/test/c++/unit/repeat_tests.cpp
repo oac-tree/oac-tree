@@ -32,6 +32,16 @@
 
 using namespace sup::sequencer;
 
+TEST(Repeat, Setup)
+{
+  Procedure proc;
+  auto instr = GlobalInstructionRegistry().Create("Repeat");
+  EXPECT_NO_THROW(instr->Setup(proc));
+
+  EXPECT_TRUE(instr->AddAttribute("maxCount", "five"));
+  EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
+}
+
 TEST(Repeat, Registration)
 {
   InstructionRegistry registry = GlobalInstructionRegistry();
@@ -51,8 +61,7 @@ TEST(Repeat, Procedure_success)
 )"};
 
   LogUI ui;
-  auto proc =
-      ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
   ASSERT_TRUE(proc.get() != nullptr);
 
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
@@ -72,8 +81,7 @@ TEST(Repeat, Procedure_failure)
 )"};
 
   LogUI ui;
-  auto proc =
-      ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
   ASSERT_TRUE(proc.get() != nullptr);
   EXPECT_TRUE(
       sup::UnitTestHelper::TryAndExecute(proc, &ui, ExecutionStatus::FAILURE));
@@ -91,8 +99,7 @@ TEST(Repeat, Procedure_attribute)
 )"};
 
   LogUI ui;
-  auto proc =
-      ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
   ASSERT_TRUE(proc.get() != nullptr);
 
   // Expect failure during Setup

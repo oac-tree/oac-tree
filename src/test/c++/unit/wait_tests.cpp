@@ -34,6 +34,16 @@
 
 using namespace sup::sequencer;
 
+TEST(Wait, Setup)
+{
+  Procedure proc;
+  auto instr = GlobalInstructionRegistry().Create("Wait");
+  EXPECT_NO_THROW(instr->Setup(proc));
+
+  EXPECT_TRUE(instr->AddAttribute("timeout", "five"));
+  EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
+}
+
 TEST(Wait, InitialState)
 {
   Wait instruction;

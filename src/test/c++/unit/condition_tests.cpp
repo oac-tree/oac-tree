@@ -26,6 +26,8 @@
 
 #include <sup/sequencer/variables/local_variable.h>
 
+#include <sup/sequencer/exceptions.h>
+#include <sup/sequencer/instruction_registry.h>
 #include <sup/sequencer/sequence_parser.h>
 #include <sup/sequencer/workspace.h>
 
@@ -85,7 +87,7 @@ TEST(Condition, Default)
   ASSERT_EQ(proc->GetStatus(), ExecutionStatus::SUCCESS);
 }
 
-TEST(Condition, Default1)
+TEST(Condition, DifferentTypes)
 {
   bool status(true);
 
@@ -127,6 +129,16 @@ TEST(Condition, Default1)
   }
 
   ASSERT_TRUE(status);
+}
+
+TEST(Condition, Setup)
+{
+  Procedure proc;
+  auto instr = GlobalInstructionRegistry().Create("Condition");
+  EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
+
+  EXPECT_TRUE(instr->AddAttribute("varName", "var"));
+  EXPECT_NO_THROW(instr->Setup(proc));
 }
 
 TEST(Condition, NonScalarVariable_success)

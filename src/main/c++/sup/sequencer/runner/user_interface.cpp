@@ -28,32 +28,6 @@ namespace sequencer
 
 UserInterface::~UserInterface() = default;
 
-void UserInterface::VariableUpdatedImpl(const std::string& name, const sup::dto::AnyValue& value)
-{}
-
-bool UserInterface::PutValueImpl(const sup::dto::AnyValue& value,
-                                 const std::string& description)
-{
-  return false;
-}
-
-bool UserInterface::GetUserValueImpl(sup::dto::AnyValue& value, const std::string& description)
-{
-  return false;
-}
-
-int UserInterface::GetUserChoiceImpl(const std::vector<std::string>& choices,
-                                     const std::string& description)
-{
-  return -1;
-}
-
-void UserInterface::StartSingleStepImpl() {}
-
-void UserInterface::EndSingleStepImpl() {}
-
-void UserInterface::MessageImpl(const std::string&) {}
-
 void UserInterface::UpdateInstructionStatus(const Instruction* instruction)
 {
   std::lock_guard<std::mutex> lock(_ui_mutex);
@@ -101,6 +75,43 @@ void UserInterface::Message(const std::string& message)
   std::lock_guard<std::mutex> lock(_ui_mutex);
   MessageImpl(message);
 }
+
+void UserInterface::Log(int severity, const std::string& message)
+{
+  std::lock_guard<std::mutex> lock(_ui_mutex);
+  LogImpl(severity, message);
+}
+
+void UserInterface::VariableUpdatedImpl(const std::string& name, const sup::dto::AnyValue& value)
+{}
+
+bool UserInterface::PutValueImpl(const sup::dto::AnyValue& value, const std::string& description)
+{
+  return false;
+}
+
+bool UserInterface::GetUserValueImpl(sup::dto::AnyValue& value, const std::string& description)
+{
+  return false;
+}
+
+int UserInterface::GetUserChoiceImpl(const std::vector<std::string>& choices,
+                                     const std::string& description)
+{
+  return -1;
+}
+
+void UserInterface::StartSingleStepImpl()
+{}
+
+void UserInterface::EndSingleStepImpl()
+{}
+
+void UserInterface::MessageImpl(const std::string&)
+{}
+
+void UserInterface::LogImpl(int, const std::string&)
+{}
 
 }  // namespace sequencer
 

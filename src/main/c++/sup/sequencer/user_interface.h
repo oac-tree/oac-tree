@@ -39,84 +39,9 @@ class Instruction;
  */
 class UserInterface
 {
-private:
-  /**
-   * @brief Private pure virtual implementation of
-   * UserInterface::UpdateInstructionStatus(const Instruction * instruction).
-   */
-  virtual void UpdateInstructionStatusImpl(const Instruction* instruction) = 0;
-
-  /**
-   * @brief Private virtual implementation of
-   * UserInterface::VariableUpdated(const std::string& name, const sup::dto::AnyValue& value).
-   */
-  virtual void VariableUpdatedImpl(const std::string& name, const sup::dto::AnyValue& value);
-
-  /**
-   * @brief Private virtual implementation of
-   * UserInterface::PutValue(const AnyValue & value, const std::string & description).
-   *
-   * @note Default implementation returns false.
-   */
-  virtual bool PutValueImpl(const sup::dto::AnyValue& value, const std::string& description);
-
-  /**
-   * @brief Private virtual implementation of
-   * UserInterface::GetUserValue(AnyValue & value, const std::string & description).
-   *
-   * @note Default implementation returns false.
-   */
-  virtual bool GetUserValueImpl(sup::dto::AnyValue& value, const std::string& description);
-
-  /**
-   * @brief Private virtual implementation of
-   * UserInterface::GetUserChoice(const std::vector<std::string> & choices, const std::string &
-   * description).
-   *
-   * @note Default implementation returns -1.
-   */
-  virtual int GetUserChoiceImpl(const std::vector<std::string>& choices,
-                                const std::string& description);
-
-  /**
-   * @brief Private virtual implementation of
-   * UserInterface::StartSingleStep().
-   *
-   * @note Default implementation is empty.
-   */
-  virtual void StartSingleStepImpl();
-
-  /**
-   * @brief Private virtual implementation of
-   * UserInterface::EndSingleStep().
-   *
-   * @note Default implementation is empty.
-   */
-  virtual void EndSingleStepImpl();
-
-  /**
-   * @brief Private virtual implementation of
-   * UserInterface::Message().
-   *
-   * @note Default implementation is empty.
-   */
-  virtual void MessageImpl(const std::string& message);
-
-  /**
-   * @brief Mutex for concurrent access of UserInterface.
-   */
-  mutable std::mutex _ui_mutex;
-
-protected:
 public:
-  /**
-   * @brief Constructor.
-   */
   UserInterface() = default;
 
-  /**
-   * @brief Destructor.
-   */
   virtual ~UserInterface();
 
   /**
@@ -186,6 +111,85 @@ public:
    * @note Non-Virtual Interface.
    */
   void Message(const std::string& message);
+
+  /**
+   * @brief Method called to log a message.
+   *
+   * @note Non-Virtual Interface.
+   */
+  void Log(int severity, const std::string& message);
+
+private:
+  /**
+   * @brief Private pure virtual implementation of
+   * UserInterface::UpdateInstructionStatus(const Instruction * instruction).
+   */
+  virtual void UpdateInstructionStatusImpl(const Instruction* instruction) = 0;
+
+  /**
+   * @brief Private virtual implementation of
+   * UserInterface::VariableUpdated(const std::string& name, const sup::dto::AnyValue& value).
+   */
+  virtual void VariableUpdatedImpl(const std::string& name, const sup::dto::AnyValue& value);
+
+  /**
+   * @brief Private virtual implementation of
+   * UserInterface::PutValue(const AnyValue & value, const std::string & description).
+   *
+   * @note Default implementation returns false.
+   */
+  virtual bool PutValueImpl(const sup::dto::AnyValue& value, const std::string& description);
+
+  /**
+   * @brief Private virtual implementation of
+   * UserInterface::GetUserValue(AnyValue & value, const std::string & description).
+   *
+   * @note Default implementation returns false.
+   */
+  virtual bool GetUserValueImpl(sup::dto::AnyValue& value, const std::string& description);
+
+  /**
+   * @brief Private virtual implementation of
+   * UserInterface::GetUserChoice(const std::vector<std::string> & choices, const std::string &
+   * description).
+   *
+   * @note Default implementation returns -1.
+   */
+  virtual int GetUserChoiceImpl(const std::vector<std::string>& choices,
+                                const std::string& description);
+
+  /**
+   * @brief Private virtual implementation of UserInterface::StartSingleStep().
+   *
+   * @note Default implementation is empty.
+   */
+  virtual void StartSingleStepImpl();
+
+  /**
+   * @brief Private virtual implementation of UserInterface::EndSingleStep().
+   *
+   * @note Default implementation is empty.
+   */
+  virtual void EndSingleStepImpl();
+
+  /**
+   * @brief Private virtual implementation of UserInterface::Message().
+   *
+   * @note Default implementation is empty.
+   */
+  virtual void MessageImpl(const std::string& message);
+
+  /**
+   * @brief Private virtual implementation of UserInterface::Log().
+   *
+   * @note Default implementation is empty.
+   */
+  virtual void LogImpl(int severity, const std::string& message);
+
+  /**
+   * @brief Mutex for concurrent access of UserInterface.
+   */
+  mutable std::mutex _ui_mutex;
 };
 
 }  // namespace sequencer

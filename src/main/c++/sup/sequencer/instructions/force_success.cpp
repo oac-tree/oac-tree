@@ -21,8 +21,6 @@
 
 #include "force_success.h"
 
-#include <sup/sequencer/log.h>
-
 namespace sup
 {
 namespace sequencer

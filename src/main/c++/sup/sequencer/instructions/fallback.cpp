@@ -21,8 +21,6 @@
 
 #include "fallback.h"
 
-#include <sup/sequencer/log.h>
-
 namespace sup
 {
 namespace sequencer
@@ -50,12 +48,6 @@ ExecutionStatus Fallback::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
     {
       instruction->ExecuteSingle(ui, ws);
       break;
-    }
-    else
-    {
-      log::Warning(
-          "Fallback::ExecuteSingleImpl() - Fallback was ticked again while already successful");
-      return child_status;
     }
   }
   return CalculateCompoundStatus();

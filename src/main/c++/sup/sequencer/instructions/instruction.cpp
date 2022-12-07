@@ -20,7 +20,7 @@
  ******************************************************************************/
 
 #include <sup/sequencer/instruction.h>
-#include <sup/sequencer/log.h>
+
 #include <sup/sequencer/user_interface.h>
 
 namespace sup

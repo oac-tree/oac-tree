@@ -21,8 +21,6 @@
 
 #include "sequence.h"
 
-#include <sup/sequencer/log.h>
-
 namespace sup
 {
 namespace sequencer
@@ -52,11 +50,6 @@ ExecutionStatus Sequence::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
     {
       instruction->ExecuteSingle(ui, ws);
       break;
-    }
-    else
-    {
-      log::Warning("Sequence::ExecuteSingleImpl() - Sequence was ticked again while already failed");
-      return child_status;
     }
   }
   return CalculateCompoundStatus();

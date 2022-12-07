@@ -21,8 +21,6 @@
 
 #include "inverter.h"
 
-#include <sup/sequencer/log.h>
-
 namespace sup
 {
 namespace sequencer

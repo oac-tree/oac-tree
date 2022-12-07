@@ -21,21 +21,18 @@
 
 #include "async_wrapper.h"
 
-#include <sup/sequencer/log.h>
-
 #include <chrono>
-#include <functional>
 
 namespace sup
 {
 namespace sequencer
 {
 AsyncWrapper::AsyncWrapper(Instruction* instruction)
-    : _instruction{instruction}, _status{ExecutionStatus::NOT_STARTED}
-{
-}
+  : _instruction{instruction}
+  , _status{ExecutionStatus::NOT_STARTED}
+{}
 
-AsyncWrapper::AsyncWrapper(AsyncWrapper&& other) = default;
+AsyncWrapper::AsyncWrapper(AsyncWrapper&&) = default;
 
 AsyncWrapper::~AsyncWrapper() = default;
 

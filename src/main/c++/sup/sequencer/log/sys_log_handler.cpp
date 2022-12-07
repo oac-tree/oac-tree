@@ -21,7 +21,7 @@
 
 #include "sys_log_handler.h"
 
-#include "log_severity.h"
+#include <sup/sequencer/log_severity.h>
 
 #include <iostream>
 #include <sstream>

@@ -53,20 +53,6 @@ private:
   std::unique_ptr<LogStreamRedirectorImpl> m_impl;
 };
 
-enum Severity
-{
-  SUP_LOG_EMERG = 0,
-  SUP_LOG_ALERT,
-  SUP_LOG_CRIT,
-  SUP_LOG_ERR,
-  SUP_LOG_WARNING,
-  SUP_LOG_NOTICE,
-  SUP_LOG_INFO,
-  SUP_LOG_DEBUG,
-  SUP_LOG_TRACE,
-  NUMBER_OF_LOG_LEVELS
-};
-
 void SetMaxSeverity(int severity);
 void SetStdOut();
 void SetSysLog();

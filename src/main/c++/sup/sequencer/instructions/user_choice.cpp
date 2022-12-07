@@ -22,7 +22,7 @@
 #include "user_choice.h"
 
 #include <sup/sequencer/exceptions.h>
-#include <sup/sequencer/log.h>
+#include <sup/sequencer/log_severity.h>
 #include <sup/sequencer/user_interface.h>
 
 namespace sup
@@ -55,9 +55,12 @@ ExecutionStatus UserChoice::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
 
   auto options = GetChoices();
   int choice = ui->GetUserChoice(options, description);
-  if (choice < 0 || choice >= ChildInstructions().size())
+  if (choice < 0 || choice >= ChildrenCount())
   {
-    log::Warning("UserChoice::ExecuteSingleImpl() - invalid choice");
+    std::string warning_message =
+      "sup::sequencer::UserChoice::ExecuteSingleImpl(): user choice [" + std::to_string(choice) +
+      "] is not a valid value for [" + std::to_string(ChildrenCount()) + "] child instructions";
+    ui->Log(log::SUP_SEQ_LOG_WARNING, warning_message);
     return ExecutionStatus::FAILURE;
   }
   auto selected = ChildInstructions()[choice];
@@ -67,10 +70,11 @@ ExecutionStatus UserChoice::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
     selected->ExecuteSingle(ui, ws);
     return selected->GetStatus();
   }
-  log::Warning(
-      "UserChoice::ExecuteSingleImpl() - Selected instruction was not in the correct "
-      "state to execute: '%s'",
-      StatusToString(selected_status).c_str());
+  std::string error_message =
+    "sup::sequencer::UserChoice::ExecuteSingleImpl(): child instruction of type [" +
+    selected->GetType() + "] was already finished with status [" +
+    StatusToString(selected_status) + "]";
+  ui->Log(log::SUP_SEQ_LOG_ERR, error_message);
   return ExecutionStatus::FAILURE;
 }
 

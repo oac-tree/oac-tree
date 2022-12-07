@@ -31,6 +31,8 @@
 
 const std::string TIMEOUT_ATTR_NAME = "timeout";
 
+const double MAX_TIMEOUT_SECONDS = 18.4e9;  // More than 500 years. This should be enough...
+
 namespace sup
 {
 namespace sequencer
@@ -66,7 +68,7 @@ void Wait::SetupImpl(const Procedure&)
          TIMEOUT_ATTR_NAME + "], with value [" + timeout_str + "] to double";
       throw InstructionSetupException(error_message);
     }
-      m_timeout = ToNanoSeconds(t);
+    m_timeout = ToNanoSeconds(t);
   }
 }
 
@@ -87,11 +89,14 @@ ExecutionStatus Wait::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
 
 static unsigned long ToNanoSeconds(double sec)
 {
-  if (sec > 0.0)
+  if (sec < 0.0 || sec > MAX_TIMEOUT_SECONDS)
   {
-    return static_cast<unsigned long>(std::lround(sec * 1e9));
+      std::string error_message =
+        "sup::sequencer::Wait::SetupImpl(): could not convert timeout in seconds [" +
+         std::to_string(sec) + "] to nanoseconds (64bit unsigned)";
+      throw InstructionSetupException(error_message);
   }
-  return 0;
+  return static_cast<unsigned long>(std::lround(sec * 1e9));
 }
 
 }  // namespace sequencer

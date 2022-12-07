@@ -22,6 +22,8 @@
 #include "equals.h"
 
 #include <sup/sequencer/exceptions.h>
+#include <sup/sequencer/log_severity.h>
+#include <sup/sequencer/user_interface.h>
 #include <sup/sequencer/workspace.h>
 
 const std::string LEFT_VARIABLE_ATTR_NAME = "lhs";
@@ -47,13 +49,44 @@ void Equals::SetupImpl(const Procedure &proc)
   }
 }
 
-ExecutionStatus Equals::ExecuteSingleImpl(UserInterface*, Workspace* ws)
+ExecutionStatus Equals::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
 {
-  sup::dto::AnyValue lhs;
-  sup::dto::AnyValue rhs;
-  if (!ws->GetValue(GetAttribute(LEFT_VARIABLE_ATTR_NAME), lhs) ||
-      !ws->GetValue(GetAttribute(RIGHT_VARIABLE_ATTR_NAME), rhs))
+  auto left_field = GetAttribute(LEFT_VARIABLE_ATTR_NAME);
+  auto right_field = GetAttribute(RIGHT_VARIABLE_ATTR_NAME);
+  auto left_var = SplitFieldName(left_field).first;
+  auto right_var = SplitFieldName(right_field).first;
+  if (!ws->HasVariable(left_var))
   {
+    std::string error_message =
+      "sup::sequencer::Equals::ExecuteSingleImpl(): workspace does not contain left hand side "
+      "variable with name [" + left_var + "]";
+    ui->Log(log::SUP_SEQ_LOG_ERR, error_message);
+    return ExecutionStatus::FAILURE;
+  }
+  if (!ws->HasVariable(right_var))
+  {
+    std::string error_message =
+      "sup::sequencer::Equals::ExecuteSingleImpl(): workspace does not contain right hand side "
+      "variable with name [" + right_var + "]";
+    ui->Log(log::SUP_SEQ_LOG_ERR, error_message);
+    return ExecutionStatus::FAILURE;
+  }
+  sup::dto::AnyValue lhs;
+  if (!ws->GetValue(left_field, lhs))
+  {
+    std::string warning_message =
+      "sup::sequencer::Equals::ExecuteSingleImpl(): could not read left field with name [" +
+      left_field + "] from workspace";
+    ui->Log(log::SUP_SEQ_LOG_WARNING, warning_message);
+    return ExecutionStatus::FAILURE;
+  }
+  sup::dto::AnyValue rhs;
+  if (!ws->GetValue(right_field, rhs))
+  {
+    std::string warning_message =
+      "sup::sequencer::Equals::ExecuteSingleImpl(): could not read right field with name [" +
+      right_field + "] from workspace";
+    ui->Log(log::SUP_SEQ_LOG_WARNING, warning_message);
     return ExecutionStatus::FAILURE;
   }
   return lhs == rhs ? ExecutionStatus::SUCCESS : ExecutionStatus::FAILURE;

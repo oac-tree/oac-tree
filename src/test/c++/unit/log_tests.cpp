@@ -21,7 +21,7 @@
 
 #include "unit_test_helper.h"
 
-#include <sup/sequencer/log/log_severity.h>
+#include <sup/sequencer/log_severity.h>
 
 #include <sup/sequencer/log.h>
 
@@ -148,10 +148,10 @@ TEST_F(LogTest, Systemlog)
 
 LogTest::LogTest()
 {
-  log::SetMaxSeverity(log::SUP_LOG_TRACE);
+  log::SetMaxSeverity(log::SUP_SEQ_LOG_TRACE);
 }
 
 LogTest::~LogTest()
 {
-  log::SetMaxSeverity(log::SUP_LOG_DEBUG);
+  log::SetMaxSeverity(log::SUP_SEQ_LOG_DEBUG);
 }

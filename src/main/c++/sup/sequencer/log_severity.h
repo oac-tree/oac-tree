@@ -65,6 +65,16 @@ enum Severity
   NUMBER_OF_LOG_LEVELS
 };
 
+const std::string EmergencyString = "EMERGENCY";
+const std::string AlertString = "ALERT";
+const std::string CriticalString = "CRITICAL";
+const std::string ErrorString = "ERROR";
+const std::string WarningString = "WARNING";
+const std::string NoticeString = "NOTICE";
+const std::string InfoString = "INFO";
+const std::string DebugString = "DEBUG";
+const std::string TraceString = "TRACE";
+
 /**
  * @brief Retrieve a string representation of the given severity level.
  */

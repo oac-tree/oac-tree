@@ -35,28 +35,32 @@ namespace InstructionHelper
  *
  * @param instructions List of instruction to search.
  * @param name_path Full path of names to reach requested instruction.
+ *
  * @return The found instruction or nullptr.
  */
-const Instruction *FindInstruction(const std::vector<const Instruction *> &instructions,
-                                   const std::string &name_path);
+const Instruction* FindInstruction(const std::vector<const Instruction*>& instructions,
+                                   const std::string& name_path);
 
 /**
  * @brief Clone an instruction, including its descendents.
  *
  * @param instruction Instruction to clone.
- * @return Clone of instruction tree.
+ *
+ * @return Clone of instruction tree or nullptr on failure.
+ *
  * @details Caller needs to take ownership of the cloned instruction tree.
  */
-Instruction *CloneInstruction(const Instruction *instruction);
+Instruction* CloneInstruction(const Instruction* instruction);
 
 /**
  * @brief Initialize variable attributes.
  *
  * @param instruction Instruction tree to initialise.
  * @param instructions List of attributes to use for initialisation.
+ *
  * @return true on successful initialisation of variable attributes.
  */
-bool InitialiseVariableAttributes(Instruction &instruction, const AttributeMap &attributes);
+bool InitialiseVariableAttributes(Instruction& instruction, const AttributeMap& attributes);
 
 }  // namespace InstructionHelper
 

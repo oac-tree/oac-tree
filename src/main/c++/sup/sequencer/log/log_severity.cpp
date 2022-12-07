@@ -34,16 +34,6 @@ namespace sequencer
 {
 namespace log
 {
-const std::string EmergencyString = "EMERGENCY";
-const std::string AlertString = "ALERT";
-const std::string CriticalString = "CRITICAL";
-const std::string ErrorString = "ERROR";
-const std::string WarningString = "WARNING";
-const std::string NoticeString = "NOTICE";
-const std::string InfoString = "INFO";
-const std::string DebugString = "DEBUG";
-const std::string TraceString = "TRACE";
-
 std::string SeverityString(int severity)
 {
   const auto& sev_map = GetSeverityMap();

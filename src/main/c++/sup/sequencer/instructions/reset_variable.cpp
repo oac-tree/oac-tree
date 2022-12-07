@@ -22,6 +22,8 @@
 #include "reset_variable.h"
 
 #include <sup/sequencer/exceptions.h>
+#include <sup/sequencer/log_severity.h>
+#include <sup/sequencer/user_interface.h>
 #include <sup/sequencer/workspace.h>
 
 namespace sup
@@ -50,13 +52,22 @@ void ResetVariable::SetupImpl(const Procedure &proc)
   }
 }
 
-ExecutionStatus ResetVariable::ExecuteSingleImpl(UserInterface*, Workspace* ws)
+ExecutionStatus ResetVariable::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
 {
-  if (ws->ResetVariable(GetAttribute(VARNAME_ATTRIBUTE)))
+  auto var_name = GetAttribute(VARNAME_ATTRIBUTE);
+  if (!ws->HasVariable(var_name))
   {
-    return ExecutionStatus::SUCCESS;
+    std::string error_message =
+      "sup::sequencer::ResetVariable::ExecuteSingleImpl(): workspace does not contain variable "
+      "with name [" + var_name + "]";
+    ui->Log(log::SUP_SEQ_LOG_ERR, error_message);
+    return ExecutionStatus::FAILURE;
   }
-  return ExecutionStatus::FAILURE;
+  if (!ws->ResetVariable(var_name))
+  {
+    return ExecutionStatus::FAILURE;
+  }
+  return ExecutionStatus::SUCCESS;
 }
 
 }  // namespace sequencer

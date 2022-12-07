@@ -26,18 +26,17 @@
 #include "include.h"
 
 #include <sup/sequencer/constants.h>
-#include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/instruction_registry.h>
 
 #include <algorithm>
 
 namespace
 {
-std::pair<std::string, std::string> StripPath(const std::string &path);
-bool CloneChildInstructions(sup::sequencer::Instruction *clone,
-                            const sup::sequencer::Instruction *source);
-bool AddClonedChildInstruction(sup::sequencer::Instruction *instr,
-                               const sup::sequencer::Instruction *child);
+std::pair<std::string, std::string> StripPath(const std::string& path);
+bool CloneChildInstructions(sup::sequencer::Instruction* clone,
+                            const sup::sequencer::Instruction* source);
+bool AddClonedChildInstruction(sup::sequencer::Instruction* instr,
+                               const sup::sequencer::Instruction* child);
 
 }  // Unnamed namespace
 
@@ -47,8 +46,8 @@ namespace sequencer
 {
 namespace InstructionHelper
 {
-const Instruction *FindInstruction(const std::vector<const Instruction *> &instructions,
-                                   const std::string &name_path)
+const Instruction* FindInstruction(const std::vector<const Instruction*>& instructions,
+                                   const std::string& name_path)
 {
   auto names = StripPath(name_path);
   auto it = std::find_if(instructions.begin(), instructions.end(),
@@ -58,10 +57,7 @@ const Instruction *FindInstruction(const std::vector<const Instruction *> &instr
                          });
   if (it == instructions.end())
   {
-    std::string error_message =
-      "sup::sequencer::InstructionHelper::FindInstruction(): could not find instruction with path "
-      "[" + name_path + "]";
-    throw InstructionSetupException(error_message);
+    return nullptr;
   }
   auto result = *it;
   if (names.second.empty())
@@ -71,33 +67,37 @@ const Instruction *FindInstruction(const std::vector<const Instruction *> &instr
   return FindInstruction(result->ChildInstructions(), names.second);
 }
 
-Instruction *CloneInstruction(const Instruction *instruction)
+Instruction* CloneInstruction(const Instruction* instruction)
 {
   if (instruction == nullptr)
   {
     return nullptr;
   }
   auto type = instruction->GetType();
+  if (!GlobalInstructionRegistry().IsRegisteredInstructionName(type))
+  {
+    return nullptr;
+  }
   auto result = GlobalInstructionRegistry().Create(type);
   if (!result)
   {
     return nullptr;
   }
-  auto include = dynamic_cast<Include *>(result.get());
-  if (include)
-  {
-    auto other = dynamic_cast<const Include *>(instruction);
-    if (other)
-    {
-      include->SetFilename(other->GetFilename());
-    }
-  }
   result->AddAttributes(instruction->GetAttributes());
-  CloneChildInstructions(result.get(), instruction);
+  if (!CloneChildInstructions(result.get(), instruction))
+  {
+    return nullptr;
+  }
+  if (type == Include::Type)
+  {
+    auto include_result = dynamic_cast<Include*>(result.get());
+    auto include_source = dynamic_cast<const Include*>(instruction);
+    include_result->SetFilename(include_source->GetFilename());
+  }
   return result.release();
 }
 
-bool InitialiseVariableAttributes(Instruction &instruction, const AttributeMap &attributes)
+bool InitialiseVariableAttributes(Instruction& instruction, const AttributeMap& attributes)
 {
   bool result = instruction.InitialiseVariableAttributes(attributes);
   for (auto child : instruction.ChildInstructions())
@@ -113,12 +113,14 @@ bool InitialiseVariableAttributes(Instruction &instruction, const AttributeMap &
 
 }  // namespace sup
 
+using namespace sup::sequencer;
+
 namespace
 {
 std::pair<std::string, std::string> StripPath(const std::string &path)
 {
   std::pair<std::string, std::string> result;
-  std::size_t delim_pos = path.find(sup::sequencer::DefaultSettings::PATH_DELIMITER);
+  std::size_t delim_pos = path.find(DefaultSettings::PATH_DELIMITER);
   result.first = path.substr(0, delim_pos);
   if (delim_pos != std::string::npos)
   {
@@ -127,34 +129,35 @@ std::pair<std::string, std::string> StripPath(const std::string &path)
   return result;
 }
 
-bool CloneChildInstructions(sup::sequencer::Instruction *clone,
-                            const sup::sequencer::Instruction *source)
+bool CloneChildInstructions(Instruction* clone, const Instruction* source)
 {
-  bool result = true;
-  if (clone == nullptr || source == nullptr)
+  for (auto child : source->ChildInstructions())
+  {
+    if (!AddClonedChildInstruction(clone, child))
+    {
+      return false;
+    }
+  }
+  return true;
+}
+
+bool AddClonedChildInstruction(Instruction* instr, const Instruction* child)
+{
+  auto cloned_child = InstructionHelper::CloneInstruction(child);
+  if (cloned_child == nullptr)
   {
     return false;
   }
-  for (auto child : source->ChildInstructions())
-  {
-    result = AddClonedChildInstruction(clone, child) && result;
-  }
-  return result;
-}
-
-bool AddClonedChildInstruction(sup::sequencer::Instruction *instr,
-                               const sup::sequencer::Instruction *child)
-{
-  auto compound = dynamic_cast<sup::sequencer::CompoundInstruction *>(instr);
+  auto compound = dynamic_cast<CompoundInstruction*>(instr);
   if (compound)
   {
-    compound->PushBack(sup::sequencer::InstructionHelper::CloneInstruction(child));
+    compound->PushBack(cloned_child);
     return true;
   }
-  auto decorator = dynamic_cast<sup::sequencer::DecoratorInstruction *>(instr);
+  auto decorator = dynamic_cast<DecoratorInstruction*>(instr);
   if (decorator)
   {
-    decorator->SetInstruction(sup::sequencer::InstructionHelper::CloneInstruction(child));
+    decorator->SetInstruction(cloned_child);
     return true;
   }
   return false;

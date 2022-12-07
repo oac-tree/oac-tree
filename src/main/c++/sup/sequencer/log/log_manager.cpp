@@ -25,6 +25,7 @@
 #include "sys_log_handler.h"
 
 #include <sup/sequencer/log.h>
+#include <sup/sequencer/log_severity.h>
 
 #include <algorithm>
 
@@ -42,7 +43,7 @@ namespace log
 {
 LogManager::LogManager()
   : m_handler{GetSysLogHandler()}
-  , m_max_severity{SUP_LOG_DEBUG}
+  , m_max_severity{SUP_SEQ_LOG_DEBUG}
 {}
 
 LogManager::~LogManager() = default;

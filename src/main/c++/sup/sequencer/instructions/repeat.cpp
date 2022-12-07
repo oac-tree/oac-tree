@@ -72,14 +72,11 @@ ExecutionStatus Repeat::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
   {
     return ExecutionStatus::SUCCESS;
   }
-
   auto child_status = GetChildStatus();
-
   if (child_status == ExecutionStatus::SUCCESS)
   {
     ResetChild();
   }
-
   ExecuteChild(ui, ws);
 
   child_status = GetChildStatus();
@@ -89,14 +86,12 @@ ExecutionStatus Repeat::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
   {
     _count++;
   }
-
   return CalculateStatus();
 }
 
 ExecutionStatus Repeat::CalculateStatus() const
 {
   auto child_status = GetChildStatus();
-
   if (child_status == ExecutionStatus::SUCCESS)
   {
     if (_count == _max_count)
@@ -108,7 +103,6 @@ ExecutionStatus Repeat::CalculateStatus() const
       return ExecutionStatus::NOT_FINISHED;
     }
   }
-
   return child_status;
 }
 

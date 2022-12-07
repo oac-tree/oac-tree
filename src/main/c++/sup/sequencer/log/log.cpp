@@ -23,6 +23,7 @@
 #include "stream_log_handler.h"
 
 #include <sup/sequencer/log.h>
+#include <sup/sequencer/log_severity.h>
 
 namespace
 {
@@ -81,47 +82,47 @@ void SetSysLog()
 
 void SimpleEmergency(const std::string& source, const std::string& message)
 {
-  LogMessage(SUP_LOG_EMERG, source, message);
+  LogMessage(SUP_SEQ_LOG_EMERG, source, message);
 }
 
 void SimpleAlert(const std::string& source, const std::string& message)
 {
-  LogMessage(SUP_LOG_ALERT, source, message);
+  LogMessage(SUP_SEQ_LOG_ALERT, source, message);
 }
 
 void SimpleCritical(const std::string& source, const std::string& message)
 {
-  LogMessage(SUP_LOG_CRIT, source, message);
+  LogMessage(SUP_SEQ_LOG_CRIT, source, message);
 }
 
 void SimpleError(const std::string& source, const std::string& message)
 {
-  LogMessage(SUP_LOG_ERR, source, message);
+  LogMessage(SUP_SEQ_LOG_ERR, source, message);
 }
 
 void SimpleWarning(const std::string& source, const std::string& message)
 {
-  LogMessage(SUP_LOG_WARNING, source, message);
+  LogMessage(SUP_SEQ_LOG_WARNING, source, message);
 }
 
 void SimpleNotice(const std::string& source, const std::string& message)
 {
-  LogMessage(SUP_LOG_NOTICE, source, message);
+  LogMessage(SUP_SEQ_LOG_NOTICE, source, message);
 }
 
 void SimpleInfo(const std::string& source, const std::string& message)
 {
-  LogMessage(SUP_LOG_INFO, source, message);
+  LogMessage(SUP_SEQ_LOG_INFO, source, message);
 }
 
 void SimpleDebug(const std::string& source, const std::string& message)
 {
-  LogMessage(SUP_LOG_DEBUG, source, message);
+  LogMessage(SUP_SEQ_LOG_DEBUG, source, message);
 }
 
 void SimpleTrace(const std::string& source, const std::string& message)
 {
-  LogMessage(SUP_LOG_TRACE, source, message);
+  LogMessage(SUP_SEQ_LOG_TRACE, source, message);
 }
 
 }  // namespace log

@@ -23,6 +23,7 @@
 
 #include <sup/sequencer/generic_utils.h>
 #include <sup/sequencer/log.h>
+#include <sup/sequencer/log_severity.h>
 #include <sup/sequencer/runner.h>
 #include <sup/sequencer/sequence_parser.h>
 
@@ -81,8 +82,8 @@ int main(int argc, char* argv[])
   {
     sup::sequencer::log::SetStdOut();
     sup::sequencer::log::SetMaxSeverity(verbosity == kMinimal ?
-                                        sup::sequencer::log::SUP_LOG_NOTICE :
-                                        sup::sequencer::log::SUP_LOG_DEBUG);
+                                        sup::sequencer::log::SUP_SEQ_LOG_NOTICE :
+                                        sup::sequencer::log::SUP_SEQ_LOG_DEBUG);
   }
 
   auto proc = sup::sequencer::ParseProcedureFile(filename.c_str());

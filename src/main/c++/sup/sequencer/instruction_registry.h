@@ -66,7 +66,7 @@ public:
   std::vector<std::string> RegisteredInstructionNames() const;
 
   /**
-   * @brief List names of registered instructions.
+   * @brief Check if instruction with the given name was registered.
    */
   bool IsRegisteredInstructionName(const std::string& name) const;
 

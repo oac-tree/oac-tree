@@ -68,9 +68,6 @@ std::unique_ptr<Instruction> ParseInstruction(const TreeData &data, const std::s
 static void AddChildInstructions(Instruction *instruction, const std::vector<TreeData> &children,
                                  const std::string &filename)
 {
-  auto instr_name = instruction->GetName();
-  auto instr_type = instruction->GetType();
-
   // Only set source directory for Include instruction:
   auto include = dynamic_cast<Include *>(instruction);
   if (include)

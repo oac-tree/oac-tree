@@ -24,7 +24,7 @@
 #include "file_variable.h"
 #include "local_variable.h"
 
-#include <sup/sequencer/log.h>
+#include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/variable.h>
 
 #include <mutex>
@@ -47,17 +47,27 @@ VariableRegistry& GlobalVariableRegistry()
 
 bool VariableRegistry::RegisterVariable(std::string name, VariableConstructor constructor)
 {
-  _variable_map[name] = constructor;
+  auto it = m_variable_map.find(name);
+  if (it != m_variable_map.end())
+  {
+    std::string error_message =
+      "sup::sequencer::VariableRegistry::RegisterVariable(): trying to register variable "
+      "with name [" + name + "] twice";
+    throw InvalidOperationException(error_message);
+  }
+  m_variable_map.insert(it, {name, constructor});
   return true;
 }
 
 std::unique_ptr<Variable> VariableRegistry::Create(std::string name)
 {
-  auto entry = _variable_map.find(name);
-  if (entry == _variable_map.end())
+  auto entry = m_variable_map.find(name);
+  if (entry == m_variable_map.end())
   {
-    log::Error("VariableRegistry::Create('%s') - Variable not registered", name.c_str());
-    return {};
+    std::string error_message =
+      "sup::sequencer::VariableRegistry::Create(): trying to create unregistered variable "
+      "with name [" + name + "]";
+    throw InvalidOperationException(error_message);
   }
   return std::unique_ptr<Variable>(entry->second());
 }
@@ -65,11 +75,17 @@ std::unique_ptr<Variable> VariableRegistry::Create(std::string name)
 std::vector<std::string> VariableRegistry::RegisteredVariableNames() const
 {
   std::vector<std::string> result;
-  for (const auto elem : _variable_map)
+  for (const auto elem : m_variable_map)
   {
     result.push_back(elem.first);
   }
   return result;
+}
+
+bool VariableRegistry::IsRegisteredVariableName(const std::string& name) const
+{
+  auto it = m_variable_map.find(name);
+  return it != m_variable_map.end();
 }
 
 void InitVariableRegistry(VariableRegistry& registry)

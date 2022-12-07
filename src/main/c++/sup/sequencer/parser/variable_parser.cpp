@@ -31,8 +31,14 @@ namespace sequencer
 std::unique_ptr<Variable> ParseVariable(const TreeData& data)
 {
   auto var_type = data.GetType();
+  if (!GlobalVariableRegistry().IsRegisteredVariableName(var_type))
+  {
+    std::string error_message =
+      "sup::sequencer::ParseVariable(): trying to create unregistered variable with typename [" +
+      var_type + "]";
+    throw ParseException(error_message);
+  }
   auto var = GlobalVariableRegistry().Create(var_type);
-
   if (!var)
   {
     std::string error_message =
@@ -41,7 +47,6 @@ std::unique_ptr<Variable> ParseVariable(const TreeData& data)
     throw ParseException(error_message);
   }
   var->AddAttributes(data.Attributes());
-
   return var;
 }
 

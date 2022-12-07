@@ -98,7 +98,6 @@ ExecutionStatus Choice::ExecuteChild(std::size_t idx, UserInterface *ui, Workspa
     auto child_instr = child_instructions[idx];
     if (NeedsExecute(child_instr->GetStatus()))
     {
-      auto childName = child_instr->GetName();
       child_instr->ExecuteSingle(ui, ws);
     }
     return child_instr->GetStatus();

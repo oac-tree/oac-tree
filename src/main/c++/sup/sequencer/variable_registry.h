@@ -39,22 +39,9 @@ class Variable;
  */
 class VariableRegistry
 {
-private:
-  /**
-   * @brief Definition of Variable constructor.
-   */
+public:
   using VariableConstructor = Variable *(*)();
 
-  /**
-   * @brief Map between Variable typename and its constructor.
-   */
-  std::map<std::string, VariableConstructor> _variable_map;
-
-protected:
-public:
-  /**
-   * @brief Constructor.
-   */
   VariableRegistry() = default;
 
   /**
@@ -76,6 +63,17 @@ public:
    * @brief List names of registered variables.
    */
   std::vector<std::string> RegisteredVariableNames() const;
+
+  /**
+   * @brief Check if variable with the given name was registered.
+   */
+  bool IsRegisteredVariableName(const std::string& name) const;
+
+private:
+  /**
+   * @brief Map between Variable typename and its constructor.
+   */
+  std::map<std::string, VariableConstructor> m_variable_map;
 };
 
 VariableRegistry &GlobalVariableRegistry();

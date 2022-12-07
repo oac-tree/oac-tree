@@ -48,14 +48,20 @@ public:
   static const std::string Type;
 
 private:
+  std::vector<Instruction*> m_instruction_list;
+
   void SetupImpl(const Procedure &proc) override;
 
   ExecutionStatus ExecuteSingleImpl(UserInterface *ui, Workspace *ws) override;
 
-  ExecutionStatus ExecuteArraySelector(std::vector<std::size_t> indices, UserInterface *ui,
-                                       Workspace *ws);
+  void ResetHook() override;
 
-  ExecutionStatus ExecuteChild(std::size_t idx, UserInterface *ui, Workspace *ws);
+  bool CreateInstructionList(UserInterface *ui, Workspace *ws);
+
+  /**
+   * @brief Calculate this instruction's status from the status of its selected child instructions.
+   */
+  ExecutionStatus CalculateCompoundStatus() const;
 };
 
 }  // namespace sequencer

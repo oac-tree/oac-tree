@@ -121,14 +121,14 @@ public:
   /**
    * @brief Get variable value.
    *
-   * @param name Variable name.
+   * @param name Variable name/field.
    */
   bool GetValue(const std::string& name, sup::dto::AnyValue& value) const;
 
   /**
    * @brief Set variable value
    *
-   * @param name Variable name.
+   * @param name Variable name/field.
    * @param value Variable value.
    */
   bool SetValue(const std::string& name, const sup::dto::AnyValue& value);
@@ -216,6 +216,8 @@ public:
   bool RegisterCallback(const std::string& name,
                         const std::function<void(const sup::dto::AnyValue&)>& cb, void* listener);
 };
+
+std::pair<std::string, std::string> SplitFieldName(const std::string &fullname);
 
 }  // namespace sequencer
 

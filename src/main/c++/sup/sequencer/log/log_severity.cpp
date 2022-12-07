@@ -19,9 +19,7 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "log_severity.h"
-
-#include <sup/sequencer/log.h>
+#include <sup/sequencer/log_severity.h>
 
 #include <map>
 
@@ -36,6 +34,16 @@ namespace sequencer
 {
 namespace log
 {
+const std::string EmergencyString = "EMERGENCY";
+const std::string AlertString = "ALERT";
+const std::string CriticalString = "CRITICAL";
+const std::string ErrorString = "ERROR";
+const std::string WarningString = "WARNING";
+const std::string NoticeString = "NOTICE";
+const std::string InfoString = "INFO";
+const std::string DebugString = "DEBUG";
+const std::string TraceString = "TRACE";
+
 std::string SeverityString(int severity)
 {
   const auto& sev_map = GetSeverityMap();
@@ -58,15 +66,15 @@ namespace
 const std::map<int, std::string>& GetSeverityMap()
 {
   static std::map<int, std::string> severity_map = {
-    { sup::sequencer::log::SUP_LOG_EMERG, sup::sequencer::log::EmergencyString},
-    { sup::sequencer::log::SUP_LOG_ALERT, sup::sequencer::log::AlertString},
-    { sup::sequencer::log::SUP_LOG_CRIT, sup::sequencer::log::CriticalString},
-    { sup::sequencer::log::SUP_LOG_ERR, sup::sequencer::log::ErrorString},
-    { sup::sequencer::log::SUP_LOG_WARNING, sup::sequencer::log::WarningString},
-    { sup::sequencer::log::SUP_LOG_NOTICE, sup::sequencer::log::NoticeString},
-    { sup::sequencer::log::SUP_LOG_INFO, sup::sequencer::log::InfoString},
-    { sup::sequencer::log::SUP_LOG_DEBUG, sup::sequencer::log::DebugString},
-    { sup::sequencer::log::SUP_LOG_TRACE, sup::sequencer::log::TraceString}
+    { sup::sequencer::log::SUP_SEQ_LOG_EMERG, sup::sequencer::log::EmergencyString},
+    { sup::sequencer::log::SUP_SEQ_LOG_ALERT, sup::sequencer::log::AlertString},
+    { sup::sequencer::log::SUP_SEQ_LOG_CRIT, sup::sequencer::log::CriticalString},
+    { sup::sequencer::log::SUP_SEQ_LOG_ERR, sup::sequencer::log::ErrorString},
+    { sup::sequencer::log::SUP_SEQ_LOG_WARNING, sup::sequencer::log::WarningString},
+    { sup::sequencer::log::SUP_SEQ_LOG_NOTICE, sup::sequencer::log::NoticeString},
+    { sup::sequencer::log::SUP_SEQ_LOG_INFO, sup::sequencer::log::InfoString},
+    { sup::sequencer::log::SUP_SEQ_LOG_DEBUG, sup::sequencer::log::DebugString},
+    { sup::sequencer::log::SUP_SEQ_LOG_TRACE, sup::sequencer::log::TraceString}
   };
   return severity_map;
 }

@@ -22,8 +22,12 @@
 #include "choice.h"
 
 #include <sup/sequencer/exceptions.h>
+#include <sup/sequencer/log_severity.h>
 #include <sup/sequencer/procedure.h>
+#include <sup/sequencer/user_interface.h>
 #include <sup/sequencer/workspace.h>
+
+#include <sup/dto/anyvalue_helper.h>
 
 namespace
 {
@@ -41,6 +45,7 @@ const std::string Choice::Type = "Choice";
 
 Choice::Choice()
   : CompoundInstruction(Choice::Type)
+  , m_instruction_list{}
 {}
 
 Choice::~Choice()
@@ -60,49 +65,100 @@ void Choice::SetupImpl(const Procedure &proc)
 
 ExecutionStatus Choice::ExecuteSingleImpl(UserInterface *ui, Workspace *ws)
 {
+  if (m_instruction_list.empty() && !CreateInstructionList(ui, ws))
+  {
+    return ExecutionStatus::FAILURE;
+  }
+  // If the index list was correctly parsed to be empty, return success
+  if (m_instruction_list.empty())
+  {
+    return ExecutionStatus::SUCCESS;
+  }
+  for (auto instruction : m_instruction_list)
+  {
+    auto child_status = instruction->GetStatus();
+    if (child_status == ExecutionStatus::SUCCESS)
+    {
+      continue;
+    }
+    if (NeedsExecute(child_status))
+    {
+      instruction->ExecuteSingle(ui, ws);
+      break;
+    }
+  }
+  return CalculateCompoundStatus();
+}
+
+void Choice::ResetHook()
+{
+  m_instruction_list.clear();
+  ResetChildren();
+}
+
+bool Choice::CreateInstructionList(UserInterface *ui, Workspace *ws)
+{
   sup::dto::AnyValue selector;
   if (!ws->GetValue(GetAttribute(SELECTOR_VARIABLE_ATTR_NAME), selector))
   {
-    return ExecutionStatus::FAILURE;
+    std::string error_message =
+      "sup::sequencer::Choice::CreateInstructionList(): could not read selector variable with name "
+      "[" + GetAttribute(SELECTOR_VARIABLE_ATTR_NAME) + "] from workspace";
+    ui->Log(log::SUP_SEQ_LOG_ERR, error_message);
+    return false;
   }
   std::vector<std::size_t> indices;
   if (!GetIndexListFromVariable(indices, selector))
   {
-    return ExecutionStatus::FAILURE;
+    auto selector_json = sup::dto::ValuesToJSONString(selector);
+    std::string error_message =
+      "sup::sequencer::Choice::CreateInstructionList(): could not parse selector variable as index "
+      "or array of indices: [" + selector_json + "]";
+    ui->Log(log::SUP_SEQ_LOG_ERR, error_message);
+    return false;
   }
-  return ExecuteArraySelector(indices, ui, ws);
-}
-
-ExecutionStatus Choice::ExecuteArraySelector(std::vector<std::size_t> indices, UserInterface *ui,
-                                             Workspace *ws)
-{
-  // TODO: change logic like in Sequence, because this will fail when child returns running
-  ExecutionStatus child_status = ExecutionStatus::SUCCESS;
+  std::vector<Instruction*> instr_list;
+  auto child_instructions = ChildInstructions();
   for (auto idx : indices)
   {
-    child_status = ExecuteChild(idx, ui, ws);
-    // continue only if success
-    if (child_status != ExecutionStatus::SUCCESS)
+    if (idx >= child_instructions.size())
     {
-      break;
+      std::string error_message =
+        "sup::sequencer::Choice::CreateInstructionList(): index [" + std::to_string(idx) + "] out "
+        "of bounds for number of child instructions [" +
+        std::to_string(child_instructions.size()) + "]";
+      ui->Log(log::SUP_SEQ_LOG_ERR, error_message);
+      return false;
     }
+    instr_list.push_back(child_instructions[idx]);
   }
-  return child_status;
+  std::swap(m_instruction_list, instr_list);
+  return true;
 }
 
-ExecutionStatus Choice::ExecuteChild(std::size_t idx, UserInterface *ui, Workspace *ws)
+ExecutionStatus Choice::CalculateCompoundStatus() const
 {
-  auto child_instructions = ChildInstructions();
-  if (idx < child_instructions.size())
+  for (auto instruction : m_instruction_list)
   {
-    auto child_instr = child_instructions[idx];
-    if (NeedsExecute(child_instr->GetStatus()))
+    auto child_status = instruction->GetStatus();
+
+    if (child_status == ExecutionStatus::SUCCESS)
     {
-      child_instr->ExecuteSingle(ui, ws);
+      continue;
     }
-    return child_instr->GetStatus();
+
+    if (child_status == ExecutionStatus::NOT_STARTED
+        || child_status == ExecutionStatus::NOT_FINISHED)
+    {
+      return ExecutionStatus::NOT_FINISHED;
+    }
+    else
+    {
+      // Forward RUNNING and FAILURE status of child instruction.
+      return child_status;
+    }
   }
-  return ExecutionStatus::FAILURE;
+  return ExecutionStatus::SUCCESS;
 }
 
 }  // namespace sequencer

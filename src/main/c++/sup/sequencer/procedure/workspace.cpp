@@ -35,8 +35,6 @@ namespace sup
 {
 namespace sequencer
 {
-static std::pair<std::string, std::string> SplitToNameField(const std::string &fullname);
-
 bool Workspace::ContainsVariableName(const std::string& name) const
 {
   if (m_var_map.find(name) == m_var_map.end())
@@ -138,7 +136,7 @@ bool Workspace::ResetVariable(const std::string& varname)
 
 bool Workspace::GetValue(const std::string& name, sup::dto::AnyValue &value) const
 {
-  auto splitname = SplitToNameField(name);
+  auto splitname = SplitFieldName(name);
   auto varname = splitname.first;
   auto fieldname = splitname.second;
 
@@ -152,7 +150,7 @@ bool Workspace::GetValue(const std::string& name, sup::dto::AnyValue &value) con
 
 bool Workspace::SetValue(const std::string& name, const sup::dto::AnyValue &value)
 {
-  auto splitname = SplitToNameField(name);
+  auto splitname = SplitFieldName(name);
   auto varname = splitname.first;
   auto fieldname = splitname.second;
 
@@ -185,9 +183,9 @@ bool Workspace::WaitForVariable(const std::string& name, double timeout_sec, boo
   return it->second->IsAvailable() == availability;
 }
 
-std::vector<const Variable *> Workspace::GetVariables() const
+std::vector<const Variable*> Workspace::GetVariables() const
 {
-  std::vector<const Variable *> result;
+  std::vector<const Variable*> result;
   std::transform(std::begin(m_var_map), std::end(m_var_map), std::back_inserter(result),
                  [](const decltype(m_var_map)::value_type &pair) { return pair.second.get(); });
   return result;
@@ -223,27 +221,27 @@ const sup::dto::AnyTypeRegistry* Workspace::GetTypeRegistry() const
   return m_type_registry.get();
 }
 
-CallbackGuard<NamedCallbackManager<const sup::dto::AnyValue &>> Workspace::GetCallbackGuard(
+CallbackGuard<NamedCallbackManager<const sup::dto::AnyValue&>> Workspace::GetCallbackGuard(
     void *listener)
 {
   return m_callbacks.GetCallbackGuard(listener);
 }
 
 bool Workspace::RegisterGenericCallback(
-    const std::function<void(const std::string &, const sup::dto::AnyValue &)> &cb,
+    const std::function<void(const std::string&, const sup::dto::AnyValue&)> &cb,
     void *listener)
 {
   return m_callbacks.RegisterGenericCallback(cb, listener);
 }
 
 bool Workspace::RegisterCallback(const std::string &name,
-                                 const std::function<void(const sup::dto::AnyValue &)> &cb,
+                                 const std::function<void(const sup::dto::AnyValue&)> &cb,
                                  void *listener)
 {
   return m_callbacks.RegisterCallback(name, cb, listener);
 }
 
-static std::pair<std::string, std::string> SplitToNameField(const std::string &fullname)
+std::pair<std::string, std::string> SplitFieldName(const std::string& fullname)
 {
   auto pos1 = fullname.find('.');
   auto pos2 = fullname.find('[');

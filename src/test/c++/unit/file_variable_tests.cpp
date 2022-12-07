@@ -130,8 +130,7 @@ TEST_F(FileVariableTest, FileSuccess)
         <Local name="severity"
             type='{"type":"uint32"}'
             value='7'/>
-        <File name="file"
-            fileName="variable.bck"/>
+        <File name="file" fileName="variable.bck"/>
     </Workspace>
 )"};
 
@@ -139,7 +138,7 @@ TEST_F(FileVariableTest, FileSuccess)
 
   auto proc = ParseProcedureString(proc_str);
 
-  ASSERT_NE(proc.get(), nullptr);
+  ASSERT_TRUE(static_cast<bool>(proc));
   ASSERT_TRUE(proc->Setup());
 
   LogUI ui;
@@ -149,8 +148,8 @@ TEST_F(FileVariableTest, FileSuccess)
   {
     proc->ExecuteSingle(&ui);
     exec = proc->GetStatus();
-  } while ((ExecutionStatus::SUCCESS != exec)
-           && (ExecutionStatus::FAILURE != exec));
+  } while ((ExecutionStatus::SUCCESS != exec) &&
+           (ExecutionStatus::FAILURE != exec));
 
   EXPECT_EQ(exec, ExecutionStatus::SUCCESS);
   EXPECT_TRUE(utils::FileExists("variable.bck"));

@@ -63,7 +63,7 @@ protected:
   /**
    * @brief Check if this compound instruction has child instructions.
    *
-   * @return true when it has chil instructions, false otherwise.
+   * @return true when it has child instructions, false otherwise.
    */
   bool HasChildren() const;
 

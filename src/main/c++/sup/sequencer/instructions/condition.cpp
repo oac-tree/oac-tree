@@ -22,6 +22,8 @@
 #include "condition.h"
 
 #include <sup/sequencer/exceptions.h>
+#include <sup/sequencer/log_severity.h>
+#include <sup/sequencer/user_interface.h>
 #include <sup/sequencer/workspace.h>
 
 #include <sup/dto/anyvalue.h>
@@ -34,7 +36,9 @@ namespace sequencer
 {
 const std::string Condition::Type = "Condition";
 
-Condition::Condition() : Instruction(Condition::Type) {}
+Condition::Condition()
+  : Instruction(Condition::Type)
+{}
 
 Condition::~Condition() = default;
 
@@ -49,16 +53,29 @@ void Condition::SetupImpl(const Procedure &proc)
   }
 }
 
-ExecutionStatus Condition::ExecuteSingleImpl(UserInterface *, Workspace *ws)
+ExecutionStatus Condition::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
 {
-  sup::dto::AnyValue var;
-  std::string varName = GetAttribute(CONDITION_VARIABLE_ATTR_NAME);
-  sup::dto::boolean result = false;
-  if (ws->GetValue(varName, var) && var.As(result))
+  auto field_name = GetAttribute(CONDITION_VARIABLE_ATTR_NAME);
+  auto var_name = SplitFieldName(field_name).first;
+  if (!ws->HasVariable(var_name))
   {
-    return result ? ExecutionStatus::SUCCESS : ExecutionStatus::FAILURE;
+    std::string error_message =
+      "sup::sequencer::Condition::ExecuteSingleImpl(): workspace does not contain condition "
+      "variable with name [" + var_name + "]";
+    ui->Log(log::SUP_SEQ_LOG_ERR, error_message);
+    return ExecutionStatus::FAILURE;
   }
-  return ExecutionStatus::FAILURE;
+  sup::dto::AnyValue var;
+  sup::dto::boolean result = false;
+  if (!ws->GetValue(field_name, var) || !var.As(result))
+  {
+    std::string warning_message =
+      "sup::sequencer::Condition::ExecuteSingleImpl(): could not parse workspace field with "
+      "name [" + field_name + "] to a boolean";
+    ui->Log(log::SUP_SEQ_LOG_WARNING, warning_message);
+    return ExecutionStatus::FAILURE;
+  }
+  return result ? ExecutionStatus::SUCCESS : ExecutionStatus::FAILURE;
 }
 
 }  // namespace sequencer

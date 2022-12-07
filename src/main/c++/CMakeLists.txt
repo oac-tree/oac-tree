@@ -21,7 +21,7 @@ install(FILES
         sup/sequencer/generic_utils.h
         sup/sequencer/instruction.h
         sup/sequencer/instruction_registry.h
-        sup/sequencer/log.h
+        sup/sequencer/log_severity.h
         sup/sequencer/named_callback_manager.h
         sup/sequencer/procedure.h
         sup/sequencer/runner.h

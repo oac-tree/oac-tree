@@ -57,5 +57,14 @@ else()
   target_link_libraries(unit-tests PRIVATE pthread GTest::gtest GTest::gtest_main GTest::gmock sup-sequencer-shared)
 endif()
 
+if (SEQUENCER_CODAC)
+  target_link_libraries(unit-tests PRIVATE sup-log)
+else()
+  find_package(sup-utils REQUIRED)
+  target_link_libraries(unit-tests PRIVATE sup-utils::sup-log)
+endif()
+
+
+
 
 gtest_discover_tests(unit-tests)

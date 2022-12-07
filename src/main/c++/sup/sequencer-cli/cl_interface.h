@@ -24,6 +24,8 @@
 
 #include <sup/sequencer/user_interface.h>
 
+#include <sup/log/default_loggers.h>
+
 namespace sup
 {
 namespace sequencer
@@ -33,10 +35,12 @@ namespace sequencer
  */
 class CLInterface : public UserInterface
 {
+public:
+  CLInterface(bool verbose = false);
+
+  ~CLInterface() override;
+
 private:
-  /**
-   * @brief See sup::sequencer::UserInterface.
-   */
   void UpdateInstructionStatusImpl(const Instruction* instruction) override;
   void VariableUpdatedImpl(const std::string& name, const sup::dto::AnyValue& value) override;
   bool PutValueImpl(const sup::dto::AnyValue& value, const std::string& description) override;
@@ -46,20 +50,11 @@ private:
   void StartSingleStepImpl() override;
   void EndSingleStepImpl() override;
   void MessageImpl(const std::string& message) override;
+  void LogImpl(int severity, const std::string& message) override;
 
   bool m_verbose;
 
-protected:
-public:
-  /**
-   * @brief Constructor.
-   */
-  CLInterface(bool verbose = false);
-
-  /**
-   * @brief Destructor.
-   */
-  ~CLInterface() override;
+  sup::log::DefaultLogger m_logger;
 };
 
 }  // namespace sequencer

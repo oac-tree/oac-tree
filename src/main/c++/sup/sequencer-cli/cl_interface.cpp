@@ -22,6 +22,7 @@
 #include "cl_interface.h"
 
 #include <sup/sequencer/log.h>
+#include <sup/sequencer/log_severity.h>
 #include <sup/sequencer/instruction.h>
 
 #include <sup/dto/anyvalue_helper.h>
@@ -37,6 +38,13 @@ namespace sup
 {
 namespace sequencer
 {
+CLInterface::CLInterface(bool verbose)
+  : m_verbose{verbose}
+  , m_logger{sup::log::CreateDefaultStdoutLogger("sequencer-cli")}
+{}
+
+CLInterface::~CLInterface() = default;
+
 void CLInterface::UpdateInstructionStatusImpl(const Instruction *instruction)
 {
   auto instruction_type = instruction->GetType();
@@ -144,9 +152,30 @@ void CLInterface::EndSingleStepImpl()
   }
 }
 
-CLInterface::CLInterface(bool verbose) : m_verbose{verbose} {}
-
-CLInterface::~CLInterface() = default;
+void CLInterface::LogImpl(int severity, const std::string& message)
+{
+  switch (severity)
+  {
+  case log::SUP_SEQ_LOG_EMERG :
+    m_logger.Emergency(message);
+    break;
+  case log::SUP_SEQ_LOG_ALERT :
+    m_logger.Alert(message);
+    break;
+  case log::SUP_SEQ_LOG_CRIT :
+    m_logger.Critical(message);
+    break;
+  case log::SUP_SEQ_LOG_ERR :
+    m_logger.Error(message);
+    break;
+  case log::SUP_SEQ_LOG_WARNING :
+    m_logger.Warning(message);
+    break;
+  default:
+    // Ignore lower levels
+    break;
+  }
+}
 
 }  // namespace sequencer
 

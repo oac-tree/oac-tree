@@ -19,7 +19,6 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "log_ui.h"
 #include "unit_test_helper.h"
 
 #include <sup/sequencer/exceptions.h>
@@ -98,7 +97,7 @@ static const std::string JSONRangeRepresentation =
 
 TEST(RegisterType, string_success)
 {
-  LogUI ui;
+  sup::UnitTestHelper::EmptyUserInterface ui;
   auto proc_str = sup::UnitTestHelper::CreateProcedureString(RegisterTypeProcedureString);
   auto proc = ParseProcedureString(proc_str);
   ASSERT_TRUE(static_cast<bool>(proc));
@@ -115,7 +114,7 @@ TEST(RegisterType, string_failed)
 TEST(RegisterType, file_success)
 {
   sup::UnitTestHelper::TemporaryTestFile json_file(JSON_FILE_NAME, JSONRangeRepresentation);
-  LogUI ui;
+  sup::UnitTestHelper::EmptyUserInterface ui;
   auto proc_str = sup::UnitTestHelper::CreateProcedureString(RegisterTypeFromFileProcedureString);
   auto proc = ParseProcedureString(proc_str);
   ASSERT_TRUE(static_cast<bool>(proc));

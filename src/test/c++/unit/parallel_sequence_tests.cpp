@@ -19,7 +19,6 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "log_ui.h"
 #include "unit_test_helper.h"
 
 #include <sup/sequencer/instructions/compound_instruction.h>
@@ -86,21 +85,21 @@ static const std::string ProcedureParallelBuiltinString =
 
 TEST(ParallelSequence, Procedure_sequence)
 {
-  LogUI ui;
+  sup::UnitTestHelper::EmptyUserInterface ui;
   auto proc = ParseProcedureString(ProcedureSequenceString);
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
 }
 
 TEST(ParallelSequence, Procedure_parallel)
 {
-  LogUI ui;
+  sup::UnitTestHelper::EmptyUserInterface ui;
   auto proc = ParseProcedureString(ProcedureParallelString);
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
 }
 
 TEST(ParallelSequence, WithBuiltinCode)
 {
-  LogUI ui;
+  sup::UnitTestHelper::EmptyUserInterface ui;
   auto proc = ParseProcedureString(ProcedureParallelBuiltinString);
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
 }

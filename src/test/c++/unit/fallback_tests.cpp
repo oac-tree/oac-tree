@@ -19,7 +19,6 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "log_ui.h"
 #include "unit_test_helper.h"
 
 #include <sup/sequencer/instruction.h>
@@ -27,6 +26,8 @@
 #include <sup/sequencer/sequence_parser.h>
 
 #include <gtest/gtest.h>
+
+using namespace sup::sequencer;
 
 // ToDo - Should implement test-specific instruction class to verify if called multiple times, or
 // called by the ForceSuccess, etc.
@@ -47,9 +48,8 @@ TEST(Fallback, Procedure_first)
     </Workspace>
 )"};
 
-  sup::sequencer::LogUI ui;
-  auto proc =
-      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
@@ -71,9 +71,8 @@ TEST(Fallback, Procedure_alternative)
     </Workspace>
 )"};
 
-  sup::sequencer::LogUI ui;
-  auto proc =
-      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
@@ -95,11 +94,10 @@ TEST(Fallback, Procedure_failure)
     </Workspace>
 )"};
 
-  sup::sequencer::LogUI ui;
-  auto proc =
-      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
-  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE));
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui, ExecutionStatus::FAILURE));
   EXPECT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 2);
 }

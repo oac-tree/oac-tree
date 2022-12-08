@@ -19,7 +19,6 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "log_ui.h"
 #include "unit_test_helper.h"
 
 #include <sup/sequencer/exceptions.h>
@@ -120,7 +119,7 @@ TEST(Include, Procedure_local)
     </Workspace>
 )"};
 
-  LogUI ui;
+  sup::UnitTestHelper::EmptyUserInterface ui;
   auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
@@ -140,7 +139,7 @@ TEST(Include, Procedure_param)
     </Workspace>
 )"};
 
-  LogUI ui;
+  sup::UnitTestHelper::EmptyUserInterface ui;
   auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
@@ -162,7 +161,7 @@ incr="2"/>
     </Workspace>
 )"};
 
-  LogUI ui;
+  sup::UnitTestHelper::EmptyUserInterface ui;
   auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
@@ -182,7 +181,7 @@ TEST(Include, Procedure_undefined)
     </Workspace>
 )"};
 
-  LogUI ui;
+  sup::UnitTestHelper::EmptyUserInterface ui;
   auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
@@ -213,7 +212,7 @@ TEST(Include, Procedure_extern)
     </Workspace>
 )"};
 
-  LogUI ui;
+  sup::UnitTestHelper::EmptyUserInterface ui;
   auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(procedure_body));
   ASSERT_TRUE(proc.get() != nullptr);
   ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
@@ -261,7 +260,7 @@ TEST(Include, Procedure_nested)
 
   auto proc_str = sup::UnitTestHelper::CreateProcedureString(main_body);
 
-  LogUI ui;
+  sup::UnitTestHelper::EmptyUserInterface ui;
   auto proc = ParseProcedureString(proc_str);
 
   ASSERT_TRUE(proc.get() != nullptr);

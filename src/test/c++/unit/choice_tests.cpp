@@ -19,7 +19,6 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "log_ui.h"
 #include "unit_test_helper.h"
 
 #include <sup/sequencer/variables/local_variable.h>
@@ -27,7 +26,6 @@
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/instruction.h>
 #include <sup/sequencer/instruction_registry.h>
-#include <sup/sequencer/log.h>
 #include <sup/sequencer/sequence_parser.h>
 #include <sup/sequencer/workspace.h>
 
@@ -88,7 +86,7 @@ TEST(Choice, Default)  // Static initialisation
     varX->AddAttribute("value", testTable[i][1]);
     proc->AddVariable("sel", varX.release());
 
-    LogUI ui;
+    sup::UnitTestHelper::EmptyUserInterface ui;
     proc->Setup();
     while ((proc->GetStatus() != ExecutionStatus::SUCCESS)
            && (proc->GetStatus() != ExecutionStatus::FAILURE))

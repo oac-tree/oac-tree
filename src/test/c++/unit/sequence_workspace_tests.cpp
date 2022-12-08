@@ -21,12 +21,10 @@
 
 #include <sup/sequencer/workspace.h>
 
-#include "log_ui.h"
 #include "unit_test_helper.h"
 
 #include <sup/sequencer/instruction.h>
 #include <sup/sequencer/instruction_registry.h>
-#include <sup/sequencer/log.h>
 #include <sup/sequencer/sequence_parser.h>
 
 #include <gtest/gtest.h>
@@ -72,7 +70,7 @@ TEST(SequenceWorkspace, CopyVariable)
   ASSERT_TRUE(proc.get() != nullptr);
   EXPECT_TRUE(proc->Setup());
 
-  LogUI ui;
+  sup::UnitTestHelper::EmptyUserInterface ui;
   proc->ExecuteSingle(&ui);
   EXPECT_EQ(proc->GetStatus(), ExecutionStatus::SUCCESS);
 }

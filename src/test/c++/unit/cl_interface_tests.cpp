@@ -23,24 +23,31 @@
 
 #include "std_redirectors.h"
 
+#include <sup/sequencer/log_severity.h>
 #include <sup/sequencer/instruction.h>
 #include <sup/sequencer/instruction_registry.h>
-#include <sup/sequencer/log.h>
+
+#include <sup/log/basic_logger.h>
 
 #include <gtest/gtest.h>
 
 #include <cstring>
 #include <memory>
 #include <sstream>
+#include <tuple>
+#include <vector>
 
 using namespace sup::sequencer;
 
 class CLInterfaceTest : public ::testing::Test
 {
 protected:
+  using LogEntry = std::tuple<int, std::string, std::string>;
+
   CLInterfaceTest();
   virtual ~CLInterfaceTest();
 
+  std::vector<LogEntry> m_log_entries;
   CLInterface cli;
   CLInterface cli_verbose;
   std::unique_ptr<Instruction> wait;
@@ -48,44 +55,36 @@ protected:
 
 TEST_F(CLInterfaceTest, UpdateInstructionStatus)
 {
-  std::ostringstream output;
-  CoutRedirector redirect(output);
-  EXPECT_TRUE(output.str().empty());
+  EXPECT_TRUE(m_log_entries.empty());
   cli.UpdateInstructionStatus(wait.get());
-  EXPECT_TRUE(output.str().empty());
+  EXPECT_TRUE(m_log_entries.empty());
   cli_verbose.UpdateInstructionStatus(wait.get());
-  EXPECT_FALSE(output.str().empty());
+  EXPECT_FALSE(m_log_entries.empty());
 }
 
 TEST_F(CLInterfaceTest, VariableUpdated)
 {
-  std::ostringstream output;
-  CoutRedirector redirect(output);
   sup::dto::AnyValue val(sup::dto::UnsignedInteger32Type, 1234);
   std::string name = "TestUpdated";
-  EXPECT_TRUE(output.str().empty());
+  EXPECT_TRUE(m_log_entries.empty());
   cli.VariableUpdated(name, val);
-  EXPECT_TRUE(output.str().empty());
+  EXPECT_TRUE(m_log_entries.empty());
   cli_verbose.VariableUpdated(name, val);
-  EXPECT_FALSE(output.str().empty());
+  EXPECT_FALSE(m_log_entries.empty());
 }
 
 TEST_F(CLInterfaceTest, StartSingleStep)
 {
-  std::ostringstream output;
-  CoutRedirector redirect(output);
-  EXPECT_TRUE(output.str().empty());
+  EXPECT_TRUE(m_log_entries.empty());
   cli_verbose.StartSingleStep();
-  EXPECT_FALSE(output.str().empty());
+  EXPECT_FALSE(m_log_entries.empty());
 }
 
 TEST_F(CLInterfaceTest, EndSingleStep)
 {
-  std::ostringstream output;
-  CoutRedirector redirect(output);
-  EXPECT_TRUE(output.str().empty());
+  EXPECT_TRUE(m_log_entries.empty());
   cli_verbose.EndSingleStep();
-  EXPECT_FALSE(output.str().empty());
+  EXPECT_FALSE(m_log_entries.empty());
 }
 
 TEST_F(CLInterfaceTest, GetUserValue)
@@ -120,22 +119,26 @@ TEST_F(CLInterfaceTest, GetUserValueString)
 
 TEST_F(CLInterfaceTest, GetUserValueParseError)
 {
+  EXPECT_TRUE(m_log_entries.empty());
   {
     sup::dto::AnyValue val(sup::dto::UnsignedInteger32Type);
     std::istringstream input("twenty-four");
     CinRedirector redirect(input);
     EXPECT_FALSE(cli.GetUserValue(val));
+    EXPECT_EQ(m_log_entries.size(), 1);
   }
   {
     sup::dto::AnyValue val(sup::dto::BooleanType);
     std::istringstream input("nottrue");
     CinRedirector redirect(input);
     EXPECT_FALSE(cli.GetUserValue(val));
+    EXPECT_EQ(m_log_entries.size(), 2);
   }
 }
 
 TEST_F(CLInterfaceTest, GetUserValueUnsupportedType)
 {
+  EXPECT_TRUE(m_log_entries.empty());
   sup::dto::AnyType test_type{{
     {"timestamp", sup::dto::UnsignedInteger64Type},
     {"count", sup::dto::UnsignedInteger16Type}
@@ -144,6 +147,7 @@ TEST_F(CLInterfaceTest, GetUserValueUnsupportedType)
   std::istringstream input("17");
   CinRedirector redirect(input);
   EXPECT_FALSE(cli.GetUserValue(val));
+  EXPECT_EQ(m_log_entries.size(), 1);
 }
 
 TEST_F(CLInterfaceTest, GetUserChoice)
@@ -157,20 +161,24 @@ TEST_F(CLInterfaceTest, GetUserChoice)
 
 TEST_F(CLInterfaceTest, GetUserChoiceParseError)
 {
+  EXPECT_TRUE(m_log_entries.empty());
   std::vector<std::string> choices = {"one", "two"};
   std::istringstream input("one");
   CinRedirector redirect(input);
   auto choice = cli.GetUserChoice(choices);
   EXPECT_EQ(choice, -1);
+  EXPECT_EQ(m_log_entries.size(), 1);
 }
 
 TEST_F(CLInterfaceTest, GetUserChoiceOutOfBounds)
 {
+  EXPECT_TRUE(m_log_entries.empty());
   std::vector<std::string> choices = {"one", "two"};
   std::istringstream input("2");
   CinRedirector redirect(input);
   auto choice = cli.GetUserChoice(choices);
   EXPECT_EQ(choice, -1);
+  EXPECT_EQ(m_log_entries.size(), 1);
 }
 
 TEST_F(CLInterfaceTest, PutValue)
@@ -192,8 +200,20 @@ TEST_F(CLInterfaceTest, Message)
 }
 
 CLInterfaceTest::CLInterfaceTest()
-    : cli{}, cli_verbose{true}, wait{GlobalInstructionRegistry().Create("Wait")}
-{
-}
+    : m_log_entries{}
+    , cli{sup::log::BasicLogger([this](int severity, const std::string& source,
+                                  const std::string& message)
+                                  {
+                                   m_log_entries.emplace_back(severity, source, message);
+                                  },
+                                "CLInterfaceTest", log::SUP_SEQ_LOG_WARNING)}
+    , cli_verbose{sup::log::BasicLogger([this](int severity, const std::string& source,
+                                          const std::string& message)
+                                          {
+                                           m_log_entries.emplace_back(severity, source, message);
+                                          },
+                                        "CLInterfaceTest", log::SUP_SEQ_LOG_INFO)}
+    , wait{GlobalInstructionRegistry().Create("Wait")}
+{}
 
 CLInterfaceTest::~CLInterfaceTest() {}

@@ -24,7 +24,7 @@
 
 #include <sup/sequencer/user_interface.h>
 
-#include <sup/log/default_loggers.h>
+#include <sup/log/basic_logger.h>
 
 namespace sup
 {
@@ -36,7 +36,7 @@ namespace sequencer
 class CLInterface : public UserInterface
 {
 public:
-  CLInterface(bool verbose = false);
+  CLInterface(const sup::log::BasicLogger& logger);
 
   ~CLInterface() override;
 
@@ -52,9 +52,7 @@ private:
   void MessageImpl(const std::string& message) override;
   void LogImpl(int severity, const std::string& message) override;
 
-  bool m_verbose;
-
-  sup::log::DefaultLogger m_logger;
+  sup::log::BasicLogger m_logger;
 };
 
 }  // namespace sequencer

@@ -49,7 +49,8 @@ namespace log
  * network variable that is not connected. The aim of the instruction might have been to check
  * connectivity of the variable, so this is not an error condition.
  *
- * All levels higher than SUP_SEQ_LOG_WARNING are informational only and are advised not to be used.
+ * All levels higher than SUP_SEQ_LOG_WARNING are informational only and their use should be
+ * restricted to avoid logging noise.
 */
 enum Severity
 {

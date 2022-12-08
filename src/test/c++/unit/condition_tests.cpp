@@ -21,7 +21,6 @@
 
 #include <sup/sequencer/instructions/condition.h>
 
-#include "log_ui.h"
 #include "unit_test_helper.h"
 
 #include <sup/sequencer/variables/local_variable.h>
@@ -78,13 +77,13 @@ TEST(Condition, Default)
   sup::UnitTestHelper::TemporaryTestFile test_file(
       file_name, sup::UnitTestHelper::CreateProcedureString(body));
 
-  auto proc = sup::sequencer::ParseProcedureFile(file_name);
+  auto proc = ParseProcedureFile(file_name);
   ASSERT_TRUE(proc.get() != nullptr);
   ASSERT_TRUE(proc->Setup());
 
-  LogUI ui;
+  sup::UnitTestHelper::EmptyUserInterface ui;
   proc->ExecuteSingle(&ui);
-  ASSERT_EQ(proc->GetStatus(), ExecutionStatus::SUCCESS);
+  EXPECT_EQ(proc->GetStatus(), ExecutionStatus::SUCCESS);
 }
 
 TEST(Condition, DifferentTypes)
@@ -109,7 +108,7 @@ TEST(Condition, DifferentTypes)
 
     if (status)
     {
-      LogUI ui;
+      sup::UnitTestHelper::EmptyUserInterface ui;
       proc->PushInstruction(myCondNode.release());
       proc->Setup();
       proc->ExecuteSingle(&ui);
@@ -128,7 +127,7 @@ TEST(Condition, DifferentTypes)
     i++;
   }
 
-  ASSERT_TRUE(status);
+  EXPECT_TRUE(status);
 }
 
 TEST(Condition, Setup)
@@ -154,10 +153,9 @@ TEST(Condition, NonScalarVariable_success)
     </Workspace>
 )"};
 
-  sup::sequencer::LogUI ui;
-  auto proc =
-      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
-  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
 }
 
 TEST(Condition, NonScalarVariable_failure)
@@ -173,11 +171,9 @@ TEST(Condition, NonScalarVariable_failure)
     </Workspace>
 )"};
 
-  sup::sequencer::LogUI ui;
-  auto proc =
-      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
-  ASSERT_TRUE(
-      sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE));
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui, ExecutionStatus::FAILURE));
 }
 
 TEST(Condition, NoSuchVariable_name)
@@ -190,11 +186,9 @@ TEST(Condition, NoSuchVariable_name)
     </Workspace>
 )"};
 
-  sup::sequencer::LogUI ui;
-  auto proc =
-      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
-  ASSERT_TRUE(
-      sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE));
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui, ExecutionStatus::FAILURE));
 }
 
 TEST(Condition, NoSuchVariable_attr)
@@ -210,9 +204,7 @@ TEST(Condition, NoSuchVariable_attr)
     </Workspace>"
 )"};
 
-  sup::sequencer::LogUI ui;
-  auto proc =
-      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
-  ASSERT_TRUE(
-      sup::UnitTestHelper::TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE));
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui, ExecutionStatus::FAILURE));
 }

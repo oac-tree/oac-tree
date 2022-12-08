@@ -23,7 +23,6 @@
 
 #include <sup/sequencer/instruction.h>
 #include <sup/sequencer/instruction_registry.h>
-#include <sup/sequencer/log.h>
 #include <sup/sequencer/workspace.h>
 
 #include <gtest/gtest.h>

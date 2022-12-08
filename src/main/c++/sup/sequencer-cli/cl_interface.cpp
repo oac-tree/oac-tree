@@ -21,10 +21,10 @@
 
 #include "cl_interface.h"
 
-#include <sup/sequencer/log.h>
 #include <sup/sequencer/log_severity.h>
 #include <sup/sequencer/instruction.h>
 
+#include <sup/dto/anytype_helper.h>
 #include <sup/dto/anyvalue_helper.h>
 
 #include <cstring>
@@ -38,38 +38,24 @@ namespace sup
 {
 namespace sequencer
 {
-CLInterface::CLInterface(bool verbose)
-  : m_verbose{verbose}
-  , m_logger{sup::log::CreateDefaultStdoutLogger("sequencer-cli")}
+CLInterface::CLInterface(const sup::log::BasicLogger& logger)
+  : m_logger{logger}
 {}
 
 CLInterface::~CLInterface() = default;
 
 void CLInterface::UpdateInstructionStatusImpl(const Instruction *instruction)
 {
-  auto instruction_type = instruction->GetType();
-  auto instruction_name = instruction->GetName();
-  auto status = instruction->GetStatus();
-
-  if (m_verbose)
-  {
-    std::cout << "Instruction: (" << instruction_type << ":" << instruction_name << ") : ";
-    std::cout << StatusToString(status) << std::endl;
-  }
+  std::string info_message = "Instruction (" + instruction->GetType() + ":" +
+    instruction->GetName() + ") : " + StatusToString(instruction->GetStatus());
+  m_logger.LogMessage(log::SUP_SEQ_LOG_INFO, info_message);
 }
 
 void CLInterface::VariableUpdatedImpl(const std::string& name, const sup::dto::AnyValue& value)
 {
-  if (!m_verbose)
-  {
-    return;
-  }
-  std::cout << "Variable (" << name << ") updated: ";
   std::string json_rep = sup::dto::ValuesToJSONString(value);
-  if (!json_rep.empty())
-  {
-    std::cout << json_rep << std::endl;
-  }
+  std::string info_message = "Variable (" + name + ") updated:" + json_rep;
+  m_logger.LogMessage(log::SUP_SEQ_LOG_INFO, info_message);
 }
 
 bool CLInterface::PutValueImpl(const sup::dto::AnyValue &value, const std::string &description)
@@ -88,20 +74,26 @@ bool CLInterface::GetUserValueImpl(sup::dto::AnyValue &value, const std::string 
 {
   if (!sup::dto::IsScalarValue(value))
   {
-    log::Warning("CLInterface::GetUserValueImpl(value, '%s') only supports scalar values..",
-                description.c_str());
+    auto json_type = sup::dto::AnyTypeToJSONString(value.GetType());
+    std::string error_message =
+      "sup::sequencer::CLInterface::GetUserValueImpl(): only scalar values are supported, "
+      "requested type was [" + json_type + "]";
+    m_logger.LogMessage(log::SUP_SEQ_LOG_ERR, error_message);
     return false;
   }
   std::cout << description << " (" << value.GetTypeName() << "): ";
   std::string input;
   std::getline(std::cin, input);
-  bool result = ParseStringToScalarAnyvalue(value, input);
-  if (!result)
+  if (!ParseStringToScalarAnyvalue(value, input))
   {
-    log::Warning("CLInterface::GetUserValueImpl(value, '%s') could not parse '%s' into value..",
-                input.c_str());
+    auto json_type = sup::dto::AnyTypeToJSONString(value.GetType());
+    std::string error_message =
+      "sup::sequencer::CLInterface::GetUserValueImpl(): user provided value [" + input +
+      "] could not be parsed to type [" + json_type + "]";
+    m_logger.LogMessage(log::SUP_SEQ_LOG_ERR, error_message);
+    return false;
   }
-  return result;
+  return true;
 }
 
 int CLInterface::GetUserChoiceImpl(const std::vector<std::string> &choices,
@@ -122,9 +114,20 @@ int CLInterface::GetUserChoiceImpl(const std::vector<std::string> &choices,
   std::getline(std::cin, input_str);
   std::istringstream istr(input_str);
   istr >> input;
-  if (istr.fail() || input < 0 || input >= choices.size())
+  if (istr.fail())
   {
-    log::Warning("CLInterface::GetUserChoiceImpl() - invalid choice");
+    std::string error_message =
+      "sup::sequencer::CLInterface::GetUserChoiceImpl(): user provided value [" + input_str +
+      "] could not be parsed to integer";
+    m_logger.LogMessage(log::SUP_SEQ_LOG_ERR, error_message);
+    return -1;
+  }
+  if (input < 0 || input >= choices.size())
+  {
+    std::string error_message =
+      "sup::sequencer::CLInterface::GetUserChoiceImpl(): user provided value [" +
+      std::to_string(input) + "] must be in the range [0, " + std::to_string(choices.size()) + ")";
+    m_logger.LogMessage(log::SUP_SEQ_LOG_ERR, error_message);
     return -1;
   }
   std::cout << choices[input] << " selected" << std::endl;
@@ -133,10 +136,8 @@ int CLInterface::GetUserChoiceImpl(const std::vector<std::string> &choices,
 
 void CLInterface::StartSingleStepImpl()
 {
-  if (m_verbose)
-  {
-    std::cout << "Start single execution step" << std::endl;
-  }
+  std::string info_message = "Start single execution step";
+  m_logger.LogMessage(log::SUP_SEQ_LOG_INFO, info_message);
 }
 
 void CLInterface::MessageImpl(const std::string& message)
@@ -146,35 +147,13 @@ void CLInterface::MessageImpl(const std::string& message)
 
 void CLInterface::EndSingleStepImpl()
 {
-  if (m_verbose)
-  {
-    std::cout << "End single execution step" << std::endl;
-  }
+  std::string info_message = "End single execution step";
+  m_logger.LogMessage(log::SUP_SEQ_LOG_INFO, info_message);
 }
 
 void CLInterface::LogImpl(int severity, const std::string& message)
 {
-  switch (severity)
-  {
-  case log::SUP_SEQ_LOG_EMERG :
-    m_logger.Emergency(message);
-    break;
-  case log::SUP_SEQ_LOG_ALERT :
-    m_logger.Alert(message);
-    break;
-  case log::SUP_SEQ_LOG_CRIT :
-    m_logger.Critical(message);
-    break;
-  case log::SUP_SEQ_LOG_ERR :
-    m_logger.Error(message);
-    break;
-  case log::SUP_SEQ_LOG_WARNING :
-    m_logger.Warning(message);
-    break;
-  default:
-    // Ignore lower levels
-    break;
-  }
+  m_logger.LogMessage(severity, message);
 }
 
 }  // namespace sequencer
@@ -191,8 +170,6 @@ bool ParserFunctionT(sup::dto::AnyValue &value, const std::string &str)
   istr >> val;
   if (istr.fail())
   {
-    sup::sequencer::log::Warning("ParseStringToScalarAnyvalue() - could not parse ('%s') in type ('%s)", str.c_str(),
-                value.GetTypeName());
     return false;
   }
   value = val;
@@ -211,9 +188,6 @@ bool ParserFunctionT<sup::dto::boolean>(sup::dto::AnyValue &value, const std::st
   istr >> std::boolalpha >> val;
   if (istr.fail())
   {
-    sup::sequencer::log::Warning(
-      "ParseStringToScalarAnyvalue() - could not parse ('%s') in type ('%s)", str.c_str(),
-       value.GetTypeName());
     return false;
   }
   value = val;

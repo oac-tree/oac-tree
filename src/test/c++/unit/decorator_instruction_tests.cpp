@@ -21,7 +21,6 @@
 
 #include <sup/sequencer/instructions/decorator_instruction.h>
 
-#include "log_ui.h"
 #include "unit_test_helper.h"
 
 #include <sup/sequencer/instructions/wait.h>
@@ -86,7 +85,7 @@ TEST_F(DecoratorInstructionTest, TakeChild)
 
 TEST_F(DecoratorInstructionTest, ChildInstructions)
 {
-  auto registry = sup::sequencer::GlobalInstructionRegistry();
+  auto registry = GlobalInstructionRegistry();
   auto instruction = GlobalInstructionRegistry().Create("ForceSuccess");
   auto decorator = dynamic_cast<DecoratorInstruction*>(instruction.get());
   ASSERT_TRUE(decorator != nullptr);
@@ -99,8 +98,8 @@ TEST_F(DecoratorInstructionTest, ChildInstructions)
 
 TEST_F(DecoratorInstructionTest, ForceSuccess_success)
 {
-  sup::sequencer::LogUI ui;
-  auto proc = sup::sequencer::ParseProcedureString(
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
       "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
       "           name=\"Trivial procedure for testing purposes\"\n"
@@ -120,8 +119,8 @@ TEST_F(DecoratorInstructionTest, ForceSuccess_success)
 
 TEST_F(DecoratorInstructionTest, ForceSuccess_failure)
 {
-  sup::sequencer::LogUI ui;
-  auto proc = sup::sequencer::ParseProcedureString(
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
       "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
       "           name=\"Trivial procedure for testing purposes\"\n"
@@ -143,8 +142,8 @@ TEST_F(DecoratorInstructionTest, ForceSuccess_failure)
 
 TEST_F(DecoratorInstructionTest, Inverter_success)
 {
-  sup::sequencer::LogUI ui;
-  auto proc = sup::sequencer::ParseProcedureString(
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
       "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
       "           name=\"Trivial procedure for testing purposes\"\n"
@@ -166,8 +165,8 @@ TEST_F(DecoratorInstructionTest, Inverter_success)
 
 TEST_F(DecoratorInstructionTest, Inverter_failure)
 {
-  sup::sequencer::LogUI ui;
-  auto proc = sup::sequencer::ParseProcedureString(
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
       "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
       "           name=\"Trivial procedure for testing purposes\"\n"
@@ -187,8 +186,8 @@ TEST_F(DecoratorInstructionTest, Inverter_failure)
 
 TEST_F(DecoratorInstructionTest, BaseClass_halt)
 {
-  sup::sequencer::LogUI ui;
-  auto proc = sup::sequencer::ParseProcedureString(
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
       "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
       "           name=\"Trivial procedure for testing purposes\"\n"

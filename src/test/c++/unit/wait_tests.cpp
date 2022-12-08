@@ -21,7 +21,6 @@
 
 #include <sup/sequencer/instructions/wait.h>
 
-#include "log_ui.h"
 #include "unit_test_helper.h"
 
 #include <sup/sequencer/exceptions.h>
@@ -64,7 +63,7 @@ TEST(Wait, Registration)
 
 TEST(Wait, Procedure_success)
 {
-  LogUI ui;
+  sup::UnitTestHelper::EmptyUserInterface ui;
   auto proc = ParseProcedureString(
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
       "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
@@ -80,7 +79,7 @@ TEST(Wait, Procedure_success)
 
 TEST(Wait, SetupImpl_throw)
 {
-  LogUI ui;
+  sup::UnitTestHelper::EmptyUserInterface ui;
   auto proc = ParseProcedureString(
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
       "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"

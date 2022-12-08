@@ -22,28 +22,21 @@
 #include "cl_interface.h"
 
 #include <sup/sequencer/generic_utils.h>
-#include <sup/sequencer/log.h>
 #include <sup/sequencer/log_severity.h>
 #include <sup/sequencer/runner.h>
 #include <sup/sequencer/sequence_parser.h>
 
+#include <sup/log/default_loggers.h>
+
 #include <algorithm>
 #include <iostream>
 
-namespace
-{
-enum VerbosityLevels
-{
-  kSilent,
-  kMinimal,
-  kInfo
-};
-}  // namespace
+using namespace sup::sequencer;
 
 bool IsVerboseOption(const char* option);
 bool HasHelpOption(const std::vector<std::string>& arguments);
 std::string GetFileName(const std::vector<std::string>& arguments);
-int GetVerbosityLevel(const std::vector<std::string>& arguments);
+int GetSeverityLevel(const std::vector<std::string>& arguments);
 
 void print_usage(const std::string& prog_name)
 {
@@ -71,37 +64,33 @@ int main(int argc, char* argv[])
     print_usage(arguments.at(0));
     return 0;
   }
-  if (!sup::sequencer::utils::FileExists(filename.c_str()))
+  auto severity = GetSeverityLevel(arguments);
+
+  sup::log::BasicLogger logger(sup::log::DefaultStdoutLogMessage, "sequencer-cli", severity);
+  if (!utils::FileExists(filename))
   {
-    sup::sequencer::log::Error("sequencer-cli: file not found <%s>", filename.c_str());
+    std::string error_message = "main(): Procedure file not found [" + filename + "]";
+    logger.LogMessage(log::SUP_SEQ_LOG_ERR, error_message);
     return 1;
   }
 
-  auto verbosity = GetVerbosityLevel(arguments);
-  if (verbosity > 0)
-  {
-    sup::sequencer::log::SetStdOut();
-    sup::sequencer::log::SetMaxSeverity(verbosity == kMinimal ?
-                                        sup::sequencer::log::SUP_SEQ_LOG_NOTICE :
-                                        sup::sequencer::log::SUP_SEQ_LOG_DEBUG);
-  }
-
-  auto proc = sup::sequencer::ParseProcedureFile(filename.c_str());
+  auto proc = ParseProcedureFile(filename);
   if (!proc)
   {
-    sup::sequencer::log::Error("sequencer-cli couldn't parse file <%s>", filename.c_str());
+    std::string error_message = "main(): could not parse procedure file [" + filename + "]";
+    logger.LogMessage(log::SUP_SEQ_LOG_ERR, error_message);
     return 1;
   }
 
   if (!proc->Setup())
   {
-    sup::sequencer::log::Error("sequencer-cli couldn't setup the parsed procedure from file: <%s>",
-              filename.c_str());
+    std::string error_message = "main(): could not setup procedure from file [" + filename + "]";
+    logger.LogMessage(log::SUP_SEQ_LOG_ERR, error_message);
     return 1;
   }
 
-  sup::sequencer::CLInterface ui(verbosity > 0);
-  sup::sequencer::Runner runner(&ui);
+  CLInterface ui(logger);
+  Runner runner(&ui);
   runner.SetProcedure(proc.get());
   runner.ExecuteProcedure();
   proc->Reset();
@@ -129,18 +118,22 @@ std::string GetFileName(const std::vector<std::string>& arguments)
   return filename.find_first_of("-") == 0 ? "" : filename;
 }
 
-//! Returns requested verbosity level.
+//! Returns requested severity level.
 
-int GetVerbosityLevel(const std::vector<std::string>& arguments)
+int GetSeverityLevel(const std::vector<std::string>& arguments)
 {
   static std::map<std::string, int> verbosity_map = {
-      {"-v", kMinimal}, {"--verbose", kMinimal}, {"-vv", kInfo}};
+      {"-v", log::SUP_SEQ_LOG_WARNING},
+      {"--verbose", log::SUP_SEQ_LOG_WARNING},
+      {"-vv", log::SUP_SEQ_LOG_INFO}
+  };
 
   // find position of file argument
   auto on_argument = [](const std::string& str)
   { return str == "-v" || str == "--verbose" || str == "-vv"; };
   auto it = std::find_if(arguments.begin(), arguments.end(), on_argument);
 
-  int result = it < arguments.end() ? verbosity_map[*it] : kSilent;
+  int result = (it == arguments.end()) ? log::SUP_SEQ_LOG_ERR
+                                       : verbosity_map[*it];
   return result;
 }

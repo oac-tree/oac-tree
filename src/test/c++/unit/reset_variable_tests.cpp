@@ -19,7 +19,6 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "log_ui.h"
 #include "unit_test_helper.h"
 
 #include <sup/sequencer/exceptions.h>
@@ -56,7 +55,7 @@ TEST(ResetVariable, CopyWithReset)
     </Workspace>
 )"};
 
-  LogUI ui;
+  sup::UnitTestHelper::EmptyUserInterface ui;
   auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
@@ -77,7 +76,7 @@ TEST(ResetVariable, CopyWithoutReset)
     </Workspace>
 )"};
 
-  LogUI ui;
+  sup::UnitTestHelper::EmptyUserInterface ui;
   auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);

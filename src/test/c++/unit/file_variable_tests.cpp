@@ -19,7 +19,6 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "log_ui.h"
 #include "unit_test_helper.h"
 
 #include <sup/sequencer/exceptions.h>
@@ -63,7 +62,7 @@ TEST_F(FileVariableTest, FileWrite)
   ASSERT_TRUE(proc.get() != nullptr);
   ASSERT_TRUE(proc->Setup());
 
-  LogUI ui;
+  sup::UnitTestHelper::EmptyUserInterface ui;
   proc->ExecuteSingle(&ui);
   EXPECT_EQ(proc->GetStatus(), ExecutionStatus::SUCCESS);
 
@@ -141,7 +140,7 @@ TEST_F(FileVariableTest, FileSuccess)
   ASSERT_TRUE(static_cast<bool>(proc));
   ASSERT_TRUE(proc->Setup());
 
-  LogUI ui;
+  sup::UnitTestHelper::EmptyUserInterface ui;
   ExecutionStatus exec = ExecutionStatus::FAILURE;
 
   do

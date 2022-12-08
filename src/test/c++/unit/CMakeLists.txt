@@ -2,7 +2,6 @@ add_executable(unit-tests)
 
 target_sources(unit-tests
     PRIVATE
-        ${CMAKE_CURRENT_LIST_DIR}/log_ui.cpp
         ${CMAKE_CURRENT_LIST_DIR}/attribute_map_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/choice_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/cl_interface_tests.cpp

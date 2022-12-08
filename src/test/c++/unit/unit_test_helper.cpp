@@ -24,7 +24,6 @@
 #include <sup/sequencer/generic_utils.h>
 #include <sup/sequencer/instruction.h>
 #include <sup/sequencer/instruction_registry.h>
-#include <sup/sequencer/log.h>
 #include <sup/sequencer/procedure.h>
 #include <sup/sequencer/user_interface.h>
 

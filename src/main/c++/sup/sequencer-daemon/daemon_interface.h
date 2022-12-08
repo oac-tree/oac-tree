@@ -24,6 +24,8 @@
 
 #include <sup/sequencer/user_interface.h>
 
+#include <sup/log/default_loggers.h>
+
 namespace sup
 {
 namespace sequencer
@@ -33,10 +35,12 @@ namespace sequencer
  */
 class DaemonInterface : public UserInterface
 {
+public:
+  DaemonInterface(const sup::log::DefaultLogger& logger);
+
+  ~DaemonInterface() override;
+
 private:
-  /**
-   * @brief See sup::sequencer::UserInterface.
-   */
   void UpdateInstructionStatusImpl(const Instruction* instruction) override;
   bool PutValueImpl(const sup::dto::AnyValue& value, const std::string& description) override;
   bool GetUserValueImpl(sup::dto::AnyValue& value, const std::string& description) override;
@@ -45,20 +49,9 @@ private:
   void StartSingleStepImpl() override;
   void EndSingleStepImpl() override;
   void MessageImpl(const std::string& message) override;
+  void LogImpl(int severity, const std::string& message) override;
 
-  bool _log_enabled;
-
-protected:
-public:
-  /**
-   * @brief Constructor.
-   */
-  DaemonInterface(bool log_enabled = false);
-
-  /**
-   * @brief Destructor.
-   */
-  ~DaemonInterface() override;
+  sup::log::DefaultLogger m_logger;
 };
 
 }  // namespace sequencer

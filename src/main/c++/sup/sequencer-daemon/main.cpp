@@ -22,13 +22,17 @@
 #include "daemon_interface.h"
 
 #include <sup/sequencer/generic_utils.h>
-#include <sup/sequencer/log.h>
+#include <sup/sequencer/log_severity.h>
 #include <sup/sequencer/runner.h>
 #include <sup/sequencer/sequence_parser.h>
+
+#include <sup/log/default_loggers.h>
 
 #include <iostream>
 #include <string>
 #include <string.h>
+
+using namespace sup::sequencer;
 
 struct DaemonParams
 {
@@ -64,39 +68,49 @@ void print_usage()
 int main(int argc, char* argv[])
 {
   auto params = ParseCommandLineArgs(argc, argv);
+
   if (params.print_usage)
   {
     print_usage();
     return params.exit_code;
   }
 
+  // Create appropriate logger object
+  int severity_level = params.logging ? log::SUP_SEQ_LOG_INFO
+                                      : log::SUP_SEQ_LOG_ERR;
+  auto logger = sup::log::CreateDefaultSysLogger("sequencer-daemon");
+  logger.SetMaxSeverity(severity_level);
+
   if (params.filepath.empty())
   {
-    sup::sequencer::log::Warning("sequencer-daemon called without filename");
+    logger.Error("main(): no filename provided in command line arguments");
     return 1;
   }
-  if (!sup::sequencer::utils::FileExists(params.filepath))
+  if (!utils::FileExists(params.filepath))
   {
-    sup::sequencer::log::Error("sequencer-daemon: file not found <%s>", params.filepath.c_str());
+    std::string error_message = "main(): file not found [" + params.filepath + "]";
+    logger.Error(error_message);
     return 1;
   }
 
-  auto proc = sup::sequencer::ParseProcedureFile(params.filepath);
+  auto proc = ParseProcedureFile(params.filepath);
   if (!proc)
   {
-    sup::sequencer::log::Error("sequencer-daemon couldn't parse file <%s>", params.filepath.c_str());
+    std::string error_message = "main(): could not parse procedure file [" + params.filepath + "]";
+    logger.Error(error_message);
     return 1;
   }
 
   if (!proc->Setup())
   {
-    sup::sequencer::log::Error("sequencer-daemon couldn't setup the parsed procedure from file: <%s>",
-              params.filepath.c_str());
+    std::string error_message = "main(): could not setup procedure from file [" +
+      params.filepath + "]";
+    logger.Error(error_message);
     return 1;
   }
 
-  sup::sequencer::DaemonInterface ui(params.logging);
-  sup::sequencer::Runner runner(&ui);
+  DaemonInterface ui(logger);
+  Runner runner(&ui);
   runner.SetProcedure(proc.get());
   runner.ExecuteProcedure();
   proc->Reset();

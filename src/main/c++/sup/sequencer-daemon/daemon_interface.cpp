@@ -21,88 +21,106 @@
 
 #include "daemon_interface.h"
 
-#include <sup/sequencer/log.h>
 #include <sup/sequencer/instruction.h>
+#include <sup/sequencer/log_severity.h>
 
 #include <sup/dto/anyvalue_helper.h>
 
-#include <sstream>
+#include <map>
+
+namespace
+{
+using LogMemberFunctionType = void (sup::log::DefaultLogger::*)(const std::string&) const;
+const std::map<int, LogMemberFunctionType>& LogMemberFunctionMap();
+}  // unnamed namespace
 
 namespace sup
 {
 namespace sequencer
 {
+DaemonInterface::DaemonInterface(const sup::log::DefaultLogger& logger)
+  : m_logger{logger}
+{}
+
+DaemonInterface::~DaemonInterface() = default;
+
 void DaemonInterface::UpdateInstructionStatusImpl(const Instruction *instruction)
 {
-  if (_log_enabled)
-  {
-    auto instruction_type = instruction->GetType();
-    auto instruction_name = instruction->GetName();
-    auto status = instruction->GetStatus();
-
-    log::Info("Instruction: (%s:%s) : %s", instruction_type.c_str(), instruction_name.c_str(),
-             StatusToString(status).c_str());
-  }
+  std::string info_message = "Instruction (" + instruction->GetType() + ":" +
+    instruction->GetName() + ") : " + StatusToString(instruction->GetStatus());
+  m_logger.Info(info_message);
 }
 
 bool DaemonInterface::PutValueImpl(const sup::dto::AnyValue &value, const std::string &description)
 {
-  if (!_log_enabled)
-  {
-    return true;
-  }
-  std::ostringstream oss;
-  oss << description << " (" << value.GetTypeName() << "): ";
   std::string json_rep = sup::dto::ValuesToJSONString(value);
-  if (json_rep.empty())
-  {
-    return false;
-  }
-  oss << json_rep << std::endl;
-  log::Info(oss.str());
+  std::string info_message = description + " (" + value.GetTypeName() + "):" + json_rep;
+  m_logger.Info(info_message);
   return true;
 }
 
 bool DaemonInterface::GetUserValueImpl(sup::dto::AnyValue &, const std::string &)
 {
-  log::Warning("DaemonInterface::GetUserValueImpl() - not implemented");
+  std::string error_message = "DaemonInterface::GetUserValueImpl(): is not implemented";
+  m_logger.Error(error_message);
   return false;
 }
 
 int DaemonInterface::GetUserChoiceImpl(const std::vector<std::string> &, const std::string &)
 {
-  log::Warning("DaemonInterface::GetUserChoiceImpl() - not implemented");
+  std::string error_message = "DaemonInterface::GetUserChoiceImpl(): is not implemented";
+  m_logger.Error(error_message);
   return -1;
 }
 
 void DaemonInterface::StartSingleStepImpl()
 {
-  if (_log_enabled)
-  {
-    log::Info("Start single execution step");
-  }
+  std::string info_message = "Start single execution step";
+  m_logger.Info(info_message);
 }
 
 void DaemonInterface::EndSingleStepImpl()
 {
-  if (_log_enabled)
-  {
-    log::Info("End single execution step");
-  }
+  std::string info_message = "End single execution step";
+  m_logger.Info(info_message);
 }
 
 void DaemonInterface::MessageImpl(const std::string& message)
 {
-  if (_log_enabled)
-  {
-    log::Info("%s", message.c_str());
-  }
+  m_logger.Info(message);
 }
 
-DaemonInterface::DaemonInterface(bool log_enabled) : _log_enabled{log_enabled} {}
-
-DaemonInterface::~DaemonInterface() = default;
+void DaemonInterface::LogImpl(int severity, const std::string& message)
+{
+  auto& mem_func_map = LogMemberFunctionMap();
+  auto it = mem_func_map.find(severity);
+  if (it == mem_func_map.end())
+  {
+    return;
+  }
+  LogMemberFunctionType mem_func = it->second;
+  (m_logger.*mem_func)(message);
+}
 
 }  // namespace sequencer
 
 }  // namespace sup
+
+namespace
+{
+const std::map<int, LogMemberFunctionType>& LogMemberFunctionMap()
+{
+  static std::map<int, LogMemberFunctionType> mem_func_map = {
+    { sup::sequencer::log::SUP_SEQ_LOG_EMERG, &sup::log::DefaultLogger::Emergency },
+    { sup::sequencer::log::SUP_SEQ_LOG_ALERT, &sup::log::DefaultLogger::Alert },
+    { sup::sequencer::log::SUP_SEQ_LOG_CRIT, &sup::log::DefaultLogger::Critical },
+    { sup::sequencer::log::SUP_SEQ_LOG_ERR, &sup::log::DefaultLogger::Error },
+    { sup::sequencer::log::SUP_SEQ_LOG_WARNING, &sup::log::DefaultLogger::Warning },
+    { sup::sequencer::log::SUP_SEQ_LOG_NOTICE, &sup::log::DefaultLogger::Notice },
+    { sup::sequencer::log::SUP_SEQ_LOG_INFO, &sup::log::DefaultLogger::Info },
+    { sup::sequencer::log::SUP_SEQ_LOG_DEBUG, &sup::log::DefaultLogger::Debug },
+    { sup::sequencer::log::SUP_SEQ_LOG_TRACE, &sup::log::DefaultLogger::Trace }
+  };
+  return mem_func_map;
+}
+}  // unnamed namespace

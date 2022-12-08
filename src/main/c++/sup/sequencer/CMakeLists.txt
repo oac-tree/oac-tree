@@ -5,7 +5,6 @@ add_library(sequencer::sequencer ALIAS sup-sequencer-shared) # alias for build-t
 
 add_subdirectory(base)
 add_subdirectory(instructions)
-add_subdirectory(log)
 add_subdirectory(parser)
 add_subdirectory(procedure)
 add_subdirectory(runner)

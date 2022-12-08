@@ -19,8 +19,8 @@ install(FILES
         sup/sequencer/exceptions.h
         sup/sequencer/execution_status.h
         sup/sequencer/generic_utils.h
-        sup/sequencer/instruction.h
         sup/sequencer/instruction_registry.h
+        sup/sequencer/instruction.h
         sup/sequencer/log_severity.h
         sup/sequencer/named_callback_manager.h
         sup/sequencer/procedure.h
@@ -28,8 +28,8 @@ install(FILES
         sup/sequencer/sequence_parser.h
         sup/sequencer/tree_data.h
         sup/sequencer/user_interface.h
-        sup/sequencer/variable.h
         sup/sequencer/variable_registry.h
+        sup/sequencer/variable.h
         sup/sequencer/workspace.h
         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/sup/sequencer
 )

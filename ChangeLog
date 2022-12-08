@@ -7,7 +7,7 @@ Changes for 2.0.0:
 - API breaking: Instruction::SetupImpl returns void instead of bool and needs to throw InstructionSetupException when setup failed
 - API breaking: Variable::SetupImpl returns void instead of bool and needs to throw VariableSetupException when setup failed
 - Parsing procedures from XML now throws on failure with a clear message indicating the problem
-- Isolate logging implementation behind a single interface
+- All logging (mostly used during execution of instructions) is now delegated to the UserInterface
 
 Changes for 1.2.0:
 

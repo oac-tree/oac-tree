@@ -21,6 +21,8 @@
 
 #include <sup/sequencer/user_interface.h>
 
+#include <sup/sequencer/log_severity.h>
+
 namespace sup
 {
 namespace sequencer
@@ -80,6 +82,16 @@ void UserInterface::Log(int severity, const std::string& message)
 {
   std::lock_guard<std::mutex> lock(_ui_mutex);
   LogImpl(severity, message);
+}
+
+void UserInterface::LogError(const std::string& message)
+{
+  Log(log::SUP_SEQ_LOG_ERR, message);
+}
+
+void UserInterface::LogWarning(const std::string& message)
+{
+  Log(log::SUP_SEQ_LOG_WARNING, message);
 }
 
 void UserInterface::VariableUpdatedImpl(const std::string& name, const sup::dto::AnyValue& value)

@@ -227,6 +227,36 @@ Instruction* Instruction::TakeInstruction(int index)
   return TakeInstructionImpl(index);
 }
 
+std::string InstructionSetupExceptionProlog(const std::string& name, const std::string& type)
+{
+  std::string optional_name;
+  if (!name.empty())
+  {
+    optional_name = "[" + name + "] ";
+  }
+  return "Setup of instruction " + optional_name + "of type <" + type + "> failed: ";
+}
+
+std::string InstructionErrorLogProlog(const std::string& name, const std::string& type)
+{
+  std::string optional_name;
+  if (!name.empty())
+  {
+    optional_name = "[" + name + "] ";
+  }
+  return "Instruction " + optional_name + "of type <" + type + "> error: ";
+}
+
+std::string InstructionWarningLogProlog(const std::string& name, const std::string& type)
+{
+  std::string optional_name;
+  if (!name.empty())
+  {
+    optional_name = "[" + name + "] ";
+  }
+  return "Instruction " + optional_name + "of type <" + type + "> warning: ";
+}
+
 }  // namespace sequencer
 
 }  // namespace sup

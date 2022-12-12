@@ -43,9 +43,8 @@ void Message::SetupImpl(const Procedure &proc)
 {
   if (!HasAttribute(TEXT_ATTRIBUTE))
   {
-    std::string error_message =
-      "sup::sequencer::Message::SetupImpl(): missing mandatory attribute [" +
-       TEXT_ATTRIBUTE + "]";
+    std::string error_message = InstructionSetupExceptionProlog(GetName(), Type) +
+      "missing mandatory attribute [" + TEXT_ATTRIBUTE + "]";
     throw InstructionSetupException(error_message);
   }
 }

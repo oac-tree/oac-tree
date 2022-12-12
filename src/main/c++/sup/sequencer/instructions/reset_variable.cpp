@@ -22,7 +22,6 @@
 #include "reset_variable.h"
 
 #include <sup/sequencer/exceptions.h>
-#include <sup/sequencer/log_severity.h>
 #include <sup/sequencer/user_interface.h>
 #include <sup/sequencer/workspace.h>
 
@@ -45,9 +44,8 @@ void ResetVariable::SetupImpl(const Procedure &proc)
 {
   if (!HasAttribute(VARNAME_ATTRIBUTE))
   {
-    std::string error_message =
-      "sup::sequencer::Copy::SetupImpl(): missing mandatory attribute [" +
-       VARNAME_ATTRIBUTE + "]";
+    std::string error_message = InstructionSetupExceptionProlog(GetName(), Type) +
+      "missing mandatory attribute [" + VARNAME_ATTRIBUTE + "]";
     throw InstructionSetupException(error_message);
   }
 }
@@ -57,10 +55,9 @@ ExecutionStatus ResetVariable::ExecuteSingleImpl(UserInterface* ui, Workspace* w
   auto var_name = GetAttribute(VARNAME_ATTRIBUTE);
   if (!ws->HasVariable(var_name))
   {
-    std::string error_message =
-      "sup::sequencer::ResetVariable::ExecuteSingleImpl(): workspace does not contain variable "
-      "with name [" + var_name + "]";
-    ui->Log(log::SUP_SEQ_LOG_ERR, error_message);
+    std::string error_message = InstructionErrorLogProlog(GetName(), Type) +
+      "workspace does not contain variable with name [" + var_name + "]";
+    ui->LogError(error_message);
     return ExecutionStatus::FAILURE;
   }
   if (!ws->ResetVariable(var_name))

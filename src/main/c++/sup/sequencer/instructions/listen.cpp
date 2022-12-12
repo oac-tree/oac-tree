@@ -99,9 +99,8 @@ void Listen::SetupImpl(const Procedure& proc)
   }
   if (!HasAttribute(VARNAMES_ATTRIBUTE_NAME))
   {
-    std::string error_message =
-      "sup::sequencer::Listen::SetupImpl(): missing mandatory attribute [" +
-       VARNAMES_ATTRIBUTE_NAME + "]";
+    std::string error_message = InstructionSetupExceptionProlog(GetName(), Type) +
+      "missing mandatory attribute [" + VARNAMES_ATTRIBUTE_NAME + "]";
     throw InstructionSetupException(error_message);
   }
   var_names = VariableNames();

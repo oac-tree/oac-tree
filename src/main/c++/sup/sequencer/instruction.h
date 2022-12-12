@@ -373,6 +373,12 @@ public:
   Instruction* TakeInstruction(int index);
 };
 
+std::string InstructionSetupExceptionProlog(const std::string& name, const std::string& type);
+
+std::string InstructionErrorLogProlog(const std::string& name, const std::string& type);
+
+std::string InstructionWarningLogProlog(const std::string& name, const std::string& type);
+
 }  // namespace sequencer
 
 }  // namespace sup

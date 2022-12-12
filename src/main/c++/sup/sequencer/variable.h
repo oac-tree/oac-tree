@@ -268,6 +268,8 @@ private:
   virtual void ResetImpl();
 };
 
+std::string VariableSetupExceptionProlog(const std::string& name, const std::string& type);
+
 }  // namespace sequencer
 
 }  // namespace sup

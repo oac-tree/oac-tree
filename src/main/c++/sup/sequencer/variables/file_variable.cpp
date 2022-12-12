@@ -42,9 +42,8 @@ void FileVariable::SetupImpl(const sup::dto::AnyTypeRegistry&)
 {
   if (!HasAttribute(FILENAME_ATTR_NAME))
   {
-    std::string error_message =
-      "sup::sequencer::FileVariable::SetupImpl(): missing attribute [" +
-       FILENAME_ATTR_NAME + "]";
+    std::string error_message = VariableSetupExceptionProlog(GetName(), Type) +
+      "missing attribute [" + FILENAME_ATTR_NAME + "]";
     throw VariableSetupException(error_message);
   }
 }

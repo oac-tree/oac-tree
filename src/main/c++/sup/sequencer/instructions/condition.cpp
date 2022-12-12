@@ -22,7 +22,6 @@
 #include "condition.h"
 
 #include <sup/sequencer/exceptions.h>
-#include <sup/sequencer/log_severity.h>
 #include <sup/sequencer/user_interface.h>
 #include <sup/sequencer/workspace.h>
 
@@ -46,9 +45,8 @@ void Condition::SetupImpl(const Procedure &proc)
 {
   if (!HasAttribute(CONDITION_VARIABLE_ATTR_NAME))
   {
-    std::string error_message =
-      "sup::sequencer::Condition::SetupImpl(): missing mandatory attribute [" +
-       CONDITION_VARIABLE_ATTR_NAME + "]";
+    std::string error_message = InstructionSetupExceptionProlog(GetName(), Type) +
+      "missing mandatory attribute [" + CONDITION_VARIABLE_ATTR_NAME + "]";
     throw InstructionSetupException(error_message);
   }
 }
@@ -59,20 +57,18 @@ ExecutionStatus Condition::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
   auto var_name = SplitFieldName(field_name).first;
   if (!ws->HasVariable(var_name))
   {
-    std::string error_message =
-      "sup::sequencer::Condition::ExecuteSingleImpl(): workspace does not contain condition "
-      "variable with name [" + var_name + "]";
-    ui->Log(log::SUP_SEQ_LOG_ERR, error_message);
+    std::string error_message = InstructionErrorLogProlog(GetName(), Type) +
+      "workspace does not contain condition variable with name [" + var_name + "]";
+    ui->LogError(error_message);
     return ExecutionStatus::FAILURE;
   }
   sup::dto::AnyValue var;
   sup::dto::boolean result = false;
   if (!ws->GetValue(field_name, var) || !var.As(result))
   {
-    std::string warning_message =
-      "sup::sequencer::Condition::ExecuteSingleImpl(): could not parse workspace field with "
-      "name [" + field_name + "] to a boolean";
-    ui->Log(log::SUP_SEQ_LOG_WARNING, warning_message);
+    std::string warning_message = InstructionWarningLogProlog(GetName(), Type) +
+      "could not parse workspace field with name [" + field_name + "] to a boolean";
+    ui->LogWarning(warning_message);
     return ExecutionStatus::FAILURE;
   }
   return result ? ExecutionStatus::SUCCESS : ExecutionStatus::FAILURE;

@@ -119,6 +119,16 @@ public:
    */
   void Log(int severity, const std::string& message);
 
+  /**
+   * @brief Convenience method to log an error message.
+   */
+  void LogError(const std::string& message);
+
+  /**
+   * @brief Convenience method to log a warning message.
+   */
+  void LogWarning(const std::string& message);
+
 private:
   /**
    * @brief Private pure virtual implementation of

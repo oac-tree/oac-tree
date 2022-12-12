@@ -22,7 +22,6 @@
 #include "choice.h"
 
 #include <sup/sequencer/exceptions.h>
-#include <sup/sequencer/log_severity.h>
 #include <sup/sequencer/procedure.h>
 #include <sup/sequencer/user_interface.h>
 #include <sup/sequencer/workspace.h>
@@ -56,9 +55,8 @@ void Choice::SetupImpl(const Procedure &proc)
   SetupChildren(proc);
   if (!HasAttribute(SELECTOR_VARIABLE_ATTR_NAME))
   {
-    std::string error_message =
-      "sup::sequencer::Choice::SetupImpl(): missing mandatory attribute [" +
-       SELECTOR_VARIABLE_ATTR_NAME + "]";
+    std::string error_message = InstructionSetupExceptionProlog(GetName(), Type) +
+      "missing mandatory attribute [" + SELECTOR_VARIABLE_ATTR_NAME + "]";
     throw InstructionSetupException(error_message);
   }
 }
@@ -101,20 +99,19 @@ bool Choice::CreateInstructionList(UserInterface *ui, Workspace *ws)
   sup::dto::AnyValue selector;
   if (!ws->GetValue(GetAttribute(SELECTOR_VARIABLE_ATTR_NAME), selector))
   {
-    std::string error_message =
-      "sup::sequencer::Choice::CreateInstructionList(): could not read selector variable with name "
-      "[" + GetAttribute(SELECTOR_VARIABLE_ATTR_NAME) + "] from workspace";
-    ui->Log(log::SUP_SEQ_LOG_ERR, error_message);
+    std::string error_message = InstructionErrorLogProlog(GetName(), Type) +
+      "could not read selector variable with name [" + GetAttribute(SELECTOR_VARIABLE_ATTR_NAME) +
+      "] from workspace";
+    ui->LogError(error_message);
     return false;
   }
   std::vector<std::size_t> indices;
   if (!GetIndexListFromVariable(indices, selector))
   {
     auto selector_json = sup::dto::ValuesToJSONString(selector);
-    std::string error_message =
-      "sup::sequencer::Choice::CreateInstructionList(): could not parse selector variable as index "
-      "or array of indices: [" + selector_json + "]";
-    ui->Log(log::SUP_SEQ_LOG_ERR, error_message);
+    std::string error_message = InstructionErrorLogProlog(GetName(), Type) +
+      "could not parse selector variable as index or array of indices: [" + selector_json + "]";
+    ui->LogError(error_message);
     return false;
   }
   std::vector<Instruction*> instr_list;
@@ -123,11 +120,10 @@ bool Choice::CreateInstructionList(UserInterface *ui, Workspace *ws)
   {
     if (idx >= child_instructions.size())
     {
-      std::string error_message =
-        "sup::sequencer::Choice::CreateInstructionList(): index [" + std::to_string(idx) + "] out "
-        "of bounds for number of child instructions [" +
+      std::string error_message = InstructionErrorLogProlog(GetName(), Type) +
+        "index [" + std::to_string(idx) + "] out of bounds for number of child instructions [" +
         std::to_string(child_instructions.size()) + "]";
-      ui->Log(log::SUP_SEQ_LOG_ERR, error_message);
+      ui->LogError(error_message);
       return false;
     }
     instr_list.push_back(child_instructions[idx]);

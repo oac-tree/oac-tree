@@ -79,23 +79,24 @@ void LocalVariable::SetupImpl(const sup::dto::AnyTypeRegistry& registry)
   // empty AnyValue is allowed for setting
   if (HasAttribute(JSON_TYPE))
   {
+    auto type_str = GetAttribute(JSON_TYPE);
     sup::dto::JSONAnyTypeParser type_parser;
-    if (!type_parser.ParseString(GetAttribute(JSON_TYPE), &registry))
+    if (!type_parser.ParseString(type_str, &registry))
     {
-      std::string error_message =
-        "sup::sequencer::LocalVariable::SetupImpl(): could not parse attribute [" +
-         JSON_TYPE + "] with value [" + GetAttribute(JSON_TYPE) + "]";
+      std::string error_message = VariableSetupExceptionProlog(GetName(), Type) +
+        "could not parse attribute [" + JSON_TYPE + "] with value [" + type_str + "]";
       throw VariableSetupException(error_message);
     }
     auto parsed_type = type_parser.MoveAnyType();
     if (HasAttribute(JSON_VALUE))
     {
+      auto val_str = GetAttribute(JSON_VALUE);
       sup::dto::JSONAnyValueParser value_parser;
-      if (!value_parser.TypedParseString(parsed_type, GetAttribute(JSON_VALUE)))
+      if (!value_parser.TypedParseString(parsed_type, val_str))
       {
-      std::string error_message =
-        "sup::sequencer::LocalVariable::SetupImpl(): could not parse attribute [" +
-         JSON_VALUE + "] with value [" + GetAttribute(JSON_VALUE) + "]";
+      std::string error_message = VariableSetupExceptionProlog(GetName(), Type) +
+        "could not parse attribute [" + JSON_VALUE + "] with value [" + val_str +
+        "]";
       throw VariableSetupException(error_message);
       }
       m_value.reset(new sup::dto::AnyValue(value_parser.MoveAnyValue()));
@@ -107,9 +108,8 @@ void LocalVariable::SetupImpl(const sup::dto::AnyTypeRegistry& registry)
   }
   else if (HasAttribute(JSON_VALUE))
   {
-    std::string error_message =
-      "sup::sequencer::LocalVariable::SetupImpl(): attribute [" +
-       JSON_VALUE + "] present without attribute [" + JSON_TYPE + "]";
+    std::string error_message = VariableSetupExceptionProlog(GetName(), Type) +
+      "attribute [" + JSON_VALUE + "] present without attribute [" + JSON_TYPE + "]";
     throw VariableSetupException(error_message);
   }
 }

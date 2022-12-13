@@ -55,7 +55,7 @@ void Choice::SetupImpl(const Procedure &proc)
   SetupChildren(proc);
   if (!HasAttribute(SELECTOR_VARIABLE_ATTR_NAME))
   {
-    std::string error_message = InstructionSetupExceptionProlog(GetName(), Type) +
+    std::string error_message = InstructionSetupExceptionProlog() +
       "missing mandatory attribute [" + SELECTOR_VARIABLE_ATTR_NAME + "]";
     throw InstructionSetupException(error_message);
   }
@@ -99,7 +99,7 @@ bool Choice::CreateInstructionList(UserInterface *ui, Workspace *ws)
   sup::dto::AnyValue selector;
   if (!ws->GetValue(GetAttribute(SELECTOR_VARIABLE_ATTR_NAME), selector))
   {
-    std::string error_message = InstructionErrorLogProlog(GetName(), Type) +
+    std::string error_message = InstructionErrorLogProlog() +
       "could not read selector variable with name [" + GetAttribute(SELECTOR_VARIABLE_ATTR_NAME) +
       "] from workspace";
     ui->LogError(error_message);
@@ -109,7 +109,7 @@ bool Choice::CreateInstructionList(UserInterface *ui, Workspace *ws)
   if (!GetIndexListFromVariable(indices, selector))
   {
     auto selector_json = sup::dto::ValuesToJSONString(selector);
-    std::string error_message = InstructionErrorLogProlog(GetName(), Type) +
+    std::string error_message = InstructionErrorLogProlog() +
       "could not parse selector variable as index or array of indices: [" + selector_json + "]";
     ui->LogError(error_message);
     return false;
@@ -120,7 +120,7 @@ bool Choice::CreateInstructionList(UserInterface *ui, Workspace *ws)
   {
     if (idx >= child_instructions.size())
     {
-      std::string error_message = InstructionErrorLogProlog(GetName(), Type) +
+      std::string error_message = InstructionErrorLogProlog() +
         "index [" + std::to_string(idx) + "] out of bounds for number of child instructions [" +
         std::to_string(child_instructions.size()) + "]";
       ui->LogError(error_message);

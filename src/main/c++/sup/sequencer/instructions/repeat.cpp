@@ -53,7 +53,7 @@ void Repeat::SetupImpl(const Procedure& proc)
     auto max_str = GetAttribute(MAXCOUNT_ATTR_NAME);
     if (!utils::SafeStringToInt(_max_count, max_str))
     {
-      std::string error_message = InstructionSetupExceptionProlog(GetName(), Type) +
+      std::string error_message = InstructionSetupExceptionProlog() +
         "could not parse value of attribute with name [" + MAXCOUNT_ATTR_NAME + "]";
       throw InstructionSetupException(error_message);
     }

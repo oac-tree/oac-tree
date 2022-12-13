@@ -23,82 +23,23 @@
 
 #include <sup/sequencer/user_interface.h>
 
+namespace
+{
+std::string WrapOptionalInstructionNameString(const std::string& instr_name);
+}  // unnamed namespace
+
 namespace sup
 {
 namespace sequencer
 {
 
-void Instruction::SetStatus(ExecutionStatus status)
-{
-  std::lock_guard<std::mutex> lock(_status_mutex);
-  _status = status;
-}
-
-void Instruction::Preamble(UserInterface* ui)
-{
-  PreExecuteHook(ui);
-  if (GetStatus() == ExecutionStatus::NOT_STARTED)
-  {
-    InitHook();
-    SetStatus(ExecutionStatus::NOT_FINISHED);
-    ui->UpdateInstructionStatus(this);
-  }
-}
-
-void Instruction::Postamble(UserInterface* ui)
-{
-  if (GetStatus() != _status_before)
-  {
-    ui->UpdateInstructionStatus(this);
-  }
-  PostExecuteHook(ui);
-}
-
-void Instruction::SetupImpl(const Procedure&)
-{}
-
-void Instruction::PreExecuteHook(UserInterface*) {}
-
-void Instruction::InitHook() {}
-
-void Instruction::PostExecuteHook(UserInterface*) {}
-
-void Instruction::HaltImpl() {}
-
-void Instruction::ResetHook() {}
-
-bool Instruction::PostInitialiseVariables(const AttributeMap&)
-{
-  return true;
-}
-
-int Instruction::ChildrenCountImpl() const
-{
-  return 0;
-}
-
-std::vector<const Instruction *> Instruction::ChildInstructionsImpl() const
-{
-  return {};
-}
-
-bool Instruction::InsertInstructionImpl(Instruction*, int)
-{
-  return false;
-}
-
-Instruction* Instruction::TakeInstructionImpl(int)
-{
-  return nullptr;
-}
 
 Instruction::Instruction(const std::string &type)
     : _type{type}
     , _status{ExecutionStatus::NOT_STARTED}
     , _status_before{ExecutionStatus::NOT_STARTED}
     , _halt_requested{false}
-{
-}
+{}
 
 Instruction::~Instruction() = default;
 
@@ -227,36 +168,99 @@ Instruction* Instruction::TakeInstruction(int index)
   return TakeInstructionImpl(index);
 }
 
-std::string InstructionSetupExceptionProlog(const std::string& name, const std::string& type)
+std::string Instruction::InstructionSetupExceptionProlog() const
 {
-  std::string optional_name;
-  if (!name.empty())
-  {
-    optional_name = "[" + name + "] ";
-  }
-  return "Setup of instruction " + optional_name + "of type <" + type + "> failed: ";
+  std::string optional_name = WrapOptionalInstructionNameString(GetName());
+  return "Setup of instruction " + optional_name + "of type <" + GetType() + "> failed: ";
 }
 
-std::string InstructionErrorLogProlog(const std::string& name, const std::string& type)
+std::string Instruction::InstructionErrorLogProlog() const
 {
-  std::string optional_name;
-  if (!name.empty())
-  {
-    optional_name = "[" + name + "] ";
-  }
-  return "Instruction " + optional_name + "of type <" + type + "> error: ";
+  std::string optional_name = WrapOptionalInstructionNameString(GetName());
+  return "Instruction " + optional_name + "of type <" + GetType() + "> error: ";
 }
 
-std::string InstructionWarningLogProlog(const std::string& name, const std::string& type)
+std::string Instruction::InstructionWarningLogProlog() const
 {
-  std::string optional_name;
-  if (!name.empty())
+  std::string optional_name = WrapOptionalInstructionNameString(GetName());
+  return "Instruction " + optional_name + "of type <" + GetType() + "> warning: ";
+}
+
+void Instruction::SetStatus(ExecutionStatus status)
+{
+  std::lock_guard<std::mutex> lock(_status_mutex);
+  _status = status;
+}
+
+void Instruction::Preamble(UserInterface* ui)
+{
+  PreExecuteHook(ui);
+  if (GetStatus() == ExecutionStatus::NOT_STARTED)
   {
-    optional_name = "[" + name + "] ";
+    InitHook();
+    SetStatus(ExecutionStatus::NOT_FINISHED);
+    ui->UpdateInstructionStatus(this);
   }
-  return "Instruction " + optional_name + "of type <" + type + "> warning: ";
+}
+
+void Instruction::Postamble(UserInterface* ui)
+{
+  if (GetStatus() != _status_before)
+  {
+    ui->UpdateInstructionStatus(this);
+  }
+  PostExecuteHook(ui);
+}
+
+void Instruction::SetupImpl(const Procedure&) {}
+
+void Instruction::PreExecuteHook(UserInterface*) {}
+
+void Instruction::InitHook() {}
+
+void Instruction::PostExecuteHook(UserInterface*) {}
+
+void Instruction::HaltImpl() {}
+
+void Instruction::ResetHook() {}
+
+bool Instruction::PostInitialiseVariables(const AttributeMap&)
+{
+  return true;
+}
+
+int Instruction::ChildrenCountImpl() const
+{
+  return 0;
+}
+
+std::vector<const Instruction *> Instruction::ChildInstructionsImpl() const
+{
+  return {};
+}
+
+bool Instruction::InsertInstructionImpl(Instruction*, int)
+{
+  return false;
+}
+
+Instruction* Instruction::TakeInstructionImpl(int)
+{
+  return nullptr;
 }
 
 }  // namespace sequencer
 
 }  // namespace sup
+
+namespace
+{
+std::string WrapOptionalInstructionNameString(const std::string& instr_name)
+{
+  if (instr_name.empty())
+  {
+    return {};
+  }
+  return "[" + instr_name + "] ";
+}
+}  // unnamed namespace

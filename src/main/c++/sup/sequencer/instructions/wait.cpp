@@ -39,8 +39,7 @@ namespace sequencer
 {
 const std::string Wait::Type = "Wait";
 
-static unsigned long ToNanoSeconds(double sec, const std::string& instr_name,
-                                   const std::string& instr_type);
+static unsigned long ToNanoSeconds(double sec, const std::string& exception_prolog);
 
 Wait::Wait()
   : Instruction(Wait::Type)
@@ -64,12 +63,12 @@ void Wait::SetupImpl(const Procedure&)
     double t{};
     if (!utils::SafeStringToDouble(t, timeout_str))
     {
-      std::string error_message = InstructionSetupExceptionProlog(GetName(), Type) +
+      std::string error_message = InstructionSetupExceptionProlog() +
         "could not parse attribute [" + TIMEOUT_ATTR_NAME + "], with value [" + timeout_str +
         "] to double";
       throw InstructionSetupException(error_message);
     }
-    m_timeout = ToNanoSeconds(t, GetName(), Type);
+    m_timeout = ToNanoSeconds(t, InstructionSetupExceptionProlog());
   }
 }
 
@@ -88,12 +87,11 @@ ExecutionStatus Wait::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
   return ExecutionStatus::SUCCESS;
 }
 
-static unsigned long ToNanoSeconds(double sec, const std::string& instr_name,
-                                   const std::string& instr_type)
+static unsigned long ToNanoSeconds(double sec, const std::string& exception_prolog)
 {
   if (sec < 0.0 || sec > MAX_TIMEOUT_SECONDS)
   {
-      std::string error_message = InstructionSetupExceptionProlog(instr_name, instr_type) +
+      std::string error_message = exception_prolog +
         "could not convert timeout in seconds [" + std::to_string(sec) +
         "] to nanoseconds (64bit unsigned)";
       throw InstructionSetupException(error_message);

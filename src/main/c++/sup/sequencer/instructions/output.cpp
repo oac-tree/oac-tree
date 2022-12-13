@@ -44,7 +44,7 @@ void Output::SetupImpl(const Procedure &proc)
 {
   if (!HasAttribute(FROM_ATTRIBUTE_NAME))
   {
-    std::string error_message = InstructionSetupExceptionProlog(GetName(), Type) +
+    std::string error_message = InstructionSetupExceptionProlog() +
       "missing mandatory attribute [" + FROM_ATTRIBUTE_NAME + "]";
     throw InstructionSetupException(error_message);
   }
@@ -56,7 +56,7 @@ ExecutionStatus Output::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
   auto from_var = SplitFieldName(from_field).first;
   if (!ws->HasVariable(from_var))
   {
-    std::string error_message = InstructionErrorLogProlog(GetName(), Type) +
+    std::string error_message = InstructionErrorLogProlog() +
       "workspace does not contain variable with name [" + from_var + "]";
     ui->LogError(error_message);
     return ExecutionStatus::FAILURE;
@@ -64,7 +64,7 @@ ExecutionStatus Output::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
   sup::dto::AnyValue value;
   if (!ws->GetValue(from_field, value))
   {
-    std::string warning_message = InstructionWarningLogProlog(GetName(), Type) +
+    std::string warning_message = InstructionWarningLogProlog() +
       "could not read field with name [" + from_field + "] from workspace";
     ui->LogWarning(warning_message);
     return ExecutionStatus::FAILURE;

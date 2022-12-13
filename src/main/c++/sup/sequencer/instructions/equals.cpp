@@ -41,7 +41,7 @@ void Equals::SetupImpl(const Procedure &proc)
 {
   if (!HasAttribute(LEFT_VARIABLE_ATTR_NAME) || !HasAttribute(RIGHT_VARIABLE_ATTR_NAME))
   {
-    std::string error_message = InstructionSetupExceptionProlog(GetName(), Type) +
+    std::string error_message = InstructionSetupExceptionProlog() +
       "missing mandatory attributes [" + LEFT_VARIABLE_ATTR_NAME + ", " +
       RIGHT_VARIABLE_ATTR_NAME + "]";
     throw InstructionSetupException(error_message);
@@ -56,14 +56,14 @@ ExecutionStatus Equals::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
   auto right_var = SplitFieldName(right_field).first;
   if (!ws->HasVariable(left_var))
   {
-    std::string error_message = InstructionErrorLogProlog(GetName(), Type) +
+    std::string error_message = InstructionErrorLogProlog() +
       "workspace does not contain left hand side variable with name [" + left_var + "]";
     ui->LogError(error_message);
     return ExecutionStatus::FAILURE;
   }
   if (!ws->HasVariable(right_var))
   {
-    std::string error_message = InstructionErrorLogProlog(GetName(), Type) +
+    std::string error_message = InstructionErrorLogProlog() +
       "workspace does not contain right hand side variable with name [" + right_var + "]";
     ui->LogError(error_message);
     return ExecutionStatus::FAILURE;
@@ -71,7 +71,7 @@ ExecutionStatus Equals::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
   sup::dto::AnyValue lhs;
   if (!ws->GetValue(left_field, lhs))
   {
-    std::string warning_message = InstructionWarningLogProlog(GetName(), Type) +
+    std::string warning_message = InstructionWarningLogProlog() +
       "could not read left field with name [" + left_field + "] from workspace";
     ui->LogWarning(warning_message);
     return ExecutionStatus::FAILURE;
@@ -79,7 +79,7 @@ ExecutionStatus Equals::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
   sup::dto::AnyValue rhs;
   if (!ws->GetValue(right_field, rhs))
   {
-    std::string warning_message = InstructionWarningLogProlog(GetName(), Type) +
+    std::string warning_message = InstructionWarningLogProlog() +
       "could not read right field with name [" + right_field + "] from workspace";
     ui->LogWarning(warning_message);
     return ExecutionStatus::FAILURE;

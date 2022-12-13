@@ -172,6 +172,13 @@ public:
    */
   bool AddAttributes(const AttributeMap& attributes);
 
+protected:
+  /**
+   * Convenience function for generating a prolog for exceptions, containing both the variable's
+   * type and object name.
+  */
+  std::string VariableSetupExceptionProlog() const;
+
 private:
   /**
    * @brief Typename of this variable
@@ -267,8 +274,6 @@ private:
    */
   virtual void ResetImpl();
 };
-
-std::string VariableSetupExceptionProlog(const std::string& name, const std::string& type);
 
 }  // namespace sequencer
 

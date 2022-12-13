@@ -82,7 +82,7 @@ void Include::SetupImpl(const Procedure& proc)
 {
   if (!HasAttribute(PATH_ATTRIBUTE_NAME))
   {
-    std::string error_message = InstructionSetupExceptionProlog(GetName(), Type) +
+    std::string error_message = InstructionSetupExceptionProlog() +
       "missing mandatory attribute [" + PATH_ATTRIBUTE_NAME + "]";
     throw InstructionSetupException(error_message);
   }
@@ -97,14 +97,14 @@ void Include::SetupImpl(const Procedure& proc)
   auto instr = InstructionHelper::FindInstruction(instructions, path);
   if (instr == nullptr)
   {
-    std::string error_message = InstructionSetupExceptionProlog(GetName(), Type) +
+    std::string error_message = InstructionSetupExceptionProlog() +
       "instruction not found, path: [" + path + "]";
     throw InstructionSetupException(error_message);
   }
   std::unique_ptr<Instruction> clone(InstructionHelper::CloneInstruction(instr));
   if (!InstructionHelper::InitialiseVariableAttributes(*clone, GetAttributes()))
   {
-    std::string error_message = InstructionSetupExceptionProlog(GetName(), Type) +
+    std::string error_message = InstructionSetupExceptionProlog() +
       "could not initialise variable attributes for child instruction";
     throw InstructionSetupException(error_message);
   }

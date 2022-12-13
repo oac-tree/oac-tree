@@ -43,7 +43,7 @@ void Copy::SetupImpl(const Procedure &proc)
 {
   if (!HasAttribute(INPUT_VARIABLE_ATTR_NAME) || !HasAttribute(OUTPUT_VARIABLE_ATTR_NAME))
   {
-    std::string error_message = InstructionSetupExceptionProlog(GetName(), Type) +
+    std::string error_message = InstructionSetupExceptionProlog() +
       "missing mandatory attributes [" + INPUT_VARIABLE_ATTR_NAME + ", " +
       OUTPUT_VARIABLE_ATTR_NAME + "]";
     throw InstructionSetupException(error_message);
@@ -58,14 +58,14 @@ ExecutionStatus Copy::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
   auto output_var_name = SplitFieldName(output_field_name).first;
   if (!ws->HasVariable(input_var_name))
   {
-    std::string error_message = InstructionErrorLogProlog(GetName(), Type) +
+    std::string error_message = InstructionErrorLogProlog() +
       "workspace does not contain input variable with name [" + input_var_name + "]";
     ui->LogError(error_message);
     return ExecutionStatus::FAILURE;
   }
   if (!ws->HasVariable(output_var_name))
   {
-    std::string error_message = InstructionErrorLogProlog(GetName(), Type) +
+    std::string error_message = InstructionErrorLogProlog() +
       "workspace does not contain output variable with name [" + output_var_name + "]";
     ui->LogError(error_message);
     return ExecutionStatus::FAILURE;
@@ -73,7 +73,7 @@ ExecutionStatus Copy::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
   sup::dto::AnyValue value;
   if (!ws->GetValue(input_field_name, value))
   {
-    std::string warning_message = InstructionWarningLogProlog(GetName(), Type) +
+    std::string warning_message = InstructionWarningLogProlog() +
       "could not read input field with name [" + input_field_name + "] from workspace";
     ui->LogWarning(warning_message);
     return ExecutionStatus::FAILURE;
@@ -81,7 +81,7 @@ ExecutionStatus Copy::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
   if (!ws->SetValue(output_field_name, value))
   {
     auto json_value = sup::dto::ValuesToJSONString(value);
-    std::string warning_message = InstructionWarningLogProlog(GetName(), Type) +
+    std::string warning_message = InstructionWarningLogProlog() +
       "could not copy value [" + json_value + "] to workspace field with name [" +
       output_field_name + "]";
     ui->LogWarning(warning_message);

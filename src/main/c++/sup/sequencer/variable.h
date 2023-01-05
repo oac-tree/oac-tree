@@ -73,7 +73,7 @@ public:
    * @brief Setup variable method.
    *
    * @param registry Type registry.
-   * @return true on successful variable setup.
+   * @throw VariableSetupException when the variable could not be setup properly.
    */
   void Setup(const sup::dto::AnyTypeRegistry* registry = nullptr);
 

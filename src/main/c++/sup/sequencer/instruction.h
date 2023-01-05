@@ -86,8 +86,9 @@ public:
 
   /**
    * @brief Setup method.
+   *
    * @param proc Procedure containing Workspace and instruction declarations.
-   * @return true on successful instruction setup.
+   * @throw InstructionSetupException when the instruction could not be setup properly.
    */
   void Setup(const Procedure& proc);
 

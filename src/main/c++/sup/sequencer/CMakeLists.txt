@@ -28,6 +28,7 @@ if (SEQUENCER_CODAC)
   target_link_libraries(sup-sequencer-shared PUBLIC sup-dto PRIVATE sup-xml)
 else()
   find_package(sup-dto REQUIRED)
+  find_package(sup-utils REQUIRED)
   target_link_libraries(sup-sequencer-shared PUBLIC sup-dto::sup-dto PRIVATE sup-utils::sup-xml)
 endif()
 

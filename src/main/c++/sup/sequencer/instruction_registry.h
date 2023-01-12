@@ -108,7 +108,7 @@ InstructionRegistry &GlobalInstructionRegistry();
    @endcode
  */
 template <class T>
-bool RegisterInstruction(InstructionRegistry &registry)
+bool RegisterInstruction(InstructionRegistry& registry)
 {
   auto constructor = []() { return static_cast<Instruction *>(new T()); };
   return registry.RegisterInstruction(T::Type, constructor);

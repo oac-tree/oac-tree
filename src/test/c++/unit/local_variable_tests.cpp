@@ -386,7 +386,7 @@ LocalVariableTest::~LocalVariableTest() = default;
 std::vector<std::string> LocalVariableTest::GetFullAttributeListNames()
 {
   std::vector<std::string> result;
-  std::transform(attr_full.begin(), attr_full.end(), result.begin(),
+  std::transform(attr_full.begin(), attr_full.end(), std::back_inserter(result),
                  [](const Attribute& attr){
                   return attr.first;
                  });

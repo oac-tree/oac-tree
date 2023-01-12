@@ -199,7 +199,7 @@ private:
   /**
    * @brief Mutex for concurrent access of UserInterface.
    */
-  mutable std::mutex _ui_mutex;
+  mutable std::mutex m_ui_mutex;
 };
 
 }  // namespace sequencer

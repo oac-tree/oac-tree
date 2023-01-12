@@ -40,13 +40,11 @@ namespace sequencer
 {
 // Static assertion
 static_assert(std::is_same<AttributeMap::map_type::iterator::value_type,
-                           std::pair<const std::string, std::string>>::value,
-              "Exposed iterator must point to std::pair<const std::string, "
-              "std::string>");
+                           std::pair<std::string, std::string>>::value,
+              "Exposed iterator must point to std::pair<std::string, std::string>");
 static_assert(std::is_same<AttributeMap::map_type::const_iterator::value_type,
-                           std::pair<const std::string, std::string>>::value,
-              "Exposed const_iterator must point to std::pair<const std::string, "
-              "std::string>");
+                           std::pair<std::string, std::string>>::value,
+              "Exposed const_iterator must point to std::pair<const std::string, std::string>");
 
 namespace attributes
 {
@@ -61,89 +59,124 @@ AttributeMap::AttributeMap() = default;
 
 AttributeMap::~AttributeMap() = default;
 
-AttributeMap::AttributeMap(const std::vector<Attribute>& attr_list)
+AttributeMap::AttributeMap(const AttributeMap::map_type& attr_list)
+  : m_attributes{}
 {
-  for (const auto& attr : attr_list)
+  for (auto& attr : attr_list)
   {
-    _attributes.emplace(attr.first, attr.second);
+    AddAttribute(attr.first, attr.second);
   }
 }
 
-AttributeMap::AttributeMap(const AttributeMap &) = default;
-AttributeMap::AttributeMap(AttributeMap &&) = default;
+AttributeMap::AttributeMap(const AttributeMap&) = default;
+AttributeMap::AttributeMap(AttributeMap&&) = default;
 
-AttributeMap &AttributeMap::operator=(const AttributeMap &) = default;
-AttributeMap &AttributeMap::operator=(AttributeMap &&) = default;
+AttributeMap& AttributeMap::operator=(const AttributeMap&) = default;
+AttributeMap& AttributeMap::operator=(AttributeMap&&) = default;
 
-bool AttributeMap::operator==(const AttributeMap &other) const
+bool AttributeMap::operator==(const AttributeMap& other) const
 {
-  return _attributes == other._attributes;
+  return m_attributes == other.m_attributes;
 }
-bool AttributeMap::operator!=(const AttributeMap &other) const
+bool AttributeMap::operator!=(const AttributeMap& other) const
 {
   return !this->operator==(other);
 }
 
 size_t AttributeMap::GetNumberOfAttributes() const
 {
-  return _attributes.size();
+  return m_attributes.size();
 }
 
-bool AttributeMap::HasAttribute(const std::string &name) const
+bool AttributeMap::HasAttribute(const std::string& name) const
 {
-  return _attributes.find(name) != _attributes.end();
+  auto it = std::find_if(m_attributes.begin(), m_attributes.end(),
+                         [name](const Attribute& attr)
+                         {
+                           return attr.first == name;
+                         });
+  return it != m_attributes.end();
 }
 
-std::string AttributeMap::GetAttribute(const std::string &name) const
+std::string AttributeMap::GetAttribute(const std::string& name) const
 {
-  if (!HasAttribute(name))
+  auto it = std::find_if(m_attributes.begin(), m_attributes.end(),
+                         [name](const Attribute& attr)
+                         {
+                           return attr.first == name;
+                         });
+  if (it == m_attributes.end())
   {
     return {};
   }
-  return _attributes.at(name);
+  return it->second;
 }
 
 std::vector<std::string> AttributeMap::GetAttributeNames() const
 {
   std::vector<std::string> result;
-  for (auto &pair : _attributes)
-  {
-    result.push_back(pair.first);
-  }
+  std::transform(m_attributes.begin(), m_attributes.end(), std::back_inserter(result),
+                 [](const Attribute& attr)
+                 {
+                  return attr.first;
+                 });
   return result;
 }
 
-bool AttributeMap::AddAttribute(const std::string &name, const std::string &value)
+bool AttributeMap::AddAttribute(const std::string& name, const std::string& value)
 {
   if (HasAttribute(name))
   {
     return false;
   }
-  _attributes[name] = value;
+  m_attributes.emplace_back(name, value);
   return true;
 }
 
-void AttributeMap::SetAttribute(const std::string &name, const std::string &value)
+void AttributeMap::SetAttribute(const std::string& name, const std::string& value)
 {
-  _attributes[name] = value;
+  auto it = std::find_if(m_attributes.begin(), m_attributes.end(),
+                         [name](const Attribute& attr)
+                         {
+                           return attr.first == name;
+                         });
+  if (it == m_attributes.end())
+  {
+    m_attributes.emplace_back(name, value);
+  }
+  else
+  {
+    it->second = value;
+  }
 }
 
 void AttributeMap::Clear()
 {
-  _attributes.clear();
+  m_attributes.clear();
 }
 
-bool AttributeMap::Remove(const std::string &name)
+bool AttributeMap::Remove(const std::string& name)
 {
-  return _attributes.erase(name) > 0;
+  auto it = std::find_if(m_attributes.begin(), m_attributes.end(),
+                         [name](const Attribute& attr)
+                         {
+                           return attr.first == name;
+                         });
+  if (it != m_attributes.end())
+  {
+    m_attributes.erase(it);
+    return true;
+  }
+  return false;
 }
 
-bool AttributeMap::InitialiseVariableAttributes(const AttributeMap &source)
+bool AttributeMap::InitialiseVariableAttributes(const AttributeMap& source)
 {
   bool result = true;
-  for (const auto &attr_name : GetAttributeNames())
+  for (auto& attr : m_attributes)
   {
-    auto attr_value = GetAttribute(attr_name);
+    auto attr_name = attr.first;
+    auto attr_value = attr.second;
     if (StartsWith(attr_value, DefaultSettings::VAR_ATTRIBUTE_CHAR))
     {
       auto var_name = attr_value.substr(1);
@@ -153,7 +186,7 @@ bool AttributeMap::InitialiseVariableAttributes(const AttributeMap &source)
         continue;
       }
       auto var_value = source.GetAttribute(var_name);
-      _attributes[attr_name] = var_value;
+      attr.second = var_value;
     }
   }
   return result;
@@ -165,7 +198,7 @@ bool AttributeMap::InitialiseVariableAttributes(const AttributeMap &source)
 
 namespace
 {
-bool StartsWith(const std::string &str, char c)
+bool StartsWith(const std::string& str, char c)
 {
   if (str.empty())
   {

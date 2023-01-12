@@ -238,7 +238,7 @@ bool Procedure::AddAttribute(const std::string &name, const std::string &value)
   return m_attributes.AddAttribute(name, value);
 }
 
-bool Procedure::AddAttributes(const std::vector<Attribute>& attributes)
+bool Procedure::AddAttributes(const AttributeMap& attributes)
 {
   bool result = true;
   for (auto &attr : attributes)

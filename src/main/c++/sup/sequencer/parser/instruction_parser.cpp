@@ -147,11 +147,11 @@ static void AddChildrenToCompound(CompoundInstruction *compound,
 
 static std::string GetNameAttribute(const sup::xml::TreeData& data)
 {
-  if (!data.HasAttribute("name"))
+  if (!data.HasAttribute(attributes::NAME_ATTRIBUTE))
   {
     return {};
   }
-  return data.GetAttribute("name");
+  return data.GetAttribute(attributes::NAME_ATTRIBUTE);
 }
 
 }  // namespace sequencer

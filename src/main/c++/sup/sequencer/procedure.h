@@ -58,51 +58,9 @@ class Workspace;
  */
 class Procedure
 {
-private:
-  std::vector<std::unique_ptr<Instruction>> m_instructions;
-  std::unique_ptr<Workspace> m_workspace;
-
-  AttributeMap m_attributes;
-
-  /**
-   * @brief Name of file from which this procedure was loaded (if loaded form file).
-   *
-   * @note This filename may include the relative or absolute paths.
-   */
-  std::string m_filename;
-
-  // Cache for other procedures loaded from files and to be used by include nodes.
-  mutable std::map<std::string, std::unique_ptr<Procedure>> m_procedure_cache;
-
-  /**
-   * @brief Load a procedure from file or cache.
-   *
-   * @param filename Filename of the procedure file.
-   * @return Pointer to the procedure or nullptr in case of failure to load the procedure.
-   *
-   * @details This method returns a pointer to a const Procedure. The Procedure itself
-   * is owned by the cache.
-   */
-  const Procedure* LoadProcedure(const std::string& filename) const;
-
-  /**
-   * @brief Clear the cached procedures.
-   *
-   * @details This method needs to be called anytime there is a possibility of changes
-   * to the loaded files on disk.
-   */
-  void ClearProcedureCache() const;
-
-protected:
 public:
-  /**
-   * @brief Constructor.
-   */
   Procedure();
 
-  /**
-   * @brief Destructor.
-   */
   ~Procedure();
 
   /**
@@ -271,7 +229,7 @@ public:
    * @param attributes List of attributes.
    * @return true when successful.
    */
-  bool AddAttributes(const std::vector<Attribute>& attributes);
+  bool AddAttributes(const AttributeMap& attributes);
 
   /**
    * @brief Returns pointer to internal workspace.
@@ -311,6 +269,41 @@ public:
    * @brief Name of attribute that defines the timeout between ticks.
    */
   static const std::string TICK_TIMEOUT_ATTRIBUTE_NAME;
+
+private:
+  std::vector<std::unique_ptr<Instruction>> m_instructions;
+  std::unique_ptr<Workspace> m_workspace;
+
+  AttributeMap m_attributes;
+
+  /**
+   * @brief Name of file from which this procedure was loaded (if loaded form file).
+   *
+   * @note This filename may include the relative or absolute paths.
+   */
+  std::string m_filename;
+
+  // Cache for other procedures loaded from files and to be used by include nodes.
+  mutable std::map<std::string, std::unique_ptr<Procedure>> m_procedure_cache;
+
+  /**
+   * @brief Load a procedure from file or cache.
+   *
+   * @param filename Filename of the procedure file.
+   * @return Pointer to the procedure or nullptr in case of failure to load the procedure.
+   *
+   * @details This method returns a pointer to a const Procedure. The Procedure itself
+   * is owned by the cache.
+   */
+  const Procedure* LoadProcedure(const std::string& filename) const;
+
+  /**
+   * @brief Clear the cached procedures.
+   *
+   * @details This method needs to be called anytime there is a possibility of changes
+   * to the loaded files on disk.
+   */
+  void ClearProcedureCache() const;
 };
 
 }  // namespace sequencer

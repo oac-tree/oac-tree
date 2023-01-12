@@ -54,8 +54,8 @@ public:
   bool IsValid() const;
 
 private:
-  T* cb_manager;
-  void* listener;
+  T* m_cb_manager;
+  void* m_listener;
 };
 
 /**
@@ -100,9 +100,9 @@ private:
 };
 
 template <typename T>
-CallbackGuard<T>::CallbackGuard(T* cb_manager_, void* listener_)
-  : cb_manager{cb_manager_}
-  , listener{listener_}
+CallbackGuard<T>::CallbackGuard(T* cb_manager, void* listener)
+  : m_cb_manager{cb_manager}
+  , m_listener{listener}
 {}
 
 template <typename T>
@@ -110,16 +110,16 @@ CallbackGuard<T>::~CallbackGuard()
 {
   if (IsValid())
   {
-    cb_manager->UnregisterListener(listener);
+    m_cb_manager->UnregisterListener(m_listener);
   }
 }
 
 template <typename T>
 CallbackGuard<T>::CallbackGuard(CallbackGuard&& other)
-  : cb_manager{other.cb_manager}
-  , listener(other.listener)
+  : m_cb_manager{other.m_cb_manager}
+  , m_listener(other.m_listener)
 {
-  other.listener = nullptr;
+  other.m_listener = nullptr;
 }
 
 template <typename T>
@@ -133,14 +133,14 @@ CallbackGuard<T>& CallbackGuard<T>::operator=(CallbackGuard&& other)
 template <typename T>
 void CallbackGuard<T>::Swap(CallbackGuard& other)
 {
-  std::swap(cb_manager, other.cb_manager);
-  std::swap(listener, other.listener);
+  std::swap(m_cb_manager, other.m_cb_manager);
+  std::swap(m_listener, other.m_listener);
 }
 
 template <typename T>
 bool CallbackGuard<T>::IsValid() const
 {
-  return cb_manager != nullptr && listener != nullptr;
+  return m_cb_manager != nullptr && m_listener != nullptr;
 }
 
 template <typename... Args>

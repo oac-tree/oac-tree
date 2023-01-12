@@ -26,14 +26,13 @@ target_sources(unit-tests
         ${CMAKE_CURRENT_LIST_DIR}/output_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/parallel_sequence_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/procedure_tests.cpp
-        # ${CMAKE_CURRENT_LIST_DIR}/procedure_to_treedata_utils_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/procedure_to_treedata_utils_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/register_type_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/repeat_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/reset_variable_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/runner_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/sequence_parser_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/sequence_workspace_tests.cpp
-        # ${CMAKE_CURRENT_LIST_DIR}/treedata_xml_write_utils_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/unit_test_helper.cpp
         ${CMAKE_CURRENT_LIST_DIR}/user_choice_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/user_interface_tests.cpp

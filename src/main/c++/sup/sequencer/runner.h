@@ -37,14 +37,6 @@ class UserInterface;
  */
 class Runner
 {
-private:
-  Procedure* _proc;
-
-  UserInterface* _ui;
-
-  std::atomic_bool halt;
-
-protected:
 public:
   /**
    * @brief Constructor.
@@ -52,9 +44,6 @@ public:
    */
   Runner(UserInterface* ui);
 
-  /**
-   * @brief Destructor.
-   */
   ~Runner();
 
   /**
@@ -91,6 +80,11 @@ public:
    * @return True if procedure has seperate threads executing.
    */
   bool IsRunning() const;
+
+private:
+  Procedure* m_proc;
+  UserInterface* m_ui;
+  std::atomic_bool m_halt;
 };
 
 }  // namespace sequencer

@@ -45,36 +45,15 @@ bool AttributeAsBool(const std::string& value);
 class AttributeMap
 {
 public:
-  using map_type = std::map<std::string, std::string>;
+  using map_type = std::vector<Attribute>;
 
-private:
-  /**
-   * @brief Implementation of the map of attributes.
-   */
-  map_type _attributes;
-
-protected:
-public:
-  /**
-   * @brief Constructor.
-   */
   AttributeMap();
-  AttributeMap(const std::vector<Attribute>& attr_list);
-
-  /**
-   * @brief Destructor.
-   */
   ~AttributeMap();
 
-  /**
-   * @brief Copy/move Constructor.
-   */
+  AttributeMap(const map_type& attr_list);
+
   AttributeMap(const AttributeMap& other);
   AttributeMap(AttributeMap&& other);
-
-  /**
-   * @brief Copy/move Assignment.
-   */
   AttributeMap& operator=(const AttributeMap& other);
   AttributeMap& operator=(AttributeMap&& other);
 
@@ -85,14 +64,11 @@ public:
   bool operator!=(const AttributeMap& other) const;
 
   /**
-   * @brief Iterator forwarding.
+   * @brief const iterator forwarding.
    */
-  using iterator = map_type::iterator;
   using const_iterator = map_type::const_iterator;
-  iterator begin() { return _attributes.begin(); }
-  iterator end() { return _attributes.end(); }
-  const_iterator begin() const { return _attributes.begin(); }
-  const_iterator end() const { return _attributes.end(); }
+  const_iterator begin() const { return m_attributes.begin(); }
+  const_iterator end() const { return m_attributes.end(); }
 
   /**
    * @brief Get number of attributes in map.
@@ -164,6 +140,9 @@ public:
    * @return true when all variable attributes were initialised.
    */
   bool InitialiseVariableAttributes(const AttributeMap& source);
+
+private:
+  map_type m_attributes;
 };
 
 }  // namespace sequencer

@@ -106,7 +106,7 @@ VariableRegistry &GlobalVariableRegistry();
    @endcode
  */
 template <class T>
-bool RegisterVariable(VariableRegistry &registry)
+bool RegisterVariable(VariableRegistry& registry)
 {
   auto constructor = []() { return static_cast<Variable *>(new T()); };
   return registry.RegisterVariable(T::Type, constructor);

@@ -44,44 +44,6 @@ namespace sequencer
  */
 class Workspace
 {
-private:
-  /**
-   * @brief Map from Variable names to Variable pointers.
-   *
-   * @note Workspace owns its Variable objects.
-   */
-  std::map<std::string, std::unique_ptr<Variable>> m_var_map;
-
-  /**
-   * @brief Threadsafe list of callback objects.
-   */
-  NamedCallbackManager<const sup::dto::AnyValue&> m_callbacks;
-
-  std::unique_ptr<sup::dto::AnyTypeRegistry> m_type_registry;
-
-  /**
-   * @brief Check if the given Variable name is already present.
-   *
-   * @param name Name to check.
-   * @return true if Variable name is already present.
-   */
-  bool ContainsVariableName(const std::string& name) const;
-
-  /**
-   * @brief Check if the Variable pointer is already present.
-   *
-   * @param var Variable pointer to check.
-   * @return true if Variable pointer is already present.
-   */
-  bool ContainsVariablePointer(Variable* var) const;
-
-  /**
-   * @brief Method which is called if a variable is updated.
-   *
-   * @param name Variable name.
-   * @param name Variable's new value.
-   */
-  void VariableUpdated(const std::string name, const sup::dto::AnyValue& value);
 
 public:
   Workspace();
@@ -215,6 +177,45 @@ public:
    */
   bool RegisterCallback(const std::string& name,
                         const std::function<void(const sup::dto::AnyValue&)>& cb, void* listener);
+
+private:
+  /**
+   * @brief Map from Variable names to Variable pointers.
+   *
+   * @note Workspace owns its Variable objects.
+   */
+  std::map<std::string, std::unique_ptr<Variable>> m_var_map;
+
+  /**
+   * @brief Threadsafe list of callback objects.
+   */
+  NamedCallbackManager<const sup::dto::AnyValue&> m_callbacks;
+
+  std::unique_ptr<sup::dto::AnyTypeRegistry> m_type_registry;
+
+  /**
+   * @brief Check if the given Variable name is already present.
+   *
+   * @param name Name to check.
+   * @return true if Variable name is already present.
+   */
+  bool ContainsVariableName(const std::string& name) const;
+
+  /**
+   * @brief Check if the Variable pointer is already present.
+   *
+   * @param var Variable pointer to check.
+   * @return true if Variable pointer is already present.
+   */
+  bool ContainsVariablePointer(Variable* var) const;
+
+  /**
+   * @brief Method which is called if a variable is updated.
+   *
+   * @param name Variable name.
+   * @param name Variable's new value.
+   */
+  void VariableUpdated(const std::string name, const sup::dto::AnyValue& value);
 };
 
 std::pair<std::string, std::string> SplitFieldName(const std::string &fullname);

@@ -35,18 +35,18 @@ namespace sequencer
 static int TickTimeoutMs(Procedure* procedure);
 
 Runner::Runner(UserInterface* ui)
-  : _proc{nullptr}
-  , _ui{ui}
-  , halt{false}
+  : m_proc{nullptr}
+  , m_ui{ui}
+  , m_halt{false}
 {}
 
 Runner::~Runner() = default;
 
 void Runner::SetProcedure(Procedure* procedure)
 {
-  _proc = procedure;
-  UserInterface* ui = _ui;
-  _proc->RegisterGenericCallback(
+  m_proc = procedure;
+  UserInterface* ui = m_ui;
+  m_proc->RegisterGenericCallback(
     [ui](const std::string& name, const sup::dto::AnyValue& value)
     {
       ui->VariableUpdated(name, value);
@@ -55,12 +55,12 @@ void Runner::SetProcedure(Procedure* procedure)
 
 void Runner::ExecuteProcedure()
 {
-  halt.store(false);
-  if (_proc)
+  m_halt.store(false);
+  if (m_proc)
   {
-    auto sleep_time_ms = TickTimeoutMs(_proc);
+    auto sleep_time_ms = TickTimeoutMs(m_proc);
 
-    while (!IsFinished() && !halt.load())
+    while (!IsFinished() && !m_halt.load())
     {
       ExecuteSingle();
       if (IsRunning())
@@ -73,42 +73,42 @@ void Runner::ExecuteProcedure()
 
 void Runner::ExecuteSingle()
 {
-  if (_proc)
+  if (m_proc)
   {
-    _ui->StartSingleStep();
-    _proc->ExecuteSingle(_ui);
-    _ui->EndSingleStep();
+    m_ui->StartSingleStep();
+    m_proc->ExecuteSingle(m_ui);
+    m_ui->EndSingleStep();
   }
 }
 
 void Runner::Halt()
 {
-  halt.store(true);
-  if (_proc)
+  m_halt.store(true);
+  if (m_proc)
   {
-    _proc->Halt();
+    m_proc->Halt();
   }
 }
 
 bool Runner::IsFinished() const
 {
-  if (!_proc)
+  if (!m_proc)
   {
     return true;
   }
 
-  auto status = _proc->GetStatus();
+  auto status = m_proc->GetStatus();
   return (status == ExecutionStatus::SUCCESS || status == ExecutionStatus::FAILURE);
 }
 
 bool Runner::IsRunning() const
 {
-  if (!_proc)
+  if (!m_proc)
   {
     return false;
   }
 
-  auto status = _proc->GetStatus();
+  auto status = m_proc->GetStatus();
   return (status == ExecutionStatus::RUNNING);
 }
 

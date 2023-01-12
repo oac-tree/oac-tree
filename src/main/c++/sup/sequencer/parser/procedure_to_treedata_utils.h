@@ -26,22 +26,24 @@
 
 namespace sup
 {
+namespace xml
+{
+class TreeData;
+}
 namespace sequencer
 {
-
-class TreeData;
 class Procedure;
 class Variable;
 class Instruction;
 class Workspace;
 
-std::unique_ptr<TreeData> ToTreeData(const Procedure& procedure);
+std::unique_ptr<sup::xml::TreeData> ToTreeData(const Procedure& procedure);
 
-std::unique_ptr<TreeData> ToTreeData(const Variable& variable);
+std::unique_ptr<sup::xml::TreeData> ToTreeData(const Variable& variable);
 
-std::unique_ptr<TreeData> ToTreeData(const Workspace& workspace);
+std::unique_ptr<sup::xml::TreeData> ToTreeData(const Workspace& workspace);
 
-std::unique_ptr<TreeData> ToTreeData(const Instruction& instruction);
+std::unique_ptr<sup::xml::TreeData> ToTreeData(const Instruction& instruction);
 
 }  // namespace sequencer
 

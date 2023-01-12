@@ -170,7 +170,7 @@ public:
    * @param attributes Attribute list.
    * @return true when successful.
    */
-  bool AddAttributes(const AttributeMap& attributes);
+  bool AddAttributes(const std::vector<Attribute>& attributes);
 
 protected:
   /**

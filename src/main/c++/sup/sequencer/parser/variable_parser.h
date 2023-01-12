@@ -22,8 +22,9 @@
 #ifndef SUP_SEQUENCER_VARIABLE_PARSER_H_
 #define SUP_SEQUENCER_VARIABLE_PARSER_H_
 
-#include <sup/sequencer/tree_data.h>
 #include <sup/sequencer/variable.h>
+
+#include <sup/xml/tree_data.h>
 
 #include <memory>
 #include <string>
@@ -35,7 +36,7 @@ namespace sequencer
 /**
  * @brief Parse to Variable.
  */
-std::unique_ptr<Variable> ParseVariable(const TreeData& data);
+std::unique_ptr<Variable> ParseVariable(const sup::xml::TreeData& data);
 
 }  // namespace sequencer
 

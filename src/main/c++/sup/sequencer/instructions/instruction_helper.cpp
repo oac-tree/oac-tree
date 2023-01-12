@@ -97,7 +97,8 @@ Instruction* CloneInstruction(const Instruction* instruction)
   return result.release();
 }
 
-bool InitialiseVariableAttributes(Instruction& instruction, const AttributeMap& attributes)
+bool InitialiseVariableAttributes(Instruction& instruction,
+                                  const AttributeMap& attributes)
 {
   bool result = instruction.InitialiseVariableAttributes(attributes);
   for (auto child : instruction.ChildInstructions())

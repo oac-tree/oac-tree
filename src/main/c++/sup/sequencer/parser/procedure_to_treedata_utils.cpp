@@ -25,9 +25,10 @@
 #include <sup/sequencer/constants.h>
 #include <sup/sequencer/instruction.h>
 #include <sup/sequencer/procedure.h>
-#include <sup/sequencer/tree_data.h>
 #include <sup/sequencer/variable.h>
 #include <sup/sequencer/workspace.h>
+
+#include <sup/xml/tree_data.h>
 
 #include <set>
 
@@ -39,10 +40,9 @@ std::unique_ptr<T> make_unique(Args&&... args)
   return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
 }
 
-std::unique_ptr<sup::sequencer::TreeData> CreateTreeData(
-    const sup::sequencer::Instruction* instruction)
+std::unique_ptr<sup::xml::TreeData> CreateTreeData(const sup::sequencer::Instruction* instruction)
 {
-  auto tree_data = make_unique<sup::sequencer::TreeData>(instruction->GetType());
+  auto tree_data = make_unique<sup::xml::TreeData>(instruction->GetType());
   for (const auto& it : instruction->GetAttributes())
   {
     tree_data->AddAttribute(it.first, it.second);
@@ -50,7 +50,7 @@ std::unique_ptr<sup::sequencer::TreeData> CreateTreeData(
   return tree_data;
 }
 
-void Iterate(const sup::sequencer::Instruction* instruction, sup::sequencer::TreeData* parent)
+void Iterate(const sup::sequencer::Instruction* instruction, sup::xml::TreeData* parent)
 {
   for (auto& child : instruction->ChildInstructions())
   {
@@ -66,23 +66,20 @@ namespace sup
 {
 namespace sequencer
 {
-std::unique_ptr<TreeData> ToTreeData(const Procedure& procedure)
+std::unique_ptr<sup::xml::TreeData> ToTreeData(const Procedure& procedure)
 {
-  auto result = make_unique<TreeData>(Constants::PROCEDURE_ELEMENT_NAME);
-
+  auto result = make_unique<sup::xml::TreeData>(Constants::PROCEDURE_ELEMENT_NAME);
   for (auto instruction : procedure.GetInstructions())
   {
     result->AddChild(*ToTreeData(*instruction));
   }
-
   result->AddChild(*ToTreeData(*procedure.GetWorkspace()));
-
   return result;
 }
 
-std::unique_ptr<TreeData> ToTreeData(const Variable& variable)
+std::unique_ptr<sup::xml::TreeData> ToTreeData(const Variable& variable)
 {
-  auto result = make_unique<TreeData>(variable.GetType());
+  auto result = make_unique<sup::xml::TreeData>(variable.GetType());
   for (const auto& it : variable.GetAttributes())
   {
     result->AddAttribute(it.first, it.second);
@@ -90,18 +87,17 @@ std::unique_ptr<TreeData> ToTreeData(const Variable& variable)
   return result;
 }
 
-std::unique_ptr<TreeData> ToTreeData(const Workspace& workspace)
+std::unique_ptr<sup::xml::TreeData> ToTreeData(const Workspace& workspace)
 {
-  auto result = make_unique<TreeData>(Constants::WORKSPACE_ELEMENT_NAME);
+  auto result = make_unique<sup::xml::TreeData>(Constants::WORKSPACE_ELEMENT_NAME);
   for (auto variable : workspace.GetVariables())
   {
     result->AddChild(*ToTreeData(*variable));
   }
-
   return result;
 }
 
-std::unique_ptr<TreeData> ToTreeData(const Instruction& instruction)
+std::unique_ptr<sup::xml::TreeData> ToTreeData(const Instruction& instruction)
 {
   auto tree_data = CreateTreeData(&instruction);
   Iterate(&instruction, tree_data.get());

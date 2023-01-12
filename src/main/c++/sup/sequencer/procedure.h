@@ -268,10 +268,10 @@ public:
   /**
    * @brief Add all attributes from a given map.
    *
-   * @param attributes Attribute map.
+   * @param attributes List of attributes.
    * @return true when successful.
    */
-  bool AddAttributes(const AttributeMap& attributes);
+  bool AddAttributes(const std::vector<Attribute>& attributes);
 
   /**
    * @brief Returns pointer to internal workspace.

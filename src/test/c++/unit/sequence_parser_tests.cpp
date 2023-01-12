@@ -29,6 +29,7 @@
 #include <sup/sequencer/instruction_registry.h>
 
 #include <sup/dto/anyvalue.h>
+#include <sup/xml/exceptions.h>
 
 #include <gtest/gtest.h>
 
@@ -121,11 +122,11 @@ TEST_F(SequencerParserTest, XMLSyntaxError)
     </Sequence>
 )RAW";
 
-  EXPECT_THROW(ParseProcedureString(body), ParseException);
+  EXPECT_THROW(ParseProcedureString(body), sup::xml::ParseException);
 
   const std::string file_name("syntax_error.xml");
   sup::UnitTestHelper::TemporaryTestFile test_file(file_name, body);
-  EXPECT_THROW(ParseProcedureFile(file_name), ParseException);
+  EXPECT_THROW(ParseProcedureFile(file_name), sup::xml::ParseException);
 }
 
 TEST_F(SequencerParserTest, NonExistentInstructionError)

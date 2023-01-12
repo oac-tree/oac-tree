@@ -61,6 +61,14 @@ AttributeMap::AttributeMap() = default;
 
 AttributeMap::~AttributeMap() = default;
 
+AttributeMap::AttributeMap(const std::vector<Attribute>& attr_list)
+{
+  for (const auto& attr : attr_list)
+  {
+    _attributes.emplace(attr.first, attr.second);
+  }
+}
+
 AttributeMap::AttributeMap(const AttributeMap &) = default;
 AttributeMap::AttributeMap(AttributeMap &&) = default;
 

@@ -28,9 +28,9 @@ namespace sup
 {
 namespace sequencer
 {
-std::unique_ptr<Variable> ParseVariable(const TreeData& data)
+std::unique_ptr<Variable> ParseVariable(const sup::xml::TreeData& data)
 {
-  auto var_type = data.GetType();
+  auto var_type = data.GetNodeName();
   if (!GlobalVariableRegistry().IsRegisteredVariableName(var_type))
   {
     std::string error_message =

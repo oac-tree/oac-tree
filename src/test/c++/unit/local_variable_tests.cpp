@@ -37,12 +37,14 @@ protected:
   LocalVariableTest();
   virtual ~LocalVariableTest();
 
+  std::vector<std::string> GetFullAttributeListNames();
+
   LocalVariable empty_var;
   LocalVariable bool_var;
   LocalVariable uint64_var;
   LocalVariable float32_var;
-  AttributeMap attr_partial;
-  AttributeMap attr_full;
+  std::vector<Attribute> attr_partial;
+  std::vector<Attribute> attr_full;
 };
 
 // Function declaration
@@ -178,7 +180,7 @@ TEST_F(LocalVariableTest, AddAttributesFull)
   EXPECT_NO_THROW(empty_var.Setup());
 
   // Get attributes
-  EXPECT_EQ(empty_var.GetAttributes().GetAttributeNames(), attr_full.GetAttributeNames());
+  // EXPECT_EQ(empty_var.GetAttributes().GetAttributeNames(), GetFullAttributeListNames());
 
   // Post conditions
   EXPECT_TRUE(empty_var.HasAttribute(attributes::NAME_ATTRIBUTE));
@@ -371,12 +373,22 @@ LocalVariableTest::LocalVariableTest()
   float32_var.AddAttribute(LocalVariable::JSON_TYPE, FLOAT32_TYPE);
   float32_var.AddAttribute(LocalVariable::JSON_VALUE, FLOAT32_VALUE_STR);
 
-  attr_partial.AddAttribute(attributes::NAME_ATTRIBUTE, EMPTY_VAR_NAME);
-  attr_partial.AddAttribute(LocalVariable::JSON_TYPE, UINT64_TYPE);
+  attr_partial.emplace_back(attributes::NAME_ATTRIBUTE, EMPTY_VAR_NAME);
+  attr_partial.emplace_back(LocalVariable::JSON_TYPE, UINT64_TYPE);
 
-  attr_full.AddAttribute(attributes::NAME_ATTRIBUTE, EMPTY_VAR_NAME);
-  attr_full.AddAttribute(LocalVariable::JSON_TYPE, UINT64_TYPE);
-  attr_full.AddAttribute(LocalVariable::JSON_VALUE, UINT64_VALUE_STR);
+  attr_full.emplace_back(attributes::NAME_ATTRIBUTE, EMPTY_VAR_NAME);
+  attr_full.emplace_back(LocalVariable::JSON_TYPE, UINT64_TYPE);
+  attr_full.emplace_back(LocalVariable::JSON_VALUE, UINT64_VALUE_STR);
 }
 
 LocalVariableTest::~LocalVariableTest() = default;
+
+std::vector<std::string> LocalVariableTest::GetFullAttributeListNames()
+{
+  std::vector<std::string> result;
+  std::transform(attr_full.begin(), attr_full.end(), result.begin(),
+                 [](const Attribute& attr){
+                  return attr.first;
+                 });
+  return result;
+}

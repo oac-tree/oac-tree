@@ -124,10 +124,9 @@ bool Instruction::SetAttribute(const std::string& name, const std::string& value
 bool Instruction::AddAttributes(const AttributeMap& attributes)
 {
   bool result = true;
-  for (const auto &name : attributes.GetAttributeNames())
+  for (const auto &attr : attributes)
   {
-    auto value = attributes.GetAttribute(name);
-    result = AddAttribute(name, value) && result;
+    result = AddAttribute(attr.first, attr.second) && result;
   }
   return result;
 }

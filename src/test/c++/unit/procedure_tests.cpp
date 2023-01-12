@@ -33,6 +33,8 @@
 #include <sup/sequencer/variable.h>
 #include <sup/sequencer/variable_registry.h>
 
+#include <sup/xml/exceptions.h>
+
 #include <gtest/gtest.h>
 
 #include <algorithm>
@@ -100,7 +102,7 @@ TEST_F(ProcedureTest, DefaultConstructed)
   instructions = empty_proc.GetInstructions(filename);
   EXPECT_EQ(instructions.size(), 1);
   std::string wrong_filename = "WrongFile.xml";
-  EXPECT_THROW(empty_proc.GetInstructions(wrong_filename), ParseException);
+  EXPECT_THROW(empty_proc.GetInstructions(wrong_filename), sup::xml::ParseException);
 
   // Variables
   auto variables = empty_proc.VariableNames();

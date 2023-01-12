@@ -32,18 +32,21 @@ namespace sup
 {
 namespace sequencer
 {
-static void AddChildInstructions(Instruction *instruction, const std::vector<TreeData> &children,
+static void AddChildInstructions(Instruction *instruction,
+                                 const std::vector<sup::xml::TreeData> &children,
                                  const std::string &filename);
 static void AddChildrenToDecorator(DecoratorInstruction *decorator,
-                                   const std::vector<TreeData> &children,
+                                   const std::vector<sup::xml::TreeData> &children,
                                    const std::string &filename);
 static void AddChildrenToCompound(CompoundInstruction *compound,
-                                  const std::vector<TreeData> &children,
+                                  const std::vector<sup::xml::TreeData> &children,
                                   const std::string &filename);
+static std::string GetNameAttribute(const sup::xml::TreeData& data);
 
-std::unique_ptr<Instruction> ParseInstruction(const TreeData &data, const std::string &filename)
+std::unique_ptr<Instruction> ParseInstruction(const sup::xml::TreeData &data,
+                                              const std::string &filename)
 {
-  auto instr_type = data.GetType();
+  auto instr_type = data.GetNodeName();
   if (!GlobalInstructionRegistry().IsRegisteredInstructionName(instr_type))
   {
     std::string error_message = "sup::sequencer::ParseInstruction(): trying to create unregistered "
@@ -65,7 +68,8 @@ std::unique_ptr<Instruction> ParseInstruction(const TreeData &data, const std::s
   return instr;
 }
 
-static void AddChildInstructions(Instruction *instruction, const std::vector<TreeData> &children,
+static void AddChildInstructions(Instruction *instruction,
+                                 const std::vector<sup::xml::TreeData> &children,
                                  const std::string &filename)
 {
   // Only set source directory for Include instruction:
@@ -100,7 +104,7 @@ static void AddChildInstructions(Instruction *instruction, const std::vector<Tre
 }
 
 static void AddChildrenToDecorator(DecoratorInstruction *decorator,
-                                   const std::vector<TreeData> &children,
+                                   const std::vector<sup::xml::TreeData> &children,
                                    const std::string &filename)
 {
   if (children.size() != 1u)
@@ -116,15 +120,15 @@ static void AddChildrenToDecorator(DecoratorInstruction *decorator,
   {
     std::string error_message =
       "sup::sequencer::AddChildrenToDecorator(): could not create instruction from TreeData "
-      "of type: <" + children[0].GetType() +
-      "> and name [" + children[0].GetName() + "]";
+      "of type: <" + children[0].GetNodeName() +
+      "> and name [" + GetNameAttribute(children[0]) + "]";
     throw ParseException(error_message);
   }
   decorator->SetInstruction(child_instr.release());
 }
 
 static void AddChildrenToCompound(CompoundInstruction *compound,
-                                  const std::vector<TreeData> &children,
+                                  const std::vector<sup::xml::TreeData> &children,
                                   const std::string &filename)
 {
   for (auto &child : children)
@@ -134,12 +138,20 @@ static void AddChildrenToCompound(CompoundInstruction *compound,
     {
       std::string error_message =
         "sup::sequencer::AddChildrenToCompound(): could not create instruction from TreeData "
-        "of type: <" + child.GetType() +
-        "> and name [" + child.GetName() + "]";
+        "of type: <" + child.GetNodeName() + "> and name [" + GetNameAttribute(child) + "]";
       throw ParseException(error_message);
     }
     compound->PushBack(child_instr.release());
   }
+}
+
+static std::string GetNameAttribute(const sup::xml::TreeData& data)
+{
+  if (!data.HasAttribute("name"))
+  {
+    return {};
+  }
+  return data.GetAttribute("name");
 }
 
 }  // namespace sequencer

@@ -4,8 +4,5 @@ target_sources(sup-sequencer-shared
         ${CMAKE_CURRENT_LIST_DIR}/procedure_parser.cpp
         ${CMAKE_CURRENT_LIST_DIR}/procedure_to_treedata_utils.cpp
         ${CMAKE_CURRENT_LIST_DIR}/sequence_parser.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/sequence_parser_impl.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/treedata_xml_write_utils.cpp
         ${CMAKE_CURRENT_LIST_DIR}/variable_parser.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/xml_utils.cpp
 )

@@ -23,7 +23,8 @@
 #define SUP_SEQUENCER_INSTRUCTION_PARSER_H_
 
 #include <sup/sequencer/instruction.h>
-#include <sup/sequencer/tree_data.h>
+
+#include <sup/xml/tree_data.h>
 
 #include <memory>
 
@@ -37,7 +38,8 @@ namespace sequencer
  * @note If more than just the filename needs to be passed as a setting from the procedure,
  * this argument needs to be replaced by a container.
  */
-std::unique_ptr<Instruction> ParseInstruction(const TreeData& data, const std::string& filename);
+std::unique_ptr<Instruction> ParseInstruction(const sup::xml::TreeData& data,
+                                              const std::string& filename);
 
 }  // namespace sequencer
 

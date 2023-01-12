@@ -4,5 +4,4 @@ target_sources(sup-sequencer-shared
         ${CMAKE_CURRENT_LIST_DIR}/exceptions.cpp
         ${CMAKE_CURRENT_LIST_DIR}/generic_utils.cpp
         ${CMAKE_CURRENT_LIST_DIR}/log_severity.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/tree_data.cpp
 )

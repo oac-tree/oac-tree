@@ -23,8 +23,6 @@
 
 #include "unit_test_helper.h"
 
-#include <sup/sequencer/tree_data.h>
-
 #include <gtest/gtest.h>
 
 using namespace sup::sequencer;

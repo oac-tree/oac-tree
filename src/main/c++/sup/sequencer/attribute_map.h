@@ -31,6 +31,7 @@ namespace sup
 {
 namespace sequencer
 {
+using Attribute = std::pair<std::string, std::string>;
 
 namespace attributes
 {
@@ -58,6 +59,7 @@ public:
    * @brief Constructor.
    */
   AttributeMap();
+  AttributeMap(const std::vector<Attribute>& attr_list);
 
   /**
    * @brief Destructor.

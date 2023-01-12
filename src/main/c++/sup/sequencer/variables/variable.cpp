@@ -159,7 +159,7 @@ bool Variable::AddAttribute(const std::string &name, const std::string &value)
   return status;
 }
 
-bool Variable::AddAttributes(const AttributeMap &attributes)
+bool Variable::AddAttributes(const std::vector<Attribute>& attributes)
 {
   std::lock_guard<std::mutex> lock(m_access_mutex);
   bool status = true;

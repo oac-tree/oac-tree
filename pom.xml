@@ -107,11 +107,9 @@
                                 <include>sequencer-daemon</include>
                             </include>
                             <!-- Package dependencies -->
-                            <requires version="current">libxml2</requires>
                             <requires codac="true">sup-dto</requires>
                             <requires codac="true">sup-utils</requires>
                             <requires version="current" buildOnly="true">cmake</requires>
-                            <requires version="current" buildOnly="true">libxml2-devel</requires>
                             <requires codac="true" buildOnly="true">sup-dto-devel</requires>
                             <requires codac="true" buildOnly="true">sup-utils-devel</requires>
                             <!-- RPM scriptlet -->

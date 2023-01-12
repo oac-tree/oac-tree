@@ -162,7 +162,7 @@ public:
   /**
    * @brief Set all attributes from given map.
    *
-   * @param attributes Map of attributes to set.
+   * @param attributes List of attributes to set.
    * @return true when successful.
    */
   bool AddAttributes(const AttributeMap& attributes);

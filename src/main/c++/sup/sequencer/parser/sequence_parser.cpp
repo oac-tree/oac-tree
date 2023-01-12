@@ -22,12 +22,13 @@
 #include <sup/sequencer/sequence_parser.h>
 
 #include "procedure_parser.h"
-#include "sequence_parser_impl.h"
-#include "treedata_xml_write_utils.h"
 #include "procedure_to_treedata_utils.h"
 
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/generic_utils.h>
+
+#include <sup/xml/tree_data_parser.h>
+#include <sup/xml/tree_data_serialize.h>
 
 namespace sup
 {
@@ -40,7 +41,7 @@ void LoadPlugin(const std::string& name)
 
 std::unique_ptr<Procedure> ParseProcedureFile(const std::string& filename)
 {
-  auto data = ParseXMLDataFile(filename);
+  auto data = sup::xml::TreeDataFromFile(filename);
 
   if (!data)
   {
@@ -54,7 +55,7 @@ std::unique_ptr<Procedure> ParseProcedureFile(const std::string& filename)
 
 std::unique_ptr<Procedure> ParseProcedureString(const std::string& xml_str)
 {
-  auto data = ParseXMLDataString(xml_str);
+  auto data = sup::xml::TreeDataFromString(xml_str);
 
   if (!data)
   {
@@ -72,7 +73,7 @@ std::unique_ptr<Procedure> ParseProcedureString(const std::string& xml_str)
 std::string GetXMLString(const Procedure& procedure)
 {
   auto tree_data = ToTreeData(procedure);
-  return GetXMLString(*tree_data);
+  return sup::xml::TreeDataToString(*tree_data);
 }
 
 }  // namespace sequencer

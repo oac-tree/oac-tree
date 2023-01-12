@@ -23,7 +23,8 @@
 #define SUP_SEQUENCER_PROCEDURE_PARSER_H_
 
 #include <sup/sequencer/procedure.h>
-#include <sup/sequencer/tree_data.h>
+
+#include <sup/xml/tree_data.h>
 
 #include <memory>
 
@@ -31,7 +32,8 @@ namespace sup
 {
 namespace sequencer
 {
-std::unique_ptr<Procedure> ParseProcedure(const TreeData& data, const std::string& filename = {});
+std::unique_ptr<Procedure> ParseProcedure(const sup::xml::TreeData& data,
+                                          const std::string& filename = {});
 
 std::string GetFullPathName(const std::string& directory, const std::string& filename);
 

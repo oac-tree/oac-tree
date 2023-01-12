@@ -60,7 +60,8 @@ Instruction* CloneInstruction(const Instruction* instruction);
  *
  * @return true on successful initialisation of variable attributes.
  */
-bool InitialiseVariableAttributes(Instruction& instruction, const AttributeMap& attributes);
+bool InitialiseVariableAttributes(Instruction& instruction,
+                                  const AttributeMap& attributes);
 
 }  // namespace InstructionHelper
 

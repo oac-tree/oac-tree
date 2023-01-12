@@ -26,7 +26,6 @@ install(FILES
         sup/sequencer/procedure.h
         sup/sequencer/runner.h
         sup/sequencer/sequence_parser.h
-        sup/sequencer/tree_data.h
         sup/sequencer/user_interface.h
         sup/sequencer/variable_registry.h
         sup/sequencer/variable.h

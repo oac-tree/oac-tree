@@ -142,6 +142,8 @@ public:
   bool InitialiseVariableAttributes(const AttributeMap& source);
 
 private:
+  map_type::iterator Find(const std::string& name);
+  map_type::const_iterator Find(const std::string& name) const;
   map_type m_attributes;
 };
 

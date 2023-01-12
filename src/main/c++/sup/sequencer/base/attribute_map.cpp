@@ -90,21 +90,13 @@ size_t AttributeMap::GetNumberOfAttributes() const
 
 bool AttributeMap::HasAttribute(const std::string& name) const
 {
-  auto it = std::find_if(m_attributes.begin(), m_attributes.end(),
-                         [name](const Attribute& attr)
-                         {
-                           return attr.first == name;
-                         });
+  auto it = Find(name);
   return it != m_attributes.end();
 }
 
 std::string AttributeMap::GetAttribute(const std::string& name) const
 {
-  auto it = std::find_if(m_attributes.begin(), m_attributes.end(),
-                         [name](const Attribute& attr)
-                         {
-                           return attr.first == name;
-                         });
+  auto it = Find(name);
   if (it == m_attributes.end())
   {
     return {};
@@ -135,11 +127,7 @@ bool AttributeMap::AddAttribute(const std::string& name, const std::string& valu
 
 void AttributeMap::SetAttribute(const std::string& name, const std::string& value)
 {
-  auto it = std::find_if(m_attributes.begin(), m_attributes.end(),
-                         [name](const Attribute& attr)
-                         {
-                           return attr.first == name;
-                         });
+  auto it = Find(name);
   if (it == m_attributes.end())
   {
     m_attributes.emplace_back(name, value);
@@ -157,11 +145,7 @@ void AttributeMap::Clear()
 
 bool AttributeMap::Remove(const std::string& name)
 {
-  auto it = std::find_if(m_attributes.begin(), m_attributes.end(),
-                         [name](const Attribute& attr)
-                         {
-                           return attr.first == name;
-                         });
+  auto it = Find(name);
   if (it != m_attributes.end())
   {
     m_attributes.erase(it);
@@ -190,6 +174,24 @@ bool AttributeMap::InitialiseVariableAttributes(const AttributeMap& source)
     }
   }
   return result;
+}
+
+AttributeMap::map_type::iterator AttributeMap::Find(const std::string& name)
+{
+  return std::find_if(m_attributes.begin(), m_attributes.end(),
+                      [name](const Attribute& attr)
+                      {
+                        return attr.first == name;
+                      });
+}
+
+AttributeMap::map_type::const_iterator AttributeMap::Find(const std::string& name) const
+{
+  return std::find_if(m_attributes.begin(), m_attributes.end(),
+                      [name](const Attribute& attr)
+                      {
+                        return attr.first == name;
+                      });
 }
 
 }  // namespace sequencer

@@ -39,11 +39,11 @@ target_sources(unit-tests
         ${CMAKE_CURRENT_LIST_DIR}/variable_registry_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/wait_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/workspace_tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++/sup/sequencer-cli/cl_interface.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++/sup/sequencer-daemon/daemon_interface.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/../../src/sup/sequencer-cli/cl_interface.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/../../src/sup/sequencer-daemon/daemon_interface.cpp
 )
 
-target_include_directories(unit-tests PRIVATE ${CMAKE_CURRENT_LIST_DIR}/../../../main/c++)
+target_include_directories(unit-tests PRIVATE ${CMAKE_CURRENT_LIST_DIR}/../../src)
 
 find_package(GTest REQUIRED)
 
@@ -56,8 +56,8 @@ endif()
 if (SEQUENCER_CODAC)
   target_link_libraries(unit-tests PRIVATE sup-log sup-xml)
 else()
-  find_package(sup-utils REQUIRED)
-  target_link_libraries(unit-tests PRIVATE sup-utils::sup-log sup-utils::sup-xml)
+find_package(sup-utils REQUIRED)
+target_link_libraries(unit-tests PRIVATE sup-utils::sup-log sup-utils::sup-xml)
 endif()
 
 gtest_discover_tests(unit-tests)

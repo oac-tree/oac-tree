@@ -8,3 +8,5 @@ target_sources(testapp
 )
 
 target_link_libraries(testapp PRIVATE sup-sequencer-shared)
+
+set_target_properties(testapp PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TEST_OUTPUT_DIRECTORY})

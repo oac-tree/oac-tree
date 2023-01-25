@@ -56,4 +56,6 @@ endif()
 find_package(sup-utils REQUIRED)
 target_link_libraries(unit-tests PRIVATE sup-utils::sup-log sup-utils::sup-xml)
 
+set_target_properties(unit-tests PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TEST_OUTPUT_DIRECTORY})
+
 gtest_discover_tests(unit-tests)

@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.5)
 project(SUP-SEQUENCER VERSION 2.0.0)
 
 option(SEQUENCER_EXPORT_BUILDTREE "Export build tree in /home/user/.cmake registry" OFF)
-option(SEQUENCER_CODAC "Compilation for CODAC environment" OFF)
+option(NO_CODAC "Don't look for the presence of CODAC environment" OFF)
 option(COVERAGE "Generate unit test coverage information" OFF)
 
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/src/cmake)

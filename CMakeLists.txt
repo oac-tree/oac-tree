@@ -6,7 +6,7 @@ option(SEQUENCER_EXPORT_BUILDTREE "Export build tree in /home/user/.cmake regist
 option(NO_CODAC "Don't look for the presence of CODAC environment" OFF)
 option(COVERAGE "Generate unit test coverage information" OFF)
 
-set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/src/cmake)
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake/module)
 include(configuration)
 
 add_subdirectory(src)

@@ -1,8 +1,5 @@
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
 add_subdirectory(unit)
-add_subdirectory(testapp)
+add_subdirectory(test_app)
 
 file(WRITE ${TEST_OUTPUT_DIRECTORY}/test.sh
 "#!/bin/bash

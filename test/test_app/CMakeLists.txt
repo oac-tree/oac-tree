@@ -1,5 +1,7 @@
 add_executable(testapp)
 
+target_compile_features(testapp PRIVATE cxx_std_11)
+
 target_sources(testapp
     PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/main.cpp

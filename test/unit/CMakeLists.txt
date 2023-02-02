@@ -1,5 +1,7 @@
 add_executable(unit-tests)
 
+target_compile_features(unit-tests PRIVATE cxx_std_11)
+
 target_sources(unit-tests
     PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/attribute_map_tests.cpp

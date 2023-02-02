@@ -32,7 +32,7 @@
 
 #include <set>
 
-namespace
+namespace internal
 {
 template <typename T, typename... Args>
 std::unique_ptr<T> make_unique(Args&&... args)
@@ -42,7 +42,7 @@ std::unique_ptr<T> make_unique(Args&&... args)
 
 std::unique_ptr<sup::xml::TreeData> CreateTreeData(const sup::sequencer::Instruction* instruction)
 {
-  auto tree_data = make_unique<sup::xml::TreeData>(instruction->GetType());
+  auto tree_data = internal::make_unique<sup::xml::TreeData>(instruction->GetType());
   for (const auto& it : instruction->GetAttributes())
   {
     tree_data->AddAttribute(it.first, it.second);
@@ -60,7 +60,7 @@ void Iterate(const sup::sequencer::Instruction* instruction, sup::xml::TreeData*
   }
 }
 
-}  // namespace
+}  // namespace internal
 
 namespace sup
 {
@@ -68,7 +68,7 @@ namespace sequencer
 {
 std::unique_ptr<sup::xml::TreeData> ToTreeData(const Procedure& procedure)
 {
-  auto result = make_unique<sup::xml::TreeData>(Constants::PROCEDURE_ELEMENT_NAME);
+  auto result = internal::make_unique<sup::xml::TreeData>(Constants::PROCEDURE_ELEMENT_NAME);
   for (auto instruction : procedure.GetInstructions())
   {
     result->AddChild(*ToTreeData(*instruction));
@@ -79,7 +79,7 @@ std::unique_ptr<sup::xml::TreeData> ToTreeData(const Procedure& procedure)
 
 std::unique_ptr<sup::xml::TreeData> ToTreeData(const Variable& variable)
 {
-  auto result = make_unique<sup::xml::TreeData>(variable.GetType());
+  auto result = internal::make_unique<sup::xml::TreeData>(variable.GetType());
   for (const auto& it : variable.GetAttributes())
   {
     result->AddAttribute(it.first, it.second);
@@ -89,7 +89,7 @@ std::unique_ptr<sup::xml::TreeData> ToTreeData(const Variable& variable)
 
 std::unique_ptr<sup::xml::TreeData> ToTreeData(const Workspace& workspace)
 {
-  auto result = make_unique<sup::xml::TreeData>(Constants::WORKSPACE_ELEMENT_NAME);
+  auto result = internal::make_unique<sup::xml::TreeData>(Constants::WORKSPACE_ELEMENT_NAME);
   for (auto variable : workspace.GetVariables())
   {
     result->AddChild(*ToTreeData(*variable));
@@ -99,8 +99,8 @@ std::unique_ptr<sup::xml::TreeData> ToTreeData(const Workspace& workspace)
 
 std::unique_ptr<sup::xml::TreeData> ToTreeData(const Instruction& instruction)
 {
-  auto tree_data = CreateTreeData(&instruction);
-  Iterate(&instruction, tree_data.get());
+  auto tree_data = internal::CreateTreeData(&instruction);
+  internal::Iterate(&instruction, tree_data.get());
   return tree_data;
 }
 

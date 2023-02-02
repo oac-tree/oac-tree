@@ -1,6 +1,8 @@
 add_library(sup-sequencer-shared SHARED)
 add_library(sequencer::sequencer ALIAS sup-sequencer-shared) # alias for build-tree usage
 
+target_compile_features(sup-sequencer-shared PRIVATE cxx_std_11)
+
 add_subdirectory(base)
 add_subdirectory(instructions)
 add_subdirectory(parser)
@@ -28,3 +30,23 @@ target_link_libraries(sup-sequencer-shared PUBLIC sup-dto::sup-dto PRIVATE sup-u
 
 install(TARGETS sup-sequencer-shared EXPORT sequencer-targets LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 set_target_properties(sup-sequencer-shared PROPERTIES EXPORT_NAME sequencer)
+
+install(FILES
+  attribute_map.h
+  constants.h
+  exceptions.h
+  execution_status.h
+  generic_utils.h
+  instruction_registry.h
+  instruction.h
+  log_severity.h
+  named_callback_manager.h
+  procedure.h
+  runner.h
+  sequence_parser.h
+  user_interface.h
+  variable_registry.h
+  variable.h
+  workspace.h
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/sup/sequencer
+)

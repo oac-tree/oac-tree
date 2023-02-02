@@ -1,14 +1,6 @@
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-if (DEFINED COVERAGE AND ${COVERAGE})
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g -fprofile-arcs -ftest-coverage --coverage")
-endif()
-
-if(CMAKE_VERSION VERSION_LESS "3.7.0")
-    set(CMAKE_INCLUDE_CURRENT_DIR ON)
-endif()
-
 add_subdirectory(unit)
 add_subdirectory(testapp)
 
@@ -18,5 +10,5 @@ TEST_RESOURCES_PATH=" ${CMAKE_CURRENT_LIST_DIR}/resources " " ${TEST_OUTPUT_DIRE
 exit $?
 ")
 
-configure_file(${TEST_OUTPUT_DIRECTORY}/test.sh ${TEST_OUTPUT_DIRECTORY}/test.sh 
+configure_file(${TEST_OUTPUT_DIRECTORY}/test.sh ${TEST_OUTPUT_DIRECTORY}/test.sh
                FILE_PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ)

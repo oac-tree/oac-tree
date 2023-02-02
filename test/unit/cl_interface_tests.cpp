@@ -19,7 +19,7 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <sup/sequencer-cli/cl_interface.h>
+#include <app/sequencer-cli/cl_interface.h>
 
 #include "std_redirectors.h"
 

@@ -39,8 +39,8 @@ target_sources(unit-tests
         ${CMAKE_CURRENT_LIST_DIR}/variable_registry_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/wait_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/workspace_tests.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/../../src/sup/sequencer-cli/cl_interface.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/../../src/sup/sequencer-daemon/daemon_interface.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/../../src/app/sequencer-cli/cl_interface.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/../../src/app/sequencer-daemon/daemon_interface.cpp
 )
 
 target_include_directories(unit-tests PRIVATE ${CMAKE_CURRENT_LIST_DIR}/../../src)

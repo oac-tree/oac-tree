@@ -19,7 +19,7 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <sup/sequencer-daemon/daemon_interface.h>
+#include <app/sequencer-daemon/daemon_interface.h>
 
 #include <sup/sequencer/log_severity.h>
 #include <sup/sequencer/instruction.h>

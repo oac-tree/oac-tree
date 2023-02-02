@@ -1,5 +1,7 @@
 add_executable(sequencer-daemon)
 
+target_compile_features(sequencer-daemon PRIVATE cxx_std_11)
+
 target_sources(sequencer-daemon
     PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/daemon_interface.cpp

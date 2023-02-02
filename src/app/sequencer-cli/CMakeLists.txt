@@ -1,5 +1,7 @@
 add_executable(sequencer-cli)
 
+target_compile_features(sequencer-cli PRIVATE cxx_std_11)
+
 target_sources(sequencer-cli
     PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/cl_interface.cpp

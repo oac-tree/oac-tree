@@ -105,11 +105,11 @@
                 <configuration>
                     <!-- Copy the sources over to target -->
                     <init>
-                        <copy source="src" target="src" />
-                        <copy source="test" target="test" />
-                        <copy source="cmake" target="cmake" />
-                        <copy source="CMakeLists.txt" target="CMakeLists.txt" />
-                        <expand source="ld.so.conf" file="sup-${project.artifactId}.conf"
+                        <copy source="src" target="SOURCE/src" />
+                        <copy source="test" target="SOURCE/test" />
+                        <copy source="cmake" target="SOURCE/cmake" />
+                        <copy source="CMakeLists.txt" target="SOURCE/CMakeLists.txt" />
+                        <expand source="ld.so.conf" file="SOURCE/sup-${project.artifactId}.conf"
                                 rpmeval="true" mvneval="true" />
                     </init>
                     <!-- Configure packaging and dependencies -->
@@ -119,7 +119,7 @@
                             <include type="file" source="lib" target="lib">
                                 <include>*.so.*</include>
                             </include>
-                            <include type="config" source="sup-${project.artifactId}.conf"
+                            <include type="config" source="SOURCE/sup-${project.artifactId}.conf"
                                      target="ld.so.conf.d/sup-${project.artifactId}.conf"
                                      altpath="%{_sysconfdir}/ld.so.conf.d/sup-${project.artifactId}.conf" />
                             <!-- Programs -->
@@ -176,12 +176,12 @@
                             <workingDirectory>${project.build.directory}</workingDirectory>
                             <arguments>
                                 <!-- CMAKE configuration options -->
-                                <argument>-B${project.build.directory}/build</argument>
+                                <argument>-B${project.build.directory}/BUILD</argument>
                                 <argument>-DCMAKE_INSTALL_PREFIX=${project.build.directory}</argument>
                                 <argument>-DCMAKE_INSTALL_LIBDIR=lib</argument>
                                 <argument>-DTEST_OUTPUT_DIRECTORY=${project.build.directory}/test</argument>
                                 <argument>-DCOVERAGE=${coverage}</argument>
-                                <argument>${project.build.directory}</argument>
+                                <argument>${project.build.directory}/SOURCE</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -197,7 +197,7 @@
                             <workingDirectory>${project.build.directory}</workingDirectory>
                             <arguments>
                                 <argument>--build</argument>
-                                <argument>${project.build.directory}/build</argument>
+                                <argument>${project.build.directory}/BUILD</argument>
                                 <argument>-j4</argument>
                                 <argument>--target</argument>
                                 <argument>install</argument>

@@ -21,12 +21,12 @@
 
 #include "cl_interface.h"
 
+#include <sup/cli/command_line_parser.h>
+#include <sup/log/default_loggers.h>
 #include <sup/sequencer/generic_utils.h>
 #include <sup/sequencer/log_severity.h>
 #include <sup/sequencer/runner.h>
 #include <sup/sequencer/sequence_parser.h>
-
-#include <sup/log/default_loggers.h>
 
 #include <algorithm>
 #include <iostream>
@@ -54,6 +54,22 @@ void print_usage(const std::string& prog_name)
 
 int main(int argc, char* argv[])
 {
+  sup::cli::CommandLineParser parser;
+  parser.AddHelpOption();
+  parser.AddOption({"-f", "--file"}, "Load, parse and execute <filename>")
+      .SetParameter(true)
+      .SetValueName("filename")
+      .SetRequired(true);
+  parser.AddOption({"-v", "--verbose"}, "Log to standard output")
+      .SetParameter(true)
+      .SetDefaultValue("WARNING");
+
+  if (!parser.Parse(argc, argv))
+  {
+    std::cout << parser.GetUsageString();
+    return 0;
+  }
+
   std::vector<std::string> arguments;
   std::for_each(argv, argv + argc, [&](const char* c_str) { arguments.push_back(c_str); });
 
@@ -122,18 +138,15 @@ std::string GetFileName(const std::vector<std::string>& arguments)
 
 int GetSeverityLevel(const std::vector<std::string>& arguments)
 {
-  static std::map<std::string, int> verbosity_map = {
-      {"-v", log::SUP_SEQ_LOG_WARNING},
-      {"--verbose", log::SUP_SEQ_LOG_WARNING},
-      {"-vv", log::SUP_SEQ_LOG_INFO}
-  };
+  static std::map<std::string, int> verbosity_map = {{"-v", log::SUP_SEQ_LOG_WARNING},
+                                                     {"--verbose", log::SUP_SEQ_LOG_WARNING},
+                                                     {"-vv", log::SUP_SEQ_LOG_INFO}};
 
   // find position of file argument
   auto on_argument = [](const std::string& str)
   { return str == "-v" || str == "--verbose" || str == "-vv"; };
   auto it = std::find_if(arguments.begin(), arguments.end(), on_argument);
 
-  int result = (it == arguments.end()) ? log::SUP_SEQ_LOG_ERR
-                                       : verbosity_map[*it];
+  int result = (it == arguments.end()) ? log::SUP_SEQ_LOG_ERR : verbosity_map[*it];
   return result;
 }

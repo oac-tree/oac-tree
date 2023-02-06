@@ -11,6 +11,6 @@ target_sources(sequencer-cli
 target_link_libraries(sequencer-cli PRIVATE sup-sequencer-shared)
 
 find_package(sup-utils REQUIRED)
-target_link_libraries(sequencer-cli PRIVATE sup-utils::sup-log)
+target_link_libraries(sequencer-cli PRIVATE sup-utils::sup-log sup-utils::sup-cli)
 
 install(TARGETS sequencer-cli RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})

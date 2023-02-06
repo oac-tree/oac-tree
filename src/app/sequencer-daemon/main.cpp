@@ -21,90 +21,65 @@
 
 #include "daemon_interface.h"
 
+#include <sup/cli/command_line_parser.h>
+#include <sup/log/default_loggers.h>
 #include <sup/sequencer/generic_utils.h>
 #include <sup/sequencer/log_severity.h>
 #include <sup/sequencer/runner.h>
 #include <sup/sequencer/sequence_parser.h>
 
-#include <sup/log/default_loggers.h>
-
 #include <iostream>
-#include <string>
-#include <string.h>
 
 using namespace sup::sequencer;
 
-struct DaemonParams
-{
-  bool print_usage;
-  std::string filepath;
-  bool logging;
-  int exit_code;
-};
-
-static const std::string kProgramName = "sequencer-daemon";
-
-DaemonParams ParseCommandLineArgs(int argc, char* argv[]);
-bool IsHelpOption(const char* option);
-bool IsFileOption(const char* option);
-bool IsLogOption(const char* option);
-bool IsEqualCString(const char* lhs, const char* rhs);
-
-void print_usage()
-{
-  std::cout << "Usage: " << kProgramName << " <options>" << std::endl;
-  std::cout << "Options: -h|--help: Print usage." << std::endl;
-  std::cout << "         -f|--file <filename>: Load, parse and execute <filename>." << std::endl;
-  std::cout << "         -l|--logging: Enable logging." << std::endl;
-  std::cout << std::endl;
-  std::cout << "The program loads <filename>, parses it into an executable behaviour tree and "
-               "executes it."
-            << std::endl;
-  std::cout << std::endl;
-
-  return;
-}
-
 int main(int argc, char* argv[])
 {
-  auto params = ParseCommandLineArgs(argc, argv);
+  sup::cli::CommandLineParser parser;
+  parser.SetDescription(
+      /*header*/ "",
+      "The program loads <filename>, parses it into an executable behaviour tree and "
+      "executes it.");
+  parser.AddHelpOption();
 
-  if (params.print_usage)
+  parser.AddOption({"-f", "--file"}, "Load, parse and execute <filename>")
+      .SetParameter(true)
+      .SetValueName("filename")
+      .SetRequired(true);
+  parser.AddOption({"-v", "--verbose"}, "Log to standard output")
+      .SetParameter(true)
+      .SetDefaultValue("WARNING");
+
+  if (!parser.Parse(argc, argv))
   {
-    print_usage();
-    return params.exit_code;
-  }
-
-  // Create appropriate logger object
-  int severity_level = params.logging ? log::SUP_SEQ_LOG_INFO
-                                      : log::SUP_SEQ_LOG_ERR;
-  auto logger = sup::log::CreateDefaultSysLogger("sequencer-daemon");
-  logger.SetMaxSeverity(severity_level);
-
-  if (params.filepath.empty())
-  {
-    logger.Error("main(): no filename provided in command line arguments");
+    std::cout << parser.GetUsageString();
     return 1;
   }
-  if (!utils::FileExists(params.filepath))
+
+  auto filename = parser.GetValue<std::string>("--file");
+  auto severity_name = parser.GetValue<std::string>("--verbose");
+
+  auto severity = sup::sequencer::log::GetSeverityFromString(severity_name);
+  auto logger = sup::log::CreateDefaultSysLogger("sequencer-daemon");
+  logger.SetMaxSeverity(severity);
+
+  if (!utils::FileExists(filename))
   {
-    std::string error_message = "main(): file not found [" + params.filepath + "]";
+    std::string error_message = "main(): file not found [" + filename + "]";
     logger.Error(error_message);
     return 1;
   }
 
-  auto proc = ParseProcedureFile(params.filepath);
+  auto proc = ParseProcedureFile(filename);
   if (!proc)
   {
-    std::string error_message = "main(): could not parse procedure file [" + params.filepath + "]";
+    std::string error_message = "main(): could not parse procedure file [" + filename + "]";
     logger.Error(error_message);
     return 1;
   }
 
   if (!proc->Setup())
   {
-    std::string error_message = "main(): could not setup procedure from file [" +
-      params.filepath + "]";
+    std::string error_message = "main(): could not setup procedure from file [" + filename + "]";
     logger.Error(error_message);
     return 1;
   }
@@ -115,68 +90,4 @@ int main(int argc, char* argv[])
   runner.ExecuteProcedure();
   proc->Reset();
   return 0;
-}
-
-DaemonParams ParseCommandLineArgs(int argc, char* argv[])
-{
-  DaemonParams result = {false, "", false, 0};
-  if (argc <= 1)
-  {
-    result.print_usage = true;
-    return result;
-  }
-  for (unsigned index = 1; index < (unsigned)argc; index++)
-  {
-    if (IsHelpOption(argv[index]))
-    {
-      result.print_usage = true;
-    }
-    else if (IsFileOption(argv[index]))
-    {
-      // Get filename
-      if (index + 1 >= (unsigned)argc)
-      {
-        result.print_usage = true;
-        result.exit_code = 1;
-      }
-      else
-      {
-        result.filepath = argv[++index];
-      }
-    }
-    else if (IsLogOption(argv[index]))
-    {
-      // Enable logging of UserInterface methods
-      result.logging = true;
-    }
-    else
-    {
-      result.print_usage = true;
-      result.exit_code = 1;
-    }
-  }
-  return result;
-}
-
-bool IsHelpOption(const char* option)
-{
-  bool result = IsEqualCString(option, "-h") || IsEqualCString(option, "--help");
-  return result;
-}
-
-bool IsFileOption(const char* option)
-{
-  bool result = IsEqualCString(option, "-f") || IsEqualCString(option, "--file");
-  return result;
-}
-
-bool IsLogOption(const char* option)
-{
-  bool result = IsEqualCString(option, "-l") || IsEqualCString(option, "--logging");
-  return result;
-}
-
-bool IsEqualCString(const char* lhs, const char* rhs)
-{
-  return strcmp(lhs, rhs) == 0;
 }

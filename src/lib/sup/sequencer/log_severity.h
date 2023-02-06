@@ -81,6 +81,11 @@ const std::string TraceString = "TRACE";
  */
 std::string SeverityString(int severity);
 
+/**
+ * @brief Retrieve a severity from string representation.
+ */
+Severity GetSeverityFromString(const std::string& str);
+
 }  // namespace log
 
 }  // namespace sequencer

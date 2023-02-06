@@ -80,6 +80,7 @@ int main(int argc, char* argv[])
     print_usage(arguments.at(0));
     return 0;
   }
+
   auto severity = GetSeverityLevel(arguments);
 
   sup::log::BasicLogger logger(sup::log::DefaultStdoutLogMessage, "sequencer-cli", severity);

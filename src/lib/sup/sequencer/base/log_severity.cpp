@@ -21,6 +21,7 @@
 
 #include <sup/sequencer/log_severity.h>
 
+#include <algorithm>
 #include <map>
 
 namespace
@@ -45,6 +46,14 @@ std::string SeverityString(int severity)
   return it->second;
 }
 
+Severity GetSeverityFromString(const std::string& str)
+{
+  const auto& sev_map = GetSeverityMap();
+  auto on_element = [str](std::pair<int, std::string> element) { return str == element.second; };
+  auto it = find_if(sev_map.begin(), sev_map.end(), on_element);
+  return it == sev_map.end() ? NUMBER_OF_LOG_LEVELS : static_cast<Severity>(it->first);
+}
+
 }  // namespace log
 
 }  // namespace sequencer
@@ -56,16 +65,15 @@ namespace
 const std::map<int, std::string>& GetSeverityMap()
 {
   static std::map<int, std::string> severity_map = {
-    { sup::sequencer::log::SUP_SEQ_LOG_EMERG, sup::sequencer::log::EmergencyString},
-    { sup::sequencer::log::SUP_SEQ_LOG_ALERT, sup::sequencer::log::AlertString},
-    { sup::sequencer::log::SUP_SEQ_LOG_CRIT, sup::sequencer::log::CriticalString},
-    { sup::sequencer::log::SUP_SEQ_LOG_ERR, sup::sequencer::log::ErrorString},
-    { sup::sequencer::log::SUP_SEQ_LOG_WARNING, sup::sequencer::log::WarningString},
-    { sup::sequencer::log::SUP_SEQ_LOG_NOTICE, sup::sequencer::log::NoticeString},
-    { sup::sequencer::log::SUP_SEQ_LOG_INFO, sup::sequencer::log::InfoString},
-    { sup::sequencer::log::SUP_SEQ_LOG_DEBUG, sup::sequencer::log::DebugString},
-    { sup::sequencer::log::SUP_SEQ_LOG_TRACE, sup::sequencer::log::TraceString}
-  };
+      {sup::sequencer::log::SUP_SEQ_LOG_EMERG, sup::sequencer::log::EmergencyString},
+      {sup::sequencer::log::SUP_SEQ_LOG_ALERT, sup::sequencer::log::AlertString},
+      {sup::sequencer::log::SUP_SEQ_LOG_CRIT, sup::sequencer::log::CriticalString},
+      {sup::sequencer::log::SUP_SEQ_LOG_ERR, sup::sequencer::log::ErrorString},
+      {sup::sequencer::log::SUP_SEQ_LOG_WARNING, sup::sequencer::log::WarningString},
+      {sup::sequencer::log::SUP_SEQ_LOG_NOTICE, sup::sequencer::log::NoticeString},
+      {sup::sequencer::log::SUP_SEQ_LOG_INFO, sup::sequencer::log::InfoString},
+      {sup::sequencer::log::SUP_SEQ_LOG_DEBUG, sup::sequencer::log::DebugString},
+      {sup::sequencer::log::SUP_SEQ_LOG_TRACE, sup::sequencer::log::TraceString}};
   return severity_map;
 }
-}
+}  // namespace

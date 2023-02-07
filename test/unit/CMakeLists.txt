@@ -49,6 +49,7 @@ target_sources(unit-tests
 target_include_directories(unit-tests PRIVATE ${CMAKE_CURRENT_LIST_DIR}/../../src)
 
 find_package(GTest REQUIRED)
+include(GoogleTest)
 
 if (GTest_VERSION VERSION_LESS_EQUAL "1.8")
   target_link_libraries(unit-tests PRIVATE pthread gtest gtest_main gmock sup-sequencer-shared)

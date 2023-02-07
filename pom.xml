@@ -107,6 +107,7 @@
                     <init>
                         <copy source="src" target="SOURCE/src" />
                         <copy source="test" target="SOURCE/test" />
+                        <copy source="doc" target="SOURCE/doc" />
                         <copy source="cmake" target="SOURCE/cmake" />
                         <copy source="CMakeLists.txt" target="SOURCE/CMakeLists.txt" />
                         <expand source="ld.so.conf" file="SOURCE/sup-${project.artifactId}.conf"

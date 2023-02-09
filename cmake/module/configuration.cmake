@@ -8,11 +8,16 @@ if(NOT NO_CODAC)
   # cmake warns for the existance of ``<PackageName>_ROOT`` (CODAC_ROOT in this case) variables and ignores them
   # for compatibility reasons, we set the related policy to NEW behaviour to suppress warnings and enable desired behaviour
   cmake_policy(SET CMP0074 NEW)
-  find_package(CODAC)
+  find_package(CODAC OPTIONAL_COMPONENTS site-packages Python MODULE)
 endif()
 if (CODAC_FOUND)
   # Append CODAC_CMAKE_PREFIXES to cmake seard directories, this helps cmake find packages installed in the CODAC enviorenment 
   list(APPEND CMAKE_PREFIX_PATH ${CODAC_CMAKE_PREFIXES})
+
+  # If CODAC module provides python executable, override Python3_EXECUTABLE with it
+  if(CODAC_Python_FOUND AND NOT Python3_EXECUTABLE)
+    set(Python3_EXECUTABLE ${CODAC_PYTHON_EXECUTABLE})
+  endif()
 else()
   message(STATUS "Compiling without CODAC")
 endif()

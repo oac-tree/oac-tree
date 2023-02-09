@@ -3,15 +3,22 @@
 # --- Finding Doxygen ---
 find_package(Doxygen)
 if(NOT DOXYGEN_FOUND)
-  message(INFO "No doxygen found, skipping documentation generation")
+  message(WARNING "Doxygen not found, skipping documentation generation")
   return()
 endif()
 
 # --- Finding Sphinx ---
-find_package(Sphinx)
+find_package(Sphinx COMPONENTS breathe OPTIONAL_COMPONENTS sphinx_rtd_theme)
 if(NOT Sphinx_FOUND)
-  message(INFO "No Sphinx found, skipping documentation generation")
+  message(WARNING "Sphinx not found, skipping documentation generation")
   return()
+endif()
+if(NOT Sphinx_breathe_FOUND)
+  message(WARNING "Sphinx extension breathe not found, skipping documentation generation")
+  return()
+endif()
+if(NOT Sphinx_sphinx_rtd_theme_FOUND)
+  message(WARNING "Sphinx theme RTD not found, building documentation with default theme")
 endif()
 
 # Just output XML since this is what Breathe consumes.

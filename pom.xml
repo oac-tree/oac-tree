@@ -157,6 +157,14 @@
                             <!-- Package dependencies -->
                             <requires version="current">%{codac_rpm_prefix}-${project.artifactId}</requires>
                         </package>
+                        <package name="docs">
+                            <!--  Public API headers  -->
+                            <include type="file" source="doc/${project.artifactId}" target="doc/${project.artifactId}"/>
+                            <!-- Package dependencies -->
+                            <requires version="current">%{codac_rpm_prefix}-${project.artifactId}</requires>
+                            <requires version="current" buildOnly="true">doxygen</requires>
+                            <requires codac="true" buildOnly="true">python-sphinx</requires>
+                        </package>
                     </packaging>
                 </configuration>
             </plugin>
@@ -180,6 +188,7 @@
                                 <argument>-B${project.build.directory}/BUILD</argument>
                                 <argument>-DCMAKE_INSTALL_PREFIX=${project.build.directory}</argument>
                                 <argument>-DCMAKE_INSTALL_LIBDIR=lib</argument>
+                                <argument>-DCMAKE_INSTALL_DOCDIR=doc/${project.artifactId}</argument>
                                 <argument>-DTEST_OUTPUT_DIRECTORY=${project.build.directory}/test</argument>
                                 <argument>-DCOVERAGE=${coverage}</argument>
                                 <argument>${project.build.directory}/SOURCE</argument>

@@ -17,7 +17,7 @@ install(EXPORT sequencer-targets FILE sequencer-targets.cmake NAMESPACE sequence
 export(TARGETS sup-sequencer-shared NAMESPACE sequencer:: FILE "${PROJECT_BINARY_DIR}/sequencer-targets.cmake")
 
 # Export the package for use from the build-tree (goes to $HOME/.cmake)
-if(SEQUENCER_EXPORT_BUILDTREE)
+if(COA_EXPORT_BUILD_TREE)
   set(CMAKE_EXPORT_PACKAGE_REGISTRY ON)
   export(PACKAGE sequencer)
 endif()

@@ -42,12 +42,7 @@ Output::~Output() = default;
 
 void Output::SetupImpl(const Procedure &proc)
 {
-  if (!HasAttribute(FROM_ATTRIBUTE_NAME))
-  {
-    std::string error_message = InstructionSetupExceptionProlog() +
-      "missing mandatory attribute [" + FROM_ATTRIBUTE_NAME + "]";
-    throw InstructionSetupException(error_message);
-  }
+  CheckMandatoryNonEmptyAttribute(*this, FROM_ATTRIBUTE_NAME);
 }
 
 ExecutionStatus Output::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)

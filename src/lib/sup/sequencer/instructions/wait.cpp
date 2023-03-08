@@ -63,12 +63,12 @@ void Wait::SetupImpl(const Procedure&)
     double t{};
     if (!utils::SafeStringToDouble(t, timeout_str))
     {
-      std::string error_message = InstructionSetupExceptionProlog() +
+      std::string error_message = InstructionSetupExceptionProlog(*this) +
         "could not parse attribute [" + TIMEOUT_ATTR_NAME + "], with value [" + timeout_str +
         "] to double";
       throw InstructionSetupException(error_message);
     }
-    m_timeout = ToNanoSeconds(t, InstructionSetupExceptionProlog());
+    m_timeout = ToNanoSeconds(t, InstructionSetupExceptionProlog(*this));
   }
 }
 

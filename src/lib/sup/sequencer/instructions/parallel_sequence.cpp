@@ -60,7 +60,7 @@ void ParallelSequence::SetupImpl(const Procedure &proc)
   {
     if (!utils::SafeStringToInt(_success_th, GetAttribute(SUCCESS_THRESHOLD_ATTRIBUTE)))
     {
-      std::string error_message = InstructionSetupExceptionProlog() +
+      std::string error_message = InstructionSetupExceptionProlog(*this) +
         "could not parse value of attribute with name [" + SUCCESS_THRESHOLD_ATTRIBUTE + "]";
       throw InstructionSetupException(error_message);
     }
@@ -72,7 +72,7 @@ void ParallelSequence::SetupImpl(const Procedure &proc)
     int th{};
     if (!utils::SafeStringToInt(th, GetAttribute(FAILURE_THRESHOLD_ATTRIBUTE)))
     {
-      std::string error_message = InstructionSetupExceptionProlog() +
+      std::string error_message = InstructionSetupExceptionProlog(*this) +
         "could not parse value of attribute with name [" + FAILURE_THRESHOLD_ATTRIBUTE + "]";
       throw InstructionSetupException(error_message);
     }

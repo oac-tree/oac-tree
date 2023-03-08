@@ -53,12 +53,7 @@ Choice::~Choice()
 void Choice::SetupImpl(const Procedure &proc)
 {
   SetupChildren(proc);
-  if (!HasAttribute(SELECTOR_VARIABLE_ATTR_NAME))
-  {
-    std::string error_message = InstructionSetupExceptionProlog() +
-      "missing mandatory attribute [" + SELECTOR_VARIABLE_ATTR_NAME + "]";
-    throw InstructionSetupException(error_message);
-  }
+  CheckMandatoryNonEmptyAttribute(*this, SELECTOR_VARIABLE_ATTR_NAME);
 }
 
 ExecutionStatus Choice::ExecuteSingleImpl(UserInterface *ui, Workspace *ws)

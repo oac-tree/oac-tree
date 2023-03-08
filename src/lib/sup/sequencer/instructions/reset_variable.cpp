@@ -42,12 +42,7 @@ ResetVariable::~ResetVariable() = default;
 
 void ResetVariable::SetupImpl(const Procedure &proc)
 {
-  if (!HasAttribute(VARNAME_ATTRIBUTE))
-  {
-    std::string error_message = InstructionSetupExceptionProlog() +
-      "missing mandatory attribute [" + VARNAME_ATTRIBUTE + "]";
-    throw InstructionSetupException(error_message);
-  }
+  CheckMandatoryNonEmptyAttribute(*this, VARNAME_ATTRIBUTE);
 }
 
 ExecutionStatus ResetVariable::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)

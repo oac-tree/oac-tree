@@ -21,6 +21,7 @@
 
 #include <sup/sequencer/instruction.h>
 
+#include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/user_interface.h>
 
 namespace
@@ -167,12 +168,6 @@ Instruction* Instruction::TakeInstruction(int index)
   return TakeInstructionImpl(index);
 }
 
-std::string Instruction::InstructionSetupExceptionProlog() const
-{
-  std::string optional_name = WrapOptionalInstructionNameString(GetName());
-  return "Setup of instruction " + optional_name + "of type <" + GetType() + "> failed: ";
-}
-
 std::string Instruction::InstructionErrorLogProlog() const
 {
   std::string optional_name = WrapOptionalInstructionNameString(GetName());
@@ -246,6 +241,35 @@ bool Instruction::InsertInstructionImpl(Instruction*, int)
 Instruction* Instruction::TakeInstructionImpl(int)
 {
   return nullptr;
+}
+
+std::string InstructionSetupExceptionProlog(const Instruction& instruction)
+{
+  auto instr_name = instruction.GetName();
+  auto instr_type = instruction.GetType();
+  std::string optional_name = WrapOptionalInstructionNameString(instr_name);
+  return "Setup of instruction " + optional_name + "of type <" + instr_type + "> failed: ";
+}
+
+void CheckMandatoryAttribute(const Instruction& instruction, const std::string& attr_name)
+{
+  if (!instruction.HasAttribute(attr_name))
+  {
+    std::string error_message = InstructionSetupExceptionProlog(instruction) +
+      "missing mandatory attribute [" + attr_name + "]";
+    throw InstructionSetupException(error_message);
+  }
+}
+
+void CheckMandatoryNonEmptyAttribute(const Instruction& instruction, const std::string& attr_name)
+{
+  CheckMandatoryAttribute(instruction, attr_name);
+  if (instruction.GetAttribute(attr_name).empty())
+  {
+    std::string error_message = InstructionSetupExceptionProlog(instruction) +
+      "mandatory attribute [" + attr_name + "] is empty";
+    throw InstructionSetupException(error_message);
+  }
 }
 
 }  // namespace sequencer

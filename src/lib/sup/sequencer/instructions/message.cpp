@@ -41,12 +41,7 @@ Message::~Message() = default;
 
 void Message::SetupImpl(const Procedure &proc)
 {
-  if (!HasAttribute(TEXT_ATTRIBUTE))
-  {
-    std::string error_message = InstructionSetupExceptionProlog() +
-      "missing mandatory attribute [" + TEXT_ATTRIBUTE + "]";
-    throw InstructionSetupException(error_message);
-  }
+  CheckMandatoryAttribute(*this, TEXT_ATTRIBUTE);
 }
 
 ExecutionStatus Message::ExecuteSingleImpl(UserInterface* ui, Workspace*)

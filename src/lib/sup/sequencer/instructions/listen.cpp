@@ -90,18 +90,13 @@ void Listen::HaltImpl()
 
 void Listen::SetupImpl(const Procedure& proc)
 {
+  CheckMandatoryNonEmptyAttribute(*this, VARNAMES_ATTRIBUTE_NAME);
   force_success = false;
   var_changed = true;
   if (HasAttribute(FORCESUCCESS_ATTRIBUTE_NAME))
   {
     auto force_success_attr = GetAttribute(FORCESUCCESS_ATTRIBUTE_NAME);
     force_success = attributes::AttributeAsBool(force_success_attr);
-  }
-  if (!HasAttribute(VARNAMES_ATTRIBUTE_NAME))
-  {
-    std::string error_message = InstructionSetupExceptionProlog() +
-      "missing mandatory attribute [" + VARNAMES_ATTRIBUTE_NAME + "]";
-    throw InstructionSetupException(error_message);
   }
   var_names = VariableNames();
   var_cache.clear();

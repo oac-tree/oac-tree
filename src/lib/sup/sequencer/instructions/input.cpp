@@ -41,12 +41,7 @@ Input::~Input() = default;
 
 void Input::SetupImpl(const Procedure &proc)
 {
-  if (!HasAttribute(OUTPUT_VARIABLE_ATTR_NAME))
-  {
-    std::string error_message = InstructionSetupExceptionProlog() +
-      "missing mandatory attribute [" + OUTPUT_VARIABLE_ATTR_NAME + "]";
-    throw InstructionSetupException(error_message);
-  }
+  CheckMandatoryNonEmptyAttribute(*this, OUTPUT_VARIABLE_ATTR_NAME);
 }
 
 ExecutionStatus Input::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)

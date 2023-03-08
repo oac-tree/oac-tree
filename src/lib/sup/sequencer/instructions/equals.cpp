@@ -39,13 +39,8 @@ Equals::~Equals() = default;
 
 void Equals::SetupImpl(const Procedure &proc)
 {
-  if (!HasAttribute(LEFT_VARIABLE_ATTR_NAME) || !HasAttribute(RIGHT_VARIABLE_ATTR_NAME))
-  {
-    std::string error_message = InstructionSetupExceptionProlog() +
-      "missing mandatory attributes [" + LEFT_VARIABLE_ATTR_NAME + ", " +
-      RIGHT_VARIABLE_ATTR_NAME + "]";
-    throw InstructionSetupException(error_message);
-  }
+  CheckMandatoryNonEmptyAttribute(*this, LEFT_VARIABLE_ATTR_NAME);
+  CheckMandatoryNonEmptyAttribute(*this, RIGHT_VARIABLE_ATTR_NAME);
 }
 
 ExecutionStatus Equals::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)

@@ -41,13 +41,8 @@ Copy::~Copy() = default;
 
 void Copy::SetupImpl(const Procedure &proc)
 {
-  if (!HasAttribute(INPUT_VARIABLE_ATTR_NAME) || !HasAttribute(OUTPUT_VARIABLE_ATTR_NAME))
-  {
-    std::string error_message = InstructionSetupExceptionProlog() +
-      "missing mandatory attributes [" + INPUT_VARIABLE_ATTR_NAME + ", " +
-      OUTPUT_VARIABLE_ATTR_NAME + "]";
-    throw InstructionSetupException(error_message);
-  }
+  CheckMandatoryNonEmptyAttribute(*this, INPUT_VARIABLE_ATTR_NAME);
+  CheckMandatoryNonEmptyAttribute(*this, OUTPUT_VARIABLE_ATTR_NAME);
 }
 
 ExecutionStatus Copy::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)

@@ -43,12 +43,7 @@ Condition::~Condition() = default;
 
 void Condition::SetupImpl(const Procedure &proc)
 {
-  if (!HasAttribute(CONDITION_VARIABLE_ATTR_NAME))
-  {
-    std::string error_message = InstructionSetupExceptionProlog() +
-      "missing mandatory attribute [" + CONDITION_VARIABLE_ATTR_NAME + "]";
-    throw InstructionSetupException(error_message);
-  }
+  CheckMandatoryNonEmptyAttribute(*this, CONDITION_VARIABLE_ATTR_NAME);
 }
 
 ExecutionStatus Condition::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)

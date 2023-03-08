@@ -223,7 +223,6 @@ protected:
    * Convenience functions for generating prologs for exceptions, errors and warnings,
    * containing both the instruction's type and object name.
   */
-  std::string InstructionSetupExceptionProlog() const;
   std::string InstructionErrorLogProlog() const;
   std::string InstructionWarningLogProlog() const;
 
@@ -381,6 +380,36 @@ private:
    */
   virtual Instruction* TakeInstructionImpl(int index);
 };
+
+/**
+ * @brief Construct a string prolog for throwing exceptions related to Instruction::Setup
+ *
+ * @param instruction Instruction to use.
+ *
+ * @return String containing the prolog to be used for the exception message.
+ */
+std::string InstructionSetupExceptionProlog(const Instruction& instruction);
+
+/**
+ * @brief Check if the instruction has an attribute with the given name and throw if not.
+ *
+ * @param instruction Instruction to check.
+ * @param attr_name Mandatory attribute name.
+ *
+ * @throw InstructionSetupException when the instruction does not contain the attribute.
+ */
+void CheckMandatoryAttribute(const Instruction& instruction, const std::string& attr_name);
+
+/**
+ * @brief Check if the instruction has a non-empty attribute with the given name and throw if not.
+ *
+ * @param instruction Instruction to check.
+ * @param attr_name Mandatory attribute name.
+ *
+ * @throw InstructionSetupException when the instruction does not contain the attribute or it is
+ * empty.
+ */
+void CheckMandatoryNonEmptyAttribute(const Instruction& instruction, const std::string& attr_name);
 
 }  // namespace sequencer
 

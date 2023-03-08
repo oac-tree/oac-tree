@@ -411,6 +411,28 @@ void CheckMandatoryAttribute(const Instruction& instruction, const std::string& 
  */
 void CheckMandatoryNonEmptyAttribute(const Instruction& instruction, const std::string& attr_name);
 
+/**
+ * @brief Try to parse attribute to int and throw otherwise.
+ *
+ * @param instruction Instruction to check.
+ * @param attr_name Attribute name.
+ *
+ * @return Parsed integer if successful.
+ * @throw InstructionSetupException when the attribute could not be parsed into an int.
+ */
+int InstructionAttributeToInt(const Instruction& instruction, const std::string& attr_name);
+
+/**
+ * @brief Try to parse attribute to double and throw otherwise.
+ *
+ * @param instruction Instruction to check.
+ * @param attr_name Attribute name.
+ *
+ * @return Parsed double if successful.
+ * @throw InstructionSetupException when the attribute could not be parsed into an double.
+ */
+double InstructionAttributeToDouble(const Instruction& instruction, const std::string& attr_name);
+
 }  // namespace sequencer
 
 }  // namespace sup

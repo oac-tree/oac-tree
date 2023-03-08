@@ -123,26 +123,6 @@ std::string GetEnvironmentVariable(const std::string& varname)
   return result_c ? std::string(result_c) : std::string{};
 }
 
-bool SafeStringToInt(int& result, const std::string& str)
-{
-  sup::dto::JSONAnyValueParser parser;
-  if (!parser.TypedParseString(sup::dto::SignedInteger32Type, str))
-  {
-    return false;
-  }
-  return parser.MoveAnyValue().As(result);
-}
-
-bool SafeStringToDouble(double& result, const std::string& str)
-{
-  sup::dto::JSONAnyValueParser parser;
-  if (!parser.TypedParseString(sup::dto::Float64Type, str))
-  {
-    return false;
-  }
-  return parser.MoveAnyValue().As(result);
-}
-
 unsigned long long GetNanosecsSinceEpoch()
 {
   auto now = std::chrono::system_clock::now();

@@ -42,16 +42,6 @@ bool CreateDir(const std::string& pathname, unsigned mode = 0755);
 
 std::string GetEnvironmentVariable(const std::string& varname);
 
-/**
- * @brief Try to convert string to an int or return false if failed.
- */
-bool SafeStringToInt(int& result, const std::string& str);
-
-/**
- * @brief Try to convert string to a double or return false if failed.
- */
-bool SafeStringToDouble(double& result, const std::string& str);
-
 unsigned long long GetNanosecsSinceEpoch();
 
 }  // namespace utils

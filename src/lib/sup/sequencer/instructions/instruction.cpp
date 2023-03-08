@@ -24,6 +24,8 @@
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/user_interface.h>
 
+#include <sup/dto/json_value_parser.h>
+
 namespace
 {
 std::string WrapOptionalInstructionNameString(const std::string& instr_name);
@@ -270,6 +272,32 @@ void CheckMandatoryNonEmptyAttribute(const Instruction& instruction, const std::
       "mandatory attribute [" + attr_name + "] is empty";
     throw InstructionSetupException(error_message);
   }
+}
+
+int InstructionAttributeToInt(const Instruction& instruction, const std::string& attr_name)
+{
+  sup::dto::JSONAnyValueParser parser;
+  auto attr_value = instruction.GetAttribute(attr_name);
+  if (!parser.TypedParseString(sup::dto::SignedInteger32Type, attr_value))
+  {
+    std::string error_message = InstructionSetupExceptionProlog(instruction) +
+      "could not parse attribute [" + attr_name + "] with value [" + attr_value + "] to integer";
+    throw InstructionSetupException(error_message);
+  }
+  return parser.MoveAnyValue().As<sup::dto::int32>();
+}
+
+double InstructionAttributeToDouble(const Instruction& instruction, const std::string& attr_name)
+{
+  sup::dto::JSONAnyValueParser parser;
+  auto attr_value = instruction.GetAttribute(attr_name);
+  if (!parser.TypedParseString(sup::dto::Float64Type, attr_value))
+  {
+    std::string error_message = InstructionSetupExceptionProlog(instruction) +
+      "could not parse attribute [" + attr_name + "] with value [" + attr_value + "] to double";
+    throw InstructionSetupException(error_message);
+  }
+  return parser.MoveAnyValue().As<sup::dto::float64>();
 }
 
 }  // namespace sequencer

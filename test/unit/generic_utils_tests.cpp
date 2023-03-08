@@ -52,32 +52,6 @@ TEST_F(GenericUtilsTest, GetEnvironmentVariable)
   EXPECT_TRUE(env_var.empty());
 }
 
-TEST_F(GenericUtilsTest, SafeStringToInt)
-{
-  int result = 0;
-  EXPECT_TRUE(utils::SafeStringToInt(result, "123"));
-  EXPECT_EQ(result, 123);
-  EXPECT_TRUE(utils::SafeStringToInt(result, "-25"));
-  EXPECT_EQ(result, -25);
-  EXPECT_FALSE(utils::SafeStringToInt(result, "five"));
-  EXPECT_FALSE(utils::SafeStringToInt(result, "3000000000"));
-}
-
-TEST_F(GenericUtilsTest, SafeStringToDouble)
-{
-  double result = 0.0;
-  EXPECT_TRUE(utils::SafeStringToDouble(result, "123"));
-  EXPECT_EQ(result, 123.0);
-  EXPECT_TRUE(utils::SafeStringToDouble(result, "3.5"));
-  EXPECT_EQ(result, 3.5);
-  EXPECT_TRUE(utils::SafeStringToDouble(result, "-10.1"));
-  EXPECT_EQ(result, -10.1);
-  EXPECT_TRUE(utils::SafeStringToDouble(result, "2.3e19"));
-  EXPECT_EQ(result, 2.3e19);
-  EXPECT_FALSE(utils::SafeStringToDouble(result, "five"));
-  EXPECT_FALSE(utils::SafeStringToDouble(result, "2e308"));
-}
-
 GenericUtilsTest::GenericUtilsTest()
     : m_test_file(TEST_FILE_NAME, "test")
 {}

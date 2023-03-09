@@ -21,7 +21,6 @@
 
 #include "file_variable.h"
 
-#include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/generic_utils.h>
 
 #include <sup/dto/anyvalue_helper.h>
@@ -40,12 +39,7 @@ const std::string FileVariable::Type = "File";
 
 void FileVariable::SetupImpl(const sup::dto::AnyTypeRegistry&)
 {
-  if (!HasAttribute(FILENAME_ATTR_NAME))
-  {
-    std::string error_message = VariableSetupExceptionProlog(*this) +
-      "missing attribute [" + FILENAME_ATTR_NAME + "]";
-    throw VariableSetupException(error_message);
-  }
+  CheckMandatoryAttribute(*this, FILENAME_ATTR_NAME);
 }
 
 bool FileVariable::GetValueImpl(sup::dto::AnyValue& value) const

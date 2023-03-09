@@ -21,6 +21,8 @@
 
 #include <sup/sequencer/variable.h>
 
+#include <sup/sequencer/exceptions.h>
+
 #include <sup/dto/anytype_registry.h>
 #include <sup/dto/anyvalue_helper.h>
 
@@ -187,6 +189,27 @@ std::string VariableSetupExceptionProlog(const Variable& variable)
   auto var_name = variable.GetName();
   auto var_type = variable.GetType();
   return "Setup of variable [" + var_name + "] of type <" + var_type + "> failed: ";
+}
+
+void CheckMandatoryAttribute(const Variable& variable, const std::string& attr_name)
+{
+  if (!variable.HasAttribute(attr_name))
+  {
+    std::string error_message = VariableSetupExceptionProlog(variable) +
+      "missing mandatory attribute [" + attr_name + "]";
+    throw VariableSetupException(error_message);
+  }
+}
+
+void CheckMandatoryNonEmptyAttribute(const Variable& variable, const std::string& attr_name)
+{
+  CheckMandatoryAttribute(variable, attr_name);
+  if (variable.GetAttribute(attr_name).empty())
+  {
+    std::string error_message = VariableSetupExceptionProlog(variable) +
+      "mandatory attribute [" + attr_name + "] is empty";
+    throw VariableSetupException(error_message);
+  }
 }
 
 }  // namespace sequencer

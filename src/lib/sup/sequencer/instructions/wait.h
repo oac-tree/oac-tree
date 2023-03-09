@@ -44,8 +44,6 @@ public:
   static const std::string Type;
 
 private:
-  void InitHook() override;
-
   void SetupImpl(const Procedure& proc) override;
 
   ExecutionStatus ExecuteSingleImpl(UserInterface* ui, Workspace* ws) override;
@@ -54,12 +52,6 @@ private:
    * @brief Timeout (in nanoseconds).
    */
   unsigned long m_timeout;
-
-  /**
-   * @brief End of wait in absolute time.
-   */
-  unsigned long m_finish;
-
 };
 
 }  // namespace sequencer

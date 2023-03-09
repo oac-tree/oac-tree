@@ -42,16 +42,9 @@ const std::string Wait::Type = "Wait";
 Wait::Wait()
   : Instruction(Wait::Type)
   , m_timeout(0)
-  , m_finish(0)
 {}
 
 Wait::~Wait() = default;
-
-void Wait::InitHook()
-{
-  unsigned long _now = utils::GetNanosecsSinceEpoch();
-  m_finish = _now + m_timeout;
-}
 
 void Wait::SetupImpl(const Procedure&)
 {
@@ -73,7 +66,8 @@ ExecutionStatus Wait::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
 {
   (void)ui;
   (void)ws;
-  while (!_halt_requested.load() && m_finish > utils::GetNanosecsSinceEpoch())
+  auto finish = utils::GetNanosecsSinceEpoch() + m_timeout;
+  while (!_halt_requested.load() && finish > utils::GetNanosecsSinceEpoch())
   {
     std::this_thread::sleep_for(std::chrono::milliseconds(DefaultSettings::TIMING_ACCURACY_MS));
   }

@@ -190,7 +190,6 @@ void Instruction::SetStatus(ExecutionStatus status)
 
 void Instruction::Preamble(UserInterface* ui)
 {
-  PreExecuteHook(ui);
   if (GetStatus() == ExecutionStatus::NOT_STARTED)
   {
     InitHook();
@@ -205,16 +204,11 @@ void Instruction::Postamble(UserInterface* ui)
   {
     ui->UpdateInstructionStatus(this);
   }
-  PostExecuteHook(ui);
 }
 
 void Instruction::SetupImpl(const Procedure&) {}
 
-void Instruction::PreExecuteHook(UserInterface*) {}
-
 void Instruction::InitHook() {}
-
-void Instruction::PostExecuteHook(UserInterface*) {}
 
 void Instruction::HaltImpl() {}
 

@@ -256,10 +256,8 @@ private:
    * @brief Private method that is always called before delegating further execution to the
    * private virutal Instruction::ExecuteSingleImple(UserInterface * ui, Workspace * ws).
    *
-   * @details This method first calls the virtual private Instruction::PreExecuteHook(UserInterface
-   * * ui). If the instruction was not yet executed (or reset through a call to
-   * Instruction::Reset()), it clears the halt requested atomic, calls Instruction::InitHook(),
-   * changes the status to ExecutionStatus::NOT_FINISHED and finally informs the user interface of a
+   * @details If the instruction was not yet executed it calls Instruction::InitHook(),
+   * changes the status to ExecutionStatus::NOT_FINISHED and informs the user interface of a
    * status change.
    */
   void Preamble(UserInterface* ui);
@@ -270,8 +268,7 @@ private:
    *
    * @details This method first checks if the instruction's status was changed as a consequence
    * of the call to Instruction::ExecuteSingleImple(UserInterface * ui, Workspace * ws). If so,
-   * it informs the user interface of this status change. Afterwards, it calls the virtual
-   * private Instruction::PostExecuteHook(UserInterface * ui).
+   * it informs the user interface of this status change.
    */
   void Postamble(UserInterface* ui);
 
@@ -287,14 +284,6 @@ private:
    * This method is called from the Instruction::Setup(const Procedure & proc) method.
    */
   virtual void SetupImpl(const Procedure& proc);
-
-  /**
-   * @brief Private hook that is always called at the start of each execution request.
-   *
-   * @details See Instruction::Preamble(UserInterface * ui) for more details.
-   * @note Default implementation is empty.
-   */
-  virtual void PreExecuteHook(UserInterface* ui);
 
   /**
    * @brief Private hook that is called at the start of the first ExecuteSingle call.
@@ -313,14 +302,6 @@ private:
    * @details Pure virtual: this method contains the action(s) to be taken during execution.
    */
   virtual ExecutionStatus ExecuteSingleImpl(UserInterface* ui, Workspace* ws) = 0;
-
-  /**
-   * @brief Private hook that is always called at the end of each execution request.
-   *
-   * @details See Instruction::Postamble(UserInterface * ui) for more details.
-   * @note Default implementation is empty.
-   */
-  virtual void PostExecuteHook(UserInterface* ui);
 
   /**
    * @brief Hook called during Instruction::Halt().

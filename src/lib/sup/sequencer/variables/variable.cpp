@@ -171,11 +171,6 @@ bool Variable::AddAttributes(const AttributeMap& attributes)
   return status;
 }
 
-std::string Variable::VariableSetupExceptionProlog() const
-{
-  return "Setup of variable [" + GetName() + "] of type <" + GetType() + "> failed: ";
-}
-
 bool Variable::IsAvailableImpl() const
 {
   return true;
@@ -186,6 +181,13 @@ void Variable::SetupImpl(const sup::dto::AnyTypeRegistry&)
 
 void Variable::ResetImpl()
 {}
+
+std::string VariableSetupExceptionProlog(const Variable& variable)
+{
+  auto var_name = variable.GetName();
+  auto var_type = variable.GetType();
+  return "Setup of variable [" + var_name + "] of type <" + var_type + "> failed: ";
+}
 
 }  // namespace sequencer
 

@@ -83,7 +83,7 @@ void LocalVariable::SetupImpl(const sup::dto::AnyTypeRegistry& registry)
     sup::dto::JSONAnyTypeParser type_parser;
     if (!type_parser.ParseString(type_str, &registry))
     {
-      std::string error_message = VariableSetupExceptionProlog() +
+      std::string error_message = VariableSetupExceptionProlog(*this) +
         "could not parse attribute [" + JSON_TYPE + "] with value [" + type_str + "]";
       throw VariableSetupException(error_message);
     }
@@ -94,7 +94,7 @@ void LocalVariable::SetupImpl(const sup::dto::AnyTypeRegistry& registry)
       sup::dto::JSONAnyValueParser value_parser;
       if (!value_parser.TypedParseString(parsed_type, val_str))
       {
-      std::string error_message = VariableSetupExceptionProlog() +
+      std::string error_message = VariableSetupExceptionProlog(*this) +
         "could not parse attribute [" + JSON_VALUE + "] with value [" + val_str +
         "]";
       throw VariableSetupException(error_message);
@@ -108,7 +108,7 @@ void LocalVariable::SetupImpl(const sup::dto::AnyTypeRegistry& registry)
   }
   else if (HasAttribute(JSON_VALUE))
   {
-    std::string error_message = VariableSetupExceptionProlog() +
+    std::string error_message = VariableSetupExceptionProlog(*this) +
       "attribute [" + JSON_VALUE + "] present without attribute [" + JSON_TYPE + "]";
     throw VariableSetupException(error_message);
   }

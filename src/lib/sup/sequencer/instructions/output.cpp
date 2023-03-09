@@ -51,7 +51,7 @@ ExecutionStatus Output::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   auto from_var = SplitFieldName(from_field).first;
   if (!ws.HasVariable(from_var))
   {
-    std::string error_message = InstructionErrorLogProlog() +
+    std::string error_message = InstructionErrorProlog(*this) +
       "workspace does not contain variable with name [" + from_var + "]";
     ui.LogError(error_message);
     return ExecutionStatus::FAILURE;
@@ -59,7 +59,7 @@ ExecutionStatus Output::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   sup::dto::AnyValue value;
   if (!ws.GetValue(from_field, value))
   {
-    std::string warning_message = InstructionWarningLogProlog() +
+    std::string warning_message = InstructionWarningProlog(*this) +
       "could not read field with name [" + from_field + "] from workspace";
     ui.LogWarning(warning_message);
     return ExecutionStatus::FAILURE;

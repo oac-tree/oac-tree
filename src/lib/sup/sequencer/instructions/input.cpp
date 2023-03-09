@@ -50,7 +50,7 @@ ExecutionStatus Input::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   auto output_var = SplitFieldName(output_field).first;
   if (!ws.HasVariable(output_var))
   {
-    std::string error_message = InstructionErrorLogProlog() +
+    std::string error_message = InstructionErrorProlog(*this) +
       "workspace does not contain output variable with name [" + output_var + "]";
     ui.LogError(error_message);
     return ExecutionStatus::FAILURE;
@@ -58,14 +58,14 @@ ExecutionStatus Input::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   sup::dto::AnyValue value;
   if (!ws.GetValue(output_field, value))
   {
-    std::string error_message = InstructionErrorLogProlog() +
+    std::string error_message = InstructionErrorProlog(*this) +
       "workspace could not retrieve value of output field with name [" + output_field + "]";
     ui.LogError(error_message);
     return ExecutionStatus::FAILURE;
   }
   if (!ui.GetUserValue(value, GetAttribute("description")))
   {
-    std::string warning_message = InstructionWarningLogProlog() +
+    std::string warning_message = InstructionWarningProlog(*this) +
       "did not receive compatible user value for field [" + output_field + "[ in workspace";
     ui.LogWarning(warning_message);
     return ExecutionStatus::FAILURE;
@@ -73,7 +73,7 @@ ExecutionStatus Input::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   if (!ws.SetValue(output_field, value))
   {
     auto json_value = sup::dto::ValuesToJSONString(value);
-    std::string warning_message = InstructionWarningLogProlog() +
+    std::string warning_message = InstructionWarningProlog(*this) +
       "could not write user value [" + json_value + "] to field [" + output_field +
       "[ in workspace";
     ui.LogWarning(warning_message);

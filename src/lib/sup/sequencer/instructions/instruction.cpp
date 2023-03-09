@@ -37,7 +37,6 @@ namespace sup
 namespace sequencer
 {
 
-
 Instruction::Instruction(const std::string &type)
     : _type{type}
     , _status{ExecutionStatus::NOT_STARTED}
@@ -169,18 +168,6 @@ bool Instruction::InsertInstruction(Instruction* child, int index)
 Instruction* Instruction::TakeInstruction(int index)
 {
   return TakeInstructionImpl(index);
-}
-
-std::string Instruction::InstructionErrorLogProlog() const
-{
-  std::string optional_name = WrapOptionalInstructionNameString(GetName());
-  return "Instruction " + optional_name + "of type <" + GetType() + "> error: ";
-}
-
-std::string Instruction::InstructionWarningLogProlog() const
-{
-  std::string optional_name = WrapOptionalInstructionNameString(GetName());
-  return "Instruction " + optional_name + "of type <" + GetType() + "> warning: ";
 }
 
 void Instruction::SetStatus(ExecutionStatus status)

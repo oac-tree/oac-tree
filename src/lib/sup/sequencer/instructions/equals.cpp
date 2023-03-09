@@ -51,14 +51,14 @@ ExecutionStatus Equals::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   auto right_var = SplitFieldName(right_field).first;
   if (!ws.HasVariable(left_var))
   {
-    std::string error_message = InstructionErrorLogProlog() +
+    std::string error_message = InstructionErrorProlog(*this) +
       "workspace does not contain left hand side variable with name [" + left_var + "]";
     ui.LogError(error_message);
     return ExecutionStatus::FAILURE;
   }
   if (!ws.HasVariable(right_var))
   {
-    std::string error_message = InstructionErrorLogProlog() +
+    std::string error_message = InstructionErrorProlog(*this) +
       "workspace does not contain right hand side variable with name [" + right_var + "]";
     ui.LogError(error_message);
     return ExecutionStatus::FAILURE;
@@ -66,7 +66,7 @@ ExecutionStatus Equals::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   sup::dto::AnyValue lhs;
   if (!ws.GetValue(left_field, lhs))
   {
-    std::string warning_message = InstructionWarningLogProlog() +
+    std::string warning_message = InstructionWarningProlog(*this) +
       "could not read left field with name [" + left_field + "] from workspace";
     ui.LogWarning(warning_message);
     return ExecutionStatus::FAILURE;
@@ -74,7 +74,7 @@ ExecutionStatus Equals::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   sup::dto::AnyValue rhs;
   if (!ws.GetValue(right_field, rhs))
   {
-    std::string warning_message = InstructionWarningLogProlog() +
+    std::string warning_message = InstructionWarningProlog(*this) +
       "could not read right field with name [" + right_field + "] from workspace";
     ui.LogWarning(warning_message);
     return ExecutionStatus::FAILURE;

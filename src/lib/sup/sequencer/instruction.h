@@ -221,13 +221,6 @@ protected:
    */
   std::atomic_bool _halt_requested;
 
-  /**
-   * Convenience functions for generating prologs for exceptions, errors and warnings,
-   * containing both the instruction's type and object name.
-  */
-  std::string InstructionErrorLogProlog() const;
-  std::string InstructionWarningLogProlog() const;
-
 private:
   /**
    * @brief Typename of this instruction

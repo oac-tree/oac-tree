@@ -21,12 +21,6 @@
 
 #include "copy.h"
 
-#include <sup/sequencer/exceptions.h>
-#include <sup/sequencer/user_interface.h>
-#include <sup/sequencer/workspace.h>
-
-#include <sup/dto/anyvalue_helper.h>
-
 const std::string INPUT_VARIABLE_ATTR_NAME = "input";
 const std::string OUTPUT_VARIABLE_ATTR_NAME = "output";
 
@@ -47,39 +41,13 @@ void Copy::SetupImpl(const Procedure &proc)
 
 ExecutionStatus Copy::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  auto input_field_name = GetAttribute(INPUT_VARIABLE_ATTR_NAME);
-  auto output_field_name = GetAttribute(OUTPUT_VARIABLE_ATTR_NAME);
-  auto input_var_name = SplitFieldName(input_field_name).first;
-  auto output_var_name = SplitFieldName(output_field_name).first;
-  if (!ws.HasVariable(input_var_name))
-  {
-    std::string error_message = InstructionErrorLogProlog() +
-      "workspace does not contain input variable with name [" + input_var_name + "]";
-    ui.LogError(error_message);
-    return ExecutionStatus::FAILURE;
-  }
-  if (!ws.HasVariable(output_var_name))
-  {
-    std::string error_message = InstructionErrorLogProlog() +
-      "workspace does not contain output variable with name [" + output_var_name + "]";
-    ui.LogError(error_message);
-    return ExecutionStatus::FAILURE;
-  }
   sup::dto::AnyValue value;
-  if (!ws.GetValue(input_field_name, value))
+  if (!GetValueFromAttributeName(*this, ws, ui, INPUT_VARIABLE_ATTR_NAME, value))
   {
-    std::string warning_message = InstructionWarningLogProlog() +
-      "could not read input field with name [" + input_field_name + "] from workspace";
-    ui.LogWarning(warning_message);
     return ExecutionStatus::FAILURE;
   }
-  if (!ws.SetValue(output_field_name, value))
+  if (!SetValueFromAttributeName(*this, ws, ui, OUTPUT_VARIABLE_ATTR_NAME, value))
   {
-    auto json_value = sup::dto::ValuesToJSONString(value);
-    std::string warning_message = InstructionWarningLogProlog() +
-      "could not copy value [" + json_value + "] to workspace field with name [" +
-      output_field_name + "]";
-    ui.LogWarning(warning_message);
     return ExecutionStatus::FAILURE;
   }
   return ExecutionStatus::SUCCESS;

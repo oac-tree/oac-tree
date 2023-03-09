@@ -52,7 +52,7 @@ ExecutionStatus Condition::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   auto var_name = SplitFieldName(field_name).first;
   if (!ws.HasVariable(var_name))
   {
-    std::string error_message = InstructionErrorLogProlog() +
+    std::string error_message = InstructionErrorProlog(*this) +
       "workspace does not contain condition variable with name [" + var_name + "]";
     ui.LogError(error_message);
     return ExecutionStatus::FAILURE;
@@ -61,7 +61,7 @@ ExecutionStatus Condition::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   sup::dto::boolean result = false;
   if (!ws.GetValue(field_name, var) || !var.As(result))
   {
-    std::string warning_message = InstructionWarningLogProlog() +
+    std::string warning_message = InstructionWarningProlog(*this) +
       "could not parse workspace field with name [" + field_name + "] to a boolean";
     ui.LogWarning(warning_message);
     return ExecutionStatus::FAILURE;

@@ -92,19 +92,15 @@ void Choice::ResetHook()
 bool Choice::CreateInstructionList(UserInterface& ui, Workspace& ws)
 {
   sup::dto::AnyValue selector;
-  if (!ws.GetValue(GetAttribute(SELECTOR_VARIABLE_ATTR_NAME), selector))
+  if (!GetValueFromAttributeName(*this, ws, ui, SELECTOR_VARIABLE_ATTR_NAME, selector))
   {
-    std::string error_message = InstructionErrorLogProlog() +
-      "could not read selector variable with name [" + GetAttribute(SELECTOR_VARIABLE_ATTR_NAME) +
-      "] from workspace";
-    ui.LogError(error_message);
     return false;
   }
   std::vector<std::size_t> indices;
   if (!GetIndexListFromVariable(indices, selector))
   {
     auto selector_json = sup::dto::ValuesToJSONString(selector);
-    std::string error_message = InstructionErrorLogProlog() +
+    std::string error_message = InstructionErrorProlog(*this) +
       "could not parse selector variable as index or array of indices: [" + selector_json + "]";
     ui.LogError(error_message);
     return false;
@@ -115,7 +111,7 @@ bool Choice::CreateInstructionList(UserInterface& ui, Workspace& ws)
   {
     if (idx >= child_instructions.size())
     {
-      std::string error_message = InstructionErrorLogProlog() +
+      std::string error_message = InstructionErrorProlog(*this) +
         "index [" + std::to_string(idx) + "] out of bounds for number of child instructions [" +
         std::to_string(child_instructions.size()) + "]";
       ui.LogError(error_message);
@@ -132,22 +128,16 @@ ExecutionStatus Choice::CalculateCompoundStatus() const
   for (auto instruction : m_instruction_list)
   {
     auto child_status = instruction->GetStatus();
-
     if (child_status == ExecutionStatus::SUCCESS)
     {
       continue;
     }
-
     if (child_status == ExecutionStatus::NOT_STARTED
         || child_status == ExecutionStatus::NOT_FINISHED)
     {
       return ExecutionStatus::NOT_FINISHED;
     }
-    else
-    {
-      // Forward RUNNING and FAILURE status of child instruction.
-      return child_status;
-    }
+    return child_status;
   }
   return ExecutionStatus::SUCCESS;
 }

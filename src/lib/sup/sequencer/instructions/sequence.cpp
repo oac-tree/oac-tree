@@ -33,7 +33,7 @@ Sequence::Sequence()
 
 Sequence::~Sequence() = default;
 
-ExecutionStatus Sequence::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
+ExecutionStatus Sequence::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   if (!HasChildren())
   {

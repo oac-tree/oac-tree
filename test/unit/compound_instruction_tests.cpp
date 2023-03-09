@@ -33,7 +33,7 @@ public:
   {
   public:
     TestClass() : CompoundInstruction("TestClass") {}
-    ExecutionStatus ExecuteSingleImpl(UserInterface*, Workspace*) override { return {}; }
+    ExecutionStatus ExecuteSingleImpl(UserInterface&, Workspace&) override { return {}; }
   };
 };
 

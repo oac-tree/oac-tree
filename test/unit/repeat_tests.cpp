@@ -63,7 +63,7 @@ TEST(Repeat, Procedure_success)
   auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
   ASSERT_TRUE(proc.get() != nullptr);
 
-  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
   EXPECT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 10);
 }
 
@@ -83,7 +83,7 @@ TEST(Repeat, Procedure_failure)
   auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
   ASSERT_TRUE(proc.get() != nullptr);
   EXPECT_TRUE(
-      sup::UnitTestHelper::TryAndExecute(proc, &ui, ExecutionStatus::FAILURE));
+      sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
   EXPECT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 1);
 }
 
@@ -102,6 +102,6 @@ TEST(Repeat, Procedure_attribute)
   ASSERT_TRUE(proc.get() != nullptr);
 
   // Expect failure during Setup
-  EXPECT_THROW(sup::UnitTestHelper::TryAndExecute(proc, &ui), InstructionSetupException);
+  EXPECT_THROW(sup::UnitTestHelper::TryAndExecute(proc, ui), InstructionSetupException);
   EXPECT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 0);
 }

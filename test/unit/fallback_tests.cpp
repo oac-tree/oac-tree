@@ -52,7 +52,7 @@ TEST(Fallback, Procedure_first)
   auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
-  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
   EXPECT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 1);
 }
 
@@ -75,7 +75,7 @@ TEST(Fallback, Procedure_alternative)
   auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
-  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
   EXPECT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 2);
 }
 
@@ -98,6 +98,6 @@ TEST(Fallback, Procedure_failure)
   auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
-  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui, ExecutionStatus::FAILURE));
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
   EXPECT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 2);
 }

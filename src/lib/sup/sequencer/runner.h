@@ -42,7 +42,7 @@ public:
    * @brief Constructor.
    * @param ui User interface object.
    */
-  Runner(UserInterface* ui);
+  Runner(UserInterface& ui);
 
   ~Runner();
 
@@ -83,7 +83,7 @@ public:
 
 private:
   Procedure* m_proc;
-  UserInterface* m_ui;
+  UserInterface& m_ui;
   std::atomic_bool m_halt;
 };
 

@@ -44,10 +44,11 @@ void Message::SetupImpl(const Procedure &proc)
   CheckMandatoryAttribute(*this, TEXT_ATTRIBUTE);
 }
 
-ExecutionStatus Message::ExecuteSingleImpl(UserInterface* ui, Workspace*)
+ExecutionStatus Message::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
+  (void)ws;
   std::string message = GetAttribute(TEXT_ATTRIBUTE);
-  ui->Message(message);
+  ui.Message(message);
   return ExecutionStatus::SUCCESS;
 }
 

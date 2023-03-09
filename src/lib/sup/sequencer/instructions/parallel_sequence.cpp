@@ -77,7 +77,7 @@ void ParallelSequence::SetupImpl(const Procedure &proc)
   }
 }
 
-ExecutionStatus ParallelSequence::ExecuteSingleImpl(UserInterface *ui, Workspace *ws)
+ExecutionStatus ParallelSequence::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   if (!HasChildren())
   {

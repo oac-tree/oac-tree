@@ -34,7 +34,7 @@ using namespace sup::sequencer;
 class CopyNode : public Instruction
 {
 private:
-  ExecutionStatus ExecuteSingleImpl(UserInterface *ui, Workspace *ws) override;
+  ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 
 public:
   CopyNode();
@@ -71,13 +71,13 @@ TEST(SequenceWorkspace, CopyVariable)
   EXPECT_TRUE(proc->Setup());
 
   sup::UnitTestHelper::EmptyUserInterface ui;
-  proc->ExecuteSingle(&ui);
+  proc->ExecuteSingle(ui);
   EXPECT_EQ(proc->GetStatus(), ExecutionStatus::SUCCESS);
 }
 
 CopyNode::CopyNode() : Instruction(Type) {}
 
-ExecutionStatus CopyNode::ExecuteSingleImpl(UserInterface *ui, Workspace *ws)
+ExecutionStatus CopyNode::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   sup::dto::AnyValue val;
 
@@ -86,7 +86,7 @@ ExecutionStatus CopyNode::ExecuteSingleImpl(UserInterface *ui, Workspace *ws)
   if (status)
   {
     std::string var_input = GetAttribute("input");
-    status = ws->GetValue(var_input, val);
+    status = ws.GetValue(var_input, val);
   }
 
   if (status)
@@ -97,7 +97,7 @@ ExecutionStatus CopyNode::ExecuteSingleImpl(UserInterface *ui, Workspace *ws)
   if (status)
   {
     std::string var_output = GetAttribute("output");
-    status = ws->SetValue(var_output, val);
+    status = ws.SetValue(var_output, val);
   }
 
   if (status)

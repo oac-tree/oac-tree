@@ -102,7 +102,7 @@ TEST(RegisterType, string_success)
   auto proc = ParseProcedureString(proc_str);
   ASSERT_TRUE(static_cast<bool>(proc));
 
-  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
 TEST(RegisterType, string_failed)
@@ -119,7 +119,7 @@ TEST(RegisterType, file_success)
   auto proc = ParseProcedureString(proc_str);
   ASSERT_TRUE(static_cast<bool>(proc));
 
-  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
 TEST(RegisterType, file_failed)

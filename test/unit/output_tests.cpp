@@ -89,7 +89,7 @@ TEST_F(OutputTest, PutInteger)
 
   auto proc = ParseProcedureString(procedure_string);
   ASSERT_TRUE(proc.get() != nullptr);
-  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui, ExecutionStatus::SUCCESS));
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::SUCCESS));
 
   // checking that Output instruction has propagated the value to the interface
   EXPECT_EQ(ui.m_value.As<unsigned>(), 42);

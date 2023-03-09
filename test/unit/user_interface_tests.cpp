@@ -162,7 +162,7 @@ TEST_F(UserInterfaceTest, InstructionExecution)
                 UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::NOT_FINISHED)));
     EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::SUCCESS)));
   }
-  wait->ExecuteSingle(&mock_ui, &empty_ws);
+  wait->ExecuteSingle(mock_ui, empty_ws);
 }
 
 UserInterfaceTest::UserInterfaceTest()

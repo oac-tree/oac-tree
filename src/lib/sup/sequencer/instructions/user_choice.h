@@ -47,7 +47,7 @@ public:
   static const std::string Type;
 
 private:
-  ExecutionStatus ExecuteSingleImpl(UserInterface* ui, Workspace* ws) override;
+  ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 
   /**
    * @brief Construct a list of choices from the available child instructions.

@@ -31,7 +31,7 @@ Inverter::Inverter() : DecoratorInstruction(Inverter::Type) {}
 
 Inverter::~Inverter() = default;
 
-ExecutionStatus Inverter::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
+ExecutionStatus Inverter::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   if (!HasChild())
   {

@@ -85,7 +85,7 @@ int main(int argc, char* argv[])
   }
 
   DaemonInterface ui(logger);
-  Runner runner(&ui);
+  Runner runner(ui);
   runner.SetProcedure(proc.get());
   runner.ExecuteProcedure();
   proc->Reset();

@@ -58,7 +58,7 @@ public:
    * @details Launches the ExecuteSingle method on the wrapped instruction
    * asynchronously if it is not already running.
    */
-  void Tick(UserInterface* ui, Workspace* ws);
+  void Tick(UserInterface& ui, Workspace& ws);
 
   /**
    * @brief Get execution status
@@ -84,7 +84,7 @@ private:
   /**
    * @brief Execution status of the wrapper
    */
-  void LaunchChild(UserInterface* ui, Workspace* ws);
+  void LaunchChild(UserInterface& ui, Workspace& ws);
 
   /**
    * @brief Check if child is still running

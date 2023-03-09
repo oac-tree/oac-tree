@@ -125,7 +125,7 @@ using ::testing::InSequence;
 TEST_F(RunnerTest, NoProcedure)
 {
   // Test constructed
-  Runner runner(&mock_ui);
+  Runner runner(mock_ui);
   EXPECT_TRUE(runner.IsFinished());  // empty procedure is finished by default
   EXPECT_FALSE(runner.IsRunning());
   EXPECT_NO_THROW(runner.ExecuteProcedure());
@@ -144,7 +144,7 @@ TEST_F(RunnerTest, ExecuteSingle)
   EXPECT_CALL(mock_ui, EndSingleStepImpl()).Times(AtLeast(3));
 
   // Test preconditions
-  Runner runner(&mock_ui);
+  Runner runner(mock_ui);
   EXPECT_TRUE(runner.IsFinished());  // empty procedure is finished by default
   EXPECT_FALSE(runner.IsRunning());
 
@@ -182,7 +182,7 @@ TEST_F(RunnerTest, ExecuteProcedure)
   EXPECT_CALL(mock_ui, EndSingleStepImpl()).Times(AtLeast(3));
 
   // Test preconditions
-  Runner runner(&mock_ui);
+  Runner runner(mock_ui);
   EXPECT_TRUE(runner.IsFinished());  // empty procedure is finished by default
   EXPECT_FALSE(runner.IsRunning());
 
@@ -222,7 +222,7 @@ TEST_F(RunnerTest, UICalls)
   }
 
   // Test preconditions
-  Runner runner(&mock_ui);
+  Runner runner(mock_ui);
   EXPECT_TRUE(runner.IsFinished());  // empty procedure is finished by default
   EXPECT_FALSE(runner.IsRunning());
 
@@ -249,7 +249,7 @@ TEST_F(RunnerTest, UIVariableCalls)
   EXPECT_CALL(mock_ui, EndSingleStepImpl()).Times(AtLeast(1));
 
   // Test preconditions
-  Runner runner(&mock_ui);
+  Runner runner(mock_ui);
   EXPECT_TRUE(runner.IsFinished());  // empty procedure is finished by default
   EXPECT_FALSE(runner.IsRunning());
 
@@ -268,7 +268,7 @@ TEST_F(RunnerTest, UIVariableCalls)
 TEST_F(RunnerTest, Halt)
 {
   // Test preconditions
-  Runner runner(&empty_ui);
+  Runner runner(empty_ui);
   EXPECT_TRUE(runner.IsFinished());  // empty procedure is finished by default
   EXPECT_FALSE(runner.IsRunning());
 

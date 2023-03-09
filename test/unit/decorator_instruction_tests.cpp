@@ -40,7 +40,7 @@ public:
   {
   public:
     TestClass() : DecoratorInstruction("TestClass") {}
-    ExecutionStatus ExecuteSingleImpl(UserInterface*, Workspace*) override { return {}; }
+    ExecutionStatus ExecuteSingleImpl(UserInterface&, Workspace&) override { return {}; }
   };
 };
 
@@ -114,7 +114,7 @@ TEST_F(DecoratorInstructionTest, ForceSuccess_success)
       "    </Workspace>\n"
       "</Procedure>");
 
-  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
 TEST_F(DecoratorInstructionTest, ForceSuccess_failure)
@@ -137,7 +137,7 @@ TEST_F(DecoratorInstructionTest, ForceSuccess_failure)
       "    </Workspace>\n"
       "</Procedure>");
 
-  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
 TEST_F(DecoratorInstructionTest, Inverter_success)
@@ -160,7 +160,7 @@ TEST_F(DecoratorInstructionTest, Inverter_success)
       "    </Workspace>\n"
       "</Procedure>");
 
-  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
 TEST_F(DecoratorInstructionTest, Inverter_failure)
@@ -181,7 +181,7 @@ TEST_F(DecoratorInstructionTest, Inverter_failure)
       "    </Workspace>\n"
       "</Procedure>");
 
-  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui, ExecutionStatus::FAILURE));
+  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
 }
 
 TEST_F(DecoratorInstructionTest, BaseClass_halt)
@@ -207,5 +207,5 @@ TEST_F(DecoratorInstructionTest, BaseClass_halt)
       "    </Workspace>\n"
       "</Procedure>");
 
-  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui, ExecutionStatus::FAILURE));
+  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
 }

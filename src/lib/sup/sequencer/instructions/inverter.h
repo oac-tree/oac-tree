@@ -42,7 +42,7 @@ public:
   static const std::string Type;
 
 private:
-  ExecutionStatus ExecuteSingleImpl(UserInterface* ui, Workspace* ws) override;
+  ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 
   /**
    * @brief Calculate this instruction's status from the status of its child instruction.

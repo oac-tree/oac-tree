@@ -41,7 +41,7 @@ public:
    *
    * @param type The type of instruction.
    */
-  DecoratorInstruction(const std::string &type);
+  DecoratorInstruction(const std::string& type);
 
   ~DecoratorInstruction() override;
 
@@ -51,14 +51,14 @@ public:
    * @param instruction Pointer to decorated instruction.
    * @note DecoratorInstruction takes ownership of the decorated instruction.
    */
-  void SetInstruction(Instruction *instruction);
+  void SetInstruction(Instruction* instruction);
 
 protected:
   /**
    * @brief Call Instruction::Setup(const Procedure & proc) on child instruction
    * and return result.
    */
-  void SetupChild(const Procedure &proc);
+  void SetupChild(const Procedure& proc);
 
   /**
    * @brief Check if this decorator has a child.
@@ -75,7 +75,7 @@ protected:
   /**
    * @brief Call Instruction::ExecuteSingle() on the child instruction.
    */
-  void ExecuteChild(UserInterface *ui, Workspace *ws);
+  void ExecuteChild(UserInterface& ui, Workspace& ws);
 
   /**
    * @brief Call Instruction::Reset() on the child instruction.

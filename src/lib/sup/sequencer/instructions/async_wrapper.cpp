@@ -22,6 +22,7 @@
 #include "async_wrapper.h"
 
 #include <chrono>
+#include <functional>
 
 namespace sup
 {
@@ -36,7 +37,7 @@ AsyncWrapper::AsyncWrapper(AsyncWrapper&&) = default;
 
 AsyncWrapper::~AsyncWrapper() = default;
 
-void AsyncWrapper::Tick(UserInterface* ui, Workspace* ws)
+void AsyncWrapper::Tick(UserInterface& ui, Workspace& ws)
 {
   if (ChildIsRunning())
   {
@@ -60,9 +61,10 @@ ExecutionStatus AsyncWrapper::GetStatus() const
   return _status;
 }
 
-void AsyncWrapper::LaunchChild(UserInterface* ui, Workspace* ws)
+void AsyncWrapper::LaunchChild(UserInterface& ui, Workspace& ws)
 {
-  _child_result = std::async(std::launch::async, &Instruction::ExecuteSingle, _instruction, ui, ws);
+  _child_result = std::async(std::launch::async, &Instruction::ExecuteSingle,
+                             _instruction, std::ref(ui), std::ref(ws));
 }
 
 bool AsyncWrapper::ChildIsRunning() const

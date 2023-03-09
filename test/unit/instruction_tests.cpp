@@ -32,7 +32,7 @@ public:
   {
   public:
     TestInstruction() : Instruction("TestInstruction") {}
-    ExecutionStatus ExecuteSingleImpl(UserInterface*, Workspace*) override { return {}; }
+    ExecutionStatus ExecuteSingleImpl(UserInterface&, Workspace&) override { return {}; }
   };
 };
 

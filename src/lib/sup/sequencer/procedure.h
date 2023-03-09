@@ -173,7 +173,7 @@ public:
    *
    * @param ui UserInterface to use for instruction input/output.
    */
-  void ExecuteSingle(UserInterface* ui);
+  void ExecuteSingle(UserInterface& ui);
 
   /**
    * @brief Halt the procedure's execution.

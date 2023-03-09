@@ -83,7 +83,7 @@ int main(int argc, char* argv[])
   }
 
   CLInterface ui(logger);
-  Runner runner(&ui);
+  Runner runner(ui);
   runner.SetProcedure(proc.get());
   runner.ExecuteProcedure();
   proc->Reset();

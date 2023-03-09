@@ -186,13 +186,13 @@ bool Procedure::Setup()
   return true;
 }
 
-void Procedure::ExecuteSingle(UserInterface *ui)
+void Procedure::ExecuteSingle(UserInterface& ui)
 {
   if (RootInstruction() == nullptr)
   {
     return;
   }
-  RootInstruction()->ExecuteSingle(ui, m_workspace.get());
+  RootInstruction()->ExecuteSingle(ui, *m_workspace);
 }
 
 void Procedure::Halt()

@@ -62,7 +62,7 @@ void Wait::SetupImpl(const Procedure&)
   }
 }
 
-ExecutionStatus Wait::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
+ExecutionStatus Wait::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   (void)ui;
   (void)ws;

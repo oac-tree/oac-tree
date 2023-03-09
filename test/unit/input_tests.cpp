@@ -58,7 +58,7 @@ TEST(Input, GetUserValue_success)
   ui.SetStatus(true);
   ui.SetValue(value);
 
-  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecuteNoReset(proc, &ui,
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecuteNoReset(proc, ui,
     ExecutionStatus::SUCCESS));
   EXPECT_TRUE(sup::dto::UnsignedInteger32Type == ui.GetType());
   sup::dto::AnyValue var_value;
@@ -81,7 +81,7 @@ TEST(Input, GetUserValue_failure)
   auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ui.SetStatus(false);
-  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui, ExecutionStatus::FAILURE));
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
 }
 
 TEST(Input, Variable_uninitialised)
@@ -101,7 +101,7 @@ TEST(Input, Variable_uninitialised)
   sup::dto::AnyValue value(1234u);
   ui.SetStatus(true);
   ui.SetValue(value);
-  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui, ExecutionStatus::FAILURE));
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
 }
 
 TEST(Input, Variable_undefined)
@@ -121,7 +121,7 @@ TEST(Input, Variable_undefined)
   ui.SetStatus(true);
   ui.SetValue(value);
 
-  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui, ExecutionStatus::FAILURE));
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
 }
 
 // ToDo - Workspace variable not updated

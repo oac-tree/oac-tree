@@ -48,27 +48,27 @@ TEST(UserChoice, GetUserChoice)
   ASSERT_TRUE(proc.get() != nullptr);
 
   ui.SetChoice(0);
-  EXPECT_TRUE(TryAndExecute(proc, &ui));
+  EXPECT_TRUE(TryAndExecute(proc, ui));
   EXPECT_EQ(CounterInstruction::GetCount(), 1);
 
   ui.SetChoice(1);
-  EXPECT_TRUE(TryAndExecute(proc, &ui));
+  EXPECT_TRUE(TryAndExecute(proc, ui));
   EXPECT_EQ(CounterInstruction::GetCount(), 3);
 
   ui.SetChoice(2);
-  EXPECT_TRUE(TryAndExecute(proc, &ui));
+  EXPECT_TRUE(TryAndExecute(proc, ui));
   EXPECT_EQ(CounterInstruction::GetCount(), 3);
 
   // Instruction called and return failure
   ui.SetChoice(3);
-  EXPECT_TRUE(TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE));
+  EXPECT_TRUE(TryAndExecute(proc, ui, sup::sequencer::ExecutionStatus::FAILURE));
   EXPECT_EQ(CounterInstruction::GetCount(), 4);
 
   // Invalid choices
 
   ui.SetChoice(4);
-  EXPECT_TRUE(TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE));
+  EXPECT_TRUE(TryAndExecute(proc, ui, sup::sequencer::ExecutionStatus::FAILURE));
 
   ui.SetChoice(-1);
-  EXPECT_TRUE(TryAndExecute(proc, &ui, sup::sequencer::ExecutionStatus::FAILURE));
+  EXPECT_TRUE(TryAndExecute(proc, ui, sup::sequencer::ExecutionStatus::FAILURE));
 }

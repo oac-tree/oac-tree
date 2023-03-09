@@ -82,7 +82,7 @@ TEST(Condition, Default)
   ASSERT_TRUE(proc->Setup());
 
   sup::UnitTestHelper::EmptyUserInterface ui;
-  proc->ExecuteSingle(&ui);
+  proc->ExecuteSingle(ui);
   EXPECT_EQ(proc->GetStatus(), ExecutionStatus::SUCCESS);
 }
 
@@ -111,7 +111,7 @@ TEST(Condition, DifferentTypes)
       sup::UnitTestHelper::EmptyUserInterface ui;
       proc->PushInstruction(myCondNode.release());
       proc->Setup();
-      proc->ExecuteSingle(&ui);
+      proc->ExecuteSingle(ui);
 
       ::std::string result = conditionTable[i][4];
       if (result == "true")
@@ -155,7 +155,7 @@ TEST(Condition, NonScalarVariable_success)
 
   sup::UnitTestHelper::EmptyUserInterface ui;
   auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
-  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
 TEST(Condition, NonScalarVariable_failure)
@@ -173,7 +173,7 @@ TEST(Condition, NonScalarVariable_failure)
 
   sup::UnitTestHelper::EmptyUserInterface ui;
   auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
-  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui, ExecutionStatus::FAILURE));
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
 }
 
 TEST(Condition, NoSuchVariable_name)
@@ -188,7 +188,7 @@ TEST(Condition, NoSuchVariable_name)
 
   sup::UnitTestHelper::EmptyUserInterface ui;
   auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
-  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui, ExecutionStatus::FAILURE));
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
 }
 
 TEST(Condition, NoSuchVariable_attr)
@@ -206,5 +206,5 @@ TEST(Condition, NoSuchVariable_attr)
 
   sup::UnitTestHelper::EmptyUserInterface ui;
   auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
-  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui, ExecutionStatus::FAILURE));
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
 }

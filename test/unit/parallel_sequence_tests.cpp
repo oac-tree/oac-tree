@@ -87,21 +87,21 @@ TEST(ParallelSequence, Procedure_sequence)
 {
   sup::UnitTestHelper::EmptyUserInterface ui;
   auto proc = ParseProcedureString(ProcedureSequenceString);
-  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
 TEST(ParallelSequence, Procedure_parallel)
 {
   sup::UnitTestHelper::EmptyUserInterface ui;
   auto proc = ParseProcedureString(ProcedureParallelString);
-  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
 TEST(ParallelSequence, WithBuiltinCode)
 {
   sup::UnitTestHelper::EmptyUserInterface ui;
   auto proc = ParseProcedureString(ProcedureParallelBuiltinString);
-  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
 TEST(ParallelSequence, SetupImpl_thresholds)

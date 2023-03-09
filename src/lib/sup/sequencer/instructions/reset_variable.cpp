@@ -45,17 +45,17 @@ void ResetVariable::SetupImpl(const Procedure &proc)
   CheckMandatoryNonEmptyAttribute(*this, VARNAME_ATTRIBUTE);
 }
 
-ExecutionStatus ResetVariable::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
+ExecutionStatus ResetVariable::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   auto var_name = GetAttribute(VARNAME_ATTRIBUTE);
-  if (!ws->HasVariable(var_name))
+  if (!ws.HasVariable(var_name))
   {
     std::string error_message = InstructionErrorLogProlog() +
       "workspace does not contain variable with name [" + var_name + "]";
-    ui->LogError(error_message);
+    ui.LogError(error_message);
     return ExecutionStatus::FAILURE;
   }
-  if (!ws->ResetVariable(var_name))
+  if (!ws.ResetVariable(var_name))
   {
     return ExecutionStatus::FAILURE;
   }

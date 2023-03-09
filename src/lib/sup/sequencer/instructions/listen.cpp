@@ -48,7 +48,7 @@ Listen::Listen()
 
 Listen::~Listen() = default;
 
-ExecutionStatus Listen::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
+ExecutionStatus Listen::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   if (!HasChild())
   {
@@ -57,7 +57,7 @@ ExecutionStatus Listen::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
   if (!cb_guard.IsValid())
   {
     var_changed = false;
-    RegisterCallbacks(ws, var_names);
+    RegisterCallbacks(&ws, var_names);
   }
   auto child_status = GetChildStatus();
   if (IsFinishedStatus(child_status))

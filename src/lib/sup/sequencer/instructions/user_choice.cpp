@@ -38,7 +38,7 @@ UserChoice::UserChoice()
 
 UserChoice::~UserChoice() = default;
 
-ExecutionStatus UserChoice::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
+ExecutionStatus UserChoice::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   (void)ws;
 
@@ -53,13 +53,13 @@ ExecutionStatus UserChoice::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
   }
 
   auto options = GetChoices();
-  int choice = ui->GetUserChoice(options, description);
+  int choice = ui.GetUserChoice(options, description);
   if (choice < 0 || choice >= ChildrenCount())
   {
     std::string warning_message = InstructionWarningLogProlog() +
       "user choice [" + std::to_string(choice) + "] is not a valid value for [" +
       std::to_string(ChildrenCount()) + "] child instructions";
-    ui->LogWarning(warning_message);
+    ui.LogWarning(warning_message);
     return ExecutionStatus::FAILURE;
   }
   auto selected = ChildInstructions()[choice];
@@ -72,7 +72,7 @@ ExecutionStatus UserChoice::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
   std::string error_message = InstructionErrorLogProlog() +
     "child instruction of type [" + selected->GetType() + "] was already finished with status [" +
     StatusToString(selected_status) + "]";
-  ui->LogError(error_message);
+  ui.LogError(error_message);
   return ExecutionStatus::FAILURE;
 }
 

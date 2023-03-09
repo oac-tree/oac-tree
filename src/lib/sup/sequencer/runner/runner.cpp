@@ -32,9 +32,9 @@ namespace sup
 {
 namespace sequencer
 {
-static int TickTimeoutMs(Procedure* procedure);
+static int TickTimeoutMs(Procedure& procedure);
 
-Runner::Runner(UserInterface* ui)
+Runner::Runner(UserInterface& ui)
   : m_proc{nullptr}
   , m_ui{ui}
   , m_halt{false}
@@ -45,11 +45,10 @@ Runner::~Runner() = default;
 void Runner::SetProcedure(Procedure* procedure)
 {
   m_proc = procedure;
-  UserInterface* ui = m_ui;
   m_proc->RegisterGenericCallback(
-    [ui](const std::string& name, const sup::dto::AnyValue& value)
+    [this](const std::string& name, const sup::dto::AnyValue& value)
     {
-      ui->VariableUpdated(name, value);
+      m_ui.VariableUpdated(name, value);
     });
 }
 
@@ -58,7 +57,7 @@ void Runner::ExecuteProcedure()
   m_halt.store(false);
   if (m_proc)
   {
-    auto sleep_time_ms = TickTimeoutMs(m_proc);
+    auto sleep_time_ms = TickTimeoutMs(*m_proc);
 
     while (!IsFinished() && !m_halt.load())
     {
@@ -75,9 +74,9 @@ void Runner::ExecuteSingle()
 {
   if (m_proc)
   {
-    m_ui->StartSingleStep();
+    m_ui.StartSingleStep();
     m_proc->ExecuteSingle(m_ui);
-    m_ui->EndSingleStep();
+    m_ui.EndSingleStep();
   }
 }
 
@@ -112,11 +111,11 @@ bool Runner::IsRunning() const
   return (status == ExecutionStatus::RUNNING);
 }
 
-static int TickTimeoutMs(Procedure* procedure)
+static int TickTimeoutMs(Procedure& procedure)
 {
-  if (procedure->HasAttribute(Procedure::TICK_TIMEOUT_ATTRIBUTE_NAME))
+  if (procedure.HasAttribute(Procedure::TICK_TIMEOUT_ATTRIBUTE_NAME))
   {
-    auto tick_timeout_str = procedure->GetAttribute(Procedure::TICK_TIMEOUT_ATTRIBUTE_NAME);
+    auto tick_timeout_str = procedure.GetAttribute(Procedure::TICK_TIMEOUT_ATTRIBUTE_NAME);
     double tick_timeout = std::stod(tick_timeout_str);
     if (tick_timeout > 0.001)
     {

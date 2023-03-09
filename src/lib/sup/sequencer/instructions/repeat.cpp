@@ -59,7 +59,7 @@ void Repeat::SetupImpl(const Procedure& proc)
   SetupChild(proc);
 }
 
-ExecutionStatus Repeat::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
+ExecutionStatus Repeat::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   if (!HasChild() || _max_count == 0)
   {

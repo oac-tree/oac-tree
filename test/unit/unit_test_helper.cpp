@@ -54,8 +54,7 @@ unsigned long CounterInstruction::GetCount()
   return counter;
 }
 
-ExecutionStatus CounterInstruction::ExecuteSingleImpl(
-    UserInterface *ui, Workspace *ws)
+ExecutionStatus CounterInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   if (HasAttribute("incr"))
   {

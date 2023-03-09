@@ -45,26 +45,26 @@ void Output::SetupImpl(const Procedure &proc)
   CheckMandatoryNonEmptyAttribute(*this, FROM_ATTRIBUTE_NAME);
 }
 
-ExecutionStatus Output::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
+ExecutionStatus Output::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   auto from_field = GetAttribute(FROM_ATTRIBUTE_NAME);
   auto from_var = SplitFieldName(from_field).first;
-  if (!ws->HasVariable(from_var))
+  if (!ws.HasVariable(from_var))
   {
     std::string error_message = InstructionErrorLogProlog() +
       "workspace does not contain variable with name [" + from_var + "]";
-    ui->LogError(error_message);
+    ui.LogError(error_message);
     return ExecutionStatus::FAILURE;
   }
   sup::dto::AnyValue value;
-  if (!ws->GetValue(from_field, value))
+  if (!ws.GetValue(from_field, value))
   {
     std::string warning_message = InstructionWarningLogProlog() +
       "could not read field with name [" + from_field + "] from workspace";
-    ui->LogWarning(warning_message);
+    ui.LogWarning(warning_message);
     return ExecutionStatus::FAILURE;
   }
-  return ui->PutValue(value, GetAttribute(DESCR_ATTRIBUTE_NAME)) ? ExecutionStatus::SUCCESS
+  return ui.PutValue(value, GetAttribute(DESCR_ATTRIBUTE_NAME)) ? ExecutionStatus::SUCCESS
                                                                  : ExecutionStatus::FAILURE;
 }
 

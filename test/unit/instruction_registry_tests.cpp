@@ -38,7 +38,7 @@ public:
   static const std::string Type;
 
 private:
-  ExecutionStatus ExecuteSingleImpl(UserInterface*, Workspace*) override
+  ExecutionStatus ExecuteSingleImpl(UserInterface&, Workspace&) override
   {
     return ExecutionStatus::SUCCESS;
   }

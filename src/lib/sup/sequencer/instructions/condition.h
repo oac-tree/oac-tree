@@ -46,7 +46,7 @@ public:
 private:
   void SetupImpl(const Procedure &proc) override;
 
-  virtual ExecutionStatus ExecuteSingleImpl(UserInterface* ui, Workspace* ws);
+  virtual ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws);
 };
 
 }  // namespace sequencer

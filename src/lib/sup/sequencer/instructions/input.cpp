@@ -44,39 +44,39 @@ void Input::SetupImpl(const Procedure &proc)
   CheckMandatoryNonEmptyAttribute(*this, OUTPUT_VARIABLE_ATTR_NAME);
 }
 
-ExecutionStatus Input::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
+ExecutionStatus Input::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   auto output_field = GetAttribute(OUTPUT_VARIABLE_ATTR_NAME);
   auto output_var = SplitFieldName(output_field).first;
-  if (!ws->HasVariable(output_var))
+  if (!ws.HasVariable(output_var))
   {
     std::string error_message = InstructionErrorLogProlog() +
       "workspace does not contain output variable with name [" + output_var + "]";
-    ui->LogError(error_message);
+    ui.LogError(error_message);
     return ExecutionStatus::FAILURE;
   }
   sup::dto::AnyValue value;
-  if (!ws->GetValue(output_field, value))
+  if (!ws.GetValue(output_field, value))
   {
     std::string error_message = InstructionErrorLogProlog() +
       "workspace could not retrieve value of output field with name [" + output_field + "]";
-    ui->LogError(error_message);
+    ui.LogError(error_message);
     return ExecutionStatus::FAILURE;
   }
-  if (!ui->GetUserValue(value, GetAttribute("description")))
+  if (!ui.GetUserValue(value, GetAttribute("description")))
   {
     std::string warning_message = InstructionWarningLogProlog() +
       "did not receive compatible user value for field [" + output_field + "[ in workspace";
-    ui->LogWarning(warning_message);
+    ui.LogWarning(warning_message);
     return ExecutionStatus::FAILURE;
   }
-  if (!ws->SetValue(output_field, value))
+  if (!ws.SetValue(output_field, value))
   {
     auto json_value = sup::dto::ValuesToJSONString(value);
     std::string warning_message = InstructionWarningLogProlog() +
       "could not write user value [" + json_value + "] to field [" + output_field +
       "[ in workspace";
-    ui->LogWarning(warning_message);
+    ui.LogWarning(warning_message);
     return ExecutionStatus::FAILURE;
   }
   return ExecutionStatus::SUCCESS;

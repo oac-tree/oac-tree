@@ -97,7 +97,7 @@ public:
    * @param ui UserInterface to handle input/output.
    * @param ws Workspace that contains the variables.
    */
-  void ExecuteSingle(UserInterface* ui, Workspace* ws);
+  void ExecuteSingle(UserInterface& ui, Workspace& ws);
 
   /**
    * @brief Halt execution.
@@ -260,7 +260,7 @@ private:
    * changes the status to ExecutionStatus::NOT_FINISHED and informs the user interface of a
    * status change.
    */
-  void Preamble(UserInterface* ui);
+  void Preamble(UserInterface& ui);
 
   /**
    * @brief Private method that is always called the delegated execution to the
@@ -270,7 +270,7 @@ private:
    * of the call to Instruction::ExecuteSingleImple(UserInterface * ui, Workspace * ws). If so,
    * it informs the user interface of this status change.
    */
-  void Postamble(UserInterface* ui);
+  void Postamble(UserInterface& ui);
 
   /**
    * @brief Setup implementation.
@@ -301,7 +301,7 @@ private:
    *
    * @details Pure virtual: this method contains the action(s) to be taken during execution.
    */
-  virtual ExecutionStatus ExecuteSingleImpl(UserInterface* ui, Workspace* ws) = 0;
+  virtual ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) = 0;
 
   /**
    * @brief Hook called during Instruction::Halt().

@@ -63,7 +63,7 @@ TEST_F(FileVariableTest, FileWrite)
   ASSERT_TRUE(proc->Setup());
 
   sup::UnitTestHelper::EmptyUserInterface ui;
-  proc->ExecuteSingle(&ui);
+  proc->ExecuteSingle(ui);
   EXPECT_EQ(proc->GetStatus(), ExecutionStatus::SUCCESS);
 
   EXPECT_TRUE(utils::FileExists("variable.bck"));
@@ -145,7 +145,7 @@ TEST_F(FileVariableTest, FileSuccess)
 
   do
   {
-    proc->ExecuteSingle(&ui);
+    proc->ExecuteSingle(ui);
     exec = proc->GetStatus();
   } while ((ExecutionStatus::SUCCESS != exec) &&
            (ExecutionStatus::FAILURE != exec));

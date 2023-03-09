@@ -75,7 +75,7 @@ void Instruction::Setup(const Procedure& proc)
   return SetupImpl(proc);
 }
 
-void Instruction::ExecuteSingle(UserInterface* ui, Workspace* ws)
+void Instruction::ExecuteSingle(UserInterface& ui, Workspace& ws)
 {
   Preamble(ui);
   _status_before = GetStatus();
@@ -188,21 +188,21 @@ void Instruction::SetStatus(ExecutionStatus status)
   _status = status;
 }
 
-void Instruction::Preamble(UserInterface* ui)
+void Instruction::Preamble(UserInterface& ui)
 {
   if (GetStatus() == ExecutionStatus::NOT_STARTED)
   {
     InitHook();
     SetStatus(ExecutionStatus::NOT_FINISHED);
-    ui->UpdateInstructionStatus(this);
+    ui.UpdateInstructionStatus(this);
   }
 }
 
-void Instruction::Postamble(UserInterface* ui)
+void Instruction::Postamble(UserInterface& ui)
 {
   if (GetStatus() != _status_before)
   {
-    ui->UpdateInstructionStatus(this);
+    ui.UpdateInstructionStatus(this);
   }
 }
 

@@ -31,7 +31,7 @@ ForceSuccess::ForceSuccess() : DecoratorInstruction(ForceSuccess::Type) {}
 
 ForceSuccess::~ForceSuccess() = default;
 
-ExecutionStatus ForceSuccess::ExecuteSingleImpl(UserInterface *ui, Workspace *ws)
+ExecutionStatus ForceSuccess::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   if (!HasChild())
   {

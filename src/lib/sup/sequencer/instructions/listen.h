@@ -64,7 +64,7 @@ private:
    * FAILURE accordingly.
    * The instruction also immediately returns SUCCESS in the absence of a child instruction.
    */
-  ExecutionStatus ExecuteSingleImpl(UserInterface* ui, Workspace* ws) override;
+  ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 
   void HaltImpl() override;
   void SetupImpl(const Procedure& proc) override;

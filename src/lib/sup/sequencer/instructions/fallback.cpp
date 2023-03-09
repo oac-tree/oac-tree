@@ -31,7 +31,7 @@ Fallback::Fallback() : CompoundInstruction(Fallback::Type) {}
 
 Fallback::~Fallback() = default;
 
-ExecutionStatus Fallback::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
+ExecutionStatus Fallback::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   if (!HasChildren())
   {

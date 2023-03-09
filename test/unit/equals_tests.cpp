@@ -56,7 +56,7 @@ TEST(Equals, Equals_success)
   auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
-  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
 TEST(Equals, Equals_failure)
@@ -76,5 +76,5 @@ TEST(Equals, Equals_failure)
   ASSERT_TRUE(proc.get() != nullptr);
   // Should have expect failure in Setup but the exception does not cause SetupImpl to fail ..
   EXPECT_TRUE(
-      sup::UnitTestHelper::TryAndExecute(proc, &ui, ExecutionStatus::FAILURE));
+      sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
 }

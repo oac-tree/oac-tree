@@ -122,7 +122,7 @@ TEST(Include, Procedure_local)
   sup::UnitTestHelper::EmptyUserInterface ui;
   auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
-  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
   EXPECT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 20);
 }
 
@@ -143,7 +143,7 @@ TEST(Include, Procedure_param)
   auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
-  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
   EXPECT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 20);
 }
 
@@ -165,7 +165,7 @@ incr="2"/>
   auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
-  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
   EXPECT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 20);
 }
 
@@ -185,7 +185,7 @@ TEST(Include, Procedure_undefined)
   auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
-  EXPECT_THROW(sup::UnitTestHelper::TryAndExecute(proc, &ui), InstructionSetupException);
+  EXPECT_THROW(sup::UnitTestHelper::TryAndExecute(proc, ui), InstructionSetupException);
 }
 
 TEST(Include, Procedure_extern)
@@ -215,7 +215,7 @@ TEST(Include, Procedure_extern)
   sup::UnitTestHelper::EmptyUserInterface ui;
   auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(procedure_body));
   ASSERT_TRUE(proc.get() != nullptr);
-  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
 TEST(Include, Procedure_nested)
@@ -264,5 +264,5 @@ TEST(Include, Procedure_nested)
   auto proc = ParseProcedureString(proc_str);
 
   ASSERT_TRUE(proc.get() != nullptr);
-  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }

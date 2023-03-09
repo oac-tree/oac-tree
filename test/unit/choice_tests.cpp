@@ -91,7 +91,7 @@ TEST(Choice, Default)  // Static initialisation
     while ((proc->GetStatus() != ExecutionStatus::SUCCESS)
            && (proc->GetStatus() != ExecutionStatus::FAILURE))
     {
-      proc->ExecuteSingle(&ui);
+      proc->ExecuteSingle(ui);
     }
     EXPECT_EQ(proc->GetStatus(), statuses[i]);
 
@@ -133,7 +133,7 @@ TEST(Choice, ArraySuccess)
   sup::UnitTestHelper::MockUI ui;
   auto proc =
       ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
-  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
   EXPECT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 3);
 }
 
@@ -158,7 +158,7 @@ TEST(Choice, ArrayFailure)
       ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
   // Instruction called and return failure
   EXPECT_TRUE(
-      sup::UnitTestHelper::TryAndExecute(proc, &ui, ExecutionStatus::FAILURE));
+      sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
   EXPECT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 3);
 }
 
@@ -176,7 +176,7 @@ TEST(Choice, NoSuchVariable)
   auto proc =
       ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
   // Expect failure during execution
-  EXPECT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+  EXPECT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
 TEST(Choice, NoAttribute)
@@ -193,5 +193,5 @@ TEST(Choice, NoAttribute)
   auto proc =
       ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
   // Expect failure in Setup
-  EXPECT_THROW(sup::UnitTestHelper::TryAndExecute(proc, &ui), InstructionSetupException);
+  EXPECT_THROW(sup::UnitTestHelper::TryAndExecute(proc, ui), InstructionSetupException);
 }

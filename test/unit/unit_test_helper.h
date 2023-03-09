@@ -40,32 +40,18 @@ namespace UnitTestHelper
 {
 class CounterInstruction : public sup::sequencer::Instruction
 {
-private:
-  /**
-   * @brief See sup::sequencer::Instruction.
-   */
-  sup::sequencer::ExecutionStatus ExecuteSingleImpl(sup::sequencer::UserInterface* ui,
-                                                    sup::sequencer::Workspace* ws) override;
-
-protected:
 public:
-  /**
-   * @brief Constructor.
-   */
   CounterInstruction();
-
-  /**
-   * @brief Destructor.
-   */
   ~CounterInstruction() override;
 
-  /**
-   * @brief Class name for InstructionRegistry.
-   */
   static const std::string Type;
 
   static unsigned long counter;
   static unsigned long GetCount();
+
+private:
+  sup::sequencer::ExecutionStatus ExecuteSingleImpl(sup::sequencer::UserInterface& ui,
+                                                    sup::sequencer::Workspace& ws) override;
 };
 
 class MockUI : public sup::sequencer::UserInterface
@@ -83,7 +69,6 @@ private:
   int GetUserChoiceImpl(const std::vector<std::string>& choices,
                         const std::string& description) override;
 
-protected:
 public:
   sup::dto::AnyType GetType() const;
 
@@ -116,11 +101,11 @@ public:
 
 std::string GetFullTestFilePath(const std::string& filename);
 static inline bool TryAndExecute(
-    std::unique_ptr<sup::sequencer::Procedure>& proc, sup::sequencer::UserInterface* const ui,
+    std::unique_ptr<sup::sequencer::Procedure>& proc, sup::sequencer::UserInterface& ui,
     const sup::sequencer::ExecutionStatus& expect = sup::sequencer::ExecutionStatus::SUCCESS);
 
 static inline bool TryAndExecuteNoReset(std::unique_ptr<sup::sequencer::Procedure>& proc,
-                                        sup::sequencer::UserInterface* const ui,
+                                        sup::sequencer::UserInterface& ui,
                                         const sup::sequencer::ExecutionStatus& expect)
 {
   bool status = static_cast<bool>(proc);
@@ -152,7 +137,7 @@ static inline bool TryAndExecuteNoReset(std::unique_ptr<sup::sequencer::Procedur
 }
 
 static inline bool TryAndExecute(std::unique_ptr<sup::sequencer::Procedure>& proc,
-                                 sup::sequencer::UserInterface* const ui,
+                                 sup::sequencer::UserInterface& ui,
                                  const sup::sequencer::ExecutionStatus& expect)
 {
 

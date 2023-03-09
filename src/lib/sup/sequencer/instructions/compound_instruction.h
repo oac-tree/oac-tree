@@ -41,7 +41,7 @@ public:
    *
    * @param type The type of instruction.
    */
-  CompoundInstruction(const std::string &type);
+  CompoundInstruction(const std::string& type);
 
   ~CompoundInstruction() override;
 
@@ -51,14 +51,14 @@ public:
    * @param instruction Pointer to instruction.
    * @note CompoundInstruction takes ownership of the added instruction.
    */
-  void PushBack(Instruction *instruction);
+  void PushBack(Instruction* instruction);
 
 protected:
   /**
    * @brief Call Instruction::Setup(const Procedure & proc) on all child instructions
    * and aggregate result.
    */
-  void SetupChildren(const Procedure &proc);
+  void SetupChildren(const Procedure& proc);
 
   /**
    * @brief Check if this compound instruction has child instructions.

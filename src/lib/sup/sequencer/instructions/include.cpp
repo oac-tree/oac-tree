@@ -51,7 +51,7 @@ std::string Include::GetFilename() const
   return _filename;
 }
 
-ExecutionStatus Include::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
+ExecutionStatus Include::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   if (!HasChild())
   {

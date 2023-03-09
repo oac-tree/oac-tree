@@ -71,7 +71,7 @@ TEST_F(MessageTest, Execute)
   message_instr.AddAttribute("text", message);
   EXPECT_NO_THROW(message_instr.Setup(proc));
 
-  message_instr.ExecuteSingle(&ui, &ws);
+  message_instr.ExecuteSingle(ui, ws);
   EXPECT_EQ(message_instr.GetStatus(), ExecutionStatus::SUCCESS);
 
   EXPECT_EQ(ui.ui_message, message);
@@ -87,7 +87,7 @@ TEST_F(MessageTest, FromRegistry)
   EXPECT_NO_THROW(message_instr->Setup(proc));
   ui.ui_message = "UNDEFINED";
 
-  message_instr->ExecuteSingle(&ui, &ws);
+  message_instr->ExecuteSingle(ui, ws);
   EXPECT_EQ(message_instr->GetStatus(), ExecutionStatus::SUCCESS);
 
   EXPECT_EQ(ui.ui_message, message);

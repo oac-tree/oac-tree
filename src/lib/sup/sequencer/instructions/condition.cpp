@@ -46,24 +46,24 @@ void Condition::SetupImpl(const Procedure &proc)
   CheckMandatoryNonEmptyAttribute(*this, CONDITION_VARIABLE_ATTR_NAME);
 }
 
-ExecutionStatus Condition::ExecuteSingleImpl(UserInterface* ui, Workspace* ws)
+ExecutionStatus Condition::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   auto field_name = GetAttribute(CONDITION_VARIABLE_ATTR_NAME);
   auto var_name = SplitFieldName(field_name).first;
-  if (!ws->HasVariable(var_name))
+  if (!ws.HasVariable(var_name))
   {
     std::string error_message = InstructionErrorLogProlog() +
       "workspace does not contain condition variable with name [" + var_name + "]";
-    ui->LogError(error_message);
+    ui.LogError(error_message);
     return ExecutionStatus::FAILURE;
   }
   sup::dto::AnyValue var;
   sup::dto::boolean result = false;
-  if (!ws->GetValue(field_name, var) || !var.As(result))
+  if (!ws.GetValue(field_name, var) || !var.As(result))
   {
     std::string warning_message = InstructionWarningLogProlog() +
       "could not parse workspace field with name [" + field_name + "] to a boolean";
-    ui->LogWarning(warning_message);
+    ui.LogWarning(warning_message);
     return ExecutionStatus::FAILURE;
   }
   return result ? ExecutionStatus::SUCCESS : ExecutionStatus::FAILURE;

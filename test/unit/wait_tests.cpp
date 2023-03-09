@@ -74,7 +74,7 @@ TEST(Wait, Procedure_success)
       "    <Workspace/>\n"
       "</Procedure>");
 
-  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, &ui));
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
 TEST(Wait, SetupImpl_throw)
@@ -91,5 +91,5 @@ TEST(Wait, SetupImpl_throw)
       "</Procedure>");
 
   // Should have expect failure in Setup but the exception does not cause SetupImpl to fail.
-  EXPECT_THROW(sup::UnitTestHelper::TryAndExecute(proc, &ui), InstructionSetupException);
+  EXPECT_THROW(sup::UnitTestHelper::TryAndExecute(proc, ui), InstructionSetupException);
 }

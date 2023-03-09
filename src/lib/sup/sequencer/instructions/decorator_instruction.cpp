@@ -59,7 +59,7 @@ ExecutionStatus DecoratorInstruction::GetChildStatus() const
   return ExecutionStatus::NOT_STARTED;
 }
 
-void DecoratorInstruction::ExecuteChild(UserInterface *ui, Workspace *ws)
+void DecoratorInstruction::ExecuteChild(UserInterface& ui, Workspace& ws)
 {
   if (_child)
   {

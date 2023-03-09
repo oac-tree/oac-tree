@@ -28,6 +28,8 @@
 #include <sup/sequencer/attribute_map.h>
 #include <sup/sequencer/execution_status.h>
 
+#include <sup/dto/anyvalue.h>
+
 namespace sup
 {
 namespace sequencer
@@ -363,13 +365,31 @@ private:
 };
 
 /**
- * @brief Construct a string prolog for throwing exceptions related to Instruction::Setup
+ * @brief Construct a string prolog for throwing exceptions related to Instruction::Setup.
  *
  * @param instruction Instruction to use.
  *
  * @return String containing the prolog to be used for the exception message.
  */
 std::string InstructionSetupExceptionProlog(const Instruction& instruction);
+
+/**
+ * @brief Construct a string prolog for reporting errors to the UserInterface.
+ *
+ * @param instruction Instruction to use.
+ *
+ * @return String containing the prolog to be used for the error message.
+ */
+std::string InstructionErrorProlog(const Instruction& instruction);
+
+/**
+ * @brief Construct a string prolog for reporting warnings to the UserInterface.
+ *
+ * @param instruction Instruction to use.
+ *
+ * @return String containing the prolog to be used for the warning message.
+ */
+std::string InstructionWarningProlog(const Instruction& instruction);
 
 /**
  * @brief Check if the instruction has an attribute with the given name and throw if not.
@@ -413,6 +433,36 @@ int InstructionAttributeToInt(const Instruction& instruction, const std::string&
  * @throw InstructionSetupException when the attribute could not be parsed into an double.
  */
 double InstructionAttributeToDouble(const Instruction& instruction, const std::string& attr_name);
+
+/**
+ * @brief Fetch variable (and field) with name contained in the instruction's attribute and copy it.
+ *
+ * @param instruction Instruction containing the attribute.
+ * @param ws Workspace containing the variables
+ * @param ui UserInterface to use to report errors or warnings.
+ * @param attr_name Attribute name.
+ * @param value AnyValue to copy to.
+ *
+ * @return True if successful.
+ */
+bool GetValueFromAttributeName(const Instruction& instruction, const Workspace& ws,
+                               UserInterface& ui, const std::string& attr_name,
+                               sup::dto::AnyValue& value);
+
+/**
+ * @brief Set variable (and field) with name contained in the instruction's attribute.
+ *
+ * @param instruction Instruction containing the attribute.
+ * @param ws Workspace containing the variables
+ * @param ui UserInterface to use to report errors or warnings.
+ * @param attr_name Attribute name.
+ * @param value AnyValue that will be copied to the workspace's variable.
+ *
+ * @return True if successful.
+ */
+bool SetValueFromAttributeName(const Instruction& instruction, Workspace& ws,
+                               UserInterface& ui, const std::string& attr_name,
+                               const sup::dto::AnyValue& value);
 
 }  // namespace sequencer
 

@@ -23,6 +23,7 @@
 
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/user_interface.h>
+#include <sup/sequencer/workspace.h>
 
 #include <sup/dto/json_value_parser.h>
 
@@ -247,6 +248,22 @@ std::string InstructionSetupExceptionProlog(const Instruction& instruction)
   return "Setup of instruction " + optional_name + "of type <" + instr_type + "> failed: ";
 }
 
+std::string InstructionErrorProlog(const Instruction& instruction)
+{
+  auto instr_name = instruction.GetName();
+  auto instr_type = instruction.GetType();
+  std::string optional_name = WrapOptionalInstructionNameString(instr_name);
+  return "Instruction " + optional_name + "of type <" + instr_type + "> error: ";
+}
+
+std::string InstructionWarningProlog(const Instruction& instruction)
+{
+  auto instr_name = instruction.GetName();
+  auto instr_type = instruction.GetType();
+  std::string optional_name = WrapOptionalInstructionNameString(instr_name);
+  return "Instruction " + optional_name + "of type <" + instr_type + "> warning: ";
+}
+
 void CheckMandatoryAttribute(const Instruction& instruction, const std::string& attr_name)
 {
   if (!instruction.HasAttribute(attr_name))
@@ -292,6 +309,66 @@ double InstructionAttributeToDouble(const Instruction& instruction, const std::s
     throw InstructionSetupException(error_message);
   }
   return parser.MoveAnyValue().As<sup::dto::float64>();
+}
+
+bool GetValueFromAttributeName(const Instruction& instruction, const Workspace& ws,
+                               UserInterface& ui, const std::string& attr_name,
+                               sup::dto::AnyValue& value)
+{
+  auto input_field_name = instruction.GetAttribute(attr_name);
+  if (input_field_name.empty())
+  {
+    std::string error_message = InstructionErrorProlog(instruction) +
+      "trying to fetch variable with empty name";
+    ui.LogError(error_message);
+    return false;
+  }
+  auto input_var_name = SplitFieldName(input_field_name).first;
+  if (!ws.HasVariable(input_var_name))
+  {
+    std::string error_message = InstructionErrorProlog(instruction) +
+      "workspace does not contain input variable with name [" + input_var_name + "]";
+    ui.LogError(error_message);
+    return false;
+  }
+  if (!ws.GetValue(input_field_name, value))
+  {
+    std::string warning_message = InstructionErrorProlog(instruction) +
+      "could not read input field with name [" + input_field_name + "] from workspace";
+    ui.LogWarning(warning_message);
+    return false;
+  }
+  return true;
+}
+
+bool SetValueFromAttributeName(const Instruction& instruction, Workspace& ws,
+                               UserInterface& ui, const std::string& attr_name,
+                               const sup::dto::AnyValue& value)
+{
+  auto output_field_name = instruction.GetAttribute(attr_name);
+  if (output_field_name.empty())
+  {
+    std::string error_message = InstructionErrorProlog(instruction) +
+      "trying to use variable with empty name";
+    ui.LogError(error_message);
+    return false;
+  }
+  auto output_var_name = SplitFieldName(output_field_name).first;
+  if (!ws.HasVariable(output_var_name))
+  {
+    std::string error_message = InstructionErrorProlog(instruction) +
+      "workspace does not contain output variable with name [" + output_var_name + "]";
+    ui.LogError(error_message);
+    return false;
+  }
+  if (!ws.SetValue(output_field_name, value))
+  {
+    std::string warning_message = InstructionErrorProlog(instruction) +
+      "could not write output field with name [" + output_field_name + "] to workspace";
+    ui.LogWarning(warning_message);
+    return false;
+  }
+  return true;
 }
 
 }  // namespace sequencer

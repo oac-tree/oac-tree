@@ -60,22 +60,16 @@ ExecutionStatus Sequence::CalculateCompoundStatus() const
   for (auto instruction : ChildInstructions())
   {
     auto child_status = instruction->GetStatus();
-
     if (child_status == ExecutionStatus::SUCCESS)
     {
       continue;
     }
-
     if (child_status == ExecutionStatus::NOT_STARTED
         || child_status == ExecutionStatus::NOT_FINISHED)
     {
       return ExecutionStatus::NOT_FINISHED;
     }
-    else
-    {
-      // Forward RUNNING and FAILURE status of child instruction.
-      return child_status;
-    }
+    return child_status;
   }
   return ExecutionStatus::SUCCESS;
 }

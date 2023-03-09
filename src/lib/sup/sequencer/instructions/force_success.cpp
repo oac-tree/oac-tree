@@ -38,8 +38,8 @@ ExecutionStatus ForceSuccess::ExecuteSingleImpl(UserInterface& ui, Workspace& ws
     return ExecutionStatus::SUCCESS;
   }
   ExecuteChild(ui, ws);
-  auto status = GetChildStatus();
 
+  auto status = GetChildStatus();
   if (status == ExecutionStatus::FAILURE)
   {
     status = ExecutionStatus::SUCCESS;

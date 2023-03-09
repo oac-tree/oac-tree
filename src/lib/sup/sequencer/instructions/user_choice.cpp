@@ -46,11 +46,7 @@ ExecutionStatus UserChoice::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   {
     return ExecutionStatus::SUCCESS;
   }
-  std::string description;
-  if (HasAttribute(DESCRIPTION_ATTRIBUTE))
-  {
-    description = GetAttribute(DESCRIPTION_ATTRIBUTE);
-  }
+  std::string description = GetAttribute(DESCRIPTION_ATTRIBUTE);
 
   auto options = GetChoices();
   int choice = ui.GetUserChoice(options, description);
@@ -81,8 +77,7 @@ std::vector<std::string> UserChoice::GetChoices() const
   std::vector<std::string> result;
   for (auto instruction : ChildInstructions())
   {
-    std::string description =
-        instruction->GetName() + std::string(" (type:") + instruction->GetType() + std::string(")");
+    std::string description = instruction->GetName() + " (type:" + instruction->GetType() + ")";
     result.push_back(description);
   }
   return result;

@@ -27,7 +27,9 @@ namespace sequencer
 {
 const std::string Fallback::Type = "Fallback";
 
-Fallback::Fallback() : CompoundInstruction(Fallback::Type) {}
+Fallback::Fallback()
+  : CompoundInstruction(Fallback::Type)
+{}
 
 Fallback::~Fallback() = default;
 
@@ -67,11 +69,7 @@ ExecutionStatus Fallback::CalculateCompoundStatus() const
     {
       return ExecutionStatus::NOT_FINISHED;
     }
-    else
-    {
-      // Forward RUNNING and SUCCESS status of child instruction.
-      return child_status;
-    }
+    return child_status;
   }
   return ExecutionStatus::FAILURE;
 }

@@ -34,10 +34,13 @@ namespace sequencer
 {
 const std::string Equals::Type = "Equals";
 
-Equals::Equals() : Instruction(Equals::Type) {}
+Equals::Equals()
+  : Instruction(Equals::Type)
+{}
+
 Equals::~Equals() = default;
 
-void Equals::SetupImpl(const Procedure &proc)
+void Equals::SetupImpl(const Procedure& proc)
 {
   CheckMandatoryNonEmptyAttribute(*this, LEFT_VARIABLE_ATTR_NAME);
   CheckMandatoryNonEmptyAttribute(*this, RIGHT_VARIABLE_ATTR_NAME);
@@ -45,38 +48,14 @@ void Equals::SetupImpl(const Procedure &proc)
 
 ExecutionStatus Equals::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  auto left_field = GetAttribute(LEFT_VARIABLE_ATTR_NAME);
-  auto right_field = GetAttribute(RIGHT_VARIABLE_ATTR_NAME);
-  auto left_var = SplitFieldName(left_field).first;
-  auto right_var = SplitFieldName(right_field).first;
-  if (!ws.HasVariable(left_var))
-  {
-    std::string error_message = InstructionErrorProlog(*this) +
-      "workspace does not contain left hand side variable with name [" + left_var + "]";
-    ui.LogError(error_message);
-    return ExecutionStatus::FAILURE;
-  }
-  if (!ws.HasVariable(right_var))
-  {
-    std::string error_message = InstructionErrorProlog(*this) +
-      "workspace does not contain right hand side variable with name [" + right_var + "]";
-    ui.LogError(error_message);
-    return ExecutionStatus::FAILURE;
-  }
   sup::dto::AnyValue lhs;
-  if (!ws.GetValue(left_field, lhs))
+  if (!GetValueFromAttributeName(*this, ws, ui, LEFT_VARIABLE_ATTR_NAME, lhs))
   {
-    std::string warning_message = InstructionWarningProlog(*this) +
-      "could not read left field with name [" + left_field + "] from workspace";
-    ui.LogWarning(warning_message);
     return ExecutionStatus::FAILURE;
   }
   sup::dto::AnyValue rhs;
-  if (!ws.GetValue(right_field, rhs))
+  if (!GetValueFromAttributeName(*this, ws, ui, RIGHT_VARIABLE_ATTR_NAME, rhs))
   {
-    std::string warning_message = InstructionWarningProlog(*this) +
-      "could not read right field with name [" + right_field + "] from workspace";
-    ui.LogWarning(warning_message);
     return ExecutionStatus::FAILURE;
   }
   return lhs == rhs ? ExecutionStatus::SUCCESS : ExecutionStatus::FAILURE;

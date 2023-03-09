@@ -62,11 +62,6 @@ ExecutionStatus Choice::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   {
     return ExecutionStatus::FAILURE;
   }
-  // If the index list was correctly parsed to be empty, return success
-  if (m_instruction_list.empty())
-  {
-    return ExecutionStatus::SUCCESS;
-  }
   for (auto instruction : m_instruction_list)
   {
     auto child_status = instruction->GetStatus();

@@ -96,7 +96,7 @@ private:
   Instruction *TakeInstructionImpl(int index) override;
   void SetupImpl(const Procedure &proc) override;
 
-  std::unique_ptr<Instruction> _child;
+  std::unique_ptr<Instruction> m_child;
 };
 
 }  // namespace sequencer

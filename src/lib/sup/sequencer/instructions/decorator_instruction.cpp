@@ -27,59 +27,59 @@ namespace sequencer
 {
 DecoratorInstruction::DecoratorInstruction(const std::string &type)
   : Instruction(type)
-  , _child{}
+  , m_child{}
 {}
 
 DecoratorInstruction::~DecoratorInstruction() = default;
 
 void DecoratorInstruction::SetInstruction(Instruction *instruction)
 {
-  _child.reset(instruction);
+  m_child.reset(instruction);
 }
 
 void DecoratorInstruction::SetupChild(const Procedure &proc)
 {
-  if (_child)
+  if (m_child)
   {
-    _child->Setup(proc);
+    m_child->Setup(proc);
   }
 }
 
 bool DecoratorInstruction::HasChild() const
 {
-  return static_cast<bool>(_child);
+  return static_cast<bool>(m_child);
 }
 
 ExecutionStatus DecoratorInstruction::GetChildStatus() const
 {
-  if (_child)
+  if (m_child)
   {
-    return _child->GetStatus();
+    return m_child->GetStatus();
   }
   return ExecutionStatus::NOT_STARTED;
 }
 
 void DecoratorInstruction::ExecuteChild(UserInterface& ui, Workspace& ws)
 {
-  if (_child)
+  if (m_child)
   {
-    _child->ExecuteSingle(ui, ws);
+    m_child->ExecuteSingle(ui, ws);
   }
 }
 
 void DecoratorInstruction::ResetChild()
 {
-  if (_child)
+  if (m_child)
   {
-    _child->Reset();
+    m_child->Reset();
   }
 }
 
 void DecoratorInstruction::HaltChild()
 {
-  if (_child)
+  if (m_child)
   {
-    _child->Halt();
+    m_child->Halt();
   }
 }
 
@@ -96,29 +96,29 @@ void DecoratorInstruction::HaltImpl()
 std::vector<const Instruction *> DecoratorInstruction::ChildInstructionsImpl() const
 {
   std::vector<const Instruction *> result;
-  if (_child)
+  if (m_child)
   {
-    result.push_back(_child.get());
+    result.push_back(m_child.get());
   }
   return result;
 }
 
 int DecoratorInstruction::ChildrenCountImpl() const
 {
-  return _child ? 1 : 0;
+  return m_child ? 1 : 0;
 }
 
 bool DecoratorInstruction::InsertInstructionImpl(Instruction *child, int index)
 {
   if (index != 0)
     return false;
-  _child.reset(child);
+  m_child.reset(child);
   return true;
 }
 
 Instruction *DecoratorInstruction::TakeInstructionImpl(int index)
 {
-  return _child && index == 0 ? _child.release() : nullptr;
+  return m_child && index == 0 ? m_child.release() : nullptr;
 }
 
 void DecoratorInstruction::SetupImpl(const Procedure &proc)

@@ -91,10 +91,7 @@ ExecutionStatus Repeat::CalculateStatus() const
     {
       return ExecutionStatus::SUCCESS;
     }
-    else
-    {
-      return ExecutionStatus::NOT_FINISHED;
-    }
+    return ExecutionStatus::NOT_FINISHED;
   }
   return child_status;
 }

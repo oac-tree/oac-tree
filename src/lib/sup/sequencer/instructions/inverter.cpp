@@ -27,7 +27,9 @@ namespace sequencer
 {
 const std::string Inverter::Type = "Inverter";
 
-Inverter::Inverter() : DecoratorInstruction(Inverter::Type) {}
+Inverter::Inverter()
+  : DecoratorInstruction(Inverter::Type)
+{}
 
 Inverter::~Inverter() = default;
 

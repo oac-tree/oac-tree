@@ -48,21 +48,17 @@ void Condition::SetupImpl(const Procedure &proc)
 
 ExecutionStatus Condition::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  auto field_name = GetAttribute(CONDITION_VARIABLE_ATTR_NAME);
-  auto var_name = SplitFieldName(field_name).first;
-  if (!ws.HasVariable(var_name))
+  sup::dto::AnyValue var;
+  if (!GetValueFromAttributeName(*this, ws, ui, CONDITION_VARIABLE_ATTR_NAME, var))
   {
-    std::string error_message = InstructionErrorProlog(*this) +
-      "workspace does not contain condition variable with name [" + var_name + "]";
-    ui.LogError(error_message);
     return ExecutionStatus::FAILURE;
   }
-  sup::dto::AnyValue var;
   sup::dto::boolean result = false;
-  if (!ws.GetValue(field_name, var) || !var.As(result))
+  if (!var.As(result))
   {
     std::string warning_message = InstructionWarningProlog(*this) +
-      "could not parse workspace field with name [" + field_name + "] to a boolean";
+      "could not parse workspace field with name [" + GetAttribute(CONDITION_VARIABLE_ATTR_NAME) +
+      "] to a boolean";
     ui.LogWarning(warning_message);
     return ExecutionStatus::FAILURE;
   }

@@ -47,25 +47,13 @@ void Output::SetupImpl(const Procedure &proc)
 
 ExecutionStatus Output::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  auto from_field = GetAttribute(FROM_ATTRIBUTE_NAME);
-  auto from_var = SplitFieldName(from_field).first;
-  if (!ws.HasVariable(from_var))
-  {
-    std::string error_message = InstructionErrorProlog(*this) +
-      "workspace does not contain variable with name [" + from_var + "]";
-    ui.LogError(error_message);
-    return ExecutionStatus::FAILURE;
-  }
   sup::dto::AnyValue value;
-  if (!ws.GetValue(from_field, value))
+  if (!GetValueFromAttributeName(*this, ws, ui, FROM_ATTRIBUTE_NAME, value))
   {
-    std::string warning_message = InstructionWarningProlog(*this) +
-      "could not read field with name [" + from_field + "] from workspace";
-    ui.LogWarning(warning_message);
     return ExecutionStatus::FAILURE;
   }
   return ui.PutValue(value, GetAttribute(DESCR_ATTRIBUTE_NAME)) ? ExecutionStatus::SUCCESS
-                                                                 : ExecutionStatus::FAILURE;
+                                                                : ExecutionStatus::FAILURE;
 }
 
 }  // namespace sequencer

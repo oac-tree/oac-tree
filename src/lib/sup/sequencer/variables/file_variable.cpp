@@ -30,6 +30,7 @@
 #include <sstream>
 
 const std::string FILENAME_ATTR_NAME = "fileName";
+const std::string PRETTY_JSON_ATTR_NAME = "pretty";
 
 namespace sup
 {
@@ -60,9 +61,14 @@ bool FileVariable::GetValueImpl(sup::dto::AnyValue& value) const
 
 bool FileVariable::SetValueImpl(const sup::dto::AnyValue& value)
 {
+  bool pretty_json = false;
+  if (HasAttribute(PRETTY_JSON_ATTR_NAME))
+  {
+    pretty_json = attributes::AttributeAsBool(GetAttribute(PRETTY_JSON_ATTR_NAME));
+  }
   try
   {
-    sup::dto::AnyValueToJSONFile(value, GetAttribute(FILENAME_ATTR_NAME));
+    sup::dto::AnyValueToJSONFile(value, GetAttribute(FILENAME_ATTR_NAME), pretty_json);
     Notify(value);
   }
   catch(const sup::dto::SerializeException&)

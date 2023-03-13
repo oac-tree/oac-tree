@@ -35,7 +35,8 @@ namespace sequencer
 class ScopeGuard
 {
 public:
-  ScopeGuard(std::function<void()> func);
+  ScopeGuard();
+  explicit ScopeGuard(std::function<void()> func);
   ~ScopeGuard();
 
   ScopeGuard(ScopeGuard&& other);
@@ -45,6 +46,8 @@ public:
   ScopeGuard& operator=(const ScopeGuard& other) = delete;
 
   void Swap(ScopeGuard& other);
+
+  bool IsValid() const;
 
 private:
   std::function<void()> m_func;

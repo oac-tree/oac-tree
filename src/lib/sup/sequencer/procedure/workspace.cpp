@@ -221,7 +221,7 @@ const sup::dto::AnyTypeRegistry* Workspace::GetTypeRegistry() const
   return m_type_registry.get();
 }
 
-CallbackGuard<NamedCallbackManager<const sup::dto::AnyValue&>> Workspace::GetCallbackGuard(
+ScopeGuard Workspace::GetCallbackGuard(
     void *listener)
 {
   return m_callbacks.GetCallbackGuard(listener);

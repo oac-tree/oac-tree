@@ -43,7 +43,7 @@ Listen::Listen()
   , var_changed{false}
   , var_names{}
   , var_cache{}
-  , cb_guard(nullptr, nullptr)
+  , cb_guard{}
 {}
 
 Listen::~Listen() = default;
@@ -169,7 +169,7 @@ void Listen::RegisterCallbacks(
 
 void Listen::ClearCallbacks()
 {
-  cb_guard = CBGuard(nullptr, nullptr);
+  cb_guard = ScopeGuard{};
 }
 
 }  // namespace sequencer

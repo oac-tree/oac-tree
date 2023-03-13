@@ -48,15 +48,13 @@ public:
   static const std::string Type;
 
 private:
-  using CBGuard = CallbackGuard<NamedCallbackManager<const sup::dto::AnyValue&>>;
-
   bool force_success;
   bool var_changed;
   std::mutex mx;
   std::condition_variable cv;
   std::vector<std::string> var_names;
   std::map<std::string, sup::dto::AnyValue> var_cache;
-  CBGuard cb_guard;
+  ScopeGuard cb_guard;
 
   /**
    * @brief Repeatedly execute the child instruction when specific variables are updated.

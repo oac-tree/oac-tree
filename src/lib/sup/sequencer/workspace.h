@@ -149,7 +149,7 @@ public:
    * for creating such an object before registering callback as there is no other way to unregister
    * them.
    */
-  CallbackGuard<NamedCallbackManager<const sup::dto::AnyValue&>> GetCallbackGuard(void* listener);
+  ScopeGuard GetCallbackGuard(void* listener);
 
   /**
    * @brief Add callback for variable updates

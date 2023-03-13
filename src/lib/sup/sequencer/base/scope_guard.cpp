@@ -25,6 +25,7 @@ namespace sup
 {
 namespace sequencer
 {
+ScopeGuard::ScopeGuard() = default;
 
 ScopeGuard::ScopeGuard(std::function<void()> func)
   : m_func{std::move(func)}
@@ -52,6 +53,11 @@ ScopeGuard& ScopeGuard::operator=(ScopeGuard&& other)
 void ScopeGuard::Swap(ScopeGuard& other)
 {
   std::swap(m_func, other.m_func);
+}
+
+bool ScopeGuard::IsValid() const
+{
+  return static_cast<bool>(m_func);
 }
 
 }  // namespace sequencer

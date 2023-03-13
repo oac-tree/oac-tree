@@ -22,6 +22,8 @@
 #ifndef SUP_SEQUENCER_NAMED_CALLBACK_MANAGER_H_
 #define SUP_SEQUENCER_NAMED_CALLBACK_MANAGER_H_
 
+#include <sup/sequencer/scope_guard.h>
+
 #include <algorithm>
 #include <functional>
 #include <mutex>
@@ -32,31 +34,6 @@ namespace sup
 {
 namespace sequencer
 {
-
-/**
- * @brief Guard class that unregisters callbacks during destruction.
- */
-template <typename T>
-class CallbackGuard
-{
-public:
-  CallbackGuard(T* cb_manager, void *listener);
-  ~CallbackGuard();
-
-  CallbackGuard(CallbackGuard&& other);
-  CallbackGuard& operator=(CallbackGuard&& other);
-
-  CallbackGuard(const CallbackGuard& other) = delete;
-  CallbackGuard& operator=(const CallbackGuard& other) = delete;
-
-  void Swap(CallbackGuard& other);
-
-  bool IsValid() const;
-
-private:
-  T* m_cb_manager;
-  void* m_listener;
-};
 
 /**
  * @brief Threadsafe class template for managing a list of callbacks and executing them.
@@ -80,7 +57,7 @@ public:
 
   void ExecuteCallbacks(const std::string& name, Args... args);
 
-  CallbackGuard<NamedCallbackManager<Args...>> GetCallbackGuard(void* listener);
+  ScopeGuard GetCallbackGuard(void* listener);
 
 private:
   struct GenericCallbackEntry
@@ -98,50 +75,6 @@ private:
   std::vector<GenericCallbackEntry> generic_cb_entries;
   std::vector<CallbackEntry> cb_entries;
 };
-
-template <typename T>
-CallbackGuard<T>::CallbackGuard(T* cb_manager, void* listener)
-  : m_cb_manager{cb_manager}
-  , m_listener{listener}
-{}
-
-template <typename T>
-CallbackGuard<T>::~CallbackGuard()
-{
-  if (IsValid())
-  {
-    m_cb_manager->UnregisterListener(m_listener);
-  }
-}
-
-template <typename T>
-CallbackGuard<T>::CallbackGuard(CallbackGuard&& other)
-  : m_cb_manager{other.m_cb_manager}
-  , m_listener(other.m_listener)
-{
-  other.m_listener = nullptr;
-}
-
-template <typename T>
-CallbackGuard<T>& CallbackGuard<T>::operator=(CallbackGuard&& other)
-{
-  CallbackGuard<T> moved{std::move(other)};
-  Swap(moved);
-  return *this;
-}
-
-template <typename T>
-void CallbackGuard<T>::Swap(CallbackGuard& other)
-{
-  std::swap(m_cb_manager, other.m_cb_manager);
-  std::swap(m_listener, other.m_listener);
-}
-
-template <typename T>
-bool CallbackGuard<T>::IsValid() const
-{
-  return m_cb_manager != nullptr && m_listener != nullptr;
-}
 
 template <typename... Args>
 bool NamedCallbackManager<Args...>::RegisterGenericCallback(
@@ -206,10 +139,16 @@ void NamedCallbackManager<Args...>::ExecuteCallbacks(const std::string& name, Ar
 }
 
 template <typename... Args>
-CallbackGuard<NamedCallbackManager<Args...>> NamedCallbackManager<Args...>::GetCallbackGuard(
+ScopeGuard NamedCallbackManager<Args...>::GetCallbackGuard(
     void* listener)
 {
-  return CallbackGuard<NamedCallbackManager<Args...>>(this, listener);
+  auto unregister = [this, listener](){
+    if (listener != nullptr)
+    {
+      UnregisterListener(listener);
+    }
+  };
+  return ScopeGuard(unregister);
 }
 
 }  // namespace sequencer

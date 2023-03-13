@@ -44,8 +44,10 @@ namespace sequencer
  */
 class Workspace
 {
-
 public:
+  using GenericCallback = std::function<void(const std::string&, const sup::dto::AnyValue&)>;
+  using VariableCallback = std::function<void(const sup::dto::AnyValue&)>;
+
   Workspace();
   ~Workspace();
 
@@ -155,15 +157,14 @@ public:
    * @brief Add callback for variable updates
    *
    * @param cb Callback function object.
+   * @param listener Pointer to object that listens to these updates (used for unregistering).
    * @return true if adding the callback was successful.
    *
    * @note Generic callbacks will be called for each variable update in the workspace.
-   * @note If a pointer to the listening object is not provide (=nullptr), the callbacks are
+   * @note If a pointer to the listening object is not provided (=nullptr), the callbacks are
    * required to outlive the Workspace.
    */
-  bool RegisterGenericCallback(
-      const std::function<void(const std::string&, const sup::dto::AnyValue&)>& cb,
-      void* listener = nullptr);
+  bool RegisterGenericCallback(const GenericCallback& cb, void* listener = nullptr);
 
   /**
    * @brief Add callback for a specific variable update.
@@ -172,11 +173,8 @@ public:
    * @param cb Callback function object.
    * @param listener Pointer to object that listens to these updates (used for unregistering).
    * @return true if adding the callback was successful.
-   *
-   * @note The pointer is only used as an id to allow for later removal (unregister).
    */
-  bool RegisterCallback(const std::string& name,
-                        const std::function<void(const sup::dto::AnyValue&)>& cb, void* listener);
+  bool RegisterCallback(const std::string& name, const VariableCallback& cb, void* listener);
 
 private:
   /**

@@ -121,16 +121,16 @@ bool Variable::IsAvailable() const
 void Variable::Notify(const sup::dto::AnyValue& value)
 {
   std::lock_guard<std::mutex> lk(m_notify_mutex);
-  if (notify_cb)
+  if (m_notify_cb)
   {
-    notify_cb(value);
+    m_notify_cb(value);
   }
 }
 
-void Variable::SetNotifyCallback(std::function<void(const sup::dto::AnyValue&)> func)
+void Variable::SetNotifyCallback(Callback func)
 {
   std::lock_guard<std::mutex> lk(m_notify_mutex);
-  notify_cb = std::move(func);
+  m_notify_cb = std::move(func);
 }
 
 void Variable::Reset()

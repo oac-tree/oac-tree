@@ -45,6 +45,8 @@ namespace sequencer
 class Variable
 {
 public:
+  using Callback = std::function<void(const sup::dto::AnyValue&)>;
+
   Variable(const std::string& type);
 
   virtual ~Variable();
@@ -123,7 +125,7 @@ public:
    *
    * @note This method will overwrite an existing callback if there was one.
    */
-  void SetNotifyCallback(std::function<void(const sup::dto::AnyValue&)> func);
+  void SetNotifyCallback(Callback func);
 
   /**
    * @brief Reset variable
@@ -216,7 +218,7 @@ private:
    * it's the responsibility of the listener to prevent deadlock (e.g. by pushing the value to a
    * queue and processing it after returning from the callback).
    */
-  std::function<void(const sup::dto::AnyValue&)> notify_cb;
+  Callback m_notify_cb;
 
   /**
    * @brief Get value of variable.

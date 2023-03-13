@@ -227,15 +227,12 @@ ScopeGuard Workspace::GetCallbackGuard(
   return m_callbacks.GetCallbackGuard(listener);
 }
 
-bool Workspace::RegisterGenericCallback(
-    const std::function<void(const std::string&, const sup::dto::AnyValue&)> &cb,
-    void *listener)
+bool Workspace::RegisterGenericCallback(const GenericCallback& cb, void* listener)
 {
   return m_callbacks.RegisterGenericCallback(cb, listener);
 }
 
-bool Workspace::RegisterCallback(const std::string &name,
-                                 const std::function<void(const sup::dto::AnyValue&)> &cb,
+bool Workspace::RegisterCallback(const std::string& name, const VariableCallback& cb,
                                  void *listener)
 {
   return m_callbacks.RegisterCallback(name, cb, listener);

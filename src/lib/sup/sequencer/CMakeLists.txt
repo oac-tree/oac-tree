@@ -43,6 +43,7 @@ install(FILES
   named_callback_manager.h
   procedure.h
   runner.h
+  scope_guard.h
   sequence_parser.h
   user_interface.h
   variable_registry.h

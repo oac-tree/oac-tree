@@ -83,6 +83,7 @@ public:
    * @brief Get value of variable.
    *
    * @param value variable reference to contain the value.
+   * @param fieldname optional field name.
    * @return true on success.
    *
    * @note Non-virtual interface.
@@ -93,6 +94,7 @@ public:
    * @brief Set value of variable.
    *
    * @param value value to set.
+   * @param fieldname optional field name.
    * @return true on success.
    *
    * @note Non-virtual interface.
@@ -112,6 +114,10 @@ public:
 
   /**
    * @brief Notify waiting threads of an update to the variable.
+   *
+   * @param value New value of variable.
+   * @param available New availability status of variable.
+   *
    * @note Needs to be called whenever the variable is updated with a different mechanism as
    * SetValue. It has to be called without holding the mutex lock.
    */

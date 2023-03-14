@@ -60,7 +60,7 @@ bool Workspace::ContainsVariablePointer(Variable* var) const
 }
 
 void Workspace::VariableUpdated(const std::string name, const sup::dto::AnyValue& value,
-                                bool available)
+                                bool available) const
 {
   m_callbacks.ExecuteCallbacks(name, value, available);
 }

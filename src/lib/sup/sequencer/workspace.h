@@ -77,7 +77,7 @@ public:
   /**
    * @brief Reset specific variable.
    *
-   * @param name Variable name.
+   * @param varname Variable name.
    * @return True if variable was found and reset.
    */
   bool ResetVariable(const std::string& varname);
@@ -86,6 +86,9 @@ public:
    * @brief Get variable value.
    *
    * @param name Variable name/field.
+   * @param value AnyValue output parameter.
+   *
+   * @return True on success.
    */
   bool GetValue(const std::string& name, sup::dto::AnyValue& value) const;
 
@@ -94,6 +97,8 @@ public:
    *
    * @param name Variable name/field.
    * @param value Variable value.
+   *
+   * @return True on success.
    */
   bool SetValue(const std::string& name, const sup::dto::AnyValue& value);
 
@@ -104,6 +109,8 @@ public:
    * @param timeout_sec Timeout in seconds.
    * @param availability If true, wait for variable to become available, otherwise wait for
    * inavailability.
+   *
+   * @return True if not timed out.
    */
   bool WaitForVariable(const std::string& name, double timeout_sec, bool availability = true);
 
@@ -211,9 +218,11 @@ private:
    * @brief Method which is called if a variable is updated.
    *
    * @param name Variable name.
-   * @param name Variable's new value.
+   * @param value Variable's new value.
+   * @param available New availibility status.
    */
-  void VariableUpdated(const std::string name, const sup::dto::AnyValue& value, bool available);
+  void VariableUpdated(const std::string name, const sup::dto::AnyValue& value,
+                       bool available) const;
 };
 
 std::pair<std::string, std::string> SplitFieldName(const std::string &fullname);

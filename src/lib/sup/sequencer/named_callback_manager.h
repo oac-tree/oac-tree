@@ -55,7 +55,7 @@ public:
 
   bool UnregisterListener(void* listener);
 
-  void ExecuteCallbacks(const std::string& name, Args... args);
+  void ExecuteCallbacks(const std::string& name, Args... args) const;
 
   ScopeGuard GetCallbackGuard(void* listener);
 
@@ -122,7 +122,7 @@ bool NamedCallbackManager<Args...>::UnregisterListener(void* listener)
 }
 
 template <typename... Args>
-void NamedCallbackManager<Args...>::ExecuteCallbacks(const std::string& name, Args... args)
+void NamedCallbackManager<Args...>::ExecuteCallbacks(const std::string& name, Args... args) const
 {
   std::lock_guard<std::mutex> lk(mtx);
   for (const auto& cb_entry : generic_cb_entries)

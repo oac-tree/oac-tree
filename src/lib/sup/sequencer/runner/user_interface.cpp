@@ -36,9 +36,10 @@ void UserInterface::UpdateInstructionStatus(const Instruction* instruction)
   UpdateInstructionStatusImpl(instruction);
 }
 
-void UserInterface::VariableUpdated(const std::string& name, const sup::dto::AnyValue& value)
+void UserInterface::VariableUpdated(const std::string& name, const sup::dto::AnyValue& value,
+                                    bool available)
 {
-  VariableUpdatedImpl(name, value);
+  VariableUpdatedImpl(name, value, available);
 }
 
 bool UserInterface::PutValue(const sup::dto::AnyValue& value, const std::string& description)
@@ -94,7 +95,8 @@ void UserInterface::LogWarning(const std::string& message)
   Log(log::SUP_SEQ_LOG_WARNING, message);
 }
 
-void UserInterface::VariableUpdatedImpl(const std::string& name, const sup::dto::AnyValue& value)
+void UserInterface::VariableUpdatedImpl(const std::string& name, const sup::dto::AnyValue& value,
+                                        bool available)
 {}
 
 bool UserInterface::PutValueImpl(const sup::dto::AnyValue& value, const std::string& description)

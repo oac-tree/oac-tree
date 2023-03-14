@@ -69,7 +69,7 @@ bool FileVariable::SetValueImpl(const sup::dto::AnyValue& value)
   try
   {
     sup::dto::AnyValueToJSONFile(value, GetAttribute(FILENAME_ATTR_NAME), pretty_json);
-    Notify(value);
+    Notify(value, true);
   }
   catch(const sup::dto::SerializeException&)
   {

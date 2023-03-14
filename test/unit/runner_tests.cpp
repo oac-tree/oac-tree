@@ -243,7 +243,7 @@ TEST_F(RunnerTest, UIVariableCalls)
   // Set Expectations on mock UserInterface calls
   sup::dto::AnyValue val(sup::dto::UnsignedInteger64Type);
   val = sup::dto::uint64(1729);
-  EXPECT_CALL(mock_ui, VariableUpdatedImpl("var2", HasSameValue(val))).Times(Exactly(1));
+  EXPECT_CALL(mock_ui, VariableUpdatedImpl("var2", HasSameValue(val), true)).Times(Exactly(1));
   EXPECT_CALL(mock_ui, StartSingleStepImpl()).Times(AtLeast(1));
   EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(_)).Times(AtLeast(4));
   EXPECT_CALL(mock_ui, EndSingleStepImpl()).Times(AtLeast(1));

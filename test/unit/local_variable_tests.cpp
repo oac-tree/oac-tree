@@ -202,7 +202,7 @@ TEST_F(LocalVariableTest, NotifyCallback)
   EXPECT_TRUE(int32_var.AddAttribute(LocalVariable::JSON_TYPE, R"RAW({"type":"int32"})RAW"));
   EXPECT_TRUE(int32_var.AddAttribute(LocalVariable::JSON_VALUE, std::to_string(value)));
   int32_var.SetNotifyCallback(
-    [&value](const sup::dto::AnyValue& val)
+    [&value](const sup::dto::AnyValue& val, bool)
     {
       value = val.As<sup::dto::int32>();
     });

@@ -45,8 +45,8 @@ namespace sequencer
 class Workspace
 {
 public:
-  using GenericCallback = std::function<void(const std::string&, const sup::dto::AnyValue&)>;
-  using VariableCallback = std::function<void(const sup::dto::AnyValue&)>;
+  using GenericCallback = std::function<void(const std::string&, const sup::dto::AnyValue&, bool)>;
+  using VariableCallback = std::function<void(const sup::dto::AnyValue&, bool)>;
 
   Workspace();
   ~Workspace();
@@ -187,7 +187,7 @@ private:
   /**
    * @brief Threadsafe list of callback objects.
    */
-  NamedCallbackManager<const sup::dto::AnyValue&> m_callbacks;
+  NamedCallbackManager<const sup::dto::AnyValue&, bool> m_callbacks;
 
   std::unique_ptr<sup::dto::AnyTypeRegistry> m_type_registry;
 
@@ -213,7 +213,7 @@ private:
    * @param name Variable name.
    * @param name Variable's new value.
    */
-  void VariableUpdated(const std::string name, const sup::dto::AnyValue& value);
+  void VariableUpdated(const std::string name, const sup::dto::AnyValue& value, bool available);
 };
 
 std::pair<std::string, std::string> SplitFieldName(const std::string &fullname);

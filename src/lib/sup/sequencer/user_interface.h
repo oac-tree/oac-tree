@@ -57,9 +57,10 @@ public:
    *
    * @param name Name of the Variable.
    * @param value New value of the Variable.
+   * @param available Boolean indicating if variable is available.
    * @note Non-Virtual Interface.
    */
-  void VariableUpdated(const std::string& name, const sup::dto::AnyValue& value);
+  void VariableUpdated(const std::string& name, const sup::dto::AnyValue& value, bool available);
 
   /**
    * @brief Method to put the value.
@@ -140,7 +141,8 @@ private:
    * @brief Private virtual implementation of
    * UserInterface::VariableUpdated(const std::string& name, const sup::dto::AnyValue& value).
    */
-  virtual void VariableUpdatedImpl(const std::string& name, const sup::dto::AnyValue& value);
+  virtual void VariableUpdatedImpl(const std::string& name, const sup::dto::AnyValue& value,
+                                   bool available);
 
   /**
    * @brief Private virtual implementation of

@@ -51,10 +51,19 @@ void CLInterface::UpdateInstructionStatusImpl(const Instruction *instruction)
   m_logger.LogMessage(log::SUP_SEQ_LOG_INFO, info_message);
 }
 
-void CLInterface::VariableUpdatedImpl(const std::string& name, const sup::dto::AnyValue& value)
+void CLInterface::VariableUpdatedImpl(const std::string& name, const sup::dto::AnyValue& value,
+                                      bool available)
 {
-  std::string json_rep = sup::dto::ValuesToJSONString(value);
-  std::string info_message = "Variable (" + name + ") updated:" + json_rep;
+  std::string info_message;
+  if (available)
+  {
+    std::string json_rep = sup::dto::ValuesToJSONString(value);
+    info_message = "Variable (" + name + ") updated:" + json_rep;
+  }
+  else
+  {
+    info_message = "Variable (" + name + ") not available";
+  }
   m_logger.LogMessage(log::SUP_SEQ_LOG_INFO, info_message);
 }
 

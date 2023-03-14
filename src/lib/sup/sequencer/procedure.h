@@ -59,8 +59,9 @@ class Workspace;
 class Procedure
 {
 public:
-  Procedure();
+  using GenericCallback = std::function<void(const std::string&, const sup::dto::AnyValue&, bool)>;
 
+  Procedure();
   ~Procedure();
 
   /**
@@ -262,8 +263,7 @@ public:
    *
    * @note Users are responsible for ensuring the callback outlives the underlying workspace.
    */
-  bool RegisterGenericCallback(
-    const std::function<void(const std::string&, const sup::dto::AnyValue&)>& cb);
+  bool RegisterGenericCallback(const GenericCallback& cb);
 
   /**
    * @brief Name of attribute that defines the timeout between ticks.

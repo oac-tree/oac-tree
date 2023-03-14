@@ -68,7 +68,7 @@ bool LocalVariable::SetValueImpl(const sup::dto::AnyValue& value)
     return false;
   }
   *m_value = value;
-  Notify(value);
+  Notify(value, true);
   return true;
 }
 

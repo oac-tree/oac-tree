@@ -67,9 +67,9 @@ TEST_F(CLInterfaceTest, VariableUpdated)
   sup::dto::AnyValue val(sup::dto::UnsignedInteger32Type, 1234);
   std::string name = "TestUpdated";
   EXPECT_TRUE(m_log_entries.empty());
-  cli.VariableUpdated(name, val);
+  cli.VariableUpdated(name, val, true);
   EXPECT_TRUE(m_log_entries.empty());
-  cli_verbose.VariableUpdated(name, val);
+  cli_verbose.VariableUpdated(name, val, true);
   EXPECT_FALSE(m_log_entries.empty());
 }
 

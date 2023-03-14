@@ -45,7 +45,7 @@ namespace sequencer
 class Variable
 {
 public:
-  using Callback = std::function<void(const sup::dto::AnyValue&)>;
+  using Callback = std::function<void(const sup::dto::AnyValue&, bool)>;
 
   Variable(const std::string& type);
 
@@ -115,7 +115,7 @@ public:
    * @note Needs to be called whenever the variable is updated with a different mechanism as
    * SetValue. It has to be called without holding the mutex lock.
    */
-  void Notify(const sup::dto::AnyValue& value);
+  void Notify(const sup::dto::AnyValue& value, bool available);
 
   /**
    * @brief Set callback for value update notifications

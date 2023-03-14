@@ -26,6 +26,7 @@
 #include <sup/dto/anytype_registry.h>
 
 #include <algorithm>
+#include <atomic>
 #include <cmath>
 #include <condition_variable>
 #include <mutex>
@@ -58,9 +59,10 @@ bool Workspace::ContainsVariablePointer(Variable* var) const
   return true;
 }
 
-void Workspace::VariableUpdated(const std::string name, const sup::dto::AnyValue& value)
+void Workspace::VariableUpdated(const std::string name, const sup::dto::AnyValue& value,
+                                bool available)
 {
-  m_callbacks.ExecuteCallbacks(name, value);
+  m_callbacks.ExecuteCallbacks(name, value, available);
 }
 
 Workspace::Workspace()
@@ -91,9 +93,9 @@ bool Workspace::AddVariable(const std::string& name, Variable *var)
     throw InvalidOperationException(error_message);
   }
   var_owned->SetNotifyCallback(
-    [this, name](const sup::dto::AnyValue& value)
+    [this, name](const sup::dto::AnyValue& value, bool available)
     {
-      VariableUpdated(name, value);
+      VariableUpdated(name, value, available);
     });
   m_var_map[name] = std::move(var_owned);
   return true;
@@ -176,11 +178,15 @@ bool Workspace::WaitForVariable(const std::string& name, double timeout_sec, boo
   std::unique_lock<std::mutex> lk(mx);
   std::condition_variable cv;
   auto cb_guard = GetCallbackGuard(&dummy_listener);
-  RegisterCallback(name, [&cv](const sup::dto::AnyValue&){ cv.notify_one(); }, &dummy_listener);
-  cv.wait_until(lk, time_end, [&it, availability]{
-    return it->second->IsAvailable() == availability;
+  std::atomic_bool is_available{it->second->IsAvailable()};
+  RegisterCallback(name, [&cv, &is_available](const sup::dto::AnyValue&, bool available){
+                           is_available = available;
+                           cv.notify_one();
+                         }, &dummy_listener);
+  cv.wait_until(lk, time_end, [&is_available, availability]{
+      return is_available == availability;
     });
-  return it->second->IsAvailable() == availability;
+  return is_available == availability;
 }
 
 std::vector<const Variable*> Workspace::GetVariables() const

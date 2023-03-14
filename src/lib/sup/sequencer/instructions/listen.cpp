@@ -160,7 +160,7 @@ void Listen::RegisterCallbacks(
   {
     ws->RegisterCallback(
         var_name,
-        [this, var_name](const sup::dto::AnyValue& val)
+        [this, var_name](const sup::dto::AnyValue& val, bool)
         {
           UpdateCallback(var_name, val);
         }, this);

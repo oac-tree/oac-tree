@@ -263,8 +263,7 @@ const sup::dto::AnyTypeRegistry* Procedure::GetTypeRegistry() const
   return m_workspace->GetTypeRegistry();
 }
 
-bool Procedure::RegisterGenericCallback(
-    const std::function<void(const std::string&, const sup::dto::AnyValue&)>& cb)
+bool Procedure::RegisterGenericCallback(const GenericCallback& cb)
 {
   return m_workspace->RegisterGenericCallback(cb);
 }

@@ -41,7 +41,7 @@ class MockUserInterface : public UserInterface
 public:
   MOCK_METHOD1(UpdateInstructionStatusImpl, void(const Instruction *));
   MOCK_METHOD3(VariableUpdatedImpl,
-               void( const std::string &name, const sup::dto::AnyValue &value, bool available));
+               void( const std::string &name, const sup::dto::AnyValue &value, bool connected));
   MOCK_METHOD2(PutValueImpl,
                bool(const sup::dto::AnyValue &value, const std::string &description));
   MOCK_METHOD2(GetUserValueImpl,

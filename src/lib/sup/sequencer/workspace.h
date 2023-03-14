@@ -219,10 +219,10 @@ private:
    *
    * @param name Variable name.
    * @param value Variable's new value.
-   * @param available New availibility status.
+   * @param connected New availibility status.
    */
   void VariableUpdated(const std::string name, const sup::dto::AnyValue& value,
-                       bool available) const;
+                       bool connected) const;
 };
 
 std::pair<std::string, std::string> SplitFieldName(const std::string &fullname);

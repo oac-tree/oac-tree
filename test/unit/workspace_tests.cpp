@@ -261,13 +261,13 @@ TEST_F(WorkspaceTest, NotifyCallback)
 {
   std::string var_name;
   sup::dto::AnyValue var_value;
-  bool var_available;
+  bool var_connected;
   EXPECT_TRUE(ws.RegisterGenericCallback(
-    [&](const std::string& name, const sup::dto::AnyValue& value, bool available)
+    [&](const std::string& name, const sup::dto::AnyValue& value, bool connected)
     {
       var_name = name;
       var_value = value;
-      var_available = available;
+      var_connected = connected;
     }));
   std::string name = "FromWorkspace";
   auto var = GlobalVariableRegistry().Create("Local");
@@ -280,7 +280,7 @@ TEST_F(WorkspaceTest, NotifyCallback)
   EXPECT_TRUE(ws.SetValue(name, new_value));
   EXPECT_EQ(var_name, name);
   EXPECT_EQ(var_value, raw_value);
-  EXPECT_TRUE(var_available);
+  EXPECT_TRUE(var_connected);
 }
 
 TEST_F(WorkspaceTest, RegisterType)

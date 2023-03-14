@@ -37,9 +37,9 @@ void UserInterface::UpdateInstructionStatus(const Instruction* instruction)
 }
 
 void UserInterface::VariableUpdated(const std::string& name, const sup::dto::AnyValue& value,
-                                    bool available)
+                                    bool connected)
 {
-  VariableUpdatedImpl(name, value, available);
+  VariableUpdatedImpl(name, value, connected);
 }
 
 bool UserInterface::PutValue(const sup::dto::AnyValue& value, const std::string& description)
@@ -96,7 +96,7 @@ void UserInterface::LogWarning(const std::string& message)
 }
 
 void UserInterface::VariableUpdatedImpl(const std::string& name, const sup::dto::AnyValue& value,
-                                        bool available)
+                                        bool connected)
 {}
 
 bool UserInterface::PutValueImpl(const sup::dto::AnyValue& value, const std::string& description)

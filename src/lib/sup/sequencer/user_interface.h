@@ -57,10 +57,10 @@ public:
    *
    * @param name Name of the Variable.
    * @param value New value of the Variable.
-   * @param available Boolean indicating if variable is available.
+   * @param connected Boolean indicating if variable is connected.
    * @note Non-Virtual Interface.
    */
-  void VariableUpdated(const std::string& name, const sup::dto::AnyValue& value, bool available);
+  void VariableUpdated(const std::string& name, const sup::dto::AnyValue& value, bool connected);
 
   /**
    * @brief Method to put the value.
@@ -142,7 +142,7 @@ private:
    * UserInterface::VariableUpdated(const std::string& name, const sup::dto::AnyValue& value).
    */
   virtual void VariableUpdatedImpl(const std::string& name, const sup::dto::AnyValue& value,
-                                   bool available);
+                                   bool connected);
 
   /**
    * @brief Private virtual implementation of

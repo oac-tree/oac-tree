@@ -52,17 +52,17 @@ void CLInterface::UpdateInstructionStatusImpl(const Instruction *instruction)
 }
 
 void CLInterface::VariableUpdatedImpl(const std::string& name, const sup::dto::AnyValue& value,
-                                      bool available)
+                                      bool connected)
 {
   std::string info_message;
-  if (available)
+  if (connected)
   {
     std::string json_rep = sup::dto::ValuesToJSONString(value);
     info_message = "Variable (" + name + ") updated:" + json_rep;
   }
   else
   {
-    info_message = "Variable (" + name + ") not available";
+    info_message = "Variable (" + name + ") disconnected";
   }
   m_logger.LogMessage(log::SUP_SEQ_LOG_INFO, info_message);
 }

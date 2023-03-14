@@ -108,7 +108,7 @@ public:
    *
    * @note Non-virtual interface.
    * @note Availability is context-dependent: e.g. a network variable is available when it is
-   * connected.
+   * connected and its value can be read.
    */
   bool IsAvailable() const;
 
@@ -116,12 +116,12 @@ public:
    * @brief Notify waiting threads of an update to the variable.
    *
    * @param value New value of variable.
-   * @param available New availability status of variable.
+   * @param connected New connectivity status of variable.
    *
-   * @note Needs to be called whenever the variable is updated with a different mechanism as
-   * SetValue. It has to be called without holding the mutex lock.
+   * @note Needs to be called whenever the variable is updated. It has to be called without
+   * holding the mutex lock.
    */
-  void Notify(const sup::dto::AnyValue& value, bool available);
+  void Notify(const sup::dto::AnyValue& value, bool connected);
 
   /**
    * @brief Set callback for value update notifications

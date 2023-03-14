@@ -46,9 +46,9 @@ void Runner::SetProcedure(Procedure* procedure)
 {
   m_proc = procedure;
   m_proc->RegisterGenericCallback(
-    [this](const std::string& name, const sup::dto::AnyValue& value, bool available)
+    [this](const std::string& name, const sup::dto::AnyValue& value, bool connected)
     {
-      m_ui.VariableUpdated(name, value, available);
+      m_ui.VariableUpdated(name, value, connected);
     });
 }
 

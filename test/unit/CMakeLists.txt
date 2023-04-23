@@ -20,6 +20,7 @@ target_sources(unit-tests
         ${CMAKE_CURRENT_LIST_DIR}/generic_utils_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/include_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/input_tests.cpp
+	${CMAKE_CURRENT_LIST_DIR}/increment_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/instruction_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/instruction_registry_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/listen_tests.cpp

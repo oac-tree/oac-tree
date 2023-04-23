@@ -6,12 +6,14 @@ target_sources(sup-sequencer-shared
         ${CMAKE_CURRENT_LIST_DIR}/condition.cpp
         ${CMAKE_CURRENT_LIST_DIR}/copy.cpp
         ${CMAKE_CURRENT_LIST_DIR}/decorator_instruction.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/decrement_variable.cpp
         ${CMAKE_CURRENT_LIST_DIR}/equals.cpp
         ${CMAKE_CURRENT_LIST_DIR}/fallback.cpp
         ${CMAKE_CURRENT_LIST_DIR}/force_success.cpp
 	${CMAKE_CURRENT_LIST_DIR}/greaterthan.cpp
 	${CMAKE_CURRENT_LIST_DIR}/greaterthanorequal.cpp
         ${CMAKE_CURRENT_LIST_DIR}/include.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/increment_variable.cpp
         ${CMAKE_CURRENT_LIST_DIR}/input.cpp
         ${CMAKE_CURRENT_LIST_DIR}/instruction.cpp
         ${CMAKE_CURRENT_LIST_DIR}/instruction_helper.cpp

@@ -25,11 +25,13 @@
 #include "condition.h"
 #include "copy.h"
 #include "equals.h"
+#include "decrement_variable.h"
 #include "fallback.h"
 #include "force_success.h"
 #include "greaterthan.h"
 #include "greaterthanorequal.h"
 #include "include.h"
+#include "increment_variable.h"
 #include "input.h"
 #include "inverter.h"
 #include "lessthan.h"
@@ -124,12 +126,14 @@ void InitInstructionRegistry(InstructionRegistry& registry)
   (void)RegisterInstruction<Repeat>(registry);
 
   // Register leaf instructions:
-  (void)RegisterInstruction<GreaterThan>(registry);
-  (void)RegisterInstruction<GreaterThanOrEqual>(registry);
   (void)RegisterInstruction<Choice>(registry);
   (void)RegisterInstruction<Condition>(registry);
   (void)RegisterInstruction<Copy>(registry);
+  (void)RegisterInstruction<DecrementVariable>(registry);
   (void)RegisterInstruction<Equals>(registry);
+  (void)RegisterInstruction<GreaterThan>(registry);
+  (void)RegisterInstruction<GreaterThanOrEqual>(registry);
+  (void)RegisterInstruction<IncrementVariable>(registry);
   (void)RegisterInstruction<Input>(registry);
   (void)RegisterInstruction<LessThan>(registry);
   (void)RegisterInstruction<LessThanOrEqual>(registry);

@@ -7,6 +7,7 @@ target_sources(unit-tests
         ${CMAKE_CURRENT_LIST_DIR}/attribute_map_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/choice_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/cl_interface_tests.cpp
+	${CMAKE_CURRENT_LIST_DIR}/comparison_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/compound_instruction_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/condition_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/copy_tests.cpp

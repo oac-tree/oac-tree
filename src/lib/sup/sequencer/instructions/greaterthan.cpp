@@ -8,7 +8,7 @@
  *
  * Author        : Ricardo Torres (EXT)
  *
- * Copyright (c) : 2010-2022 ITER Organization,
+ * Copyright (c) : 2010-2023 ITER Organization,
  *                 CS 90 046
  *                 13067 St. Paul-lez-Durance Cedex
  *                 France
@@ -47,7 +47,7 @@ void GreaterThan::SetupImpl(const Procedure& proc)
   CheckMandatoryNonEmptyAttribute(*this, LEFT_VARIABLE_ATTR_NAME);
   CheckMandatoryNonEmptyAttribute(*this, RIGHT_VARIABLE_ATTR_NAME);
 }
-  
+
 ExecutionStatus GreaterThan::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   sup::dto::AnyValue lhs;

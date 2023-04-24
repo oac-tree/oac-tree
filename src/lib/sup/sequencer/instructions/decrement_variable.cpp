@@ -8,7 +8,7 @@
  *
  * Author        : Ricardo Torres (EXT)
  *
- * Copyright (c) : 2010-2022 ITER Organization,
+ * Copyright (c) : 2010-2023 ITER Organization,
  *                 CS 90 046
  *                 13067 St. Paul-lez-Durance Cedex
  *                 France
@@ -64,7 +64,7 @@ ExecutionStatus DecrementVariable::ExecuteSingleImpl(UserInterface& ui, Workspac
   if (!sup::dto::Decrement(var))
   {
     return ExecutionStatus::FAILURE;
-  }  
+  }
   if (!ws.SetValue(var_name, var))
   {
     return ExecutionStatus::FAILURE;

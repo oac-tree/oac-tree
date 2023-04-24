@@ -8,7 +8,7 @@
  *
  * Author        : Ricardo Torres (EXT)
  *
- * Copyright (c) : 2010-2022 ITER Organization,
+ * Copyright (c) : 2010-2023 ITER Organization,
  *                 CS 90 046
  *                 13067 St. Paul-lez-Durance Cedex
  *                 France
@@ -42,10 +42,10 @@ public:
   ~GreaterThan() override;
 
   static const std::string Type;
-  
+
 private:
   void SetupImpl(const Procedure& proc) override;
-  
+
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 };
 

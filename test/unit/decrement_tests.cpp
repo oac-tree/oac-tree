@@ -30,27 +30,27 @@
 
 using namespace sup::sequencer;
 
-TEST(Increment, Setup)
+TEST(Decrement, Setup)
 {
   Procedure proc;
-  auto instr = GlobalInstructionRegistry().Create("Increment");
+  auto instr = GlobalInstructionRegistry().Create("Decrement");
   EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
 
   EXPECT_TRUE(instr->AddAttribute("varName", "var"));
   EXPECT_NO_THROW(instr->Setup(proc));
 }
 
-TEST(Increment, IncrementSuccess)
+TEST(Decrement, DecrementSuccess)
 {
   const std::string body{
     R"(
     <Sequence>
-        <Increment varName="a"/>
+        <Decrement varName="a"/>
         <Equals lhs="a" rhs="b"/>
     </Sequence>
     <Workspace>
-        <Local name="a" type='{"type":"uint8"}' value='1' />
-        <Local name="b" type='{"type":"uint8"}' value='2' />
+        <Local name="a" type='{"type":"int8"}' value='5' />
+        <Local name="b" type='{"type":"int8"}' value='4' />
     </Workspace>
 )"};
 
@@ -61,17 +61,17 @@ TEST(Increment, IncrementSuccess)
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
-TEST(Increment, IncrementFailure)
+TEST(Decrement, DecrementFailure)
 {
   const std::string body{
     R"(
     <Sequence>
-        <Increment varName="a"/>
+        <Decrement varName="a"/>
         <Equals lhs="a" rhs="b"/>
     </Sequence>
     <Workspace>
-        <Local name="a" type='{"type":"uint8"}' value='1' />
-        <Local name="b" type='{"type":"uint8"}' value='1' />
+        <Local name="a" type='{"type":"int8"}' value='1' />
+        <Local name="b" type='{"type":"int8"}' value='1' />
     </Workspace>
 )"};
 
@@ -82,17 +82,17 @@ TEST(Increment, IncrementFailure)
   EXPECT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
-TEST(Increment, IncrementFloatSuccess)
+TEST(Decrement, DecrementFloatSuccess)
 {
   const std::string body{
     R"(
     <Sequence>
-        <Increment varName="a"/>
+        <Decrement varName="a"/>
         <Equals lhs="a" rhs="b"/>
     </Sequence>
     <Workspace>
-        <Local name="a" type='{"type":"float32"}' value='4' />
-        <Local name="b" type='{"type":"float32"}' value='5' />
+        <Local name="a" type='{"type":"float32"}' value='5' />
+        <Local name="b" type='{"type":"float32"}' value='4' />
     </Workspace>
 )"};
 
@@ -103,12 +103,12 @@ TEST(Increment, IncrementFloatSuccess)
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
-TEST(Increment, IncrementStringFailure)
+TEST(Decrement, DecrementStringFailure)
 {
   const std::string body{
     R"(
     <Sequence>
-        <Increment varName="a"/>
+        <Decrement varName="a"/>
     </Sequence>
     <Workspace>
         <Local name="a" type='{"type":"string"}' value='"fail"' />
@@ -122,12 +122,12 @@ TEST(Increment, IncrementStringFailure)
   EXPECT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
-TEST(Increment, IncrementBoolFailure)
+TEST(Decrement, DecrementBoolFailure)
 {
   const std::string body{
     R"(
     <Sequence>
-        <Increment varName="a"/>
+        <Decrement varName="a"/>
     </Sequence>
     <Workspace>
         <Local name="a" type='{"type":"bool"}' value='true' />

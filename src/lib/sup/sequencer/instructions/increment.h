@@ -19,8 +19,8 @@
  * of the distribution package.
  ******************************************************************************/
 
-#ifndef SUP_SEQUENCER_DECREMENT_VARIABLE_H_
-#define SUP_SEQUENCER_DECREMENT_VARIABLE_H_
+#ifndef SUP_SEQUENCER_INCREMENT_VARIABLE_H_
+#define SUP_SEQUENCER_INCREMENT_VARIABLE_H_
 
 #include <sup/sequencer/instruction.h>
 
@@ -29,14 +29,14 @@ namespace sup
 namespace sequencer
 {
 /**
- * @brief Instruction to decrement a variable.
+ * @brief Instruction to increment a variable.
  */
-class DecrementVariable : public Instruction
+class Increment : public Instruction
 {
 public:
-  DecrementVariable();
+  Increment();
 
-  ~DecrementVariable() override;
+  ~Increment() override;
 
   static const std::string Type;
 
@@ -50,4 +50,4 @@ private:
 
 }  // namespace sup
 
-#endif  // SUP_SEQUENCER_RESET_DECREMENT_H_
+#endif  // SUP_SEQUENCER_RESET_INCREMENT_H_

@@ -13,6 +13,7 @@ target_sources(unit-tests
         ${CMAKE_CURRENT_LIST_DIR}/copy_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/daemon_interface_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/decorator_instruction_tests.cpp
+	${CMAKE_CURRENT_LIST_DIR}/decrement_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/equals_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/execution_status_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/fallback_tests.cpp

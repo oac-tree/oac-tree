@@ -19,7 +19,7 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "decrement_variable.h"
+#include "decrement.h"
 
 #include <sup/dto/anyvalue.h>
 #include <sup/dto/anyvalue_operations.h>
@@ -33,39 +33,34 @@ namespace sup
 namespace sequencer
 {
 
-const std::string DecrementVariable::Type = "DecrementVariable";
+const std::string Decrement::Type = "Decrement";
 
 static const std::string VARNAME_ATTRIBUTE = "varName";
 
-DecrementVariable::DecrementVariable()
-  : Instruction(DecrementVariable::Type)
+Decrement::Decrement()
+  : Instruction(Decrement::Type)
 {}
 
-DecrementVariable::~DecrementVariable() = default;
+Decrement::~Decrement() = default;
 
-void DecrementVariable::SetupImpl(const Procedure &proc)
+void Decrement::SetupImpl(const Procedure &proc)
 {
   CheckMandatoryNonEmptyAttribute(*this, VARNAME_ATTRIBUTE);
 }
 
-ExecutionStatus DecrementVariable::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
+ExecutionStatus Decrement::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   auto var_name = GetAttribute(VARNAME_ATTRIBUTE);
-  if (!ws.HasVariable(var_name))
-  {
-    std::string error_message = InstructionErrorProlog(*this) +
-      "workspace does not contain variable with name [" + var_name + "]";
-    ui.LogError(error_message);
-    return ExecutionStatus::FAILURE;
-  }
-
-  sup::dto::AnyValue var;
-  ws.GetValue(var_name, var);
-  if (!sup::dto::Decrement(var))
+  sup::dto::AnyValue value;
+  if (!GetValueFromAttributeName(*this, ws, ui, VARNAME_ATTRIBUTE, value))
   {
     return ExecutionStatus::FAILURE;
   }
-  if (!ws.SetValue(var_name, var))
+  if (!sup::dto::Decrement(value))
+  {
+    return ExecutionStatus::FAILURE;
+  }
+  if (!ws.SetValue(var_name, value))
   {
     return ExecutionStatus::FAILURE;
   }

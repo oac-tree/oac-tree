@@ -19,7 +19,7 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "increment_variable.h"
+#include "increment.h"
 
 #include <sup/dto/anyvalue.h>
 #include <sup/dto/anyvalue_operations.h>
@@ -33,39 +33,34 @@ namespace sup
 namespace sequencer
 {
 
-const std::string IncrementVariable::Type = "IncrementVariable";
+const std::string Increment::Type = "Increment";
 
 static const std::string VARNAME_ATTRIBUTE = "varName";
 
-IncrementVariable::IncrementVariable()
-  : Instruction(IncrementVariable::Type)
+Increment::Increment()
+  : Instruction(Increment::Type)
 {}
 
-IncrementVariable::~IncrementVariable() = default;
+Increment::~Increment() = default;
 
-void IncrementVariable::SetupImpl(const Procedure &proc)
+void Increment::SetupImpl(const Procedure &proc)
 {
   CheckMandatoryNonEmptyAttribute(*this, VARNAME_ATTRIBUTE);
 }
 
-ExecutionStatus IncrementVariable::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
+ExecutionStatus Increment::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   auto var_name = GetAttribute(VARNAME_ATTRIBUTE);
-  if (!ws.HasVariable(var_name))
-  {
-    std::string error_message = InstructionErrorProlog(*this) +
-      "workspace does not contain variable with name [" + var_name + "]";
-    ui.LogError(error_message);
-    return ExecutionStatus::FAILURE;
-  }
-
-  sup::dto::AnyValue var;
-  ws.GetValue(var_name, var);
-  if (!sup::dto::Increment(var))
+  sup::dto::AnyValue value;
+  if (!GetValueFromAttributeName(*this, ws, ui, VARNAME_ATTRIBUTE, value))
   {
     return ExecutionStatus::FAILURE;
   }
-  if (!ws.SetValue(var_name, var))
+  if (!sup::dto::Increment(value))
+  {
+    return ExecutionStatus::FAILURE;
+  }
+  if (!ws.SetValue(var_name, value))
   {
     return ExecutionStatus::FAILURE;
   }

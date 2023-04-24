@@ -64,7 +64,7 @@ TEST(WaitForVariable, WaitForVariableParallelSuccess)
 {
   const std::string body{
       R"(
-    <ParallelSequence name="parallel" successThreshold="1" failureThreshold="2">
+    <ParallelSequence name="parallel" successThreshold="2" failureThreshold="1">
         <WaitForVariable timeout="1.0" varName="a" equalsVar="b"/>
         <Increment varName="a"/>
     </ParallelSequence>
@@ -85,13 +85,13 @@ TEST(WaitForVariable, WaitForVariableParallelFailure)
 {
   const std::string body{
       R"(
-    <ParallelSequence name="parallel" successThreshold="1" failureThreshold="2">
+    <ParallelSequence name="parallel" successThreshold="2" failureThreshold="1">
         <WaitForVariable timeout="1.0" varName="a" equalsVar="b"/>
         <Increment varName="a"/>
     </ParallelSequence>
     <Workspace>
-        <Local name="a" type='{"type":"uint8"}' value='3' />
-        <Local name="b" type='{"type":"uint8"}' value='5' />
+        <Local name="a" type='{"type":"uint8"}' value='0' />
+        <Local name="b" type='{"type":"uint8"}' value='2' />
     </Workspace>
 )"};
 
@@ -99,5 +99,5 @@ TEST(WaitForVariable, WaitForVariableParallelFailure)
   auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
-  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+  EXPECT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }

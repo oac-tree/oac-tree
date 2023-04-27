@@ -63,7 +63,6 @@ void WaitForVariable::SetupImpl(const Procedure&)
 
 ExecutionStatus WaitForVariable::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  auto time_end = std::chrono::system_clock::now() + std::chrono::nanoseconds(m_timeout);
   auto var_name = GetAttribute(VARNAME_ATTRIBUTE);
   bool equals_var_exists = HasAttribute(EQUALVAR_ATTRIBUTE);
   std::string equals_var_name;
@@ -106,8 +105,8 @@ ExecutionStatus WaitForVariable::ExecuteSingleImpl(UserInterface& ui, Workspace&
                         &dummy_listener);
   }
 
-  auto result = cv.wait_until(
-      lk, time_end,
+  auto result = cv.wait_for(
+      lk, std::chrono::nanoseconds(m_timeout),
       [this, &ws, &ui, &value1, &value2, &read_value1, &read_value2]
       {
         if (!_halt_requested.load() && read_value1)

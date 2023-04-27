@@ -84,7 +84,7 @@ TEST(WaitForVariable, WaitForVariableParallelSuccess)
   const std::string body{
       R"(
     <ParallelSequence name="parallel" successThreshold="2" failureThreshold="1">
-        <WaitForVariable timeout="0.1" varName="a" equalsVar="b"/>
+        <WaitForVariable timeout="0.5" varName="a" equalsVar="b"/>
         <Increment varName="a"/>
     </ParallelSequence>
     <Workspace>

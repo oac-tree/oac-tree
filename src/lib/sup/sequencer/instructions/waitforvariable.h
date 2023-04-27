@@ -48,6 +48,9 @@ private:
 
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 
+  bool SuccessCondition(bool var_available, const sup::dto::AnyValue& var_value,
+                        bool other_available, const sup::dto::AnyValue& other_value) const;
+
   /**
    * @brief Timeout (in nanoseconds).
    */

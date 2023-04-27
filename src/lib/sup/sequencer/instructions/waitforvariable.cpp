@@ -104,29 +104,35 @@ ExecutionStatus WaitForVariable::ExecuteSingleImpl(UserInterface& ui, Workspace&
                                   std::placeholders::_2, std::ref(value2), std::ref(read_value2)),
                         &dummy_listener);
   }
+  bool success = false;
+  auto predicate = [this, &success, &value1, &value2, &read_value1, &read_value2]
+                   {
+                     success = SuccessCondition(read_value1, value1, read_value2, value2);
+                     return _halt_requested.load() || success;
+                   };
+  auto result = cv.wait_for(lk, std::chrono::nanoseconds(m_timeout), predicate);
 
-  auto result = cv.wait_for(
-      lk, std::chrono::nanoseconds(m_timeout),
-      [this, &ws, &ui, &value1, &value2, &read_value1, &read_value2]
-      {
-        if (!_halt_requested.load() && read_value1)
-        {
-          if (read_value2)
-          {
-            if (value1 == value2)
-            {
-              return true;
-            }
-            return false;
-          }
-          return true;
-        }
-        return false;
-      });
+  return success ? ExecutionStatus::SUCCESS
+                 : ExecutionStatus::FAILURE;
+}
 
-  if (result)
-    return ExecutionStatus::SUCCESS;
-  return ExecutionStatus::FAILURE;
+bool WaitForVariable::SuccessCondition(
+  bool var_available, const sup::dto::AnyValue& var_value,
+  bool other_available, const sup::dto::AnyValue& other_value) const
+{
+  if (!var_available)
+  {
+    return false;
+  }
+  if (!HasAttribute(EQUALVAR_ATTRIBUTE))
+  {
+    return true;
+  }
+  if (!other_available)
+  {
+    return false;
+  }
+  return var_value == other_value;
 }
 
 }  // namespace sequencer

@@ -80,7 +80,7 @@ ExecutionStatus WaitForVariable::ExecuteSingleImpl(UserInterface& ui, Workspace&
   std::condition_variable cv;
   auto cb_guard = ws.GetCallbackGuard(&dummy_listener);
 
-  read_value1 = ws.GetValue(var_name, value1);
+  read_value1 = GetValueFromAttributeName(*this, ws, ui, VARNAME_ATTRIBUTE, value1);
 
   auto callback = [](std::condition_variable& cv, const sup::dto::AnyValue& val, bool boo,
                      sup::dto::AnyValue& value, bool flag)
@@ -98,7 +98,7 @@ ExecutionStatus WaitForVariable::ExecuteSingleImpl(UserInterface& ui, Workspace&
   if (equals_var_exists)
   {
     equals_var_name = GetAttribute(EQUALVAR_ATTRIBUTE);
-    read_value2 = ws.GetValue(equals_var_name, value2);
+    read_value2 = GetValueFromAttributeName(*this, ws, ui, EQUALVAR_ATTRIBUTE, value2);
 
     ws.RegisterCallback(equals_var_name,
                         std::bind(callback, std::ref(cv), std::placeholders::_1,

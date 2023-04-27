@@ -45,7 +45,7 @@ TEST(WaitForVariable, WaitForVariableSuccess)
   const std::string body{
       R"(
     <Sequence>
-        <WaitForVariable timeout="0.5" varName="a" equalsVar="b"/>
+        <WaitForVariable timeout="0.1" varName="a" equalsVar="b"/>
     </Sequence>
     <Workspace>
         <Local name="a" type='{"type":"uint8"}' value='3' />
@@ -65,7 +65,7 @@ TEST(WaitForVariable, WaitForVariableParallelSuccess)
   const std::string body{
       R"(
     <ParallelSequence name="parallel" successThreshold="2" failureThreshold="1">
-        <WaitForVariable timeout="1.0" varName="a" equalsVar="b"/>
+        <WaitForVariable timeout="0.1" varName="a" equalsVar="b"/>
         <Increment varName="a"/>
     </ParallelSequence>
     <Workspace>
@@ -86,7 +86,7 @@ TEST(WaitForVariable, WaitForVariableParallelFailure)
   const std::string body{
       R"(
     <ParallelSequence name="parallel" successThreshold="2" failureThreshold="1">
-        <WaitForVariable timeout="1.0" varName="a" equalsVar="b"/>
+        <WaitForVariable timeout="0.1" varName="a" equalsVar="b"/>
         <Increment varName="a"/>
     </ParallelSequence>
     <Workspace>

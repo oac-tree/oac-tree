@@ -22,14 +22,13 @@
 #include "waitforvariable.h"
 
 #include "sup/sequencer/execution_status.h"
+#include "sup/sequencer/workspace.h"
 
 #include <sup/sequencer/constants.h>
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/generic_utils.h>
 
-#include <chrono>
 #include <cmath>
-#include <thread>
 
 const std::string TIMEOUT_ATTR_NAME = "timeout";
 static const std::string VARNAME_ATTRIBUTE = "varName";
@@ -64,41 +63,76 @@ void WaitForVariable::SetupImpl(const Procedure&)
 
 ExecutionStatus WaitForVariable::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  auto finish = utils::GetNanosecsSinceEpoch() + m_timeout;
+  auto time_end = std::chrono::system_clock::now() + std::chrono::nanoseconds(m_timeout);
   auto var_name = GetAttribute(VARNAME_ATTRIBUTE);
-  sup::dto::AnyValue value;
-  bool readvar = false;
-  bool equalsvarexists = HasAttribute(EQUALVAR_ATTRIBUTE);
+  bool equals_var_exists = HasAttribute(EQUALVAR_ATTRIBUTE);
+  std::string equals_var_name;
+
+  sup::dto::AnyValue value1;
   sup::dto::AnyValue value2;
-  if (equalsvarexists)
+
+  bool read_value1 = false;
+  bool read_value2 = false;
+
+  int dummy_listener;  // to get a unique address
+  std::mutex mx;
+  std::unique_lock<std::mutex> lk(mx);
+  std::condition_variable cv;
+  auto cb_guard = ws.GetCallbackGuard(&dummy_listener);
+
+  read_value1 = ws.GetValue(var_name, value1);
+
+  auto callback = [](std::condition_variable& cv, const sup::dto::AnyValue& val, bool boo,
+                     sup::dto::AnyValue& value, bool flag)
   {
-    if (!GetValueFromAttributeName(*this, ws, ui, EQUALVAR_ATTRIBUTE, value2))
-    {
-      return ExecutionStatus::FAILURE;
-    }
-  }
-  while (!_halt_requested.load() && !readvar && finish > utils::GetNanosecsSinceEpoch())
+    value = val;
+    flag = boo;
+    cv.notify_one();
+  };
+
+  ws.RegisterCallback(var_name,
+                      std::bind(callback, std::ref(cv), std::placeholders::_1,
+                                std::placeholders::_2, std::ref(value1), std::ref(read_value1)),
+                      &dummy_listener);
+
+  if (equals_var_exists)
   {
-    readvar = GetValueFromAttributeName(*this, ws, ui, VARNAME_ATTRIBUTE, value);
-    if (readvar && equalsvarexists)
-    {
-      if (value == value2)
-      {
-        return ExecutionStatus::SUCCESS;
-      }
-      readvar = false;
-    }
-  }
-  if (_halt_requested.load() || !readvar)
-  {
-    return ExecutionStatus::FAILURE;
-  }
-  if (equalsvarexists && !(value == value2))
-  {
-    return ExecutionStatus::FAILURE;
+    equals_var_name = GetAttribute(EQUALVAR_ATTRIBUTE);
+    read_value2 = ws.GetValue(equals_var_name, value2);
+
+    ws.RegisterCallback(equals_var_name,
+                        std::bind(callback, std::ref(cv), std::placeholders::_1,
+                                  std::placeholders::_2, std::ref(value2), std::ref(read_value2)),
+                        &dummy_listener);
   }
 
-  return ExecutionStatus::SUCCESS;
+  auto result = cv.wait_until(
+      lk, time_end,
+      [this, &ws, &ui, &equals_var_exists, &value1, &value2, &read_value1, &read_value2]
+      {
+        if (_halt_requested.load())
+        {
+          return false;
+        }
+        bool read_or_equal_value1 = read_value1;
+        if (equals_var_exists && read_value2)
+        {
+          if (value1 == value2)
+          {
+            return true;
+          }
+          read_or_equal_value1 = false;
+        }
+        if (read_or_equal_value1)
+        {
+          return true;
+        }
+        return false;
+      });
+
+  if (result)
+    return ExecutionStatus::SUCCESS;
+  return ExecutionStatus::FAILURE;
 }
 
 }  // namespace sequencer

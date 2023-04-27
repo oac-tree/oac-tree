@@ -108,23 +108,18 @@ ExecutionStatus WaitForVariable::ExecuteSingleImpl(UserInterface& ui, Workspace&
 
   auto result = cv.wait_until(
       lk, time_end,
-      [this, &ws, &ui, &equals_var_exists, &value1, &value2, &read_value1, &read_value2]
+      [this, &ws, &ui, &value1, &value2, &read_value1, &read_value2]
       {
-        if (_halt_requested.load())
+        if (!_halt_requested.load() && read_value1)
         {
-          return false;
-        }
-        bool read_or_equal_value1 = read_value1;
-        if (equals_var_exists && read_value2)
-        {
-          if (value1 == value2)
+          if (read_value2)
           {
-            return true;
+            if (value1 == value2)
+            {
+              return true;
+            }
+            return false;
           }
-          read_or_equal_value1 = false;
-        }
-        if (read_or_equal_value1)
-        {
           return true;
         }
         return false;

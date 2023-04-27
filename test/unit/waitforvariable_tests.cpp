@@ -40,7 +40,26 @@ TEST(WaitForVariable, Setup)
   EXPECT_NO_THROW(instr->Setup(proc));
 }
 
-TEST(WaitForVariable, WaitForVariableSuccess)
+TEST(WaitForVariable, WaitForSingleVariableSuccess)
+{
+  const std::string body{
+      R"(
+    <Sequence>
+        <WaitForVariable timeout="0.1" varName="a"/>
+    </Sequence>
+    <Workspace>
+        <Local name="a" type='{"type":"uint8"}' value='3' />
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST(WaitForVariable, WaitForVariableValueSuccess)
 {
   const std::string body{
       R"(

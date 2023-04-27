@@ -11,7 +11,7 @@ if(NOT COA_NO_CODAC)
   find_package(CODAC OPTIONAL_COMPONENTS site-packages Python MODULE)
 endif()
 if (CODAC_FOUND)
-  # Append CODAC_CMAKE_PREFIXES to cmake seard directories, this helps cmake find packages installed in the CODAC enviorenment 
+  # Append CODAC_CMAKE_PREFIXES to cmake seard directories, this helps cmake find packages installed in the CODAC enviorenment
   list(APPEND CMAKE_PREFIX_PATH ${CODAC_CMAKE_PREFIXES})
 
   # If CODAC module provides python executable, override Python3_EXECUTABLE with it
@@ -39,7 +39,7 @@ if (NOT CMAKE_BUILD_TYPE)
 endif()
 
 set(LIBVERSION ${CMAKE_PROJECT_VERSION})
-set(LIBSOVERSION ${CMAKE_PROJECT_VERSION_MAJOR})
+set(LIBSOVERSION ${CMAKE_PROJECT_VERSION_MAJOR}.${CMAKE_PROJECT_VERSION_MINOR})
 
 # Directories
 if (NOT DEFINED TEST_OUTPUT_DIRECTORY)

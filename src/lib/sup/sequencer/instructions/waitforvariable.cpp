@@ -28,6 +28,8 @@
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/generic_utils.h>
 
+#include <sup/dto/anyvalue_helper.h>
+
 #include <cmath>
 
 const std::string TIMEOUT_ATTR_NAME = "timeout";
@@ -64,56 +66,54 @@ void WaitForVariable::SetupImpl(const Procedure&)
 ExecutionStatus WaitForVariable::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   auto var_name = GetAttribute(VARNAME_ATTRIBUTE);
-  bool equals_var_exists = HasAttribute(EQUALVAR_ATTRIBUTE);
-  std::string equals_var_name;
 
-  sup::dto::AnyValue value1;
-  sup::dto::AnyValue value2;
-
-  bool read_value1 = false;
-  bool read_value2 = false;
+  sup::dto::AnyValue var_value;
+  sup::dto::AnyValue other_value;
 
   int dummy_listener;  // to get a unique address
   std::mutex mx;
-  std::unique_lock<std::mutex> lk(mx);
   std::condition_variable cv;
+
+  // Register callbacks:
   auto cb_guard = ws.GetCallbackGuard(&dummy_listener);
+  bool var_available = ws.GetValue(var_name, var_value);
+  RegisterCallback(ws, cv, mx, &dummy_listener, GetAttribute(VARNAME_ATTRIBUTE),
+                   var_value, var_available);
 
-  read_value1 = GetValueFromAttributeName(*this, ws, ui, VARNAME_ATTRIBUTE, value1);
-
-  auto callback = [](std::condition_variable& cv, const sup::dto::AnyValue& val, bool boo,
-                     sup::dto::AnyValue& value, bool flag)
+  bool other_available = false;
+  if (HasAttribute(EQUALVAR_ATTRIBUTE))
   {
-    value = val;
-    flag = boo;
-    cv.notify_one();
-  };
-
-  ws.RegisterCallback(var_name,
-                      std::bind(callback, std::ref(cv), std::placeholders::_1,
-                                std::placeholders::_2, std::ref(value1), std::ref(read_value1)),
-                      &dummy_listener);
-
-  if (equals_var_exists)
-  {
-    equals_var_name = GetAttribute(EQUALVAR_ATTRIBUTE);
-    read_value2 = GetValueFromAttributeName(*this, ws, ui, EQUALVAR_ATTRIBUTE, value2);
-
-    ws.RegisterCallback(equals_var_name,
-                        std::bind(callback, std::ref(cv), std::placeholders::_1,
-                                  std::placeholders::_2, std::ref(value2), std::ref(read_value2)),
-                        &dummy_listener);
+    other_available = ws.GetValue(GetAttribute(EQUALVAR_ATTRIBUTE), other_value);
+    RegisterCallback(ws, cv, mx, &dummy_listener, GetAttribute(EQUALVAR_ATTRIBUTE),
+                     other_value, other_available);
   }
   bool success = false;
-  auto predicate = [this, &success, &value1, &value2, &read_value1, &read_value2]
+  auto predicate = [this, &success, &var_value, &other_value, &var_available, &other_available]
                    {
-                     success = SuccessCondition(read_value1, value1, read_value2, value2);
+                     success = SuccessCondition(var_available, var_value, other_available, other_value);
                      return _halt_requested.load() || success;
                    };
+  std::unique_lock<std::mutex> lk(mx);
   auto result = cv.wait_for(lk, std::chrono::nanoseconds(m_timeout), predicate);
 
   return success ? ExecutionStatus::SUCCESS
                  : ExecutionStatus::FAILURE;
+}
+
+void WaitForVariable::RegisterCallback(Workspace& ws, std::condition_variable& cv, std::mutex& mtx,
+                                       void* listener, const std::string& var_name,
+                                       sup::dto::AnyValue& value, bool& available) const
+{
+  auto callback = [&cv, &mtx, &value, &available](const sup::dto::AnyValue& newval, bool connected)
+                  {
+                    {
+                      std::lock_guard<std::mutex> lk(mtx);
+                      available = connected && !sup::dto::IsEmptyValue(newval);
+                      (void)sup::dto::TryConvert(value, newval);  // ignore failure
+                    }
+                    cv.notify_one();
+                  };
+  ws.RegisterCallback(var_name, callback, listener);
 }
 
 bool WaitForVariable::SuccessCondition(

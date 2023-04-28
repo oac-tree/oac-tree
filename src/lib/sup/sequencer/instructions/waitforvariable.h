@@ -24,6 +24,8 @@
 
 #include <sup/sequencer/instruction.h>
 
+#include <condition_variable>
+
 namespace sup
 {
 namespace sequencer
@@ -47,6 +49,10 @@ private:
   void SetupImpl(const Procedure& proc) override;
 
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
+
+  void RegisterCallback(Workspace& ws, std::condition_variable& cv, std::mutex& mtx,
+                        void* listener, const std::string& var_name,
+                        sup::dto::AnyValue& value, bool& available) const;
 
   bool SuccessCondition(bool var_available, const sup::dto::AnyValue& var_value,
                         bool other_available, const sup::dto::AnyValue& other_value) const;

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(sup-sequencer VERSION 2.0.0)
+project(sup-sequencer VERSION 2.0.1)
 
 option(COVERAGE "Generate unit test coverage information" OFF)
 option(COA_EXPORT_BUILD_TREE "Export build tree in /home/user/.cmake registry" OFF)

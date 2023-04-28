@@ -45,8 +45,9 @@ int main(int argc, char* argv[])
       .SetParameter(true)
       .SetValueName("filename")
       .SetRequired(true);
-  parser.AddOption({"-v", "--verbose"}, "Log to standard output")
+  parser.AddOption({"-v", "--verbose"}, "Log to standard output (default: WARNING)")
       .SetParameter(true)
+      .SetValueName("log_level")
       .SetDefaultValue("WARNING");
 
   if (!parser.Parse(argc, argv))
@@ -60,7 +61,13 @@ int main(int argc, char* argv[])
 
   auto severity = sup::sequencer::log::GetSeverityFromString(severity_name);
 
-  sup::log::BasicLogger logger(sup::log::DefaultStdoutLogMessage, "sequencer-cli", severity);
+  auto log_function = [](int severity, const std::string& source, const std::string& message)
+                      {
+                        std::cout << sup::log::DefaultStdoutLogMessage(severity, source, message)
+                                  << std::endl;
+                      };
+
+  sup::log::BasicLogger logger(log_function, "sequencer-cli", severity);
   if (!utils::FileExists(filename))
   {
     std::cout << "main(): Procedure file not found [" + filename + "]" << std::endl;

@@ -50,12 +50,13 @@ private:
 
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 
-  void RegisterCallback(Workspace& ws, std::condition_variable& cv, std::mutex& mtx,
-                        void* listener, const std::string& var_name,
-                        sup::dto::AnyValue& value, bool& available) const;
+  void RegisterCallback(Workspace& ws, std::condition_variable& cv,
+                        void* listener, const std::string& var_name) const;
 
   bool SuccessCondition(bool var_available, const sup::dto::AnyValue& var_value,
                         bool other_available, const sup::dto::AnyValue& other_value) const;
+
+  bool CheckCondition(Workspace& ws) const;
 
   /**
    * @brief Timeout (in nanoseconds).

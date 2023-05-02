@@ -65,34 +65,24 @@ void WaitForVariable::SetupImpl(const Procedure&)
 
 ExecutionStatus WaitForVariable::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  auto var_name = GetAttribute(VARNAME_ATTRIBUTE);
-
-  sup::dto::AnyValue var_value;
-  sup::dto::AnyValue other_value;
-
   int dummy_listener;  // to get a unique address
   std::mutex mx;
   std::condition_variable cv;
 
   // Register callbacks:
   auto cb_guard = ws.GetCallbackGuard(&dummy_listener);
-  bool var_available = ws.GetValue(var_name, var_value);
-  RegisterCallback(ws, cv, mx, &dummy_listener, GetAttribute(VARNAME_ATTRIBUTE),
-                   var_value, var_available);
-
-  bool other_available = false;
+  RegisterCallback(ws, cv, &dummy_listener, GetAttribute(VARNAME_ATTRIBUTE));
   if (HasAttribute(EQUALVAR_ATTRIBUTE))
   {
-    other_available = ws.GetValue(GetAttribute(EQUALVAR_ATTRIBUTE), other_value);
-    RegisterCallback(ws, cv, mx, &dummy_listener, GetAttribute(EQUALVAR_ATTRIBUTE),
-                     other_value, other_available);
+    RegisterCallback(ws, cv, &dummy_listener, GetAttribute(EQUALVAR_ATTRIBUTE));
   }
+
+  // Wait for condition to be satisfied, halt or timeout:
   bool success = false;
-  auto predicate = [this, &success, &var_value, &other_value, &var_available, &other_available]
-                   {
-                     success = SuccessCondition(var_available, var_value, other_available, other_value);
-                     return _halt_requested.load() || success;
-                   };
+  auto predicate = [&]{
+                        success = CheckCondition(ws);
+                        return _halt_requested.load() || success;
+                      };
   std::unique_lock<std::mutex> lk(mx);
   auto result = cv.wait_for(lk, std::chrono::nanoseconds(m_timeout), predicate);
 
@@ -100,17 +90,11 @@ ExecutionStatus WaitForVariable::ExecuteSingleImpl(UserInterface& ui, Workspace&
                  : ExecutionStatus::FAILURE;
 }
 
-void WaitForVariable::RegisterCallback(Workspace& ws, std::condition_variable& cv, std::mutex& mtx,
-                                       void* listener, const std::string& var_name,
-                                       sup::dto::AnyValue& value, bool& available) const
+void WaitForVariable::RegisterCallback(Workspace& ws, std::condition_variable& cv,
+                                       void* listener, const std::string& var_name) const
 {
-  auto callback = [&cv, &mtx, &value, &available](const sup::dto::AnyValue& newval, bool connected)
+  auto callback = [&](const sup::dto::AnyValue&, bool)
                   {
-                    {
-                      std::lock_guard<std::mutex> lk(mtx);
-                      available = connected && !sup::dto::IsEmptyValue(newval);
-                      (void)sup::dto::TryConvert(value, newval);  // ignore failure
-                    }
                     cv.notify_one();
                   };
   ws.RegisterCallback(var_name, callback, listener);
@@ -133,6 +117,22 @@ bool WaitForVariable::SuccessCondition(
     return false;
   }
   return var_value == other_value;
+}
+
+bool WaitForVariable::CheckCondition(Workspace& ws) const
+{
+  sup::dto::AnyValue var_value;
+  sup::dto::AnyValue other_value;
+
+  bool var_available = ws.GetValue(GetAttribute(VARNAME_ATTRIBUTE), var_value) &&
+                      !sup::dto::IsEmptyValue(var_value);
+  bool other_available;
+  if (HasAttribute(EQUALVAR_ATTRIBUTE))
+  {
+    other_available = ws.GetValue(GetAttribute(EQUALVAR_ATTRIBUTE), other_value) &&
+                      !sup::dto::IsEmptyValue(other_value);
+  }
+  return SuccessCondition(var_available, var_value, other_available, other_value);
 }
 
 }  // namespace sequencer

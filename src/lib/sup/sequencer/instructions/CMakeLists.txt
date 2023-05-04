@@ -9,6 +9,7 @@ target_sources(sup-sequencer-shared
     ${CMAKE_CURRENT_LIST_DIR}/decrement.cpp
     ${CMAKE_CURRENT_LIST_DIR}/equals.cpp
     ${CMAKE_CURRENT_LIST_DIR}/fallback.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/for.cpp
     ${CMAKE_CURRENT_LIST_DIR}/force_success.cpp
     ${CMAKE_CURRENT_LIST_DIR}/greaterthan.cpp
     ${CMAKE_CURRENT_LIST_DIR}/greaterthanorequal.cpp

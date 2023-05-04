@@ -27,6 +27,7 @@
 #include "equals.h"
 #include "decrement.h"
 #include "fallback.h"
+#include "for.h"
 #include "force_success.h"
 #include "greaterthan.h"
 #include "greaterthanorequal.h"
@@ -120,6 +121,7 @@ void InitInstructionRegistry(InstructionRegistry& registry)
   (void)RegisterInstruction<UserChoice>(registry);
 
   // Register decorator instructions:
+  (void)RegisterInstruction<ForInstruction>(registry);
   (void)RegisterInstruction<ForceSuccess>(registry);
   (void)RegisterInstruction<Include>(registry);
   (void)RegisterInstruction<Inverter>(registry);

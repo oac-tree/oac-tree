@@ -28,6 +28,16 @@ namespace sequencer
 
 Constraint::~Constraint() = default;
 
+Constraint::Constraint(Constraint&& other)
+  : m_impl{std::move(other.m_impl)}
+{}
+
+Constraint& Constraint::operator=(Constraint&& other)
+{
+  std::swap(m_impl, other.m_impl);
+  return *this;
+}
+
 bool Constraint::Validate(const ValueMap& attr_map) const
 {
   return m_impl->Validate(attr_map);

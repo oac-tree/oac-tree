@@ -52,7 +52,11 @@ class Constraint
 public:
   template <typename T, typename... Args>
   Constraint(Args&&... args);
+
   ~Constraint();
+
+  Constraint(Constraint&& other);
+  Constraint& operator=(Constraint&& other);
 
   bool Validate(const ValueMap& attr_map) const;
 

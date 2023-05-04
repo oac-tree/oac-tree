@@ -42,6 +42,40 @@ std::string Exists::GetRepresentation() const
   return "Exists(" + m_attr_name + ")";
 }
 
+Either::Either(Constraint&& left, Constraint&& right)
+  : m_left{std::move(left)}
+  , m_right{std::move(right)}
+{}
+
+Either::~Either() = default;
+
+bool Either::Validate(const ValueMap& attr_map) const
+{
+  return m_left.Validate(attr_map) || m_right.Validate(attr_map);
+}
+
+std::string Either::GetRepresentation() const
+{
+  return "Either (" + m_left.GetRepresentation() + ") or (" + m_right.GetRepresentation() + ")";
+}
+
+Both::Both(Constraint&& left, Constraint&& right)
+  : m_left{std::move(left)}
+  , m_right{std::move(right)}
+{}
+
+Both::~Both() = default;
+
+bool Both::Validate(const ValueMap& attr_map) const
+{
+  return m_left.Validate(attr_map) && m_right.Validate(attr_map);
+}
+
+std::string Both::GetRepresentation() const
+{
+  return "Both (" + m_left.GetRepresentation() + ") and (" + m_right.GetRepresentation() + ")";
+}
+
 }  // namespace sequencer
 
 }  // namespace sup

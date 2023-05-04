@@ -41,6 +41,32 @@ private:
   const std::string m_attr_name;
 };
 
+class Either : public IConstraint
+{
+public:
+  explicit Either(Constraint&& left, Constraint&& right);
+  ~Either();
+
+  bool Validate(const ValueMap& attr_map) const override;
+  std::string GetRepresentation() const override;
+private:
+  Constraint m_left;
+  Constraint m_right;
+};
+
+class Both : public IConstraint
+{
+public:
+  explicit Both(Constraint&& left, Constraint&& right);
+  ~Both();
+
+  bool Validate(const ValueMap& attr_map) const override;
+  std::string GetRepresentation() const override;
+private:
+  Constraint m_left;
+  Constraint m_right;
+};
+
 }  // namespace sequencer
 
 }  // namespace sup

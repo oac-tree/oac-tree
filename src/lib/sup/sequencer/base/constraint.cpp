@@ -19,41 +19,23 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <sup/sequencer/attribute_constraint.h>
+#include <sup/sequencer/constraint.h>
 
 namespace sup
 {
 namespace sequencer
 {
 
-AttributeConstraint::AttributeConstraint(ConstraintFunction func)
-  : m_func{std::move(func)}
-{}
+Constraint::~Constraint() = default;
 
-AttributeConstraint::~AttributeConstraint() = default;
-
-bool AttributeConstraint::Validate(const AttributeValueMap& attr_map,
-                                   const AppendErrorStringFunction& err_func) const
+bool Constraint::Validate(const ValueMap& attr_map) const
 {
-  if (!m_func)
-  {
-    if (err_func)
-    {
-      err_func(kNoConstraintFunctionError);
-    }
-    return false;
-  }
-  auto result = m_func(attr_map);
-  if (!result.first && err_func)
-  {
-    err_func(result.second);
-  }
-  return result.first;
+  return m_impl->Validate(attr_map);
 }
 
-void IgnoreConstraintError(const std::string& err_str)
+std::string Constraint::GetRepresentation() const
 {
-  (void)err_str;
+  return m_impl->GetRepresentation();
 }
 
 }  // namespace sequencer

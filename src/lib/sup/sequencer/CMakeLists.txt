@@ -32,6 +32,7 @@ install(TARGETS sup-sequencer-shared EXPORT sequencer-targets LIBRARY DESTINATIO
 set_target_properties(sup-sequencer-shared PROPERTIES EXPORT_NAME sequencer)
 
 install(FILES
+  attribute_constraint.h
   attribute_definition.h
   attribute_handler.h
   attribute_map.h

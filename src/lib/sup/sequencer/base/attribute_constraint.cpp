@@ -19,44 +19,43 @@
  * of the distribution package.
  ******************************************************************************/
 
-#ifndef SUP_SEQUENCER_ATTRIBUTE_DEFINITION_H_
-#define SUP_SEQUENCER_ATTRIBUTE_DEFINITION_H_
-
-#include <sup/dto/anytype.h>
-
-#include <map>
-#include <string>
-#include <vector>
+#include <sup/sequencer/attribute_constraint.h>
 
 namespace sup
 {
 namespace sequencer
 {
 
-/**
- * @brief Class that defines a specific attribute by name and type.
- */
-class AttributeDefinition
+AttributeConstraint::AttributeConstraint(ConstraintFunction func)
+  : m_func{std::move(func)}
+{}
+
+AttributeConstraint::~AttributeConstraint() = default;
+
+bool AttributeConstraint::Validate(const AttributeValueMap& attr_map,
+                                   const AppendErrorStringFunction& err_func) const
 {
-public:
-  AttributeDefinition(const std::string& name);
-  ~AttributeDefinition();
+  if (!m_func)
+  {
+    if (err_func)
+    {
+      err_func(kNoConstraintFunctionError);
+    }
+    return false;
+  }
+  auto result = m_func(attr_map);
+  if (!result.first && err_func)
+  {
+    err_func(result.second);
+  }
+  return result.first;
+}
 
-  std::string GetName() const;
-  sup::dto::AnyType GetType() const;
-  bool IsMandatory() const;
-
-  AttributeDefinition& SetType(const sup::dto::AnyType& value_type);
-  AttributeDefinition& SetMandatory(bool mandatory = true);
-
-private:
-  std::string m_name;
-  sup::dto::AnyType m_value_type;
-  bool m_is_mandatory;
-};
+void IgnoreConstraintError(const std::string& err_str)
+{
+  (void)err_str;
+}
 
 }  // namespace sequencer
 
 }  // namespace sup
-
-#endif  // SUP_SEQUENCER_ATTRIBUTE_DEFINITION_H_

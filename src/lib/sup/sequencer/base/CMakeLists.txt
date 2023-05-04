@@ -1,5 +1,6 @@
 target_sources(sup-sequencer-shared
   PRIVATE
+    ${CMAKE_CURRENT_LIST_DIR}/attribute_constraint.cpp
     ${CMAKE_CURRENT_LIST_DIR}/attribute_definition.cpp
     ${CMAKE_CURRENT_LIST_DIR}/attribute_handler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/attribute_map.cpp

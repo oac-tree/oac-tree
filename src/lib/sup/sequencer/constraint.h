@@ -50,26 +50,28 @@ public:
 class Constraint
 {
 public:
-  template <typename T, typename... Args>
-  Constraint(Args&&... args);
-
   ~Constraint();
 
   Constraint(Constraint&& other);
   Constraint& operator=(Constraint&& other);
+
+  template <typename T, typename... Args>
+  static Constraint Make(Args&&... args);
 
   bool Validate(const ValueMap& attr_map) const;
 
   std::string GetRepresentation() const;
 
 private:
+  Constraint(std::unique_ptr<IConstraint>&& impl);
   std::unique_ptr<IConstraint> m_impl;
 };
 
 template <typename T, typename... Args>
-Constraint::Constraint(Args&&... args)
-  : m_impl{new T{std::forward<Args>(args)...}}
-{}
+Constraint Constraint::Make(Args&&... args)
+{
+  return Constraint{std::unique_ptr<IConstraint>{new T{std::forward<Args>(args)...}}};
+}
 
 }  // namespace sequencer
 

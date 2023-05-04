@@ -10,6 +10,7 @@ target_sources(unit-tests
     ${CMAKE_CURRENT_LIST_DIR}/comparison_tests.cpp
     ${CMAKE_CURRENT_LIST_DIR}/compound_instruction_tests.cpp
     ${CMAKE_CURRENT_LIST_DIR}/condition_tests.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/constraint_tests.cpp
     ${CMAKE_CURRENT_LIST_DIR}/copy_tests.cpp
     ${CMAKE_CURRENT_LIST_DIR}/daemon_interface_tests.cpp
     ${CMAKE_CURRENT_LIST_DIR}/decorator_instruction_tests.cpp

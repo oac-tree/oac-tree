@@ -48,6 +48,10 @@ std::string Constraint::GetRepresentation() const
   return m_impl->GetRepresentation();
 }
 
+Constraint::Constraint(std::unique_ptr<IConstraint>&& impl)
+  : m_impl{std::move(impl)}
+{}
+
 }  // namespace sequencer
 
 }  // namespace sup

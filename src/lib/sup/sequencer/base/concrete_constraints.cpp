@@ -32,6 +32,11 @@ Exists::Exists(const std::string& attr_name)
 
 Exists::~Exists() = default;
 
+Exists* Exists::Clone() const
+{
+  return new Exists{m_attr_name};
+}
+
 bool Exists::Validate(const ValueMap& attr_map) const
 {
   return attr_map.find(m_attr_name) != attr_map.end();
@@ -49,6 +54,11 @@ Either::Either(Constraint&& left, Constraint&& right)
 
 Either::~Either() = default;
 
+Either* Either::Clone() const
+{
+  return new Either{Constraint{m_left}, Constraint{m_right}};
+}
+
 bool Either::Validate(const ValueMap& attr_map) const
 {
   return m_left.Validate(attr_map) ^ m_right.Validate(attr_map);
@@ -65,6 +75,11 @@ Both::Both(Constraint&& left, Constraint&& right)
 {}
 
 Both::~Both() = default;
+
+Both* Both::Clone() const
+{
+  return new Both{Constraint{m_left}, Constraint{m_right}};
+}
 
 bool Both::Validate(const ValueMap& attr_map) const
 {

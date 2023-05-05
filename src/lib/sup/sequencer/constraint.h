@@ -39,6 +39,8 @@ class IConstraint
 public:
   virtual ~IConstraint() = default;
 
+  virtual IConstraint* Clone() const = 0;
+
   virtual bool Validate(const ValueMap& attr_map) const = 0;
 
   virtual std::string GetRepresentation() const = 0;
@@ -53,7 +55,10 @@ public:
   ~Constraint();
   Constraint(std::unique_ptr<IConstraint>&& impl);
 
+  // Copy/move
+  Constraint(const Constraint& other);
   Constraint(Constraint&& other);
+  Constraint& operator=(const Constraint& other);
   Constraint& operator=(Constraint&& other);
 
   bool Validate(const ValueMap& attr_map) const;

@@ -28,9 +28,20 @@ namespace sequencer
 
 Constraint::~Constraint() = default;
 
+Constraint::Constraint(const Constraint& other)
+  : m_impl{other.m_impl->Clone()}
+{}
+
 Constraint::Constraint(Constraint&& other)
   : m_impl{std::move(other.m_impl)}
 {}
+
+Constraint& Constraint::operator=(const Constraint& other)
+{
+  Constraint copy{other};
+  std::swap(m_impl, copy.m_impl);
+  return *this;
+}
 
 Constraint& Constraint::operator=(Constraint&& other)
 {

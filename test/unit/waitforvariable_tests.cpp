@@ -120,3 +120,30 @@ TEST(WaitForVariable, WaitForVariableParallelFailure)
   ASSERT_TRUE(proc.get() != nullptr);
   EXPECT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
+
+
+TEST(WaitForVariable, WaitForVariableParallelMultipleSuccess)
+{
+  const std::string body{
+    R"(
+    <ParallelSequence name="parallel">
+        <WaitForVariable timeout="4.0" varName="a" equalsVar="b"/>
+        <Repeat maxCount="8">
+            <Increment varName="a"/>
+        </Repeat>
+        <Repeat maxCount="2">
+            <Decrement varName="b"/>
+        </Repeat>
+    </ParallelSequence>
+    <Workspace>
+        <Local name="a" type='{"type":"uint8"}' value='3' />
+        <Local name="b" type='{"type":"uint8"}' value='13' />
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}

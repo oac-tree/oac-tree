@@ -34,6 +34,8 @@ namespace sequencer
 {
 using ValueMap = std::map<std::string, sup::dto::AnyValue>;
 
+const std::string kConstraintEmpty = "Empty constraint (always fails)";
+
 class IConstraint
 {
 public:

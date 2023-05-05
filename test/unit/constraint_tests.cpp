@@ -28,6 +28,24 @@ using namespace sup::sequencer;
 const std::string kEmptyAttrName = "empty";
 const std::string kDoubleAttrName = "double";
 
+class TestConstraint : public IConstraint
+{
+public:
+  TestConstraint(bool pass) : m_pass{pass} {}
+  ~TestConstraint() = default;
+
+  TestConstraint* Clone() const override { return new TestConstraint{m_pass}; }
+
+  bool Validate(const ValueMap& attr_map) const override { return m_pass; }
+  std::string GetRepresentation() const override
+  {
+    std::string pass_str = m_pass ? "true" : "false";
+    return "TestConstraint(" + pass_str + ")";
+  }
+private:
+  bool m_pass;
+};
+
 class ConstraintTest : public ::testing::Test
 {
 protected:
@@ -40,14 +58,41 @@ protected:
 TEST_F(ConstraintTest, Exists)
 {
   {
+    // Exists passes when the attribute is present in the given map
     auto constraint = MakeConstraint<Exists>(kEmptyAttrName);
     EXPECT_TRUE(constraint.Validate(m_attr_map));
     EXPECT_FALSE(constraint.GetRepresentation().empty());
   }
   {
+    // Exists fails when the attribute is not present in the given map
     auto constraint = MakeConstraint<Exists>("does_not_exist");
     EXPECT_FALSE(constraint.Validate(m_attr_map));
     EXPECT_FALSE(constraint.GetRepresentation().empty());
+  }
+  {
+    // Copy
+    auto constraint = MakeConstraint<Exists>(kEmptyAttrName);
+    auto repr = constraint.GetRepresentation();
+    Constraint copy_constructed{constraint};
+    EXPECT_EQ(copy_constructed.GetRepresentation(), repr);
+    auto copy_assigned = MakeConstraint<TestConstraint>(true);
+    copy_assigned = constraint;
+    EXPECT_EQ(copy_constructed.GetRepresentation(), repr);
+  }
+  {
+    // Move
+    auto constraint = MakeConstraint<Exists>(kEmptyAttrName);
+    auto repr = constraint.GetRepresentation();
+    EXPECT_TRUE(constraint.Validate(m_attr_map));
+    Constraint move_constructed{std::move(constraint)};
+    // Move source always fails validation during construction
+    EXPECT_FALSE(constraint.Validate(m_attr_map));
+    EXPECT_EQ(move_constructed.GetRepresentation(), repr);
+    EXPECT_TRUE(move_constructed.Validate(m_attr_map));
+    auto move_assigned = MakeConstraint<TestConstraint>(true);
+    move_assigned = std::move(move_constructed);
+    EXPECT_EQ(move_assigned.GetRepresentation(), repr);
+    EXPECT_TRUE(move_assigned.Validate(m_attr_map));
   }
 }
 
@@ -81,6 +126,33 @@ TEST_F(ConstraintTest, Either)
     EXPECT_FALSE(constraint.Validate(m_attr_map));
     EXPECT_FALSE(constraint.GetRepresentation().empty());
   }
+  {
+    // Copy
+    auto constraint = MakeConstraint<Either>(MakeConstraint<Exists>("does_not_exist"),
+                                             MakeConstraint<Exists>(kEmptyAttrName));
+    auto repr = constraint.GetRepresentation();
+    Constraint copy_constructed{constraint};
+    EXPECT_EQ(copy_constructed.GetRepresentation(), repr);
+    auto copy_assigned = MakeConstraint<TestConstraint>(true);
+    copy_assigned = constraint;
+    EXPECT_EQ(copy_constructed.GetRepresentation(), repr);
+  }
+  {
+    // Move
+    auto constraint = MakeConstraint<Either>(MakeConstraint<Exists>("does_not_exist"),
+                                             MakeConstraint<Exists>(kEmptyAttrName));
+    auto repr = constraint.GetRepresentation();
+    EXPECT_TRUE(constraint.Validate(m_attr_map));
+    Constraint move_constructed{std::move(constraint)};
+    // Move source always fails validation
+    EXPECT_FALSE(constraint.Validate(m_attr_map));
+    EXPECT_EQ(move_constructed.GetRepresentation(), repr);
+    EXPECT_TRUE(move_constructed.Validate(m_attr_map));
+    auto move_assigned = MakeConstraint<TestConstraint>(true);
+    move_assigned = std::move(move_constructed);
+    EXPECT_EQ(move_assigned.GetRepresentation(), repr);
+    EXPECT_TRUE(move_assigned.Validate(m_attr_map));
+  }
 }
 
 TEST_F(ConstraintTest, Both)
@@ -112,6 +184,33 @@ TEST_F(ConstraintTest, Both)
                                            MakeConstraint<Exists>("does_not_exist"));
     EXPECT_FALSE(constraint.Validate(m_attr_map));
     EXPECT_FALSE(constraint.GetRepresentation().empty());
+  }
+  {
+    // Copy
+    auto constraint = MakeConstraint<Both>(MakeConstraint<Exists>(kEmptyAttrName),
+                                           MakeConstraint<Exists>(kDoubleAttrName));
+    auto repr = constraint.GetRepresentation();
+    Constraint copy_constructed{constraint};
+    EXPECT_EQ(copy_constructed.GetRepresentation(), repr);
+    auto copy_assigned = MakeConstraint<TestConstraint>(true);
+    copy_assigned = constraint;
+    EXPECT_EQ(copy_constructed.GetRepresentation(), repr);
+  }
+  {
+    // Move
+    auto constraint = MakeConstraint<Both>(MakeConstraint<Exists>(kEmptyAttrName),
+                                           MakeConstraint<Exists>(kDoubleAttrName));
+    auto repr = constraint.GetRepresentation();
+    EXPECT_TRUE(constraint.Validate(m_attr_map));
+    Constraint move_constructed{std::move(constraint)};
+    // Move source always fails validation
+    EXPECT_FALSE(constraint.Validate(m_attr_map));
+    EXPECT_EQ(move_constructed.GetRepresentation(), repr);
+    EXPECT_TRUE(move_constructed.Validate(m_attr_map));
+    auto move_assigned = MakeConstraint<TestConstraint>(true);
+    move_assigned = std::move(move_constructed);
+    EXPECT_EQ(move_assigned.GetRepresentation(), repr);
+    EXPECT_TRUE(move_assigned.Validate(m_attr_map));
   }
 }
 

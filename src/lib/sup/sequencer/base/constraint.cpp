@@ -51,11 +51,19 @@ Constraint& Constraint::operator=(Constraint&& other)
 
 bool Constraint::Validate(const ValueMap& attr_map) const
 {
+  if (!m_impl)
+  {
+    return false;
+  }
   return m_impl->Validate(attr_map);
 }
 
 std::string Constraint::GetRepresentation() const
 {
+  if (!m_impl)
+  {
+    return kConstraintEmpty;
+  }
   return m_impl->GetRepresentation();
 }
 

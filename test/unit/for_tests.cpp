@@ -72,6 +72,28 @@ TEST(For, Procedure_success)
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
+TEST(For, Procedure_not_array_failure)
+{
+  const std::string body{
+    R"(
+    <Sequence>
+        <For elementVar="i" arrayVar="notarr">
+            <Increment varName="i"/>
+        </For>
+    </Sequence>
+    <Workspace>
+    <Local name="notarr" type='{"type":"uint32"}' value='0' />
+    <Local name="i" type='{"type":"uint32"}' value='0' />
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+}
+
 TEST(For, Procedure_type_failure)
 {
   const std::string body{
@@ -91,5 +113,5 @@ TEST(For, Procedure_type_failure)
   auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
-  EXPECT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
 }

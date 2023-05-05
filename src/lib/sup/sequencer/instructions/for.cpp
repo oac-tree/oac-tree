@@ -22,6 +22,7 @@
 #include "for.h"
 #include "sup/sequencer/execution_status.h"
 #include "sup/sequencer/instruction.h"
+#include "sup/sequencer/user_interface.h"
 #include <sup/dto/basic_scalar_types.h>
 #include <sup/sequencer/workspace.h>
 
@@ -68,13 +69,21 @@ ExecutionStatus ForInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& 
   sup::dto::AnyValue array;
   if (!GetValueFromAttributeName(*this, ws, ui, ARRAY_ATTR_NAME, array))
   {
+    std::string warning_message = InstructionWarningProlog(*this)
+                                  + "Failed to retriece the value of ["
+                                  + GetAttribute(ARRAY_ATTR_NAME) + "].";
+    ui.LogWarning(warning_message);
     return ExecutionStatus::FAILURE;
   }
   if (!dto::IsArrayValue(array))
   {
+    std::string warning_message = InstructionWarningProlog(*this)
+                                  + "For instruction expects an array but variable ["
+                                  + GetAttribute(ARRAY_ATTR_NAME) + "] is not one.";
+    ui.LogWarning(warning_message);
     return ExecutionStatus::FAILURE;
   }
-  
+
   int max_count = array.NumberOfElements();
   if (max_count == 0)
   {
@@ -85,6 +94,11 @@ ExecutionStatus ForInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& 
   GetValueFromAttributeName(*this, ws, ui, ELEMENT_ATTR_NAME, i);
   if (i.GetType() != array[_count].GetType())
   {
+    std::string warning_message = InstructionWarningProlog(*this) + "The element ["
+                                  + GetAttribute(ELEMENT_ATTR_NAME)
+                                  + "] and the elements of array [" + GetAttribute(ARRAY_ATTR_NAME)
+                                  + "] have to be of the same type.";
+    ui.LogWarning(warning_message);
     return ExecutionStatus::FAILURE;
   }
 

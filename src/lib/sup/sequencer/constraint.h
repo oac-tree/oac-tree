@@ -51,24 +51,21 @@ class Constraint
 {
 public:
   ~Constraint();
+  Constraint(std::unique_ptr<IConstraint>&& impl);
 
   Constraint(Constraint&& other);
   Constraint& operator=(Constraint&& other);
-
-  template <typename T, typename... Args>
-  static Constraint Make(Args&&... args);
 
   bool Validate(const ValueMap& attr_map) const;
 
   std::string GetRepresentation() const;
 
 private:
-  Constraint(std::unique_ptr<IConstraint>&& impl);
   std::unique_ptr<IConstraint> m_impl;
 };
 
 template <typename T, typename... Args>
-Constraint Constraint::Make(Args&&... args)
+Constraint MakeConstraint(Args&&... args)
 {
   return Constraint{std::unique_ptr<IConstraint>{new T{std::forward<Args>(args)...}}};
 }

@@ -25,6 +25,9 @@
 
 using namespace sup::sequencer;
 
+const std::string kEmptyAttrName = "empty";
+const std::string kDoubleAttrName = "double";
+
 class ConstraintTest : public ::testing::Test
 {
 protected:
@@ -36,13 +39,86 @@ protected:
 
 TEST_F(ConstraintTest, Exists)
 {
-  auto constraint = Constraint::Make<Exists>("empty");
-  EXPECT_TRUE(constraint.Validate(m_attr_map));
+  {
+    auto constraint = MakeConstraint<Exists>(kEmptyAttrName);
+    EXPECT_TRUE(constraint.Validate(m_attr_map));
+    EXPECT_FALSE(constraint.GetRepresentation().empty());
+  }
+  {
+    auto constraint = MakeConstraint<Exists>("does_not_exist");
+    EXPECT_FALSE(constraint.Validate(m_attr_map));
+    EXPECT_FALSE(constraint.GetRepresentation().empty());
+  }
+}
+
+TEST_F(ConstraintTest, Either)
+{
+  {
+    // Validation passes when exactly one child constraint passes.
+    auto constraint = MakeConstraint<Either>(MakeConstraint<Exists>(kEmptyAttrName),
+                                             MakeConstraint<Exists>("does_not_exist"));
+    EXPECT_TRUE(constraint.Validate(m_attr_map));
+    EXPECT_FALSE(constraint.GetRepresentation().empty());
+  }
+  {
+    // Validation passes when exactly one child constraint passes.
+    auto constraint = MakeConstraint<Either>(MakeConstraint<Exists>("does_not_exist"),
+                                             MakeConstraint<Exists>(kEmptyAttrName));
+    EXPECT_TRUE(constraint.Validate(m_attr_map));
+    EXPECT_FALSE(constraint.GetRepresentation().empty());
+  }
+  {
+    // Validation fails when no child constraint passes.
+    auto constraint = MakeConstraint<Either>(MakeConstraint<Exists>("does_not_exist"),
+                                             MakeConstraint<Exists>("does_not_exist"));
+    EXPECT_FALSE(constraint.Validate(m_attr_map));
+    EXPECT_FALSE(constraint.GetRepresentation().empty());
+  }
+  {
+    // Validation fails when both child constraints pass.
+    auto constraint = MakeConstraint<Either>(MakeConstraint<Exists>(kEmptyAttrName),
+                                             MakeConstraint<Exists>(kDoubleAttrName));
+    EXPECT_FALSE(constraint.Validate(m_attr_map));
+    EXPECT_FALSE(constraint.GetRepresentation().empty());
+  }
+}
+
+TEST_F(ConstraintTest, Both)
+{
+  {
+    // Validation passes when both child constraints pass.
+    auto constraint = MakeConstraint<Both>(MakeConstraint<Exists>(kEmptyAttrName),
+                                           MakeConstraint<Exists>(kDoubleAttrName));
+    EXPECT_TRUE(constraint.Validate(m_attr_map));
+    EXPECT_FALSE(constraint.GetRepresentation().empty());
+  }
+  {
+    // Validation fails when only one child constraint passes.
+    auto constraint = MakeConstraint<Both>(MakeConstraint<Exists>(kEmptyAttrName),
+                                           MakeConstraint<Exists>("does_not_exist"));
+    EXPECT_FALSE(constraint.Validate(m_attr_map));
+    EXPECT_FALSE(constraint.GetRepresentation().empty());
+  }
+  {
+    // Validation fails when only one child constraint passes.
+    auto constraint = MakeConstraint<Both>(MakeConstraint<Exists>("does_not_exist"),
+                                           MakeConstraint<Exists>(kEmptyAttrName));
+    EXPECT_FALSE(constraint.Validate(m_attr_map));
+    EXPECT_FALSE(constraint.GetRepresentation().empty());
+  }
+  {
+    // Validation fails when no child constraint passes.
+    auto constraint = MakeConstraint<Both>(MakeConstraint<Exists>("does_not_exist"),
+                                           MakeConstraint<Exists>("does_not_exist"));
+    EXPECT_FALSE(constraint.Validate(m_attr_map));
+    EXPECT_FALSE(constraint.GetRepresentation().empty());
+  }
 }
 
 ConstraintTest::ConstraintTest()
 {
-  m_attr_map["empty"] = sup::dto::AnyValue{};
+  m_attr_map[kEmptyAttrName] = sup::dto::AnyValue{};
+  m_attr_map[kDoubleAttrName] = 1.0;
 }
 
 ConstraintTest::~ConstraintTest() = default;

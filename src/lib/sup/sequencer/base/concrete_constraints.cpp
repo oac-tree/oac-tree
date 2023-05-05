@@ -51,7 +51,7 @@ Either::~Either() = default;
 
 bool Either::Validate(const ValueMap& attr_map) const
 {
-  return m_left.Validate(attr_map) || m_right.Validate(attr_map);
+  return m_left.Validate(attr_map) ^ m_right.Validate(attr_map);
 }
 
 std::string Either::GetRepresentation() const

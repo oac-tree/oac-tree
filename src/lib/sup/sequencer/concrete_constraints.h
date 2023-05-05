@@ -29,6 +29,9 @@ namespace sup
 namespace sequencer
 {
 
+/**
+ * Constraint that checks presence of mandatory attribute.
+*/
 class Exists : public IConstraint
 {
 public:
@@ -41,6 +44,10 @@ private:
   const std::string m_attr_name;
 };
 
+/**
+ * Composite constraint that checks if either the left or the right constraint is satisfied.
+ * This is equivalent to an 'XOR' operation.
+*/
 class Either : public IConstraint
 {
 public:
@@ -54,6 +61,10 @@ private:
   Constraint m_right;
 };
 
+/**
+ * Composite constraint that checks if both the left and the right constraint is satisfied.
+ * This is equivalent to an 'AND' operation.
+*/
 class Both : public IConstraint
 {
 public:

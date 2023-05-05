@@ -31,16 +31,16 @@
 
 using namespace sup::sequencer;
 
-// TEST(For, Setup)
-// {
-//   Procedure proc;
-//   auto instr = GlobalInstructionRegistry().Create("For");
-//   EXPECT_NO_THROW(instr->Setup(proc));
+TEST(For, Setup)
+{
+  Procedure proc;
+  auto instr = GlobalInstructionRegistry().Create("For");
+  EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
 
-//   EXPECT_TRUE(instr->AddAttribute("elementVar", "i"));
-//   EXPECT_TRUE(instr->AddAttribute("arrayVar", "a"));
-//   EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
-// }
+  EXPECT_TRUE(instr->AddAttribute("elementVar", "i"));
+  EXPECT_TRUE(instr->AddAttribute("arrayVar", "a"));
+  EXPECT_NO_THROW(instr->Setup(proc));
+}
 
 TEST(For, Registration)
 {
@@ -58,12 +58,10 @@ TEST(For, Procedure_success)
         <For elementVar="i" arrayVar="arr">
             <Increment varName="i"/>
         </For>
-        <Equals lhs="arr" rhs="arr2"/>
     </Sequence>
     <Workspace>
     <Local name="arr" type='{"type":"uint32_arr","element":{"type":"uint32"}}' value="[2,4,6]"/>
     <Local name="i" type='{"type":"uint32"}' value='0' />
-    <Local name="arr2" type='{"type":"uint32_arr","element":{"type":"uint32"}}' value="[3,5,7]"/>
     </Workspace>
 )"};
 
@@ -74,41 +72,24 @@ TEST(For, Procedure_success)
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
-// TEST(Repeat, Procedure_failure)
-// {
-//   const std::string body{R"(
-//     <Repeat maxCount="10">
-//         <Inverter name="failure">
-//             <Counter/>
-//         </Inverter>
-//     </Repeat>
-//     <Workspace>
-//     </Workspace>
-// )"};
+TEST(For, Procedure_type_failure)
+{
+  const std::string body{
+    R"(
+    <Sequence>
+        <For elementVar="i" arrayVar="arr">
+            <Increment varName="i"/>
+        </For>
+    </Sequence>
+    <Workspace>
+    <Local name="arr" type='{"type":"uint32_arr","element":{"type":"uint32"}}' value="[2,4,6]"/>
+    <Local name="i" type='{"type":"float32"}' value='0' />
+    </Workspace>
+)"};
 
-//   sup::UnitTestHelper::EmptyUserInterface ui;
-//   auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
-//   ASSERT_TRUE(proc.get() != nullptr);
-//   EXPECT_TRUE(
-//       sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
-//   EXPECT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 1);
-// }
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
-// TEST(Repeat, Procedure_attribute)
-// {
-//   const std::string body{R"(
-//     <Repeat maxCount="undefined">
-//         <Counter/>
-//     </Repeat>
-//     <Workspace>
-//     </Workspace>
-// )"};
-
-//   sup::UnitTestHelper::EmptyUserInterface ui;
-//   auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
-//   ASSERT_TRUE(proc.get() != nullptr);
-
-//   // Expect failure during Setup
-//   EXPECT_THROW(sup::UnitTestHelper::TryAndExecute(proc, ui), InstructionSetupException);
-//   EXPECT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 0);
-// }
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}

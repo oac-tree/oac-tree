@@ -30,8 +30,6 @@
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/generic_utils.h>
 
-#include <iostream>
-
 const std::string ELEMENT_ATTR_NAME = "elementVar";
 const std::string ARRAY_ATTR_NAME = "arrayVar";
 
@@ -43,9 +41,7 @@ const std::string ForInstruction::Type = "For";
 
 ForInstruction::ForInstruction()
   : DecoratorInstruction(ForInstruction::Type)
-  , _max_count{0}
   , _count{0}
-  , _init_ok{false}
 {}
 
 ForInstruction::~ForInstruction() = default;
@@ -79,11 +75,17 @@ ExecutionStatus ForInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& 
     return ExecutionStatus::FAILURE;
   }
   
-  _max_count = array.NumberOfElements();
-
-  if (_max_count == 0)
+  int max_count = array.NumberOfElements();
+  if (max_count == 0)
   {
     return ExecutionStatus::SUCCESS;
+  }
+
+  dto::AnyValue i;
+  GetValueFromAttributeName(*this, ws, ui, ELEMENT_ATTR_NAME, i);
+  if (i.GetType() != array[_count].GetType())
+  {
+    return ExecutionStatus::FAILURE;
   }
 
   ws.SetValue(GetAttribute(ELEMENT_ATTR_NAME),array[_count]);
@@ -96,28 +98,22 @@ ExecutionStatus ForInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& 
   ExecuteChild(ui, ws);
 
   child_status = GetChildStatus();
-  if (child_status == ExecutionStatus::SUCCESS)
-  {
-    sup::dto::AnyValue element;
-    GetValueFromAttributeName(*this, ws, ui, ELEMENT_ATTR_NAME, element);
-    array[_count] = element;
-    ws.SetValue(GetAttribute(ARRAY_ATTR_NAME), array);
-  }
+
   // Don't increment count when _max_count is not strictly positive.
-  if (_max_count > 0
+  if (max_count > 0
       && (child_status == ExecutionStatus::SUCCESS || child_status == ExecutionStatus::FAILURE))
   {
     _count++;
   }
-  return CalculateStatus();
+  return CalculateStatus(max_count);
 }
 
-ExecutionStatus ForInstruction::CalculateStatus() const
+ExecutionStatus ForInstruction::CalculateStatus(int max_count) const
 {
   auto child_status = GetChildStatus();
   if (child_status == ExecutionStatus::SUCCESS)
   {
-    if (_count == _max_count)
+    if (_count == max_count)
     {
       return ExecutionStatus::SUCCESS;
     }

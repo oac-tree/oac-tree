@@ -55,10 +55,9 @@ private:
    * @brief Calculate this instruction's status from the status of its child instruction
    * and the number of successful executions of the child instruction.
    */
-  ExecutionStatus CalculateStatus() const;
+  ExecutionStatus CalculateStatus(int max_count) const;
 
-  int _max_count, _count;
-  bool _init_ok;
+  int _count;
 };
 
 }  // namespace sequencer

@@ -21,8 +21,9 @@
 
 #include <sup/sequencer/concrete_constraints.h>
 
+#include <sup/sequencer/attribute_utils.h>
+
 #include <sup/dto/anytype_helper.h>
-#include <sup/dto/json_value_parser.h>
 
 namespace sup
 {
@@ -49,8 +50,7 @@ bool FixedType::Validate(const ValueMap& attr_map) const
     return false;
   }
   auto val_str = it->second;
-  sup::dto::JSONAnyValueParser parser;
-  return parser.TypedParseString(m_attr_type, val_str);
+  return utils::ParseAttributeString(m_attr_type, val_str).first;
 }
 
 std::string FixedType::GetRepresentation() const

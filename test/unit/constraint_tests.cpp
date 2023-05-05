@@ -269,7 +269,7 @@ TEST_F(ConstraintTest, Both)
 
 ConstraintTest::ConstraintTest()
 {
-  m_attr_map[kEmptyStringAttrName] = "\"\"";
+  m_attr_map[kEmptyStringAttrName] = "";
   m_attr_map[kDoubleAttrName] = "1.0";
 }
 

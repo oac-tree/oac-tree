@@ -25,7 +25,7 @@
 
 using namespace sup::sequencer;
 
-const std::string kEmptyAttrName = "empty";
+const std::string kEmptyStringAttrName = "empty_string";
 const std::string kDoubleAttrName = "double";
 
 class TestConstraint : public IConstraint
@@ -55,11 +55,64 @@ protected:
   ValueMap m_attr_map;
 };
 
+TEST_F(ConstraintTest, FixedType)
+{
+  {
+    // FixedType passes when the attribute in the given map can be parsed into the given type
+    auto constraint = MakeConstraint<FixedType>(kEmptyStringAttrName, sup::dto::StringType);
+    EXPECT_TRUE(constraint.Validate(m_attr_map));
+    EXPECT_FALSE(constraint.GetRepresentation().empty());
+  }
+  {
+    // FixedType passes when the attribute in the given map can be parsed into the given type
+    auto constraint = MakeConstraint<FixedType>(kDoubleAttrName, sup::dto::Float64Type);
+    EXPECT_TRUE(constraint.Validate(m_attr_map));
+    EXPECT_FALSE(constraint.GetRepresentation().empty());
+  }
+  {
+    // FixedType fails when the attribute is not present in the given map
+    auto constraint = MakeConstraint<FixedType>("does_not_exist", sup::dto::StringType);
+    EXPECT_FALSE(constraint.Validate(m_attr_map));
+    EXPECT_FALSE(constraint.GetRepresentation().empty());
+  }
+  {
+    // FixedType fails when the attribute in the given map can not be parsed into the given type
+    auto constraint = MakeConstraint<FixedType>(kEmptyStringAttrName, sup::dto::Float64Type);
+    EXPECT_FALSE(constraint.Validate(m_attr_map));
+    EXPECT_FALSE(constraint.GetRepresentation().empty());
+  }
+  {
+    // Copy
+    auto constraint = MakeConstraint<FixedType>(kDoubleAttrName, sup::dto::Float64Type);
+    auto repr = constraint.GetRepresentation();
+    Constraint copy_constructed{constraint};
+    EXPECT_EQ(copy_constructed.GetRepresentation(), repr);
+    auto copy_assigned = MakeConstraint<TestConstraint>(true);
+    copy_assigned = constraint;
+    EXPECT_EQ(copy_constructed.GetRepresentation(), repr);
+  }
+  {
+    // Move
+    auto constraint = MakeConstraint<FixedType>(kDoubleAttrName, sup::dto::Float64Type);
+    auto repr = constraint.GetRepresentation();
+    EXPECT_TRUE(constraint.Validate(m_attr_map));
+    Constraint move_constructed{std::move(constraint)};
+    // Move source always fails validation during construction
+    EXPECT_FALSE(constraint.Validate(m_attr_map));
+    EXPECT_EQ(move_constructed.GetRepresentation(), repr);
+    EXPECT_TRUE(move_constructed.Validate(m_attr_map));
+    auto move_assigned = MakeConstraint<TestConstraint>(true);
+    move_assigned = std::move(move_constructed);
+    EXPECT_EQ(move_assigned.GetRepresentation(), repr);
+    EXPECT_TRUE(move_assigned.Validate(m_attr_map));
+  }
+}
+
 TEST_F(ConstraintTest, Exists)
 {
   {
     // Exists passes when the attribute is present in the given map
-    auto constraint = MakeConstraint<Exists>(kEmptyAttrName);
+    auto constraint = MakeConstraint<Exists>(kEmptyStringAttrName);
     EXPECT_TRUE(constraint.Validate(m_attr_map));
     EXPECT_FALSE(constraint.GetRepresentation().empty());
   }
@@ -71,7 +124,7 @@ TEST_F(ConstraintTest, Exists)
   }
   {
     // Copy
-    auto constraint = MakeConstraint<Exists>(kEmptyAttrName);
+    auto constraint = MakeConstraint<Exists>(kEmptyStringAttrName);
     auto repr = constraint.GetRepresentation();
     Constraint copy_constructed{constraint};
     EXPECT_EQ(copy_constructed.GetRepresentation(), repr);
@@ -81,7 +134,7 @@ TEST_F(ConstraintTest, Exists)
   }
   {
     // Move
-    auto constraint = MakeConstraint<Exists>(kEmptyAttrName);
+    auto constraint = MakeConstraint<Exists>(kEmptyStringAttrName);
     auto repr = constraint.GetRepresentation();
     EXPECT_TRUE(constraint.Validate(m_attr_map));
     Constraint move_constructed{std::move(constraint)};
@@ -100,7 +153,7 @@ TEST_F(ConstraintTest, Either)
 {
   {
     // Validation passes when exactly one child constraint passes.
-    auto constraint = MakeConstraint<Either>(MakeConstraint<Exists>(kEmptyAttrName),
+    auto constraint = MakeConstraint<Either>(MakeConstraint<Exists>(kEmptyStringAttrName),
                                              MakeConstraint<Exists>("does_not_exist"));
     EXPECT_TRUE(constraint.Validate(m_attr_map));
     EXPECT_FALSE(constraint.GetRepresentation().empty());
@@ -108,7 +161,7 @@ TEST_F(ConstraintTest, Either)
   {
     // Validation passes when exactly one child constraint passes.
     auto constraint = MakeConstraint<Either>(MakeConstraint<Exists>("does_not_exist"),
-                                             MakeConstraint<Exists>(kEmptyAttrName));
+                                             MakeConstraint<Exists>(kEmptyStringAttrName));
     EXPECT_TRUE(constraint.Validate(m_attr_map));
     EXPECT_FALSE(constraint.GetRepresentation().empty());
   }
@@ -121,7 +174,7 @@ TEST_F(ConstraintTest, Either)
   }
   {
     // Validation fails when both child constraints pass.
-    auto constraint = MakeConstraint<Either>(MakeConstraint<Exists>(kEmptyAttrName),
+    auto constraint = MakeConstraint<Either>(MakeConstraint<Exists>(kEmptyStringAttrName),
                                              MakeConstraint<Exists>(kDoubleAttrName));
     EXPECT_FALSE(constraint.Validate(m_attr_map));
     EXPECT_FALSE(constraint.GetRepresentation().empty());
@@ -129,7 +182,7 @@ TEST_F(ConstraintTest, Either)
   {
     // Copy
     auto constraint = MakeConstraint<Either>(MakeConstraint<Exists>("does_not_exist"),
-                                             MakeConstraint<Exists>(kEmptyAttrName));
+                                             MakeConstraint<Exists>(kEmptyStringAttrName));
     auto repr = constraint.GetRepresentation();
     Constraint copy_constructed{constraint};
     EXPECT_EQ(copy_constructed.GetRepresentation(), repr);
@@ -140,7 +193,7 @@ TEST_F(ConstraintTest, Either)
   {
     // Move
     auto constraint = MakeConstraint<Either>(MakeConstraint<Exists>("does_not_exist"),
-                                             MakeConstraint<Exists>(kEmptyAttrName));
+                                             MakeConstraint<Exists>(kEmptyStringAttrName));
     auto repr = constraint.GetRepresentation();
     EXPECT_TRUE(constraint.Validate(m_attr_map));
     Constraint move_constructed{std::move(constraint)};
@@ -159,14 +212,14 @@ TEST_F(ConstraintTest, Both)
 {
   {
     // Validation passes when both child constraints pass.
-    auto constraint = MakeConstraint<Both>(MakeConstraint<Exists>(kEmptyAttrName),
+    auto constraint = MakeConstraint<Both>(MakeConstraint<Exists>(kEmptyStringAttrName),
                                            MakeConstraint<Exists>(kDoubleAttrName));
     EXPECT_TRUE(constraint.Validate(m_attr_map));
     EXPECT_FALSE(constraint.GetRepresentation().empty());
   }
   {
     // Validation fails when only one child constraint passes.
-    auto constraint = MakeConstraint<Both>(MakeConstraint<Exists>(kEmptyAttrName),
+    auto constraint = MakeConstraint<Both>(MakeConstraint<Exists>(kEmptyStringAttrName),
                                            MakeConstraint<Exists>("does_not_exist"));
     EXPECT_FALSE(constraint.Validate(m_attr_map));
     EXPECT_FALSE(constraint.GetRepresentation().empty());
@@ -174,7 +227,7 @@ TEST_F(ConstraintTest, Both)
   {
     // Validation fails when only one child constraint passes.
     auto constraint = MakeConstraint<Both>(MakeConstraint<Exists>("does_not_exist"),
-                                           MakeConstraint<Exists>(kEmptyAttrName));
+                                           MakeConstraint<Exists>(kEmptyStringAttrName));
     EXPECT_FALSE(constraint.Validate(m_attr_map));
     EXPECT_FALSE(constraint.GetRepresentation().empty());
   }
@@ -187,7 +240,7 @@ TEST_F(ConstraintTest, Both)
   }
   {
     // Copy
-    auto constraint = MakeConstraint<Both>(MakeConstraint<Exists>(kEmptyAttrName),
+    auto constraint = MakeConstraint<Both>(MakeConstraint<Exists>(kEmptyStringAttrName),
                                            MakeConstraint<Exists>(kDoubleAttrName));
     auto repr = constraint.GetRepresentation();
     Constraint copy_constructed{constraint};
@@ -198,7 +251,7 @@ TEST_F(ConstraintTest, Both)
   }
   {
     // Move
-    auto constraint = MakeConstraint<Both>(MakeConstraint<Exists>(kEmptyAttrName),
+    auto constraint = MakeConstraint<Both>(MakeConstraint<Exists>(kEmptyStringAttrName),
                                            MakeConstraint<Exists>(kDoubleAttrName));
     auto repr = constraint.GetRepresentation();
     EXPECT_TRUE(constraint.Validate(m_attr_map));
@@ -216,8 +269,8 @@ TEST_F(ConstraintTest, Both)
 
 ConstraintTest::ConstraintTest()
 {
-  m_attr_map[kEmptyAttrName] = sup::dto::AnyValue{};
-  m_attr_map[kDoubleAttrName] = 1.0;
+  m_attr_map[kEmptyStringAttrName] = "\"\"";
+  m_attr_map[kDoubleAttrName] = "1.0";
 }
 
 ConstraintTest::~ConstraintTest() = default;

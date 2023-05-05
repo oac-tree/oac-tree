@@ -21,10 +21,43 @@
 
 #include <sup/sequencer/concrete_constraints.h>
 
+#include <sup/dto/anytype_helper.h>
+#include <sup/dto/json_value_parser.h>
+
 namespace sup
 {
 namespace sequencer
 {
+
+FixedType::FixedType(const std::string& attr_name, const sup::dto::AnyType& attr_type)
+  : m_attr_name{attr_name}
+  , m_attr_type{attr_type}
+{}
+
+FixedType::~FixedType() = default;
+
+FixedType* FixedType::Clone() const
+{
+  return new FixedType{m_attr_name, m_attr_type};
+}
+
+bool FixedType::Validate(const ValueMap& attr_map) const
+{
+  auto it = attr_map.find(m_attr_name);
+  if (it == attr_map.end())
+  {
+    return false;
+  }
+  auto val_str = it->second;
+  sup::dto::JSONAnyValueParser parser;
+  return parser.TypedParseString(m_attr_type, val_str);
+}
+
+std::string FixedType::GetRepresentation() const
+{
+  return "Type of (" + m_attr_name + ") must be (" +
+          sup::dto::AnyTypeToJSONString(m_attr_type) + ")";
+}
 
 Exists::Exists(const std::string& attr_name)
   : m_attr_name{attr_name}

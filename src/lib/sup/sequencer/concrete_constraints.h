@@ -30,6 +30,24 @@ namespace sequencer
 {
 
 /**
+ * Constraint that checks if attribute value can represent the correct type.
+*/
+class FixedType : public IConstraint
+{
+public:
+  explicit FixedType(const std::string& attr_name, const sup::dto::AnyType& attr_type);
+  ~FixedType();
+
+  FixedType* Clone() const override;
+
+  bool Validate(const ValueMap& attr_map) const override;
+  std::string GetRepresentation() const override;
+private:
+  const std::string m_attr_name;
+  const sup::dto::AnyType m_attr_type;
+};
+
+/**
  * Constraint that checks presence of mandatory attribute.
 */
 class Exists : public IConstraint

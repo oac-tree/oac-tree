@@ -32,7 +32,7 @@ namespace sup
 {
 namespace sequencer
 {
-using ValueMap = std::map<std::string, sup::dto::AnyValue>;
+using ValueMap = std::map<std::string, std::string>;
 
 const std::string kConstraintEmpty = "Empty constraint (always fails)";
 

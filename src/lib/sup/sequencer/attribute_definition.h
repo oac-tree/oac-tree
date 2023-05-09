@@ -39,14 +39,13 @@ namespace sequencer
 class AttributeDefinition
 {
 public:
-  AttributeDefinition(const std::string& name);
+  AttributeDefinition(const std::string& name, const sup::dto::AnyType& value_type);
   ~AttributeDefinition();
 
   std::string GetName() const;
   sup::dto::AnyType GetType() const;
   bool IsMandatory() const;
 
-  AttributeDefinition& SetType(const sup::dto::AnyType& value_type);
   AttributeDefinition& SetMandatory(bool mandatory = true);
 
 private:

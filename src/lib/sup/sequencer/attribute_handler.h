@@ -23,6 +23,7 @@
 #define SUP_SEQUENCER_ATTRIBUTE_HANDLER_H_
 
 #include <sup/sequencer/attribute_definition.h>
+#include <sup/sequencer/constraint.h>
 
 #include <sup/dto/anytype.h>
 
@@ -43,11 +44,21 @@ public:
   AttributeHandler();
   ~AttributeHandler();
 
-  AttributeDefinition& AddAttributeDefinition(const std::string& attr_name);
+  AttributeDefinition& AddAttributeDefinition(const std::string& attr_name,
+                                              const sup::dto::AnyType& value_type);
+
+  void AddConstraint(Constraint constraint);
+
+  const std::vector<AttributeDefinition>& GetAttributeDefinitions() const;
+
+  std::vector<std::string> FailedConstraints() const;
 
 private:
-  bool HasAttribute(const std::string& attr_name) const;
+  bool HasAttributeDefinition(const std::string& attr_name) const;
+  std::vector<Constraint> GetSimpleConstraints() const;
   std::vector<AttributeDefinition> m_attribute_definitions;
+  std::vector<Constraint> m_custom_constraints;
+  ValueMap m_attributes;
 };
 
 }  // namespace sequencer

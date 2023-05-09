@@ -25,9 +25,10 @@ namespace sup
 {
 namespace sequencer
 {
-AttributeDefinition::AttributeDefinition(const std::string& name)
+AttributeDefinition::AttributeDefinition(const std::string& name,
+                                         const sup::dto::AnyType& value_type)
   : m_name{name}
-  , m_value_type{}
+  , m_value_type{value_type}
   , m_is_mandatory{false}
 {}
 
@@ -46,12 +47,6 @@ sup::dto::AnyType AttributeDefinition::GetType() const
 bool AttributeDefinition::IsMandatory() const
 {
   return m_is_mandatory;
-}
-
-AttributeDefinition& AttributeDefinition::SetType(const sup::dto::AnyType& value_type)
-{
-  m_value_type = value_type;
-  return *this;
 }
 
 AttributeDefinition& AttributeDefinition::SetMandatory(bool mandatory)

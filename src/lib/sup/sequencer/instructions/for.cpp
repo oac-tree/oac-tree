@@ -69,10 +69,6 @@ ExecutionStatus ForInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& 
   sup::dto::AnyValue array;
   if (!GetValueFromAttributeName(*this, ws, ui, ARRAY_ATTR_NAME, array))
   {
-    std::string warning_message = InstructionWarningProlog(*this)
-                                  + "Failed to retriece the value of ["
-                                  + GetAttribute(ARRAY_ATTR_NAME) + "].";
-    ui.LogWarning(warning_message);
     return ExecutionStatus::FAILURE;
   }
   if (!dto::IsArrayValue(array))

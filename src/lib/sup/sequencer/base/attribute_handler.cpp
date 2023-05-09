@@ -21,6 +21,8 @@
 
 #include <sup/sequencer/attribute_handler.h>
 
+#include <algorithm>
+
 namespace sup
 {
 namespace sequencer
@@ -36,6 +38,15 @@ AttributeDefinition& AttributeHandler::AddAttributeDefinition(const std::string&
   // TODO: throw if an attribute with that name already exists
   m_attribute_definitions.emplace_back(attr_name);
   return m_attribute_definitions.back();
+}
+
+bool AttributeHandler::HasAttribute(const std::string& attr_name) const
+{
+  auto it = std::find_if(m_attribute_definitions.begin(), m_attribute_definitions.end(),
+                         [&attr_name](const AttributeDefinition& attr_def){
+                           return attr_def.GetName() == attr_name;
+                         });
+  return it != m_attribute_definitions.end();
 }
 
 }  // namespace sequencer

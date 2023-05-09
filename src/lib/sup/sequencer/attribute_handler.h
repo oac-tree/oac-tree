@@ -46,6 +46,7 @@ public:
   AttributeDefinition& AddAttributeDefinition(const std::string& attr_name);
 
 private:
+  bool HasAttribute(const std::string& attr_name) const;
   std::vector<AttributeDefinition> m_attribute_definitions;
 };
 

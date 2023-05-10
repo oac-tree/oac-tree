@@ -3,6 +3,7 @@ add_library(sequencer::sequencer ALIAS sup-sequencer-shared) # alias for build-t
 
 target_compile_features(sup-sequencer-shared PRIVATE cxx_std_11)
 
+add_subdirectory(attributes)
 add_subdirectory(base)
 add_subdirectory(instructions)
 add_subdirectory(parser)

@@ -51,14 +51,13 @@ public:
 
   const std::vector<AttributeDefinition>& GetAttributeDefinitions() const;
 
-  std::vector<std::string> FailedConstraints() const;
+  std::vector<std::string> FailedConstraints(const ValueMap& attr_map) const;
 
 private:
   bool HasAttributeDefinition(const std::string& attr_name) const;
   std::vector<Constraint> GetSimpleConstraints() const;
   std::vector<AttributeDefinition> m_attribute_definitions;
   std::vector<Constraint> m_custom_constraints;
-  ValueMap m_attributes;
 };
 
 }  // namespace sequencer

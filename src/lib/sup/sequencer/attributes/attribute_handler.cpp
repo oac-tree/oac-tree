@@ -40,7 +40,6 @@ namespace sequencer
 AttributeHandler::AttributeHandler()
   : m_attribute_definitions{}
   , m_custom_constraints{}
-  , m_attributes{}
 {}
 
 AttributeHandler::~AttributeHandler() = default;
@@ -68,12 +67,12 @@ const std::vector<AttributeDefinition>& AttributeHandler::GetAttributeDefinition
   return m_attribute_definitions;
 }
 
-std::vector<std::string> AttributeHandler::FailedConstraints() const
+std::vector<std::string> AttributeHandler::FailedConstraints(const ValueMap& attr_map) const
 {
   std::vector<std::string> failed_constraints;
   auto simple_constraints = GetSimpleConstraints();
-  RegisterFailedConstraints(simple_constraints, m_attributes, failed_constraints);
-  RegisterFailedConstraints(m_custom_constraints, m_attributes, failed_constraints);
+  RegisterFailedConstraints(simple_constraints, attr_map, failed_constraints);
+  RegisterFailedConstraints(m_custom_constraints, attr_map, failed_constraints);
   return failed_constraints;
 }
 

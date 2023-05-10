@@ -21,25 +21,15 @@
 
 #include <sup/sequencer/attribute_handler.h>
 
-#include <sup/sequencer/concrete_constraints.h>
-#include <sup/sequencer/exceptions.h>
-
 #include <algorithm>
-
-namespace
-{
-void RegisterFailedConstraints(const std::vector<sup::sequencer::Constraint>& constraints,
-                               const sup::sequencer::ValueMap& attr_map,
-                               std::vector<std::string>& failed_constraints);
-}  // unnamed namespace
 
 namespace sup
 {
 namespace sequencer
 {
 AttributeHandler::AttributeHandler()
-  : m_attribute_definitions{}
-  , m_custom_constraints{}
+  : m_attr_validator{}
+  , m_str_attributes{}
 {}
 
 AttributeHandler::~AttributeHandler() = default;
@@ -47,79 +37,38 @@ AttributeHandler::~AttributeHandler() = default;
 AttributeDefinition& AttributeHandler::AddAttributeDefinition(
   const std::string& attr_name, const sup::dto::AnyType& value_type)
 {
-  if (HasAttributeDefinition(attr_name))
-  {
-    std::string error_message = "AttributeHandler::AddAttributeDefinition(): trying to add already "
-      "existing attribute with name (" + attr_name + ")";
-    throw InvalidOperationException(error_message);
-  }
-  m_attribute_definitions.emplace_back(attr_name, value_type);
-  return m_attribute_definitions.back();
+  return m_attr_validator.AddAttributeDefinition(attr_name, value_type);
 }
 
 void AttributeHandler::AddConstraint(Constraint constraint)
 {
-  m_custom_constraints.push_back(std::move(constraint));
+  m_attr_validator.AddConstraint(std::move(constraint));
+}
+
+bool AttributeHandler::HasAttribute(const std::string& name) const
+{
+  auto it = std::find_if(m_str_attributes.begin(), m_str_attributes.end(),
+                         [&name](const StringAttribute& str_attr){
+                           return str_attr.first == name;
+                         });
+  return it != m_str_attributes.end();
+}
+
+bool AttributeHandler::AddAttribute(const std::string& name, const std::string& value)
+{
+  if (HasAttribute(name))
+  {
+    return false;
+  }
+  m_str_attributes.emplace_back(name, value);
+  return true;
 }
 
 const std::vector<AttributeDefinition>& AttributeHandler::GetAttributeDefinitions() const
 {
-  return m_attribute_definitions;
-}
-
-std::vector<std::string> AttributeHandler::FailedConstraints(const ValueMap& attr_map) const
-{
-  std::vector<std::string> failed_constraints;
-  auto simple_constraints = GetSimpleConstraints();
-  RegisterFailedConstraints(simple_constraints, attr_map, failed_constraints);
-  RegisterFailedConstraints(m_custom_constraints, attr_map, failed_constraints);
-  return failed_constraints;
-}
-
-bool AttributeHandler::HasAttributeDefinition(const std::string& attr_name) const
-{
-  auto it = std::find_if(m_attribute_definitions.begin(), m_attribute_definitions.end(),
-                         [&attr_name](const AttributeDefinition& attr_def){
-                           return attr_def.GetName() == attr_name;
-                         });
-  return it != m_attribute_definitions.end();
-}
-
-std::vector<Constraint> AttributeHandler::GetSimpleConstraints() const
-{
-  std::vector<Constraint> result;
-  for (const auto& attr_def : m_attribute_definitions)
-  {
-    auto attr_name = attr_def.GetName();
-    if (attr_def.IsMandatory())
-    {
-      result.push_back(MakeConstraint<Exists>(attr_name));
-    }
-    auto attr_type = attr_def.GetType();
-    if (!sup::dto::IsEmptyType(attr_type))
-    {
-      result.push_back(MakeConstraint<FixedType>(attr_name, attr_type));
-    }
-  }
-  return result;
+  return m_attr_validator.GetAttributeDefinitions();
 }
 
 }  // namespace sequencer
 
 }  // namespace sup
-
-namespace
-{
-void RegisterFailedConstraints(const std::vector<sup::sequencer::Constraint>& constraints,
-                               const sup::sequencer::ValueMap& attr_map,
-                               std::vector<std::string>& failed_constraints)
-{
-  for (const auto& constraint : constraints)
-  {
-    if (!constraint.Validate(attr_map))
-    {
-      failed_constraints.push_back(constraint.GetRepresentation());
-    }
-  }
-}
-}  // unnamed namespace

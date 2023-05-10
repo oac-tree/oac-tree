@@ -19,48 +19,49 @@
  * of the distribution package.
  ******************************************************************************/
 
-#ifndef SUP_SEQUENCER_ATTRIBUTE_HANDLER2_H_
-#define SUP_SEQUENCER_ATTRIBUTE_HANDLER2_H_
+#ifndef SUP_SEQUENCER_ATTRIBUTE_HANDLER_H_
+#define SUP_SEQUENCER_ATTRIBUTE_HANDLER_H_
 
-#include <sup/sequencer/attribute_validator.h>
+#include <sup/sequencer/attribute_definition.h>
+#include <sup/sequencer/constraint.h>
+
+#include <sup/dto/anytype.h>
+
+#include <map>
+#include <string>
+#include <vector>
 
 namespace sup
 {
 namespace sequencer
 {
-class ValueMapInfo;
-
-using StringAttribute = std::pair<std::string, std::string>;
-using StringAttributeList = std::vector<StringAttribute>;
 /**
  * @brief Class that handles the consistency of a set of attributes according to given constraints.
  */
-class AttributeHandler
+class AttributeValidator
 {
 public:
-  AttributeHandler();
-  ~AttributeHandler();
+  AttributeValidator();
+  ~AttributeValidator();
 
   AttributeDefinition& AddAttributeDefinition(const std::string& attr_name,
                                               const sup::dto::AnyType& value_type);
 
   void AddConstraint(Constraint constraint);
 
-  bool HasAttribute(const std::string& name) const;
-
-  bool AddAttribute(const std::string& name, const std::string& value);
-
   const std::vector<AttributeDefinition>& GetAttributeDefinitions() const;
 
-  ValueMapInfo CreateValueMap() const;
+  std::vector<std::string> FailedConstraints(const ValueMap& attr_map) const;
 
 private:
-  AttributeValidator m_attr_validator;
-  StringAttributeList m_str_attributes;
+  bool HasAttributeDefinition(const std::string& attr_name) const;
+  std::vector<Constraint> GetSimpleConstraints() const;
+  std::vector<AttributeDefinition> m_attribute_definitions;
+  std::vector<Constraint> m_custom_constraints;
 };
 
 }  // namespace sequencer
 
 }  // namespace sup
 
-#endif  // SUP_SEQUENCER_ATTRIBUTE_HANDLER2_H_
+#endif  // SUP_SEQUENCER_ATTRIBUTE_HANDLER_H_

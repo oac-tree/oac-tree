@@ -52,6 +52,7 @@ install(FILES
   scope_guard.h
   sequence_parser.h
   user_interface.h
+  value_map_info.h
   variable_registry.h
   variable.h
   workspace.h

@@ -27,12 +27,14 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <utility>
 
 namespace sup
 {
 namespace sequencer
 {
-using ValueMap = std::map<std::string, std::string>;
+using StringAttribute = std::pair<std::string, std::string>;
+using StringAttributeList = std::vector<StringAttribute>;
 
 const std::string kConstraintEmpty = "Empty constraint (always fails)";
 
@@ -43,7 +45,7 @@ public:
 
   virtual IConstraint* Clone() const = 0;
 
-  virtual bool Validate(const ValueMap& attr_map) const = 0;
+  virtual bool Validate(const StringAttributeList& attr_map) const = 0;
 
   virtual std::string GetRepresentation() const = 0;
 };
@@ -63,7 +65,7 @@ public:
   Constraint& operator=(const Constraint& other);
   Constraint& operator=(Constraint&& other);
 
-  bool Validate(const ValueMap& attr_map) const;
+  bool Validate(const StringAttributeList& attr_map) const;
 
   std::string GetRepresentation() const;
 

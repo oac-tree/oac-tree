@@ -28,10 +28,8 @@ namespace sup
 {
 namespace sequencer
 {
-class ValueMapInfo;
+struct ValueMapInfo;
 
-using StringAttribute = std::pair<std::string, std::string>;
-using StringAttributeList = std::vector<StringAttribute>;
 /**
  * @brief Class that handles the consistency of a set of attributes according to given constraints.
  */

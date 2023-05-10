@@ -35,6 +35,8 @@ namespace sup
 {
 namespace sequencer
 {
+struct ValueMapInfo;
+
 /**
  * @brief Class that handles the consistency of a set of attributes according to given constraints.
  */
@@ -51,11 +53,10 @@ public:
 
   const std::vector<AttributeDefinition>& GetAttributeDefinitions() const;
 
-  std::vector<std::string> FailedConstraints(const ValueMap& attr_map) const;
+  ValueMapInfo CreateValueMap(const StringAttributeList& attr_map) const;
 
 private:
   bool HasAttributeDefinition(const std::string& attr_name) const;
-  std::vector<Constraint> GetSimpleConstraints() const;
   std::vector<AttributeDefinition> m_attribute_definitions;
   std::vector<Constraint> m_custom_constraints;
 };

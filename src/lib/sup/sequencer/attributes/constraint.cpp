@@ -49,7 +49,7 @@ Constraint& Constraint::operator=(Constraint&& other)
   return *this;
 }
 
-bool Constraint::Validate(const ValueMap& attr_map) const
+bool Constraint::Validate(const StringAttributeList& attr_map) const
 {
   if (!m_impl)
   {

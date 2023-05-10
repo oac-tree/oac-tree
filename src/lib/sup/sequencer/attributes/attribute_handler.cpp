@@ -20,6 +20,7 @@
  ******************************************************************************/
 
 #include <sup/sequencer/attribute_handler.h>
+#include <sup/sequencer/value_map_info.h>
 
 #include <algorithm>
 
@@ -67,6 +68,11 @@ bool AttributeHandler::AddAttribute(const std::string& name, const std::string& 
 const std::vector<AttributeDefinition>& AttributeHandler::GetAttributeDefinitions() const
 {
   return m_attr_validator.GetAttributeDefinitions();
+}
+
+ValueMapInfo AttributeHandler::CreateValueMap() const
+{
+  return m_attr_validator.CreateValueMap(m_str_attributes);
 }
 
 }  // namespace sequencer

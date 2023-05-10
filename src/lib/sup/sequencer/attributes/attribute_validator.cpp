@@ -23,13 +23,18 @@
 
 #include <sup/sequencer/concrete_constraints.h>
 #include <sup/sequencer/exceptions.h>
+#include <sup/sequencer/value_map_info.h>
 
 #include <algorithm>
 
 namespace
 {
+std::vector<sup::sequencer::AttributeDefinition>::const_iterator FindAttributeDefinition(
+  const std::vector<sup::sequencer::AttributeDefinition>& attribute_definitions,
+  const std::string& attr_name);
+
 void RegisterFailedConstraints(const std::vector<sup::sequencer::Constraint>& constraints,
-                               const sup::sequencer::ValueMap& attr_map,
+                               const sup::sequencer::StringAttributeList& str_attributes,
                                std::vector<std::string>& failed_constraints);
 }  // unnamed namespace
 
@@ -67,41 +72,31 @@ const std::vector<AttributeDefinition>& AttributeValidator::GetAttributeDefiniti
   return m_attribute_definitions;
 }
 
-std::vector<std::string> AttributeValidator::FailedConstraints(const ValueMap& attr_map) const
+ValueMapInfo AttributeValidator::CreateValueMap(const StringAttributeList& str_attributes) const
 {
-  std::vector<std::string> failed_constraints;
-  auto simple_constraints = GetSimpleConstraints();
-  RegisterFailedConstraints(simple_constraints, attr_map, failed_constraints);
-  RegisterFailedConstraints(m_custom_constraints, attr_map, failed_constraints);
-  return failed_constraints;
+  ValueMapInfo result;
+  auto attr_defs = m_attribute_definitions;
+  for (const auto& str_attr : str_attributes)
+  {
+    // Definition found?
+    //   N: add (name, AnyValue(str_value)) to result.value_map;
+    //   Y: use type of definition to create the appropriate AnyValue value and
+    //      add (name, value) to result.value_map
+    //      if that failed, add failed type constraint representation to result.failed_constraints
+    //      either way, remove the definition from the local list (attr_defs)
+  }
+  // Does attr_defs still contain mandatary attributes? If so, append their representation to
+  // result.failed_constraints
+  // Validate all custom constraints and append their representation to result.failed_constraints if
+  // not successful
+  // return a ValueMapInfo (leave value_map empty if there are failed constraints)
+  return {};
 }
 
 bool AttributeValidator::HasAttributeDefinition(const std::string& attr_name) const
 {
-  auto it = std::find_if(m_attribute_definitions.begin(), m_attribute_definitions.end(),
-                         [&attr_name](const AttributeDefinition& attr_def){
-                           return attr_def.GetName() == attr_name;
-                         });
+  auto it = FindAttributeDefinition(m_attribute_definitions, attr_name);
   return it != m_attribute_definitions.end();
-}
-
-std::vector<Constraint> AttributeValidator::GetSimpleConstraints() const
-{
-  std::vector<Constraint> result;
-  for (const auto& attr_def : m_attribute_definitions)
-  {
-    auto attr_name = attr_def.GetName();
-    if (attr_def.IsMandatory())
-    {
-      result.push_back(MakeConstraint<Exists>(attr_name));
-    }
-    auto attr_type = attr_def.GetType();
-    if (!sup::dto::IsEmptyType(attr_type))
-    {
-      result.push_back(MakeConstraint<FixedType>(attr_name, attr_type));
-    }
-  }
-  return result;
 }
 
 }  // namespace sequencer
@@ -110,13 +105,24 @@ std::vector<Constraint> AttributeValidator::GetSimpleConstraints() const
 
 namespace
 {
+std::vector<sup::sequencer::AttributeDefinition>::const_iterator FindAttributeDefinition(
+  const std::vector<sup::sequencer::AttributeDefinition>& attribute_definitions,
+  const std::string& attr_name)
+{
+  auto predicate = [&attr_name](const sup::sequencer::AttributeDefinition& attr_def)
+                   {
+                     return attr_def.GetName() == attr_name;
+                   };
+  return std::find_if(attribute_definitions.begin(), attribute_definitions.end(), predicate);
+}
+
 void RegisterFailedConstraints(const std::vector<sup::sequencer::Constraint>& constraints,
-                               const sup::sequencer::ValueMap& attr_map,
+                               const sup::sequencer::StringAttributeList& str_attributes,
                                std::vector<std::string>& failed_constraints)
 {
   for (const auto& constraint : constraints)
   {
-    if (!constraint.Validate(attr_map))
+    if (!constraint.Validate(str_attributes))
     {
       failed_constraints.push_back(constraint.GetRepresentation());
     }

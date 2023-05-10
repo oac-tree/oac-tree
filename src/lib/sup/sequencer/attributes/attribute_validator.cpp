@@ -26,6 +26,8 @@
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/value_map_info.h>
 
+#include <sup/dto/anytype_helper.h>
+
 #include <algorithm>
 
 namespace
@@ -93,7 +95,9 @@ ValueMapInfo AttributeValidator::CreateValueMap(const StringAttributeList& str_a
     }
     else
     {
-      result.failed_constraints.emplace_back("TODO: format type constraint here!!!");
+      std::string failed_constraint = "Type of (" + str_attr.first + ") must be (" +
+          sup::dto::AnyTypeToJSONString(attr_type) + ")";
+      result.failed_constraints.push_back(failed_constraint);
     }
     attr_defs.erase(it);
   }
@@ -101,7 +105,8 @@ ValueMapInfo AttributeValidator::CreateValueMap(const StringAttributeList& str_a
   {
     if (attr_def.IsMandatory())
     {
-      result.failed_constraints.emplace_back("TODO: format type constraint here!!!");
+      result.failed_constraints.emplace_back(
+        MakeConstraint<Exists>(attr_def.GetName()).GetRepresentation());
     }
   }
   for (const auto& constraint : m_custom_constraints)

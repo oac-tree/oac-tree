@@ -44,9 +44,9 @@ public:
 
   void AddConstraint(Constraint constraint);
 
-  bool HasAttribute(const std::string& name) const;
+  bool HasStringAttribute(const std::string& name) const;
 
-  bool AddAttribute(const std::string& name, const std::string& value);
+  bool AddStringAttribute(const std::string& name, const std::string& value);
 
   const std::vector<AttributeDefinition>& GetAttributeDefinitions() const;
 

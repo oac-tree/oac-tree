@@ -21,6 +21,7 @@
 
 #include <sup/sequencer/attribute_validator.h>
 
+#include <sup/sequencer/attribute_utils.h>
 #include <sup/sequencer/concrete_constraints.h>
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/value_map_info.h>
@@ -78,19 +79,43 @@ ValueMapInfo AttributeValidator::CreateValueMap(const StringAttributeList& str_a
   auto attr_defs = m_attribute_definitions;
   for (const auto& str_attr : str_attributes)
   {
-    // Definition found?
-    //   N: add (name, AnyValue(str_value)) to result.value_map;
-    //   Y: use type of definition to create the appropriate AnyValue value and
-    //      add (name, value) to result.value_map
-    //      if that failed, add failed type constraint representation to result.failed_constraints
-    //      either way, remove the definition from the local list (attr_defs)
+    auto it = FindAttributeDefinition(attr_defs, str_attr.first);
+    if (it == attr_defs.end())
+    {
+      result.value_map.emplace(str_attr.first, sup::dto::AnyValue(str_attr.second));
+      continue;
+    }
+    auto attr_type = it->GetType();
+    auto parsed = utils::ParseAttributeString(attr_type, str_attr.second);
+    if (parsed.first)
+    {
+      result.value_map.emplace(str_attr.first, parsed.second);
+    }
+    else
+    {
+      result.failed_constraints.emplace_back("TODO: format type constraint here!!!");
+    }
+    attr_defs.erase(it);
   }
-  // Does attr_defs still contain mandatary attributes? If so, append their representation to
-  // result.failed_constraints
-  // Validate all custom constraints and append their representation to result.failed_constraints if
-  // not successful
-  // return a ValueMapInfo (leave value_map empty if there are failed constraints)
-  return {};
+  for (const auto& attr_def : attr_defs)
+  {
+    if (attr_def.IsMandatory())
+    {
+      result.failed_constraints.emplace_back("TODO: format type constraint here!!!");
+    }
+  }
+  for (const auto& constraint : m_custom_constraints)
+  {
+    if (!constraint.Validate(str_attributes))
+    {
+      result.failed_constraints.push_back(constraint.GetRepresentation());
+    }
+  }
+  if (result.failed_constraints.size() > 0)
+  {
+    result.value_map.clear();
+  }
+  return result;
 }
 
 bool AttributeValidator::HasAttributeDefinition(const std::string& attr_name) const

@@ -46,7 +46,7 @@ void AttributeHandler::AddConstraint(Constraint constraint)
   m_attr_validator.AddConstraint(std::move(constraint));
 }
 
-bool AttributeHandler::HasAttribute(const std::string& name) const
+bool AttributeHandler::HasStringAttribute(const std::string& name) const
 {
   auto it = std::find_if(m_str_attributes.begin(), m_str_attributes.end(),
                          [&name](const StringAttribute& str_attr){
@@ -55,9 +55,9 @@ bool AttributeHandler::HasAttribute(const std::string& name) const
   return it != m_str_attributes.end();
 }
 
-bool AttributeHandler::AddAttribute(const std::string& name, const std::string& value)
+bool AttributeHandler::AddStringAttribute(const std::string& name, const std::string& value)
 {
-  if (HasAttribute(name))
+  if (HasStringAttribute(name))
   {
     return false;
   }

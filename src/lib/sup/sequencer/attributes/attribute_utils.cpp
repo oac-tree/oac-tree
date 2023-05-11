@@ -21,6 +21,7 @@
 
 #include <sup/sequencer/attribute_utils.h>
 
+#include <sup/dto/anyvalue_helper.h>
 #include <sup/dto/json_value_parser.h>
 
 #include <algorithm>
@@ -34,13 +35,18 @@ const std::vector<std::string> kTrueStringList = {"true", "yes", "on"};
 using AttributeStringParser = std::pair<bool, sup::dto::AnyValue>(*)(const sup::dto::AnyType&,
                                                                      const std::string&);
 const std::map<sup::dto::TypeCode, AttributeStringParser>& GetAttributeStringParserMap();
-std::pair<bool, sup::dto::AnyValue> BooleanParserFunction(const sup::dto::AnyType& anytype,
-                                                         const std::string& repr);
-std::pair<bool, sup::dto::AnyValue> JSONParserFunction(const sup::dto::AnyType& anytype,
+std::pair<bool, sup::dto::AnyValue> BooleanStringParser(const sup::dto::AnyType& anytype,
+                                                        const std::string& repr);
+std::pair<bool, sup::dto::AnyValue> JSONStringParser(const sup::dto::AnyType& anytype,
+                                                     const std::string& repr);
+std::pair<bool, sup::dto::AnyValue> StringStringParser(const sup::dto::AnyType& anytype,
                                                        const std::string& repr);
-std::pair<bool, sup::dto::AnyValue> StringParserFunction(const sup::dto::AnyType& anytype,
-                                                         const std::string& repr);
 bool IsTrueStringRepresentation(std::string repr);
+using AttributeValueParser = std::string(*)(const sup::dto::AnyValue&);
+const std::map<sup::dto::TypeCode, AttributeValueParser>& GetAttributeValueParserMap();
+std::string BooleanValueParser(const sup::dto::AnyValue& value);
+std::string JSONValueParser(const sup::dto::AnyValue& value);
+std::string StringValueParser(const sup::dto::AnyValue& value);
 }  // unnamed namespace
 
 namespace sup
@@ -61,6 +67,17 @@ std::pair<bool, sup::dto::AnyValue> ParseAttributeString(const sup::dto::AnyType
   return it->second(anytype, repr);
 }
 
+std::pair<bool, std::string> CreateAttributeString(const sup::dto::AnyValue& value)
+{
+  const auto& parser_map = GetAttributeValueParserMap();
+  auto it = parser_map.find(value.GetTypeCode());
+  if (it == parser_map.end())
+  {
+    return { false, {} };
+  }
+  return { true, it->second(value) };
+}
+
 }  // namespace utils
 
 }  // namespace sequencer
@@ -72,25 +89,25 @@ namespace
 const std::map<sup::dto::TypeCode, AttributeStringParser>& GetAttributeStringParserMap()
 {
   static const std::map<sup::dto::TypeCode, AttributeStringParser> parser_map = {
-    { sup::dto::TypeCode::Bool, BooleanParserFunction },
-    { sup::dto::TypeCode::Char8, JSONParserFunction },
-    { sup::dto::TypeCode::Int8, JSONParserFunction },
-    { sup::dto::TypeCode::UInt8, JSONParserFunction },
-    { sup::dto::TypeCode::Int16, JSONParserFunction },
-    { sup::dto::TypeCode::UInt16, JSONParserFunction },
-    { sup::dto::TypeCode::Int32, JSONParserFunction },
-    { sup::dto::TypeCode::UInt32, JSONParserFunction },
-    { sup::dto::TypeCode::Int64, JSONParserFunction },
-    { sup::dto::TypeCode::UInt64, JSONParserFunction },
-    { sup::dto::TypeCode::Float32, JSONParserFunction },
-    { sup::dto::TypeCode::Float64, JSONParserFunction },
-    { sup::dto::TypeCode::String, StringParserFunction }
+    { sup::dto::TypeCode::Bool, BooleanStringParser },
+    { sup::dto::TypeCode::Char8, JSONStringParser },
+    { sup::dto::TypeCode::Int8, JSONStringParser },
+    { sup::dto::TypeCode::UInt8, JSONStringParser },
+    { sup::dto::TypeCode::Int16, JSONStringParser },
+    { sup::dto::TypeCode::UInt16, JSONStringParser },
+    { sup::dto::TypeCode::Int32, JSONStringParser },
+    { sup::dto::TypeCode::UInt32, JSONStringParser },
+    { sup::dto::TypeCode::Int64, JSONStringParser },
+    { sup::dto::TypeCode::UInt64, JSONStringParser },
+    { sup::dto::TypeCode::Float32, JSONStringParser },
+    { sup::dto::TypeCode::Float64, JSONStringParser },
+    { sup::dto::TypeCode::String, StringStringParser }
   };
   return parser_map;
 }
 
-std::pair<bool, sup::dto::AnyValue> BooleanParserFunction(const sup::dto::AnyType& anytype,
-                                                         const std::string& repr)
+std::pair<bool, sup::dto::AnyValue> BooleanStringParser(const sup::dto::AnyType& anytype,
+                                                        const std::string& repr)
 {
   if (IsTrueStringRepresentation(repr))
   {
@@ -99,8 +116,8 @@ std::pair<bool, sup::dto::AnyValue> BooleanParserFunction(const sup::dto::AnyTyp
   return { true, { sup::dto::BooleanType, false }};
 }
 
-std::pair<bool, sup::dto::AnyValue> JSONParserFunction(const sup::dto::AnyType& anytype,
-                                                       const std::string& repr)
+std::pair<bool, sup::dto::AnyValue> JSONStringParser(const sup::dto::AnyType& anytype,
+                                                     const std::string& repr)
 {
   sup::dto::JSONAnyValueParser parser;
   if (!parser.TypedParseString(anytype, repr))
@@ -110,8 +127,8 @@ std::pair<bool, sup::dto::AnyValue> JSONParserFunction(const sup::dto::AnyType& 
   return { true, parser.MoveAnyValue() };
 }
 
-std::pair<bool, sup::dto::AnyValue> StringParserFunction(const sup::dto::AnyType& anytype,
-                                                         const std::string& repr)
+std::pair<bool, sup::dto::AnyValue> StringStringParser(const sup::dto::AnyType& anytype,
+                                                       const std::string& repr)
 {
   (void)anytype;
   return { true, { sup::dto::StringType, repr }};
@@ -123,6 +140,45 @@ bool IsTrueStringRepresentation(std::string repr)
                  [](unsigned char c){ return std::tolower(c); });
   auto it = std::find(kTrueStringList.begin(), kTrueStringList.end(), repr);
   return it != kTrueStringList.end();
+}
+
+const std::map<sup::dto::TypeCode, AttributeValueParser>& GetAttributeValueParserMap()
+{
+  static const std::map<sup::dto::TypeCode, AttributeValueParser> parser_map = {
+    { sup::dto::TypeCode::Bool, BooleanValueParser },
+    { sup::dto::TypeCode::Char8, JSONValueParser },
+    { sup::dto::TypeCode::Int8, JSONValueParser },
+    { sup::dto::TypeCode::UInt8, JSONValueParser },
+    { sup::dto::TypeCode::Int16, JSONValueParser },
+    { sup::dto::TypeCode::UInt16, JSONValueParser },
+    { sup::dto::TypeCode::Int32, JSONValueParser },
+    { sup::dto::TypeCode::UInt32, JSONValueParser },
+    { sup::dto::TypeCode::Int64, JSONValueParser },
+    { sup::dto::TypeCode::UInt64, JSONValueParser },
+    { sup::dto::TypeCode::Float32, JSONValueParser },
+    { sup::dto::TypeCode::Float64, JSONValueParser },
+    { sup::dto::TypeCode::String, StringValueParser }
+  };
+  return parser_map;
+}
+
+std::string BooleanValueParser(const sup::dto::AnyValue& value)
+{
+  if (value.As<sup::dto::boolean>())
+  {
+    return "true";
+  }
+  return "false";
+}
+
+std::string JSONValueParser(const sup::dto::AnyValue& value)
+{
+  return sup::dto::ValuesToJSONString(value);
+}
+
+std::string StringValueParser(const sup::dto::AnyValue& value)
+{
+  return value.As<std::string>();
 }
 
 }  // unnamed namespace

@@ -34,8 +34,17 @@ namespace sequencer
 {
 namespace utils
 {
+/**
+ * Parse an attribute string to an AnyValue with given type. The first element of the return
+ * value encodes success of failure.
+*/
 std::pair<bool, sup::dto::AnyValue> ParseAttributeString(const sup::dto::AnyType& anytype,
                                                          const std::string& repr);
+
+/**
+ * Create an attribute string from an AnyValue. This is the reverse of ParseAttributeString.
+*/
+std::pair<bool, std::string> CreateAttributeString(const sup::dto::AnyValue& value);
 }  // namespace utils
 
 }  // namespace sequencer

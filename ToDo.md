@@ -1,4 +1,5 @@
 # To do list
 
-* Instruction::PostInitialiseVariables: review necessity and/or document more
-* Add regression test for Listen bug that was fixed
+* Add unit tests for new attribute system
+* Move Instruction/Variable to new attribute system
+* Add special case of two attributes definining a single generic anyvalue

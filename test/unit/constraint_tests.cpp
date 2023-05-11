@@ -96,6 +96,59 @@ TEST_F(ConstraintTest, Exists)
   }
 }
 
+TEST_F(ConstraintTest, FixedType)
+{
+  {
+    // FixedType passes when the attribute in the given map can be parsed into the given type
+    auto constraint = MakeConstraint<FixedType>(kEmptyStringAttrName, sup::dto::StringType);
+    EXPECT_TRUE(constraint.Validate(m_attr_map));
+    EXPECT_FALSE(constraint.GetRepresentation().empty());
+  }
+  {
+    // FixedType passes when the attribute in the given map can be parsed into the given type
+    auto constraint = MakeConstraint<FixedType>(kDoubleAttrName, sup::dto::Float64Type);
+    EXPECT_TRUE(constraint.Validate(m_attr_map));
+    EXPECT_FALSE(constraint.GetRepresentation().empty());
+  }
+  {
+    // FixedType fails when the attribute is not present in the given map
+    auto constraint = MakeConstraint<FixedType>("does_not_exist", sup::dto::StringType);
+    EXPECT_FALSE(constraint.Validate(m_attr_map));
+    EXPECT_FALSE(constraint.GetRepresentation().empty());
+  }
+  {
+    // FixedType fails when the attribute in the given map can not be parsed into the given type
+    auto constraint = MakeConstraint<FixedType>(kEmptyStringAttrName, sup::dto::Float64Type);
+    EXPECT_FALSE(constraint.Validate(m_attr_map));
+    EXPECT_FALSE(constraint.GetRepresentation().empty());
+  }
+  {
+    // Copy
+    auto constraint = MakeConstraint<FixedType>(kDoubleAttrName, sup::dto::Float64Type);
+    auto repr = constraint.GetRepresentation();
+    Constraint copy_constructed{constraint};
+    EXPECT_EQ(copy_constructed.GetRepresentation(), repr);
+    auto copy_assigned = MakeConstraint<TestConstraint>(true);
+    copy_assigned = constraint;
+    EXPECT_EQ(copy_constructed.GetRepresentation(), repr);
+  }
+  {
+    // Move
+    auto constraint = MakeConstraint<FixedType>(kDoubleAttrName, sup::dto::Float64Type);
+    auto repr = constraint.GetRepresentation();
+    EXPECT_TRUE(constraint.Validate(m_attr_map));
+    Constraint move_constructed{std::move(constraint)};
+    // Move source always fails validation during construction
+    EXPECT_FALSE(constraint.Validate(m_attr_map));
+    EXPECT_EQ(move_constructed.GetRepresentation(), repr);
+    EXPECT_TRUE(move_constructed.Validate(m_attr_map));
+    auto move_assigned = MakeConstraint<TestConstraint>(true);
+    move_assigned = std::move(move_constructed);
+    EXPECT_EQ(move_assigned.GetRepresentation(), repr);
+    EXPECT_TRUE(move_assigned.Validate(m_attr_map));
+  }
+}
+
 TEST_F(ConstraintTest, Either)
 {
   {

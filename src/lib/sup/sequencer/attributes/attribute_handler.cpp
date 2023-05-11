@@ -21,6 +21,9 @@
 
 #include <sup/sequencer/attribute_handler.h>
 
+#include "attribute_validator.h"
+#include "value_map_info.h"
+
 #include <algorithm>
 
 namespace
@@ -36,8 +39,14 @@ namespace sup
 {
 namespace sequencer
 {
+struct AttributeHandler::AttributeHandlerImpl
+{
+  AttributeValidator attr_validator;
+  ValueMapInfo value_map_info;
+};
+
 AttributeHandler::AttributeHandler()
-  : m_attr_validator{}
+  : m_impl{new AttributeHandlerImpl{}}
   , m_str_attributes{}
 {}
 
@@ -46,17 +55,17 @@ AttributeHandler::~AttributeHandler() = default;
 AttributeDefinition& AttributeHandler::AddAttributeDefinition(
   const std::string& attr_name, const sup::dto::AnyType& value_type)
 {
-  return m_attr_validator.AddAttributeDefinition(attr_name, value_type);
+  return m_impl->attr_validator.AddAttributeDefinition(attr_name, value_type);
 }
 
 const std::vector<AttributeDefinition>& AttributeHandler::GetAttributeDefinitions() const
 {
-  return m_attr_validator.GetAttributeDefinitions();
+  return m_impl->attr_validator.GetAttributeDefinitions();
 }
 
 void AttributeHandler::AddConstraint(Constraint constraint)
 {
-  m_attr_validator.AddConstraint(std::move(constraint));
+  m_impl->attr_validator.AddConstraint(std::move(constraint));
 }
 
 bool AttributeHandler::HasStringAttribute(const std::string& name) const
@@ -90,19 +99,19 @@ void AttributeHandler::SetStringAttribute(const std::string& name, const std::st
 
 bool AttributeHandler::InitValueMap()
 {
-  m_value_map_info = m_attr_validator.CreateValueMap(m_str_attributes);
-  return m_value_map_info.failed_constraints.empty();
+  m_impl->value_map_info = m_impl->attr_validator.CreateValueMap(m_str_attributes);
+  return m_impl->value_map_info.failed_constraints.empty();
 }
 
 std::vector<std::string> AttributeHandler::GetFailedConstraints() const
 {
-  return m_value_map_info.failed_constraints;
+  return m_impl->value_map_info.failed_constraints;
 }
 
 sup::dto::AnyValue AttributeHandler::GetValue(const std::string& name) const
 {
-  auto it = m_value_map_info.value_map.find(name);
-  if (it == m_value_map_info.value_map.end())
+  auto it = m_impl->value_map_info.value_map.find(name);
+  if (it == m_impl->value_map_info.value_map.end())
   {
     return {};
   }

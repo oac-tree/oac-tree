@@ -19,12 +19,12 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <sup/sequencer/attribute_validator.h>
+#include "attribute_validator.h"
+#include "value_map_info.h"
 
 #include <sup/sequencer/attribute_utils.h>
 #include <sup/sequencer/concrete_constraints.h>
 #include <sup/sequencer/exceptions.h>
-#include <sup/sequencer/value_map_info.h>
 
 #include <algorithm>
 

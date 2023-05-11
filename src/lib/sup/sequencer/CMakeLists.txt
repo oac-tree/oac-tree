@@ -36,7 +36,6 @@ install(FILES
   attribute_definition.h
   attribute_handler.h
   attribute_map.h
-  attribute_validator.h
   attribute_utils.h
   constants.h
   constraint.h
@@ -52,7 +51,6 @@ install(FILES
   scope_guard.h
   sequence_parser.h
   user_interface.h
-  value_map_info.h
   variable_registry.h
   variable.h
   workspace.h

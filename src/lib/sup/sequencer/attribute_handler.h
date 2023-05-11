@@ -19,11 +19,13 @@
  * of the distribution package.
  ******************************************************************************/
 
-#ifndef SUP_SEQUENCER_ATTRIBUTE_HANDLER2_H_
-#define SUP_SEQUENCER_ATTRIBUTE_HANDLER2_H_
+#ifndef SUP_SEQUENCER_ATTRIBUTE_HANDLER_H_
+#define SUP_SEQUENCER_ATTRIBUTE_HANDLER_H_
 
-#include <sup/sequencer/attribute_validator.h>
-#include <sup/sequencer/value_map_info.h>
+#include <sup/sequencer/attribute_definition.h>
+#include <sup/sequencer/constraint.h>
+
+#include <memory>
 
 namespace sup
 {
@@ -58,13 +60,13 @@ public:
   sup::dto::AnyValue GetValue(const std::string& name) const;
 
 private:
-  AttributeValidator m_attr_validator;
+  struct AttributeHandlerImpl;
+  std::unique_ptr<AttributeHandlerImpl> m_impl;
   StringAttributeList m_str_attributes;
-  ValueMapInfo m_value_map_info;
 };
 
 }  // namespace sequencer
 
 }  // namespace sup
 
-#endif  // SUP_SEQUENCER_ATTRIBUTE_HANDLER2_H_
+#endif  // SUP_SEQUENCER_ATTRIBUTE_HANDLER_H_

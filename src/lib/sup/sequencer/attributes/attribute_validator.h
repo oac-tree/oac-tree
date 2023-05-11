@@ -19,8 +19,8 @@
  * of the distribution package.
  ******************************************************************************/
 
-#ifndef SUP_SEQUENCER_ATTRIBUTE_HANDLER_H_
-#define SUP_SEQUENCER_ATTRIBUTE_HANDLER_H_
+#ifndef SUP_SEQUENCER_ATTRIBUTE_VALIDATOR_H_
+#define SUP_SEQUENCER_ATTRIBUTE_VALIDATOR_H_
 
 #include <sup/sequencer/attribute_definition.h>
 #include <sup/sequencer/constraint.h>
@@ -65,4 +65,4 @@ private:
 
 }  // namespace sup
 
-#endif  // SUP_SEQUENCER_ATTRIBUTE_HANDLER_H_
+#endif  // SUP_SEQUENCER_ATTRIBUTE_VALIDATOR_H_

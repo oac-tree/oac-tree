@@ -20,9 +20,17 @@
  ******************************************************************************/
 
 #include <sup/sequencer/attribute_handler.h>
-#include <sup/sequencer/value_map_info.h>
 
 #include <algorithm>
+
+namespace
+{
+using sup::sequencer::StringAttributeList;
+StringAttributeList::iterator FindStringAttribute(StringAttributeList& str_attributes,
+                                                  const std::string& attr_name);
+StringAttributeList::const_iterator FindStringAttribute(const StringAttributeList& str_attributes,
+                                                        const std::string& attr_name);
+}  // unnamed namespace
 
 namespace sup
 {
@@ -41,6 +49,11 @@ AttributeDefinition& AttributeHandler::AddAttributeDefinition(
   return m_attr_validator.AddAttributeDefinition(attr_name, value_type);
 }
 
+const std::vector<AttributeDefinition>& AttributeHandler::GetAttributeDefinitions() const
+{
+  return m_attr_validator.GetAttributeDefinitions();
+}
+
 void AttributeHandler::AddConstraint(Constraint constraint)
 {
   m_attr_validator.AddConstraint(std::move(constraint));
@@ -48,10 +61,7 @@ void AttributeHandler::AddConstraint(Constraint constraint)
 
 bool AttributeHandler::HasStringAttribute(const std::string& name) const
 {
-  auto it = std::find_if(m_str_attributes.begin(), m_str_attributes.end(),
-                         [&name](const StringAttribute& str_attr){
-                           return str_attr.first == name;
-                         });
+  auto it = FindStringAttribute(m_str_attributes, name);
   return it != m_str_attributes.end();
 }
 
@@ -65,16 +75,69 @@ bool AttributeHandler::AddStringAttribute(const std::string& name, const std::st
   return true;
 }
 
-const std::vector<AttributeDefinition>& AttributeHandler::GetAttributeDefinitions() const
+void AttributeHandler::SetStringAttribute(const std::string& name, const std::string& value)
 {
-  return m_attr_validator.GetAttributeDefinitions();
+  auto it = FindStringAttribute(m_str_attributes, name);
+  if (it != m_str_attributes.end())
+  {
+    it->second = value;
+  }
+  else
+  {
+    m_str_attributes.emplace_back(name, value);
+  }
 }
 
-ValueMapInfo AttributeHandler::CreateValueMap() const
+bool AttributeHandler::InitValueMap()
 {
-  return m_attr_validator.CreateValueMap(m_str_attributes);
+  m_value_map_info = m_attr_validator.CreateValueMap(m_str_attributes);
+  return m_value_map_info.failed_constraints.empty();
+}
+
+std::vector<std::string> AttributeHandler::GetFailedConstraints() const
+{
+  return m_value_map_info.failed_constraints;
+}
+
+sup::dto::AnyValue AttributeHandler::GetValue(const std::string& name) const
+{
+  auto it = m_value_map_info.value_map.find(name);
+  if (it == m_value_map_info.value_map.end())
+  {
+    return {};
+  }
+  return it->second;
 }
 
 }  // namespace sequencer
 
 }  // namespace sup
+
+namespace
+{
+using sup::sequencer::StringAttribute;
+
+class StringAttributeNameMatcher
+{
+public:
+  StringAttributeNameMatcher(std::string name) : m_name{std::move(name)} {}
+  ~StringAttributeNameMatcher() = default;
+  bool operator()(const StringAttribute& str_attr) { return str_attr.first == m_name; }
+private:
+  const std::string m_name;
+};
+
+StringAttributeList::iterator FindStringAttribute(StringAttributeList& str_attributes,
+                                                  const std::string& attr_name)
+{
+  auto predicate = StringAttributeNameMatcher(attr_name);
+  return std::find_if(str_attributes.begin(), str_attributes.end(), predicate);
+}
+
+StringAttributeList::const_iterator FindStringAttribute(const StringAttributeList& str_attributes,
+                                                        const std::string& attr_name)
+{
+  auto predicate = StringAttributeNameMatcher(attr_name);
+  return std::find_if(str_attributes.begin(), str_attributes.end(), predicate);
+}
+}  // unnamed namespace

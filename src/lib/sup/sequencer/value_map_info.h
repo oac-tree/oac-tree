@@ -39,7 +39,6 @@ namespace sequencer
  */
 struct ValueMapInfo
 {
-  bool result;
   std::vector<std::string> failed_constraints;
   std::map<std::string, sup::dto::AnyValue> value_map;
 };

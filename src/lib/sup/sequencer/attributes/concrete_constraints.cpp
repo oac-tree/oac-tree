@@ -57,6 +57,38 @@ std::string Exists::GetRepresentation() const
   return "Exists(" + m_attr_name + ")";
 }
 
+FixedType::FixedType(const std::string& attr_name, const sup::dto::AnyType& attr_type)
+  : m_attr_name{attr_name}
+  , m_attr_type{attr_type}
+{}
+
+FixedType::~FixedType() = default;
+
+FixedType* FixedType::Clone() const
+{
+  return new FixedType{m_attr_name, m_attr_type};
+}
+
+bool FixedType::Validate(const StringAttributeList& attr_map) const
+{
+  auto it = std::find_if(attr_map.begin(), attr_map.end(),
+                         [this](const StringAttribute& str_attr) {
+                           return str_attr.first == m_attr_name;
+                         });
+  if (it == attr_map.end())
+  {
+    return false;
+  }
+  auto val_str = it->second;
+  return utils::ParseAttributeString(m_attr_type, val_str).first;
+}
+
+std::string FixedType::GetRepresentation() const
+{
+  return "Type of (" + m_attr_name + ") must be (" +
+          sup::dto::AnyTypeToJSONString(m_attr_type) + ")";
+}
+
 Either::Either(Constraint&& left, Constraint&& right)
   : m_left{std::move(left)}
   , m_right{std::move(right)}

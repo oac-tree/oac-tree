@@ -26,19 +26,29 @@
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/value_map_info.h>
 
-#include <sup/dto/anytype_helper.h>
-
 #include <algorithm>
 
 namespace
 {
-std::vector<sup::sequencer::AttributeDefinition>::const_iterator FindAttributeDefinition(
-  const std::vector<sup::sequencer::AttributeDefinition>& attribute_definitions,
+using sup::sequencer::AttributeDefinition;
+using sup::sequencer::StringAttribute;
+using sup::sequencer::StringAttributeList;
+using sup::sequencer::ValueMapInfo;
+using sup::sequencer::Constraint;
+std::vector<AttributeDefinition>::const_iterator FindAttributeDefinition(
+  const std::vector<AttributeDefinition>& attribute_definitions,
   const std::string& attr_name);
 
-void RegisterFailedConstraints(const std::vector<sup::sequencer::Constraint>& constraints,
-                               const sup::sequencer::StringAttributeList& str_attributes,
-                               std::vector<std::string>& failed_constraints);
+void CreateValueEntryFromStringAttribute(const StringAttribute& str_attr,
+                                         std::vector<AttributeDefinition>& attr_defs,
+                                         ValueMapInfo& value_map_info);
+
+void HandleRemainingMandatoryAttributes(const std::vector<AttributeDefinition>& attr_defs,
+                                        ValueMapInfo& value_map_info);
+
+void ValidateCustomConstraints(const StringAttributeList& str_attributes,
+                               const std::vector<Constraint>& constraints,
+                               ValueMapInfo& value_map_info);
 }  // unnamed namespace
 
 namespace sup
@@ -81,41 +91,11 @@ ValueMapInfo AttributeValidator::CreateValueMap(const StringAttributeList& str_a
   auto attr_defs = m_attribute_definitions;
   for (const auto& str_attr : str_attributes)
   {
-    auto it = FindAttributeDefinition(attr_defs, str_attr.first);
-    if (it == attr_defs.end())
-    {
-      result.value_map.emplace(str_attr.first, sup::dto::AnyValue(str_attr.second));
-      continue;
-    }
-    auto attr_type = it->GetType();
-    auto parsed = utils::ParseAttributeString(attr_type, str_attr.second);
-    if (parsed.first)
-    {
-      result.value_map.emplace(str_attr.first, parsed.second);
-    }
-    else
-    {
-      std::string failed_constraint = "Type of (" + str_attr.first + ") must be (" +
-          sup::dto::AnyTypeToJSONString(attr_type) + ")";
-      result.failed_constraints.push_back(failed_constraint);
-    }
-    attr_defs.erase(it);
+    CreateValueEntryFromStringAttribute(str_attr, attr_defs, result);
   }
-  for (const auto& attr_def : attr_defs)
-  {
-    if (attr_def.IsMandatory())
-    {
-      result.failed_constraints.emplace_back(
-        MakeConstraint<Exists>(attr_def.GetName()).GetRepresentation());
-    }
-  }
-  for (const auto& constraint : m_custom_constraints)
-  {
-    if (!constraint.Validate(str_attributes))
-    {
-      result.failed_constraints.push_back(constraint.GetRepresentation());
-    }
-  }
+  HandleRemainingMandatoryAttributes(attr_defs, result);
+  ValidateCustomConstraints(str_attributes, m_custom_constraints, result);
+  // Clear value map when not all constraints were successfully validated:
   if (result.failed_constraints.size() > 0)
   {
     result.value_map.clear();
@@ -146,16 +126,56 @@ std::vector<sup::sequencer::AttributeDefinition>::const_iterator FindAttributeDe
   return std::find_if(attribute_definitions.begin(), attribute_definitions.end(), predicate);
 }
 
-void RegisterFailedConstraints(const std::vector<sup::sequencer::Constraint>& constraints,
-                               const sup::sequencer::StringAttributeList& str_attributes,
-                               std::vector<std::string>& failed_constraints)
+void CreateValueEntryFromStringAttribute(const StringAttribute& str_attr,
+                                         std::vector<AttributeDefinition>& attr_defs,
+                                         ValueMapInfo& value_map_info)
+{
+  using sup::sequencer::MakeConstraint;
+  auto it = FindAttributeDefinition(attr_defs, str_attr.first);
+  if (it == attr_defs.end())
+  {
+    value_map_info.value_map.emplace(str_attr.first, sup::dto::AnyValue(str_attr.second));
+    return;
+  }
+  auto attr_type = it->GetType();
+  auto parsed = sup::sequencer::utils::ParseAttributeString(attr_type, str_attr.second);
+  if (parsed.first)
+  {
+    value_map_info.value_map.emplace(str_attr.first, parsed.second);
+  }
+  else
+  {
+    value_map_info.failed_constraints.emplace_back(
+        MakeConstraint<sup::sequencer::FixedType>(str_attr.first, attr_type).GetRepresentation());
+  }
+  attr_defs.erase(it);
+}
+
+void HandleRemainingMandatoryAttributes(const std::vector<AttributeDefinition>& attr_defs,
+                                        ValueMapInfo& value_map_info)
+{
+  using sup::sequencer::MakeConstraint;
+  for (const auto& attr_def : attr_defs)
+  {
+    if (attr_def.IsMandatory())
+    {
+      value_map_info.failed_constraints.emplace_back(
+        MakeConstraint<sup::sequencer::Exists>(attr_def.GetName()).GetRepresentation());
+    }
+  }
+}
+
+void ValidateCustomConstraints(const StringAttributeList& str_attributes,
+                               const std::vector<Constraint>& constraints,
+                               ValueMapInfo& value_map_info)
 {
   for (const auto& constraint : constraints)
   {
     if (!constraint.Validate(str_attributes))
     {
-      failed_constraints.push_back(constraint.GetRepresentation());
+      value_map_info.failed_constraints.push_back(constraint.GetRepresentation());
     }
   }
 }
+
 }  // unnamed namespace

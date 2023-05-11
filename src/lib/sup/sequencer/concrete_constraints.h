@@ -47,6 +47,24 @@ private:
 };
 
 /**
+ * Constraint that checks if attribute value can represent the correct type.
+*/
+class FixedType : public IConstraint
+{
+public:
+  explicit FixedType(const std::string& attr_name, const sup::dto::AnyType& attr_type);
+  ~FixedType();
+
+  FixedType* Clone() const override;
+
+  bool Validate(const StringAttributeList& attr_map) const override;
+  std::string GetRepresentation() const override;
+private:
+  const std::string m_attr_name;
+  const sup::dto::AnyType m_attr_type;
+};
+
+/**
  * Composite constraint that checks if either the left or the right constraint is satisfied.
  * This is equivalent to an 'XOR' operation.
 */

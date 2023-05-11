@@ -23,13 +23,12 @@
 #define SUP_SEQUENCER_ATTRIBUTE_HANDLER2_H_
 
 #include <sup/sequencer/attribute_validator.h>
+#include <sup/sequencer/value_map_info.h>
 
 namespace sup
 {
 namespace sequencer
 {
-struct ValueMapInfo;
-
 /**
  * @brief Class that handles the consistency of a set of attributes according to given constraints.
  */
@@ -42,19 +41,26 @@ public:
   AttributeDefinition& AddAttributeDefinition(const std::string& attr_name,
                                               const sup::dto::AnyType& value_type);
 
+  const std::vector<AttributeDefinition>& GetAttributeDefinitions() const;
+
   void AddConstraint(Constraint constraint);
 
   bool HasStringAttribute(const std::string& name) const;
 
   bool AddStringAttribute(const std::string& name, const std::string& value);
 
-  const std::vector<AttributeDefinition>& GetAttributeDefinitions() const;
+  void SetStringAttribute(const std::string& name, const std::string& value);
 
-  ValueMapInfo CreateValueMap() const;
+  bool InitValueMap();
+
+  std::vector<std::string> GetFailedConstraints() const;
+
+  sup::dto::AnyValue GetValue(const std::string& name) const;
 
 private:
   AttributeValidator m_attr_validator;
   StringAttributeList m_str_attributes;
+  ValueMapInfo m_value_map_info;
 };
 
 }  // namespace sequencer

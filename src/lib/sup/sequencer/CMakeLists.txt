@@ -37,6 +37,7 @@ install(FILES
   attribute_handler.h
   attribute_map.h
   attribute_utils.h
+  concrete_constraints.h
   constants.h
   constraint.h
   exceptions.h

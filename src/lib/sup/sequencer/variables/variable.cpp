@@ -249,27 +249,6 @@ sup::dto::AnyValue ParseAnyValueAttributePair(const Variable& variable,
   return sup::dto::AnyValue(parsed_type);
 }
 
-void CheckMandatoryAttribute(const Variable& variable, const std::string& attr_name)
-{
-  if (!variable.HasAttribute(attr_name))
-  {
-    std::string error_message = VariableSetupExceptionProlog(variable) +
-      "missing mandatory attribute [" + attr_name + "]";
-    throw VariableSetupException(error_message);
-  }
-}
-
-void CheckMandatoryNonEmptyAttribute(const Variable& variable, const std::string& attr_name)
-{
-  CheckMandatoryAttribute(variable, attr_name);
-  if (variable.GetAttributeString(attr_name).empty())
-  {
-    std::string error_message = VariableSetupExceptionProlog(variable) +
-      "mandatory attribute [" + attr_name + "] is empty";
-    throw VariableSetupException(error_message);
-  }
-}
-
 }  // namespace sequencer
 
 }  // namespace sup

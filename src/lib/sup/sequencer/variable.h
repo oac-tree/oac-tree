@@ -345,27 +345,6 @@ sup::dto::AnyValue ParseAnyValueAttributePair(const Variable& variable,
                                               const std::string& value_attr_name,
                                               const sup::dto::AnyTypeRegistry& registry);
 
-/**
- * @brief Check if the variable has an attribute with the given name and throw if not.
- *
- * @param variable Variable to check.
- * @param attr_name Mandatory attribute name.
- *
- * @throw VariableSetupException when the variable does not contain the attribute.
- */
-void CheckMandatoryAttribute(const Variable& variable, const std::string& attr_name);
-
-/**
- * @brief Check if the variable has a non-empty attribute with the given name and throw if not.
- *
- * @param variable Variable to check.
- * @param attr_name Mandatory attribute name.
- *
- * @throw VariableSetupException when the variable does not contain the attribute or it is
- * empty.
- */
-void CheckMandatoryNonEmptyAttribute(const Variable& variable, const std::string& attr_name);
-
 }  // namespace sequencer
 
 }  // namespace sup

@@ -21,6 +21,7 @@
 
 #include "file_variable.h"
 
+#include <sup/sequencer/concrete_constraints.h>
 #include <sup/sequencer/generic_utils.h>
 
 #include <sup/dto/anyvalue_helper.h>
@@ -43,6 +44,7 @@ FileVariable::FileVariable()
 {
   AddAttributeDefinition(FILENAME_ATTR_NAME, sup::dto::StringType).SetMandatory();
   AddAttributeDefinition(PRETTY_JSON_ATTR_NAME, sup::dto::BooleanType);
+  AddConstraint(MakeConstraint<NonEmpty>(FILENAME_ATTR_NAME));
 }
 
 FileVariable::~FileVariable() = default;

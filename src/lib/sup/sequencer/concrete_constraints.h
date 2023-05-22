@@ -65,6 +65,23 @@ private:
 };
 
 /**
+ * Constraint that checks attribute is not empty.
+*/
+class NonEmpty : public IConstraint
+{
+public:
+  explicit NonEmpty(const std::string& attr_name);
+  ~NonEmpty();
+
+  NonEmpty* Clone() const override;
+
+  bool Validate(const StringAttributeList& attr_map) const override;
+  std::string GetRepresentation() const override;
+private:
+  const std::string m_attr_name;
+};
+
+/**
  * Composite constraint that checks if either the left or the right constraint is satisfied.
  * This is equivalent to an 'XOR' operation.
 */

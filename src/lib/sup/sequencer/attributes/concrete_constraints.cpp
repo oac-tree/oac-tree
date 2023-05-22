@@ -89,6 +89,31 @@ std::string FixedType::GetRepresentation() const
           sup::dto::AnyTypeToJSONString(m_attr_type) + ")";
 }
 
+NonEmpty::NonEmpty(const std::string& attr_name)
+  : m_attr_name{attr_name}
+{}
+
+NonEmpty::~NonEmpty() = default;
+
+NonEmpty* NonEmpty::Clone() const
+{
+  return new NonEmpty{m_attr_name};
+}
+
+bool NonEmpty::Validate(const StringAttributeList& attr_map) const
+{
+  auto it = std::find_if(attr_map.begin(), attr_map.end(),
+                         [this](const StringAttribute& str_attr) {
+                           return str_attr.first == m_attr_name;
+                         });
+  return it != attr_map.end() && !it->second.empty();
+}
+
+std::string NonEmpty::GetRepresentation() const
+{
+  return "NonEmpty(" + m_attr_name + ")";
+}
+
 Xor::Xor(Constraint&& left, Constraint&& right)
   : m_left{std::move(left)}
   , m_right{std::move(right)}

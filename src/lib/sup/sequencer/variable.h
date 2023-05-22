@@ -327,6 +327,25 @@ private:
 std::string VariableSetupExceptionProlog(const Variable& variable);
 
 /**
+ * @brief Construct an anyvalue from a set of attributes holding the json type and value
+ * representation.
+ *
+ * @param variable Variable to use.
+ * @param type_attr_name Attribute name for the json type.
+ * @param value_attr_name Attribute name for the json value.
+ * @param registry Type registry to use for parsing the type.
+ *
+ * @return AnyValue created from parsing the set of attributes. If the json type attribute is not
+ * present, returns empty. If the json value attribute is not present, returns a default constructed
+ * value from the type.
+ * @throws VariableSetupException when the parsing fails.
+ */
+sup::dto::AnyValue ParseAnyValueAttributePair(const Variable& variable,
+                                              const std::string& type_attr_name,
+                                              const std::string& value_attr_name,
+                                              const sup::dto::AnyTypeRegistry& registry);
+
+/**
  * @brief Check if the variable has an attribute with the given name and throw if not.
  *
  * @param variable Variable to check.

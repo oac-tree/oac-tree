@@ -27,8 +27,6 @@
 
 #include <sup/dto/anytype.h>
 #include <sup/dto/anyvalue.h>
-#include <sup/dto/json_type_parser.h>
-#include <sup/dto/json_value_parser.h>
 
 #include <memory>
 
@@ -80,38 +78,8 @@ bool LocalVariable::SetValueImpl(const sup::dto::AnyValue& value)
 
 void LocalVariable::SetupImpl(const sup::dto::AnyTypeRegistry& registry)
 {
-  m_value.reset(new sup::dto::AnyValue());
-
-  // empty AnyValue is allowed for setting
-  if (HasAttribute(JSON_TYPE))
-  {
-    auto type_str = GetAttributeValue<std::string>(JSON_TYPE);
-    sup::dto::JSONAnyTypeParser type_parser;
-    if (!type_parser.ParseString(type_str, &registry))
-    {
-      std::string error_message = VariableSetupExceptionProlog(*this) +
-        "could not parse attribute [" + JSON_TYPE + "] with value [" + type_str + "]";
-      throw VariableSetupException(error_message);
-    }
-    auto parsed_type = type_parser.MoveAnyType();
-    if (HasAttribute(JSON_VALUE))
-    {
-      auto val_str = GetAttributeValue<std::string>(JSON_VALUE);
-      sup::dto::JSONAnyValueParser value_parser;
-      if (!value_parser.TypedParseString(parsed_type, val_str))
-      {
-      std::string error_message = VariableSetupExceptionProlog(*this) +
-        "could not parse attribute [" + JSON_VALUE + "] with value [" + val_str +
-        "]";
-      throw VariableSetupException(error_message);
-      }
-      m_value.reset(new sup::dto::AnyValue(value_parser.MoveAnyValue()));
-    }
-    else
-    {
-      m_value.reset(new sup::dto::AnyValue(parsed_type));
-    }
-  }
+  auto parsed_value = ParseAnyValueAttributePair(*this, JSON_TYPE, JSON_VALUE, registry);
+  m_value.reset(new sup::dto::AnyValue{parsed_value});
 }
 
 void LocalVariable::ResetImpl()

@@ -25,6 +25,8 @@
 
 #include <sup/dto/anytype_registry.h>
 #include <sup/dto/anyvalue_helper.h>
+#include <sup/dto/json_type_parser.h>
+#include <sup/dto/json_value_parser.h>
 
 #include <chrono>
 #include <cmath>
@@ -210,6 +212,41 @@ std::string VariableSetupExceptionProlog(const Variable& variable)
   auto var_name = variable.GetName();
   auto var_type = variable.GetType();
   return "Setup of variable [" + var_name + "] of type <" + var_type + "> failed: ";
+}
+
+sup::dto::AnyValue ParseAnyValueAttributePair(const Variable& variable,
+                                              const std::string& type_attr_name,
+                                              const std::string& value_attr_name,
+                                              const sup::dto::AnyTypeRegistry& registry)
+{
+  if (!variable.HasAttribute(type_attr_name))
+  {
+    return {};
+  }
+  auto type_str = variable.GetAttributeValue<std::string>(type_attr_name);
+  sup::dto::JSONAnyTypeParser type_parser;
+  if (!type_parser.ParseString(type_str, &registry))
+  {
+    std::string error_message = VariableSetupExceptionProlog(variable) +
+      "could not parse attribute [" + type_attr_name + "] with value [" + type_str + "] to an "
+      "AnyType";
+    throw VariableSetupException(error_message);
+  }
+  auto parsed_type = type_parser.MoveAnyType();
+  if (variable.HasAttribute(value_attr_name))
+  {
+    auto val_str = variable.GetAttributeValue<std::string>(value_attr_name);
+    sup::dto::JSONAnyValueParser value_parser;
+    if (!value_parser.TypedParseString(parsed_type, val_str))
+    {
+    std::string error_message = VariableSetupExceptionProlog(variable) +
+      "could not parse attribute [" + value_attr_name + "] with value [" + val_str + "] to an "
+      "AnyValue";
+    throw VariableSetupException(error_message);
+    }
+    return value_parser.MoveAnyValue();
+  }
+  return sup::dto::AnyValue(parsed_type);
 }
 
 void CheckMandatoryAttribute(const Variable& variable, const std::string& attr_name)

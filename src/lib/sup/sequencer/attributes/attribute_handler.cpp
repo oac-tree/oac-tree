@@ -21,9 +21,6 @@
 
 #include <sup/sequencer/attribute_handler.h>
 
-#include <sup/dto/json_type_parser.h>
-#include <sup/dto/json_value_parser.h>
-
 #include "attribute_validator.h"
 #include "value_map_info.h"
 

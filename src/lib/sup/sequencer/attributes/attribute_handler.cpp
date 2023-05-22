@@ -97,6 +97,12 @@ void AttributeHandler::SetStringAttribute(const std::string& name, const std::st
   }
 }
 
+const StringAttributeList& AttributeHandler::GetStringAttributes() const
+{
+  return m_str_attributes;
+}
+
+
 bool AttributeHandler::InitValueMap()
 {
   m_impl->value_map_info = m_impl->attr_validator.CreateValueMap(m_str_attributes);
@@ -112,6 +118,17 @@ sup::dto::AnyValue AttributeHandler::GetValue(const std::string& name) const
 {
   auto it = m_impl->value_map_info.value_map.find(name);
   if (it == m_impl->value_map_info.value_map.end())
+  {
+    return {};
+  }
+  return it->second;
+}
+
+std::string GetStringAttributeValue(const StringAttributeList& str_attributes,
+                                    const std::string& attr_name)
+{
+  auto it = FindStringAttribute(str_attributes, attr_name);
+  if (it == str_attributes.end())
   {
     return {};
   }

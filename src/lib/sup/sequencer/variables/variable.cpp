@@ -42,6 +42,7 @@ namespace sequencer
 
 Variable::Variable(const std::string &type)
   : m_type{type}
+  , m_attribute_handler{}
   , m_setup_successful{false}
 {}
 
@@ -54,12 +55,12 @@ std::string Variable::GetType() const
 
 std::string Variable::GetName() const
 {
-  return GetAttribute(attributes::NAME_ATTRIBUTE);
+  return GetAttribute(attributes::kNameAttribute);
 }
 
 void Variable::SetName(const std::string &name)
 {
-  AddAttribute(attributes::NAME_ATTRIBUTE, name);
+  AddAttribute(attributes::kNameAttribute, name);
 }
 
 void Variable::Setup(const sup::dto::AnyTypeRegistry* registry)
@@ -141,34 +142,31 @@ void Variable::Reset()
 
 bool Variable::HasAttribute(const std::string &name) const
 {
-  return m_attributes.HasAttribute(name);
+  return m_attribute_handler.HasStringAttribute(name);
 }
 
 std::string Variable::GetAttribute(const std::string &name) const
 {
-  return m_attributes.GetAttribute(name);
+  return GetStringAttributeValue(m_attribute_handler.GetStringAttributes(), name);
 }
 
-AttributeMap Variable::GetAttributes() const
+const StringAttributeList& Variable::GetAttributes() const
 {
-  return m_attributes;
+  return m_attribute_handler.GetStringAttributes();
 }
 
 bool Variable::AddAttribute(const std::string &name, const std::string &value)
 {
-  std::lock_guard<std::mutex> lock(m_access_mutex);
-  bool status = m_attributes.AddAttribute(name, value);
-  return status;
+  return m_attribute_handler.AddStringAttribute(name, value);
 }
 
-bool Variable::AddAttributes(const AttributeMap& attributes)
+bool Variable::AddAttributes(const StringAttributeList& str_attributes)
 {
-  std::lock_guard<std::mutex> lock(m_access_mutex);
   bool status = true;
-  for (auto &attr : attributes)
+  for (auto &attr : str_attributes)
   {
     // Order in AND matters: add all attributes, even if previous adding failed.
-    status = m_attributes.AddAttribute(attr.first, attr.second) && status;
+    status = AddAttribute(attr.first, attr.second) && status;
   }
   return status;
 }

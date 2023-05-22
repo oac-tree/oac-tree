@@ -53,6 +53,8 @@ public:
 
   void SetStringAttribute(const std::string& name, const std::string& value);
 
+  const StringAttributeList& GetStringAttributes() const;
+
   bool InitValueMap();
 
   std::vector<std::string> GetFailedConstraints() const;
@@ -64,6 +66,9 @@ private:
   std::unique_ptr<AttributeHandlerImpl> m_impl;
   StringAttributeList m_str_attributes;
 };
+
+std::string GetStringAttributeValue(const StringAttributeList& str_attributes,
+                                    const std::string& attr_name);
 
 }  // namespace sequencer
 

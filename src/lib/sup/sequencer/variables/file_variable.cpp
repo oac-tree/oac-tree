@@ -21,6 +21,7 @@
 
 #include "file_variable.h"
 
+#include <sup/sequencer/attribute_map.h>
 #include <sup/sequencer/generic_utils.h>
 
 #include <sup/dto/anyvalue_helper.h>

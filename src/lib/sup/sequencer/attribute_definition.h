@@ -32,6 +32,10 @@ namespace sup
 {
 namespace sequencer
 {
+namespace attributes
+{
+const std::string kNameAttribute = "name";
+}
 
 /**
  * @brief Class that defines a specific attribute by name and type.

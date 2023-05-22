@@ -43,8 +43,8 @@ protected:
   LocalVariable bool_var;
   LocalVariable uint64_var;
   LocalVariable float32_var;
-  std::vector<Attribute> attr_partial;
-  std::vector<Attribute> attr_full;
+  StringAttributeList attr_partial;
+  StringAttributeList attr_full;
 };
 
 // Function declaration
@@ -75,16 +75,16 @@ TEST_F(LocalVariableTest, DefaultConstructed)
   // Test default constructed
   EXPECT_EQ(empty_var.GetType(), LocalVariable::Type);
   EXPECT_TRUE(empty_var.GetName().empty());
-  EXPECT_FALSE(empty_var.HasAttribute(attributes::NAME_ATTRIBUTE));
+  EXPECT_FALSE(empty_var.HasAttribute(attributes::kNameAttribute));
   EXPECT_FALSE(empty_var.IsAvailable());
   EXPECT_NO_THROW(empty_var.Setup());
   EXPECT_TRUE(empty_var.IsAvailable());
 
   // Test Get/SetName
   empty_var.SetName(EMPTY_VAR_NAME);
-  EXPECT_TRUE(empty_var.HasAttribute(attributes::NAME_ATTRIBUTE));
+  EXPECT_TRUE(empty_var.HasAttribute(attributes::kNameAttribute));
   EXPECT_EQ(empty_var.GetName(), EMPTY_VAR_NAME);
-  EXPECT_EQ(empty_var.GetName(), empty_var.GetAttribute(attributes::NAME_ATTRIBUTE));
+  EXPECT_EQ(empty_var.GetName(), empty_var.GetAttribute(attributes::kNameAttribute));
 
   // Test GetValue
   sup::dto::AnyValue any_value;
@@ -140,7 +140,7 @@ TEST_F(LocalVariableTest, AddAttribute)
 TEST_F(LocalVariableTest, AddAttributesPartial)
 {
   // Preconditions
-  EXPECT_FALSE(empty_var.HasAttribute(attributes::NAME_ATTRIBUTE));
+  EXPECT_FALSE(empty_var.HasAttribute(attributes::kNameAttribute));
   EXPECT_FALSE(empty_var.HasAttribute(LocalVariable::JSON_TYPE));
   sup::dto::AnyValue any_value;
   EXPECT_FALSE(empty_var.GetValue(any_value));
@@ -150,10 +150,10 @@ TEST_F(LocalVariableTest, AddAttributesPartial)
   EXPECT_NO_THROW(empty_var.Setup());
 
   // Post conditions
-  EXPECT_TRUE(empty_var.HasAttribute(attributes::NAME_ATTRIBUTE));
+  EXPECT_TRUE(empty_var.HasAttribute(attributes::kNameAttribute));
   EXPECT_TRUE(empty_var.HasAttribute(LocalVariable::JSON_TYPE));
   EXPECT_EQ(empty_var.GetName(), EMPTY_VAR_NAME);
-  EXPECT_EQ(empty_var.GetName(), empty_var.GetAttribute(attributes::NAME_ATTRIBUTE));
+  EXPECT_EQ(empty_var.GetName(), empty_var.GetAttribute(attributes::kNameAttribute));
   EXPECT_EQ(empty_var.GetAttribute(LocalVariable::JSON_TYPE), UINT64_TYPE);
   EXPECT_TRUE(empty_var.GetValue(any_value));  // zero initialized
   EXPECT_EQ(any_value, static_cast<sup::dto::uint64>(0));
@@ -168,7 +168,7 @@ TEST_F(LocalVariableTest, AddAttributesPartial)
 TEST_F(LocalVariableTest, AddAttributesFull)
 {
   // Preconditions
-  EXPECT_FALSE(empty_var.HasAttribute(attributes::NAME_ATTRIBUTE));
+  EXPECT_FALSE(empty_var.HasAttribute(attributes::kNameAttribute));
   EXPECT_FALSE(empty_var.HasAttribute(LocalVariable::JSON_TYPE));
   EXPECT_FALSE(empty_var.HasAttribute(LocalVariable::JSON_VALUE));
   EXPECT_NO_THROW(empty_var.Setup());
@@ -183,11 +183,11 @@ TEST_F(LocalVariableTest, AddAttributesFull)
   // EXPECT_EQ(empty_var.GetAttributes().GetAttributeNames(), GetFullAttributeListNames());
 
   // Post conditions
-  EXPECT_TRUE(empty_var.HasAttribute(attributes::NAME_ATTRIBUTE));
+  EXPECT_TRUE(empty_var.HasAttribute(attributes::kNameAttribute));
   EXPECT_TRUE(empty_var.HasAttribute(LocalVariable::JSON_TYPE));
   EXPECT_TRUE(empty_var.HasAttribute(LocalVariable::JSON_VALUE));
   EXPECT_EQ(empty_var.GetName(), EMPTY_VAR_NAME);
-  EXPECT_EQ(empty_var.GetName(), empty_var.GetAttribute(attributes::NAME_ATTRIBUTE));
+  EXPECT_EQ(empty_var.GetName(), empty_var.GetAttribute(attributes::kNameAttribute));
   EXPECT_EQ(empty_var.GetAttribute(LocalVariable::JSON_TYPE), UINT64_TYPE);
   EXPECT_EQ(empty_var.GetAttribute(LocalVariable::JSON_VALUE), UINT64_VALUE_STR);
   EXPECT_TRUE(empty_var.GetValue(any_value));
@@ -217,7 +217,7 @@ TEST_F(LocalVariableTest, BooleanType)
 {
   EXPECT_EQ(bool_var.GetType(), LocalVariable::Type);
   EXPECT_TRUE(bool_var.GetName().empty());
-  EXPECT_FALSE(bool_var.HasAttribute(attributes::NAME_ATTRIBUTE));
+  EXPECT_FALSE(bool_var.HasAttribute(attributes::kNameAttribute));
   EXPECT_TRUE(bool_var.HasAttribute(LocalVariable::JSON_TYPE));
   EXPECT_EQ(bool_var.GetAttribute(LocalVariable::JSON_TYPE), BOOL_TYPE);
   EXPECT_NO_THROW(bool_var.Setup());
@@ -254,7 +254,7 @@ TEST_F(LocalVariableTest, UnsignedInteger64Type)
 {
   EXPECT_EQ(uint64_var.GetType(), LocalVariable::Type);
   EXPECT_TRUE(uint64_var.GetName().empty());
-  EXPECT_FALSE(uint64_var.HasAttribute(attributes::NAME_ATTRIBUTE));
+  EXPECT_FALSE(uint64_var.HasAttribute(attributes::kNameAttribute));
   EXPECT_TRUE(uint64_var.HasAttribute(LocalVariable::JSON_TYPE));
   EXPECT_EQ(uint64_var.GetAttribute(LocalVariable::JSON_TYPE), UINT64_TYPE);
   EXPECT_NO_THROW(uint64_var.Setup());
@@ -294,7 +294,7 @@ TEST_F(LocalVariableTest, Float32Type)
 {
   EXPECT_EQ(float32_var.GetType(), LocalVariable::Type);
   EXPECT_TRUE(float32_var.GetName().empty());
-  EXPECT_FALSE(float32_var.HasAttribute(attributes::NAME_ATTRIBUTE));
+  EXPECT_FALSE(float32_var.HasAttribute(attributes::kNameAttribute));
   EXPECT_TRUE(float32_var.HasAttribute(LocalVariable::JSON_TYPE));
   EXPECT_EQ(float32_var.GetAttribute(LocalVariable::JSON_TYPE), FLOAT32_TYPE);
   EXPECT_NO_THROW(float32_var.Setup());
@@ -373,10 +373,10 @@ LocalVariableTest::LocalVariableTest()
   float32_var.AddAttribute(LocalVariable::JSON_TYPE, FLOAT32_TYPE);
   float32_var.AddAttribute(LocalVariable::JSON_VALUE, FLOAT32_VALUE_STR);
 
-  attr_partial.emplace_back(attributes::NAME_ATTRIBUTE, EMPTY_VAR_NAME);
+  attr_partial.emplace_back(attributes::kNameAttribute, EMPTY_VAR_NAME);
   attr_partial.emplace_back(LocalVariable::JSON_TYPE, UINT64_TYPE);
 
-  attr_full.emplace_back(attributes::NAME_ATTRIBUTE, EMPTY_VAR_NAME);
+  attr_full.emplace_back(attributes::kNameAttribute, EMPTY_VAR_NAME);
   attr_full.emplace_back(LocalVariable::JSON_TYPE, UINT64_TYPE);
   attr_full.emplace_back(LocalVariable::JSON_VALUE, UINT64_VALUE_STR);
 }
@@ -387,7 +387,7 @@ std::vector<std::string> LocalVariableTest::GetFullAttributeListNames()
 {
   std::vector<std::string> result;
   std::transform(attr_full.begin(), attr_full.end(), std::back_inserter(result),
-                 [](const Attribute& attr){
+                 [](const StringAttribute& attr){
                   return attr.first;
                  });
   return result;

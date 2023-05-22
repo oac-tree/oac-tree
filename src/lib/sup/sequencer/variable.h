@@ -22,7 +22,7 @@
 #ifndef SUP_SEQUENCER_VARIABLE_H_
 #define SUP_SEQUENCER_VARIABLE_H_
 
-#include <sup/sequencer/attribute_map.h>
+#include <sup/sequencer/attribute_handler.h>
 
 #include <sup/dto/anyvalue.h>
 
@@ -41,6 +41,14 @@ namespace sequencer
 {
 /**
  * @brief Interface for workspace variables.
+ *
+ * @details Most of the Variable API is implemented using the non-virtual interface (NVI) idiom and
+ * locks are provided for those public methods that can be called during execution to ensure
+ * thread safety. Those methods are:
+ *   - Value access functions: GetValue, SetValue and IsAvailable;
+ *   - Notification callback functions: Notify and SetNotifyCallback.
+ * Note that all other methods are not thread safe and thus should be called only from a single
+ * thread. These methods are typically called during the initialization of a procedure.
  */
 class Variable
 {
@@ -161,7 +169,7 @@ public:
    *
    * @return Map containing all attributes.
    */
-  AttributeMap GetAttributes() const;
+  const StringAttributeList& GetAttributes() const;
 
   /**
    * @brief Set attribute with given name and value.
@@ -175,10 +183,10 @@ public:
   /**
    * @brief Set all attributes in given list.
    *
-   * @param attributes Attribute list.
+   * @param str_attributes Attribute list.
    * @return true when successful.
    */
-  bool AddAttributes(const AttributeMap& attributes);
+  bool AddAttributes(const StringAttributeList& str_attributes);
 
 private:
   /**
@@ -194,9 +202,9 @@ private:
   mutable std::mutex m_access_mutex;
 
   /**
-   * @brief List of attributes.
-   */
-  AttributeMap m_attributes;
+   * @brief Attribute handler.
+  */
+ AttributeHandler m_attribute_handler;
 
   /**
    * @brief Indicates if the Variable was correctly setup from its attributes.

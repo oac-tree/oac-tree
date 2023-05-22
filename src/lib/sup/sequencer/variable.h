@@ -162,14 +162,14 @@ public:
    * @param attr_name Attribute name.
    * @return Attribute value.
    */
-  std::string GetAttribute(const std::string& attr_name) const;
+  std::string GetAttributeString(const std::string& attr_name) const;
 
   /**
    * @brief Get all attributes.
    *
    * @return Map containing all attributes.
    */
-  const StringAttributeList& GetAttributes() const;
+  const StringAttributeList& GetStringAttributes() const;
 
   /**
    * @brief Set attribute with given name and value.

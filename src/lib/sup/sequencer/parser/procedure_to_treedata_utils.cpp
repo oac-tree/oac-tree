@@ -80,7 +80,7 @@ std::unique_ptr<sup::xml::TreeData> ToTreeData(const Procedure& procedure)
 std::unique_ptr<sup::xml::TreeData> ToTreeData(const Variable& variable)
 {
   auto result = internal::make_unique<sup::xml::TreeData>(variable.GetType());
-  for (const auto& it : variable.GetAttributes())
+  for (const auto& it : variable.GetStringAttributes())
   {
     result->AddAttribute(it.first, it.second);
   }

@@ -224,9 +224,9 @@ TEST_F(SequencerParserTest, Workspace)
   ASSERT_TRUE(static_cast<bool>(proc));
   auto variables = proc->GetWorkspace()->GetVariables();
   ASSERT_EQ(variables.size(), 3);
-  EXPECT_EQ(variables.at(0)->GetAttribute("name"), "var1");
-  EXPECT_EQ(variables.at(1)->GetAttribute("name"), "var2");
-  EXPECT_EQ(variables.at(2)->GetAttribute("name"), "var3");
+  EXPECT_EQ(variables.at(0)->GetAttributeString("name"), "var1");
+  EXPECT_EQ(variables.at(1)->GetAttributeString("name"), "var2");
+  EXPECT_EQ(variables.at(2)->GetAttributeString("name"), "var3");
 }
 
 TEST_F(SequencerParserTest, EmptyProcedureFromXMLAndBack)

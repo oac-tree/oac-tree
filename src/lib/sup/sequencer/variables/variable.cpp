@@ -62,7 +62,7 @@ std::string Variable::GetType() const
 
 std::string Variable::GetName() const
 {
-  return GetAttribute(attributes::kNameAttribute);
+  return GetAttributeString(attributes::kNameAttribute);
 }
 
 void Variable::SetName(const std::string &name)
@@ -159,12 +159,12 @@ bool Variable::HasAttribute(const std::string &name) const
   return m_attribute_handler.HasStringAttribute(name);
 }
 
-std::string Variable::GetAttribute(const std::string &name) const
+std::string Variable::GetAttributeString(const std::string &name) const
 {
   return GetStringAttributeValue(m_attribute_handler.GetStringAttributes(), name);
 }
 
-const StringAttributeList& Variable::GetAttributes() const
+const StringAttributeList& Variable::GetStringAttributes() const
 {
   return m_attribute_handler.GetStringAttributes();
 }
@@ -262,7 +262,7 @@ void CheckMandatoryAttribute(const Variable& variable, const std::string& attr_n
 void CheckMandatoryNonEmptyAttribute(const Variable& variable, const std::string& attr_name)
 {
   CheckMandatoryAttribute(variable, attr_name);
-  if (variable.GetAttribute(attr_name).empty())
+  if (variable.GetAttributeString(attr_name).empty())
   {
     std::string error_message = VariableSetupExceptionProlog(variable) +
       "mandatory attribute [" + attr_name + "] is empty";

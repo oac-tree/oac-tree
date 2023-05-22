@@ -159,10 +159,10 @@ public:
   /**
    * @brief Get attribute with given name.
    *
-   * @param name Attribute name.
+   * @param attr_name Attribute name.
    * @return Attribute value.
    */
-  std::string GetAttribute(const std::string& name) const;
+  std::string GetAttribute(const std::string& attr_name) const;
 
   /**
    * @brief Get all attributes.
@@ -174,11 +174,11 @@ public:
   /**
    * @brief Set attribute with given name and value.
    *
-   * @param name Attribute name.
-   * @param value Attribute value.
+   * @param attr_name Attribute name.
+   * @param attr_value Attribute value.
    * @return true when successful.
    */
-  bool AddAttribute(const std::string& name, const std::string& value);
+  bool AddAttribute(const std::string& attr_name, const std::string& attr_value);
 
   /**
    * @brief Set all attributes in given list.
@@ -187,6 +187,39 @@ public:
    * @return true when successful.
    */
   bool AddAttributes(const StringAttributeList& str_attributes);
+
+  /**
+   * @brief Get attribute value with given name and type.
+   *
+   * @param attr_name Attribute name.
+   * @return Attribute value of requested type.
+   *
+   * @throws RuntimeException when attribute with given name was not found or its value could not
+   * be converted to the requested type.
+   */
+  template <typename T>
+  T GetAttributeValue(const std::string& attr_name) const
+  {
+    return m_attribute_handler.GetValueAs<T>(attr_name);
+  }
+
+protected:
+  /**
+   * @brief Add an attribute definition with the given name and type.
+   *
+   * @param attr_name Attribute name.
+   * @param value_type Attribute type.
+   * @return Newly added attribute definition.
+   */
+  AttributeDefinition& AddAttributeDefinition(const std::string& attr_name,
+                                              const sup::dto::AnyType& value_type);
+
+  /**
+   * @brief Add an attribute constraint.
+   *
+   * @param constraint Attribute constraint.
+   */
+  void AddConstraint(Constraint constraint);
 
 private:
   /**

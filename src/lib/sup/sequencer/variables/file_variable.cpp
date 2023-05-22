@@ -21,7 +21,6 @@
 
 #include "file_variable.h"
 
-#include <sup/sequencer/attribute_map.h>
 #include <sup/sequencer/generic_utils.h>
 
 #include <sup/dto/anyvalue_helper.h>
@@ -39,15 +38,19 @@ namespace sequencer
 {
 const std::string FileVariable::Type = "File";
 
-void FileVariable::SetupImpl(const sup::dto::AnyTypeRegistry&)
+FileVariable::FileVariable()
+  : Variable(FileVariable::Type)
 {
-  CheckMandatoryAttribute(*this, FILENAME_ATTR_NAME);
+  AddAttributeDefinition(FILENAME_ATTR_NAME, sup::dto::StringType).SetMandatory();
+  AddAttributeDefinition(PRETTY_JSON_ATTR_NAME, sup::dto::BooleanType);
 }
+
+FileVariable::~FileVariable() = default;
 
 bool FileVariable::GetValueImpl(sup::dto::AnyValue& value) const
 {
   sup::dto::JSONAnyValueParser parser;
-  if (!parser.ParseFile(GetAttribute(FILENAME_ATTR_NAME)))
+  if (!parser.ParseFile(GetAttributeValue<std::string>(FILENAME_ATTR_NAME)))
   {
     return false;
   }
@@ -65,11 +68,12 @@ bool FileVariable::SetValueImpl(const sup::dto::AnyValue& value)
   bool pretty_json = false;
   if (HasAttribute(PRETTY_JSON_ATTR_NAME))
   {
-    pretty_json = attributes::AttributeAsBool(GetAttribute(PRETTY_JSON_ATTR_NAME));
+    pretty_json = GetAttributeValue<bool>(PRETTY_JSON_ATTR_NAME);
   }
   try
   {
-    sup::dto::AnyValueToJSONFile(value, GetAttribute(FILENAME_ATTR_NAME), pretty_json);
+    sup::dto::AnyValueToJSONFile(value, GetAttributeValue<std::string>(FILENAME_ATTR_NAME),
+                                 pretty_json);
     Notify(value, true);
   }
   catch(const sup::dto::SerializeException&)
@@ -78,9 +82,6 @@ bool FileVariable::SetValueImpl(const sup::dto::AnyValue& value)
   }
   return true;
 }
-
-FileVariable::FileVariable() : Variable(FileVariable::Type) {}
-FileVariable::~FileVariable() = default;
 
 }  // namespace sequencer
 

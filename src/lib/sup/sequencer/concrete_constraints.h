@@ -68,13 +68,32 @@ private:
  * Composite constraint that checks if either the left or the right constraint is satisfied.
  * This is equivalent to an 'XOR' operation.
 */
-class Either : public IConstraint
+class Xor : public IConstraint
 {
 public:
-  explicit Either(Constraint&& left, Constraint&& right);
-  ~Either();
+  explicit Xor(Constraint&& left, Constraint&& right);
+  ~Xor();
 
-  Either* Clone() const override;
+  Xor* Clone() const override;
+
+  bool Validate(const StringAttributeList& attr_map) const override;
+  std::string GetRepresentation() const override;
+private:
+  Constraint m_left;
+  Constraint m_right;
+};
+
+/**
+ * Composite constraint that checks if the left or the right constraint is satisfied (or both).
+ * This is equivalent to an 'OR' operation.
+*/
+class Or : public IConstraint
+{
+public:
+  explicit Or(Constraint&& left, Constraint&& right);
+  ~Or();
+
+  Or* Clone() const override;
 
   bool Validate(const StringAttributeList& attr_map) const override;
   std::string GetRepresentation() const override;
@@ -87,19 +106,37 @@ private:
  * Composite constraint that checks if both the left and the right constraint is satisfied.
  * This is equivalent to an 'AND' operation.
 */
-class Both : public IConstraint
+class And : public IConstraint
 {
 public:
-  explicit Both(Constraint&& left, Constraint&& right);
-  ~Both();
+  explicit And(Constraint&& left, Constraint&& right);
+  ~And();
 
-  Both* Clone() const override;
+  And* Clone() const override;
 
   bool Validate(const StringAttributeList& attr_map) const override;
   std::string GetRepresentation() const override;
 private:
   Constraint m_left;
   Constraint m_right;
+};
+
+/**
+ * Decorator constraint that checks inverts the validation result of its child contraint.
+ * This is equivalent to an 'NOT' operation.
+*/
+class Not : public IConstraint
+{
+public:
+  explicit Not(Constraint&& child);
+  ~Not();
+
+  Not* Clone() const override;
+
+  bool Validate(const StringAttributeList& attr_map) const override;
+  std::string GetRepresentation() const override;
+private:
+  Constraint m_child;
 };
 
 }  // namespace sequencer

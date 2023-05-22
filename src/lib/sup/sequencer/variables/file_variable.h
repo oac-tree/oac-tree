@@ -34,30 +34,21 @@ namespace sequencer
  */
 class FileVariable : public Variable
 {
-private:
-  /**
-   * @brief See sup::sequencer::Variable.
-   */
-  bool GetValueImpl(sup::dto::AnyValue& value) const override;
-  bool SetValueImpl(const sup::dto::AnyValue& value) override;
-  void SetupImpl(const sup::dto::AnyTypeRegistry& registry) override;
-
-protected:
 public:
-  /**
-   * @brief Constructor.
-   */
   FileVariable();
-
-  /**
-   * @brief Destructor.
-   */
   ~FileVariable() override;
 
   /**
    * @brief Class name for VariableRegistry.
    */
   static const std::string Type;
+
+private:
+  /**
+   * @brief See sup::sequencer::Variable.
+   */
+  bool GetValueImpl(sup::dto::AnyValue& value) const override;
+  bool SetValueImpl(const sup::dto::AnyValue& value) override;
 };
 
 }  // namespace sequencer

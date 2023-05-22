@@ -21,6 +21,9 @@
 
 #include <sup/sequencer/attribute_handler.h>
 
+#include <sup/dto/json_type_parser.h>
+#include <sup/dto/json_value_parser.h>
+
 #include "attribute_validator.h"
 #include "value_map_info.h"
 
@@ -102,11 +105,16 @@ const StringAttributeList& AttributeHandler::GetStringAttributes() const
   return m_str_attributes;
 }
 
-
 bool AttributeHandler::InitValueMap()
 {
   m_impl->value_map_info = m_impl->attr_validator.CreateValueMap(m_str_attributes);
   return m_impl->value_map_info.failed_constraints.empty();
+}
+
+void AttributeHandler::ClearValueMap()
+{
+  m_impl->value_map_info.failed_constraints.clear();
+  m_impl->value_map_info.value_map.clear();
 }
 
 std::vector<std::string> AttributeHandler::GetFailedConstraints() const

@@ -21,6 +21,7 @@
 
 #include "local_variable.h"
 
+#include <sup/sequencer/concrete_constraints.h>
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/procedure.h>
 
@@ -43,7 +44,12 @@ const std::string LocalVariable::JSON_VALUE = "value";
 LocalVariable::LocalVariable()
   : Variable(LocalVariable::Type)
   , m_value{}
-{}
+{
+  AddAttributeDefinition(JSON_TYPE, sup::dto::StringType);
+  AddAttributeDefinition(JSON_VALUE, sup::dto::StringType);
+  AddConstraint(MakeConstraint<Or>(MakeConstraint<Exists>(JSON_TYPE),
+                                   MakeConstraint<Not>(MakeConstraint<Exists>(JSON_VALUE))));
+}
 
 LocalVariable::~LocalVariable() {}
 
@@ -79,7 +85,7 @@ void LocalVariable::SetupImpl(const sup::dto::AnyTypeRegistry& registry)
   // empty AnyValue is allowed for setting
   if (HasAttribute(JSON_TYPE))
   {
-    auto type_str = GetAttribute(JSON_TYPE);
+    auto type_str = GetAttributeValue<std::string>(JSON_TYPE);
     sup::dto::JSONAnyTypeParser type_parser;
     if (!type_parser.ParseString(type_str, &registry))
     {
@@ -90,7 +96,7 @@ void LocalVariable::SetupImpl(const sup::dto::AnyTypeRegistry& registry)
     auto parsed_type = type_parser.MoveAnyType();
     if (HasAttribute(JSON_VALUE))
     {
-      auto val_str = GetAttribute(JSON_VALUE);
+      auto val_str = GetAttributeValue<std::string>(JSON_VALUE);
       sup::dto::JSONAnyValueParser value_parser;
       if (!value_parser.TypedParseString(parsed_type, val_str))
       {
@@ -105,12 +111,6 @@ void LocalVariable::SetupImpl(const sup::dto::AnyTypeRegistry& registry)
     {
       m_value.reset(new sup::dto::AnyValue(parsed_type));
     }
-  }
-  else if (HasAttribute(JSON_VALUE))
-  {
-    std::string error_message = VariableSetupExceptionProlog(*this) +
-      "attribute [" + JSON_VALUE + "] present without attribute [" + JSON_TYPE + "]";
-    throw VariableSetupException(error_message);
   }
 }
 

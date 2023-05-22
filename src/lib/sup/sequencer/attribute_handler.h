@@ -24,6 +24,7 @@
 
 #include <sup/sequencer/attribute_definition.h>
 #include <sup/sequencer/constraint.h>
+#include <sup/sequencer/exceptions.h>
 
 #include <memory>
 
@@ -57,15 +58,41 @@ public:
 
   bool InitValueMap();
 
+  void ClearValueMap();
+
   std::vector<std::string> GetFailedConstraints() const;
 
-  sup::dto::AnyValue GetValue(const std::string& name) const;
+  sup::dto::AnyValue GetValue(const std::string& attr_name) const;
+
+  template <typename T>
+  T GetValueAs(const std::string& attr_name) const;
 
 private:
   struct AttributeHandlerImpl;
   std::unique_ptr<AttributeHandlerImpl> m_impl;
   StringAttributeList m_str_attributes;
 };
+
+template <typename T>
+T AttributeHandler::GetValueAs(const std::string& attr_name) const
+{
+  auto val = GetValue(attr_name);
+  if (sup::dto::IsEmptyValue(val))
+  {
+    std::string message = "AttributeHandler::GetValueAs(): no attribute with name [" +
+                          attr_name + "]";
+    throw RuntimeException(message);
+  }
+  T result;
+  if (!val.As(result))
+  {
+    std::string message =
+      "AttributeHandler::GetValueAs(): could not convert attribute with name [" + attr_name +
+      "] to requested type";
+    throw RuntimeException(message);
+  }
+  return result;
+}
 
 std::string GetStringAttributeValue(const StringAttributeList& str_attributes,
                                     const std::string& attr_name);

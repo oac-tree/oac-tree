@@ -89,48 +89,91 @@ std::string FixedType::GetRepresentation() const
           sup::dto::AnyTypeToJSONString(m_attr_type) + ")";
 }
 
-Either::Either(Constraint&& left, Constraint&& right)
+Xor::Xor(Constraint&& left, Constraint&& right)
   : m_left{std::move(left)}
   , m_right{std::move(right)}
 {}
 
-Either::~Either() = default;
+Xor::~Xor() = default;
 
-Either* Either::Clone() const
+Xor* Xor::Clone() const
 {
-  return new Either{Constraint{m_left}, Constraint{m_right}};
+  return new Xor{Constraint{m_left}, Constraint{m_right}};
 }
 
-bool Either::Validate(const StringAttributeList& attr_map) const
+bool Xor::Validate(const StringAttributeList& attr_map) const
 {
   return m_left.Validate(attr_map) ^ m_right.Validate(attr_map);
 }
 
-std::string Either::GetRepresentation() const
+std::string Xor::GetRepresentation() const
 {
-  return "Either (" + m_left.GetRepresentation() + ") or (" + m_right.GetRepresentation() + ")";
+  return "(" + m_left.GetRepresentation() + ") XOR (" + m_right.GetRepresentation() + ")";
 }
 
-Both::Both(Constraint&& left, Constraint&& right)
+Or::Or(Constraint&& left, Constraint&& right)
   : m_left{std::move(left)}
   , m_right{std::move(right)}
 {}
 
-Both::~Both() = default;
+Or::~Or() = default;
 
-Both* Both::Clone() const
+Or* Or::Clone() const
 {
-  return new Both{Constraint{m_left}, Constraint{m_right}};
+  return new Or{Constraint{m_left}, Constraint{m_right}};
 }
 
-bool Both::Validate(const StringAttributeList& attr_map) const
+bool Or::Validate(const StringAttributeList& attr_map) const
+{
+  return m_left.Validate(attr_map) || m_right.Validate(attr_map);
+}
+
+std::string Or::GetRepresentation() const
+{
+  return "(" + m_left.GetRepresentation() + ") OR (" + m_right.GetRepresentation() + ")";
+}
+
+And::And(Constraint&& left, Constraint&& right)
+  : m_left{std::move(left)}
+  , m_right{std::move(right)}
+{}
+
+And::~And() = default;
+
+And* And::Clone() const
+{
+  return new And{Constraint{m_left}, Constraint{m_right}};
+}
+
+bool And::Validate(const StringAttributeList& attr_map) const
 {
   return m_left.Validate(attr_map) && m_right.Validate(attr_map);
 }
 
-std::string Both::GetRepresentation() const
+std::string And::GetRepresentation() const
 {
-  return "Both (" + m_left.GetRepresentation() + ") and (" + m_right.GetRepresentation() + ")";
+  return "(" + m_left.GetRepresentation() + ") AND (" + m_right.GetRepresentation() + ")";
+}
+
+Not::Not(Constraint&& child)
+  : m_child{std::move(child)}
+{}
+
+Not::~Not() = default;
+
+Not* Not::Clone() const
+{
+  return new Not{Constraint{m_child}};
+}
+
+bool Not::Validate(const StringAttributeList& attr_map) const
+{
+  return !m_child.Validate(attr_map);
+}
+
+std::string Not::GetRepresentation() const
+{
+  return "Not (" + m_child.GetRepresentation() + ")";
 }
 
 }  // namespace sequencer

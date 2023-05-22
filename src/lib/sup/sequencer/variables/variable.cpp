@@ -28,11 +28,14 @@
 
 #include <chrono>
 #include <cmath>
+#include <sstream>
 
 namespace
 {
 bool TryStrictAssignment(sup::dto::AnyValue& dest, const std::string& dest_field,
                          const sup::dto::AnyValue& src, const std::string& src_field);
+std::string VariableSetupExceptionMessage(const sup::sequencer::Variable& var,
+                                          const std::vector<std::string>& failed_constraints);
 }  // unnamed namespace
 
 namespace sup
@@ -44,7 +47,9 @@ Variable::Variable(const std::string &type)
   : m_type{type}
   , m_attribute_handler{}
   , m_setup_successful{false}
-{}
+{
+  m_attribute_handler.AddAttributeDefinition(attributes::kNameAttribute, sup::dto::StringType);
+}
 
 Variable::~Variable() = default;
 
@@ -65,6 +70,12 @@ void Variable::SetName(const std::string &name)
 
 void Variable::Setup(const sup::dto::AnyTypeRegistry* registry)
 {
+  if (!m_attribute_handler.InitValueMap())
+  {
+    auto error_message =
+      VariableSetupExceptionMessage(*this, m_attribute_handler.GetFailedConstraints());
+    throw VariableSetupException(error_message);
+  }
   sup::dto::AnyTypeRegistry local_registry{};
   auto& reg = registry == nullptr ? local_registry : *registry;
   SetupImpl(reg);
@@ -137,6 +148,7 @@ void Variable::SetNotifyCallback(Callback func)
 void Variable::Reset()
 {
   ResetImpl();
+  m_attribute_handler.ClearValueMap();
   m_setup_successful = false;
 }
 
@@ -169,6 +181,17 @@ bool Variable::AddAttributes(const StringAttributeList& str_attributes)
     status = AddAttribute(attr.first, attr.second) && status;
   }
   return status;
+}
+
+AttributeDefinition& Variable::AddAttributeDefinition(const std::string& attr_name,
+                                                      const sup::dto::AnyType& value_type)
+{
+  return m_attribute_handler.AddAttributeDefinition(attr_name, value_type);
+}
+
+void Variable::AddConstraint(Constraint constraint)
+{
+  return m_attribute_handler.AddConstraint(constraint);
 }
 
 bool Variable::IsAvailableImpl() const
@@ -236,4 +259,17 @@ bool TryStrictAssignment(sup::dto::AnyValue& dest, const std::string& dest_field
   dest_val = src_val;
   return true;
 }
+
+std::string VariableSetupExceptionMessage(const sup::sequencer::Variable& var,
+                                          const std::vector<std::string>& failed_constraints)
+{
+  std::stringstream oss;
+  oss << VariableSetupExceptionProlog(var) << "Failed attribute constraint(s):";
+  for (const auto& failed_constraint : failed_constraints)
+  {
+    oss << std::endl << failed_constraint;
+  }
+  return oss.str();
+}
+
 }  // unnamed namespace

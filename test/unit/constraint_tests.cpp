@@ -149,39 +149,39 @@ TEST_F(ConstraintTest, FixedType)
   }
 }
 
-TEST_F(ConstraintTest, Either)
+TEST_F(ConstraintTest, Xor)
 {
   {
     // Validation passes when exactly one child constraint passes.
-    auto constraint = MakeConstraint<Either>(MakeConstraint<Exists>(kEmptyStringAttrName),
+    auto constraint = MakeConstraint<Xor>(MakeConstraint<Exists>(kEmptyStringAttrName),
                                              MakeConstraint<Exists>("does_not_exist"));
     EXPECT_TRUE(constraint.Validate(m_attr_map));
     EXPECT_FALSE(constraint.GetRepresentation().empty());
   }
   {
     // Validation passes when exactly one child constraint passes.
-    auto constraint = MakeConstraint<Either>(MakeConstraint<Exists>("does_not_exist"),
+    auto constraint = MakeConstraint<Xor>(MakeConstraint<Exists>("does_not_exist"),
                                              MakeConstraint<Exists>(kEmptyStringAttrName));
     EXPECT_TRUE(constraint.Validate(m_attr_map));
     EXPECT_FALSE(constraint.GetRepresentation().empty());
   }
   {
     // Validation fails when no child constraint passes.
-    auto constraint = MakeConstraint<Either>(MakeConstraint<Exists>("does_not_exist"),
+    auto constraint = MakeConstraint<Xor>(MakeConstraint<Exists>("does_not_exist"),
                                              MakeConstraint<Exists>("does_not_exist"));
     EXPECT_FALSE(constraint.Validate(m_attr_map));
     EXPECT_FALSE(constraint.GetRepresentation().empty());
   }
   {
     // Validation fails when both child constraints pass.
-    auto constraint = MakeConstraint<Either>(MakeConstraint<Exists>(kEmptyStringAttrName),
+    auto constraint = MakeConstraint<Xor>(MakeConstraint<Exists>(kEmptyStringAttrName),
                                              MakeConstraint<Exists>(kDoubleAttrName));
     EXPECT_FALSE(constraint.Validate(m_attr_map));
     EXPECT_FALSE(constraint.GetRepresentation().empty());
   }
   {
     // Copy
-    auto constraint = MakeConstraint<Either>(MakeConstraint<Exists>("does_not_exist"),
+    auto constraint = MakeConstraint<Xor>(MakeConstraint<Exists>("does_not_exist"),
                                              MakeConstraint<Exists>(kEmptyStringAttrName));
     auto repr = constraint.GetRepresentation();
     Constraint copy_constructed{constraint};
@@ -192,7 +192,7 @@ TEST_F(ConstraintTest, Either)
   }
   {
     // Move
-    auto constraint = MakeConstraint<Either>(MakeConstraint<Exists>("does_not_exist"),
+    auto constraint = MakeConstraint<Xor>(MakeConstraint<Exists>("does_not_exist"),
                                              MakeConstraint<Exists>(kEmptyStringAttrName));
     auto repr = constraint.GetRepresentation();
     EXPECT_TRUE(constraint.Validate(m_attr_map));
@@ -208,39 +208,39 @@ TEST_F(ConstraintTest, Either)
   }
 }
 
-TEST_F(ConstraintTest, Both)
+TEST_F(ConstraintTest, And)
 {
   {
     // Validation passes when both child constraints pass.
-    auto constraint = MakeConstraint<Both>(MakeConstraint<Exists>(kEmptyStringAttrName),
+    auto constraint = MakeConstraint<And>(MakeConstraint<Exists>(kEmptyStringAttrName),
                                            MakeConstraint<Exists>(kDoubleAttrName));
     EXPECT_TRUE(constraint.Validate(m_attr_map));
     EXPECT_FALSE(constraint.GetRepresentation().empty());
   }
   {
     // Validation fails when only one child constraint passes.
-    auto constraint = MakeConstraint<Both>(MakeConstraint<Exists>(kEmptyStringAttrName),
+    auto constraint = MakeConstraint<And>(MakeConstraint<Exists>(kEmptyStringAttrName),
                                            MakeConstraint<Exists>("does_not_exist"));
     EXPECT_FALSE(constraint.Validate(m_attr_map));
     EXPECT_FALSE(constraint.GetRepresentation().empty());
   }
   {
     // Validation fails when only one child constraint passes.
-    auto constraint = MakeConstraint<Both>(MakeConstraint<Exists>("does_not_exist"),
+    auto constraint = MakeConstraint<And>(MakeConstraint<Exists>("does_not_exist"),
                                            MakeConstraint<Exists>(kEmptyStringAttrName));
     EXPECT_FALSE(constraint.Validate(m_attr_map));
     EXPECT_FALSE(constraint.GetRepresentation().empty());
   }
   {
     // Validation fails when no child constraint passes.
-    auto constraint = MakeConstraint<Both>(MakeConstraint<Exists>("does_not_exist"),
+    auto constraint = MakeConstraint<And>(MakeConstraint<Exists>("does_not_exist"),
                                            MakeConstraint<Exists>("does_not_exist"));
     EXPECT_FALSE(constraint.Validate(m_attr_map));
     EXPECT_FALSE(constraint.GetRepresentation().empty());
   }
   {
     // Copy
-    auto constraint = MakeConstraint<Both>(MakeConstraint<Exists>(kEmptyStringAttrName),
+    auto constraint = MakeConstraint<And>(MakeConstraint<Exists>(kEmptyStringAttrName),
                                            MakeConstraint<Exists>(kDoubleAttrName));
     auto repr = constraint.GetRepresentation();
     Constraint copy_constructed{constraint};
@@ -251,7 +251,7 @@ TEST_F(ConstraintTest, Both)
   }
   {
     // Move
-    auto constraint = MakeConstraint<Both>(MakeConstraint<Exists>(kEmptyStringAttrName),
+    auto constraint = MakeConstraint<And>(MakeConstraint<Exists>(kEmptyStringAttrName),
                                            MakeConstraint<Exists>(kDoubleAttrName));
     auto repr = constraint.GetRepresentation();
     EXPECT_TRUE(constraint.Validate(m_attr_map));

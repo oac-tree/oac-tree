@@ -153,8 +153,8 @@ TEST_F(AttributeHandlerTest, ComplexConstraint)
     // Add constraint: the string attribute has to exist XOR both the double and boolean attribute
     // need to exist
     EXPECT_NO_THROW(handler.AddConstraint(
-      MakeConstraint<Either>(MakeConstraint<Exists>(kStrAttrName),
-                             MakeConstraint<Both>(MakeConstraint<Exists>(kDoubleAttrName),
+      MakeConstraint<Xor>(MakeConstraint<Exists>(kStrAttrName),
+                             MakeConstraint<And>(MakeConstraint<Exists>(kDoubleAttrName),
                                                   MakeConstraint<Exists>(kBoolAttrName)))));
     EXPECT_FALSE(handler.InitValueMap());
     auto failed_constraints = handler.GetFailedConstraints();
@@ -174,8 +174,8 @@ TEST_F(AttributeHandlerTest, ComplexConstraint)
     // Add constraint: the string attribute has to exist XOR both the double and boolean attribute
     // need to exist
     EXPECT_NO_THROW(handler.AddConstraint(
-      MakeConstraint<Either>(MakeConstraint<Exists>(kStrAttrName),
-                             MakeConstraint<Both>(MakeConstraint<Exists>(kDoubleAttrName),
+      MakeConstraint<Xor>(MakeConstraint<Exists>(kStrAttrName),
+                             MakeConstraint<And>(MakeConstraint<Exists>(kDoubleAttrName),
                                                   MakeConstraint<Exists>(kBoolAttrName)))));
     EXPECT_FALSE(handler.InitValueMap());
     auto failed_constraints = handler.GetFailedConstraints();

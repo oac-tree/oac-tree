@@ -21,6 +21,7 @@
 
 #include <sup/sequencer/procedure.h>
 
+#include <sup/sequencer/attribute_utils.h>
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/instruction.h>
 #include <sup/sequencer/sequence_parser.h>
@@ -32,10 +33,6 @@ namespace sup
 {
 namespace sequencer
 {
-const std::string Procedure::TICK_TIMEOUT_ATTRIBUTE_NAME = "tickTimeout";
-
-static const std::string IS_ROOT_ATTRIBUTE = "isRoot";
-
 static bool HasRootAttributeSet(const Instruction &instruction);
 
 const Procedure *Procedure::LoadProcedure(const std::string &filename) const
@@ -55,10 +52,12 @@ void Procedure::ClearProcedureCache() const
 Procedure::Procedure()
   : m_instructions{}
   , m_workspace{new Workspace()}
-  , m_attributes{}
+  , m_attribute_handler{}
   , m_filename{}
   , m_procedure_cache{}
-{}
+{
+  m_attribute_handler.AddAttributeDefinition(kTickTimeoutAttributeName, sup::dto::Float64Type);
+}
 
 Procedure::~Procedure()
 {
@@ -176,6 +175,8 @@ bool Procedure::GetVariableValue(std::string name, sup::dto::AnyValue &value) co
 
 bool Procedure::Setup()
 {
+  // TODO: throw when this fails!
+  m_attribute_handler.InitValueMap();
   m_workspace->Setup();
   if (RootInstruction() == nullptr)
   {
@@ -212,6 +213,7 @@ void Procedure::Reset()
     return;
   }
   RootInstruction()->Reset();
+  m_attribute_handler.ClearValueMap();
 }
 
 ExecutionStatus Procedure::GetStatus() const
@@ -225,23 +227,23 @@ ExecutionStatus Procedure::GetStatus() const
 
 bool Procedure::HasAttribute(const std::string &name) const
 {
-  return m_attributes.HasAttribute(name);
+  return m_attribute_handler.HasStringAttribute(name);
 }
 
 std::string Procedure::GetAttribute(const std::string &name) const
 {
-  return m_attributes.GetAttribute(name);
+  return GetStringAttributeValue(m_attribute_handler.GetStringAttributes(), name);
 }
 
 bool Procedure::AddAttribute(const std::string &name, const std::string &value)
 {
-  return m_attributes.AddAttribute(name, value);
+  return m_attribute_handler.AddStringAttribute(name, value);
 }
 
-bool Procedure::AddAttributes(const AttributeMap& attributes)
+bool Procedure::AddAttributes(const StringAttributeList& str_attributes)
 {
   bool result = true;
-  for (auto &attr : attributes)
+  for (auto &attr : str_attributes)
   {
     result = AddAttribute(attr.first, attr.second) && result;
   }
@@ -270,12 +272,17 @@ bool Procedure::RegisterGenericCallback(const GenericCallback& cb)
 
 static bool HasRootAttributeSet(const Instruction &instruction)
 {
-  if (!instruction.HasAttribute(IS_ROOT_ATTRIBUTE))
+  if (!instruction.HasAttribute(kIsRootAttribute))
   {
     return false;
   }
-  auto attr_val = instruction.GetAttribute(IS_ROOT_ATTRIBUTE);
-  return attributes::AttributeAsBool(attr_val);
+  auto attr_val = instruction.GetAttribute(kIsRootAttribute);
+  auto parsed = utils::ParseAttributeString(sup::dto::BooleanType, attr_val);
+  if (!parsed.first)
+  {
+    return false;
+  }
+  return parsed.second.As<bool>();
 }
 
 }  // namespace sequencer

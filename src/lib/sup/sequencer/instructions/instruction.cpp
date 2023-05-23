@@ -48,6 +48,7 @@ Instruction::Instruction(const std::string &type)
     , m_status_mutex{}
 {
   AddAttributeDefinition(attributes::kNameAttribute, sup::dto::StringType);
+  AddAttributeDefinition(kIsRootAttribute, sup::dto::BooleanType);
 }
 
 Instruction::~Instruction() = default;

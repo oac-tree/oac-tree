@@ -113,10 +113,9 @@ bool Runner::IsRunning() const
 
 static int TickTimeoutMs(Procedure& procedure)
 {
-  if (procedure.HasAttribute(Procedure::TICK_TIMEOUT_ATTRIBUTE_NAME))
+  if (procedure.HasAttribute(kTickTimeoutAttributeName))
   {
-    auto tick_timeout_str = procedure.GetAttribute(Procedure::TICK_TIMEOUT_ATTRIBUTE_NAME);
-    double tick_timeout = std::stod(tick_timeout_str);
+    auto tick_timeout = procedure.GetAttributeValue<double>(kTickTimeoutAttributeName);
     if (tick_timeout > 0.001)
     {
       return static_cast<int>(tick_timeout * 1000);

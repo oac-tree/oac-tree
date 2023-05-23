@@ -29,8 +29,8 @@
 #include <cstring>
 #include <thread>
 
-static const std::string VARNAMES_ATTRIBUTE_NAME = "varNames";
-static const std::string FORCESUCCESS_ATTRIBUTE_NAME = "forceSuccess";
+const std::string VARNAMES_ATTRIBUTE_NAME = "varNames";
+const std::string FORCESUCCESS_ATTRIBUTE_NAME = "forceSuccess";
 
 namespace sup
 {

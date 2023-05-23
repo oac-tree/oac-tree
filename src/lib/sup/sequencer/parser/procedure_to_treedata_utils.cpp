@@ -21,7 +21,6 @@
 
 #include "procedure_to_treedata_utils.h"
 
-#include <sup/sequencer/attribute_map.h>
 #include <sup/sequencer/constants.h>
 #include <sup/sequencer/instruction.h>
 #include <sup/sequencer/procedure.h>

@@ -2,3 +2,4 @@
 
 * Remove Instruction::GetAttributes
 * Remove AttributeMap
+* Check TODOs

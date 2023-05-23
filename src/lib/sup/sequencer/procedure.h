@@ -22,7 +22,7 @@
 #ifndef SUP_SEQUENCER_PROCEDURE_H_
 #define SUP_SEQUENCER_PROCEDURE_H_
 
-#include <sup/sequencer/attribute_map.h>
+#include <sup/sequencer/attribute_handler.h>
 #include <sup/sequencer/execution_status.h>
 
 #include <functional>
@@ -46,6 +46,8 @@ class Instruction;
 class UserInterface;
 class Variable;
 class Workspace;
+
+const std::string kTickTimeoutAttributeName = "tickTimeout";
 
 /**
  * @brief Procedure contains a tree of instructions
@@ -227,10 +229,25 @@ public:
   /**
    * @brief Add all attributes from a given map.
    *
-   * @param attributes List of attributes.
+   * @param str_attributes List of attributes.
    * @return true when successful.
    */
-  bool AddAttributes(const AttributeMap& attributes);
+  bool AddAttributes(const StringAttributeList& str_attributes);
+
+  /**
+   * @brief Get attribute value with given name and type.
+   *
+   * @param attr_name Attribute name.
+   * @return Attribute value of requested type.
+   *
+   * @throws RuntimeException when attribute with given name was not found or its value could not
+   * be converted to the requested type.
+   */
+  template <typename T>
+  T GetAttributeValue(const std::string& attr_name) const
+  {
+    return m_attribute_handler.GetValueAs<T>(attr_name);
+  }
 
   /**
    * @brief Returns pointer to internal workspace.
@@ -265,16 +282,14 @@ public:
    */
   bool RegisterGenericCallback(const GenericCallback& cb);
 
-  /**
-   * @brief Name of attribute that defines the timeout between ticks.
-   */
-  static const std::string TICK_TIMEOUT_ATTRIBUTE_NAME;
-
 private:
   std::vector<std::unique_ptr<Instruction>> m_instructions;
   std::unique_ptr<Workspace> m_workspace;
 
-  AttributeMap m_attributes;
+  /**
+   * @brief Attribute handler.
+  */
+  AttributeHandler m_attribute_handler;
 
   /**
    * @brief Name of file from which this procedure was loaded (if loaded form file).

@@ -29,8 +29,8 @@ namespace sup
 namespace sequencer
 {
 AsyncWrapper::AsyncWrapper(Instruction* instruction)
-  : _instruction{instruction}
-  , _status{ExecutionStatus::NOT_STARTED}
+  : m_instruction{instruction}
+  , m_status{ExecutionStatus::NOT_STARTED}
 {}
 
 AsyncWrapper::AsyncWrapper(AsyncWrapper&&) = default;
@@ -43,37 +43,37 @@ void AsyncWrapper::Tick(UserInterface& ui, Workspace& ws)
   {
     return;
   }
-  auto child_status = _instruction->GetStatus();
+  auto child_status = m_instruction->GetStatus();
 
   if (child_status == ExecutionStatus::SUCCESS || child_status == ExecutionStatus::FAILURE)
   {
-    _status = child_status;
+    m_status = child_status;
   }
   else
   {
     LaunchChild(ui, ws);
-    _status = ExecutionStatus::RUNNING;
+    m_status = ExecutionStatus::RUNNING;
   }
 }
 
 ExecutionStatus AsyncWrapper::GetStatus() const
 {
-  return _status;
+  return m_status;
 }
 
 void AsyncWrapper::LaunchChild(UserInterface& ui, Workspace& ws)
 {
-  _child_result = std::async(std::launch::async, &Instruction::ExecuteSingle,
-                             _instruction, std::ref(ui), std::ref(ws));
+  m_child_result = std::async(std::launch::async, &Instruction::ExecuteSingle,
+                             m_instruction, std::ref(ui), std::ref(ws));
 }
 
 bool AsyncWrapper::ChildIsRunning() const
 {
-  if (!_child_result.valid())
+  if (!m_child_result.valid())
   {
     return false;
   }
-  auto result_status = _child_result.wait_for(std::chrono::seconds(0));
+  auto result_status = m_child_result.wait_for(std::chrono::seconds(0));
   return result_status == std::future_status::timeout;
 }
 

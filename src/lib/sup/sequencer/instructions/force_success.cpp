@@ -27,7 +27,9 @@ namespace sequencer
 {
 const std::string ForceSuccess::Type = "ForceSuccess";
 
-ForceSuccess::ForceSuccess() : DecoratorInstruction(ForceSuccess::Type) {}
+ForceSuccess::ForceSuccess()
+  : DecoratorInstruction(ForceSuccess::Type)
+{}
 
 ForceSuccess::~ForceSuccess() = default;
 

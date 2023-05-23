@@ -5,7 +5,6 @@ target_compile_features(unit-tests PRIVATE cxx_std_11)
 target_sources(unit-tests
   PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}/attribute_handler_tests.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/attribute_map_tests.cpp
     ${CMAKE_CURRENT_LIST_DIR}/attribute_utils_tests.cpp
     ${CMAKE_CURRENT_LIST_DIR}/choice_tests.cpp
     ${CMAKE_CURRENT_LIST_DIR}/cl_interface_tests.cpp

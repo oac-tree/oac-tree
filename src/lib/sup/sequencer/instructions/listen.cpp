@@ -21,7 +21,6 @@
 
 #include "listen.h"
 
-#include <sup/sequencer/attribute_map.h>
 #include <sup/sequencer/constants.h>
 #include <sup/sequencer/exceptions.h>
 
@@ -45,7 +44,10 @@ Listen::Listen()
   , var_names{}
   , var_cache{}
   , cb_guard{}
-{}
+{
+  AddAttributeDefinition(VARNAMES_ATTRIBUTE_NAME, sup::dto::StringType).SetMandatory();
+  AddAttributeDefinition(FORCESUCCESS_ATTRIBUTE_NAME, sup::dto::BooleanType);
+}
 
 Listen::~Listen() = default;
 
@@ -91,13 +93,11 @@ void Listen::HaltImpl()
 
 void Listen::SetupImpl(const Procedure& proc)
 {
-  CheckMandatoryNonEmptyAttribute(*this, VARNAMES_ATTRIBUTE_NAME);
   force_success = false;
   var_changed = true;
   if (HasAttribute(FORCESUCCESS_ATTRIBUTE_NAME))
   {
-    auto force_success_attr = GetAttribute(FORCESUCCESS_ATTRIBUTE_NAME);
-    force_success = attributes::AttributeAsBool(force_success_attr);
+    force_success = GetAttributeValue<bool>(FORCESUCCESS_ATTRIBUTE_NAME);
   }
   var_names = VariableNames();
   var_cache.clear();
@@ -124,7 +124,7 @@ ExecutionStatus Listen::CalculateStatus() const
 
 std::vector<std::string> Listen::VariableNames() const
 {
-  auto var_names_attr = GetAttribute(VARNAMES_ATTRIBUTE_NAME);
+  auto var_names_attr = GetAttributeValue<std::string>(VARNAMES_ATTRIBUTE_NAME);
   std::vector<std::string> result;
   size_t pos = var_names_attr.find_first_not_of(DefaultSettings::VARNAME_DELIMITER);
   while (pos != std::string::npos)

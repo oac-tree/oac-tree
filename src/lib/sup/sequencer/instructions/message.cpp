@@ -34,20 +34,18 @@ const std::string Message::Type = "Message";
 
 static const std::string TEXT_ATTRIBUTE = "text";
 
-Message::Message() : Instruction(Message::Type)
-{}
+Message::Message()
+  : Instruction(Message::Type)
+{
+  AddAttributeDefinition(TEXT_ATTRIBUTE, sup::dto::StringType).SetMandatory();
+}
 
 Message::~Message() = default;
-
-void Message::SetupImpl(const Procedure &proc)
-{
-  CheckMandatoryAttribute(*this, TEXT_ATTRIBUTE);
-}
 
 ExecutionStatus Message::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   (void)ws;
-  std::string message = GetAttribute(TEXT_ATTRIBUTE);
+  std::string message = GetAttributeValue<std::string>(TEXT_ATTRIBUTE);
   ui.Message(message);
   return ExecutionStatus::SUCCESS;
 }

@@ -45,11 +45,11 @@ TEST_F(InstructionTest, SetAttribute)
 
   // adding attribute and checking its value
   instruction.AddAttribute("key", "value");
-  EXPECT_EQ(instruction.GetAttribute("key"), std::string("value"));
+  EXPECT_EQ(instruction.GetAttributeString("key"), std::string("value"));
 
   // changind the value
   EXPECT_TRUE(instruction.SetAttribute("key", "new-value"));
-  EXPECT_EQ(instruction.GetAttribute("key"), std::string("new-value"));
+  EXPECT_EQ(instruction.GetAttributeString("key"), std::string("new-value"));
 }
 
 TEST_F(InstructionTest, SetName)

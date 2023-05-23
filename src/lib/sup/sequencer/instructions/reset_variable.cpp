@@ -36,18 +36,15 @@ static const std::string VARNAME_ATTRIBUTE = "varName";
 
 ResetVariable::ResetVariable()
   : Instruction(ResetVariable::Type)
-{}
+{
+  AddAttributeDefinition(VARNAME_ATTRIBUTE, sup::dto::StringType).SetMandatory();
+}
 
 ResetVariable::~ResetVariable() = default;
 
-void ResetVariable::SetupImpl(const Procedure &proc)
-{
-  CheckMandatoryNonEmptyAttribute(*this, VARNAME_ATTRIBUTE);
-}
-
 ExecutionStatus ResetVariable::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  auto var_name = GetAttribute(VARNAME_ATTRIBUTE);
+  auto var_name = GetAttributeValue<std::string>(VARNAME_ATTRIBUTE);
   if (!ws.HasVariable(var_name))
   {
     std::string error_message = InstructionErrorProlog(*this) +

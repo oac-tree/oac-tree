@@ -37,7 +37,12 @@ namespace sequencer
 {
 const std::string Include::Type = "Include";
 
-Include::Include() : DecoratorInstruction(Include::Type) {}
+Include::Include()
+  : DecoratorInstruction(Include::Type)
+{
+  AddAttributeDefinition(PATH_ATTRIBUTE_NAME, sup::dto::StringType).SetMandatory();
+  AddAttributeDefinition(FILE_ATTRIBUTE_NAME, sup::dto::StringType);
+}
 
 Include::~Include() = default;
 
@@ -80,15 +85,14 @@ bool Include::PostInitialiseVariables(const StringAttributeList& source_attribut
 
 void Include::SetupImpl(const Procedure& proc)
 {
-  CheckMandatoryNonEmptyAttribute(*this, PATH_ATTRIBUTE_NAME);
   std::string proc_filename = GetFilename();
   if (HasAttribute(FILE_ATTRIBUTE_NAME))
   {
-    auto filename = GetAttribute(FILE_ATTRIBUTE_NAME);
+    auto filename = GetAttributeValue<std::string>(FILE_ATTRIBUTE_NAME);
     proc_filename = GetFullPathName(GetFileDirectory(proc_filename), filename);
   }
   auto instructions = proc.GetInstructions(proc_filename);
-  auto path = GetAttribute(PATH_ATTRIBUTE_NAME);
+  auto path = GetAttributeValue<std::string>(PATH_ATTRIBUTE_NAME);
   auto instr = InstructionHelper::FindInstruction(instructions, path);
   if (instr == nullptr)
   {

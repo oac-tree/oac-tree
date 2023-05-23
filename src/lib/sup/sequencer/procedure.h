@@ -215,7 +215,7 @@ public:
    * @param name Attribute name.
    * @return Attribute value.
    */
-  std::string GetAttribute(const std::string& name) const;
+  std::string GetAttributeString(const std::string& name) const;
 
   /**
    * @brief Set attribute with given name and value.

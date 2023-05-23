@@ -44,6 +44,8 @@ using namespace sup::sequencer;
 
 static const std::string ENV_TEST_RESOURCES_PATH_NAME = "TEST_RESOURCES_PATH";
 
+const std::string INCREMENT_ATTRIBUTE_NAME = "incr";
+
 const std::string CounterInstruction::Type = "Counter";
 unsigned long CounterInstruction::counter = 0u;
 
@@ -56,13 +58,9 @@ unsigned long CounterInstruction::GetCount()
 
 ExecutionStatus CounterInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  if (HasAttribute("incr"))
+  if (HasAttribute(INCREMENT_ATTRIBUTE_NAME))
   {
-    sup::dto::JSONAnyValueParser parser;
-    if (parser.TypedParseString(sup::dto::UnsignedInteger64Type, GetAttribute("incr")))
-    {
-      counter += parser.MoveAnyValue().As<sup::dto::uint64>();
-    }
+    counter += GetAttributeValue<sup::dto::uint64>(INCREMENT_ATTRIBUTE_NAME);
   }
   else
   {
@@ -72,10 +70,13 @@ ExecutionStatus CounterInstruction::ExecuteSingleImpl(UserInterface& ui, Workspa
   return ExecutionStatus::SUCCESS;
 }
 
-CounterInstruction::CounterInstruction() : Instruction(CounterInstruction::Type)
+CounterInstruction::CounterInstruction()
+  : Instruction(CounterInstruction::Type)
 {
+  AddAttributeDefinition(INCREMENT_ATTRIBUTE_NAME, sup::dto::UnsignedInteger64Type);
   counter = 0u;
 }
+
 CounterInstruction::~CounterInstruction()
 {
   counter = 0u;

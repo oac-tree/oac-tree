@@ -27,8 +27,6 @@
 #include <sup/sequencer/user_interface.h>
 #include <sup/sequencer/workspace.h>
 
-#include <sup/dto/json_value_parser.h>
-
 namespace
 {
 std::string WrapOptionalInstructionNameString(const std::string& instr_name);
@@ -60,7 +58,7 @@ std::string Instruction::GetType() const
 
 std::string Instruction::GetName() const
 {
-  return GetAttribute(attributes::kNameAttribute);
+  return GetAttributeString(attributes::kNameAttribute);
 }
 
 void Instruction::SetName(const std::string &name)
@@ -111,7 +109,6 @@ void Instruction::Reset()
 {
   ResetHook();
   SetStatus(ExecutionStatus::NOT_STARTED);
-  m_attribute_handler.ClearValueMap();
   m_halt_requested.store(false);
 }
 
@@ -120,7 +117,7 @@ bool Instruction::HasAttribute(const std::string& name) const
   return m_attribute_handler.HasStringAttribute(name);
 }
 
-std::string Instruction::GetAttribute(const std::string& name) const
+std::string Instruction::GetAttributeString(const std::string& name) const
 {
   return GetStringAttributeValue(m_attribute_handler.GetStringAttributes(), name);
 }
@@ -295,58 +292,11 @@ std::string InstructionWarningProlog(const Instruction& instruction)
   return "Instruction " + optional_name + "of type <" + instr_type + "> warning: ";
 }
 
-void CheckMandatoryAttribute(const Instruction& instruction, const std::string& attr_name)
-{
-  if (!instruction.HasAttribute(attr_name))
-  {
-    std::string error_message = InstructionSetupExceptionProlog(instruction) +
-      "missing mandatory attribute [" + attr_name + "]";
-    throw InstructionSetupException(error_message);
-  }
-}
-
-void CheckMandatoryNonEmptyAttribute(const Instruction& instruction, const std::string& attr_name)
-{
-  CheckMandatoryAttribute(instruction, attr_name);
-  if (instruction.GetAttribute(attr_name).empty())
-  {
-    std::string error_message = InstructionSetupExceptionProlog(instruction) +
-      "mandatory attribute [" + attr_name + "] is empty";
-    throw InstructionSetupException(error_message);
-  }
-}
-
-int InstructionAttributeToInt(const Instruction& instruction, const std::string& attr_name)
-{
-  sup::dto::JSONAnyValueParser parser;
-  auto attr_value = instruction.GetAttribute(attr_name);
-  if (!parser.TypedParseString(sup::dto::SignedInteger32Type, attr_value))
-  {
-    std::string error_message = InstructionSetupExceptionProlog(instruction) +
-      "could not parse attribute [" + attr_name + "] with value [" + attr_value + "] to integer";
-    throw InstructionSetupException(error_message);
-  }
-  return parser.MoveAnyValue().As<sup::dto::int32>();
-}
-
-double InstructionAttributeToDouble(const Instruction& instruction, const std::string& attr_name)
-{
-  sup::dto::JSONAnyValueParser parser;
-  auto attr_value = instruction.GetAttribute(attr_name);
-  if (!parser.TypedParseString(sup::dto::Float64Type, attr_value))
-  {
-    std::string error_message = InstructionSetupExceptionProlog(instruction) +
-      "could not parse attribute [" + attr_name + "] with value [" + attr_value + "] to double";
-    throw InstructionSetupException(error_message);
-  }
-  return parser.MoveAnyValue().As<sup::dto::float64>();
-}
-
 bool GetValueFromAttributeName(const Instruction& instruction, const Workspace& ws,
                                UserInterface& ui, const std::string& attr_name,
                                sup::dto::AnyValue& value)
 {
-  auto input_field_name = instruction.GetAttribute(attr_name);
+  auto input_field_name = instruction.GetAttributeValue<std::string>(attr_name);
   if (input_field_name.empty())
   {
     std::string error_message = InstructionErrorProlog(instruction) +
@@ -376,7 +326,7 @@ bool SetValueFromAttributeName(const Instruction& instruction, Workspace& ws,
                                UserInterface& ui, const std::string& attr_name,
                                const sup::dto::AnyValue& value)
 {
-  auto output_field_name = instruction.GetAttribute(attr_name);
+  auto output_field_name = instruction.GetAttributeValue<std::string>(attr_name);
   if (output_field_name.empty())
   {
     std::string error_message = InstructionErrorProlog(instruction) +

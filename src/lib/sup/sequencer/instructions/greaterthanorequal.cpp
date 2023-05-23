@@ -43,15 +43,14 @@ namespace sequencer
 {
 const std::string GreaterThanOrEqual::Type = "GreaterThanOrEqual";
 
-GreaterThanOrEqual::GreaterThanOrEqual() : Instruction(GreaterThanOrEqual::Type) {}
+GreaterThanOrEqual::GreaterThanOrEqual()
+  : Instruction(GreaterThanOrEqual::Type)
+{
+  AddAttributeDefinition(LEFT_VARIABLE_ATTR_NAME, sup::dto::StringType).SetMandatory();
+  AddAttributeDefinition(RIGHT_VARIABLE_ATTR_NAME, sup::dto::StringType).SetMandatory();
+}
 
 GreaterThanOrEqual::~GreaterThanOrEqual() = default;
-
-void GreaterThanOrEqual::SetupImpl(const Procedure& proc)
-{
-  CheckMandatoryNonEmptyAttribute(*this, LEFT_VARIABLE_ATTR_NAME);
-  CheckMandatoryNonEmptyAttribute(*this, RIGHT_VARIABLE_ATTR_NAME);
-}
 
 ExecutionStatus GreaterThanOrEqual::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {

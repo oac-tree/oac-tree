@@ -43,15 +43,14 @@ namespace sequencer
 {
 const std::string LessThanOrEqual::Type = "LessThanOrEqual";
 
-LessThanOrEqual::LessThanOrEqual() : Instruction(LessThanOrEqual::Type) {}
+LessThanOrEqual::LessThanOrEqual()
+  : Instruction(LessThanOrEqual::Type)
+{
+  AddAttributeDefinition(LEFT_VARIABLE_ATTR_NAME, sup::dto::StringType).SetMandatory();
+  AddAttributeDefinition(RIGHT_VARIABLE_ATTR_NAME, sup::dto::StringType).SetMandatory();
+}
 
 LessThanOrEqual::~LessThanOrEqual() = default;
-
-void LessThanOrEqual::SetupImpl(const Procedure& proc)
-{
-  CheckMandatoryNonEmptyAttribute(*this, LEFT_VARIABLE_ATTR_NAME);
-  CheckMandatoryNonEmptyAttribute(*this, RIGHT_VARIABLE_ATTR_NAME);
-}
 
 ExecutionStatus LessThanOrEqual::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {

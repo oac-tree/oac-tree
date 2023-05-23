@@ -69,17 +69,17 @@ private:
   /**
    * @brief Wrapped instruction (not owned!)
    */
-  Instruction* _instruction;
+  Instruction* m_instruction;
 
   /**
    * @brief Execution status of the wrapper
    */
-  ExecutionStatus _status;
+  ExecutionStatus m_status;
 
   /**
    * @brief Track the wrapped instruction
    */
-  std::future<void> _child_result;
+  std::future<void> m_child_result;
 
   /**
    * @brief Execution status of the wrapper

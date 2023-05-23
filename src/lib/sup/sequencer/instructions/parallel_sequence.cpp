@@ -35,9 +35,12 @@ const std::string FAILURE_THRESHOLD_ATTRIBUTE = "failureThreshold";
 
 ParallelSequence::ParallelSequence()
   : CompoundInstruction(ParallelSequence::Type)
-  , _success_th{0}
-  , _failure_th{0}
-{}
+  , m_success_th{0}
+  , m_failure_th{0}
+{
+  AddAttributeDefinition(SUCCESS_THRESHOLD_ATTRIBUTE, sup::dto::UnsignedInteger32Type);
+  AddAttributeDefinition(FAILURE_THRESHOLD_ATTRIBUTE, sup::dto::UnsignedInteger32Type);
+}
 
 ParallelSequence::~ParallelSequence() = default;
 
@@ -52,27 +55,26 @@ void ParallelSequence::SetupImpl(const Procedure &proc)
   SetupChildren(proc);
 
   // default values for thresholds:
-  int N = static_cast<int>(ChildInstructions().size());
-  _success_th = N;
-  _failure_th = 1;
+  auto N = static_cast<sup::dto::uint32>(ChildInstructions().size());
+  m_success_th = N;
+  m_failure_th = 1;
   bool success_th_from_attributes = false;
   if (HasAttribute(SUCCESS_THRESHOLD_ATTRIBUTE))
   {
-    _success_th = InstructionAttributeToInt(*this, SUCCESS_THRESHOLD_ATTRIBUTE);
+    m_success_th = std::min(N, GetAttributeValue<sup::dto::uint32>(SUCCESS_THRESHOLD_ATTRIBUTE));
     success_th_from_attributes = true;
   }
-
   if (HasAttribute(FAILURE_THRESHOLD_ATTRIBUTE))
   {
-    int th = InstructionAttributeToInt(*this, FAILURE_THRESHOLD_ATTRIBUTE);
+    auto th = std::min(N, GetAttributeValue<sup::dto::uint32>(FAILURE_THRESHOLD_ATTRIBUTE));
     if (success_th_from_attributes)
     {
-      _failure_th = std::min(th, N - _success_th + 1);
+      m_failure_th = std::min(th, N - m_success_th + 1);
     }
     else
     {
-      _failure_th = th;
-      _success_th = N - th + 1;
+      m_failure_th = th;
+      m_success_th = N - th + 1;
     }
   }
 }
@@ -83,7 +85,7 @@ ExecutionStatus ParallelSequence::ExecuteSingleImpl(UserInterface& ui, Workspace
   {
     return ExecutionStatus::SUCCESS;
   }
-  for (auto &wrapper : _wrappers)
+  for (auto &wrapper : m_wrappers)
   {
     auto wrapper_status = wrapper.GetStatus();
     if (NeedsExecute(wrapper_status))
@@ -107,7 +109,7 @@ void ParallelSequence::ResetHook()
     Halt();
   }
   // wait for child threads to terminate
-  _wrappers.clear();
+  m_wrappers.clear();
   // call reset on child instructions
   ResetChildren();
 }
@@ -117,7 +119,7 @@ ExecutionStatus ParallelSequence::CalculateCompoundStatus() const
   int n_success = 0;
   int n_failure = 0;
 
-  for (const auto &wrapper : _wrappers)
+  for (const auto &wrapper : m_wrappers)
   {
     auto wrapper_status = wrapper.GetStatus();
     if (wrapper_status == ExecutionStatus::SUCCESS)
@@ -129,11 +131,11 @@ ExecutionStatus ParallelSequence::CalculateCompoundStatus() const
       n_failure++;
     }
   }
-  if (n_success >= _success_th)
+  if (n_success >= m_success_th)
   {
     return ExecutionStatus::SUCCESS;
   }
-  if (n_failure >= _failure_th)
+  if (n_failure >= m_failure_th)
   {
     return ExecutionStatus::FAILURE;
   }
@@ -142,10 +144,10 @@ ExecutionStatus ParallelSequence::CalculateCompoundStatus() const
 
 void ParallelSequence::InitWrappers()
 {
-  _wrappers.clear();
+  m_wrappers.clear();
   for (auto child : ChildInstructions())
   {
-    _wrappers.emplace_back(child);
+    m_wrappers.emplace_back(child);
   }
 }
 

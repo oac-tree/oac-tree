@@ -42,7 +42,9 @@ const std::string Wait::Type = "Wait";
 Wait::Wait()
   : Instruction(Wait::Type)
   , m_timeout(0)
-{}
+{
+  AddAttributeDefinition(TIMEOUT_ATTR_NAME, sup::dto::Float64Type);
+}
 
 Wait::~Wait() = default;
 
@@ -50,7 +52,7 @@ void Wait::SetupImpl(const Procedure&)
 {
   if (HasAttribute(TIMEOUT_ATTR_NAME))
   {
-    double t = InstructionAttributeToDouble(*this, TIMEOUT_ATTR_NAME);
+    double t = GetAttributeValue<sup::dto::float64>(TIMEOUT_ATTR_NAME);
     if (t < 0.0 || t > MAX_TIMEOUT_SECONDS)
     {
         std::string error_message = InstructionSetupExceptionProlog(*this) +

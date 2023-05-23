@@ -38,15 +38,14 @@ namespace sequencer
 {
 const std::string GreaterThan::Type = "GreaterThan";
 
-GreaterThan::GreaterThan() : Instruction(GreaterThan::Type) {}
+GreaterThan::GreaterThan()
+  : Instruction(GreaterThan::Type)
+{
+  AddAttributeDefinition(LEFT_VARIABLE_ATTR_NAME, sup::dto::StringType).SetMandatory();
+  AddAttributeDefinition(RIGHT_VARIABLE_ATTR_NAME, sup::dto::StringType).SetMandatory();
+}
 
 GreaterThan::~GreaterThan() = default;
-
-void GreaterThan::SetupImpl(const Procedure& proc)
-{
-  CheckMandatoryNonEmptyAttribute(*this, LEFT_VARIABLE_ATTR_NAME);
-  CheckMandatoryNonEmptyAttribute(*this, RIGHT_VARIABLE_ATTR_NAME);
-}
 
 ExecutionStatus GreaterThan::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {

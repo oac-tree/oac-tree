@@ -230,7 +230,7 @@ bool Procedure::HasAttribute(const std::string &name) const
   return m_attribute_handler.HasStringAttribute(name);
 }
 
-std::string Procedure::GetAttribute(const std::string &name) const
+std::string Procedure::GetAttributeString(const std::string &name) const
 {
   return GetStringAttributeValue(m_attribute_handler.GetStringAttributes(), name);
 }
@@ -276,7 +276,7 @@ static bool HasRootAttributeSet(const Instruction &instruction)
   {
     return false;
   }
-  auto attr_val = instruction.GetAttribute(kIsRootAttribute);
+  auto attr_val = instruction.GetAttributeString(kIsRootAttribute);
   auto parsed = utils::ParseAttributeString(sup::dto::BooleanType, attr_val);
   if (!parsed.first)
   {

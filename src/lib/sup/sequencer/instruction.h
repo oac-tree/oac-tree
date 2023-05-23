@@ -135,7 +135,7 @@ public:
    * @param name Attribute name.
    * @return Attribute value.
    */
-  std::string GetAttribute(const std::string& name) const;
+  std::string GetAttributeString(const std::string& name) const;
 
   /**
    * @brief Get all attributes.
@@ -430,49 +430,6 @@ std::string InstructionErrorProlog(const Instruction& instruction);
  * @return String containing the prolog to be used for the warning message.
  */
 std::string InstructionWarningProlog(const Instruction& instruction);
-
-/**
- * @brief Check if the instruction has an attribute with the given name and throw if not.
- *
- * @param instruction Instruction to check.
- * @param attr_name Mandatory attribute name.
- *
- * @throw InstructionSetupException when the instruction does not contain the attribute.
- */
-void CheckMandatoryAttribute(const Instruction& instruction, const std::string& attr_name);
-
-/**
- * @brief Check if the instruction has a non-empty attribute with the given name and throw if not.
- *
- * @param instruction Instruction to check.
- * @param attr_name Mandatory attribute name.
- *
- * @throw InstructionSetupException when the instruction does not contain the attribute or it is
- * empty.
- */
-void CheckMandatoryNonEmptyAttribute(const Instruction& instruction, const std::string& attr_name);
-
-/**
- * @brief Try to parse attribute to int and throw otherwise.
- *
- * @param instruction Instruction to check.
- * @param attr_name Attribute name.
- *
- * @return Parsed integer if successful.
- * @throw InstructionSetupException when the attribute could not be parsed into an int.
- */
-int InstructionAttributeToInt(const Instruction& instruction, const std::string& attr_name);
-
-/**
- * @brief Try to parse attribute to double and throw otherwise.
- *
- * @param instruction Instruction to check.
- * @param attr_name Attribute name.
- *
- * @return Parsed double if successful.
- * @throw InstructionSetupException when the attribute could not be parsed into an double.
- */
-double InstructionAttributeToDouble(const Instruction& instruction, const std::string& attr_name);
 
 /**
  * @brief Fetch variable (and field) with name contained in the instruction's attribute and copy it.

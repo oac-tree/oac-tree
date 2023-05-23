@@ -36,15 +36,12 @@ const std::string Equals::Type = "Equals";
 
 Equals::Equals()
   : Instruction(Equals::Type)
-{}
+{
+  AddAttributeDefinition(LEFT_VARIABLE_ATTR_NAME, sup::dto::StringType).SetMandatory();
+  AddAttributeDefinition(RIGHT_VARIABLE_ATTR_NAME, sup::dto::StringType).SetMandatory();
+}
 
 Equals::~Equals() = default;
-
-void Equals::SetupImpl(const Procedure& proc)
-{
-  CheckMandatoryNonEmptyAttribute(*this, LEFT_VARIABLE_ATTR_NAME);
-  CheckMandatoryNonEmptyAttribute(*this, RIGHT_VARIABLE_ATTR_NAME);
-}
 
 ExecutionStatus Equals::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {

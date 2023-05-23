@@ -45,16 +45,11 @@ const std::string Choice::Type = "Choice";
 Choice::Choice()
   : CompoundInstruction(Choice::Type)
   , m_instruction_list{}
-{}
-
-Choice::~Choice()
-{}
-
-void Choice::SetupImpl(const Procedure &proc)
 {
-  SetupChildren(proc);
-  CheckMandatoryNonEmptyAttribute(*this, SELECTOR_VARIABLE_ATTR_NAME);
+  AddAttributeDefinition(SELECTOR_VARIABLE_ATTR_NAME, sup::dto::StringType).SetMandatory();
 }
+
+Choice::~Choice() = default;
 
 ExecutionStatus Choice::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {

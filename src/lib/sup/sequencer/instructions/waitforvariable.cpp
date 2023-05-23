@@ -44,15 +44,20 @@ namespace sequencer
 {
 const std::string WaitForVariable::Type = "WaitForVariable";
 
-WaitForVariable::WaitForVariable() : Instruction(WaitForVariable::Type), m_timeout(0) {}
+WaitForVariable::WaitForVariable()
+  : Instruction(WaitForVariable::Type)
+  , m_timeout(0)
+{
+  AddAttributeDefinition(VARNAME_ATTRIBUTE, sup::dto::StringType).SetMandatory();
+  AddAttributeDefinition(TIMEOUT_ATTR_NAME, sup::dto::Float64Type).SetMandatory();
+  AddAttributeDefinition(EQUALVAR_ATTRIBUTE, sup::dto::StringType);
+}
 
 WaitForVariable::~WaitForVariable() = default;
 
 void WaitForVariable::SetupImpl(const Procedure&)
 {
-  CheckMandatoryNonEmptyAttribute(*this, VARNAME_ATTRIBUTE);
-  CheckMandatoryNonEmptyAttribute(*this, TIMEOUT_ATTR_NAME);
-  double t = InstructionAttributeToDouble(*this, TIMEOUT_ATTR_NAME);
+  double t = GetAttributeValue<sup::dto::float64>(TIMEOUT_ATTR_NAME);
   if (t < 0.0 || t > MAX_TIMEOUT_SECONDS)
   {
     std::string error_message = InstructionSetupExceptionProlog(*this)
@@ -71,10 +76,10 @@ ExecutionStatus WaitForVariable::ExecuteSingleImpl(UserInterface& ui, Workspace&
 
   // Register callbacks:
   auto cb_guard = ws.GetCallbackGuard(&dummy_listener);
-  RegisterCallback(ws, cv, &dummy_listener, GetAttribute(VARNAME_ATTRIBUTE));
+  RegisterCallback(ws, cv, &dummy_listener, GetAttributeValue<std::string>(VARNAME_ATTRIBUTE));
   if (HasAttribute(EQUALVAR_ATTRIBUTE))
   {
-    RegisterCallback(ws, cv, &dummy_listener, GetAttribute(EQUALVAR_ATTRIBUTE));
+    RegisterCallback(ws, cv, &dummy_listener, GetAttributeValue<std::string>(EQUALVAR_ATTRIBUTE));
   }
 
   // Wait for condition to be satisfied, halt or timeout:
@@ -124,12 +129,12 @@ bool WaitForVariable::CheckCondition(Workspace& ws) const
   sup::dto::AnyValue var_value;
   sup::dto::AnyValue other_value;
 
-  bool var_available = ws.GetValue(GetAttribute(VARNAME_ATTRIBUTE), var_value) &&
+  bool var_available = ws.GetValue(GetAttributeValue<std::string>(VARNAME_ATTRIBUTE), var_value) &&
                       !sup::dto::IsEmptyValue(var_value);
   bool other_available;
   if (HasAttribute(EQUALVAR_ATTRIBUTE))
   {
-    other_available = ws.GetValue(GetAttribute(EQUALVAR_ATTRIBUTE), other_value) &&
+    other_available = ws.GetValue(GetAttributeValue<std::string>(EQUALVAR_ATTRIBUTE), other_value) &&
                       !sup::dto::IsEmptyValue(other_value);
   }
   return SuccessCondition(var_available, var_value, other_available, other_value);

@@ -37,14 +37,11 @@ const std::string Condition::Type = "Condition";
 
 Condition::Condition()
   : Instruction(Condition::Type)
-{}
+{
+  AddAttributeDefinition(CONDITION_VARIABLE_ATTR_NAME, sup::dto::StringType).SetMandatory();
+}
 
 Condition::~Condition() = default;
-
-void Condition::SetupImpl(const Procedure &proc)
-{
-  CheckMandatoryNonEmptyAttribute(*this, CONDITION_VARIABLE_ATTR_NAME);
-}
 
 ExecutionStatus Condition::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
@@ -56,9 +53,9 @@ ExecutionStatus Condition::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   sup::dto::boolean result = false;
   if (!var.As(result))
   {
-    std::string warning_message = InstructionWarningProlog(*this) +
-      "could not parse workspace field with name [" + GetAttribute(CONDITION_VARIABLE_ATTR_NAME) +
-      "] to a boolean";
+    std::string warning_message =
+      InstructionWarningProlog(*this) + "could not parse workspace field with name [" +
+      GetAttributeValue<std::string>(CONDITION_VARIABLE_ATTR_NAME) + "] to a boolean";
     ui.LogWarning(warning_message);
     return ExecutionStatus::FAILURE;
   }

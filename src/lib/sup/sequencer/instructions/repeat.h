@@ -56,8 +56,9 @@ private:
    */
   ExecutionStatus CalculateStatus() const;
 
-  int _max_count, _count;
-  bool _init_ok;
+  sup::dto::int32 m_max_count;
+  sup::dto::int32 m_count;
+  bool m_init_ok;
 };
 
 }  // namespace sequencer

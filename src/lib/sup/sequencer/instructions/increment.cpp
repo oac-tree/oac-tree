@@ -39,18 +39,15 @@ static const std::string VARNAME_ATTRIBUTE = "varName";
 
 Increment::Increment()
   : Instruction(Increment::Type)
-{}
+{
+  AddAttributeDefinition(VARNAME_ATTRIBUTE, sup::dto::StringType).SetMandatory();
+}
 
 Increment::~Increment() = default;
 
-void Increment::SetupImpl(const Procedure &proc)
-{
-  CheckMandatoryNonEmptyAttribute(*this, VARNAME_ATTRIBUTE);
-}
-
 ExecutionStatus Increment::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  auto var_name = GetAttribute(VARNAME_ATTRIBUTE);
+  auto var_name = GetAttributeValue<std::string>(VARNAME_ATTRIBUTE);
   sup::dto::AnyValue value;
   if (!GetValueFromAttributeName(*this, ws, ui, VARNAME_ATTRIBUTE, value))
   {

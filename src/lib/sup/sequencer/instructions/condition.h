@@ -44,8 +44,6 @@ public:
   static const std::string Type;
 
 private:
-  void SetupImpl(const Procedure &proc) override;
-
   virtual ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws);
 };
 

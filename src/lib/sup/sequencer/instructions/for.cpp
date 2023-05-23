@@ -31,8 +31,8 @@
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/generic_utils.h>
 
-const std::string ELEMENT_ATTR_NAME = "elementVar";
 const std::string ARRAY_ATTR_NAME = "arrayVar";
+const std::string ELEMENT_ATTR_NAME = "elementVar";
 
 namespace sup
 {
@@ -42,22 +42,17 @@ const std::string ForInstruction::Type = "For";
 
 ForInstruction::ForInstruction()
   : DecoratorInstruction(ForInstruction::Type)
-  , _count{0}
-{}
+  , m_count{0}
+{
+  AddAttributeDefinition(ARRAY_ATTR_NAME, sup::dto::StringType).SetMandatory();
+  AddAttributeDefinition(ELEMENT_ATTR_NAME, sup::dto::StringType).SetMandatory();
+}
 
 ForInstruction::~ForInstruction() = default;
 
 void ForInstruction::InitHook()
 {
-  _count = 0;
-}
-
-void ForInstruction::SetupImpl(const Procedure& proc)
-{
-  CheckMandatoryNonEmptyAttribute(*this, ELEMENT_ATTR_NAME);
-  CheckMandatoryNonEmptyAttribute(*this, ARRAY_ATTR_NAME);
-
-  SetupChild(proc);
+  m_count = 0;
 }
 
 ExecutionStatus ForInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
@@ -73,9 +68,9 @@ ExecutionStatus ForInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& 
   }
   if (!dto::IsArrayValue(array))
   {
-    std::string warning_message = InstructionWarningProlog(*this)
-                                  + "For instruction expects an array but variable ["
-                                  + GetAttribute(ARRAY_ATTR_NAME) + "] is not one.";
+    std::string warning_message =
+      InstructionWarningProlog(*this) + "For instruction expects an array but variable [" +
+      GetAttributeValue<std::string>(ARRAY_ATTR_NAME) + "] is not one.";
     ui.LogWarning(warning_message);
     return ExecutionStatus::FAILURE;
   }
@@ -88,17 +83,17 @@ ExecutionStatus ForInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& 
 
   dto::AnyValue i;
   GetValueFromAttributeName(*this, ws, ui, ELEMENT_ATTR_NAME, i);
-  if (i.GetType() != array[_count].GetType())
+  if (i.GetType() != array[m_count].GetType())
   {
-    std::string warning_message = InstructionWarningProlog(*this) + "The element ["
-                                  + GetAttribute(ELEMENT_ATTR_NAME)
-                                  + "] and the elements of array [" + GetAttribute(ARRAY_ATTR_NAME)
-                                  + "] have to be of the same type.";
+    std::string warning_message =
+      InstructionWarningProlog(*this) + "The element [" +
+      GetAttributeValue<std::string>(ELEMENT_ATTR_NAME) + "] and the elements of array [" +
+      GetAttributeValue<std::string>(ARRAY_ATTR_NAME) + "] have to be of the same type.";
     ui.LogWarning(warning_message);
     return ExecutionStatus::FAILURE;
   }
 
-  ws.SetValue(GetAttribute(ELEMENT_ATTR_NAME),array[_count]);
+  ws.SetValue(GetAttributeValue<std::string>(ELEMENT_ATTR_NAME),array[m_count]);
 
   auto child_status = GetChildStatus();
   if (child_status == ExecutionStatus::SUCCESS)
@@ -113,7 +108,7 @@ ExecutionStatus ForInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& 
   if (max_count > 0
       && (child_status == ExecutionStatus::SUCCESS || child_status == ExecutionStatus::FAILURE))
   {
-    _count++;
+    m_count++;
   }
   return CalculateStatus(max_count);
 }
@@ -123,7 +118,7 @@ ExecutionStatus ForInstruction::CalculateStatus(int max_count) const
   auto child_status = GetChildStatus();
   if (child_status == ExecutionStatus::SUCCESS)
   {
-    if (_count == max_count)
+    if (m_count == max_count)
     {
       return ExecutionStatus::SUCCESS;
     }

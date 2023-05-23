@@ -36,14 +36,12 @@ const std::string Output::Type = "Output";
 
 Output::Output()
   : Instruction(Output::Type)
-{}
+{
+  AddAttributeDefinition(FROM_ATTRIBUTE_NAME, sup::dto::StringType).SetMandatory();
+  AddAttributeDefinition(DESCR_ATTRIBUTE_NAME, sup::dto::StringType);
+}
 
 Output::~Output() = default;
-
-void Output::SetupImpl(const Procedure &proc)
-{
-  CheckMandatoryNonEmptyAttribute(*this, FROM_ATTRIBUTE_NAME);
-}
 
 ExecutionStatus Output::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
@@ -52,8 +50,10 @@ ExecutionStatus Output::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   {
     return ExecutionStatus::FAILURE;
   }
-  return ui.PutValue(value, GetAttribute(DESCR_ATTRIBUTE_NAME)) ? ExecutionStatus::SUCCESS
-                                                                : ExecutionStatus::FAILURE;
+  auto description =
+    HasAttribute(DESCR_ATTRIBUTE_NAME) ? GetAttributeValue<std::string>(DESCR_ATTRIBUTE_NAME)
+                                       : "";
+  return ui.PutValue(value, description) ? ExecutionStatus::SUCCESS : ExecutionStatus::FAILURE;
 }
 
 }  // namespace sequencer

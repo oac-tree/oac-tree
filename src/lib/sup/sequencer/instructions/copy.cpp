@@ -30,14 +30,14 @@ namespace sequencer
 {
 const std::string Copy::Type = "Copy";
 
-Copy::Copy() : Instruction(Copy::Type) {}
-Copy::~Copy() = default;
-
-void Copy::SetupImpl(const Procedure &proc)
+Copy::Copy()
+  : Instruction(Copy::Type)
 {
-  CheckMandatoryNonEmptyAttribute(*this, INPUT_VARIABLE_ATTR_NAME);
-  CheckMandatoryNonEmptyAttribute(*this, OUTPUT_VARIABLE_ATTR_NAME);
+  AddAttributeDefinition(INPUT_VARIABLE_ATTR_NAME, sup::dto::StringType).SetMandatory();
+  AddAttributeDefinition(OUTPUT_VARIABLE_ATTR_NAME, sup::dto::StringType).SetMandatory();
 }
+
+Copy::~Copy() = default;
 
 ExecutionStatus Copy::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {

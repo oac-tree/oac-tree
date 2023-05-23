@@ -67,9 +67,10 @@ private:
    */
   void InitWrappers();
 
-  std::vector<AsyncWrapper> _wrappers;
+  std::vector<AsyncWrapper> m_wrappers;
 
-  int _success_th, _failure_th;
+  sup::dto::uint32 m_success_th;
+  sup::dto::uint32 m_failure_th;
 };
 
 }  // namespace sequencer

@@ -34,7 +34,9 @@ static const std::string DESCRIPTION_ATTRIBUTE = "description";
 
 UserChoice::UserChoice()
   : CompoundInstruction(UserChoice::Type)
-{}
+{
+  AddAttributeDefinition(DESCRIPTION_ATTRIBUTE, sup::dto::StringType);
+}
 
 UserChoice::~UserChoice() = default;
 
@@ -46,7 +48,9 @@ ExecutionStatus UserChoice::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   {
     return ExecutionStatus::SUCCESS;
   }
-  std::string description = GetAttribute(DESCRIPTION_ATTRIBUTE);
+  std::string description =
+    HasAttribute(DESCRIPTION_ATTRIBUTE) ? GetAttributeValue<std::string>(DESCRIPTION_ATTRIBUTE)
+                                        : "";
 
   auto options = GetChoices();
   int choice = ui.GetUserChoice(options, description);

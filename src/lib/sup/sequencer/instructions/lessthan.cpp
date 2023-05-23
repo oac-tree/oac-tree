@@ -41,15 +41,14 @@ namespace sequencer
 {
 const std::string LessThan::Type = "LessThan";
 
-LessThan::LessThan() : Instruction(LessThan::Type) {}
+LessThan::LessThan()
+  : Instruction(LessThan::Type)
+{
+  AddAttributeDefinition(LEFT_VARIABLE_ATTR_NAME, sup::dto::StringType).SetMandatory();
+  AddAttributeDefinition(RIGHT_VARIABLE_ATTR_NAME, sup::dto::StringType).SetMandatory();
+}
 
 LessThan::~LessThan() = default;
-
-void LessThan::SetupImpl(const Procedure& proc)
-{
-  CheckMandatoryNonEmptyAttribute(*this, LEFT_VARIABLE_ATTR_NAME);
-  CheckMandatoryNonEmptyAttribute(*this, RIGHT_VARIABLE_ATTR_NAME);
-}
 
 ExecutionStatus LessThan::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {

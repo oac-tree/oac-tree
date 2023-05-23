@@ -31,22 +31,6 @@
 
 using namespace sup::sequencer;
 
-class CopyNode : public Instruction
-{
-private:
-  ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
-
-public:
-  CopyNode();
-  ~CopyNode() override = default;
-
-  static const std::string Type;
-};
-
-const std::string CopyNode::Type = "CopyNode";
-
-static bool CopyNodeRegistered = RegisterGlobalInstruction<CopyNode>();
-
 TEST(SequenceWorkspace, CopyVariable)
 {
   const std::string body{R"(
@@ -73,37 +57,4 @@ TEST(SequenceWorkspace, CopyVariable)
   sup::UnitTestHelper::EmptyUserInterface ui;
   proc->ExecuteSingle(ui);
   EXPECT_EQ(proc->GetStatus(), ExecutionStatus::SUCCESS);
-}
-
-CopyNode::CopyNode() : Instruction(Type) {}
-
-ExecutionStatus CopyNode::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
-{
-  sup::dto::AnyValue val;
-
-  bool status = HasAttribute("input");
-
-  if (status)
-  {
-    std::string var_input = GetAttribute("input");
-    status = ws.GetValue(var_input, val);
-  }
-
-  if (status)
-  {
-    status = HasAttribute("output");
-  }
-
-  if (status)
-  {
-    std::string var_output = GetAttribute("output");
-    status = ws.SetValue(var_output, val);
-  }
-
-  if (status)
-  {
-    return ExecutionStatus::SUCCESS;
-  }
-
-  return ExecutionStatus::FAILURE;
 }

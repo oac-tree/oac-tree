@@ -34,26 +34,28 @@ const std::string Repeat::Type = "Repeat";
 
 Repeat::Repeat()
   : DecoratorInstruction(Repeat::Type)
-  , _max_count{0}
-  , _count{0}
-  , _init_ok{false}
-{}
+  , m_max_count{0}
+  , m_count{0}
+  , m_init_ok{false}
+{
+  AddAttributeDefinition(MAXCOUNT_ATTR_NAME, sup::dto::SignedInteger32Type);
+}
 
 Repeat::~Repeat() = default;
 
 void Repeat::InitHook()
 {
-  _count = 0;
+  m_count = 0;
 }
 
 void Repeat::SetupImpl(const Procedure& proc)
 {
   if (HasAttribute(MAXCOUNT_ATTR_NAME))
   {
-    _max_count = InstructionAttributeToInt(*this, MAXCOUNT_ATTR_NAME);
-    if (_max_count < 0)
+    m_max_count = GetAttributeValue<sup::dto::int32>(MAXCOUNT_ATTR_NAME);
+    if (m_max_count < 0)
     {
-      _max_count = -1;
+      m_max_count = -1;
     }
   }
   SetupChild(proc);
@@ -61,7 +63,7 @@ void Repeat::SetupImpl(const Procedure& proc)
 
 ExecutionStatus Repeat::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  if (!HasChild() || _max_count == 0)
+  if (!HasChild() || m_max_count == 0)
   {
     return ExecutionStatus::SUCCESS;
   }
@@ -73,11 +75,11 @@ ExecutionStatus Repeat::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   ExecuteChild(ui, ws);
 
   child_status = GetChildStatus();
-  // Don't increment count when _max_count is not strictly positive.
-  if (_max_count > 0
+  // Don't increment count when m_max_count is not strictly positive.
+  if (m_max_count > 0
       && (child_status == ExecutionStatus::SUCCESS || child_status == ExecutionStatus::FAILURE))
   {
-    _count++;
+    m_count++;
   }
   return CalculateStatus();
 }
@@ -87,7 +89,7 @@ ExecutionStatus Repeat::CalculateStatus() const
   auto child_status = GetChildStatus();
   if (child_status == ExecutionStatus::SUCCESS)
   {
-    if (_count == _max_count)
+    if (m_count == m_max_count)
     {
       return ExecutionStatus::SUCCESS;
     }

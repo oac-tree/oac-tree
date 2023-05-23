@@ -47,8 +47,6 @@ public:
 private:
   void InitHook() override;
 
-  void SetupImpl(const Procedure& proc) override;
-
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 
   /**
@@ -57,7 +55,7 @@ private:
    */
   ExecutionStatus CalculateStatus(int max_count) const;
 
-  int _count;
+  int m_count;
 };
 
 }  // namespace sequencer

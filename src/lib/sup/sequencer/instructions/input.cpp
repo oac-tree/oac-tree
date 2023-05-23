@@ -28,6 +28,7 @@
 #include <sup/dto/anyvalue_helper.h>
 
 const std::string OUTPUT_VARIABLE_ATTR_NAME = "output";
+const std::string DESCRIPTION_ATTR_NAME = "description";
 
 namespace sup
 {
@@ -35,14 +36,14 @@ namespace sequencer
 {
 const std::string Input::Type = "Input";
 
-Input::Input() : Instruction(Input::Type) {}
+Input::Input()
+  : Instruction(Input::Type)
+{
+  AddAttributeDefinition(OUTPUT_VARIABLE_ATTR_NAME, sup::dto::StringType).SetMandatory();
+  AddAttributeDefinition(DESCRIPTION_ATTR_NAME, sup::dto::StringType);
+}
 
 Input::~Input() = default;
-
-void Input::SetupImpl(const Procedure& proc)
-{
-  CheckMandatoryNonEmptyAttribute(*this, OUTPUT_VARIABLE_ATTR_NAME);
-}
 
 ExecutionStatus Input::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
@@ -51,11 +52,14 @@ ExecutionStatus Input::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   {
     return ExecutionStatus::FAILURE;
   }
-  if (!ui.GetUserValue(value, GetAttribute("description")))
+  auto description =
+    HasAttribute(DESCRIPTION_ATTR_NAME) ? GetAttributeValue<std::string>(DESCRIPTION_ATTR_NAME)
+                                        : "";
+  if (!ui.GetUserValue(value, description))
   {
     std::string warning_message = InstructionWarningProlog(*this) +
       "did not receive compatible user value for field [" +
-      GetAttribute(OUTPUT_VARIABLE_ATTR_NAME) + "[ in workspace";
+      GetAttributeValue<std::string>(OUTPUT_VARIABLE_ATTR_NAME) + "[ in workspace";
     ui.LogWarning(warning_message);
     return ExecutionStatus::FAILURE;
   }

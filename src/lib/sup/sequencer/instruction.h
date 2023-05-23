@@ -137,12 +137,13 @@ public:
    */
   std::string GetAttribute(const std::string& name) const;
 
+  AttributeMap GetAttributes() const;
   /**
    * @brief Get all attributes.
    *
-   * @return Map containing all attributes.
+   * @return List containing all attributes.
    */
-  AttributeMap GetAttributes() const;
+  const StringAttributeList& GetStringAttributes() const;
 
   /**
    * @brief Set new attribute with given name and value.

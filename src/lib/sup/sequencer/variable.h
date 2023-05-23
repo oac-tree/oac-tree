@@ -167,7 +167,7 @@ public:
   /**
    * @brief Get all attributes.
    *
-   * @return Map containing all attributes.
+   * @return List containing all attributes.
    */
   const StringAttributeList& GetStringAttributes() const;
 

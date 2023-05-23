@@ -1,3 +1,4 @@
 # To do list
 
-* Move Instruction to new attribute system
+* Remove Instruction::GetAttributes
+* Remove AttributeMap

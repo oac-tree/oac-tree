@@ -21,6 +21,8 @@
 
 #include <sup/sequencer/attribute_handler.h>
 
+#include <sup/sequencer/constants.h>
+
 #include "attribute_validator.h"
 #include "value_map_info.h"
 
@@ -33,6 +35,7 @@ StringAttributeList::iterator FindStringAttribute(StringAttributeList& str_attri
                                                   const std::string& attr_name);
 StringAttributeList::const_iterator FindStringAttribute(const StringAttributeList& str_attributes,
                                                         const std::string& attr_name);
+bool StartsWith(const std::string &str, char c);
 }  // unnamed namespace
 
 namespace sup
@@ -95,6 +98,28 @@ void AttributeHandler::SetStringAttribute(const std::string& name, const std::st
   {
     m_str_attributes.emplace_back(name, value);
   }
+}
+
+bool AttributeHandler::InitialiseVariableAttributes(const StringAttributeList& source_attributes)
+{
+  bool result = true;
+  for (auto& attr : m_str_attributes)
+  {
+    auto attr_value = attr.second;
+    if (StartsWith(attr_value, DefaultSettings::VAR_ATTRIBUTE_CHAR))
+    {
+      auto var_name = attr_value.substr(1);
+      auto it = FindStringAttribute(source_attributes, var_name);
+      if (it == source_attributes.end())
+      {
+        result = false;
+        continue;
+      }
+      auto var_value = it->second;
+      attr.second = var_value;
+    }
+  }
+  return result;
 }
 
 const StringAttributeList& AttributeHandler::GetStringAttributes() const
@@ -170,5 +195,14 @@ StringAttributeList::const_iterator FindStringAttribute(const StringAttributeLis
 {
   auto predicate = StringAttributeNameMatcher(attr_name);
   return std::find_if(str_attributes.begin(), str_attributes.end(), predicate);
+}
+
+bool StartsWith(const std::string& str, char c)
+{
+  if (str.empty())
+  {
+    return false;
+  }
+  return str[0] == c;
 }
 }  // unnamed namespace

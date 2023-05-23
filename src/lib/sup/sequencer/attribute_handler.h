@@ -54,6 +54,8 @@ public:
 
   void SetStringAttribute(const std::string& name, const std::string& value);
 
+  bool InitialiseVariableAttributes(const StringAttributeList& source_attributes);
+
   const StringAttributeList& GetStringAttributes() const;
 
   bool InitValueMap();

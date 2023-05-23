@@ -115,6 +115,11 @@ AttributeMap Instruction::GetAttributes() const
   return _attributes;
 }
 
+const StringAttributeList& Instruction::GetStringAttributes() const
+{
+  return m_attribute_handler.GetStringAttributes();
+}
+
 bool Instruction::AddAttribute(const std::string& name, const std::string& value)
 {
   return _attributes.AddAttribute(name, value);

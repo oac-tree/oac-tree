@@ -25,6 +25,7 @@
 #include <atomic>
 #include <mutex>
 
+#include <sup/sequencer/attribute_handler.h>
 #include <sup/sequencer/attribute_map.h>
 #include <sup/sequencer/execution_status.h>
 
@@ -217,6 +218,23 @@ public:
 
 protected:
   /**
+   * @brief Add an attribute definition with the given name and type.
+   *
+   * @param attr_name Attribute name.
+   * @param value_type Attribute type.
+   * @return Newly added attribute definition.
+   */
+  AttributeDefinition& AddAttributeDefinition(const std::string& attr_name,
+                                              const sup::dto::AnyType& value_type);
+
+  /**
+   * @brief Add an attribute constraint.
+   *
+   * @param constraint Attribute constraint.
+   */
+  void AddConstraint(Constraint constraint);
+
+  /**
    * @brief Check if a request to halt this instruction was issued.
    */
   bool IsHaltRequested() const;
@@ -234,6 +252,11 @@ private:
    * @brief Atomic flag that indicates if a request was made to halt the instruction.
    */
   std::atomic_bool m_halt_requested;
+
+  /**
+   * @brief Attribute handler.
+  */
+ AttributeHandler m_attribute_handler;
 
   AttributeMap _attributes;
 

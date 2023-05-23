@@ -228,21 +228,21 @@ private:
   const std::string m_type;
 
   /**
-   * @brief Mutex for concurrent access of Variable.
-   * @details This mutex protects access to all other private member data, unless explicitly
-   * mentioned otherwise.
-   */
-  mutable std::mutex m_access_mutex;
-
-  /**
    * @brief Attribute handler.
   */
- AttributeHandler m_attribute_handler;
+  AttributeHandler m_attribute_handler;
 
   /**
    * @brief Indicates if the Variable was correctly setup from its attributes.
    */
   bool m_setup_successful;
+
+  /**
+   * @brief Mutex for concurrent access of Variable.
+   * @details This mutex protects access to all other private member data, unless explicitly
+   * mentioned otherwise.
+   */
+  mutable std::mutex m_access_mutex;
 
   /**
    * @brief Mutex for concurrent access of the update counter.

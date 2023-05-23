@@ -42,7 +42,11 @@ Instruction::Instruction(const std::string &type)
     , m_status{ExecutionStatus::NOT_STARTED}
     , m_status_before{ExecutionStatus::NOT_STARTED}
     , m_halt_requested{false}
-{}
+    , m_attribute_handler{}
+    , m_status_mutex{}
+{
+  AddAttributeDefinition(attributes::kNameAttribute, sup::dto::StringType);
+}
 
 Instruction::~Instruction() = default;
 
@@ -168,6 +172,17 @@ bool Instruction::InsertInstruction(Instruction* child, int index)
 Instruction* Instruction::TakeInstruction(int index)
 {
   return TakeInstructionImpl(index);
+}
+
+AttributeDefinition& Instruction::AddAttributeDefinition(const std::string& attr_name,
+                                                      const sup::dto::AnyType& value_type)
+{
+  return m_attribute_handler.AddAttributeDefinition(attr_name, value_type);
+}
+
+void Instruction::AddConstraint(Constraint constraint)
+{
+  return m_attribute_handler.AddConstraint(constraint);
 }
 
 bool Instruction::IsHaltRequested() const

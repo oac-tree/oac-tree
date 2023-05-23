@@ -54,8 +54,6 @@ public:
 
   void SetStringAttribute(const std::string& name, const std::string& value);
 
-  bool InitialiseVariableAttributes(const StringAttributeList& source_attributes);
-
   const StringAttributeList& GetStringAttributes() const;
 
   bool InitValueMap();
@@ -98,6 +96,11 @@ T AttributeHandler::GetValueAs(const std::string& attr_name) const
 
 std::string GetStringAttributeValue(const StringAttributeList& str_attributes,
                                     const std::string& attr_name);
+
+StringAttributeList::iterator FindStringAttribute(StringAttributeList& str_attributes,
+                                                  const std::string& attr_name);
+StringAttributeList::const_iterator FindStringAttribute(const StringAttributeList& str_attributes,
+                                                        const std::string& attr_name);
 
 }  // namespace sequencer
 

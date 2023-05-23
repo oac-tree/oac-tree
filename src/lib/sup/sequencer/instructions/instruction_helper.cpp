@@ -37,7 +37,7 @@ bool CloneChildInstructions(sup::sequencer::Instruction* clone,
                             const sup::sequencer::Instruction* source);
 bool AddClonedChildInstruction(sup::sequencer::Instruction* instr,
                                const sup::sequencer::Instruction* child);
-
+bool StartsWith(const std::string &str, char c);
 }  // Unnamed namespace
 
 namespace sup
@@ -108,6 +108,29 @@ bool InitialiseVariableAttributes(Instruction& instruction,
   return result;
 }
 
+bool InitialiseVariableAttributes(AttributeHandler& attribute_handler,
+                                  const StringAttributeList& source_attributes)
+{
+  bool result = true;
+  for (auto& attr : attribute_handler.GetStringAttributes())
+  {
+    auto attr_value = attr.second;
+    if (StartsWith(attr_value, DefaultSettings::VAR_ATTRIBUTE_CHAR))
+    {
+      auto var_name = attr_value.substr(1);
+      auto it = FindStringAttribute(source_attributes, var_name);
+      if (it == source_attributes.end())
+      {
+        result = false;
+        continue;
+      }
+      auto var_value = it->second;
+      attribute_handler.SetStringAttribute(attr.first, var_value);
+    }
+  }
+  return result;
+}
+
 }  // namespace InstructionHelper
 
 }  // namespace sequencer
@@ -164,4 +187,12 @@ bool AddClonedChildInstruction(Instruction* instr, const Instruction* child)
   return false;
 }
 
+bool StartsWith(const std::string& str, char c)
+{
+  if (str.empty())
+  {
+    return false;
+  }
+  return str[0] == c;
+}
 }  // Unnamed namespace

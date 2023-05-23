@@ -63,6 +63,17 @@ Instruction* CloneInstruction(const Instruction* instruction);
 bool InitialiseVariableAttributes(Instruction& instruction,
                                   const AttributeMap& attributes);
 
+/**
+ * @brief Initialize variable attributes of an AttributeHandler.
+ *
+ * @param attribute_handler Attribute handler.
+ * @param source_attributes List of attributes to use for initialisation.
+ *
+ * @return true on successful initialisation of variable attributes.
+ */
+bool InitialiseVariableAttributes(AttributeHandler& attribute_handler,
+                                  const StringAttributeList& source_attributes);
+
 }  // namespace InstructionHelper
 
 }  // namespace sequencer

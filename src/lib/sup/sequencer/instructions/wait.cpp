@@ -67,11 +67,11 @@ ExecutionStatus Wait::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   (void)ui;
   (void)ws;
   auto finish = utils::GetNanosecsSinceEpoch() + m_timeout;
-  while (!_halt_requested.load() && finish > utils::GetNanosecsSinceEpoch())
+  while (!IsHaltRequested() && finish > utils::GetNanosecsSinceEpoch())
   {
     std::this_thread::sleep_for(std::chrono::milliseconds(DefaultSettings::TIMING_ACCURACY_MS));
   }
-  if (_halt_requested.load())
+  if (IsHaltRequested())
   {
     return ExecutionStatus::FAILURE;
   }

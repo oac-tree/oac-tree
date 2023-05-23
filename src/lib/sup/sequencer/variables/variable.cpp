@@ -50,7 +50,7 @@ Variable::Variable(const std::string &type)
   , m_attribute_handler{}
   , m_setup_successful{false}
 {
-  m_attribute_handler.AddAttributeDefinition(attributes::kNameAttribute, sup::dto::StringType);
+  AddAttributeDefinition(attributes::kNameAttribute, sup::dto::StringType);
 }
 
 Variable::~Variable() = default;

@@ -38,17 +38,17 @@ namespace sequencer
 {
 
 Instruction::Instruction(const std::string &type)
-    : _type{type}
-    , _status{ExecutionStatus::NOT_STARTED}
-    , _status_before{ExecutionStatus::NOT_STARTED}
-    , _halt_requested{false}
+    : m_type{type}
+    , m_status{ExecutionStatus::NOT_STARTED}
+    , m_status_before{ExecutionStatus::NOT_STARTED}
+    , m_halt_requested{false}
 {}
 
 Instruction::~Instruction() = default;
 
 std::string Instruction::GetType() const
 {
-  return _type;
+  return m_type;
 }
 
 std::string Instruction::GetName() const
@@ -66,8 +66,8 @@ void Instruction::SetName(const std::string &name)
 
 ExecutionStatus Instruction::GetStatus() const
 {
-  std::lock_guard<std::mutex> lock(_status_mutex);
-  return _status;
+  std::lock_guard<std::mutex> lock(m_status_mutex);
+  return m_status;
 }
 
 void Instruction::Setup(const Procedure& proc)
@@ -78,14 +78,14 @@ void Instruction::Setup(const Procedure& proc)
 void Instruction::ExecuteSingle(UserInterface& ui, Workspace& ws)
 {
   Preamble(ui);
-  _status_before = GetStatus();
+  m_status_before = GetStatus();
   SetStatus(ExecuteSingleImpl(ui, ws));
   Postamble(ui);
 }
 
 void Instruction::Halt()
 {
-  _halt_requested.store(true);
+  m_halt_requested.store(true);
   HaltImpl();
 }
 
@@ -93,7 +93,7 @@ void Instruction::Reset()
 {
   ResetHook();
   SetStatus(ExecutionStatus::NOT_STARTED);
-  _halt_requested.store(false);
+  m_halt_requested.store(false);
 }
 
 bool Instruction::HasAttribute(const std::string& name) const
@@ -170,10 +170,15 @@ Instruction* Instruction::TakeInstruction(int index)
   return TakeInstructionImpl(index);
 }
 
+bool Instruction::IsHaltRequested() const
+{
+  return m_halt_requested.load();
+}
+
 void Instruction::SetStatus(ExecutionStatus status)
 {
-  std::lock_guard<std::mutex> lock(_status_mutex);
-  _status = status;
+  std::lock_guard<std::mutex> lock(m_status_mutex);
+  m_status = status;
 }
 
 void Instruction::Preamble(UserInterface& ui)
@@ -188,7 +193,7 @@ void Instruction::Preamble(UserInterface& ui)
 
 void Instruction::Postamble(UserInterface& ui)
 {
-  if (GetStatus() != _status_before)
+  if (GetStatus() != m_status_before)
   {
     ui.UpdateInstructionStatus(this);
   }

@@ -64,10 +64,10 @@ ExecutionStatus Listen::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   {
     ResetChild();
     std::unique_lock<std::mutex> lk(mx);
-    cv.wait(lk, [this]{ return var_changed || _halt_requested; });
+    cv.wait(lk, [this]{ return var_changed || IsHaltRequested(); });
     var_changed = false;
     lk.unlock();
-    if (_halt_requested)
+    if (IsHaltRequested())
     {
       ClearCallbacks();
       return ExecutionStatus::FAILURE;

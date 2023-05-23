@@ -81,7 +81,7 @@ ExecutionStatus WaitForVariable::ExecuteSingleImpl(UserInterface& ui, Workspace&
   bool success = false;
   auto predicate = [&]{
                         success = CheckCondition(ws);
-                        return _halt_requested.load() || success;
+                        return IsHaltRequested() || success;
                       };
   std::unique_lock<std::mutex> lk(mx);
   auto result = cv.wait_for(lk, std::chrono::nanoseconds(m_timeout), predicate);

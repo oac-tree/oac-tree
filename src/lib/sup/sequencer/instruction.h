@@ -217,19 +217,23 @@ public:
 
 protected:
   /**
-   * @brief Atomic flag that indicates if a request was made to halt the instruction.
+   * @brief Check if a request to halt this instruction was issued.
    */
-  std::atomic_bool _halt_requested;
+  bool IsHaltRequested() const;
 
 private:
   /**
    * @brief Typename of this instruction
    */
-  const std::string _type;
+  const std::string m_type;
 
-  ExecutionStatus _status;
+  ExecutionStatus m_status;
 
-  ExecutionStatus _status_before;
+  ExecutionStatus m_status_before;
+  /**
+   * @brief Atomic flag that indicates if a request was made to halt the instruction.
+   */
+  std::atomic_bool m_halt_requested;
 
   AttributeMap _attributes;
 
@@ -238,7 +242,7 @@ private:
    *
    * @note Only locked for Get/SetStatus to prevent deadlock.
    */
-  mutable std::mutex _status_mutex;
+  mutable std::mutex m_status_mutex;
 
   /**
    * @brief Set the Instruction's execution status.

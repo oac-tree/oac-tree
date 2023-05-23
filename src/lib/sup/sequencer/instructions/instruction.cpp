@@ -162,6 +162,11 @@ bool Instruction::InitialiseVariableAttributes(const StringAttributeList& source
   return status;
 }
 
+const std::vector<AttributeDefinition>& Instruction::GetAttributeDefinitions() const
+{
+  return m_attribute_handler.GetAttributeDefinitions();
+}
+
 int Instruction::ChildrenCount() const
 {
   return ChildrenCountImpl();

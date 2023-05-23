@@ -178,6 +178,28 @@ public:
   bool InitialiseVariableAttributes(const StringAttributeList& source_attributes);
 
   /**
+   * @brief Get attribute value with given name and type.
+   *
+   * @param attr_name Attribute name.
+   * @return Attribute value of requested type.
+   *
+   * @throws RuntimeException when attribute with given name was not found or its value could not
+   * be converted to the requested type.
+   */
+  template <typename T>
+  T GetAttributeValue(const std::string& attr_name) const
+  {
+    return m_attribute_handler.GetValueAs<T>(attr_name);
+  }
+
+  /**
+   * @brief Get all attribute definitions.
+   *
+   * @return List of attribute definitions.
+   */
+  const std::vector<AttributeDefinition>& GetAttributeDefinitions() const;
+
+  /**
    * @brief Returns children count.
    *
    * @return children count

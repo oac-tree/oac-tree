@@ -189,6 +189,11 @@ bool Variable::AddAttributes(const StringAttributeList& str_attributes)
   return status;
 }
 
+const std::vector<AttributeDefinition>& Variable::GetAttributeDefinitions() const
+{
+  return m_attribute_handler.GetAttributeDefinitions();
+}
+
 AttributeDefinition& Variable::AddAttributeDefinition(const std::string& attr_name,
                                                       const sup::dto::AnyType& value_type)
 {

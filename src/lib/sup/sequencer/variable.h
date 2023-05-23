@@ -203,6 +203,13 @@ public:
     return m_attribute_handler.GetValueAs<T>(attr_name);
   }
 
+  /**
+   * @brief Get all attribute definitions.
+   *
+   * @return List of attribute definitions.
+   */
+  const std::vector<AttributeDefinition>& GetAttributeDefinitions() const;
+
 protected:
   /**
    * @brief Add an attribute definition with the given name and type.

@@ -44,7 +44,6 @@ FileVariable::FileVariable()
 {
   AddAttributeDefinition(FILENAME_ATTR_NAME, sup::dto::StringType).SetMandatory();
   AddAttributeDefinition(PRETTY_JSON_ATTR_NAME, sup::dto::BooleanType);
-  AddConstraint(MakeConstraint<NonEmpty>(FILENAME_ATTR_NAME));
 }
 
 FileVariable::~FileVariable() = default;

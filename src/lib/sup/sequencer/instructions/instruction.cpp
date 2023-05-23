@@ -21,6 +21,8 @@
 
 #include <sup/sequencer/instruction.h>
 
+#include "instruction_helper.h"
+
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/user_interface.h>
 #include <sup/sequencer/workspace.h>
@@ -102,12 +104,12 @@ void Instruction::Reset()
 
 bool Instruction::HasAttribute(const std::string& name) const
 {
-  return _attributes.HasAttribute(name);
+  return m_attribute_handler.HasStringAttribute(name);
 }
 
 std::string Instruction::GetAttribute(const std::string& name) const
 {
-  return _attributes.GetAttribute(name);
+  return GetStringAttributeValue(m_attribute_handler.GetStringAttributes(), name);
 }
 
 AttributeMap Instruction::GetAttributes() const
@@ -122,13 +124,17 @@ const StringAttributeList& Instruction::GetStringAttributes() const
 
 bool Instruction::AddAttribute(const std::string& name, const std::string& value)
 {
-  return _attributes.AddAttribute(name, value);
+  (void)_attributes.AddAttribute(name, value);
+  return m_attribute_handler.AddStringAttribute(name, value);
 }
 
 bool Instruction::SetAttribute(const std::string& name, const std::string& value)
 {
-  if (!_attributes.HasAttribute(name))
+  if (!HasAttribute(name))
+  {
     return false;
+  }
+  m_attribute_handler.SetStringAttribute(name, value);
   _attributes.SetAttribute(name, value);
   return true;
 }
@@ -145,7 +151,8 @@ bool Instruction::AddAttributes(const AttributeMap& attributes)
 
 bool Instruction::InitialiseVariableAttributes(const AttributeMap& source)
 {
-  bool status = _attributes.InitialiseVariableAttributes(source) && PostInitialiseVariables(source);
+  bool status = InstructionHelper::InitialiseVariableAttributes(m_attribute_handler, source.GetRawMap());
+  status = _attributes.InitialiseVariableAttributes(source) && PostInitialiseVariables(source);
   return status;
 }
 

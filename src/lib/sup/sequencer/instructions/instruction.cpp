@@ -59,15 +59,19 @@ std::string Instruction::GetType() const
 
 std::string Instruction::GetName() const
 {
-  return GetAttribute(attributes::NAME_ATTRIBUTE);
+  return GetAttribute(attributes::kNameAttribute);
 }
 
 void Instruction::SetName(const std::string &name)
 {
-  if (HasAttribute(attributes::NAME_ATTRIBUTE))
-    SetAttribute(attributes::NAME_ATTRIBUTE, name);
+  if (HasAttribute(attributes::kNameAttribute))
+  {
+    SetAttribute(attributes::kNameAttribute, name);
+  }
   else
-    AddAttribute(attributes::NAME_ATTRIBUTE, name);
+  {
+    AddAttribute(attributes::kNameAttribute, name);
+  }
 }
 
 ExecutionStatus Instruction::GetStatus() const
@@ -78,6 +82,13 @@ ExecutionStatus Instruction::GetStatus() const
 
 void Instruction::Setup(const Procedure& proc)
 {
+  if (!m_attribute_handler.InitValueMap())
+  {
+    auto error_message = "Oops";
+      // TODO: create correct exception message
+      // VariableSetupExceptionMessage(*this, m_attribute_handler.GetFailedConstraints());
+    throw InstructionSetupException(error_message);
+  }
   return SetupImpl(proc);
 }
 
@@ -99,6 +110,7 @@ void Instruction::Reset()
 {
   ResetHook();
   SetStatus(ExecutionStatus::NOT_STARTED);
+  m_attribute_handler.ClearValueMap();
   m_halt_requested.store(false);
 }
 
@@ -112,11 +124,6 @@ std::string Instruction::GetAttribute(const std::string& name) const
   return GetStringAttributeValue(m_attribute_handler.GetStringAttributes(), name);
 }
 
-AttributeMap Instruction::GetAttributes() const
-{
-  return _attributes;
-}
-
 const StringAttributeList& Instruction::GetStringAttributes() const
 {
   return m_attribute_handler.GetStringAttributes();
@@ -124,7 +131,6 @@ const StringAttributeList& Instruction::GetStringAttributes() const
 
 bool Instruction::AddAttribute(const std::string& name, const std::string& value)
 {
-  (void)_attributes.AddAttribute(name, value);
   return m_attribute_handler.AddStringAttribute(name, value);
 }
 
@@ -135,11 +141,10 @@ bool Instruction::SetAttribute(const std::string& name, const std::string& value
     return false;
   }
   m_attribute_handler.SetStringAttribute(name, value);
-  _attributes.SetAttribute(name, value);
   return true;
 }
 
-bool Instruction::AddAttributes(const AttributeMap& attributes)
+bool Instruction::AddAttributes(const StringAttributeList& attributes)
 {
   bool result = true;
   for (const auto &attr : attributes)
@@ -149,10 +154,11 @@ bool Instruction::AddAttributes(const AttributeMap& attributes)
   return result;
 }
 
-bool Instruction::InitialiseVariableAttributes(const AttributeMap& source)
+bool Instruction::InitialiseVariableAttributes(const StringAttributeList& source_attributes)
 {
-  bool status = InstructionHelper::InitialiseVariableAttributes(m_attribute_handler, source.GetRawMap());
-  status = _attributes.InitialiseVariableAttributes(source) && PostInitialiseVariables(source);
+  bool status =
+    InstructionHelper::InitialiseVariableAttributes(m_attribute_handler, source_attributes) &&
+    PostInitialiseVariables(source_attributes);
   return status;
 }
 
@@ -234,7 +240,7 @@ void Instruction::HaltImpl() {}
 
 void Instruction::ResetHook() {}
 
-bool Instruction::PostInitialiseVariables(const AttributeMap&)
+bool Instruction::PostInitialiseVariables(const StringAttributeList&)
 {
   return true;
 }

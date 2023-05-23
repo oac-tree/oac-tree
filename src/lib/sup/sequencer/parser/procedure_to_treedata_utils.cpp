@@ -43,7 +43,7 @@ std::unique_ptr<T> make_unique(Args&&... args)
 std::unique_ptr<sup::xml::TreeData> CreateTreeData(const sup::sequencer::Instruction* instruction)
 {
   auto tree_data = internal::make_unique<sup::xml::TreeData>(instruction->GetType());
-  for (const auto& it : instruction->GetAttributes())
+  for (const auto& it : instruction->GetStringAttributes())
   {
     tree_data->AddAttribute(it.first, it.second);
   }

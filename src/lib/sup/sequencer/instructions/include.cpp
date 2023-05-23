@@ -65,10 +65,10 @@ ExecutionStatus Include::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   return CalculateStatus();
 }
 
-bool Include::PostInitialiseVariables(const AttributeMap& source)
+bool Include::PostInitialiseVariables(const StringAttributeList& source_attributes)
 {
   bool result = true;
-  for (auto& attr : source)
+  for (auto& attr : source_attributes)
   {
     if (!HasAttribute(attr.first))
     {
@@ -97,7 +97,7 @@ void Include::SetupImpl(const Procedure& proc)
     throw InstructionSetupException(error_message);
   }
   std::unique_ptr<Instruction> clone(InstructionHelper::CloneInstruction(instr));
-  if (!InstructionHelper::InitialiseVariableAttributes(*clone, GetAttributes()))
+  if (!InstructionHelper::InitialiseVariableAttributes(*clone, GetStringAttributes()))
   {
     std::string error_message = InstructionSetupExceptionProlog(*this) +
       "could not initialise variable attributes for child instruction";

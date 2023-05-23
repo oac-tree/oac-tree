@@ -21,6 +21,7 @@
 
 #include "listen.h"
 
+#include <sup/sequencer/attribute_map.h>
 #include <sup/sequencer/constants.h>
 #include <sup/sequencer/exceptions.h>
 

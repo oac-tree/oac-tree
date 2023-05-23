@@ -26,7 +26,6 @@
 #include <mutex>
 
 #include <sup/sequencer/attribute_handler.h>
-#include <sup/sequencer/attribute_map.h>
 #include <sup/sequencer/execution_status.h>
 
 #include <sup/dto/anyvalue.h>
@@ -137,7 +136,6 @@ public:
    */
   std::string GetAttribute(const std::string& name) const;
 
-  AttributeMap GetAttributes() const;
   /**
    * @brief Get all attributes.
    *
@@ -169,15 +167,15 @@ public:
    * @param attributes List of attributes to set.
    * @return true when successful.
    */
-  bool AddAttributes(const AttributeMap& attributes);
+  bool AddAttributes(const StringAttributeList& attributes);
 
   /**
    * @brief Initialise variable attributes with values from attribute map.
    *
-   * @param source Map containing variable name - value pairs.
-   * @return true when all variable attributes were initialised.
+   * @param source_attributes List containing variable name - value pairs.
+   * @return true when all variable attributes were correctly initialised.
    */
-  bool InitialiseVariableAttributes(const AttributeMap& source);
+  bool InitialiseVariableAttributes(const StringAttributeList& source_attributes);
 
   /**
    * @brief Returns children count.
@@ -258,8 +256,6 @@ private:
    * @brief Attribute handler.
   */
  AttributeHandler m_attribute_handler;
-
-  AttributeMap _attributes;
 
   /**
    * @brief Mutex for thread safe access to the Instruction's execution status.
@@ -351,7 +347,7 @@ private:
    * @details Mainly used to propagate attributes to nested instructions.
    * Default implementation returns true.
    */
-  virtual bool PostInitialiseVariables(const AttributeMap& source);
+  virtual bool PostInitialiseVariables(const StringAttributeList& source_attributes);
 
   /**
    * @brief Returns children count.

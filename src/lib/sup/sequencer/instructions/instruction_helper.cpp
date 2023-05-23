@@ -83,7 +83,7 @@ Instruction* CloneInstruction(const Instruction* instruction)
   {
     return nullptr;
   }
-  result->AddAttributes(instruction->GetAttributes());
+  result->AddAttributes(instruction->GetStringAttributes());
   if (!CloneChildInstructions(result.get(), instruction))
   {
     return nullptr;
@@ -98,12 +98,12 @@ Instruction* CloneInstruction(const Instruction* instruction)
 }
 
 bool InitialiseVariableAttributes(Instruction& instruction,
-                                  const AttributeMap& attributes)
+                                  const StringAttributeList& source_attributes)
 {
-  bool result = instruction.InitialiseVariableAttributes(attributes);
+  bool result = instruction.InitialiseVariableAttributes(source_attributes);
   for (auto child : instruction.ChildInstructions())
   {
-    result = InitialiseVariableAttributes(*child, attributes) && result;
+    result = InitialiseVariableAttributes(*child, source_attributes) && result;
   }
   return result;
 }

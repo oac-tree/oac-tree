@@ -61,7 +61,7 @@ Instruction* CloneInstruction(const Instruction* instruction);
  * @return true on successful initialisation of variable attributes.
  */
 bool InitialiseVariableAttributes(Instruction& instruction,
-                                  const AttributeMap& attributes);
+                                  const StringAttributeList& source_attributes);
 
 /**
  * @brief Initialize variable attributes of an AttributeHandler.

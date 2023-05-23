@@ -62,7 +62,7 @@ public:
 private:
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 
-  bool PostInitialiseVariables(const AttributeMap& source) override;
+  bool PostInitialiseVariables(const StringAttributeList& source_attributes) override;
 
   void SetupImpl(const Procedure& proc) override;
 

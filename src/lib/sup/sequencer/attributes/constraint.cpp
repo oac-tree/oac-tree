@@ -25,6 +25,7 @@ namespace sup
 {
 namespace sequencer
 {
+IConstraint::~IConstraint() = default;
 
 Constraint::~Constraint() = default;
 

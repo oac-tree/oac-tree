@@ -120,6 +120,13 @@ TEST_F(ProcedureTest, DefaultConstructed)
   EXPECT_NE(std::find(variables.begin(), variables.end(), var2_name), variables.end());
 }
 
+TEST_F(ProcedureTest, SetupFailure)
+{
+  Procedure procedure;
+  EXPECT_TRUE(procedure.AddAttribute(kTickTimeoutAttributeName, "cannot_parse_this"));
+  EXPECT_THROW(procedure.Setup(), ProcedureSetupException);
+}
+
 TEST_F(ProcedureTest, GetWorkspace)
 {
   Procedure procedure;

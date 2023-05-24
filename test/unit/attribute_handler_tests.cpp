@@ -72,6 +72,37 @@ TEST_F(AttributeHandlerTest, AttributeDefinitions)
   }
 }
 
+TEST_F(AttributeHandlerTest, SetStringAttribute)
+{
+  AttributeHandler handler;
+  auto str_attributes = handler.GetStringAttributes();
+  EXPECT_EQ(str_attributes.size(), 0);
+  EXPECT_NO_THROW(handler.AddStringAttribute(kStrAttrName, kBoolAttrValue));
+  EXPECT_TRUE(handler.HasStringAttribute(kStrAttrName));
+  str_attributes = handler.GetStringAttributes();
+  ASSERT_EQ(str_attributes.size(), 1);
+  auto attr = str_attributes[0];
+  EXPECT_EQ(attr.first, kStrAttrName);
+  EXPECT_EQ(attr.second, kBoolAttrValue);
+  EXPECT_NO_THROW(handler.SetStringAttribute(kStrAttrName, kStrAttrValue));
+  str_attributes = handler.GetStringAttributes();
+  ASSERT_EQ(str_attributes.size(), 1);
+  attr = str_attributes[0];
+  EXPECT_EQ(attr.first, kStrAttrName);
+  EXPECT_EQ(attr.second, kStrAttrValue);
+}
+
+TEST_F(AttributeHandlerTest, GetValueAs)
+{
+  AttributeHandler handler;
+  EXPECT_NO_THROW(handler.AddStringAttribute(kStrAttrName, kStrAttrValue));
+  EXPECT_TRUE(handler.InitValueMap());
+  std::string str_val;
+  EXPECT_NO_THROW(str_val = handler.GetValueAs<std::string>(kStrAttrName));
+  EXPECT_THROW(str_val = handler.GetValueAs<std::string>(kDoubleAttrName), RuntimeException);
+  EXPECT_THROW(handler.GetValueAs<double>(kStrAttrName), RuntimeException);
+}
+
 TEST_F(AttributeHandlerTest, MandatoryAttributes)
 {
   // Successful addition and failed one

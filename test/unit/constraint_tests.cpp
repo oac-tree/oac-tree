@@ -55,6 +55,16 @@ protected:
   StringAttributeList m_attr_map;
 };
 
+TEST_F(ConstraintTest, MovedFrom)
+{
+  auto constraint = MakeConstraint<Exists>(kEmptyStringAttrName);
+  EXPECT_TRUE(constraint.Validate(m_attr_map));
+  Constraint constraint_moved = std::move(constraint);
+  EXPECT_TRUE(constraint_moved.Validate(m_attr_map));
+  EXPECT_FALSE(constraint.Validate(m_attr_map));
+  EXPECT_EQ(constraint.GetRepresentation(), kConstraintEmpty);
+}
+
 TEST_F(ConstraintTest, Exists)
 {
   {

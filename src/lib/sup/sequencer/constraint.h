@@ -41,7 +41,7 @@ const std::string kConstraintEmpty = "Empty constraint (always fails)";
 class IConstraint
 {
 public:
-  virtual ~IConstraint() = default;
+  virtual ~IConstraint();
 
   virtual IConstraint* Clone() const = 0;
 

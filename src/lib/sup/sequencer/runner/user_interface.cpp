@@ -27,7 +27,7 @@ namespace sup
 {
 namespace sequencer
 {
-
+UserInterface::UserInterface() = default;
 UserInterface::~UserInterface() = default;
 
 void UserInterface::UpdateInstructionStatus(const Instruction* instruction)

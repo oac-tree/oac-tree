@@ -40,7 +40,7 @@ class Instruction;
 class UserInterface
 {
 public:
-  UserInterface() = default;
+  UserInterface();
 
   virtual ~UserInterface();
 

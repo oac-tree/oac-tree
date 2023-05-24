@@ -30,6 +30,8 @@
 namespace
 {
 std::string WrapOptionalInstructionNameString(const std::string& instr_name);
+std::string InstructionSetupExceptionMessage(const sup::sequencer::Instruction& instruction,
+                                             const std::vector<std::string>& failed_constraints);
 }  // unnamed namespace
 
 namespace sup
@@ -83,9 +85,8 @@ void Instruction::Setup(const Procedure& proc)
 {
   if (!m_attribute_handler.InitValueMap())
   {
-    auto error_message = "Oops";
-      // TODO: create correct exception message
-      // VariableSetupExceptionMessage(*this, m_attribute_handler.GetFailedConstraints());
+    auto error_message =
+      InstructionSetupExceptionMessage(*this, m_attribute_handler.GetFailedConstraints());
     throw InstructionSetupException(error_message);
   }
   return SetupImpl(proc);
@@ -366,4 +367,14 @@ std::string WrapOptionalInstructionNameString(const std::string& instr_name)
   }
   return "[" + instr_name + "] ";
 }
+
+std::string InstructionSetupExceptionMessage(const sup::sequencer::Instruction& instruction,
+                                             const std::vector<std::string>& failed_constraints)
+{
+  std::string message =
+    InstructionSetupExceptionProlog(instruction) + "Failed attribute constraint(s):" +
+    sup::sequencer::FormatFailedConstraints(failed_constraints);
+  return message;
+}
+
 }  // unnamed namespace

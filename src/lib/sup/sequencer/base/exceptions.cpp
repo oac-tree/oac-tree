@@ -47,6 +47,10 @@ ParseException::ParseException(const std::string& message)
   : MessageException{message}
 {}
 
+ProcedureSetupException::ProcedureSetupException(const std::string& message)
+  : MessageException{message}
+{}
+
 InstructionSetupException::InstructionSetupException(const std::string& message)
   : MessageException{message}
 {}

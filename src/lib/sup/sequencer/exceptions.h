@@ -70,6 +70,15 @@ public:
 };
 
 /**
+ * @brief Exception thrown when setting up a procedure failed.
+ */
+class ProcedureSetupException : public MessageException
+{
+public:
+  ProcedureSetupException(const std::string& message);
+};
+
+/**
  * @brief Exception thrown when setting up an instruction failed.
  */
 class InstructionSetupException : public MessageException

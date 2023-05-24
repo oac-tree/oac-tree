@@ -175,8 +175,12 @@ bool Procedure::GetVariableValue(std::string name, sup::dto::AnyValue &value) co
 
 bool Procedure::Setup()
 {
-  // TODO: throw when this fails!
-  m_attribute_handler.InitValueMap();
+  if (!m_attribute_handler.InitValueMap())
+  {
+    std::string error_message = "Procedure::Setup(): Failed attribute constraint(s):" +
+                                FormatFailedConstraints(m_attribute_handler.GetFailedConstraints());
+    throw ProcedureSetupException(error_message);
+  }
   m_workspace->Setup();
   if (RootInstruction() == nullptr)
   {

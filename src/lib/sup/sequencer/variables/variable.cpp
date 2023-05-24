@@ -30,7 +30,6 @@
 
 #include <chrono>
 #include <cmath>
-#include <sstream>
 
 namespace
 {
@@ -288,13 +287,9 @@ bool TryStrictAssignment(sup::dto::AnyValue& dest, const std::string& dest_field
 std::string VariableSetupExceptionMessage(const sup::sequencer::Variable& var,
                                           const std::vector<std::string>& failed_constraints)
 {
-  std::stringstream oss;
-  oss << VariableSetupExceptionProlog(var) << "Failed attribute constraint(s):";
-  for (const auto& failed_constraint : failed_constraints)
-  {
-    oss << std::endl << failed_constraint;
-  }
-  return oss.str();
+  std::string message = VariableSetupExceptionProlog(var) + "Failed attribute constraint(s):" +
+                        sup::sequencer::FormatFailedConstraints(failed_constraints);
+  return message;
 }
 
 }  // unnamed namespace

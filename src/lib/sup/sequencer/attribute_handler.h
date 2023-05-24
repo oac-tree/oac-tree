@@ -101,7 +101,8 @@ StringAttributeList::iterator FindStringAttribute(StringAttributeList& str_attri
                                                   const std::string& attr_name);
 StringAttributeList::const_iterator FindStringAttribute(const StringAttributeList& str_attributes,
                                                         const std::string& attr_name);
-
+std::string FormatFailedConstraints(const std::vector<std::string>& failed_constraints,
+                                    const std::string& prefix = "\n");
 }  // namespace sequencer
 
 }  // namespace sup

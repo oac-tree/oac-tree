@@ -25,6 +25,7 @@
 #include "value_map_info.h"
 
 #include <algorithm>
+#include <sstream>
 
 namespace sup
 {
@@ -155,6 +156,16 @@ StringAttributeList::const_iterator FindStringAttribute(const StringAttributeLis
   return std::find_if(str_attributes.begin(), str_attributes.end(), predicate);
 }
 
+std::string FormatFailedConstraints(const std::vector<std::string>& failed_constraints,
+                                    const std::string& prefix)
+{
+  std::stringstream oss;
+  for (const auto& failed_constraint : failed_constraints)
+  {
+    oss << prefix << failed_constraint;
+  }
+  return oss.str();
+}
 }  // namespace sequencer
 
 }  // namespace sup

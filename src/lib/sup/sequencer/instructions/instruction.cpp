@@ -27,6 +27,9 @@
 #include <sup/sequencer/user_interface.h>
 #include <sup/sequencer/workspace.h>
 
+#include <sup/dto/json_type_parser.h>
+#include <sup/dto/json_value_parser.h>
+
 namespace
 {
 std::string WrapOptionalInstructionNameString(const std::string& instr_name);
@@ -351,6 +354,36 @@ bool SetValueFromAttributeName(const Instruction& instruction, Workspace& ws,
     return false;
   }
   return true;
+}
+
+sup::dto::AnyValue ParseAnyValueAttributePair(const Instruction& instruction,
+                                              const Workspace& ws,
+                                              UserInterface& ui,
+                                              const std::string& type_attr_name,
+                                              const std::string& value_attr_name)
+{
+  auto type_str = instruction.GetAttributeValue<std::string>(type_attr_name);
+  sup::dto::JSONAnyTypeParser type_parser;
+  auto registry = ws.GetTypeRegistry();
+  if (!type_parser.ParseString(type_str, registry))
+  {
+    std::string error_message = InstructionErrorProlog(instruction) +
+      "could not parse type [" + type_str + "] from attribute [" + type_attr_name + "]";
+    ui.LogError(error_message);
+    return {};
+  }
+  sup::dto::AnyType anytype = type_parser.MoveAnyType();
+  auto val_str = instruction.GetAttributeValue<std::string>(value_attr_name);
+  sup::dto::JSONAnyValueParser val_parser;
+  if (!val_parser.TypedParseString(anytype, val_str))
+  {
+    std::string error_message = InstructionErrorProlog(instruction) +
+      "could not parse value [" + val_str + "] from attribute [" + value_attr_name +
+      "] to type [" + type_str + "]";
+    ui.LogError(error_message);
+    return {};
+  }
+  return val_parser.MoveAnyValue();
 }
 
 }  // namespace sequencer

@@ -461,6 +461,25 @@ bool SetValueFromAttributeName(const Instruction& instruction, Workspace& ws,
                                UserInterface& ui, const std::string& attr_name,
                                const sup::dto::AnyValue& value);
 
+/**
+ * @brief Construct an anyvalue from a pair of attributes holding the json type and value
+ * representation.
+ *
+ * @param instruction Instruction to use.
+ * @param ws Workspace that can hold type definitions.
+ * @param ui UserInterface to log errors to.
+ * @param type_attr_name Attribute name for the json type.
+ * @param value_attr_name Attribute name for the json value.
+ *
+ * @return AnyValue created from parsing the set of attributes. Both type and value attributes
+ * need to exist and be correctly formatted to parse them.
+ */
+sup::dto::AnyValue ParseAnyValueAttributePair(const Instruction& instruction,
+                                              const Workspace& ws,
+                                              UserInterface& ui,
+                                              const std::string& type_attr_name,
+                                              const std::string& value_attr_name);
+
 }  // namespace sequencer
 
 }  // namespace sup

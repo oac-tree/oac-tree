@@ -53,6 +53,17 @@ class Instruction
 {
 public:
   /**
+   * Enumeration that indicates if the instruction is a simple action (no child instructions),
+   * a decorator (one child) or a compound instruction (multiple children).
+  */
+  enum Category
+  {
+    kAction = 0,
+    kDecorator,
+    kCompound
+  };
+
+  /**
    * @brief Constructor.
    * @param type The type of instruction.
    */
@@ -62,6 +73,12 @@ public:
    * @brief Virtual destructor.
    */
   virtual ~Instruction();
+
+  /**
+   * @brief Get instruction category.
+   * @return instruction category.
+   */
+  virtual Category GetCategory() const;
 
   /**
    * @brief Get instruction type.

@@ -35,6 +35,11 @@ CompoundInstruction::~CompoundInstruction()
   }
 }
 
+Instruction::Category CompoundInstruction::GetCategory() const
+{
+  return kCompound;
+}
+
 void CompoundInstruction::PushBack(Instruction* instruction)
 {
   _children.push_back(instruction);

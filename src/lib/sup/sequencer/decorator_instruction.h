@@ -45,6 +45,8 @@ public:
 
   ~DecoratorInstruction() override;
 
+  Category GetCategory() const final;
+
   /**
    * @brief Set the decorated child instruction.
    *

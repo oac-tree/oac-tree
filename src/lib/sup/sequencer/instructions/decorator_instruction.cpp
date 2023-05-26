@@ -32,6 +32,11 @@ DecoratorInstruction::DecoratorInstruction(const std::string &type)
 
 DecoratorInstruction::~DecoratorInstruction() = default;
 
+Instruction::Category DecoratorInstruction::GetCategory() const
+{
+  return kDecorator;
+}
+
 void DecoratorInstruction::SetInstruction(Instruction *instruction)
 {
   m_child.reset(instruction);

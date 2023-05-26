@@ -45,6 +45,8 @@ public:
 
   ~CompoundInstruction() override;
 
+  Category GetCategory() const final;
+
   /**
    * @brief Add child instruction.
    *

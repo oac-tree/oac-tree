@@ -56,6 +56,11 @@ Instruction::Instruction(const std::string &type)
 
 Instruction::~Instruction() = default;
 
+Instruction::Category Instruction::GetCategory() const
+{
+  return kAction;
+}
+
 std::string Instruction::GetType() const
 {
   return m_type;

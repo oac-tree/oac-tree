@@ -19,7 +19,7 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <sup/sequencer/instructions/compound_instruction.h>
+#include <sup/sequencer/compound_instruction.h>
 #include <sup/sequencer/instructions/wait.h>
 
 #include <gtest/gtest.h>

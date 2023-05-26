@@ -22,7 +22,7 @@
 #ifndef SUP_SEQUENCER_INCLUDE_H_
 #define SUP_SEQUENCER_INCLUDE_H_
 
-#include "decorator_instruction.h"
+#include <sup/sequencer/decorator_instruction.h>
 
 namespace sup
 {

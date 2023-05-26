@@ -22,7 +22,7 @@
 #ifndef SUP_SEQUENCER_SEQUENCE_H_
 #define SUP_SEQUENCER_SEQUENCE_H_
 
-#include "compound_instruction.h"
+#include <sup/sequencer/compound_instruction.h>
 
 namespace sup
 {

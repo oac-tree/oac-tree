@@ -36,9 +36,11 @@ install(FILES
   attribute_definition.h
   attribute_handler.h
   attribute_utils.h
+  compound_instruction.h
   concrete_constraints.h
   constants.h
   constraint.h
+  decorator_instruction.h
   exceptions.h
   execution_status.h
   generic_utils.h

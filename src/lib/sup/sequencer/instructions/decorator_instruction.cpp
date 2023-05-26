@@ -19,7 +19,7 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "decorator_instruction.h"
+#include <sup/sequencer/decorator_instruction.h>
 
 namespace sup
 {

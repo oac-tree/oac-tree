@@ -19,7 +19,7 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "compound_instruction.h"
+#include <sup/sequencer/compound_instruction.h>
 
 namespace sup
 {

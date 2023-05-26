@@ -19,9 +19,7 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "sup/sequencer/instructions/lessthanorequal.h"
-
-#include "sup/sequencer/instructions/compound_instruction.h"
+#include "lessthanorequal.h"
 
 #include <sup/dto/anyvalue.h>
 #include <sup/dto/anyvalue_operations.h>

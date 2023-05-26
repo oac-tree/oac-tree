@@ -21,7 +21,7 @@
 
 #include "unit_test_helper.h"
 
-#include <sup/sequencer/instructions/compound_instruction.h>
+#include <sup/sequencer/compound_instruction.h>
 
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/instruction.h>

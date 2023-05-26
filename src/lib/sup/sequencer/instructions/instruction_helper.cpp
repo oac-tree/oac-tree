@@ -21,8 +21,8 @@
 
 #include "instruction_helper.h"
 
-#include "compound_instruction.h"
-#include "decorator_instruction.h"
+#include <sup/sequencer/compound_instruction.h>
+#include <sup/sequencer/decorator_instruction.h>
 #include "include.h"
 
 #include <sup/sequencer/constants.h>

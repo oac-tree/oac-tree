@@ -23,7 +23,7 @@
 #define SUP_SEQUENCER_PARALLEL_SEQUENCE_H_
 
 #include "async_wrapper.h"
-#include "compound_instruction.h"
+#include <sup/sequencer/compound_instruction.h>
 
 namespace sup
 {

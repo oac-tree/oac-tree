@@ -22,7 +22,7 @@
 #ifndef SUP_SEQUENCER_USER_CHOICE_H_
 #define SUP_SEQUENCER_USER_CHOICE_H_
 
-#include "compound_instruction.h"
+#include <sup/sequencer/compound_instruction.h>
 
 #include <string>
 #include <vector>

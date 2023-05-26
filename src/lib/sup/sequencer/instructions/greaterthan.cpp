@@ -19,7 +19,7 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "sup/sequencer/instructions/greaterthan.h"
+#include "greaterthan.h"
 
 #include <sup/dto/anyvalue.h>
 #include <sup/dto/basic_scalar_types.h>

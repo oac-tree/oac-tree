@@ -19,7 +19,7 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "sup/sequencer/instructions/lessthan.h"
+#include "lessthan.h"
 
 #include <sup/dto/anyvalue.h>
 #include <sup/dto/anyvalue_operations.h>

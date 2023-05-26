@@ -19,7 +19,7 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <sup/sequencer/instructions/decorator_instruction.h>
+#include <sup/sequencer/decorator_instruction.h>
 
 #include "unit_test_helper.h"
 

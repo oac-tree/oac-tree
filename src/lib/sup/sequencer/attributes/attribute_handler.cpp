@@ -22,7 +22,6 @@
 #include <sup/sequencer/attribute_handler.h>
 
 #include "attribute_validator.h"
-#include "value_map_info.h"
 
 #include <algorithm>
 #include <sstream>
@@ -34,7 +33,7 @@ namespace sequencer
 struct AttributeHandler::AttributeHandlerImpl
 {
   AttributeValidator attr_validator;
-  ValueMapInfo value_map_info;
+  std::vector<std::string> failed_constraints;
 };
 
 AttributeHandler::AttributeHandler()
@@ -96,29 +95,37 @@ const StringAttributeList& AttributeHandler::GetStringAttributes() const
 
 bool AttributeHandler::InitValueMap()
 {
-  m_impl->value_map_info = m_impl->attr_validator.CreateValueMap(m_str_attributes);
-  return m_impl->value_map_info.failed_constraints.empty();
+  m_impl->failed_constraints = m_impl->attr_validator.ValidateAttributes(m_str_attributes);
+  return m_impl->failed_constraints.empty();
 }
 
 void AttributeHandler::ClearValueMap()
 {
-  m_impl->value_map_info.failed_constraints.clear();
-  m_impl->value_map_info.value_map.clear();
+  m_impl->failed_constraints.clear();
 }
 
 std::vector<std::string> AttributeHandler::GetFailedConstraints() const
 {
-  return m_impl->value_map_info.failed_constraints;
+  return m_impl->failed_constraints;
 }
 
-sup::dto::AnyValue AttributeHandler::GetValue(const std::string& name) const
+sup::dto::AnyValue AttributeHandler::GetValue(const std::string& attr_name) const
 {
-  auto it = m_impl->value_map_info.value_map.find(name);
-  if (it == m_impl->value_map_info.value_map.end())
+  auto it = FindStringAttribute(m_str_attributes, attr_name);
+  if (it == m_str_attributes.end())
   {
-    return {};
+    std::string message = "AttributeHandler::GetValue(): no attribute with name [" +
+                          attr_name + "]";
+    throw RuntimeException(message);
   }
-  return it->second;
+  auto result = m_impl->attr_validator.TryCreateAnyValue(*it);
+  if (!result.second.empty())
+  {
+    std::string message = "AttributeHandler::GetValue(): failed to create value of name [" +
+                          attr_name + "] because of constraint:\n" + result.second;
+    throw RuntimeException(message);
+  }
+  return result.first;
 }
 
 std::string GetStringAttributeValue(const StringAttributeList& str_attributes,

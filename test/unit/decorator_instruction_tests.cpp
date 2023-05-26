@@ -88,11 +88,11 @@ TEST_F(DecoratorInstructionTest, ChildInstructions)
   auto registry = GlobalInstructionRegistry();
   auto instruction = GlobalInstructionRegistry().Create("ForceSuccess");
   ASSERT_TRUE(instruction.get() != nullptr);
-  ASSERT_TRUE(instruction->ChildInstructions().empty());
+  EXPECT_TRUE(instruction->ChildInstructions().empty());
 
   auto child = GlobalInstructionRegistry().Create("Wait");
-  ASSERT_TRUE(AppendChildInstruction(*instruction, child.release()));
-  ASSERT_FALSE(instruction->ChildInstructions().empty());
+  EXPECT_TRUE(AppendChildInstruction(*instruction, child.release()));
+  EXPECT_FALSE(instruction->ChildInstructions().empty());
 }
 
 TEST_F(DecoratorInstructionTest, ForceSuccess_success)

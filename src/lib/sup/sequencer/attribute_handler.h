@@ -77,12 +77,6 @@ template <typename T>
 T AttributeHandler::GetValueAs(const std::string& attr_name) const
 {
   auto val = GetValue(attr_name);
-  if (sup::dto::IsEmptyValue(val))
-  {
-    std::string message = "AttributeHandler::GetValueAs(): no attribute with name [" +
-                          attr_name + "]";
-    throw RuntimeException(message);
-  }
   T result;
   if (!val.As(result))
   {

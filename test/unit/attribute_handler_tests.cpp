@@ -138,7 +138,6 @@ TEST_F(AttributeHandlerTest, MandatoryAttributes)
   EXPECT_FALSE(handler.InitValueMap());
   failed_constraints = handler.GetFailedConstraints();
   EXPECT_EQ(failed_constraints.size(), 1);
-  EXPECT_TRUE(sup::dto::IsEmptyValue(handler.GetValue(kStrAttrName)));
   // All constraints pass
   EXPECT_TRUE(handler.AddStringAttribute(kBoolAttrName, kBoolAttrValue));
   EXPECT_TRUE(handler.InitValueMap());

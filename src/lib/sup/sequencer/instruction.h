@@ -422,6 +422,16 @@ private:
 };
 
 /**
+ * @brief Append a child instruction to an instruction if that is supported.
+ *
+ * @param instruction Instruction to add child to.
+ * @param child Instruction to add.
+ *
+ * @return True if the adding was successful.
+ */
+bool AppendChildInstruction(Instruction& instruction, Instruction* child);
+
+/**
  * @brief Construct a string prolog for throwing exceptions related to Instruction::Setup.
  *
  * @param instruction Instruction to use.

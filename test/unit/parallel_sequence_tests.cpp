@@ -108,17 +108,13 @@ TEST(ParallelSequence, SetupImpl_thresholds)
 {
   auto parallel = GlobalInstructionRegistry().Create("ParallelSequence");
   ASSERT_NE(parallel.get(), nullptr);
-  auto compound = dynamic_cast<CompoundInstruction *>(parallel.get());
-  EXPECT_TRUE(compound);
-
   EXPECT_TRUE(parallel->ChildInstructions().empty());
   EXPECT_TRUE(parallel->AddAttribute("successThreshold", "undefined")
               && parallel->AddAttribute("failureThreshold", "undefined"));
 
   auto child = GlobalInstructionRegistry().Create("Wait");
   EXPECT_TRUE(child->AddAttribute("timeout", "1.0"));
-
-  compound->PushBack(child.release());
+  EXPECT_TRUE(AppendChildInstruction(*parallel, child.release()));
   EXPECT_FALSE(parallel->ChildInstructions().empty());
 
   Procedure proc;

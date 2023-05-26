@@ -29,7 +29,7 @@ CompoundInstruction::CompoundInstruction(const std::string& type) : Instruction(
 
 CompoundInstruction::~CompoundInstruction()
 {
-  for (auto instruction : _children)
+  for (auto instruction : m_children)
   {
     delete instruction;
   }
@@ -42,12 +42,12 @@ Instruction::Category CompoundInstruction::GetCategory() const
 
 void CompoundInstruction::PushBack(Instruction* instruction)
 {
-  _children.push_back(instruction);
+  m_children.push_back(instruction);
 }
 
 void CompoundInstruction::SetupChildren(const Procedure& proc)
 {
-  for (auto instruction : _children)
+  for (auto instruction : m_children)
   {
     instruction->Setup(proc);
   }
@@ -55,12 +55,12 @@ void CompoundInstruction::SetupChildren(const Procedure& proc)
 
 bool CompoundInstruction::HasChildren() const
 {
-  return !_children.empty();
+  return !m_children.empty();
 }
 
 void CompoundInstruction::ResetChildren()
 {
-  for (auto instruction : _children)
+  for (auto instruction : m_children)
   {
     instruction->Reset();
   }
@@ -68,7 +68,7 @@ void CompoundInstruction::ResetChildren()
 
 void CompoundInstruction::HaltChildren()
 {
-  for (auto instruction : _children)
+  for (auto instruction : m_children)
   {
     instruction->Halt();
   }
@@ -87,7 +87,7 @@ void CompoundInstruction::HaltImpl()
 std::vector<const Instruction*> CompoundInstruction::ChildInstructionsImpl() const
 {
   std::vector<const Instruction*> result;
-  for (auto instr : _children)
+  for (auto instr : m_children)
   {
     result.push_back(instr);
   }
@@ -96,14 +96,14 @@ std::vector<const Instruction*> CompoundInstruction::ChildInstructionsImpl() con
 
 int CompoundInstruction::ChildrenCountImpl() const
 {
-  return static_cast<int>(_children.size());
+  return static_cast<int>(m_children.size());
 }
 
 bool CompoundInstruction::InsertInstructionImpl(Instruction* child, int index)
 {
   if (index < 0 || index > ChildrenCount())
     return false;
-  _children.insert(std::next(_children.begin(), index), child);
+  m_children.insert(std::next(m_children.begin(), index), child);
   return true;
 }
 
@@ -112,9 +112,9 @@ Instruction* CompoundInstruction::TakeInstructionImpl(int index)
   if (index < 0 || index >= ChildrenCount())
     return nullptr;
 
-  auto it = std::next(_children.begin(), index);
+  auto it = std::next(m_children.begin(), index);
   auto retval = *it;
-  _children.erase(it);
+  m_children.erase(it);
   return retval;
 }
 

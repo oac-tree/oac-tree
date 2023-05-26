@@ -277,6 +277,12 @@ Instruction* Instruction::TakeInstructionImpl(int)
   return nullptr;
 }
 
+bool AppendChildInstruction(Instruction& instruction, Instruction* child)
+{
+  auto n_children = instruction.ChildrenCount();
+  return instruction.InsertInstruction(child, n_children);
+}
+
 std::string InstructionSetupExceptionProlog(const Instruction& instruction)
 {
   auto instr_name = instruction.GetName();

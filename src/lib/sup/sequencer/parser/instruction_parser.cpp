@@ -35,12 +35,6 @@ namespace sequencer
 static void AddChildInstructions(Instruction *instruction,
                                  const std::vector<sup::xml::TreeData> &children,
                                  const std::string &filename);
-static void AddChildrenToDecorator(DecoratorInstruction *decorator,
-                                   const std::vector<sup::xml::TreeData> &children,
-                                   const std::string &filename);
-static void AddChildrenToCompound(CompoundInstruction *compound,
-                                  const std::vector<sup::xml::TreeData> &children,
-                                  const std::string &filename);
 static std::string GetNameAttribute(const sup::xml::TreeData& data);
 
 std::unique_ptr<Instruction> ParseInstruction(const sup::xml::TreeData &data,
@@ -72,7 +66,8 @@ static void AddChildInstructions(Instruction *instruction,
                                  const std::vector<sup::xml::TreeData> &children,
                                  const std::string &filename)
 {
-  // Only set source directory for Include instruction:
+  // Only set source directory for Include instruction. Child will be added during setup phase
+  // from its attributes.
   auto include = dynamic_cast<Include *>(instruction);
   if (include)
   {
@@ -80,68 +75,24 @@ static void AddChildInstructions(Instruction *instruction,
     return;
   }
 
-  auto decorator = dynamic_cast<DecoratorInstruction *>(instruction);
-  if (decorator)
-  {
-    AddChildrenToDecorator(decorator, children, filename);
-    return;
-  }
-
-  auto compound = dynamic_cast<CompoundInstruction *>(instruction);
-  if (compound)
-  {
-    AddChildrenToCompound(compound, children, filename);
-    return;
-  }
-  if (!children.empty())
-  {
-    std::string error_message =
-      "sup::sequencer::AddChildInstructions(): non-zero amount of child instructions for leaf "
-      "instruction of type: [" + instruction->GetType() +
-      "] and name [" + instruction->GetName() + "]";
-    throw ParseException(error_message);
-  }
-}
-
-static void AddChildrenToDecorator(DecoratorInstruction *decorator,
-                                   const std::vector<sup::xml::TreeData> &children,
-                                   const std::string &filename)
-{
-  if (children.size() != 1u)
-  {
-    std::string error_message =
-      "sup::sequencer::AddChildrenToDecorator(): number of children not equal to 1 for decorator "
-      "of type: " + decorator->GetType() +
-      "] and name [" + decorator->GetName() + "]";
-    throw ParseException(error_message);
-  }
-  auto child_instr = ParseInstruction(children[0], filename);
-  if (!child_instr)
-  {
-    std::string error_message =
-      "sup::sequencer::AddChildrenToDecorator(): could not create instruction from TreeData "
-      "of type: <" + children[0].GetNodeName() +
-      "> and name [" + GetNameAttribute(children[0]) + "]";
-    throw ParseException(error_message);
-  }
-  decorator->SetInstruction(child_instr.release());
-}
-
-static void AddChildrenToCompound(CompoundInstruction *compound,
-                                  const std::vector<sup::xml::TreeData> &children,
-                                  const std::string &filename)
-{
   for (auto &child : children)
   {
     auto child_instr = ParseInstruction(child, filename);
     if (!child_instr)
     {
       std::string error_message =
-        "sup::sequencer::AddChildrenToCompound(): could not create instruction from TreeData "
+        "sup::sequencer::AddChildInstructions(): could not create instruction from TreeData "
         "of type: <" + child.GetNodeName() + "> and name [" + GetNameAttribute(child) + "]";
       throw ParseException(error_message);
     }
-    compound->PushBack(child_instr.release());
+    if (!AppendChildInstruction(*instruction, child_instr.release()))
+    {
+      std::string error_message =
+        "sup::sequencer::AddChildInstructions(): wrong amount of child instructions for leaf "
+        "instruction of type: [" + instruction->GetType() +
+        "] and name [" + instruction->GetName() + "]";
+      throw ParseException(error_message);
+    }
   }
 }
 

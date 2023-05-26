@@ -172,19 +172,7 @@ bool AddClonedChildInstruction(Instruction* instr, const Instruction* child)
   {
     return false;
   }
-  auto compound = dynamic_cast<CompoundInstruction*>(instr);
-  if (compound)
-  {
-    compound->PushBack(cloned_child);
-    return true;
-  }
-  auto decorator = dynamic_cast<DecoratorInstruction*>(instr);
-  if (decorator)
-  {
-    decorator->SetInstruction(cloned_child);
-    return true;
-  }
-  return false;
+  return AppendChildInstruction(*instr, cloned_child);
 }
 
 bool StartsWith(const std::string& str, char c)

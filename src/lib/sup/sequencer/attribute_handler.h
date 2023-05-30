@@ -56,9 +56,9 @@ public:
 
   const StringAttributeList& GetStringAttributes() const;
 
-  bool InitValueMap();
+  bool ValidateAttributes();
 
-  void ClearValueMap();
+  void ClearFailedConstraints();
 
   std::vector<std::string> GetFailedConstraints() const;
 

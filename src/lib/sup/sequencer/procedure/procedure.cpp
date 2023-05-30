@@ -175,7 +175,7 @@ bool Procedure::GetVariableValue(std::string name, sup::dto::AnyValue &value) co
 
 bool Procedure::Setup()
 {
-  if (!m_attribute_handler.InitValueMap())
+  if (!m_attribute_handler.ValidateAttributes())
   {
     std::string error_message = "Procedure::Setup(): Failed attribute constraint(s):" +
                                 FormatFailedConstraints(m_attribute_handler.GetFailedConstraints());
@@ -217,7 +217,7 @@ void Procedure::Reset()
     return;
   }
   RootInstruction()->Reset();
-  m_attribute_handler.ClearValueMap();
+  m_attribute_handler.ClearFailedConstraints();
 }
 
 ExecutionStatus Procedure::GetStatus() const

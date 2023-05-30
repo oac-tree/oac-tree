@@ -93,13 +93,13 @@ const StringAttributeList& AttributeHandler::GetStringAttributes() const
   return m_str_attributes;
 }
 
-bool AttributeHandler::InitValueMap()
+bool AttributeHandler::ValidateAttributes()
 {
   m_impl->failed_constraints = m_impl->attr_validator.ValidateAttributes(m_str_attributes);
   return m_impl->failed_constraints.empty();
 }
 
-void AttributeHandler::ClearValueMap()
+void AttributeHandler::ClearFailedConstraints()
 {
   m_impl->failed_constraints.clear();
 }

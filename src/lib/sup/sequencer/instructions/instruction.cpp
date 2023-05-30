@@ -91,7 +91,7 @@ ExecutionStatus Instruction::GetStatus() const
 
 void Instruction::Setup(const Procedure& proc)
 {
-  if (!m_attribute_handler.InitValueMap())
+  if (!m_attribute_handler.ValidateAttributes())
   {
     auto error_message =
       InstructionSetupExceptionMessage(*this, m_attribute_handler.GetFailedConstraints());
@@ -118,6 +118,7 @@ void Instruction::Reset()
 {
   ResetHook();
   SetStatus(ExecutionStatus::NOT_STARTED);
+  m_attribute_handler.ClearFailedConstraints();
   m_halt_requested.store(false);
 }
 

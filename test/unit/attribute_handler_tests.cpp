@@ -96,7 +96,7 @@ TEST_F(AttributeHandlerTest, GetValueAs)
 {
   AttributeHandler handler;
   EXPECT_NO_THROW(handler.AddStringAttribute(kStrAttrName, kStrAttrValue));
-  EXPECT_TRUE(handler.InitValueMap());
+  EXPECT_TRUE(handler.ValidateAttributes());
   std::string str_val;
   EXPECT_NO_THROW(str_val = handler.GetValueAs<std::string>(kStrAttrName));
   EXPECT_THROW(str_val = handler.GetValueAs<std::string>(kDoubleAttrName), RuntimeException);
@@ -120,27 +120,27 @@ TEST_F(AttributeHandlerTest, MandatoryAttributes)
   attr_defs = handler.GetAttributeDefinitions();
   EXPECT_EQ(attr_defs.size(), 3);
   // Three constraints fail due to three missing mandatory attributes
-  EXPECT_FALSE(handler.InitValueMap());
+  EXPECT_FALSE(handler.ValidateAttributes());
   auto failed_constraints = handler.GetFailedConstraints();
   EXPECT_EQ(failed_constraints.size(), 3);
   // Two constraints fail due to two missing mandatory attributes
   EXPECT_TRUE(handler.AddStringAttribute(kStrAttrName, kStrAttrValue));
-  EXPECT_FALSE(handler.InitValueMap());
+  EXPECT_FALSE(handler.ValidateAttributes());
   failed_constraints = handler.GetFailedConstraints();
   EXPECT_EQ(failed_constraints.size(), 2);
   // Two constraints fail: missing mandatory attribute and failed to parse other
   EXPECT_TRUE(handler.AddStringAttribute(kDoubleAttrName, "cannot_be_parsed"));
-  EXPECT_FALSE(handler.InitValueMap());
+  EXPECT_FALSE(handler.ValidateAttributes());
   failed_constraints = handler.GetFailedConstraints();
   EXPECT_EQ(failed_constraints.size(), 2);
   // One constraint fails due to one missing mandatory attribute
   EXPECT_NO_THROW(handler.SetStringAttribute(kDoubleAttrName, kDoubleAttrValue));
-  EXPECT_FALSE(handler.InitValueMap());
+  EXPECT_FALSE(handler.ValidateAttributes());
   failed_constraints = handler.GetFailedConstraints();
   EXPECT_EQ(failed_constraints.size(), 1);
   // All constraints pass
   EXPECT_TRUE(handler.AddStringAttribute(kBoolAttrName, kBoolAttrValue));
-  EXPECT_TRUE(handler.InitValueMap());
+  EXPECT_TRUE(handler.ValidateAttributes());
   failed_constraints = handler.GetFailedConstraints();
   EXPECT_EQ(failed_constraints.size(), 0);
   // Inspect anyvalue values
@@ -163,7 +163,7 @@ TEST_F(AttributeHandlerTest, NonDefinedAttributes)
   // Attributes without definition are of type string by default
   AttributeHandler handler;
   EXPECT_TRUE(handler.AddStringAttribute(kBoolAttrName, kBoolAttrValue));
-  EXPECT_TRUE(handler.InitValueMap());
+  EXPECT_TRUE(handler.ValidateAttributes());
   auto failed_constraints = handler.GetFailedConstraints();
   EXPECT_EQ(failed_constraints.size(), 0);
   auto bool_val = handler.GetValue(kBoolAttrName);
@@ -186,12 +186,12 @@ TEST_F(AttributeHandlerTest, ComplexConstraint)
       MakeConstraint<Xor>(MakeConstraint<Exists>(kStrAttrName),
                              MakeConstraint<And>(MakeConstraint<Exists>(kDoubleAttrName),
                                                   MakeConstraint<Exists>(kBoolAttrName)))));
-    EXPECT_FALSE(handler.InitValueMap());
+    EXPECT_FALSE(handler.ValidateAttributes());
     auto failed_constraints = handler.GetFailedConstraints();
     EXPECT_EQ(failed_constraints.size(), 1);
     // Adding the string attribute results in no failed constraints
     EXPECT_TRUE(handler.AddStringAttribute(kStrAttrName, kStrAttrValue));
-    EXPECT_TRUE(handler.InitValueMap());
+    EXPECT_TRUE(handler.ValidateAttributes());
     failed_constraints = handler.GetFailedConstraints();
     EXPECT_EQ(failed_constraints.size(), 0);
   }
@@ -207,17 +207,17 @@ TEST_F(AttributeHandlerTest, ComplexConstraint)
       MakeConstraint<Xor>(MakeConstraint<Exists>(kStrAttrName),
                              MakeConstraint<And>(MakeConstraint<Exists>(kDoubleAttrName),
                                                   MakeConstraint<Exists>(kBoolAttrName)))));
-    EXPECT_FALSE(handler.InitValueMap());
+    EXPECT_FALSE(handler.ValidateAttributes());
     auto failed_constraints = handler.GetFailedConstraints();
     EXPECT_EQ(failed_constraints.size(), 1);
     // Adding only the double attribute results in a failed constraint
     EXPECT_TRUE(handler.AddStringAttribute(kDoubleAttrName, kDoubleAttrValue));
-    EXPECT_FALSE(handler.InitValueMap());
+    EXPECT_FALSE(handler.ValidateAttributes());
     failed_constraints = handler.GetFailedConstraints();
     EXPECT_EQ(failed_constraints.size(), 1);
     // Adding the boolean attribute too makes it successful
     EXPECT_TRUE(handler.AddStringAttribute(kBoolAttrName, kBoolAttrValue));
-    EXPECT_TRUE(handler.InitValueMap());
+    EXPECT_TRUE(handler.ValidateAttributes());
     failed_constraints = handler.GetFailedConstraints();
     EXPECT_EQ(failed_constraints.size(), 0);
   }

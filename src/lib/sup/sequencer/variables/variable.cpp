@@ -75,7 +75,7 @@ void Variable::SetName(const std::string &name)
 
 void Variable::Setup(const sup::dto::AnyTypeRegistry* registry)
 {
-  if (!m_attribute_handler.InitValueMap())
+  if (!m_attribute_handler.ValidateAttributes())
   {
     auto error_message =
       VariableSetupExceptionMessage(*this, m_attribute_handler.GetFailedConstraints());
@@ -153,7 +153,7 @@ void Variable::SetNotifyCallback(Callback func)
 void Variable::Reset()
 {
   ResetImpl();
-  m_attribute_handler.ClearValueMap();
+  m_attribute_handler.ClearFailedConstraints();
   m_setup_successful = false;
 }
 

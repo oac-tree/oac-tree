@@ -61,6 +61,11 @@ public:
   void Tick(UserInterface& ui, Workspace& ws);
 
   /**
+   * @brief Try to fetch execution status of child instruction
+   */
+  void FetchStatus();
+
+  /**
    * @brief Get execution status
    */
   ExecutionStatus GetStatus() const;

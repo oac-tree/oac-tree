@@ -56,6 +56,18 @@ void AsyncWrapper::Tick(UserInterface& ui, Workspace& ws)
   }
 }
 
+void AsyncWrapper::FetchStatus()
+{
+  if (!m_child_result.valid())
+  {
+    return;
+  }
+  if (m_child_result.wait_for(std::chrono::seconds(0)) != std::future_status::timeout)
+  {
+    m_status = m_instruction->GetStatus();
+  }
+}
+
 ExecutionStatus AsyncWrapper::GetStatus() const
 {
   return m_status;

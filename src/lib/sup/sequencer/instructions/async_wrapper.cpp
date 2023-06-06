@@ -39,30 +39,19 @@ AsyncWrapper::~AsyncWrapper() = default;
 
 void AsyncWrapper::Tick(UserInterface& ui, Workspace& ws)
 {
-  if (ChildIsRunning())
-  {
-    return;
-  }
-  auto child_status = m_instruction->GetStatus();
-
-  if (child_status == ExecutionStatus::SUCCESS || child_status == ExecutionStatus::FAILURE)
-  {
-    m_status = child_status;
-  }
-  else
-  {
-    LaunchChild(ui, ws);
-    m_status = ExecutionStatus::RUNNING;
-  }
+  LaunchChild(ui, ws);
+  m_status = ExecutionStatus::RUNNING;
 }
 
-void AsyncWrapper::FetchStatus()
+void AsyncWrapper::UpdateStatus()
 {
   if (!m_child_result.valid())
   {
+    // m_status is already NOT_STARTED by construction
     return;
   }
-  if (m_child_result.wait_for(std::chrono::seconds(0)) != std::future_status::timeout)
+  // If this timeouts, m_status is RUNNING because Tick() was called before
+  if (m_child_result.wait_for(std::chrono::seconds(0)) == std::future_status::ready)
   {
     m_status = m_instruction->GetStatus();
   }
@@ -77,16 +66,6 @@ void AsyncWrapper::LaunchChild(UserInterface& ui, Workspace& ws)
 {
   m_child_result = std::async(std::launch::async, &Instruction::ExecuteSingle,
                              m_instruction, std::ref(ui), std::ref(ws));
-}
-
-bool AsyncWrapper::ChildIsRunning() const
-{
-  if (!m_child_result.valid())
-  {
-    return false;
-  }
-  auto result_status = m_child_result.wait_for(std::chrono::seconds(0));
-  return result_status == std::future_status::timeout;
 }
 
 }  // namespace sequencer

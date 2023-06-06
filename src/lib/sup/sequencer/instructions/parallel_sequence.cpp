@@ -88,13 +88,17 @@ ExecutionStatus ParallelSequence::ExecuteSingleImpl(UserInterface& ui, Workspace
   for (auto &wrapper : m_wrappers)
   {
     auto wrapper_status = wrapper.GetStatus();
-    if (NeedsExecute(wrapper_status))
+    if (NeedsExecute(wrapper_status) && wrapper_status != ExecutionStatus::RUNNING)
     {
       wrapper.Tick(ui, ws);
     }
+    else
+    {
+      wrapper.UpdateStatus();
+    }
   }
   auto status = CalculateCompoundStatus();
-  if (status != ExecutionStatus::RUNNING)
+  if (IsFinishedStatus(status))
   {
     Halt();
   }
@@ -118,7 +122,7 @@ ExecutionStatus ParallelSequence::CalculateCompoundStatus() const
 {
   int n_success = 0;
   int n_failure = 0;
-
+  bool child_not_finished_present = false;
   for (const auto &wrapper : m_wrappers)
   {
     auto wrapper_status = wrapper.GetStatus();
@@ -130,6 +134,10 @@ ExecutionStatus ParallelSequence::CalculateCompoundStatus() const
     {
       n_failure++;
     }
+    if (wrapper_status == ExecutionStatus::NOT_FINISHED)
+    {
+      child_not_finished_present = true;
+    }
   }
   if (n_success >= m_success_th)
   {
@@ -139,7 +147,7 @@ ExecutionStatus ParallelSequence::CalculateCompoundStatus() const
   {
     return ExecutionStatus::FAILURE;
   }
-  return ExecutionStatus::RUNNING;
+  return child_not_finished_present ? ExecutionStatus::NOT_FINISHED : ExecutionStatus::RUNNING;
 }
 
 void ParallelSequence::InitWrappers()

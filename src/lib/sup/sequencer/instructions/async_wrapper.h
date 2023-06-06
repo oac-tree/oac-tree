@@ -61,9 +61,9 @@ public:
   void Tick(UserInterface& ui, Workspace& ws);
 
   /**
-   * @brief Try to fetch execution status of child instruction
+   * @brief Try to update state with the execution status of the child instruction
    */
-  void FetchStatus();
+  void UpdateStatus();
 
   /**
    * @brief Get execution status
@@ -90,11 +90,6 @@ private:
    * @brief Execution status of the wrapper
    */
   void LaunchChild(UserInterface& ui, Workspace& ws);
-
-  /**
-   * @brief Check if child is still running
-   */
-  bool ChildIsRunning() const;
 };
 
 }  // namespace sequencer

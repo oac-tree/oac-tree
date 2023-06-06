@@ -144,9 +144,9 @@ ParallelSequence::ExecuteSingleImpl()
   return status;
 }
 
-AsyncWrapper::FetchStatus()
+AsyncWrapper::UpdateStatus()
 {
-  // If child thread finished:
+  // If child thread exists and is finished:
   {
     m_status = child->GetStatus();
   }

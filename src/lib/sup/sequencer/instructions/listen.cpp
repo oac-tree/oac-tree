@@ -72,7 +72,6 @@ ExecutionStatus Listen::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
     lk.unlock();
     if (IsHaltRequested())
     {
-      ClearCallbacks();
       return ExecutionStatus::FAILURE;
     }
   }
@@ -89,6 +88,7 @@ void Listen::HaltImpl()
 {
   HaltChild();
   cv.notify_one();
+  ClearCallbacks();
 }
 
 void Listen::SetupImpl(const Procedure& proc)

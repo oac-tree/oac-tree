@@ -33,6 +33,17 @@ namespace sequencer
 {
 /**
  * @brief Wrapper to execute an Instruction asynchronously.
+ *
+ * @details This wrapper is used in ParallelSequence to decouple the asynchronous execution of an
+ * instruction from querying its status. If no intermediate ticks were executed after the last call
+ * to UpdateStatus and GetStatus, the returned status can give some guarantees on the state of the
+ * execution thread of the wrapped instruction:
+ * - NOT_STARTED: there is no thread and no shared state.
+ * - NOT_FINISHED, SUCCESS, FAILURE: there is a thread that has finished execution. We can safely
+ *   destroy the shared state owned by this wrapper or call non threadsafe methods on the wrapped
+ *   instruction.
+ * - RUNNING: there is a thread that has possibly finished execution. We cannot safely call methods
+ *   on the wrapped instruction if these are not threadsafe.
  */
 class AsyncWrapper
 {
@@ -62,6 +73,8 @@ public:
 
   /**
    * @brief Try to update state with the execution status of the child instruction
+   *
+   * @note Together with the Tick method, this is the only way wrapper's status can change.
    */
   void UpdateStatus();
 

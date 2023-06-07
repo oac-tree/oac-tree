@@ -55,6 +55,27 @@ ExecutionStatus Sequence::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   return CalculateCompoundStatus();
 }
 
+std::vector<const Instruction*> Sequence::NextInstructionsImpl() const
+{
+  std::vector<const Instruction*> result;
+  for (auto instruction : ChildInstructions())
+  {
+    auto child_status = instruction->GetStatus();
+    if (child_status == ExecutionStatus::SUCCESS)
+    {
+      continue;
+    }
+    if (ReadyForExecute(child_status))
+    {
+      result.push_back(instruction);
+      return result;
+    }
+    // There is no next when a child is encountered that has status FAILURE/RUNNING:
+    break;
+  }
+  return result;
+}
+
 ExecutionStatus Sequence::CalculateCompoundStatus() const
 {
   for (auto instruction : ChildInstructions())

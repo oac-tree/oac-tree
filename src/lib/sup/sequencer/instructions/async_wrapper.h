@@ -83,6 +83,11 @@ public:
    */
   ExecutionStatus GetStatus() const;
 
+  /**
+   * @brief Get wrapped instruction
+   */
+  const Instruction* GetInstruction() const;
+
 private:
   /**
    * @brief Wrapped instruction (not owned!)

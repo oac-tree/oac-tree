@@ -108,10 +108,11 @@ std::vector<const Instruction*> DecoratorInstruction::ChildInstructionsImpl() co
   return result;
 }
 
-std::vector<Instruction*> DecoratorInstruction::NextInstructionsImpl() const
+std::vector<const Instruction*> DecoratorInstruction::NextInstructionsImpl() const
 {
-  std::vector<Instruction*> result;
-  if (m_child && ReadyForExecute(m_child->GetStatus()))
+  // If the decorator instruction is not finished yet, the child, if present, is next...
+  std::vector<const Instruction*> result;
+  if (HasChild())
   {
     result.push_back(m_child.get());
   }

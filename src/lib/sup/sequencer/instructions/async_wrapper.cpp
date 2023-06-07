@@ -62,6 +62,11 @@ ExecutionStatus AsyncWrapper::GetStatus() const
   return m_status;
 }
 
+const Instruction* AsyncWrapper::GetInstruction() const
+{
+   return m_instruction;
+}
+
 void AsyncWrapper::LaunchChild(UserInterface& ui, Workspace& ws)
 {
   m_child_result = std::async(std::launch::async, &Instruction::ExecuteSingle,

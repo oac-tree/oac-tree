@@ -195,7 +195,7 @@ std::vector<const Instruction*> Instruction::ChildInstructions() const
   return ChildInstructionsImpl();
 }
 
-std::vector<Instruction*> Instruction::NextInstructions() const
+std::vector<const Instruction*> Instruction::NextInstructions() const
 {
   return NextInstructionsImpl();
 }
@@ -273,7 +273,7 @@ std::vector<const Instruction*> Instruction::ChildInstructionsImpl() const
   return {};
 }
 
-std::vector<Instruction*> Instruction::NextInstructionsImpl() const
+std::vector<const Instruction*> Instruction::NextInstructionsImpl() const
 {
   return {};
 }

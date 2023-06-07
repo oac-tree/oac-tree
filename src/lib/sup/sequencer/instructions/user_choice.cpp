@@ -76,6 +76,12 @@ ExecutionStatus UserChoice::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   return ExecutionStatus::FAILURE;
 }
 
+std::vector<const Instruction*> UserChoice::NextInstructionsImpl() const
+{
+  // TODO: when UserChoice was not executed, one cannot know which instructions will be next...
+  return {};
+}
+
 std::vector<std::string> UserChoice::GetChoices() const
 {
   std::vector<std::string> result;

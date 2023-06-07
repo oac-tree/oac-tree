@@ -93,7 +93,7 @@ private:
   void ResetHook() override;
   void HaltImpl() override;
   std::vector<const Instruction*> ChildInstructionsImpl() const override;
-  std::vector<Instruction*> NextInstructionsImpl() const override;
+  std::vector<const Instruction*> NextInstructionsImpl() const override;
   int ChildrenCountImpl() const override;
   bool InsertInstructionImpl(Instruction *child, int index) override;
   Instruction* TakeInstructionImpl(int index) override;

@@ -118,6 +118,19 @@ void ParallelSequence::ResetHook()
   ResetChildren();
 }
 
+std::vector<const Instruction*> ParallelSequence::NextInstructionsImpl() const
+{
+  std::vector<const Instruction*> result;
+  for (auto& wrapper : m_wrappers)
+  {
+    if (ReadyForExecute(wrapper.GetStatus()))
+    {
+      result.push_back(wrapper.GetInstruction());
+    }
+  }
+  return result;
+}
+
 ExecutionStatus ParallelSequence::CalculateCompoundStatus() const
 {
   int n_success = 0;

@@ -79,6 +79,12 @@ void Choice::ResetHook()
   ResetChildren();
 }
 
+std::vector<const Instruction*> Choice::NextInstructionsImpl() const
+{
+  // TODO: when Choice was not executed, one cannot know which instructions will be next...
+  return {};
+}
+
 bool Choice::CreateInstructionList(UserInterface& ui, Workspace& ws)
 {
   sup::dto::AnyValue selector;

@@ -247,7 +247,7 @@ public:
    * instruction also is, i.e. it apprears in the NextInstructions() list of the parent or is a
    * root instruction that is NOT_STARTED/NOT_FINISHED.
    */
-  std::vector<Instruction*> NextInstructions() const;
+  std::vector<const Instruction*> NextInstructions() const;
 
   /**
    * @brief Inserts child into the given index.
@@ -419,7 +419,7 @@ private:
    *
    * @return List of child instructions.
    */
-  virtual std::vector<Instruction*> NextInstructionsImpl() const;
+  virtual std::vector<const Instruction*> NextInstructionsImpl() const;
 
   /**
    * @brief Inserts child into the given index.

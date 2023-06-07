@@ -55,6 +55,27 @@ ExecutionStatus Fallback::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   return CalculateCompoundStatus();
 }
 
+std::vector<const Instruction*> Fallback::NextInstructionsImpl() const
+{
+  std::vector<const Instruction*> result;
+  for (auto instruction : ChildInstructions())
+  {
+    auto child_status = instruction->GetStatus();
+    if (child_status == ExecutionStatus::FAILURE)
+    {
+      continue;
+    }
+    if (ReadyForExecute(child_status))
+    {
+      result.push_back(instruction);
+      return result;
+    }
+    // There is no next when a child is encountered that has status SUCCESS/RUNNING:
+    break;
+  }
+  return result;
+}
+
 ExecutionStatus Fallback::CalculateCompoundStatus() const
 {
   for (auto instruction : ChildInstructions())

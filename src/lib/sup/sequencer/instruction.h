@@ -229,14 +229,25 @@ public:
    *
    * @return List of child instructions.
    */
-  std::vector<Instruction *> ChildInstructions();
+  std::vector<Instruction*> ChildInstructions();
 
   /**
    * @brief Get list of child instructions (const version).
    *
    * @return List of child instructions.
    */
-  std::vector<const Instruction *> ChildInstructions() const;
+  std::vector<const Instruction*> ChildInstructions() const;
+
+  /**
+   * @brief Get list of child instructions that will be executed in the next execute step.
+   *
+   * @return List of child instructions.
+   *
+   * @details This list of child instructions is only scheduled to be executed next if the current
+   * instruction also is, i.e. it apprears in the NextInstructions() list of the parent or is a
+   * root instruction that is NOT_STARTED/NOT_FINISHED.
+   */
+  std::vector<Instruction*> NextInstructions() const;
 
   /**
    * @brief Inserts child into the given index.
@@ -401,7 +412,14 @@ private:
    *
    * @return List of child instructions.
    */
-  virtual std::vector<const Instruction *> ChildInstructionsImpl() const;
+  virtual std::vector<const Instruction*> ChildInstructionsImpl() const;
+
+  /**
+   * @brief Get list of child instructions that will be executed in the next execute step.
+   *
+   * @return List of child instructions.
+   */
+  virtual std::vector<Instruction*> NextInstructionsImpl() const;
 
   /**
    * @brief Inserts child into the given index.

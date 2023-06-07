@@ -180,9 +180,9 @@ int Instruction::ChildrenCount() const
   return ChildrenCountImpl();
 }
 
-std::vector<Instruction *> Instruction::ChildInstructions()
+std::vector<Instruction*> Instruction::ChildInstructions()
 {
-  std::vector<Instruction *> result;
+  std::vector<Instruction*> result;
   for (auto instr : static_cast<const Instruction &>(*this).ChildInstructions())
   {
     result.push_back(const_cast<Instruction *>(instr));
@@ -190,9 +190,14 @@ std::vector<Instruction *> Instruction::ChildInstructions()
   return result;
 }
 
-std::vector<const Instruction *> Instruction::ChildInstructions() const
+std::vector<const Instruction*> Instruction::ChildInstructions() const
 {
   return ChildInstructionsImpl();
+}
+
+std::vector<Instruction*> Instruction::NextInstructions() const
+{
+  return NextInstructionsImpl();
 }
 
 bool Instruction::InsertInstruction(Instruction* child, int index)
@@ -263,7 +268,12 @@ int Instruction::ChildrenCountImpl() const
   return 0;
 }
 
-std::vector<const Instruction *> Instruction::ChildInstructionsImpl() const
+std::vector<const Instruction*> Instruction::ChildInstructionsImpl() const
+{
+  return {};
+}
+
+std::vector<Instruction*> Instruction::NextInstructionsImpl() const
 {
   return {};
 }

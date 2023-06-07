@@ -57,6 +57,15 @@ bool IsFinishedStatus(const ExecutionStatus& status);
  */
 bool NeedsExecute(const ExecutionStatus& status);
 
+/**
+ * @brief Check if the given status indicates the instruction is ready to be executed next.
+ * @return true if status is NOT_STARTED or NOT_FINISHED.
+ *
+ * @details The different with NeedsExecute is that RUNNING is not considered to be ready for
+ * execution, as it is not yet clear if the previous execution step finished already.
+ */
+bool ReadyForExecute(const ExecutionStatus& status);
+
 }  // namespace sequencer
 
 }  // namespace sup

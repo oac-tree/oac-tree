@@ -98,10 +98,20 @@ void DecoratorInstruction::HaltImpl()
   HaltChild();
 }
 
-std::vector<const Instruction *> DecoratorInstruction::ChildInstructionsImpl() const
+std::vector<const Instruction*> DecoratorInstruction::ChildInstructionsImpl() const
 {
-  std::vector<const Instruction *> result;
+  std::vector<const Instruction*> result;
   if (m_child)
+  {
+    result.push_back(m_child.get());
+  }
+  return result;
+}
+
+std::vector<Instruction*> DecoratorInstruction::NextInstructionsImpl() const
+{
+  std::vector<Instruction*> result;
+  if (m_child && ReadyForExecute(m_child->GetStatus()))
   {
     result.push_back(m_child.get());
   }
@@ -121,7 +131,7 @@ bool DecoratorInstruction::InsertInstructionImpl(Instruction *child, int index)
   return true;
 }
 
-Instruction *DecoratorInstruction::TakeInstructionImpl(int index)
+Instruction* DecoratorInstruction::TakeInstructionImpl(int index)
 {
   return m_child && index == 0 ? m_child.release() : nullptr;
 }

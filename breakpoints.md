@@ -1,66 +1,45 @@
 # Breakpoints
 
-## Instruction
-
-```c++
-void Instruction::ExecuteSingle(UserInterface& ui, Workspace& ws)
-{
-  if (m_breakpoint_state == Breakpoint::Set)
-  {
-    m_breakpoint_callback();
-    return;
-  }
-  else if (m_breakpoint_state == Breakpoint::Released)
-  {
-    m_breakpoint_state == Breakpoint::Set;
-  }
-  Preamble(ui);
-  m_status_before = GetStatus();
-  SetStatus(ExecuteSingleImpl(ui, ws));
-  Postamble(ui);
-}
-```
-
 ## Runner
 
 ```c++
 Runner::SetBreakpoint(Instruction* instr)
 {
-  if (instr->HasBreakpoint())
-  {
-    return;
-  }
-  auto callback = [this, instr](){
-    BreakPointReached(instr);
-  };
-  instr->SetBreakpoint(callback);
+  // If not present yet:
+  m_breakpoints.push_back(instr);
 }
 
-Runner::BreakPointReached(Instruction* instr)
+bool Runner::BreakpointReached()
 {
-  m_active_breakpoints.push(instr);  // threadsafe FIFO
+  if (!m_breakpoints.empty())
+  {
+    Tree<Instruction*> next_instructions = m_proc->NextInstructions();
+    // HandleIntersection only takes into account active breakpoints:
+    // - Stop on first encounter of breakpoint and release the breakpoint;
+    // - Do not stop on released breakpoints, but make them active again.
+    auto status = CheckBreakpoints(m_breakpoints, next_instructions);
+    if (status == Breakpoint::Break)
+    {
+      return true;
+    }
+  }
+  return false;
 }
 
 void Runner::ExecuteProcedure()
 {
   m_halt.store(false);
-  if (m_current_breakpoint)
-  {
-    m_current_breakpoint.release();
-    m_current_breakpoint.clear();
-  }
   if (m_proc)
   {
     auto sleep_time_ms = TickTimeoutMs(*m_proc);
 
     while (!IsFinished() && !m_halt.load())
     {
-      ExecuteSingle();
-      if (!m_active_breakpoints.empty())
+      if (BreakpointReached())
       {
-        m_current_breakpoint = m_active_breakpoints.pop();
         return;
       }
+      ExecuteSingle();
       if (IsRunning())
       {
         std::this_thread::sleep_for(std::chrono::milliseconds(sleep_time_ms));
@@ -73,7 +52,13 @@ void Runner::ExecuteProcedure()
 
 ## Parallel sequence logic and statuses
 
-Current implementation:
+To be able to query the list of instructions that will be executed next (from the root instruction), the implementation of the ParallelSequence had to be adapted. This has no impact on any unit test or other instructions.
+
+With this change, it is now possible to know exactly which instructions will be executed next if `Procedure::ExecuteSingle` will be called, thus allowing to handle breakpoints at the top level, i.e. the `Runner` class.
+
+This change also prioritizes the `NOT_FINISHED` execution status above the `RUNNING` status, thus removing the necessity to sleep for a short while before ticking the root instruction again.
+
+Old implementation:
 
 ```c++
 ParallelSequence::ExecuteSingleImpl()

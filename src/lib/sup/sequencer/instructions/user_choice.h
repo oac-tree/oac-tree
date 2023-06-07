@@ -49,12 +49,16 @@ public:
 private:
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 
+  void ResetHook() override;
+
   std::vector<const Instruction*> NextInstructionsImpl() const override;
 
   /**
    * @brief Construct a list of choices from the available child instructions.
    */
   std::vector<std::string> GetChoices() const;
+
+  int m_choice;
 };
 
 }  // namespace sequencer

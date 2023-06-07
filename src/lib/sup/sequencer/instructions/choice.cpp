@@ -45,6 +45,7 @@ const std::string Choice::Type = "Choice";
 Choice::Choice()
   : CompoundInstruction(Choice::Type)
   , m_instruction_list{}
+  , m_instruction_list_initialized{false}
 {
   AddAttributeDefinition(SELECTOR_VARIABLE_ATTR_NAME, sup::dto::StringType).SetMandatory();
 }
@@ -53,9 +54,14 @@ Choice::~Choice() = default;
 
 ExecutionStatus Choice::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  if (m_instruction_list.empty() && !CreateInstructionList(ui, ws))
+  if (m_instruction_list.empty() && !m_instruction_list_initialized)
   {
-    return ExecutionStatus::FAILURE;
+    m_instruction_list_initialized = true;
+    if (!CreateInstructionList(ui, ws))
+    {
+      return ExecutionStatus::FAILURE;
+    }
+    return ExecutionStatus::NOT_FINISHED;
   }
   for (auto instruction : m_instruction_list)
   {
@@ -76,13 +82,28 @@ ExecutionStatus Choice::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 void Choice::ResetHook()
 {
   m_instruction_list.clear();
+  m_instruction_list_initialized = false;
   ResetChildren();
 }
 
 std::vector<const Instruction*> Choice::NextInstructionsImpl() const
 {
-  // TODO: when Choice was not executed, one cannot know which instructions will be next...
-  return {};
+  std::vector<const Instruction*> result;
+  for (auto instruction : m_instruction_list)
+  {
+    auto child_status = instruction->GetStatus();
+    if (child_status == ExecutionStatus::SUCCESS)
+    {
+      continue;
+    }
+    if (ReadyForExecute(child_status))
+    {
+      result.push_back(instruction);
+      return result;
+    }
+    break;
+  }
+  return result;
 }
 
 bool Choice::CreateInstructionList(UserInterface& ui, Workspace& ws)

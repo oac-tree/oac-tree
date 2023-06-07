@@ -34,6 +34,7 @@ static const std::string DESCRIPTION_ATTRIBUTE = "description";
 
 UserChoice::UserChoice()
   : CompoundInstruction(UserChoice::Type)
+  , m_choice{-1}
 {
   AddAttributeDefinition(DESCRIPTION_ATTRIBUTE, sup::dto::StringType);
 }
@@ -48,21 +49,28 @@ ExecutionStatus UserChoice::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   {
     return ExecutionStatus::SUCCESS;
   }
-  std::string description =
-    HasAttribute(DESCRIPTION_ATTRIBUTE) ? GetAttributeValue<std::string>(DESCRIPTION_ATTRIBUTE)
-                                        : "";
-
-  auto options = GetChoices();
-  int choice = ui.GetUserChoice(options, description);
-  if (choice < 0 || choice >= ChildrenCount())
+  // Negative number for choice member variable indicates choice was not made yet
+  if (m_choice < 0)
   {
-    std::string warning_message = InstructionWarningProlog(*this) +
-      "user choice [" + std::to_string(choice) + "] is not a valid value for [" +
-      std::to_string(ChildrenCount()) + "] child instructions";
-    ui.LogWarning(warning_message);
-    return ExecutionStatus::FAILURE;
+    std::string description =
+      HasAttribute(DESCRIPTION_ATTRIBUTE) ? GetAttributeValue<std::string>(DESCRIPTION_ATTRIBUTE)
+                                          : "";
+    auto options = GetChoices();
+    int choice = ui.GetUserChoice(options, description);
+    if (choice < 0 || choice >= ChildrenCount())
+    {
+      std::string warning_message = InstructionWarningProlog(*this) +
+        "user choice [" + std::to_string(choice) + "] is not a valid value for [" +
+        std::to_string(ChildrenCount()) + "] child instructions";
+      ui.LogWarning(warning_message);
+      return ExecutionStatus::FAILURE;
+    }
+    m_choice = choice;
+    // Request second tick so NextInstructions member function can correctly give the chosen
+    // child instruction:
+    return ExecutionStatus::NOT_FINISHED;
   }
-  auto selected = ChildInstructions()[choice];
+  auto selected = ChildInstructions()[m_choice];
   auto selected_status = selected->GetStatus();
   if (NeedsExecute(selected_status))
   {
@@ -76,10 +84,25 @@ ExecutionStatus UserChoice::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   return ExecutionStatus::FAILURE;
 }
 
+void UserChoice::ResetHook()
+{
+  m_choice = -1;
+  ResetChildren();
+}
+
 std::vector<const Instruction*> UserChoice::NextInstructionsImpl() const
 {
-  // TODO: when UserChoice was not executed, one cannot know which instructions will be next...
-  return {};
+  std::vector<const Instruction*> result;
+  if (m_choice < 0 || m_choice >= ChildrenCount())
+  {
+    return result;
+  }
+  auto instruction = ChildInstructions()[m_choice];
+  if (ReadyForExecute(instruction->GetStatus()))
+  {
+    result.push_back(instruction);
+  }
+  return result;
 }
 
 std::vector<std::string> UserChoice::GetChoices() const

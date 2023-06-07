@@ -50,6 +50,8 @@ public:
 private:
   std::vector<Instruction*> m_instruction_list;
 
+  bool m_instruction_list_initialized;
+
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 
   void ResetHook() override;

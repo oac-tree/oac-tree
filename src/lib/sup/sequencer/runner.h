@@ -22,13 +22,17 @@
 #ifndef SUP_SEQUENCER_RUNNER_H_
 #define SUP_SEQUENCER_RUNNER_H_
 
+#include <sup/sequencer/breakpoint.h>
+
 #include <atomic>
+#include <vector>
 
 namespace sup
 {
 namespace sequencer
 {
 
+class Instruction;
 class Procedure;
 class UserInterface;
 
@@ -47,10 +51,16 @@ public:
   ~Runner();
 
   /**
-   * @brief Set the procedure..
+   * @brief Set the procedure.
    * @param procedure Pointer to procedure.
    */
   void SetProcedure(Procedure* procedure);
+
+  /**
+   * @brief Set a breakpoint at the given instruction.
+   * @param instruction Pointer to instruction for breakpoint location.
+   */
+  void SetBreakpoint(const Instruction* instruction);
 
   /**
    * @brief Execute the procedure
@@ -84,6 +94,7 @@ public:
 private:
   Procedure* m_proc;
   UserInterface& m_ui;
+  std::vector<Breakpoint> m_breakpoints;
   std::atomic_bool m_halt;
 };
 

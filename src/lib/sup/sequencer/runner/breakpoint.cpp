@@ -19,7 +19,7 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "breakpoint.h"
+#include <sup/sequencer/breakpoint.h>
 
 namespace sup
 {

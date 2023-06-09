@@ -25,8 +25,17 @@
 #include <sup/sequencer/procedure.h>
 #include <sup/sequencer/user_interface.h>
 
+#include <algorithm>
 #include <chrono>
 #include <thread>
+
+namespace
+{
+using sup::sequencer::Breakpoint;
+using sup::sequencer::Instruction;
+std::vector<Breakpoint>::const_iterator FindBreakpoint(const std::vector<Breakpoint>& breakpoints,
+                                                       const Instruction* instruction);
+}
 
 namespace sup
 {
@@ -50,6 +59,15 @@ void Runner::SetProcedure(Procedure* procedure)
     {
       m_ui.VariableUpdated(name, value, connected);
     });
+}
+
+void Runner::SetBreakpoint(const Instruction* instruction)
+{
+  auto it = FindBreakpoint(m_breakpoints, instruction);
+  if (it == m_breakpoints.end())
+  {
+    m_breakpoints.emplace_back(instruction);
+  }
 }
 
 void Runner::ExecuteProcedure()
@@ -127,3 +145,15 @@ static int TickTimeoutMs(Procedure& procedure)
 }  // namespace sequencer
 
 }  // namespace sup
+
+namespace
+{
+std::vector<Breakpoint>::const_iterator FindBreakpoint(const std::vector<Breakpoint>& breakpoints,
+                                                       const Instruction* instruction)
+{
+  auto predicate = [instruction](const Breakpoint& breakpoint) {
+    return breakpoint.GetInstruction() == instruction;
+  };
+  return std::find_if(breakpoints.begin(), breakpoints.end(), predicate);
+}
+}

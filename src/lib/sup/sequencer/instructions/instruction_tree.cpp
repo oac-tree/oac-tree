@@ -118,7 +118,7 @@ std::vector<const Instruction*> FlattenBFS(const InstructionTree& tree)
   std::deque<const InstructionTree*> stack;
   std::deque<const InstructionTree*> temp_stack;
   stack.push_back(&tree);
-  while(true)
+  while(!stack.empty())
   {
     while (!stack.empty())
     {
@@ -129,10 +129,6 @@ std::vector<const Instruction*> FlattenBFS(const InstructionTree& tree)
       {
         temp_stack.push_back(child_node);
       }
-    }
-    if (temp_stack.empty())
-    {
-      break;
     }
     std::swap(stack, temp_stack);
   }

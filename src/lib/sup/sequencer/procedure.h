@@ -108,6 +108,14 @@ public:
   std::vector<const Instruction*> GetInstructions(const std::string& filename = {}) const;
 
   /**
+   * @brief Get list of instructions that will be executed next.
+   *
+   * @return List of instructions.
+   * @details This method should only be called in between execution steps.
+   */
+  std::vector<const Instruction*> GetNextInstructions() const;
+
+  /**
    * @brief Get number of top-level instructions.
    */
   int GetInstructionCount() const;

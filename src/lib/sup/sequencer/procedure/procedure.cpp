@@ -24,6 +24,7 @@
 #include <sup/sequencer/attribute_utils.h>
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/instruction.h>
+#include <sup/sequencer/instruction_tree.h>
 #include <sup/sequencer/sequence_parser.h>
 #include <sup/sequencer/workspace.h>
 
@@ -121,6 +122,16 @@ std::vector<const Instruction *> Procedure::GetInstructions(const std::string &f
     throw ParseException(error_message);
   }
   return loaded_proc->GetInstructions();
+}
+
+std::vector<const Instruction*> Procedure::GetNextInstructions() const
+{
+  auto root = RootInstruction();
+  if (root == nullptr || !ReadyForExecute(root->GetStatus()))
+  {
+    return {};
+  }
+  return FlattenBFS(CreateNextInstructionTree(root));
 }
 
 int Procedure::GetInstructionCount() const

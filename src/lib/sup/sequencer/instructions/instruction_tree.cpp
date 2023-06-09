@@ -21,7 +21,10 @@
 
 #include <sup/sequencer/instruction_tree.h>
 
+#include <sup/sequencer/exceptions.h>
+
 #include <algorithm>
+#include <deque>
 
 namespace sup
 {
@@ -64,6 +67,28 @@ std::vector<const Instruction*> InstructionTree::GetChildInstructions() const
 std::vector<InstructionTree*> InstructionTree::GetChildren() const
 {
   return m_children;
+}
+
+InstructionTree CreateInstructionTree(const Instruction* root, InstructionChildSelector selector)
+{
+  if (root == nullptr)
+  {
+    std::string message = "CreateInstructionTree(): called with nullptr to instruction";
+    throw InvalidOperationException(message);
+  }
+  std::deque<InstructionTree*> stack;
+  InstructionTree result{root};
+  stack.push_back(&result);
+  while (!stack.empty())
+  {
+    auto tree = stack.back();
+    stack.pop_back();
+    for (auto instr : selector(tree->GetInstruction()))
+    {
+      stack.push_back(tree->AddChildInstruction(instr));
+    }
+  }
+  return result;
 }
 
 }  // namespace sequencer

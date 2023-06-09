@@ -148,29 +148,3 @@ AsyncWrapper::Tick()
   m_status = RUNNING;
 }
 ```
-
-## InstructionTree creation
-
-```c++
-using ChildSelector = std::function<std::vector<const Instruction*>(const Instruction*)>;
-
-InstructionTree CreateInstructionTree(const Instruction* root, ChildSelector selector)
-{
-  if (root == nullptr)
-  {
-    throw RuntimeException("");
-  }
-  stack<InstructionTree*> stack;
-  InstructionTree result{root};
-  stack.push(&result);
-  while (!stack.empty())
-  {
-    auto tree = stack.pop();
-    for (auto instr : selector(tree->GetInstruction()))
-    {
-      stack.push(tree.AddChild(instr));
-    }
-  }
-  return result;
-}
-```

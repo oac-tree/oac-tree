@@ -112,6 +112,33 @@ InstructionTree CreateInstructionTree(const Instruction* root, InstructionChildS
   return result;
 }
 
+std::vector<const Instruction*> FlattenBFS(const InstructionTree& tree)
+{
+  std::vector<const Instruction*> result;
+  std::deque<const InstructionTree*> stack;
+  std::deque<const InstructionTree*> temp_stack;
+  stack.push_back(&tree);
+  while(true)
+  {
+    while (!stack.empty())
+    {
+      auto node = stack.front();
+      stack.pop_front();
+      result.push_back(node->GetInstruction());
+      for (auto child_node : node->GetChildren())
+      {
+        temp_stack.push_back(child_node);
+      }
+    }
+    if (temp_stack.empty())
+    {
+      break;
+    }
+    std::swap(stack, temp_stack);
+  }
+  return result;
+}
+
 }  // namespace sequencer
 
 }  // namespace sup

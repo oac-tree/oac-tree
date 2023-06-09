@@ -65,6 +65,11 @@ InstructionTree CreateFullInstructionTree(const Instruction* root);
 */
 InstructionTree CreateNextInstructionTree(const Instruction* root);
 
+/**
+ * @brief Flatten an InstructionTree using breadth-first search.
+*/
+std::vector<const Instruction*> FlattenBFS(const InstructionTree& tree);
+
 }  // namespace sequencer
 
 }  // namespace sup

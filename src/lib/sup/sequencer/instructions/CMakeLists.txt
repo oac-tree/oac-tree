@@ -19,6 +19,7 @@ target_sources(sup-sequencer-shared
     ${CMAKE_CURRENT_LIST_DIR}/instruction.cpp
     ${CMAKE_CURRENT_LIST_DIR}/instruction_helper.cpp
     ${CMAKE_CURRENT_LIST_DIR}/instruction_registry.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/instruction_tree.cpp
     ${CMAKE_CURRENT_LIST_DIR}/inverter.cpp
     ${CMAKE_CURRENT_LIST_DIR}/lessthan.cpp
     ${CMAKE_CURRENT_LIST_DIR}/lessthanorequal.cpp

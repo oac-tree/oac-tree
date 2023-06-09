@@ -22,14 +22,19 @@
 #include <sup/sequencer/instruction_tree.h>
 
 #include <sup/sequencer/exceptions.h>
+#include <sup/sequencer/instruction.h>
 
 #include <algorithm>
 #include <deque>
+#include <functional>
 
 namespace sup
 {
 namespace sequencer
 {
+using InstructionChildSelector = std::function<std::vector<const Instruction*>(const Instruction*)>;
+
+InstructionTree CreateInstructionTree(const Instruction* root, InstructionChildSelector selector);
 
 InstructionTree::InstructionTree(const Instruction* instruction)
   : m_instruction{instruction}
@@ -67,6 +72,22 @@ std::vector<const Instruction*> InstructionTree::GetChildInstructions() const
 std::vector<InstructionTree*> InstructionTree::GetChildren() const
 {
   return m_children;
+}
+
+InstructionTree CreateFullInstructionTree(const Instruction* root)
+{
+  auto selector = [](const Instruction* instruction) {
+    return instruction->ChildInstructions();
+  };
+  return CreateInstructionTree(root, selector);
+}
+
+InstructionTree CreateNextInstructionTree(const Instruction* root)
+{
+  auto selector = [](const Instruction* instruction) {
+    return instruction->NextInstructions();
+  };
+  return CreateInstructionTree(root, selector);
 }
 
 InstructionTree CreateInstructionTree(const Instruction* root, InstructionChildSelector selector)

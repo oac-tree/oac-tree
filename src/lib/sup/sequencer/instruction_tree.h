@@ -22,7 +22,6 @@
 #ifndef SUP_SEQUENCER_INSTRUCTION_TREE_H_
 #define SUP_SEQUENCER_INSTRUCTION_TREE_H_
 
-#include <functional>
 #include <vector>
 
 namespace sup
@@ -55,9 +54,16 @@ private:
   std::vector<InstructionTree*> m_children;
 };
 
-using InstructionChildSelector = std::function<std::vector<const Instruction*>(const Instruction*)>;
+/**
+ * @brief Create an InstructionTree representing the whole instruction tree starting from the
+ * given root instruction.
+*/
+InstructionTree CreateFullInstructionTree(const Instruction* root);
 
-InstructionTree CreateInstructionTree(const Instruction* root, InstructionChildSelector selector);
+/**
+ * @brief Create an InstructionTree representing the tree of instructions that will be executed next.
+*/
+InstructionTree CreateNextInstructionTree(const Instruction* root);
 
 }  // namespace sequencer
 

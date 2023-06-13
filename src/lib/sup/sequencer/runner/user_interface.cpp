@@ -61,18 +61,6 @@ int UserInterface::GetUserChoice(const std::vector<std::string>& choices,
   return GetUserChoiceImpl(choices, description);
 }
 
-void UserInterface::StartSingleStep()
-{
-  std::lock_guard<std::mutex> lock(m_ui_mutex);
-  StartSingleStepImpl();
-}
-
-void UserInterface::EndSingleStep()
-{
-  std::lock_guard<std::mutex> lock(m_ui_mutex);
-  EndSingleStepImpl();
-}
-
 void UserInterface::Message(const std::string& message)
 {
   std::lock_guard<std::mutex> lock(m_ui_mutex);
@@ -114,12 +102,6 @@ int UserInterface::GetUserChoiceImpl(const std::vector<std::string>& choices,
 {
   return -1;
 }
-
-void UserInterface::StartSingleStepImpl()
-{}
-
-void UserInterface::EndSingleStepImpl()
-{}
 
 void UserInterface::MessageImpl(const std::string&)
 {}

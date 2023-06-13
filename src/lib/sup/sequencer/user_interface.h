@@ -93,20 +93,6 @@ public:
   int GetUserChoice(const std::vector<std::string>& choices, const std::string& description = {});
 
   /**
-   * @brief Method called before stepping into an instruction.
-   *
-   * @note Non-Virtual Interface.
-   */
-  void StartSingleStep();
-
-  /**
-   * @brief Method called after executing an instruction.
-   *
-   * @note Non-Virtual Interface.
-   */
-  void EndSingleStep();
-
-  /**
    * @brief Method called to display a message.
    *
    * @note Non-Virtual Interface.
@@ -169,20 +155,6 @@ private:
    */
   virtual int GetUserChoiceImpl(const std::vector<std::string>& choices,
                                 const std::string& description);
-
-  /**
-   * @brief Private virtual implementation of UserInterface::StartSingleStep().
-   *
-   * @note Default implementation is empty.
-   */
-  virtual void StartSingleStepImpl();
-
-  /**
-   * @brief Private virtual implementation of UserInterface::EndSingleStep().
-   *
-   * @note Default implementation is empty.
-   */
-  virtual void EndSingleStepImpl();
 
   /**
    * @brief Private virtual implementation of UserInterface::Message().

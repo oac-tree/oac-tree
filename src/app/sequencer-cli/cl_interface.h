@@ -48,8 +48,6 @@ private:
   bool GetUserValueImpl(sup::dto::AnyValue& value, const std::string& description) override;
   int GetUserChoiceImpl(const std::vector<std::string>& choices,
                         const std::string& description) override;
-  void StartSingleStepImpl() override;
-  void EndSingleStepImpl() override;
   void MessageImpl(const std::string& message) override;
   void LogImpl(int severity, const std::string& message) override;
 

@@ -19,13 +19,3 @@ void TestUI::UpdateInstructionStatusImpl(const Instruction* instruction)
   std::cout << "Instruction: " << instruction_type << ": ";
   std::cout << StatusToString(status) << std::endl;
 }
-
-void TestUI::StartSingleStepImpl()
-{
-  std::cout << "Start single execution step" << std::endl;
-}
-
-void TestUI::EndSingleStepImpl()
-{
-  std::cout << "End single execution step" << std::endl;
-}

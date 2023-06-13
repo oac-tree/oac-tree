@@ -12,10 +12,6 @@ public:
 
 private:
   void UpdateInstructionStatusImpl(const sup::sequencer::Instruction* instruction) override;
-
-  void StartSingleStepImpl() override;
-
-  void EndSingleStepImpl() override;
 };
 
 #endif  // SUP_SEQUENCER_TEST_UI_H_

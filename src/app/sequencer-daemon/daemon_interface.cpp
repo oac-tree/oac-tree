@@ -73,18 +73,6 @@ int DaemonInterface::GetUserChoiceImpl(const std::vector<std::string> &, const s
   return -1;
 }
 
-void DaemonInterface::StartSingleStepImpl()
-{
-  std::string info_message = "Start single execution step";
-  m_logger.Info(info_message);
-}
-
-void DaemonInterface::EndSingleStepImpl()
-{
-  std::string info_message = "End single execution step";
-  m_logger.Info(info_message);
-}
-
 void DaemonInterface::MessageImpl(const std::string& message)
 {
   m_logger.Info(message);

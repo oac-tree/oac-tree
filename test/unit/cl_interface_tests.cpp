@@ -73,20 +73,6 @@ TEST_F(CLInterfaceTest, VariableUpdated)
   EXPECT_FALSE(m_log_entries.empty());
 }
 
-TEST_F(CLInterfaceTest, StartSingleStep)
-{
-  EXPECT_TRUE(m_log_entries.empty());
-  cli_verbose.StartSingleStep();
-  EXPECT_FALSE(m_log_entries.empty());
-}
-
-TEST_F(CLInterfaceTest, EndSingleStep)
-{
-  EXPECT_TRUE(m_log_entries.empty());
-  cli_verbose.EndSingleStep();
-  EXPECT_FALSE(m_log_entries.empty());
-}
-
 TEST_F(CLInterfaceTest, GetUserValue)
 {
   sup::dto::AnyValue val(sup::dto::UnsignedInteger32Type);

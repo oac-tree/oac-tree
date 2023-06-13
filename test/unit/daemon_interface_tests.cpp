@@ -66,34 +66,6 @@ TEST_F(DaemonInterfaceTest, UpdateInstructionStatusLogged)
   EXPECT_NE(last_message.find(StatusToString(ExecutionStatus::NOT_STARTED)), std::string::npos);
 }
 
-TEST_F(DaemonInterfaceTest, StartSingleStep)
-{
-  EXPECT_TRUE(m_log_entries.empty());
-  daemon_interface.StartSingleStep();
-  EXPECT_TRUE(m_log_entries.empty());
-}
-
-TEST_F(DaemonInterfaceTest, StartSingleStepLogged)
-{
-  EXPECT_TRUE(m_log_entries.empty());
-  daemon_interface_logging.StartSingleStep();
-  EXPECT_FALSE(m_log_entries.empty());
-}
-
-TEST_F(DaemonInterfaceTest, EndSingleStep)
-{
-  EXPECT_TRUE(m_log_entries.empty());
-  daemon_interface.EndSingleStep();
-  EXPECT_TRUE(m_log_entries.empty());
-}
-
-TEST_F(DaemonInterfaceTest, EndSingleStepLogged)
-{
-  EXPECT_TRUE(m_log_entries.empty());
-  daemon_interface_logging.EndSingleStep();
-  EXPECT_FALSE(m_log_entries.empty());
-}
-
 TEST_F(DaemonInterfaceTest, GetUserValue)
 {
   EXPECT_TRUE(m_log_entries.empty());

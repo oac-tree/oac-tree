@@ -143,21 +143,9 @@ int CLInterface::GetUserChoiceImpl(const std::vector<std::string> &choices,
   return input;
 }
 
-void CLInterface::StartSingleStepImpl()
-{
-  std::string info_message = "Start single execution step";
-  m_logger.LogMessage(log::SUP_SEQ_LOG_INFO, info_message);
-}
-
 void CLInterface::MessageImpl(const std::string& message)
 {
   std::cout << message << std::endl;
-}
-
-void CLInterface::EndSingleStepImpl()
-{
-  std::string info_message = "End single execution step";
-  m_logger.LogMessage(log::SUP_SEQ_LOG_INFO, info_message);
 }
 
 void CLInterface::LogImpl(int severity, const std::string& message)

@@ -48,8 +48,6 @@ public:
                bool(sup::dto::AnyValue &value, const std::string &description));
   MOCK_METHOD2(GetUserChoiceImpl,
                int(const std::vector<std::string> &choices, const std::string &description));
-  MOCK_METHOD0(StartSingleStepImpl, void());
-  MOCK_METHOD0(EndSingleStepImpl, void());
 };
 
 MATCHER_P(HasExecutionStatus, expected, "")

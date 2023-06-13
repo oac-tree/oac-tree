@@ -104,24 +104,6 @@ TEST_F(UserInterfaceTest, GetUserChoiceDispatch)
   EXPECT_EQ(mock_ui.GetUserChoice(choices, description), 0);
 }
 
-TEST_F(UserInterfaceTest, StartSingleStepDispatch)
-{
-  EXPECT_CALL(mock_ui, StartSingleStepImpl()).Times(3);
-  EXPECT_NO_THROW(mock_ui.StartSingleStep());
-  EXPECT_NO_THROW(mock_ui.StartSingleStep());
-  EXPECT_NO_THROW(mock_ui.StartSingleStep());
-}
-
-TEST_F(UserInterfaceTest, EndSingleStepDispatch)
-{
-  EXPECT_CALL(mock_ui, EndSingleStepImpl()).Times(5);
-  EXPECT_NO_THROW(mock_ui.EndSingleStep());
-  EXPECT_NO_THROW(mock_ui.EndSingleStep());
-  EXPECT_NO_THROW(mock_ui.EndSingleStep());
-  EXPECT_NO_THROW(mock_ui.EndSingleStep());
-  EXPECT_NO_THROW(mock_ui.EndSingleStep());
-}
-
 TEST_F(UserInterfaceTest, PutValueDefault)
 {
   sup::dto::AnyValue val;
@@ -143,16 +125,6 @@ TEST_F(UserInterfaceTest, GetUserChoiceDefault)
   EXPECT_EQ(empty_ui.GetUserChoice(choices, description), -1);
 }
 
-TEST_F(UserInterfaceTest, StartSingleStepDefault)
-{
-  EXPECT_NO_THROW(empty_ui.StartSingleStep());
-}
-
-TEST_F(UserInterfaceTest, EndSingleStepDefault)
-{
-  EXPECT_NO_THROW(empty_ui.EndSingleStep());
-}
-
 TEST_F(UserInterfaceTest, InstructionExecution)
 {
   EXPECT_THAT(wait, HasExecutionStatus(ExecutionStatus::NOT_STARTED));
@@ -167,7 +139,6 @@ TEST_F(UserInterfaceTest, InstructionExecution)
 
 UserInterfaceTest::UserInterfaceTest()
     : mock_ui{}, empty_ui{}, empty_ws{}, wait{GlobalInstructionRegistry().Create("Wait")}
-{
-}
+{}
 
 UserInterfaceTest::~UserInterfaceTest() = default;

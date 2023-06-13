@@ -140,9 +140,7 @@ TEST_F(RunnerTest, NoProcedure)
 TEST_F(RunnerTest, ExecuteSingle)
 {
   // Set Expectations on mock UserInterface calls
-  EXPECT_CALL(mock_ui, StartSingleStepImpl()).Times(AtLeast(3));
   EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(_)).Times(AtLeast(12));
-  EXPECT_CALL(mock_ui, EndSingleStepImpl()).Times(AtLeast(3));
 
   // Test preconditions
   Runner runner(mock_ui);
@@ -178,9 +176,7 @@ TEST_F(RunnerTest, ExecuteSingle)
 TEST_F(RunnerTest, ExecuteProcedure)
 {
   // Set Expectations on mock UserInterface calls
-  EXPECT_CALL(mock_ui, StartSingleStepImpl()).Times(AtLeast(3));
   EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(_)).Times(AtLeast(12));
-  EXPECT_CALL(mock_ui, EndSingleStepImpl()).Times(AtLeast(3));
 
   // Test preconditions
   Runner runner(mock_ui);
@@ -204,14 +200,11 @@ TEST_F(RunnerTest, UICalls)
   // Set Expectations on mock UserInterface calls
   {
     InSequence seq;
-    EXPECT_CALL(mock_ui, StartSingleStepImpl());
     EXPECT_CALL(mock_ui,
                 UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::NOT_FINISHED)));
     EXPECT_CALL(mock_ui,
                 UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::NOT_FINISHED)));
     EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::SUCCESS)));
-    EXPECT_CALL(mock_ui, EndSingleStepImpl());
-    EXPECT_CALL(mock_ui, StartSingleStepImpl());
     EXPECT_CALL(mock_ui,
                 UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::NOT_FINISHED)));
     EXPECT_CALL(mock_ui,
@@ -219,7 +212,6 @@ TEST_F(RunnerTest, UICalls)
     EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::SUCCESS)));
     EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::FAILURE)));
     EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::FAILURE)));
-    EXPECT_CALL(mock_ui, EndSingleStepImpl());
   }
 
   // Test preconditions
@@ -245,9 +237,7 @@ TEST_F(RunnerTest, UIVariableCalls)
   sup::dto::AnyValue val(sup::dto::UnsignedInteger64Type);
   val = sup::dto::uint64(1729);
   EXPECT_CALL(mock_ui, VariableUpdatedImpl("var2", HasSameValue(val), true)).Times(Exactly(1));
-  EXPECT_CALL(mock_ui, StartSingleStepImpl()).Times(AtLeast(1));
   EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(_)).Times(AtLeast(4));
-  EXPECT_CALL(mock_ui, EndSingleStepImpl()).Times(AtLeast(1));
 
   // Test preconditions
   Runner runner(mock_ui);

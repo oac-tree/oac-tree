@@ -149,9 +149,7 @@ void Runner::ExecuteSingle()
 {
   if (m_proc)
   {
-    m_ui.StartSingleStep();
     m_proc->ExecuteSingle(m_ui);
-    m_ui.EndSingleStep();
   }
 }
 

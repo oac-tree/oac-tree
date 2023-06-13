@@ -49,8 +49,7 @@ std::vector<Breakpoint*> CurrentBreakpoints(
 std::vector<const Instruction*> HandleBreakpoints(
   std::vector<Breakpoint>& breakpoints, const std::vector<const Instruction*>& next_instructions);
 
-void ResetBreakpoints(std::vector<Breakpoint>& breakpoints,
-                      const std::vector<const Instruction*>& current_breakpoint_instructions);
+void ResetBreakpoints(std::vector<Breakpoint>& breakpoints);
 
 Runner::Runner(UserInterface& ui)
   : m_proc{nullptr}
@@ -119,7 +118,6 @@ std::vector<Breakpoint> Runner::GetBreakpoints() const
 void Runner::ExecuteProcedure()
 {
   m_halt.store(false);
-  ResetBreakpoints(m_breakpoints, m_current_breakpoint_instructions);
   if (m_proc)
   {
     auto sleep_time_ms = TickTimeoutMs(*m_proc);
@@ -136,6 +134,7 @@ void Runner::ExecuteProcedure()
         }
       }
       ExecuteSingle();
+      ResetBreakpoints(m_breakpoints);
       if (IsRunning())
       {
         std::this_thread::sleep_for(std::chrono::milliseconds(sleep_time_ms));
@@ -246,15 +245,13 @@ std::vector<const Instruction*> HandleBreakpoints(
   return result;
 }
 
-void ResetBreakpoints(std::vector<Breakpoint>& breakpoints,
-                      const std::vector<const Instruction*>& current_breakpoint_instructions)
+void ResetBreakpoints(std::vector<Breakpoint>& breakpoints)
 {
-  for (auto current_breakpoint_instruction : current_breakpoint_instructions)
+  for (auto& breakpoint : breakpoints)
   {
-    auto it = FindBreakpoint(breakpoints, current_breakpoint_instruction);
-    if (it != breakpoints.end() && it->GetStatus() == Breakpoint::kReleased)
+    if (breakpoint.GetStatus() == Breakpoint::kReleased)
     {
-      it->SetStatus(Breakpoint::kSet);
+      breakpoint.SetStatus(Breakpoint::kSet);
     }
   }
 }

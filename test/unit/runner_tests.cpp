@@ -358,6 +358,114 @@ TEST_F(RunnerTest, Pause)
   EXPECT_FALSE(runner.IsRunning());
 }
 
+TEST_F(RunnerTest, EnabledBreakpoint)
+{
+  // Test preconditions
+  CallbackUserInterface cb_ui;
+  Runner runner(cb_ui);
+  EXPECT_TRUE(runner.IsFinished());  // empty procedure is finished by default
+  EXPECT_FALSE(runner.IsRunning());
+
+  // Set procedure and test conditions again
+  EXPECT_NO_THROW(sync_proc->Setup());
+  EXPECT_NO_THROW(runner.SetProcedure(sync_proc.get()));
+  EXPECT_EQ(sync_proc->GetStatus(), ExecutionStatus::NOT_STARTED);
+  EXPECT_FALSE(runner.IsFinished());
+  EXPECT_FALSE(runner.IsRunning());
+
+  // Set callback to pause runner and execute
+  auto cb = [&runner]() { runner.Pause(); };
+  cb_ui.SetCallback(cb);
+  EXPECT_NO_THROW(runner.ExecuteProcedure());
+  EXPECT_FALSE(runner.IsFinished());
+  EXPECT_FALSE(runner.IsRunning());
+  // Clear pause callback
+  cb_ui.SetCallback();
+
+  // Fetch next instructions and set a breakpoint on the Inverter instruction
+  auto next_instructions = sync_proc->GetNextInstructions();
+  EXPECT_EQ(next_instructions.size(), 3);
+  auto predicate = [](const Instruction* instruction) {
+    return instruction->GetType() == "Inverter";
+  };
+  auto it = std::find_if(next_instructions.begin(), next_instructions.end(), predicate);
+  ASSERT_NE(it, next_instructions.end());
+  EXPECT_NO_THROW(runner.SetBreakpoint(*it));
+
+  // Check presence of one breakpoint that is set
+  auto breakpoints = runner.GetBreakpoints();
+  ASSERT_EQ(breakpoints.size(), 1);
+  EXPECT_EQ(breakpoints[0].GetInstruction(), *it);
+  EXPECT_EQ(breakpoints[0].GetStatus(), Breakpoint::kSet);
+  EXPECT_NO_THROW(runner.ExecuteProcedure());
+  EXPECT_FALSE(runner.IsFinished());
+  EXPECT_FALSE(runner.IsRunning());
+
+  // Check presence of one breakpoint that is released
+  breakpoints = runner.GetBreakpoints();
+  ASSERT_EQ(breakpoints.size(), 1);
+  EXPECT_EQ(breakpoints[0].GetInstruction(), *it);
+  EXPECT_EQ(breakpoints[0].GetStatus(), Breakpoint::kReleased);
+
+  // Next execute will pass the breakpoint
+  EXPECT_NO_THROW(runner.ExecuteProcedure());
+  EXPECT_TRUE(runner.IsFinished());
+  EXPECT_FALSE(runner.IsRunning());
+}
+
+TEST_F(RunnerTest, DisabledBreakpoint)
+{
+  // Test preconditions
+  CallbackUserInterface cb_ui;
+  Runner runner(cb_ui);
+  EXPECT_TRUE(runner.IsFinished());  // empty procedure is finished by default
+  EXPECT_FALSE(runner.IsRunning());
+
+  // Set procedure and test conditions again
+  EXPECT_NO_THROW(sync_proc->Setup());
+  EXPECT_NO_THROW(runner.SetProcedure(sync_proc.get()));
+  EXPECT_EQ(sync_proc->GetStatus(), ExecutionStatus::NOT_STARTED);
+  EXPECT_FALSE(runner.IsFinished());
+  EXPECT_FALSE(runner.IsRunning());
+
+  // Set callback to pause runner and execute
+  auto cb = [&runner]() { runner.Pause(); };
+  cb_ui.SetCallback(cb);
+  EXPECT_NO_THROW(runner.ExecuteProcedure());
+  EXPECT_FALSE(runner.IsFinished());
+  EXPECT_FALSE(runner.IsRunning());
+  // Clear pause callback
+  cb_ui.SetCallback();
+
+  // Fetch next instructions and set a breakpoint on the Inverter instruction
+  auto next_instructions = sync_proc->GetNextInstructions();
+  EXPECT_EQ(next_instructions.size(), 3);
+  auto predicate = [](const Instruction* instruction) {
+    return instruction->GetType() == "Inverter";
+  };
+  auto it = std::find_if(next_instructions.begin(), next_instructions.end(), predicate);
+  ASSERT_NE(it, next_instructions.end());
+  EXPECT_NO_THROW(runner.SetBreakpoint(*it));
+
+  // Check presence of one breakpoint that is set
+  auto breakpoints = runner.GetBreakpoints();
+  ASSERT_EQ(breakpoints.size(), 1);
+  EXPECT_EQ(breakpoints[0].GetInstruction(), *it);
+  EXPECT_EQ(breakpoints[0].GetStatus(), Breakpoint::kSet);
+
+  // Disable breakpoint and check
+  EXPECT_NO_THROW(runner.DisableBreakpoint(*it));
+  breakpoints = runner.GetBreakpoints();
+  ASSERT_EQ(breakpoints.size(), 1);
+  EXPECT_EQ(breakpoints[0].GetInstruction(), *it);
+  EXPECT_EQ(breakpoints[0].GetStatus(), Breakpoint::kDisabled);
+
+  // A disabled breakpoint is ignored, so the runner runs to completion
+  EXPECT_NO_THROW(runner.ExecuteProcedure());
+  EXPECT_TRUE(runner.IsFinished());
+  EXPECT_FALSE(runner.IsRunning());
+}
+
 RunnerTest::RunnerTest()
     : mock_ui{}
     , empty_ui{}

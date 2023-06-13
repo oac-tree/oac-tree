@@ -33,8 +33,6 @@ namespace
 {
 using sup::sequencer::Breakpoint;
 using sup::sequencer::Instruction;
-std::vector<Breakpoint>::const_iterator FindBreakpoint(const std::vector<Breakpoint>& breakpoints,
-                                                       const Instruction* instruction);
 std::vector<Breakpoint>::iterator FindBreakpoint(std::vector<Breakpoint>& breakpoints,
                                                  const Instruction* instruction);
 }
@@ -83,6 +81,41 @@ void Runner::SetBreakpoint(const Instruction* instruction)
   }
 }
 
+void Runner::RemoveBreakpoint(const Instruction* instruction)
+{
+  auto it = FindBreakpoint(m_breakpoints, instruction);
+  if (it == m_breakpoints.end())
+  {
+    return;
+  }
+  m_breakpoints.erase(it);
+}
+
+void Runner::DisableBreakpoint(const Instruction* instruction)
+{
+  auto it = FindBreakpoint(m_breakpoints, instruction);
+  if (it == m_breakpoints.end())
+  {
+    return;
+  }
+  it->SetStatus(Breakpoint::kDisabled);
+}
+
+void Runner::EnableBreakpoint(const Instruction* instruction)
+{
+  auto it = FindBreakpoint(m_breakpoints, instruction);
+  if (it == m_breakpoints.end())
+  {
+    return;
+  }
+  it->SetStatus(Breakpoint::kSet);
+}
+
+std::vector<Breakpoint> Runner::GetBreakpoints() const
+{
+  return m_breakpoints;
+}
+
 void Runner::ExecuteProcedure()
 {
   m_halt.store(false);
@@ -94,10 +127,13 @@ void Runner::ExecuteProcedure()
     while (!IsFinished() && !m_halt.load())
     {
       auto next_instructions = m_proc->GetNextInstructions();
-      m_current_breakpoint_instructions = HandleBreakpoints(m_breakpoints, next_instructions);
-      if (!m_current_breakpoint_instructions.empty())
+      if (!next_instructions.empty())
       {
-        return;
+        m_current_breakpoint_instructions = HandleBreakpoints(m_breakpoints, next_instructions);
+        if (!m_current_breakpoint_instructions.empty())
+        {
+          return;
+        }
       }
       ExecuteSingle();
       if (IsRunning())
@@ -118,6 +154,11 @@ void Runner::ExecuteSingle()
   }
 }
 
+std::vector<const Instruction*> Runner::GetCurrentBreakpointInstructions() const
+{
+  return m_current_breakpoint_instructions;
+}
+
 void Runner::Halt()
 {
   m_halt.store(true);
@@ -125,6 +166,11 @@ void Runner::Halt()
   {
     m_proc->Halt();
   }
+}
+
+void Runner::Pause()
+{
+  m_halt.store(true);
 }
 
 bool Runner::IsFinished() const
@@ -219,15 +265,6 @@ void ResetBreakpoints(std::vector<Breakpoint>& breakpoints,
 
 namespace
 {
-std::vector<Breakpoint>::const_iterator FindBreakpoint(const std::vector<Breakpoint>& breakpoints,
-                                                       const Instruction* instruction)
-{
-  auto predicate = [instruction](const Breakpoint& breakpoint) {
-    return breakpoint.GetInstruction() == instruction;
-  };
-  return std::find_if(breakpoints.begin(), breakpoints.end(), predicate);
-}
-
 std::vector<Breakpoint>::iterator FindBreakpoint(std::vector<Breakpoint>& breakpoints,
                                                  const Instruction* instruction)
 {

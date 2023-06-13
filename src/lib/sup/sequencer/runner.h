@@ -59,8 +59,57 @@ public:
   /**
    * @brief Set a breakpoint at the given instruction.
    * @param instruction Pointer to instruction for breakpoint location.
+   *
+   * @note This member function should not be called during execution, but only when it is paused,
+   * before/after a single execution step or after a breakpoint was triggered.
    */
   void SetBreakpoint(const Instruction* instruction);
+
+  /**
+   * @brief Remove a breakpoint at the given instruction (if it exists).
+   * @param instruction Pointer to instruction for breakpoint location.
+   *
+   * @note This member function should not be called during execution, but only when it is paused,
+   * before/after a single execution step or after a breakpoint was triggered.
+   */
+  void RemoveBreakpoint(const Instruction* instruction);
+
+  /**
+   * @brief Disable a breakpoint at the given instruction.
+   * @param instruction Pointer to instruction for breakpoint location.
+   *
+   * @details The breakpoint will not be removed, but will be ignored during determination whether
+   * the procedure has to stop executing at the given instruction.
+   *
+   * @note This member function should not be called during execution, but only when it is paused,
+   * before/after a single execution step or after a breakpoint was triggered.
+   */
+  void DisableBreakpoint(const Instruction* instruction);
+
+  /**
+   * @brief Enable a breakpoint at the given instruction.
+   * @param instruction Pointer to instruction for breakpoint location.
+   *
+   * @details The breakpoint will be re-enabled if it exists and was disabled.
+   *
+   * @note This member function should not be called during execution, but only when it is paused,
+   * before/after a single execution step or after a breakpoint was triggered.
+   */
+  void EnableBreakpoint(const Instruction* instruction);
+
+  /**
+   * @brief Get a list of breakpoints.
+   *
+   * @return List of breakpoints.
+   *
+   * @details This member function returns a copy of the breakpoint list. Manipulation of breakpoint
+   * statuses is handled only internally or through dedicated member functions like
+   * DisableBreakpoint().
+   *
+   * @note This member function should not be called during execution, but only when it is paused,
+   * before/after a single execution step or after a breakpoint was triggered.
+   */
+  std::vector<Breakpoint> GetBreakpoints() const;
 
   /**
    * @brief Execute the procedure
@@ -73,9 +122,26 @@ public:
   void ExecuteSingle();
 
   /**
+   * @brief Get a list of instruction pointers for which breakpoints were triggered.
+   *
+   * @return List of instructions whose breakpoints were triggered.
+   *
+   * @note This member function should not be called during execution, but only when it is paused,
+   * before/after a single execution step or after a breakpoint was triggered.
+   */
+  std::vector<const Instruction*> GetCurrentBreakpointInstructions() const;
+
+  /**
    * @brief Halts the procedure execution.
    */
   void Halt();
+
+  /**
+   * @brief Pauses the procedure execution.
+   *
+   * @note Resuming the execution is done by calling ExecuteProcedure() again.
+   */
+  void Pause();
 
   /**
    * @brief Query if procedure has finished.

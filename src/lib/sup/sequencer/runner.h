@@ -95,6 +95,7 @@ private:
   Procedure* m_proc;
   UserInterface& m_ui;
   std::vector<Breakpoint> m_breakpoints;
+  std::vector<const Instruction*> m_current_breakpoint_instructions;
   std::atomic_bool m_halt;
 };
 

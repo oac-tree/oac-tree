@@ -21,7 +21,6 @@
 
 #include <sup/sequencer/runner.h>
 
-#include <sup/sequencer/constants.h>
 #include <sup/sequencer/procedure.h>
 #include <sup/sequencer/user_interface.h>
 
@@ -52,6 +51,7 @@ void ResetBreakpoints(std::vector<Breakpoint>& breakpoints);
 Runner::Runner(UserInterface& ui)
   : m_proc{nullptr}
   , m_ui{ui}
+  , m_tick_cb{}
   , m_breakpoints{}
   , m_current_breakpoint_instructions{}
   , m_halt{false}
@@ -67,6 +67,11 @@ void Runner::SetProcedure(Procedure* procedure)
     {
       m_ui.VariableUpdated(name, value, connected);
     });
+}
+
+void Runner::SetTickCallback(TickCallback cb)
+{
+  m_tick_cb = cb;
 }
 
 void Runner::SetBreakpoint(const Instruction* instruction)
@@ -116,27 +121,26 @@ std::vector<Breakpoint> Runner::GetBreakpoints() const
 void Runner::ExecuteProcedure()
 {
   m_halt.store(false);
-  if (m_proc)
+  if (!m_proc)
   {
-    auto sleep_time_ms = TickTimeoutMs(*m_proc);
-
-    while (!IsFinished() && !m_halt.load())
+    return;
+  }
+  while (!IsFinished() && !m_halt.load())
+  {
+    auto next_instructions = m_proc->GetNextInstructions();
+    if (!next_instructions.empty())
     {
-      auto next_instructions = m_proc->GetNextInstructions();
-      if (!next_instructions.empty())
+      m_current_breakpoint_instructions = HandleBreakpoints(m_breakpoints, next_instructions);
+      if (!m_current_breakpoint_instructions.empty())
       {
-        m_current_breakpoint_instructions = HandleBreakpoints(m_breakpoints, next_instructions);
-        if (!m_current_breakpoint_instructions.empty())
-        {
-          return;
-        }
+        return;
       }
-      ExecuteSingle();
-      ResetBreakpoints(m_breakpoints);
-      if (IsRunning())
-      {
-        std::this_thread::sleep_for(std::chrono::milliseconds(sleep_time_ms));
-      }
+    }
+    ExecuteSingle();
+    ResetBreakpoints(m_breakpoints);
+    if (m_tick_cb)
+    {
+      m_tick_cb(*m_proc);
     }
   }
 }
@@ -238,6 +242,20 @@ void ResetBreakpoints(std::vector<Breakpoint>& breakpoints)
     {
       breakpoint.SetStatus(Breakpoint::kSet);
     }
+  }
+}
+
+TimeoutWhenRunning::TimeoutWhenRunning(int ms)
+  : m_timeout_ms{ms}
+{}
+
+TimeoutWhenRunning::~TimeoutWhenRunning() = default;
+
+void TimeoutWhenRunning::operator()(const Procedure& proc) const
+{
+  if (proc.GetStatus() == ExecutionStatus::RUNNING && m_timeout_ms > 0)
+  {
+    std::this_thread::sleep_for(std::chrono::milliseconds(m_timeout_ms));
   }
 }
 

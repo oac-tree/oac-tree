@@ -87,6 +87,7 @@ int main(int argc, char* argv[])
   DaemonInterface ui(logger);
   Runner runner(ui);
   runner.SetProcedure(proc.get());
+  runner.SetTickCallback(TimeoutWhenRunning{TickTimeoutMs(*proc)});
   runner.ExecuteProcedure();
   proc->Reset();
   return 0;

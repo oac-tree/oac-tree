@@ -25,6 +25,7 @@
 #include <sup/sequencer/breakpoint.h>
 
 #include <atomic>
+#include <functional>
 #include <vector>
 
 namespace sup
@@ -42,6 +43,8 @@ class UserInterface;
 class Runner
 {
 public:
+  using TickCallback = std::function<void(const Procedure&)>;
+
   /**
    * @brief Constructor.
    * @param ui User interface object.
@@ -55,6 +58,12 @@ public:
    * @param procedure Pointer to procedure.
    */
   void SetProcedure(Procedure* procedure);
+
+  /**
+   * @brief Set the callback function to be called after each execution step.
+   * @param cb Callback function.
+   */
+  void SetTickCallback(TickCallback cb = {});
 
   /**
    * @brief Set a breakpoint at the given instruction.
@@ -160,9 +169,25 @@ public:
 private:
   Procedure* m_proc;
   UserInterface& m_ui;
+  TickCallback m_tick_cb;
   std::vector<Breakpoint> m_breakpoints;
   std::vector<const Instruction*> m_current_breakpoint_instructions;
   std::atomic_bool m_halt;
+};
+
+/**
+ * @brief Class that can be used as a callback in between ticks. It will perform a fixed timeout
+ * when the procedure reports a running status (async operation).
+ */
+class TimeoutWhenRunning
+{
+public:
+  TimeoutWhenRunning(int ms);
+  ~TimeoutWhenRunning();
+
+  void operator()(const Procedure& proc) const;
+private:
+  int m_timeout_ms;
 };
 
 }  // namespace sequencer

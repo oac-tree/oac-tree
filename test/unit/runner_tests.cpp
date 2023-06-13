@@ -51,24 +51,6 @@ protected:
   std::unique_ptr<Procedure> async_wait_proc;
 };
 
-class CallbackUserInterface : public sup::sequencer::UserInterface
-{
-public:
-  using Callback = std::function<void()>;
-  CallbackUserInterface() : m_cb{} {}
-  ~CallbackUserInterface() = default;
-
-  void SetCallback(Callback cb = {}) { m_cb = cb; }
-private:
-  Callback m_cb;
-  void UpdateInstructionStatusImpl(const sup::sequencer::Instruction* instruction) override {
-    if (m_cb)
-    {
-      m_cb();
-    }
-  }
-};
-
 static const std::string AsyncProcedureString =
     R"RAW(<?xml version="1.0" encoding="UTF-8"?>
 <Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
@@ -333,8 +315,7 @@ TEST_F(RunnerTest, Halt)
 TEST_F(RunnerTest, Pause)
 {
   // Test preconditions
-  CallbackUserInterface cb_ui;
-  Runner runner(cb_ui);
+  Runner runner(empty_ui);
   EXPECT_TRUE(runner.IsFinished());  // empty procedure is finished by default
   EXPECT_FALSE(runner.IsRunning());
 
@@ -346,8 +327,8 @@ TEST_F(RunnerTest, Pause)
   EXPECT_FALSE(runner.IsRunning());
 
   // Set callback to pause runner and execute
-  auto cb = [&runner]() { runner.Pause(); };
-  cb_ui.SetCallback(cb);
+  auto cb = [&runner](const Procedure&) { runner.Pause(); };
+  runner.SetTickCallback(cb);
   EXPECT_NO_THROW(runner.ExecuteProcedure());
   EXPECT_FALSE(runner.IsFinished());
   EXPECT_FALSE(runner.IsRunning());
@@ -361,8 +342,7 @@ TEST_F(RunnerTest, Pause)
 TEST_F(RunnerTest, EnabledBreakpoint)
 {
   // Test preconditions
-  CallbackUserInterface cb_ui;
-  Runner runner(cb_ui);
+  Runner runner(empty_ui);
   EXPECT_TRUE(runner.IsFinished());  // empty procedure is finished by default
   EXPECT_FALSE(runner.IsRunning());
 
@@ -374,13 +354,13 @@ TEST_F(RunnerTest, EnabledBreakpoint)
   EXPECT_FALSE(runner.IsRunning());
 
   // Set callback to pause runner and execute
-  auto cb = [&runner]() { runner.Pause(); };
-  cb_ui.SetCallback(cb);
+  auto cb = [&runner](const Procedure&) { runner.Pause(); };
+  runner.SetTickCallback(cb);
   EXPECT_NO_THROW(runner.ExecuteProcedure());
   EXPECT_FALSE(runner.IsFinished());
   EXPECT_FALSE(runner.IsRunning());
   // Clear pause callback
-  cb_ui.SetCallback();
+  runner.SetTickCallback();
 
   // Fetch next instructions and set a breakpoint on the Inverter instruction
   auto next_instructions = sync_proc->GetNextInstructions();
@@ -416,8 +396,7 @@ TEST_F(RunnerTest, EnabledBreakpoint)
 TEST_F(RunnerTest, DisabledBreakpoint)
 {
   // Test preconditions
-  CallbackUserInterface cb_ui;
-  Runner runner(cb_ui);
+  Runner runner(empty_ui);
   EXPECT_TRUE(runner.IsFinished());  // empty procedure is finished by default
   EXPECT_FALSE(runner.IsRunning());
 
@@ -429,13 +408,13 @@ TEST_F(RunnerTest, DisabledBreakpoint)
   EXPECT_FALSE(runner.IsRunning());
 
   // Set callback to pause runner and execute
-  auto cb = [&runner]() { runner.Pause(); };
-  cb_ui.SetCallback(cb);
+  auto cb = [&runner](const Procedure&) { runner.Pause(); };
+  runner.SetTickCallback(cb);
   EXPECT_NO_THROW(runner.ExecuteProcedure());
   EXPECT_FALSE(runner.IsFinished());
   EXPECT_FALSE(runner.IsRunning());
   // Clear pause callback
-  cb_ui.SetCallback();
+  runner.SetTickCallback();
 
   // Fetch next instructions and set a breakpoint on the Inverter instruction
   auto next_instructions = sync_proc->GetNextInstructions();

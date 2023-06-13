@@ -86,7 +86,7 @@ private:
   void UpdateInstructionStatusImpl(const sup::sequencer::Instruction* instruction) override {}
 public:
   EmptyUserInterface() = default;
-  ~EmptyUserInterface() =default;
+  ~EmptyUserInterface() = default;
 };
 
 class TemporaryTestFile

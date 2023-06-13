@@ -30,6 +30,7 @@
 #include <gtest/gtest.h>
 
 #include <chrono>
+#include <functional>
 #include <future>
 #include <thread>
 
@@ -48,6 +49,24 @@ protected:
   std::unique_ptr<Procedure> sync_proc;
   std::unique_ptr<Procedure> copy_proc;
   std::unique_ptr<Procedure> async_wait_proc;
+};
+
+class CallbackUserInterface : public sup::sequencer::UserInterface
+{
+public:
+  using Callback = std::function<void()>;
+  CallbackUserInterface() : m_cb{} {}
+  ~CallbackUserInterface() = default;
+
+  void SetCallback(Callback cb = {}) { m_cb = cb; }
+private:
+  Callback m_cb;
+  void UpdateInstructionStatusImpl(const sup::sequencer::Instruction* instruction) override {
+    if (m_cb)
+    {
+      m_cb();
+    }
+  }
 };
 
 static const std::string AsyncProcedureString =
@@ -307,6 +326,34 @@ TEST_F(RunnerTest, Halt)
     --max_waits;
   }
   EXPECT_EQ(async_wait_proc->GetStatus(), ExecutionStatus::FAILURE);
+  EXPECT_TRUE(runner.IsFinished());
+  EXPECT_FALSE(runner.IsRunning());
+}
+
+TEST_F(RunnerTest, Pause)
+{
+  // Test preconditions
+  CallbackUserInterface cb_ui;
+  Runner runner(cb_ui);
+  EXPECT_TRUE(runner.IsFinished());  // empty procedure is finished by default
+  EXPECT_FALSE(runner.IsRunning());
+
+  // Set procedure and test conditions again
+  EXPECT_NO_THROW(sync_proc->Setup());
+  EXPECT_NO_THROW(runner.SetProcedure(sync_proc.get()));
+  EXPECT_EQ(sync_proc->GetStatus(), ExecutionStatus::NOT_STARTED);
+  EXPECT_FALSE(runner.IsFinished());
+  EXPECT_FALSE(runner.IsRunning());
+
+  // Set callback to pause runner and execute
+  auto cb = [&runner]() { runner.Pause(); };
+  cb_ui.SetCallback(cb);
+  EXPECT_NO_THROW(runner.ExecuteProcedure());
+  EXPECT_FALSE(runner.IsFinished());
+  EXPECT_FALSE(runner.IsRunning());
+  auto next_instructions = sync_proc->GetNextInstructions();
+  EXPECT_EQ(next_instructions.size(), 3);
+  EXPECT_NO_THROW(runner.ExecuteProcedure());
   EXPECT_TRUE(runner.IsFinished());
   EXPECT_FALSE(runner.IsRunning());
 }

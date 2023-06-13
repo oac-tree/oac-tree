@@ -329,6 +329,15 @@ private:
   void ClearProcedureCache() const;
 };
 
+/**
+ * @brief Query the desired timeout in ms of the procedure.
+ *
+ * @returns Timeout in ms of the procedure (attribute or default value)
+ *
+ * @details Applications are free to ignore this setting. It is only provided as a guideline.
+ */
+int TickTimeoutMs(Procedure& procedure);
+
 }  // namespace sequencer
 
 }  // namespace sup

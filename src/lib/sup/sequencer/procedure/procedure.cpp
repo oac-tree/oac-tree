@@ -22,6 +22,7 @@
 #include <sup/sequencer/procedure.h>
 
 #include <sup/sequencer/attribute_utils.h>
+#include <sup/sequencer/constants.h>
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/instruction.h>
 #include <sup/sequencer/instruction_tree.h>
@@ -298,6 +299,19 @@ static bool HasRootAttributeSet(const Instruction &instruction)
     return false;
   }
   return parsed.second.As<bool>();
+}
+
+int TickTimeoutMs(Procedure& procedure)
+{
+  if (procedure.HasAttribute(kTickTimeoutAttributeName))
+  {
+    auto tick_timeout = procedure.GetAttributeValue<double>(kTickTimeoutAttributeName);
+    if (tick_timeout > 0.001)
+    {
+      return static_cast<int>(tick_timeout * 1000);
+    }
+  }
+  return DefaultSettings::DEFAULT_SLEEP_TIME_MS;
 }
 
 }  // namespace sequencer

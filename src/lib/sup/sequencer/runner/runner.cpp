@@ -41,8 +41,6 @@ namespace sup
 {
 namespace sequencer
 {
-static int TickTimeoutMs(Procedure& procedure);
-
 std::vector<Breakpoint*> CurrentBreakpoints(
   std::vector<Breakpoint>& breakpoints, const std::vector<const Instruction*>& next_instructions);
 
@@ -192,19 +190,6 @@ bool Runner::IsRunning() const
 
   auto status = m_proc->GetStatus();
   return (status == ExecutionStatus::RUNNING);
-}
-
-static int TickTimeoutMs(Procedure& procedure)
-{
-  if (procedure.HasAttribute(kTickTimeoutAttributeName))
-  {
-    auto tick_timeout = procedure.GetAttributeValue<double>(kTickTimeoutAttributeName);
-    if (tick_timeout > 0.001)
-    {
-      return static_cast<int>(tick_timeout * 1000);
-    }
-  }
-  return DefaultSettings::DEFAULT_SLEEP_TIME_MS;
 }
 
 std::vector<Breakpoint*> CurrentBreakpoints(

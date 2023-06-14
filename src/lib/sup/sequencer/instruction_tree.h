@@ -41,7 +41,7 @@ public:
 
   ~InstructionTree();
 
-  bool Empty() const;
+  bool IsEmpty() const;
 
   const Instruction* GetInstruction() const;
 

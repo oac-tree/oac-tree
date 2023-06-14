@@ -48,7 +48,7 @@ InstructionTree::~InstructionTree()
   }
 }
 
-bool InstructionTree::Empty() const
+bool InstructionTree::IsEmpty() const
 {
   return m_instruction == nullptr;
 }

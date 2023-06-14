@@ -48,6 +48,11 @@ InstructionTree::~InstructionTree()
   }
 }
 
+bool InstructionTree::Empty() const
+{
+  return m_instruction == nullptr;
+}
+
 const Instruction* InstructionTree::GetInstruction() const
 {
   return m_instruction;

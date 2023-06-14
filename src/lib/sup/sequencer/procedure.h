@@ -43,6 +43,7 @@ class AnyValue;
 namespace sequencer
 {
 class Instruction;
+class InstructionTree;
 class UserInterface;
 class Variable;
 class Workspace;
@@ -106,6 +107,14 @@ public:
    * cache and then return its top-level instructions.
    */
   std::vector<const Instruction*> GetInstructions(const std::string& filename = {}) const;
+
+  /**
+   * @brief Get tree instructions that will be executed next.
+   *
+   * @return Tree of instructions.
+   * @details This method should only be called in between execution steps.
+   */
+  InstructionTree GetNextInstructionTree() const;
 
   /**
    * @brief Get list of instructions that will be executed next.

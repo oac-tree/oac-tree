@@ -41,6 +41,8 @@ public:
 
   ~InstructionTree();
 
+  bool Empty() const;
+
   const Instruction* GetInstruction() const;
 
   InstructionTree* AddChildInstruction(const Instruction* instruction);

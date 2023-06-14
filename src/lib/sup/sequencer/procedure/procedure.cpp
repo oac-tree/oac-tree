@@ -125,6 +125,16 @@ std::vector<const Instruction *> Procedure::GetInstructions(const std::string &f
   return loaded_proc->GetInstructions();
 }
 
+InstructionTree Procedure::GetNextInstructionTree() const
+{
+  auto root = RootInstruction();
+  if (root == nullptr || !ReadyForExecute(root->GetStatus()))
+  {
+    return InstructionTree{nullptr};
+  }
+  return CreateNextInstructionTree(root);
+}
+
 std::vector<const Instruction*> Procedure::GetNextInstructions() const
 {
   auto root = RootInstruction();

@@ -109,7 +109,7 @@ TEST(Condition, DifferentTypes)
     if (status)
     {
       sup::UnitTestHelper::EmptyUserInterface ui;
-      proc->PushInstruction(myCondNode.release());
+      proc->PushInstruction(std::move(myCondNode));
       proc->Setup();
       proc->ExecuteSingle(ui);
 

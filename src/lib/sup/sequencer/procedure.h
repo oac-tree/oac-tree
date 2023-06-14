@@ -132,13 +132,9 @@ public:
   /**
    * @brief Push Instruction at top level.
    *
-   * @note Procedure takes ownership of the instruction and will take care of its timely
-   * destruction. This implies that the client code should NEVER push the same
-   * instruction more than once.
-   *
-   * @throw InvalidOperationException when trying to push a nullptr.
+   * @throw InvalidOperationException when trying to pass an empty unique_ptr.
    */
-  void PushInstruction(Instruction* instruction);
+  void PushInstruction(std::unique_ptr<Instruction>&& instruction);
 
   /**
    * @brief Inserts Instruction at the specified position.

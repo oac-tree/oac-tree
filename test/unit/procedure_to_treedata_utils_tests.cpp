@@ -177,7 +177,7 @@ TEST_F(ProcedureToTreeDataUtilsTest, ProcedureWithSingleInstructionAndSingleVari
   const std::string instruction_attr_name("value");
   const std::string instruction_attr_value("42");
   wait->AddAttribute(instruction_attr_name, instruction_attr_value);
-  procedure.PushInstruction(wait.release());
+  procedure.PushInstruction(std::move(wait));
 
   const std::string variable_attr_name("timeout");
   const std::string variable_attr_value("43");
@@ -222,7 +222,7 @@ TEST_F(ProcedureToTreeDataUtilsTest, ProcedureWithSequenceToTreeData)
   auto sequence = GlobalInstructionRegistry().Create(Sequence::Type);
   sequence->InsertInstruction(wait.release(), 0);
 
-  procedure.PushInstruction(sequence.release());
+  procedure.PushInstruction(std::move(sequence));
 
   auto tree_data = ToTreeData(procedure);
 

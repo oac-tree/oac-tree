@@ -150,15 +150,15 @@ int Procedure::GetInstructionCount() const
   return static_cast<int>(m_instructions.size());
 }
 
-void Procedure::PushInstruction(Instruction *instruction)
+void Procedure::PushInstruction(std::unique_ptr<Instruction>&& instruction)
 {
-  if (instruction == nullptr)
+  if (!instruction)
   {
     std::string error_message =
-      "sup::sequencer::Procedure::PushInstruction(): trying to add nullptr";
+      "sup::sequencer::Procedure::PushInstruction(): trying to add empty unique_ptr";
     throw InvalidOperationException(error_message);
   }
-  m_instructions.emplace_back(instruction);
+  m_instructions.emplace_back(std::move(instruction));
 }
 
 bool Procedure::InsertInstruction(Instruction *instruction, int index)

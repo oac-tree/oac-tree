@@ -114,7 +114,7 @@ TEST(ParallelSequence, SetupImpl_thresholds)
 
   auto child = GlobalInstructionRegistry().Create("Wait");
   EXPECT_TRUE(child->AddAttribute("timeout", "1.0"));
-  EXPECT_TRUE(AppendChildInstruction(*parallel, child.release()));
+  EXPECT_TRUE(AppendChildInstruction(*parallel, std::move(child)));
   EXPECT_FALSE(parallel->ChildInstructions().empty());
 
   Procedure proc;

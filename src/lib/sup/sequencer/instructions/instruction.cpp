@@ -200,9 +200,9 @@ std::vector<const Instruction*> Instruction::NextInstructions() const
   return NextInstructionsImpl();
 }
 
-bool Instruction::InsertInstruction(Instruction* child, int index)
+bool Instruction::InsertInstruction(std::unique_ptr<Instruction>&& child, int index)
 {
-  return InsertInstructionImpl(child, index);
+  return InsertInstructionImpl(std::move(child), index);
 }
 
 std::unique_ptr<Instruction> Instruction::TakeInstruction(int index)
@@ -278,7 +278,7 @@ std::vector<const Instruction*> Instruction::NextInstructionsImpl() const
   return {};
 }
 
-bool Instruction::InsertInstructionImpl(Instruction*, int)
+bool Instruction::InsertInstructionImpl(std::unique_ptr<Instruction>&&, int)
 {
   return false;
 }
@@ -288,10 +288,10 @@ std::unique_ptr<Instruction> Instruction::TakeInstructionImpl(int)
   return nullptr;
 }
 
-bool AppendChildInstruction(Instruction& instruction, Instruction* child)
+bool AppendChildInstruction(Instruction& instruction, std::unique_ptr<Instruction>&& child)
 {
   auto n_children = instruction.ChildrenCount();
-  return instruction.InsertInstruction(child, n_children);
+  return instruction.InsertInstruction(std::move(child), n_children);
 }
 
 std::string InstructionSetupExceptionProlog(const Instruction& instruction)

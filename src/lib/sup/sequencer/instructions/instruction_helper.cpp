@@ -167,12 +167,12 @@ bool CloneChildInstructions(Instruction* clone, const Instruction* source)
 
 bool AddClonedChildInstruction(Instruction* instr, const Instruction* child)
 {
-  auto cloned_child = InstructionHelper::CloneInstruction(child);
-  if (cloned_child == nullptr)
+  std::unique_ptr<Instruction> cloned_child{InstructionHelper::CloneInstruction(child)};
+  if (!cloned_child)
   {
     return false;
   }
-  return AppendChildInstruction(*instr, cloned_child);
+  return AppendChildInstruction(*instr, std::move(cloned_child));
 }
 
 bool StartsWith(const std::string& str, char c)

@@ -124,11 +124,13 @@ int DecoratorInstruction::ChildrenCountImpl() const
   return m_child ? 1 : 0;
 }
 
-bool DecoratorInstruction::InsertInstructionImpl(Instruction *child, int index)
+bool DecoratorInstruction::InsertInstructionImpl(std::unique_ptr<Instruction>&& child, int index)
 {
   if (index != 0)
+  {
     return false;
-  m_child.reset(child);
+  }
+  std::swap(m_child, child);
   return true;
 }
 

@@ -48,8 +48,7 @@ TEST(Wait, InitialState)
   Wait instruction;
   EXPECT_EQ(instruction.ChildrenCount(), 0);
 
-  Wait child;
-  EXPECT_FALSE(instruction.InsertInstruction(&child, 0));
+  EXPECT_FALSE(instruction.InsertInstruction(nullptr, 0));
   EXPECT_FALSE(instruction.TakeInstruction(0));
 }
 

@@ -96,7 +96,7 @@ public:
    * @brief Set instruction name.
    * @param name Name to set.
    */
-  void SetName(const std::string &name);
+  void SetName(const std::string& name);
 
   /**
    * @brief Get execution status.
@@ -255,7 +255,7 @@ public:
    * @return true on success
    * @details Index must be in the range [0, current_children_count] inclusively.
    */
-  bool InsertInstruction(Instruction* child, int index);
+  bool InsertInstruction(std::unique_ptr<Instruction>&& child, int index);
 
   /**
    * @brief Removes child with the given index and returns it to the user.
@@ -426,7 +426,7 @@ private:
    * @return true on success
    * @details Index must be in the range [0, current_children_count] inclusively.
    */
-  virtual bool InsertInstructionImpl(Instruction* child, int index);
+  virtual bool InsertInstructionImpl(std::unique_ptr<Instruction>&& child, int index);
 
   /**
    * @brief Removes child with the given index and returns it to the user.
@@ -445,7 +445,7 @@ private:
  *
  * @return True if the adding was successful.
  */
-bool AppendChildInstruction(Instruction& instruction, Instruction* child);
+bool AppendChildInstruction(Instruction& instruction, std::unique_ptr<Instruction>&& child);
 
 /**
  * @brief Construct a string prolog for throwing exceptions related to Instruction::Setup.

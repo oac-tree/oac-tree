@@ -93,13 +93,13 @@ int CompoundInstruction::ChildrenCountImpl() const
   return static_cast<int>(m_children.size());
 }
 
-bool CompoundInstruction::InsertInstructionImpl(Instruction* child, int index)
+bool CompoundInstruction::InsertInstructionImpl(std::unique_ptr<Instruction>&& child, int index)
 {
   if (index < 0 || index > ChildrenCount())
   {
     return false;
   }
-  m_children.emplace(std::next(m_children.begin(), index), child);
+  m_children.emplace(std::next(m_children.begin(), index), std::move(child));
   return true;
 }
 

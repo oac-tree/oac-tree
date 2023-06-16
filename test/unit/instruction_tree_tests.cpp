@@ -174,12 +174,12 @@ std::unique_ptr<Instruction> CreateTestInstructionTree()
   auto wait_3 = GlobalInstructionRegistry().Create(kWaitType);
   auto wait_4 = GlobalInstructionRegistry().Create(kWaitType);
 
-  AppendChildInstruction(*seq_1, wait_1.release());
-  AppendChildInstruction(*seq_2, wait_2.release());
-  AppendChildInstruction(*inverter, wait_3.release());
-  AppendChildInstruction(*seq_2, inverter.release());
-  AppendChildInstruction(*seq_1, seq_2.release());
-  AppendChildInstruction(*seq_1, wait_4.release());
+  AppendChildInstruction(*seq_1, std::move(wait_1));
+  AppendChildInstruction(*seq_2, std::move(wait_2));
+  AppendChildInstruction(*inverter, std::move(wait_3));
+  AppendChildInstruction(*seq_2, std::move(inverter));
+  AppendChildInstruction(*seq_1, std::move(seq_2));
+  AppendChildInstruction(*seq_1, std::move(wait_4));
 
   return std::move(seq_1);
 }

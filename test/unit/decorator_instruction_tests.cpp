@@ -55,7 +55,7 @@ TEST_F(DecoratorInstructionTest, InsertChild)
 
   // inserting children one after another
   auto child0 = new Wait;
-  EXPECT_TRUE(decorator.InsertInstruction(child0, 0));
+  EXPECT_TRUE(decorator.InsertInstruction(std::unique_ptr<Instruction>{child0}, 0));
   EXPECT_EQ(decorator.ChildrenCount(), 1);
 }
 
@@ -69,7 +69,7 @@ TEST_F(DecoratorInstructionTest, TakeChild)
 
   // inserting children one after another
   auto child0 = new Wait;
-  EXPECT_TRUE(decorator.InsertInstruction(child0, 0));
+  EXPECT_TRUE(decorator.InsertInstruction(std::unique_ptr<Instruction>{child0}, 0));
   EXPECT_EQ(decorator.ChildrenCount(), 1);
 
   // not possible to take index !=0
@@ -90,7 +90,7 @@ TEST_F(DecoratorInstructionTest, ChildInstructions)
   EXPECT_TRUE(instruction->ChildInstructions().empty());
 
   auto child = GlobalInstructionRegistry().Create("Wait");
-  EXPECT_TRUE(AppendChildInstruction(*instruction, child.release()));
+  EXPECT_TRUE(AppendChildInstruction(*instruction, std::move(child)));
   EXPECT_FALSE(instruction->ChildInstructions().empty());
 }
 

@@ -85,7 +85,7 @@ static void AddChildInstructions(Instruction *instruction,
         "of type: <" + child.GetNodeName() + "> and name [" + GetNameAttribute(child) + "]";
       throw ParseException(error_message);
     }
-    if (!AppendChildInstruction(*instruction, child_instr.release()))
+    if (!AppendChildInstruction(*instruction, std::move(child_instr)))
     {
       std::string error_message =
         "sup::sequencer::AddChildInstructions(): wrong amount of child instructions for leaf "

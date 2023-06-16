@@ -44,24 +44,23 @@ TEST_F(CompoundInstructionTest, InsertChild)
 
   // inserting children one after another
   auto child0 = new Wait;
-  EXPECT_TRUE(compound.InsertInstruction(child0, 0));
+  EXPECT_TRUE(compound.InsertInstruction(std::unique_ptr<Instruction>{child0}, 0));
   EXPECT_EQ(compound.ChildrenCount(), 1);
 
   auto child1 = new Wait;
-  EXPECT_TRUE(compound.InsertInstruction(child1, 1));
+  EXPECT_TRUE(compound.InsertInstruction(std::unique_ptr<Instruction>{child1}, 1));
   EXPECT_EQ(compound.ChildrenCount(), 2);
 
   // inserting child in between
   auto child2 = new Wait;
-  EXPECT_TRUE(compound.InsertInstruction(child2, 1));
+  EXPECT_TRUE(compound.InsertInstruction(std::unique_ptr<Instruction>{child2}, 1));
   EXPECT_EQ(compound.ChildrenCount(), 3);
 
   EXPECT_EQ(compound.ChildInstructions(), std::vector<Instruction*>({child0, child2, child1}));
 
   // wrong insert index
-  Wait child3;
-  EXPECT_FALSE(compound.InsertInstruction(&child3, -1));
-  EXPECT_FALSE(compound.InsertInstruction(&child3, 4));
+  EXPECT_FALSE(compound.InsertInstruction(nullptr, -1));
+  EXPECT_FALSE(compound.InsertInstruction(nullptr, 4));
 }
 
 TEST_F(CompoundInstructionTest, TakeChild)
@@ -70,7 +69,7 @@ TEST_F(CompoundInstructionTest, TakeChild)
 
   // inserting child
   auto child0 = new Wait;
-  EXPECT_TRUE(compound.InsertInstruction(child0, 0));
+  EXPECT_TRUE(compound.InsertInstruction(std::unique_ptr<Instruction>{child0}, 0));
   EXPECT_EQ(compound.ChildrenCount(), 1);
 
   // removing child
@@ -85,13 +84,13 @@ TEST_F(CompoundInstructionTest, TakeMiddleChild)
 
   // inserting 4 children
   auto child0 = new Wait;
-  compound.InsertInstruction(child0, 0);
+  compound.InsertInstruction(std::unique_ptr<Instruction>{child0}, 0);
   auto child1 = new Wait;
-  compound.InsertInstruction(child1, 1);
+  compound.InsertInstruction(std::unique_ptr<Instruction>{child1}, 1);
   auto child2 = new Wait;
-  compound.InsertInstruction(child2, 2);
+  compound.InsertInstruction(std::unique_ptr<Instruction>{child2}, 2);
   auto child3 = new Wait;
-  compound.InsertInstruction(child3, 3);
+  compound.InsertInstruction(std::unique_ptr<Instruction>{child3}, 3);
 
   // taking middle child
   auto child1_taken = compound.TakeInstruction(1);

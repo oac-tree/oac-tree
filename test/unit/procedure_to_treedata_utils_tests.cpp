@@ -128,8 +128,8 @@ TEST_F(ProcedureToTreeDataUtilsTest, SequenceWithTwoChildrenToTreeData)
   auto wait1 = GlobalInstructionRegistry().Create(Wait::Type);
   wait1->AddAttribute(wait1_attr_name, wait1_attr_value);
 
-  sequence->InsertInstruction(wait0.release(), 0);
-  sequence->InsertInstruction(wait1.release(), 1);
+  sequence->InsertInstruction(std::move(wait0), 0);
+  sequence->InsertInstruction(std::move(wait1), 1);
 
   auto tree_data = ToTreeData(*sequence);
   EXPECT_EQ(tree_data->GetNodeName(), Sequence::Type);
@@ -220,7 +220,7 @@ TEST_F(ProcedureToTreeDataUtilsTest, ProcedureWithSequenceToTreeData)
   wait->AddAttribute(instruction_attr_name, instruction_attr_value);
 
   auto sequence = GlobalInstructionRegistry().Create(Sequence::Type);
-  sequence->InsertInstruction(wait.release(), 0);
+  sequence->InsertInstruction(std::move(wait), 0);
 
   procedure.PushInstruction(std::move(sequence));
 

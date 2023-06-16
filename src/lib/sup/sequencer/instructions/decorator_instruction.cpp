@@ -132,9 +132,9 @@ bool DecoratorInstruction::InsertInstructionImpl(Instruction *child, int index)
   return true;
 }
 
-Instruction* DecoratorInstruction::TakeInstructionImpl(int index)
+std::unique_ptr<Instruction> DecoratorInstruction::TakeInstructionImpl(int index)
 {
-  return m_child && index == 0 ? m_child.release() : nullptr;
+  return m_child && index == 0 ? std::move(m_child) : nullptr;
 }
 
 void DecoratorInstruction::SetupImpl(const Procedure &proc)

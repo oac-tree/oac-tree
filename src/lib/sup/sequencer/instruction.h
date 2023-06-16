@@ -261,10 +261,9 @@ public:
    * @brief Removes child with the given index and returns it to the user.
    *
    * @return child on success, nullptr otherwise
-   * @details Index must be in the range [0, current_children_count-1], ownership
-   * is given to the user.
+   * @details Index must be in the range [0, current_children_count-1].
    */
-  Instruction* TakeInstruction(int index);
+  std::unique_ptr<Instruction> TakeInstruction(int index);
 
 protected:
   /**
@@ -433,10 +432,9 @@ private:
    * @brief Removes child with the given index and returns it to the user.
    *
    * @return child on success, nullptr otherwise
-   * @details Index must be in the range [0, current_children_count-1], ownership
-   * is given to the user.
+   * @details Index must be in the range [0, current_children_count-1].
    */
-  virtual Instruction* TakeInstructionImpl(int index);
+  virtual std::unique_ptr<Instruction> TakeInstructionImpl(int index);
 };
 
 /**

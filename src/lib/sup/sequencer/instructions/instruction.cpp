@@ -205,7 +205,7 @@ bool Instruction::InsertInstruction(Instruction* child, int index)
   return InsertInstructionImpl(child, index);
 }
 
-Instruction* Instruction::TakeInstruction(int index)
+std::unique_ptr<Instruction> Instruction::TakeInstruction(int index)
 {
   return TakeInstructionImpl(index);
 }
@@ -283,7 +283,7 @@ bool Instruction::InsertInstructionImpl(Instruction*, int)
   return false;
 }
 
-Instruction* Instruction::TakeInstructionImpl(int)
+std::unique_ptr<Instruction> Instruction::TakeInstructionImpl(int)
 {
   return nullptr;
 }

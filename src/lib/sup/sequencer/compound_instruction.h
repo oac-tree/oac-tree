@@ -85,10 +85,10 @@ private:
   std::vector<const Instruction *> ChildInstructionsImpl() const override;
   int ChildrenCountImpl() const override;
   bool InsertInstructionImpl(Instruction *child, int index) override;
-  Instruction *TakeInstructionImpl(int index) override;
+  std::unique_ptr<Instruction> TakeInstructionImpl(int index) override;
   void SetupImpl(const Procedure &proc) override;
 
-  std::vector<Instruction *> m_children;
+  std::vector<std::unique_ptr<Instruction>> m_children;
 };
 
 }  // namespace sequencer

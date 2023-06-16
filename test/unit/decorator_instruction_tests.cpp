@@ -77,8 +77,7 @@ TEST_F(DecoratorInstructionTest, TakeChild)
 
   // tremoving child
   auto child0_taken = decorator.TakeInstruction(0);
-  EXPECT_EQ(child0, child0_taken);
-  delete child0_taken;
+  EXPECT_EQ(child0, child0_taken.get());
 
   EXPECT_EQ(decorator.ChildrenCount(), 0);
 }

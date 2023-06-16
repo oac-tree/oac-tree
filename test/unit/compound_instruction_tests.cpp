@@ -75,9 +75,8 @@ TEST_F(CompoundInstructionTest, TakeChild)
 
   // removing child
   auto child0_taken = compound.TakeInstruction(0);
-  EXPECT_EQ(child0, child0_taken);
+  EXPECT_EQ(child0, child0_taken.get());
   EXPECT_EQ(compound.ChildrenCount(), 0);
-  delete child0_taken;
 }
 
 TEST_F(CompoundInstructionTest, TakeMiddleChild)
@@ -96,10 +95,9 @@ TEST_F(CompoundInstructionTest, TakeMiddleChild)
 
   // taking middle child
   auto child1_taken = compound.TakeInstruction(1);
-  EXPECT_EQ(child1, child1_taken);
+  EXPECT_EQ(child1, child1_taken.get());
   EXPECT_EQ(compound.ChildrenCount(), 3);
   EXPECT_EQ(compound.ChildInstructions(), std::vector<Instruction*>({child0, child2, child3}));
-  delete child1_taken;
 
   // attempt to take non-existing one
   EXPECT_TRUE(compound.TakeInstruction(3) == nullptr);

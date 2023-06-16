@@ -174,10 +174,12 @@ bool Procedure::InsertInstruction(std::unique_ptr<Instruction>&& instruction, in
 std::unique_ptr<Instruction> Procedure::TakeInstruction(int index)
 {
   if (index < 0 || index >= m_instructions.size())
+  {
     return nullptr;
-
+  }
   auto it = std::next(m_instructions.begin(), index);
-  auto retval = std::move(*it);
+  std::unique_ptr<Instruction> retval;
+  std::swap(retval, *it);
   m_instructions.erase(it);
   return std::move(retval);
 }

@@ -171,7 +171,7 @@ bool Procedure::InsertInstruction(std::unique_ptr<Instruction>&& instruction, in
   return true;
 }
 
-Instruction *Procedure::TakeInstruction(int index)
+std::unique_ptr<Instruction> Procedure::TakeInstruction(int index)
 {
   if (index < 0 || index >= m_instructions.size())
     return nullptr;
@@ -179,7 +179,7 @@ Instruction *Procedure::TakeInstruction(int index)
   auto it = std::next(m_instructions.begin(), index);
   auto retval = std::move(*it);
   m_instructions.erase(it);
-  return retval.release();
+  return std::move(retval);
 }
 
 bool Procedure::AddVariable(std::string name, Variable *var)

@@ -147,9 +147,8 @@ public:
    * @brief Removes Instruction from the specified position.
    *
    * @param Position in the vector from where instruction is removed.
-   * @note Ownership is handed to the user.
    */
-  Instruction* TakeInstruction(int index);
+  std::unique_ptr<Instruction> TakeInstruction(int index);
 
   /**
    * @brief Add variable.

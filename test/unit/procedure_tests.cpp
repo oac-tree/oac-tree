@@ -179,11 +179,10 @@ TEST_F(ProcedureTest, TakeMiddleChild)
 
   // taking middle child
   auto child1_taken = procedure.TakeInstruction(1);
-  EXPECT_EQ(child1, child1_taken);
+  EXPECT_EQ(child1, child1_taken.get());
   EXPECT_EQ(procedure.GetInstructions().size(), 3);
   EXPECT_EQ(procedure.GetInstructions(),
             std::vector<const Instruction *>({child0, child2, child3}));
-  delete child1_taken;
 
   // attempt to take non-existing one
   EXPECT_TRUE(procedure.TakeInstruction(3) == nullptr);

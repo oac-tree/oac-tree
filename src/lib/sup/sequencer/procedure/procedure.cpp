@@ -161,11 +161,13 @@ void Procedure::PushInstruction(std::unique_ptr<Instruction>&& instruction)
   m_instructions.emplace_back(std::move(instruction));
 }
 
-bool Procedure::InsertInstruction(Instruction *instruction, int index)
+bool Procedure::InsertInstruction(std::unique_ptr<Instruction>&& instruction, int index)
 {
   if (index < 0 || index > m_instructions.size())
+  {
     return false;
-  m_instructions.emplace(std::next(m_instructions.begin(), index), instruction);
+  }
+  m_instructions.emplace(std::next(m_instructions.begin(), index), std::move(instruction));
   return true;
 }
 

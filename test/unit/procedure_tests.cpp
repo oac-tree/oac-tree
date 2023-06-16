@@ -143,25 +143,24 @@ TEST_F(ProcedureTest, InsertInstruction)
 
   // inserting children one after another
   auto child0 = new Wait;
-  EXPECT_TRUE(procedure.InsertInstruction(child0, 0));
+  EXPECT_TRUE(procedure.InsertInstruction(std::unique_ptr<Instruction>{child0}, 0));
   EXPECT_EQ(procedure.GetInstructionCount(), 1);
 
   auto child1 = new Wait;
-  EXPECT_TRUE(procedure.InsertInstruction(child1, 1));
+  EXPECT_TRUE(procedure.InsertInstruction(std::unique_ptr<Instruction>{child1}, 1));
   EXPECT_EQ(procedure.GetInstructionCount(), 2);
 
   // inserting child in between
   auto child2 = new Wait;
-  EXPECT_TRUE(procedure.InsertInstruction(child2, 1));
+  EXPECT_TRUE(procedure.InsertInstruction(std::unique_ptr<Instruction>{child2}, 1));
   EXPECT_EQ(procedure.GetInstructionCount(), 3);
 
   EXPECT_EQ(procedure.GetInstructions(),
             std::vector<const Instruction *>({child0, child2, child1}));
 
   // wrong insert index
-  Wait child3;
-  EXPECT_FALSE(procedure.InsertInstruction(&child3, -1));
-  EXPECT_FALSE(procedure.InsertInstruction(&child3, 4));
+  EXPECT_FALSE(procedure.InsertInstruction(nullptr, -1));
+  EXPECT_FALSE(procedure.InsertInstruction(nullptr, 4));
 }
 
 TEST_F(ProcedureTest, TakeMiddleChild)
@@ -170,13 +169,13 @@ TEST_F(ProcedureTest, TakeMiddleChild)
 
   // inserting 4 children
   auto child0 = new Wait;
-  procedure.InsertInstruction(child0, 0);
+  procedure.InsertInstruction(std::unique_ptr<Instruction>{child0}, 0);
   auto child1 = new Wait;
-  procedure.InsertInstruction(child1, 1);
+  procedure.InsertInstruction(std::unique_ptr<Instruction>{child1}, 1);
   auto child2 = new Wait;
-  procedure.InsertInstruction(child2, 2);
+  procedure.InsertInstruction(std::unique_ptr<Instruction>{child2}, 2);
   auto child3 = new Wait;
-  procedure.InsertInstruction(child3, 3);
+  procedure.InsertInstruction(std::unique_ptr<Instruction>{child3}, 3);
 
   // taking middle child
   auto child1_taken = procedure.TakeInstruction(1);

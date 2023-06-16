@@ -140,9 +140,8 @@ public:
    * @brief Inserts Instruction at the specified position.
    *
    * @param Position in the vector where instruction is inserted.
-   * @note Procedure takes ownership of the instruction.
    */
-  bool InsertInstruction(Instruction* instruction, int index);
+  bool InsertInstruction(std::unique_ptr<Instruction>&& instruction, int index);
 
   /**
    * @brief Removes Instruction from the specified position.

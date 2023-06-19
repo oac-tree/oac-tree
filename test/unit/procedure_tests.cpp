@@ -109,11 +109,11 @@ TEST_F(ProcedureTest, DefaultConstructed)
   EXPECT_EQ(variables.size(), 0);
   std::string var1_name = "var1";
   std::string var2_name = "var2";
-  EXPECT_TRUE(empty_proc.AddVariable(var1_name, var1.release()));
+  EXPECT_TRUE(empty_proc.AddVariable(var1_name, std::move(var1)));
   variables = empty_proc.VariableNames();
   EXPECT_EQ(variables.size(), 1);
   EXPECT_NE(std::find(variables.begin(), variables.end(), var1_name), variables.end());
-  EXPECT_TRUE(empty_proc.AddVariable(var2_name, var2.release()));
+  EXPECT_TRUE(empty_proc.AddVariable(var2_name, std::move(var2)));
   variables = empty_proc.VariableNames();
   EXPECT_EQ(variables.size(), 2);
   EXPECT_NE(std::find(variables.begin(), variables.end(), var1_name), variables.end());
@@ -132,7 +132,7 @@ TEST_F(ProcedureTest, GetWorkspace)
   Procedure procedure;
   auto variable = GlobalVariableRegistry().Create("Local");
   std::vector<const Variable*> expected({variable.get()});
-  procedure.AddVariable("var", variable.release());
+  procedure.AddVariable("var", std::move(variable));
 
   EXPECT_EQ(procedure.GetWorkspace()->GetVariables(), expected);
 }

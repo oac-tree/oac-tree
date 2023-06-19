@@ -55,9 +55,9 @@ public:
    * @brief Add variable.
    *
    * @param name Variable name.
-   * @param var Variable pointer.
+   * @param var Variable to add.
    */
-  bool AddVariable(const std::string& name, Variable* var);
+  bool AddVariable(const std::string& name, std::unique_ptr<Variable>&& var);
 
   /**
    * @brief List all variable names.
@@ -205,14 +205,6 @@ private:
    * @return true if Variable name is already present.
    */
   bool ContainsVariableName(const std::string& name) const;
-
-  /**
-   * @brief Check if the Variable pointer is already present.
-   *
-   * @param var Variable pointer to check.
-   * @return true if Variable pointer is already present.
-   */
-  bool ContainsVariablePointer(Variable* var) const;
 
   /**
    * @brief Method which is called if a variable is updated.

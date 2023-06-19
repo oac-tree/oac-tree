@@ -36,35 +36,6 @@ namespace sup
 {
 namespace sequencer
 {
-bool Workspace::ContainsVariableName(const std::string& name) const
-{
-  if (m_var_map.find(name) == m_var_map.end())
-  {
-    return false;
-  }
-  return true;
-}
-
-bool Workspace::ContainsVariablePointer(Variable* var) const
-{
-  auto it = std::find_if(m_var_map.begin(), m_var_map.end(),
-                         [var](const decltype(m_var_map)::value_type &pair)
-                         {
-                           return pair.second.get() == var;
-                         });
-  if (it == m_var_map.end())
-  {
-    return false;
-  }
-  return true;
-}
-
-void Workspace::VariableUpdated(const std::string name, const sup::dto::AnyValue& value,
-                                bool connected) const
-{
-  m_callbacks.ExecuteCallbacks(name, value, connected);
-}
-
 Workspace::Workspace()
    : m_var_map{}
    , m_callbacks{}
@@ -73,18 +44,8 @@ Workspace::Workspace()
 
 Workspace::~Workspace() = default;
 
-bool Workspace::AddVariable(const std::string& name, Variable *var)
+bool Workspace::AddVariable(const std::string& name, std::unique_ptr<Variable>&& var)
 {
-  std::unique_ptr<Variable> var_owned(var);  // take ownership immediately
-  if (ContainsVariablePointer(var))
-  {
-    auto vartype = var_owned->GetType();
-    var_owned.release(); // do not delete this variable!
-    std::string error_message =
-      "sup::sequencer::Workspace::AddVariable(): trying to add variable that already exists, "
-      "with type [" + vartype + "] and name [" + name + "]";
-    throw InvalidOperationException(error_message);
-  }
   if (ContainsVariableName(name))
   {
     std::string error_message =
@@ -92,12 +53,12 @@ bool Workspace::AddVariable(const std::string& name, Variable *var)
       "exists: [" + name + "]";
     throw InvalidOperationException(error_message);
   }
-  var_owned->SetNotifyCallback(
+  var->SetNotifyCallback(
     [this, name](const sup::dto::AnyValue& value, bool connected)
     {
       VariableUpdated(name, value, connected);
     });
-  m_var_map[name] = std::move(var_owned);
+  m_var_map[name] = std::move(var);
   return true;
 }
 
@@ -241,6 +202,21 @@ bool Workspace::RegisterCallback(const std::string& name, const VariableCallback
                                  void *listener)
 {
   return m_callbacks.RegisterCallback(name, cb, listener);
+}
+
+bool Workspace::ContainsVariableName(const std::string& name) const
+{
+  if (m_var_map.find(name) == m_var_map.end())
+  {
+    return false;
+  }
+  return true;
+}
+
+void Workspace::VariableUpdated(const std::string name, const sup::dto::AnyValue& value,
+                                bool connected) const
+{
+  m_callbacks.ExecuteCallbacks(name, value, connected);
 }
 
 std::pair<std::string, std::string> SplitFieldName(const std::string& fullname)

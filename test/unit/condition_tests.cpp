@@ -104,7 +104,7 @@ TEST(Condition, DifferentTypes)
     varX->AddAttribute("value", conditionTable[i][2]);
 
     varX->GetValue(resVal);
-    proc->AddVariable(conditionTable[i][3], varX.release());
+    proc->AddVariable(conditionTable[i][3], std::move(varX));
 
     if (status)
     {

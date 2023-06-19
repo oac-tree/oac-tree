@@ -217,7 +217,7 @@ void AddWorkspaceVariables(Procedure* procedure, const sup::xml::TreeData& ws_da
       throw ParseException(error_message);
     }
     auto var = ParseVariable(var_data);
-    if (!procedure->AddVariable(name, var.release()))
+    if (!procedure->AddVariable(name, std::move(var)))
     {
       std::string error_message =
         "sup::sequencer::AddWorkspaceVariables(): adding variable with type [" +

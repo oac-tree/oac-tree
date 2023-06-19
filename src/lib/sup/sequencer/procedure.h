@@ -156,10 +156,8 @@ public:
    * @param name Variable name.
    * @param var Variable to add.
    * @return true on successful addition.
-   * @note Procedure, or rather its underlying Workspace, takes ownership of the
-   * variable and will take care of its timely destruction.
    */
-  bool AddVariable(std::string name, Variable* var);
+  bool AddVariable(std::string name, std::unique_ptr<Variable>&& var);
 
   /**
    * @brief List all variable names.

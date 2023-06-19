@@ -184,9 +184,9 @@ std::unique_ptr<Instruction> Procedure::TakeInstruction(int index)
   return std::move(retval);
 }
 
-bool Procedure::AddVariable(std::string name, Variable *var)
+bool Procedure::AddVariable(std::string name, std::unique_ptr<Variable>&& var)
 {
-  return m_workspace->AddVariable(name, var);
+  return m_workspace->AddVariable(name, std::move(var));
 }
 
 std::vector<std::string> Procedure::VariableNames() const
@@ -194,7 +194,7 @@ std::vector<std::string> Procedure::VariableNames() const
   return m_workspace->VariableNames();
 }
 
-bool Procedure::GetVariableValue(std::string name, sup::dto::AnyValue &value) const
+bool Procedure::GetVariableValue(std::string name, sup::dto::AnyValue& value) const
 {
   return m_workspace->GetValue(name, value);
 }

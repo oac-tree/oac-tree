@@ -84,7 +84,7 @@ TEST(Choice, Default)  // Static initialisation
 
     varX->AddAttribute("type", testTable[i][0]);
     varX->AddAttribute("value", testTable[i][1]);
-    proc->AddVariable("sel", varX.release());
+    proc->AddVariable("sel", std::move(varX));
 
     sup::UnitTestHelper::EmptyUserInterface ui;
     proc->Setup();

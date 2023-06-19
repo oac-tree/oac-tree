@@ -69,9 +69,8 @@ TEST_F(WorkspaceTest, AddVariable)
   auto variables = ws.VariableNames();
   EXPECT_EQ(variables.size(), 0);
 
-  Variable *var1_address = var1.get();  // cache address for later
-  EXPECT_TRUE(ws.AddVariable(var1_name, var1.release()));
-  EXPECT_TRUE(ws.AddVariable(var2_name, var2.release()));
+  EXPECT_TRUE(ws.AddVariable(var1_name, std::move(var1)));
+  EXPECT_TRUE(ws.AddVariable(var2_name, std::move(var2)));
   EXPECT_TRUE(ws.HasVariable(var1_name));
   EXPECT_TRUE(ws.HasVariable(var2_name));
   variables = ws.VariableNames();
@@ -81,9 +80,7 @@ TEST_F(WorkspaceTest, AddVariable)
   EXPECT_EQ(std::find(variables.begin(), variables.end(), var3_name), variables.end());
 
   // Test failure of adding variable with duplicate name or address
-  EXPECT_THROW(ws.AddVariable(var1_name, var3.release()), InvalidOperationException);
-  std::string var4_name = "var4";
-  EXPECT_THROW(ws.AddVariable(var4_name, var1_address), InvalidOperationException);
+  EXPECT_THROW(ws.AddVariable(var1_name, std::move(var3)), InvalidOperationException);
 }
 
 TEST_F(WorkspaceTest, GetValue)
@@ -96,9 +93,9 @@ TEST_F(WorkspaceTest, GetValue)
   ws.Setup();
   EXPECT_FALSE(ws.GetValue(var2_name, val2));
   EXPECT_FALSE(ws.SetValue(var2_name, val2));
-  EXPECT_TRUE(ws.AddVariable(var1_name, var1.release()));
-  EXPECT_TRUE(ws.AddVariable(var2_name, var2.release()));
-  EXPECT_TRUE(ws.AddVariable(var3_name, var3.release()));
+  EXPECT_TRUE(ws.AddVariable(var1_name, std::move(var1)));
+  EXPECT_TRUE(ws.AddVariable(var2_name, std::move(var2)));
+  EXPECT_TRUE(ws.AddVariable(var3_name, std::move(var3)));
   variables = ws.VariableNames();
   EXPECT_EQ(variables.size(), 3);
   EXPECT_NE(std::find(variables.begin(), variables.end(), var1_name), variables.end());
@@ -150,9 +147,9 @@ TEST_F(WorkspaceTest, SetValue)
   sup::dto::AnyValue val2;
   EXPECT_FALSE(ws.GetValue(var2_name, val2));
   EXPECT_FALSE(ws.SetValue(var2_name, val2));
-  EXPECT_TRUE(ws.AddVariable(var1_name, var1.release()));
-  EXPECT_TRUE(ws.AddVariable(var2_name, var2.release()));
-  EXPECT_TRUE(ws.AddVariable(var3_name, var3.release()));
+  EXPECT_TRUE(ws.AddVariable(var1_name, std::move(var1)));
+  EXPECT_TRUE(ws.AddVariable(var2_name, std::move(var2)));
+  EXPECT_TRUE(ws.AddVariable(var3_name, std::move(var3)));
   variables = ws.VariableNames();
   EXPECT_EQ(variables.size(), 3);
   EXPECT_NE(std::find(variables.begin(), variables.end(), var1_name), variables.end());
@@ -200,7 +197,7 @@ TEST_F(WorkspaceTest, WaitForVariable)
   EXPECT_FALSE(workspace.WaitForVariable("v1", 1.0));
 
   auto v1 = GlobalVariableRegistry().Create("Local");
-  workspace.AddVariable("v1", v1.release());
+  workspace.AddVariable("v1", std::move(v1));
   EXPECT_FALSE(workspace.WaitForVariable("v1", 0.0));
 
   workspace.Setup();
@@ -218,8 +215,8 @@ TEST_F(WorkspaceTest, GetVariables)
 
   std::vector<const Variable *> expected({v1.get(), v2.get()});
 
-  workspace.AddVariable("v1", v1.release());
-  workspace.AddVariable("v2", v2.release());
+  workspace.AddVariable("v1", std::move(v1));
+  workspace.AddVariable("v2", std::move(v2));
 
   EXPECT_EQ(workspace.GetVariables(), expected);
 }
@@ -234,8 +231,8 @@ TEST_F(WorkspaceTest, GetVariable)
   auto p_v1 = v1.get();
   auto p_v2 = v2.get();
 
-  workspace.AddVariable("v1", v1.release());
-  workspace.AddVariable("v2", v2.release());
+  workspace.AddVariable("v1", std::move(v1));
+  workspace.AddVariable("v2", std::move(v2));
 
   EXPECT_EQ(workspace.GetVariable("v1"), p_v1);
   EXPECT_EQ(workspace.GetVariable("v2"), p_v2);
@@ -250,8 +247,8 @@ TEST_F(WorkspaceTest, HasVariable)
   EXPECT_FALSE(ws.HasVariable(var1_name));
   EXPECT_FALSE(ws.HasVariable(var2_name));
   EXPECT_FALSE(ws.HasVariable(var3_name));
-  EXPECT_TRUE(ws.AddVariable(var1_name, var1.release()));
-  EXPECT_TRUE(ws.AddVariable(var2_name, var2.release()));
+  EXPECT_TRUE(ws.AddVariable(var1_name, std::move(var1)));
+  EXPECT_TRUE(ws.AddVariable(var2_name, std::move(var2)));
   EXPECT_TRUE(ws.HasVariable(var1_name));
   EXPECT_TRUE(ws.HasVariable(var2_name));
   EXPECT_FALSE(ws.HasVariable(var3_name));
@@ -272,7 +269,7 @@ TEST_F(WorkspaceTest, NotifyCallback)
   std::string name = "FromWorkspace";
   auto var = GlobalVariableRegistry().Create("Local");
   EXPECT_TRUE(var->AddAttribute(LocalVariable::JSON_TYPE, R"RAW({"type":"uint16"})RAW"));
-  EXPECT_TRUE(ws.AddVariable(name, var.release()));
+  EXPECT_TRUE(ws.AddVariable(name, std::move(var)));
   ws.Setup();
   sup::dto::AnyValue new_value(sup::dto::UnsignedInteger16Type);
   sup::dto::uint16 raw_value = 123;
@@ -304,7 +301,7 @@ TEST_F(WorkspaceTest, ResetVariable)
   // Add all variables
   sup::dto::AnyValue val;
   EXPECT_FALSE(ws.GetValue(var1_name, val));
-  EXPECT_TRUE(ws.AddVariable(var1_name, var1.release()));
+  EXPECT_TRUE(ws.AddVariable(var1_name, std::move(var1)));
   variables = ws.VariableNames();
   EXPECT_EQ(variables.size(), 1);
 

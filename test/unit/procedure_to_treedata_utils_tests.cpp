@@ -86,7 +86,7 @@ TEST_F(ProcedureToTreeDataUtilsTest, WorkspaceWithSingleVariableToTreeData)
   auto variable0 = GlobalVariableRegistry().Create(LocalVariable::Type);
   variable0->AddAttribute(variable_attr_name, variable_attr_value);
 
-  workspace.AddVariable("var0", variable0.release());
+  workspace.AddVariable("var0", std::move(variable0));
   auto tree_data = ToTreeData(workspace);
   EXPECT_EQ(tree_data->GetNodeName(), Constants::WORKSPACE_ELEMENT_NAME);
   ASSERT_EQ(tree_data->GetNumberOfChildren(), 1);
@@ -183,7 +183,7 @@ TEST_F(ProcedureToTreeDataUtilsTest, ProcedureWithSingleInstructionAndSingleVari
   const std::string variable_attr_value("43");
   auto variable = GlobalVariableRegistry().Create(LocalVariable::Type);
   variable->AddAttribute(variable_attr_name, variable_attr_value);
-  procedure.AddVariable("var0", variable.release());
+  procedure.AddVariable("var0", std::move(variable));
 
   auto tree_data = ToTreeData(procedure);
 

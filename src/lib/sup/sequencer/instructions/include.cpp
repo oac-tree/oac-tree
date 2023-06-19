@@ -107,7 +107,7 @@ void Include::SetupImpl(const Procedure& proc)
       "could not initialise variable attributes for child instruction";
     throw InstructionSetupException(error_message);
   }
-  SetInstruction(clone.release());
+  (void)InsertInstruction(std::move(clone), 0);
   SetupChild(proc);
 }
 

@@ -47,14 +47,6 @@ public:
 
   Category GetCategory() const final;
 
-  /**
-   * @brief Set the decorated child instruction.
-   *
-   * @param instruction Pointer to decorated instruction.
-   * @note DecoratorInstruction takes ownership of the decorated instruction.
-   */
-  void SetInstruction(Instruction* instruction);
-
 protected:
   /**
    * @brief Call Instruction::Setup(const Procedure & proc) on child instruction

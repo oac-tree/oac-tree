@@ -47,14 +47,6 @@ public:
 
   Category GetCategory() const final;
 
-  /**
-   * @brief Add child instruction.
-   *
-   * @param instruction Pointer to instruction.
-   * @note CompoundInstruction takes ownership of the added instruction.
-   */
-  void PushBack(Instruction* instruction);
-
 protected:
   /**
    * @brief Call Instruction::Setup(const Procedure & proc) on all child instructions

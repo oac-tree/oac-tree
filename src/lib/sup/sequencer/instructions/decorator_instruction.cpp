@@ -37,11 +37,6 @@ Instruction::Category DecoratorInstruction::GetCategory() const
   return kDecorator;
 }
 
-void DecoratorInstruction::SetInstruction(Instruction *instruction)
-{
-  m_child.reset(instruction);
-}
-
 void DecoratorInstruction::SetupChild(const Procedure &proc)
 {
   if (m_child)

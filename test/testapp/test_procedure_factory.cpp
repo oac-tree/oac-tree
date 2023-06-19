@@ -16,7 +16,7 @@ std::unique_ptr<Procedure> TestProcedureFactory::CreateProcedure() const
   result->PushInstruction(std::unique_ptr<Instruction>{new Wait()});
   result->PushInstruction(std::unique_ptr<Instruction>{new Wait()});
   auto inverter = new Inverter();
-  inverter->SetInstruction(new Wait());
+  inverter->InsertInstruction(std::unique_ptr<Instruction>{new Wait()}, 0);
   result->PushInstruction(std::unique_ptr<Instruction>{inverter});
 
   return result;

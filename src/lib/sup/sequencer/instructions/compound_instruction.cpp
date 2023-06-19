@@ -34,11 +34,6 @@ Instruction::Category CompoundInstruction::GetCategory() const
   return kCompound;
 }
 
-void CompoundInstruction::PushBack(Instruction* instruction)
-{
-  m_children.emplace_back(instruction);
-}
-
 void CompoundInstruction::SetupChildren(const Procedure& proc)
 {
   for (auto& instruction : m_children)

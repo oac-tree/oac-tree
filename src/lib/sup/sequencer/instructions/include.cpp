@@ -100,7 +100,7 @@ void Include::SetupImpl(const Procedure& proc)
       "instruction not found, path: [" + path + "]";
     throw InstructionSetupException(error_message);
   }
-  std::unique_ptr<Instruction> clone(InstructionHelper::CloneInstruction(instr));
+  auto clone = InstructionHelper::CloneInstruction(instr);
   if (!InstructionHelper::InitialiseVariableAttributes(*clone, GetStringAttributes()))
   {
     std::string error_message = InstructionSetupExceptionProlog(*this) +

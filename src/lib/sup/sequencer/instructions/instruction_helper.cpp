@@ -33,9 +33,9 @@
 namespace
 {
 std::pair<std::string, std::string> StripPath(const std::string& path);
-bool CloneChildInstructions(sup::sequencer::Instruction* clone,
+bool CloneChildInstructions(sup::sequencer::Instruction& clone,
                             const sup::sequencer::Instruction* source);
-bool AddClonedChildInstruction(sup::sequencer::Instruction* instr,
+bool AddClonedChildInstruction(sup::sequencer::Instruction& instr,
                                const sup::sequencer::Instruction* child);
 bool StartsWith(const std::string &str, char c);
 }  // Unnamed namespace
@@ -67,7 +67,7 @@ const Instruction* FindInstruction(const std::vector<const Instruction*>& instru
   return FindInstruction(result->ChildInstructions(), names.second);
 }
 
-Instruction* CloneInstruction(const Instruction* instruction)
+std::unique_ptr<Instruction> CloneInstruction(const Instruction* instruction)
 {
   if (instruction == nullptr)
   {
@@ -84,7 +84,7 @@ Instruction* CloneInstruction(const Instruction* instruction)
     return nullptr;
   }
   result->AddAttributes(instruction->GetStringAttributes());
-  if (!CloneChildInstructions(result.get(), instruction))
+  if (!CloneChildInstructions(*result, instruction))
   {
     return nullptr;
   }
@@ -94,7 +94,7 @@ Instruction* CloneInstruction(const Instruction* instruction)
     auto include_source = dynamic_cast<const Include*>(instruction);
     include_result->SetFilename(include_source->GetFilename());
   }
-  return result.release();
+  return std::move(result);
 }
 
 bool InitialiseVariableAttributes(Instruction& instruction,
@@ -153,7 +153,7 @@ std::pair<std::string, std::string> StripPath(const std::string &path)
   return result;
 }
 
-bool CloneChildInstructions(Instruction* clone, const Instruction* source)
+bool CloneChildInstructions(Instruction& clone, const Instruction* source)
 {
   for (auto child : source->ChildInstructions())
   {
@@ -165,14 +165,14 @@ bool CloneChildInstructions(Instruction* clone, const Instruction* source)
   return true;
 }
 
-bool AddClonedChildInstruction(Instruction* instr, const Instruction* child)
+bool AddClonedChildInstruction(Instruction& instr, const Instruction* child)
 {
-  std::unique_ptr<Instruction> cloned_child{InstructionHelper::CloneInstruction(child)};
+  auto cloned_child = InstructionHelper::CloneInstruction(child);
   if (!cloned_child)
   {
     return false;
   }
-  return AppendChildInstruction(*instr, std::move(cloned_child));
+  return AppendChildInstruction(instr, std::move(cloned_child));
 }
 
 bool StartsWith(const std::string& str, char c)

@@ -46,11 +46,9 @@ const Instruction* FindInstruction(const std::vector<const Instruction*>& instru
  *
  * @param instruction Instruction to clone.
  *
- * @return Clone of instruction tree or nullptr on failure.
- *
- * @details Caller needs to take ownership of the cloned instruction tree.
+ * @return Clone of instruction tree or invalid unique pointer on failure.
  */
-Instruction* CloneInstruction(const Instruction* instruction);
+std::unique_ptr<Instruction> CloneInstruction(const Instruction* instruction);
 
 /**
  * @brief Initialize variable attributes.

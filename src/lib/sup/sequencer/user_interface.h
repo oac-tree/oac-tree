@@ -218,6 +218,8 @@ sup::dto::AnyValue CreateUserChoiceMetadata();
 
 bool IsUserChoiceMetadata(const sup::dto::AnyValue& metadata);
 
+std::string GetMainTextFromMetadata(const sup::dto::AnyValue& metadata);
+
 }  // namespace sequencer
 
 }  // namespace sup

@@ -179,6 +179,16 @@ bool IsUserChoiceMetadata(const sup::dto::AnyValue& metadata)
   return true;
 }
 
+std::string GetMainTextFromMetadata(const sup::dto::AnyValue& metadata)
+{
+  if (metadata.HasField(Constants::USER_CHOICES_TEXT_NAME) &&
+      (metadata[Constants::USER_CHOICES_TEXT_NAME].GetType() == sup::dto::StringType))
+  {
+    return metadata[Constants::USER_CHOICES_TEXT_NAME].As<std::string>();
+  }
+  return {};
+}
+
 }  // namespace sequencer
 
 }  // namespace sup

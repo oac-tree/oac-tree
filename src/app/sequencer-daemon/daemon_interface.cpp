@@ -73,6 +73,14 @@ int DaemonInterface::GetUserChoiceImpl(const std::vector<std::string> &, const s
   return -1;
 }
 
+int DaemonInterface::GetUserChoiceImpl(const std::vector<std::pair<std::string, int>>& options,
+                                       const sup::dto::AnyValue& metadata)
+{
+  std::string error_message = "DaemonInterface::GetUserChoiceImpl(): is not implemented";
+  m_logger.Error(error_message);
+  return -1;
+}
+
 void DaemonInterface::MessageImpl(const std::string& message)
 {
   m_logger.Info(message);

@@ -66,8 +66,6 @@ private:
    */
   void UpdateInstructionStatusImpl(const sup::sequencer::Instruction* instruction) override;
   bool GetUserValueImpl(sup::dto::AnyValue& value, const std::string& description) override;
-  int GetUserChoiceImpl(const std::vector<std::string>& choices,
-                        const std::string& description) override;
   int GetUserChoiceImpl(const std::vector<std::pair<std::string, int>>& options,
                         const sup::dto::AnyValue& metadata) override;
 

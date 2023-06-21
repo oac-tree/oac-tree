@@ -83,11 +83,6 @@ CounterInstruction::~CounterInstruction()
 }
 
 void MockUI::UpdateInstructionStatusImpl(const Instruction *instruction) {}
-int MockUI::GetUserChoiceImpl(const std::vector<std::string> &choices,
-                              const std::string &description)
-{
-  return m_choice;
-}
 
 int MockUI::GetUserChoiceImpl(const std::vector<std::pair<std::string, int>>& options,
                               const sup::dto::AnyValue& metadata)

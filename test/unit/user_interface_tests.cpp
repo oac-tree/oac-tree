@@ -92,16 +92,16 @@ TEST_F(UserInterfaceTest, GetUserValueDispatch)
 
 TEST_F(UserInterfaceTest, GetUserChoiceDispatch)
 {
-  std::vector<std::string> choices = {"yes", "no"};
-  std::string description = "TestGetUserChoice";
+  std::vector<std::pair<std::string,int>> options = { {"yes", 0}, {"no", 1} };
+  auto metadata = CreateUserChoiceMetadata();
   EXPECT_CALL(mock_ui, PutValueImpl(_, _)).Times(0);
   EXPECT_CALL(mock_ui, GetUserValueImpl(_, _)).Times(0);
-  EXPECT_CALL(mock_ui, GetUserChoiceImpl(choices, description))
+  EXPECT_CALL(mock_ui, GetUserChoiceImpl(options, metadata))
       .Times(2)
       .WillOnce(Return(-1))
       .WillOnce(Return(0));
-  EXPECT_EQ(mock_ui.GetUserChoice(choices, description), -1);
-  EXPECT_EQ(mock_ui.GetUserChoice(choices, description), 0);
+  EXPECT_EQ(mock_ui.GetUserChoice(options, metadata), -1);
+  EXPECT_EQ(mock_ui.GetUserChoice(options, metadata), 0);
 }
 
 TEST_F(UserInterfaceTest, PutValueDefault)
@@ -120,9 +120,9 @@ TEST_F(UserInterfaceTest, GetUserValueDefault)
 
 TEST_F(UserInterfaceTest, GetUserChoiceDefault)
 {
-  std::vector<std::string> choices;
-  std::string description;
-  EXPECT_EQ(empty_ui.GetUserChoice(choices, description), -1);
+  std::vector<std::pair<std::string,int>> options;
+  auto metadata = CreateUserChoiceMetadata();
+  EXPECT_EQ(empty_ui.GetUserChoice(options, metadata), -1);
 }
 
 TEST_F(UserInterfaceTest, InstructionExecution)

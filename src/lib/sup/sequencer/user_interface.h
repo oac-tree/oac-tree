@@ -86,16 +86,6 @@ public:
   /**
    * @brief Method to request the user to choose one of the given options.
    *
-   * @param choices List of options to choose from.
-   * @param description Optional description.
-   * @return index of the choice (zero-based) or -1 on failure.
-   * @note Non-Virtual Interface.
-   */
-  int GetUserChoice(const std::vector<std::string>& choices, const std::string& description = {});
-
-  /**
-   * @brief Method to request the user to choose one of the given options.
-   *
    * @param optoins List of options the user can choose; each option is a string and a
    *                corresponding value.
    * @param metadata Structure that encodes optional metadata that could be used by the
@@ -173,16 +163,6 @@ private:
    * @note Default implementation returns false.
    */
   virtual bool GetUserValueImpl(sup::dto::AnyValue& value, const std::string& description);
-
-  /**
-   * @brief Private virtual implementation of
-   * UserInterface::GetUserChoice(const std::vector<std::string> & choices, const std::string &
-   * description).
-   *
-   * @note Default implementation returns -1.
-   */
-  virtual int GetUserChoiceImpl(const std::vector<std::string>& choices,
-                                const std::string& description);
 
   /**
    * @brief Private virtual implementation of

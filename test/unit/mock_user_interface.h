@@ -47,7 +47,8 @@ public:
   MOCK_METHOD2(GetUserValueImpl,
                bool(sup::dto::AnyValue &value, const std::string &description));
   MOCK_METHOD2(GetUserChoiceImpl,
-               int(const std::vector<std::string> &choices, const std::string &description));
+               int(const std::vector<std::pair<std::string, int>>& options,
+                   const sup::dto::AnyValue& metadata));
 };
 
 MATCHER_P(HasExecutionStatus, expected, "")

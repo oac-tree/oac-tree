@@ -105,44 +105,6 @@ bool CLInterface::GetUserValueImpl(sup::dto::AnyValue &value, const std::string 
   return true;
 }
 
-int CLInterface::GetUserChoiceImpl(const std::vector<std::string> &choices,
-                                   const std::string &description)
-{
-  std::string message = description;
-  if (message.empty())
-  {
-    message = "Select one of the following options:";
-  }
-  std::cout << message << std::endl;
-  for (int i = 0; i < choices.size(); ++i)
-  {
-    std::cout << i << ": " << choices[i] << std::endl;
-  }
-  int input = -1;
-  std::string input_str;
-  std::getline(std::cin, input_str);
-  std::istringstream istr(input_str);
-  istr >> input;
-  if (istr.fail())
-  {
-    std::string error_message =
-      "sup::sequencer::CLInterface::GetUserChoiceImpl(): user provided value [" + input_str +
-      "] could not be parsed to integer";
-    m_logger.LogMessage(log::SUP_SEQ_LOG_ERR, error_message);
-    return -1;
-  }
-  if (input < 0 || input >= choices.size())
-  {
-    std::string error_message =
-      "sup::sequencer::CLInterface::GetUserChoiceImpl(): user provided value [" +
-      std::to_string(input) + "] must be in the range [0, " + std::to_string(choices.size()) + ")";
-    m_logger.LogMessage(log::SUP_SEQ_LOG_ERR, error_message);
-    return -1;
-  }
-  std::cout << choices[input] << " selected" << std::endl;
-  return input;
-}
-
 int CLInterface::GetUserChoiceImpl(const std::vector<std::pair<std::string, int>>& options,
                                    const sup::dto::AnyValue& metadata)
 {

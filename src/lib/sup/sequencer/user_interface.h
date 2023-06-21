@@ -93,6 +93,33 @@ public:
   int GetUserChoice(const std::vector<std::string>& choices, const std::string& description = {});
 
   /**
+   * @brief Method to request the user to choose one of the given options.
+   *
+   * @param choices Structure that encodes the possible choices and optional metadata.
+   *
+   * @return index of the choice.
+   *
+   * @details The provided anyvalue has the following structure (which may be extended in the
+   * future):
+   * sup::sequencerUserChoices/v1.0
+   *   structure choice_map (mandatory)     Map between choice strings and their integer values
+   *     int "option_1"                     Name and value of first option
+   *     int "option_2"                     Name and value of first option
+   *     ...
+   *   string description (opt)             Description of what the choice is about
+   *   structure metadata (opt)             Structure to hold any other metadata
+   *     uint dialog_type                   Enumerator giving the type of dialog: e.g. confirmation
+   *                                        dialog, combobox style dialog, etc.
+   *     bool modal                         Flag to indicate preference for (non)modal dialog
+   *     string title                       Title for the dialog
+   *     string details                     Details about the user choice, which could be displayed
+   *                                        as tooltip for example
+   *     ...                                Future extension appear here
+   * @note Non-Virtual Interface.
+   */
+  int GetUserChoice(const sup::dto::AnyValue& choices);
+
+  /**
    * @brief Method called to display a message.
    *
    * @note Non-Virtual Interface.
@@ -155,6 +182,13 @@ private:
    */
   virtual int GetUserChoiceImpl(const std::vector<std::string>& choices,
                                 const std::string& description);
+
+  /**
+   * @brief Private virtual implementation of UserInterface::GetUserChoice(const AnyValue& choices).
+   *
+   * @note Default implementation returns -1.
+   */
+  virtual int GetUserChoiceImpl(const sup::dto::AnyValue& choices);
 
   /**
    * @brief Private virtual implementation of UserInterface::Message().

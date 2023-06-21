@@ -61,6 +61,12 @@ int UserInterface::GetUserChoice(const std::vector<std::string>& choices,
   return GetUserChoiceImpl(choices, description);
 }
 
+int UserInterface::GetUserChoice(const sup::dto::AnyValue& choices)
+{
+  std::lock_guard<std::mutex> lock(m_ui_mutex);
+  return GetUserChoiceImpl(choices);
+}
+
 void UserInterface::Message(const std::string& message)
 {
   std::lock_guard<std::mutex> lock(m_ui_mutex);
@@ -100,6 +106,12 @@ bool UserInterface::GetUserValueImpl(sup::dto::AnyValue& value, const std::strin
 int UserInterface::GetUserChoiceImpl(const std::vector<std::string>& choices,
                                      const std::string& description)
 {
+  return -1;
+}
+
+int UserInterface::GetUserChoiceImpl(const sup::dto::AnyValue& choices)
+{
+  (void)choices;
   return -1;
 }
 

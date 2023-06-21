@@ -51,7 +51,6 @@ protected:
   CLInterface cli;
   CLInterface cli_verbose;
   std::unique_ptr<Instruction> wait;
-  sup::dto::AnyValue metadata;
 };
 
 TEST_F(CLInterfaceTest, UpdateInstructionStatus)
@@ -139,20 +138,22 @@ TEST_F(CLInterfaceTest, GetUserValueUnsupportedType)
 
 TEST_F(CLInterfaceTest, GetUserChoice)
 {
-  std::vector<std::pair<std::string, int>> options = { {"one", 1}, {"two", 2} };
+  auto options = CreateIndexedOptions({"one", "two"});
   std::istringstream input("2");
   CinRedirector redirect(input);
-  auto choice = cli.GetUserChoice(options, metadata);
-  EXPECT_EQ(choice, 2);
+  auto choice = cli.GetUserChoice(options);
+  // CLI interface uses one-based indexing, but the options vector has zero-based indexing, so
+  // returned integer is one smaller than the string input:
+  EXPECT_EQ(choice, 1);
 }
 
 TEST_F(CLInterfaceTest, GetUserChoiceParseError)
 {
   EXPECT_TRUE(m_log_entries.empty());
-  std::vector<std::pair<std::string, int>> options = { {"one", 1}, {"two", 2} };
+  auto options = CreateIndexedOptions({"one", "two"});
   std::istringstream input("one");
   CinRedirector redirect(input);
-  auto choice = cli.GetUserChoice(options, metadata);
+  auto choice = cli.GetUserChoice(options);
   EXPECT_EQ(choice, -1);
   EXPECT_EQ(m_log_entries.size(), 1);
 }
@@ -160,10 +161,10 @@ TEST_F(CLInterfaceTest, GetUserChoiceParseError)
 TEST_F(CLInterfaceTest, GetUserChoiceOutOfBounds)
 {
   EXPECT_TRUE(m_log_entries.empty());
-  std::vector<std::pair<std::string, int>> options = { {"one", 1}, {"two", 2} };
+  auto options = CreateIndexedOptions({"one", "two"});
   std::istringstream input("3");
   CinRedirector redirect(input);
-  auto choice = cli.GetUserChoice(options, metadata);
+  auto choice = cli.GetUserChoice(options);
   EXPECT_EQ(choice, -1);
   EXPECT_EQ(m_log_entries.size(), 1);
 }
@@ -201,7 +202,6 @@ CLInterfaceTest::CLInterfaceTest()
                                           },
                                         "CLInterfaceTest", log::SUP_SEQ_LOG_INFO)}
     , wait{GlobalInstructionRegistry().Create("Wait")}
-    , metadata{CreateUserChoiceMetadata()}
 {}
 
 CLInterfaceTest::~CLInterfaceTest() {}

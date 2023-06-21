@@ -176,6 +176,18 @@ std::string GetMainTextFromMetadata(const sup::dto::AnyValue& metadata)
   return {};
 }
 
+std::vector<std::pair<std::string, int>> CreateIndexedOptions(
+  const std::vector<std::string>& option_names)
+{
+  std::vector<std::pair<std::string, int>> result;
+  int index = 0;
+  for (const auto& option_name : option_names)
+  {
+    result.emplace_back(option_name, index++);
+  }
+  return result;
+}
+
 }  // namespace sequencer
 
 }  // namespace sup

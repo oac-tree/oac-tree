@@ -121,8 +121,7 @@ TEST_F(UserInterfaceTest, GetUserValueDefault)
 TEST_F(UserInterfaceTest, GetUserChoiceDefault)
 {
   std::vector<std::pair<std::string,int>> options;
-  auto metadata = CreateUserChoiceMetadata();
-  EXPECT_EQ(empty_ui.GetUserChoice(options, metadata), -1);
+  EXPECT_EQ(empty_ui.GetUserChoice(options), -1);
 }
 
 TEST_F(UserInterfaceTest, InstructionExecution)

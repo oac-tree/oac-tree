@@ -110,14 +110,13 @@ std::vector<const Instruction*> UserChoice::NextInstructionsImpl() const
 
 std::vector<std::pair<std::string, int>> UserChoice::GetChoices() const
 {
-  std::vector<std::pair<std::string, int>> result;
-  int index = 0;
+  std::vector<std::string> option_names;
   for (auto instruction : ChildInstructions())
   {
     std::string description = instruction->GetName() + " (type:" + instruction->GetType() + ")";
-    result.emplace_back(description, index++);
+    option_names.push_back(description);
   }
-  return result;
+  return CreateIndexedOptions(option_names);
 }
 
 }  // namespace sequencer

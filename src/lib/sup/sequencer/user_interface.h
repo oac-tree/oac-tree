@@ -108,7 +108,7 @@ public:
    * @note Non-Virtual Interface.
    */
   int GetUserChoice(const std::vector<std::pair<std::string, int>>& options,
-                    const sup::dto::AnyValue& metadata);
+                    const sup::dto::AnyValue& metadata = {});
 
   /**
    * @brief Method called to display a message.
@@ -199,6 +199,9 @@ sup::dto::AnyValue CreateUserChoiceMetadata();
 bool IsUserChoiceMetadata(const sup::dto::AnyValue& metadata);
 
 std::string GetMainTextFromMetadata(const sup::dto::AnyValue& metadata);
+
+std::vector<std::pair<std::string, int>> CreateIndexedOptions(
+  const std::vector<std::string>& option_names);
 
 }  // namespace sequencer
 

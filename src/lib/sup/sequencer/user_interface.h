@@ -26,6 +26,7 @@
 
 #include <mutex>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace sup
@@ -95,29 +96,29 @@ public:
   /**
    * @brief Method to request the user to choose one of the given options.
    *
-   * @param choices Structure that encodes the possible choices and optional metadata.
+   * @param optoins List of options the user can choose; each option is a string and a
+   *                corresponding value.
+   * @param metadata Structure that encodes optional metadata that could be used by the
+   *                 UserInterface to properly display the choice.
    *
-   * @return index of the choice.
+   * @return value of the choice.
    *
-   * @details The provided anyvalue has the following structure (which may be extended in the
+   * @details The provided metadata has the following structure (which may be extended in the
    * future):
-   * sup::sequencerUserChoices/v1.0
-   *   structure choice_map (mandatory)     Map between choice strings and their integer values
-   *     int "option_1"                     Name and value of first option
-   *     int "option_2"                     Name and value of first option
-   *     ...
-   *   string description (opt)             Description of what the choice is about
-   *   structure metadata (opt)             Structure to hold any other metadata
-   *     uint dialog_type                   Enumerator giving the type of dialog: e.g. confirmation
-   *                                        dialog, combobox style dialog, etc.
-   *     bool modal                         Flag to indicate preference for (non)modal dialog
-   *     string title                       Title for the dialog
-   *     string details                     Details about the user choice, which could be displayed
-   *                                        as tooltip for example
-   *     ...                                Future extension appear here
+   * sup::sequencerUserChoiceMetadata/v1.0
+   *   string text (opt)                  Main text to display
+   *   uint dialog_type (opt)             Enumerator giving the type of dialog: e.g. confirmation
+   *                                      dialog, combobox style dialog, etc.
+   *   bool modal (opt)                   Flag to indicate preference for (non)modal dialog
+   *   string title (opt)                 Title for the dialog
+   *   string informative (opt)           Informative extra text to display
+   *   string details (opt)               Details about the user choice, which could be displayed
+   *                                      on request
+   *   ...                                Future extension appear here
    * @note Non-Virtual Interface.
    */
-  int GetUserChoice(const sup::dto::AnyValue& choices);
+  int GetUserChoice(const std::vector<std::pair<std::string, int>>& options,
+                    const sup::dto::AnyValue& metadata);
 
   /**
    * @brief Method called to display a message.
@@ -184,11 +185,14 @@ private:
                                 const std::string& description);
 
   /**
-   * @brief Private virtual implementation of UserInterface::GetUserChoice(const AnyValue& choices).
+   * @brief Private virtual implementation of
+   * UserInterface::GetUserChoice(const std::vector<std::pair<std::string, int>>& options,
+   *                              const sup::dto::AnyValue& metadata)
    *
    * @note Default implementation returns -1.
    */
-  virtual int GetUserChoiceImpl(const sup::dto::AnyValue& choices);
+  virtual int GetUserChoiceImpl(const std::vector<std::pair<std::string, int>>& options,
+                                const sup::dto::AnyValue& metadata);
 
   /**
    * @brief Private virtual implementation of UserInterface::Message().
@@ -209,6 +213,10 @@ private:
    */
   mutable std::mutex m_ui_mutex;
 };
+
+sup::dto::AnyValue CreateUserChoiceMetadata();
+
+bool IsUserChoiceMetadata(const sup::dto::AnyValue& metadata);
 
 }  // namespace sequencer
 

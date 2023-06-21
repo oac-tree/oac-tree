@@ -21,12 +21,16 @@
 
 #include <sup/sequencer/user_interface.h>
 
+#include <sup/sequencer/constants.h>
 #include <sup/sequencer/log_severity.h>
 
 namespace sup
 {
 namespace sequencer
 {
+const sup::dto::AnyType USER_CHOICE_METADATA_ANYTYPE =
+  sup::dto::EmptyStructType(Constants::USER_CHOICES_METADATA_NAME);
+
 UserInterface::UserInterface() = default;
 UserInterface::~UserInterface() = default;
 
@@ -61,10 +65,11 @@ int UserInterface::GetUserChoice(const std::vector<std::string>& choices,
   return GetUserChoiceImpl(choices, description);
 }
 
-int UserInterface::GetUserChoice(const sup::dto::AnyValue& choices)
+int UserInterface::GetUserChoice(const std::vector<std::pair<std::string, int>>& options,
+                                 const sup::dto::AnyValue& metadata)
 {
   std::lock_guard<std::mutex> lock(m_ui_mutex);
-  return GetUserChoiceImpl(choices);
+  return GetUserChoiceImpl(options, metadata);
 }
 
 void UserInterface::Message(const std::string& message)
@@ -109,9 +114,11 @@ int UserInterface::GetUserChoiceImpl(const std::vector<std::string>& choices,
   return -1;
 }
 
-int UserInterface::GetUserChoiceImpl(const sup::dto::AnyValue& choices)
+int UserInterface::GetUserChoiceImpl(const std::vector<std::pair<std::string, int>>& options,
+                                     const sup::dto::AnyValue& metadata)
 {
-  (void)choices;
+  (void)options;
+  (void)metadata;
   return -1;
 }
 
@@ -120,6 +127,57 @@ void UserInterface::MessageImpl(const std::string&)
 
 void UserInterface::LogImpl(int, const std::string&)
 {}
+
+sup::dto::AnyValue CreateUserChoiceMetadata()
+{
+  sup::dto::AnyValue result{USER_CHOICE_METADATA_ANYTYPE};
+  return result;
+}
+
+bool IsUserChoiceMetadata(const sup::dto::AnyValue& metadata)
+{
+  if (!sup::dto::IsStructValue(metadata))
+  {
+    return false;
+  }
+  if (metadata.HasField(Constants::USER_CHOICES_TEXT_NAME) &&
+      (metadata[Constants::USER_CHOICES_TEXT_NAME].GetType()
+        != sup::dto::StringType))
+  {
+    return false;
+  }
+  if (metadata.HasField(Constants::USER_CHOICES_DIALOG_TYPE_NAME) &&
+      (metadata[Constants::USER_CHOICES_DIALOG_TYPE_NAME].GetType()
+        != sup::dto::UnsignedInteger32Type))
+  {
+    return false;
+  }
+  if (metadata.HasField(Constants::USER_CHOICES_MODAL_NAME) &&
+      (metadata[Constants::USER_CHOICES_MODAL_NAME].GetType()
+        != sup::dto::BooleanType))
+  {
+    return false;
+  }
+  if (metadata.HasField(Constants::USER_CHOICES_TITLE_NAME) &&
+      (metadata[Constants::USER_CHOICES_TITLE_NAME].GetType()
+        != sup::dto::StringType))
+  {
+    return false;
+  }
+  if (metadata.HasField(Constants::USER_CHOICES_INFORMATIVE_TEXT_NAME) &&
+      (metadata[Constants::USER_CHOICES_INFORMATIVE_TEXT_NAME].GetType()
+        != sup::dto::StringType))
+  {
+    return false;
+  }
+  if (metadata.HasField(Constants::USER_CHOICES_DETAILS_NAME) &&
+      (metadata[Constants::USER_CHOICES_DETAILS_NAME].GetType()
+        != sup::dto::StringType))
+  {
+    return false;
+  }
+  return true;
+}
 
 }  // namespace sequencer
 

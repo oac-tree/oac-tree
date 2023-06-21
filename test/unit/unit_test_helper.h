@@ -68,6 +68,8 @@ private:
   bool GetUserValueImpl(sup::dto::AnyValue& value, const std::string& description) override;
   int GetUserChoiceImpl(const std::vector<std::string>& choices,
                         const std::string& description) override;
+  int GetUserChoiceImpl(const std::vector<std::pair<std::string, int>>& options,
+                        const sup::dto::AnyValue& metadata) override;
 
 public:
   sup::dto::AnyType GetType() const;

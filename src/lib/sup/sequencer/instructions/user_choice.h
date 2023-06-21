@@ -56,7 +56,7 @@ private:
   /**
    * @brief Construct a list of choices from the available child instructions.
    */
-  std::vector<std::string> GetChoices() const;
+  std::vector<std::pair<std::string, int>> GetChoices() const;
 
   int m_choice;
 };

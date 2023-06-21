@@ -21,6 +21,7 @@
 
 #include "user_choice.h"
 
+#include <sup/sequencer/constants.h>
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/user_interface.h>
 
@@ -52,11 +53,13 @@ ExecutionStatus UserChoice::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   // Negative number for choice member variable indicates choice was not made yet
   if (m_choice < 0)
   {
-    std::string description =
+    std::string main_text =
       HasAttribute(DESCRIPTION_ATTRIBUTE) ? GetAttributeValue<std::string>(DESCRIPTION_ATTRIBUTE)
                                           : "";
+    auto metadata = CreateUserChoiceMetadata();
+    metadata.AddMember(Constants::USER_CHOICES_TEXT_NAME, main_text);
     auto options = GetChoices();
-    int choice = ui.GetUserChoice(options, description);
+    int choice = ui.GetUserChoice(options, metadata);
     if (choice < 0 || choice >= ChildrenCount())
     {
       std::string warning_message = InstructionWarningProlog(*this) +
@@ -105,13 +108,14 @@ std::vector<const Instruction*> UserChoice::NextInstructionsImpl() const
   return result;
 }
 
-std::vector<std::string> UserChoice::GetChoices() const
+std::vector<std::pair<std::string, int>> UserChoice::GetChoices() const
 {
-  std::vector<std::string> result;
+  std::vector<std::pair<std::string, int>> result;
+  int index = 0;
   for (auto instruction : ChildInstructions())
   {
     std::string description = instruction->GetName() + " (type:" + instruction->GetType() + ")";
-    result.push_back(description);
+    result.emplace_back(description, index++);
   }
   return result;
 }

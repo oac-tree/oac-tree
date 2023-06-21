@@ -89,6 +89,12 @@ int MockUI::GetUserChoiceImpl(const std::vector<std::string> &choices,
   return m_choice;
 }
 
+int MockUI::GetUserChoiceImpl(const std::vector<std::pair<std::string, int>>& options,
+                              const sup::dto::AnyValue& metadata)
+{
+  return m_choice;
+}
+
 bool MockUI::GetUserValueImpl(sup::dto::AnyValue &value, const std::string &description)
 {
   if (sup::dto::IsEmptyValue(value))

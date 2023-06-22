@@ -28,8 +28,8 @@
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/procedure.h>
 
-static const std::string PATH_ATTRIBUTE_NAME = "path";
-static const std::string FILE_ATTRIBUTE_NAME = "file";
+const std::string PATH_ATTRIBUTE_NAME = "path";
+const std::string FILE_ATTRIBUTE_NAME = "file";
 
 namespace sup
 {

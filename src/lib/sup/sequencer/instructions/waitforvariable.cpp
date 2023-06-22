@@ -33,8 +33,8 @@
 #include <cmath>
 
 const std::string TIMEOUT_ATTR_NAME = "timeout";
-static const std::string VARNAME_ATTRIBUTE = "varName";
-static const std::string EQUALVAR_ATTRIBUTE = "equalsVar";
+const std::string VARNAME_ATTRIBUTE = "varName";
+const std::string EQUALVAR_ATTRIBUTE = "equalsVar";
 
 const double MAX_TIMEOUT_SECONDS = 18.4e9;  // More than 500 years. This should be enough...
 

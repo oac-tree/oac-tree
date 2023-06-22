@@ -35,7 +35,7 @@ namespace sequencer
 
 const std::string Decrement::Type = "Decrement";
 
-static const std::string VARNAME_ATTRIBUTE = "varName";
+const std::string VARNAME_ATTRIBUTE = "varName";
 
 Decrement::Decrement()
   : Instruction(Decrement::Type)

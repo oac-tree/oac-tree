@@ -32,7 +32,7 @@ namespace sequencer
 
 const std::string ResetVariable::Type = "ResetVariable";
 
-static const std::string VARNAME_ATTRIBUTE = "varName";
+const std::string VARNAME_ATTRIBUTE = "varName";
 
 ResetVariable::ResetVariable()
   : Instruction(ResetVariable::Type)

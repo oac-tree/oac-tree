@@ -49,7 +49,7 @@ protected:
   std::unique_ptr<Instruction> wait;
 };
 
-static const std::string TREE_TYPE = "TestData";
+const std::string TREE_TYPE = "TestData";
 
 using ::testing::_;
 using ::testing::InSequence;

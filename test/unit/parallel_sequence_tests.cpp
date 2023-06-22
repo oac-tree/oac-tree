@@ -35,7 +35,7 @@
 
 using namespace sup::sequencer;
 
-static const std::string ProcedureSequenceString =
+const std::string ProcedureSequenceString =
     R"RAW(<?xml version="1.0" encoding="UTF-8"?>
 <Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
            name="Trivial procedure for testing purposes"
@@ -50,7 +50,7 @@ static const std::string ProcedureSequenceString =
 </Procedure>
 )RAW";
 
-static const std::string ProcedureParallelString =
+const std::string ProcedureParallelString =
     R"RAW(<?xml version="1.0" encoding="UTF-8"?>
 <Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
            name="Trivial procedure for testing purposes"
@@ -65,7 +65,7 @@ static const std::string ProcedureParallelString =
 </Procedure>
 )RAW";
 
-static const std::string ProcedureParallelBuiltinString =
+const std::string ProcedureParallelBuiltinString =
     R"RAW(<?xml version="1.0" encoding="UTF-8"?>
 <Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
            name="Trivial procedure for testing purposes"

@@ -71,12 +71,6 @@ public:
    * @brief Class name for VariableRegistry.
    */
   static const std::string Type;
-
-  /**
-   * @brief Defined attribute names.
-   */
-  static const std::string JSON_TYPE;
-  static const std::string JSON_VALUE;
 };
 
 }  // namespace sequencer

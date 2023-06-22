@@ -40,8 +40,8 @@ namespace sup
 {
 namespace sequencer
 {
-static const std::string JSONTYPE_ATTRIBUTE_NAME = "jsontype";
-static const std::string JSONFILE_ATTRIBUTE_NAME = "jsonfile";
+const std::string JSONTYPE_ATTRIBUTE_NAME = "jsontype";
+const std::string JSONFILE_ATTRIBUTE_NAME = "jsonfile";
 
 namespace
 {

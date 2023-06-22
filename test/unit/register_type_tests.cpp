@@ -30,7 +30,7 @@
 
 using namespace sup::sequencer;
 
-static const std::string RegisterTypeProcedureString{R"(
+const std::string RegisterTypeProcedureString{R"(
     <RegisterType jsontype='{"type":"range_uint32","attributes":[{"min":{"type":"uint32"}},{"max":{"type":"uint32"}}]}'/>
     <RegisterType jsontype='{"type":"ranges_uint32","multiplicity":3,"element":{"type":"range_uint32"}}'/>
     <Sequence>
@@ -47,11 +47,11 @@ static const std::string RegisterTypeProcedureString{R"(
     </Workspace>
 )"};
 
-static const std::string FailedRegisterTypeProcedureString = {R"(
+const std::string FailedRegisterTypeProcedureString = {R"(
     <RegisterType jsontype='{"type":"fail_ranges_uint32","multiplicity":3,"element":{"type":"undefined_type"}}'/>
 )"};
 
-static const std::string RegisterTypeFromFileProcedureString = {R"(
+const std::string RegisterTypeFromFileProcedureString = {R"(
     <RegisterType jsonfile="range_uint16.json"/>
     <RegisterType jsontype='{"type":"ranges_uint16","multiplicity":3,"element":{"type":"range_uint16"}}'/>
     <Sequence>
@@ -68,13 +68,13 @@ static const std::string RegisterTypeFromFileProcedureString = {R"(
     </Workspace>
 )"};
 
-static const std::string FailedRegisterTypeFromFileProcedureString = {R"(
+const std::string FailedRegisterTypeFromFileProcedureString = {R"(
     <RegisterType jsonfile="does_not_exist.json"/>
 )"};
 
-static const std::string JSON_FILE_NAME = "range_uint16.json";
+const std::string JSON_FILE_NAME = "range_uint16.json";
 
-static const std::string JSONRangeRepresentation =
+const std::string JSONRangeRepresentation =
     R"RAW(
 {
     "type": "range_uint16",

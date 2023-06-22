@@ -42,7 +42,7 @@ namespace UnitTestHelper
 {
 using namespace sup::sequencer;
 
-static const std::string ENV_TEST_RESOURCES_PATH_NAME = "TEST_RESOURCES_PATH";
+const std::string ENV_TEST_RESOURCES_PATH_NAME = "TEST_RESOURCES_PATH";
 
 const std::string INCREMENT_ATTRIBUTE_NAME = "incr";
 

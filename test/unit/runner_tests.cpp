@@ -51,7 +51,7 @@ protected:
   std::unique_ptr<Procedure> async_wait_proc;
 };
 
-static const std::string AsyncProcedureString =
+const std::string AsyncProcedureString =
     R"RAW(<?xml version="1.0" encoding="UTF-8"?>
 <Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
            name="Asynchronous procedure for testing purposes"
@@ -68,7 +68,7 @@ static const std::string AsyncProcedureString =
 </Procedure>
 )RAW";
 
-static const std::string SyncProcedureString =
+const std::string SyncProcedureString =
     R"RAW(<?xml version="1.0" encoding="UTF-8"?>
 <Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
            name="Synchronous procedure for testing purposes"
@@ -84,7 +84,7 @@ static const std::string SyncProcedureString =
 </Procedure>
 )RAW";
 
-static const std::string CopyVariableProcedureString =
+const std::string CopyVariableProcedureString =
     R"RAW(<?xml version="1.0" encoding="UTF-8"?>
 <Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
            name="Trivial procedure for testing purposes"
@@ -103,7 +103,7 @@ static const std::string CopyVariableProcedureString =
 </Procedure>
 )RAW";
 
-static const std::string AsyncWaitProcedureString =
+const std::string AsyncWaitProcedureString =
     R"RAW(<?xml version="1.0" encoding="UTF-8"?>
 <Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
            name="Synchronous procedure for testing purposes"

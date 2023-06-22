@@ -44,15 +44,18 @@ protected:
   std::unique_ptr<Variable> var3;
 };
 
-static const std::string var1_name = "var1";
-static const std::string var2_name = "var2";
-static const std::string var3_name = "var3";
+const std::string JSON_TYPE = "type";
+const std::string JSON_VALUE = "value";
 
-static const std::string var2_type =
+const std::string var1_name = "var1";
+const std::string var2_name = "var2";
+const std::string var3_name = "var3";
+
+const std::string var2_type =
     R"RAW({"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}},{"status":{"type":"bool"}},{"message":{"type":"string"}}]})RAW";
-static const std::string var3_type =
+const std::string var3_type =
     R"RAW({"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}},{"status":{"type":"bool"}},{"message":{"type":"string"}}]})RAW";
-static const std::string var3_val = R"RAW({"value":55,"status":1})RAW";
+const std::string var3_val = R"RAW({"value":55,"status":1})RAW";
 
 TEST_F(WorkspaceTest, DefaultConstructed)
 {
@@ -268,7 +271,7 @@ TEST_F(WorkspaceTest, NotifyCallback)
     }));
   std::string name = "FromWorkspace";
   auto var = GlobalVariableRegistry().Create("Local");
-  EXPECT_TRUE(var->AddAttribute(LocalVariable::JSON_TYPE, R"RAW({"type":"uint16"})RAW"));
+  EXPECT_TRUE(var->AddAttribute(JSON_TYPE, R"RAW({"type":"uint16"})RAW"));
   EXPECT_TRUE(ws.AddVariable(name, std::move(var)));
   ws.Setup();
   sup::dto::AnyValue new_value(sup::dto::UnsignedInteger16Type);
@@ -326,7 +329,7 @@ WorkspaceTest::WorkspaceTest()
     , var2{GlobalVariableRegistry().Create("Local")}
     , var3{GlobalVariableRegistry().Create("Local")}
 {
-  var2->AddAttribute(LocalVariable::JSON_TYPE, var2_type);
-  var3->AddAttribute(LocalVariable::JSON_TYPE, var3_type);
-  var3->AddAttribute(LocalVariable::JSON_VALUE, var3_val);
+  var2->AddAttribute(JSON_TYPE, var2_type);
+  var3->AddAttribute(JSON_TYPE, var3_type);
+  var3->AddAttribute(JSON_VALUE, var3_val);
 }

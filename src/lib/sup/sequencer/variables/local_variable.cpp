@@ -36,8 +36,9 @@ namespace sequencer
 {
 
 const std::string LocalVariable::Type = "Local";
-const std::string LocalVariable::JSON_TYPE = "type";
-const std::string LocalVariable::JSON_VALUE = "value";
+
+const std::string JSON_TYPE = "type";
+const std::string JSON_VALUE = "value";
 
 LocalVariable::LocalVariable()
   : Variable(LocalVariable::Type)

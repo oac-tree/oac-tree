@@ -35,7 +35,7 @@ namespace sequencer
 
 const std::string Increment::Type = "Increment";
 
-static const std::string VARNAME_ATTRIBUTE = "varName";
+const std::string VARNAME_ATTRIBUTE = "varName";
 
 Increment::Increment()
   : Instruction(Increment::Type)

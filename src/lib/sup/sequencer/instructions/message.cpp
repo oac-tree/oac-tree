@@ -32,7 +32,7 @@ namespace sequencer
 
 const std::string Message::Type = "Message";
 
-static const std::string TEXT_ATTRIBUTE = "text";
+const std::string TEXT_ATTRIBUTE = "text";
 
 Message::Message()
   : Instruction(Message::Type)

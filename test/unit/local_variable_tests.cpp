@@ -45,26 +45,29 @@ protected:
   StringAttributeList attr_full;
 };
 
+const std::string JSON_TYPE = "type";
+const std::string JSON_VALUE = "value";
+
 // Function declaration
 
 static std::string stob(bool b);
 
 // Global variables
 
-static const std::string EMPTY_VAR_NAME = "Empty LocalVariable";
-static const std::string TEST_ATTRIBUTE_NAME = "Test Attribute Name";
-static const std::string TEST_ATTRIBUTE_VALUE = "Test Attribute Value";
+const std::string EMPTY_VAR_NAME = "Empty LocalVariable";
+const std::string TEST_ATTRIBUTE_NAME = "Test Attribute Name";
+const std::string TEST_ATTRIBUTE_VALUE = "Test Attribute Value";
 
-static const std::string BOOL_TYPE = R"RAW({"type":"bool"})RAW";
-static const std::string UINT64_TYPE = R"RAW({"type":"uint64"})RAW";
-static const std::string FLOAT32_TYPE = R"RAW({"type":"float32"})RAW";
+const std::string BOOL_TYPE = R"RAW({"type":"bool"})RAW";
+const std::string UINT64_TYPE = R"RAW({"type":"uint64"})RAW";
+const std::string FLOAT32_TYPE = R"RAW({"type":"float32"})RAW";
 
-static const sup::dto::boolean BOOL_VALUE = true;
-static const std::string BOOL_VALUE_STR = stob(BOOL_VALUE);
-static const sup::dto::uint64 UINT64_VALUE = 98765;
-static const std::string UINT64_VALUE_STR = std::to_string(UINT64_VALUE);
-static const sup::dto::float32 FLOAT32_VALUE = 0.5772f;
-static const std::string FLOAT32_VALUE_STR = std::to_string(FLOAT32_VALUE);
+const sup::dto::boolean BOOL_VALUE = true;
+const std::string BOOL_VALUE_STR = stob(BOOL_VALUE);
+const sup::dto::uint64 UINT64_VALUE = 98765;
+const std::string UINT64_VALUE_STR = std::to_string(UINT64_VALUE);
+const sup::dto::float32 FLOAT32_VALUE = 0.5772f;
+const std::string FLOAT32_VALUE_STR = std::to_string(FLOAT32_VALUE);
 
 // Function definition
 
@@ -139,7 +142,7 @@ TEST_F(LocalVariableTest, AddAttributesPartial)
 {
   // Preconditions
   EXPECT_FALSE(empty_var.HasAttribute(attributes::kNameAttribute));
-  EXPECT_FALSE(empty_var.HasAttribute(LocalVariable::JSON_TYPE));
+  EXPECT_FALSE(empty_var.HasAttribute(JSON_TYPE));
   sup::dto::AnyValue any_value;
   EXPECT_FALSE(empty_var.GetValue(any_value));
 
@@ -149,10 +152,10 @@ TEST_F(LocalVariableTest, AddAttributesPartial)
 
   // Post conditions
   EXPECT_TRUE(empty_var.HasAttribute(attributes::kNameAttribute));
-  EXPECT_TRUE(empty_var.HasAttribute(LocalVariable::JSON_TYPE));
+  EXPECT_TRUE(empty_var.HasAttribute(JSON_TYPE));
   EXPECT_EQ(empty_var.GetName(), EMPTY_VAR_NAME);
   EXPECT_EQ(empty_var.GetName(), empty_var.GetAttributeString(attributes::kNameAttribute));
-  EXPECT_EQ(empty_var.GetAttributeString(LocalVariable::JSON_TYPE), UINT64_TYPE);
+  EXPECT_EQ(empty_var.GetAttributeString(JSON_TYPE), UINT64_TYPE);
   EXPECT_TRUE(empty_var.GetValue(any_value));  // zero initialized
   EXPECT_EQ(any_value, static_cast<sup::dto::uint64>(0));
   sup::dto::AnyValue val(sup::dto::UnsignedInteger64Type);
@@ -167,8 +170,8 @@ TEST_F(LocalVariableTest, AddAttributesFull)
 {
   // Preconditions
   EXPECT_FALSE(empty_var.HasAttribute(attributes::kNameAttribute));
-  EXPECT_FALSE(empty_var.HasAttribute(LocalVariable::JSON_TYPE));
-  EXPECT_FALSE(empty_var.HasAttribute(LocalVariable::JSON_VALUE));
+  EXPECT_FALSE(empty_var.HasAttribute(JSON_TYPE));
+  EXPECT_FALSE(empty_var.HasAttribute(JSON_VALUE));
   EXPECT_NO_THROW(empty_var.Setup());
   sup::dto::AnyValue any_value;
   EXPECT_FALSE(empty_var.GetValue(any_value));
@@ -182,12 +185,12 @@ TEST_F(LocalVariableTest, AddAttributesFull)
 
   // Post conditions
   EXPECT_TRUE(empty_var.HasAttribute(attributes::kNameAttribute));
-  EXPECT_TRUE(empty_var.HasAttribute(LocalVariable::JSON_TYPE));
-  EXPECT_TRUE(empty_var.HasAttribute(LocalVariable::JSON_VALUE));
+  EXPECT_TRUE(empty_var.HasAttribute(JSON_TYPE));
+  EXPECT_TRUE(empty_var.HasAttribute(JSON_VALUE));
   EXPECT_EQ(empty_var.GetName(), EMPTY_VAR_NAME);
   EXPECT_EQ(empty_var.GetName(), empty_var.GetAttributeString(attributes::kNameAttribute));
-  EXPECT_EQ(empty_var.GetAttributeString(LocalVariable::JSON_TYPE), UINT64_TYPE);
-  EXPECT_EQ(empty_var.GetAttributeString(LocalVariable::JSON_VALUE), UINT64_VALUE_STR);
+  EXPECT_EQ(empty_var.GetAttributeString(JSON_TYPE), UINT64_TYPE);
+  EXPECT_EQ(empty_var.GetAttributeString(JSON_VALUE), UINT64_VALUE_STR);
   EXPECT_TRUE(empty_var.GetValue(any_value));
   auto val = any_value.As<sup::dto::uint64>();
   EXPECT_EQ(val, UINT64_VALUE);
@@ -197,8 +200,8 @@ TEST_F(LocalVariableTest, NotifyCallback)
 {
   sup::dto::int32 value = 0;
   LocalVariable int32_var{};
-  EXPECT_TRUE(int32_var.AddAttribute(LocalVariable::JSON_TYPE, R"RAW({"type":"int32"})RAW"));
-  EXPECT_TRUE(int32_var.AddAttribute(LocalVariable::JSON_VALUE, std::to_string(value)));
+  EXPECT_TRUE(int32_var.AddAttribute(JSON_TYPE, R"RAW({"type":"int32"})RAW"));
+  EXPECT_TRUE(int32_var.AddAttribute(JSON_VALUE, std::to_string(value)));
   int32_var.SetNotifyCallback(
     [&value](const sup::dto::AnyValue& val, bool)
     {
@@ -216,8 +219,8 @@ TEST_F(LocalVariableTest, BooleanType)
   EXPECT_EQ(bool_var.GetType(), LocalVariable::Type);
   EXPECT_TRUE(bool_var.GetName().empty());
   EXPECT_FALSE(bool_var.HasAttribute(attributes::kNameAttribute));
-  EXPECT_TRUE(bool_var.HasAttribute(LocalVariable::JSON_TYPE));
-  EXPECT_EQ(bool_var.GetAttributeString(LocalVariable::JSON_TYPE), BOOL_TYPE);
+  EXPECT_TRUE(bool_var.HasAttribute(JSON_TYPE));
+  EXPECT_EQ(bool_var.GetAttributeString(JSON_TYPE), BOOL_TYPE);
   EXPECT_NO_THROW(bool_var.Setup());
   sup::dto::AnyValue any_value;
   EXPECT_TRUE(bool_var.GetValue(any_value));
@@ -253,8 +256,8 @@ TEST_F(LocalVariableTest, UnsignedInteger64Type)
   EXPECT_EQ(uint64_var.GetType(), LocalVariable::Type);
   EXPECT_TRUE(uint64_var.GetName().empty());
   EXPECT_FALSE(uint64_var.HasAttribute(attributes::kNameAttribute));
-  EXPECT_TRUE(uint64_var.HasAttribute(LocalVariable::JSON_TYPE));
-  EXPECT_EQ(uint64_var.GetAttributeString(LocalVariable::JSON_TYPE), UINT64_TYPE);
+  EXPECT_TRUE(uint64_var.HasAttribute(JSON_TYPE));
+  EXPECT_EQ(uint64_var.GetAttributeString(JSON_TYPE), UINT64_TYPE);
   EXPECT_NO_THROW(uint64_var.Setup());
   sup::dto::AnyValue any_value;
   EXPECT_TRUE(uint64_var.GetValue(any_value));
@@ -293,8 +296,8 @@ TEST_F(LocalVariableTest, Float32Type)
   EXPECT_EQ(float32_var.GetType(), LocalVariable::Type);
   EXPECT_TRUE(float32_var.GetName().empty());
   EXPECT_FALSE(float32_var.HasAttribute(attributes::kNameAttribute));
-  EXPECT_TRUE(float32_var.HasAttribute(LocalVariable::JSON_TYPE));
-  EXPECT_EQ(float32_var.GetAttributeString(LocalVariable::JSON_TYPE), FLOAT32_TYPE);
+  EXPECT_TRUE(float32_var.HasAttribute(JSON_TYPE));
+  EXPECT_EQ(float32_var.GetAttributeString(JSON_TYPE), FLOAT32_TYPE);
   EXPECT_NO_THROW(float32_var.Setup());
   sup::dto::AnyValue any_value;
   EXPECT_TRUE(float32_var.GetValue(any_value));
@@ -364,19 +367,19 @@ static std::string stob(bool b)
 LocalVariableTest::LocalVariableTest()
     : empty_var{}, bool_var{}, uint64_var{}, float32_var{}, attr_partial{}, attr_full{}
 {
-  bool_var.AddAttribute(LocalVariable::JSON_TYPE, BOOL_TYPE);
-  bool_var.AddAttribute(LocalVariable::JSON_VALUE, BOOL_VALUE_STR);
-  uint64_var.AddAttribute(LocalVariable::JSON_TYPE, UINT64_TYPE);
-  uint64_var.AddAttribute(LocalVariable::JSON_VALUE, UINT64_VALUE_STR);
-  float32_var.AddAttribute(LocalVariable::JSON_TYPE, FLOAT32_TYPE);
-  float32_var.AddAttribute(LocalVariable::JSON_VALUE, FLOAT32_VALUE_STR);
+  bool_var.AddAttribute(JSON_TYPE, BOOL_TYPE);
+  bool_var.AddAttribute(JSON_VALUE, BOOL_VALUE_STR);
+  uint64_var.AddAttribute(JSON_TYPE, UINT64_TYPE);
+  uint64_var.AddAttribute(JSON_VALUE, UINT64_VALUE_STR);
+  float32_var.AddAttribute(JSON_TYPE, FLOAT32_TYPE);
+  float32_var.AddAttribute(JSON_VALUE, FLOAT32_VALUE_STR);
 
   attr_partial.emplace_back(attributes::kNameAttribute, EMPTY_VAR_NAME);
-  attr_partial.emplace_back(LocalVariable::JSON_TYPE, UINT64_TYPE);
+  attr_partial.emplace_back(JSON_TYPE, UINT64_TYPE);
 
   attr_full.emplace_back(attributes::kNameAttribute, EMPTY_VAR_NAME);
-  attr_full.emplace_back(LocalVariable::JSON_TYPE, UINT64_TYPE);
-  attr_full.emplace_back(LocalVariable::JSON_VALUE, UINT64_VALUE_STR);
+  attr_full.emplace_back(JSON_TYPE, UINT64_TYPE);
+  attr_full.emplace_back(JSON_VALUE, UINT64_VALUE_STR);
 }
 
 LocalVariableTest::~LocalVariableTest() = default;

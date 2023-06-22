@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+           name="Procedure for testing user confirmation"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+    <Sequence>
+        <UserConfirmation description="Start sequence?" okText="yes" cancelText="no"/>
+        <Wait timeout="1.0"/>
+        <UserConfirmation description="Select Ok to proceed"/>
+        <Wait timeout="1.0"/>
+        <UserConfirmation description="Almost there. Proceed?" okText="yes"/>
+        <Wait timeout="1.0"/>
+    </Sequence>
+    <Workspace>
+    </Workspace>
+</Procedure>

@@ -114,9 +114,9 @@ int CLInterface::GetUserChoiceImpl(const std::vector<std::pair<std::string, int>
     message = "Select one of the following options:";
   }
   std::cout << message << std::endl;
-  for (int i = 1; i <= options.size(); ++i)
+  for (int i = 0; i < options.size(); ++i)
   {
-    std::cout << i << ": " << options[i-1].first << std::endl;
+    std::cout << i + 1 << ": " << options[i].first << std::endl;
   }
   int input = -1;
   std::string input_str;
@@ -131,7 +131,9 @@ int CLInterface::GetUserChoiceImpl(const std::vector<std::pair<std::string, int>
     m_logger.LogMessage(log::SUP_SEQ_LOG_ERR, error_message);
     return -1;
   }
-  if (input < 1 || input > options.size())
+  // Decrement input as the interface uses 1-based indexing
+  --input;
+  if (input < 0 || input >= options.size())
   {
     std::string error_message =
       "sup::sequencer::CLInterface::GetUserChoiceImpl(): user provided value [" +
@@ -139,8 +141,8 @@ int CLInterface::GetUserChoiceImpl(const std::vector<std::pair<std::string, int>
     m_logger.LogMessage(log::SUP_SEQ_LOG_ERR, error_message);
     return -1;
   }
-  std::cout << options[input-1].first << " selected" << std::endl;
-  return options[input-1].second;
+  std::cout << options[input].first << " selected" << std::endl;
+  return options[input].second;
 }
 
 void CLInterface::MessageImpl(const std::string& message)

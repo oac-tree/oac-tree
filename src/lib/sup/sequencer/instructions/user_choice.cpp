@@ -58,6 +58,8 @@ ExecutionStatus UserChoice::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
                                           : "";
     auto metadata = CreateUserChoiceMetadata();
     metadata.AddMember(Constants::USER_CHOICES_TEXT_NAME, main_text);
+    metadata.AddMember(Constants::USER_CHOICES_DIALOG_TYPE_NAME,
+                       {sup::dto::UnsignedInteger32Type, dialog_type::kSelection});
     auto options = GetChoices();
     int choice = ui.GetUserChoice(options, metadata);
     if (choice < 0 || choice >= ChildrenCount())

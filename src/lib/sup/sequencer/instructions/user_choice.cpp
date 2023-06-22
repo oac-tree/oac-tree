@@ -31,7 +31,7 @@ namespace sequencer
 {
 const std::string UserChoice::Type = "UserChoice";
 
-static const std::string DESCRIPTION_ATTRIBUTE = "description";
+const std::string DESCRIPTION_ATTRIBUTE = "description";
 
 UserChoice::UserChoice()
   : CompoundInstruction(UserChoice::Type)

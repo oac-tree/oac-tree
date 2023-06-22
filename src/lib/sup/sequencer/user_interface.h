@@ -35,6 +35,21 @@ namespace sequencer
 {
 class Instruction;
 
+namespace dialog_type
+{
+/**
+ * @brief DialogType enumerators provide a hint to a UserInterface implementation on how to
+ * represent certain user choices. Implementations are allowed to ignore these hints.
+ */
+enum DialogType
+{
+  kDefault = 0,      // Use default dialog tyep
+  kSelection,        // Selection box (e.g. combo box)
+  kConfirmation,     // Confirmation dialog (typically two buttons only)
+  kAlert             // Alert dialog (typically one button only)
+};
+}
+
 /**
  * @brief Interface representing user interactions.
  */

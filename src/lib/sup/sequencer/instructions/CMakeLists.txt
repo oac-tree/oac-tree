@@ -31,6 +31,7 @@ target_sources(sup-sequencer-shared
     ${CMAKE_CURRENT_LIST_DIR}/reset_variable.cpp
     ${CMAKE_CURRENT_LIST_DIR}/sequence.cpp
     ${CMAKE_CURRENT_LIST_DIR}/user_choice.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/user_confirmation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/wait.cpp
     ${CMAKE_CURRENT_LIST_DIR}/waitforvariable.cpp
 )

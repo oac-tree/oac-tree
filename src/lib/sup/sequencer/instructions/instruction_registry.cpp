@@ -45,6 +45,7 @@
 #include "reset_variable.h"
 #include "sequence.h"
 #include "user_choice.h"
+#include "user_confirmation.h"
 #include "wait.h"
 #include "waitforvariable.h"
 
@@ -143,6 +144,7 @@ void InitInstructionRegistry(InstructionRegistry& registry)
   (void)RegisterInstruction<Message>(registry);
   (void)RegisterInstruction<Output>(registry);
   (void)RegisterInstruction<ResetVariable>(registry);
+  (void)RegisterInstruction<UserConfirmation>(registry);
   (void)RegisterInstruction<Wait>(registry);
   (void)RegisterInstruction<WaitForVariable>(registry);
 }

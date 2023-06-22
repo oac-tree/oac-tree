@@ -45,6 +45,7 @@ target_sources(unit-tests
     ${CMAKE_CURRENT_LIST_DIR}/sequence_workspace_tests.cpp
     ${CMAKE_CURRENT_LIST_DIR}/unit_test_helper.cpp
     ${CMAKE_CURRENT_LIST_DIR}/user_choice_tests.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/user_confirmation_tests.cpp
     ${CMAKE_CURRENT_LIST_DIR}/user_interface_tests.cpp
     ${CMAKE_CURRENT_LIST_DIR}/variable_registry_tests.cpp
     ${CMAKE_CURRENT_LIST_DIR}/wait_tests.cpp

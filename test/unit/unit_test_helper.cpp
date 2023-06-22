@@ -51,6 +51,18 @@ unsigned long CounterInstruction::counter = 0u;
 
 static bool _initialise_instruction = RegisterGlobalInstruction<CounterInstruction>();
 
+CounterInstruction::CounterInstruction()
+  : Instruction(CounterInstruction::Type)
+{
+  AddAttributeDefinition(INCREMENT_ATTRIBUTE_NAME, sup::dto::UnsignedInteger64Type);
+  counter = 0u;
+}
+
+CounterInstruction::~CounterInstruction()
+{
+  counter = 0u;
+}
+
 unsigned long CounterInstruction::GetCount()
 {
   return counter;
@@ -70,25 +82,47 @@ ExecutionStatus CounterInstruction::ExecuteSingleImpl(UserInterface& ui, Workspa
   return ExecutionStatus::SUCCESS;
 }
 
-CounterInstruction::CounterInstruction()
-  : Instruction(CounterInstruction::Type)
+MockUI::MockUI()
+  : m_status{false}
+  , m_choice{-1}
+  , m_value{}
+  , m_options{}
+  , m_metadata{}
+{}
+
+MockUI::~MockUI() = default;
+
+sup::dto::AnyType MockUI::GetType() const
 {
-  AddAttributeDefinition(INCREMENT_ATTRIBUTE_NAME, sup::dto::UnsignedInteger64Type);
-  counter = 0u;
+  return m_value.GetType();
 }
 
-CounterInstruction::~CounterInstruction()
+void MockUI::SetChoice(int choice)
 {
-  counter = 0u;
+  m_choice = choice;
+}
+
+void MockUI::SetStatus(bool status)
+{
+  m_status = status;
+}
+
+void MockUI::SetValue(sup::dto::AnyValue &value)
+{
+  m_value = value;
+}
+
+std::vector<std::pair<std::string, int>> MockUI::GetOptions() const
+{
+  return m_options;
+}
+
+const sup::dto::AnyValue* MockUI::GetMetadata() const
+{
+  return m_metadata.get();
 }
 
 void MockUI::UpdateInstructionStatusImpl(const Instruction *instruction) {}
-
-int MockUI::GetUserChoiceImpl(const std::vector<std::pair<std::string, int>>& options,
-                              const sup::dto::AnyValue& metadata)
-{
-  return m_choice;
-}
 
 bool MockUI::GetUserValueImpl(sup::dto::AnyValue &value, const std::string &description)
 {
@@ -104,26 +138,13 @@ bool MockUI::GetUserValueImpl(sup::dto::AnyValue &value, const std::string &desc
   return m_status;
 }
 
-sup::dto::AnyType MockUI::GetType() const
+int MockUI::GetUserChoiceImpl(const std::vector<std::pair<std::string, int>>& options,
+                              const sup::dto::AnyValue& metadata)
 {
-  return m_value.GetType();
+  m_options = options;
+  m_metadata.reset(new sup::dto::AnyValue{metadata});
+  return m_choice;
 }
-
-void MockUI::SetChoice(int choice)
-{
-  m_choice = choice;
-}
-void MockUI::SetStatus(bool status)
-{
-  m_status = status;
-}
-void MockUI::SetValue(sup::dto::AnyValue &value)
-{
-  m_value = value;
-}
-
-MockUI::MockUI() {}
-MockUI::~MockUI() {}
 
 TemporaryTestFile::TemporaryTestFile(std::string filename_, std::string contents)
     : filename{filename_}

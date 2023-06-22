@@ -56,10 +56,25 @@ private:
 
 class MockUI : public sup::sequencer::UserInterface
 {
+public:
+  MockUI();
+  virtual ~MockUI();
+
+  sup::dto::AnyType GetType() const;
+
+  void SetChoice(int choice);
+  void SetStatus(bool status);
+  void SetValue(sup::dto::AnyValue& value);
+
+  std::vector<std::pair<std::string, int>> GetOptions() const;
+  const sup::dto::AnyValue* GetMetadata() const;
+
 private:
   bool m_status = false;
   int m_choice = -1;
   sup::dto::AnyValue m_value;
+  std::vector<std::pair<std::string, int>> m_options;
+  std::unique_ptr<sup::dto::AnyValue> m_metadata;
 
   /**
    * @brief See sup::sequencer::UserInterface.
@@ -68,16 +83,6 @@ private:
   bool GetUserValueImpl(sup::dto::AnyValue& value, const std::string& description) override;
   int GetUserChoiceImpl(const std::vector<std::pair<std::string, int>>& options,
                         const sup::dto::AnyValue& metadata) override;
-
-public:
-  sup::dto::AnyType GetType() const;
-
-  void SetChoice(int choice);
-  void SetStatus(bool status);
-  void SetValue(sup::dto::AnyValue& value);
-
-  MockUI();
-  virtual ~MockUI();
 };
 
 class EmptyUserInterface : public sup::sequencer::UserInterface
@@ -100,6 +105,7 @@ public:
 };
 
 std::string GetFullTestFilePath(const std::string& filename);
+
 static inline bool TryAndExecute(
     std::unique_ptr<sup::sequencer::Procedure>& proc, sup::sequencer::UserInterface& ui,
     const sup::sequencer::ExecutionStatus& expect = sup::sequencer::ExecutionStatus::SUCCESS);

@@ -88,7 +88,7 @@ TEST_F(ProcedureTest, DefaultConstructed)
 
   // Empty instruction list
   EXPECT_EQ(empty_proc.RootInstruction(), nullptr);
-  auto instructions = empty_proc.GetInstructions();
+  auto instructions = empty_proc.GetTopInstructions();
   EXPECT_EQ(instructions.size(), 0);
   EXPECT_EQ(empty_proc.GetInstructionCount(), 0);
 
@@ -97,12 +97,13 @@ TEST_F(ProcedureTest, DefaultConstructed)
   Instruction *p_wait = wait.get();
   EXPECT_NO_THROW(empty_proc.PushInstruction(std::move(wait)));
   EXPECT_EQ(empty_proc.RootInstruction(), p_wait);
-  instructions = empty_proc.GetInstructions();
+  instructions = empty_proc.GetTopInstructions();
   EXPECT_EQ(instructions.size(), 1);
-  instructions = empty_proc.GetInstructions(filename);
+  auto& sub_proc_1 = empty_proc.GetSubProcedure(filename);
+  instructions = sub_proc_1.GetTopInstructions();
   EXPECT_EQ(instructions.size(), 1);
   std::string wrong_filename = "WrongFile.xml";
-  EXPECT_THROW(empty_proc.GetInstructions(wrong_filename), sup::xml::ParseException);
+  EXPECT_THROW(empty_proc.GetSubProcedure(wrong_filename), sup::xml::ParseException);
 
   // Variables
   auto variables = empty_proc.VariableNames();
@@ -155,7 +156,7 @@ TEST_F(ProcedureTest, InsertInstruction)
   EXPECT_TRUE(procedure.InsertInstruction(std::unique_ptr<Instruction>{child2}, 1));
   EXPECT_EQ(procedure.GetInstructionCount(), 3);
 
-  EXPECT_EQ(procedure.GetInstructions(),
+  EXPECT_EQ(procedure.GetTopInstructions(),
             std::vector<const Instruction *>({child0, child2, child1}));
 
   // wrong insert index
@@ -180,8 +181,8 @@ TEST_F(ProcedureTest, TakeMiddleChild)
   // taking middle child
   auto child1_taken = procedure.TakeInstruction(1);
   EXPECT_EQ(child1, child1_taken.get());
-  EXPECT_EQ(procedure.GetInstructions().size(), 3);
-  EXPECT_EQ(procedure.GetInstructions(),
+  EXPECT_EQ(procedure.GetTopInstructions().size(), 3);
+  EXPECT_EQ(procedure.GetTopInstructions(),
             std::vector<const Instruction *>({child0, child2, child3}));
 
   // attempt to take non-existing one
@@ -201,13 +202,13 @@ TEST_F(ProcedureTest, ConstructedFromString)
   // Instruction list
   auto root = loaded_proc->RootInstruction();
   EXPECT_NE(root, nullptr);
-  auto instructions = loaded_proc->GetInstructions();
+  auto instructions = loaded_proc->GetTopInstructions();
   EXPECT_EQ(instructions.size(), 2);
 
   // Add one instruction
   Instruction *p_wait = wait.get();
   EXPECT_NO_THROW(loaded_proc->PushInstruction(std::move(wait)));
-  instructions = loaded_proc->GetInstructions();
+  instructions = loaded_proc->GetTopInstructions();
   EXPECT_EQ(instructions.size(), 3);
   EXPECT_EQ(loaded_proc->RootInstruction(), root);
 
@@ -261,7 +262,8 @@ TEST_F(ProcedureTest, ExternalInclude)
   auto proc = ParseProcedureFile(external_include_file_name);
   ASSERT_TRUE(static_cast<bool>(proc));
 
-  auto ext_instructions = proc->GetInstructions(parallel_sequence_file_name);
+  auto& sub_proc = proc->GetSubProcedure(parallel_sequence_file_name);
+  auto ext_instructions = sub_proc.GetTopInstructions();
   EXPECT_GT(ext_instructions.size(), 0);
 
   EXPECT_TRUE(proc->Setup());

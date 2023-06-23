@@ -68,7 +68,7 @@ namespace sequencer
 std::unique_ptr<sup::xml::TreeData> ToTreeData(const Procedure& procedure)
 {
   auto result = internal::make_unique<sup::xml::TreeData>(Constants::PROCEDURE_ELEMENT_NAME);
-  for (auto instruction : procedure.GetInstructions())
+  for (auto instruction : procedure.GetTopInstructions())
   {
     result->AddChild(*ToTreeData(*instruction));
   }

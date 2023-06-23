@@ -98,15 +98,22 @@ public:
   const Instruction* RootInstruction() const;
 
   /**
-   * @brief Get top-level instructions (from other procedure file if requested).
+   * @brief Get top-level instructions.
    *
-   * @param filename Optional filename for external loading of instructions.
    * @return List of top-level instructions.
-   * @details If the filename argument is not empty, this method will first look into the
-   * procedure cache to see if this file was already loaded. If not, it will load it into the
-   * cache and then return its top-level instructions.
    */
-  std::vector<const Instruction*> GetInstructions(const std::string& filename = {}) const;
+  std::vector<const Instruction*> GetTopInstructions() const;
+
+  /**
+   * @brief Get procedure reference to this or loaded procedure.
+   *
+   * @return Reference to procedure.
+   *
+   * @details If the filename argument is not empty or equal to this procedure's filename,
+   * this method will first look into the procedure cache to see if this file was already loaded.
+   * If not, it will load it into the cache before returning a reference.
+   */
+  const Procedure& GetSubProcedure(const std::string& filename) const;
 
   /**
    * @brief Get tree instructions that will be executed next.

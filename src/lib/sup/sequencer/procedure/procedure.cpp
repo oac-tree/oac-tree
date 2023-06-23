@@ -103,26 +103,31 @@ const Instruction *Procedure::RootInstruction() const
   return nullptr;
 }
 
-std::vector<const Instruction *> Procedure::GetInstructions(const std::string &filename) const
+std::vector<const Instruction*> Procedure::GetTopInstructions() const
+{
+  std::vector<const Instruction*> result;
+  for (auto &instr : m_instructions)
+  {
+    result.push_back(instr.get());
+  }
+  return result;
+}
+
+const Procedure& Procedure::GetSubProcedure(const std::string& filename) const
 {
   if (filename.empty() || filename == GetFilename())
   {
-    std::vector<const Instruction *> result;
-    for (auto &instr : m_instructions)
-    {
-      result.push_back(instr.get());
-    }
-    return result;
+    return *this;
   }
   auto loaded_proc = LoadProcedure(filename);
   if (!loaded_proc)
   {
     std::string error_message =
-      "sup::sequencer::Procedure::GetInstructions: could not load procedure with filename [" +
+      "sup::sequencer::Procedure::GetSubProcedure: could not load procedure with filename [" +
       filename + "]";
     throw ParseException(error_message);
   }
-  return loaded_proc->GetInstructions();
+  return *loaded_proc;
 }
 
 InstructionTree Procedure::GetNextInstructionTree() const

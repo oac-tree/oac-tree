@@ -92,7 +92,8 @@ void Include::SetupImpl(const Procedure& proc)
     auto filename = GetAttributeValue<std::string>(FILE_ATTRIBUTE_NAME);
     proc_filename = GetFullPathName(GetFileDirectory(proc_filename), filename);
   }
-  auto instructions = proc.GetInstructions(proc_filename);
+  auto& sub_proc = proc.GetSubProcedure(proc_filename);
+  auto instructions = sub_proc.GetTopInstructions();
   auto path = GetAttributeValue<std::string>(PATH_ATTRIBUTE_NAME);
   auto instr = InstructionHelper::FindInstruction(instructions, path);
   if (instr == nullptr)

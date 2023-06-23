@@ -39,23 +39,12 @@ const std::string Include::Type = "Include";
 
 Include::Include()
   : DecoratorInstruction(Include::Type)
-  , m_filename{}
 {
   AddAttributeDefinition(PATH_ATTRIBUTE_NAME, sup::dto::StringType).SetMandatory();
   AddAttributeDefinition(FILE_ATTRIBUTE_NAME, sup::dto::StringType);
 }
 
 Include::~Include() = default;
-
-void Include::SetFilename(const std::string& filename)
-{
-  m_filename = filename;
-}
-
-std::string Include::GetFilename() const
-{
-  return m_filename;
-}
 
 ExecutionStatus Include::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
@@ -86,7 +75,7 @@ bool Include::PostInitialiseVariables(const StringAttributeList& source_attribut
 
 void Include::SetupImpl(const Procedure& proc)
 {
-  std::string proc_filename = GetFilename();
+  std::string proc_filename = proc.GetFilename();
   if (HasAttribute(FILE_ATTRIBUTE_NAME))
   {
     auto filename = GetAttributeValue<std::string>(FILE_ATTRIBUTE_NAME);
@@ -110,7 +99,7 @@ void Include::SetupImpl(const Procedure& proc)
     throw InstructionSetupException(error_message);
   }
   (void)InsertInstruction(std::move(clone), 0);
-  SetupChild(proc);
+  SetupChild(sub_proc);
 }
 
 ExecutionStatus Include::CalculateStatus() const

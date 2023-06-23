@@ -88,12 +88,6 @@ std::unique_ptr<Instruction> CloneInstruction(const Instruction* instruction)
   {
     return nullptr;
   }
-  if (type == Include::Type)
-  {
-    auto include_result = dynamic_cast<Include*>(result.get());
-    auto include_source = dynamic_cast<const Include*>(instruction);
-    include_result->SetFilename(include_source->GetFilename());
-  }
   return std::move(result);
 }
 

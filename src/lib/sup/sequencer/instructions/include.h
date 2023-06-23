@@ -41,22 +41,6 @@ public:
 
   ~Include() override;
 
-  /**
-   * @brief Set the filename of this include instruction (if loaded from file).
-   *
-   * @param filename Filename of this include instruction.
-   * @details This filename is used for external includes with relative pathnames.
-   */
-  void SetFilename(const std::string& filename);
-
-  /**
-   * @brief Get the filename of this include instruction (if loaded from file).
-   *
-   * @return Filename of this include instruction.
-   * @details This filename is used for external includes with relative pathnames.
-   */
-  std::string GetFilename() const;
-
   static const std::string Type;
 
 private:
@@ -67,11 +51,6 @@ private:
   void SetupImpl(const Procedure& proc) override;
 
   ExecutionStatus CalculateStatus() const;
-
-  /**
-   * @brief Name of file from which this include instruction was loaded (if loaded form file).
-   */
-  std::string m_filename;
 };
 
 }  // namespace sequencer

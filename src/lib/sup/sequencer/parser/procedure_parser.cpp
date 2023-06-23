@@ -229,7 +229,7 @@ void AddWorkspaceVariables(Procedure* procedure, const sup::xml::TreeData& ws_da
 
 void ParseAndAddInstruction(Procedure *procedure, const sup::xml::TreeData &instr_data)
 {
-  auto instr = ParseInstruction(instr_data, procedure->GetFilename());
+  auto instr = ParseInstruction(instr_data);
   procedure->PushInstruction(std::move(instr));
 }
 

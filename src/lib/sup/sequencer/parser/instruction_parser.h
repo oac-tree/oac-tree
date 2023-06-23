@@ -34,12 +34,8 @@ namespace sequencer
 {
 /**
  * @brief Parse to Instruction.
- *
- * @note If more than just the filename needs to be passed as a setting from the procedure,
- * this argument needs to be replaced by a container.
  */
-std::unique_ptr<Instruction> ParseInstruction(const sup::xml::TreeData& data,
-                                              const std::string& filename);
+std::unique_ptr<Instruction> ParseInstruction(const sup::xml::TreeData& data);
 
 }  // namespace sequencer
 

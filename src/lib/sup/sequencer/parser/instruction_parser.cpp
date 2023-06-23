@@ -33,12 +33,10 @@ namespace sup
 namespace sequencer
 {
 static void AddChildInstructions(Instruction *instruction,
-                                 const std::vector<sup::xml::TreeData> &children,
-                                 const std::string &filename);
+                                 const std::vector<sup::xml::TreeData> &children);
 static std::string GetNameAttribute(const sup::xml::TreeData& data);
 
-std::unique_ptr<Instruction> ParseInstruction(const sup::xml::TreeData &data,
-                                              const std::string &filename)
+std::unique_ptr<Instruction> ParseInstruction(const sup::xml::TreeData &data)
 {
   auto instr_type = data.GetNodeName();
   if (!GlobalInstructionRegistry().IsRegisteredInstructionName(instr_type))
@@ -58,26 +56,16 @@ std::unique_ptr<Instruction> ParseInstruction(const sup::xml::TreeData &data,
   {
     instr->AddAttribute(attr.first, attr.second);
   }
-  AddChildInstructions(instr.get(), data.Children(), filename);
+  AddChildInstructions(instr.get(), data.Children());
   return instr;
 }
 
 static void AddChildInstructions(Instruction *instruction,
-                                 const std::vector<sup::xml::TreeData> &children,
-                                 const std::string &filename)
+                                 const std::vector<sup::xml::TreeData> &children)
 {
-  // Only set source directory for Include instruction. Child will be added during setup phase
-  // from its attributes.
-  auto include = dynamic_cast<Include *>(instruction);
-  if (include)
-  {
-    include->SetFilename(filename);
-    return;
-  }
-
   for (auto &child : children)
   {
-    auto child_instr = ParseInstruction(child, filename);
+    auto child_instr = ParseInstruction(child);
     if (!child_instr)
     {
       std::string error_message =

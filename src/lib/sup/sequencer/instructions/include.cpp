@@ -39,6 +39,7 @@ const std::string Include::Type = "Include";
 
 Include::Include()
   : DecoratorInstruction(Include::Type)
+  , m_filename{}
 {
   AddAttributeDefinition(PATH_ATTRIBUTE_NAME, sup::dto::StringType).SetMandatory();
   AddAttributeDefinition(FILE_ATTRIBUTE_NAME, sup::dto::StringType);
@@ -48,12 +49,12 @@ Include::~Include() = default;
 
 void Include::SetFilename(const std::string& filename)
 {
-  _filename = filename;
+  m_filename = filename;
 }
 
 std::string Include::GetFilename() const
 {
-  return _filename;
+  return m_filename;
 }
 
 ExecutionStatus Include::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)

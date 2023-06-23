@@ -71,7 +71,7 @@ private:
   /**
    * @brief Name of file from which this include instruction was loaded (if loaded form file).
    */
-  std::string _filename;
+  std::string m_filename;
 };
 
 }  // namespace sequencer

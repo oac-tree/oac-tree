@@ -49,6 +49,7 @@ private:
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 
   std::unique_ptr<Procedure> m_proc;
+  std::unique_ptr<Instruction> m_root_instruction;
 };
 
 }  // namespace sequencer

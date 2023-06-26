@@ -21,13 +21,15 @@
 
 #include "include_procedure.h"
 
+#include "instruction_helper.h"
+
 #include <sup/sequencer/parser/procedure_parser.h>
 
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/sequence_parser.h>
 
 const std::string FILE_ATTRIBUTE_NAME = "file";
-// const std::string PATH_ATTRIBUTE_NAME = "path";
+const std::string PATH_ATTRIBUTE_NAME = "path";
 
 namespace sup
 {
@@ -38,9 +40,10 @@ const std::string IncludeProcedure::Type = "IncludeProcedure";
 IncludeProcedure::IncludeProcedure()
   : Instruction(IncludeProcedure::Type)
   , m_proc{}
+  , m_root_instruction{}
 {
   AddAttributeDefinition(FILE_ATTRIBUTE_NAME, sup::dto::StringType).SetMandatory();
-  // AddAttributeDefinition(PATH_ATTRIBUTE_NAME, sup::dto::StringType).SetMandatory();
+  AddAttributeDefinition(PATH_ATTRIBUTE_NAME, sup::dto::StringType);
 }
 
 IncludeProcedure::~IncludeProcedure() = default;
@@ -57,13 +60,24 @@ void IncludeProcedure::SetupImpl(const Procedure& proc)
       "could not load procedure with filename: [" + proc_filename + "]";
     throw InstructionSetupException(error_message);
   }
+  auto top_instructions = m_proc->GetTopInstructions();
+  auto instr = HasAttribute(PATH_ATTRIBUTE_NAME) ? InstructionHelper::FindInstruction(
+                   top_instructions, GetAttributeValue<std::string>(PATH_ATTRIBUTE_NAME))
+                                                 : m_proc->RootInstruction();
+  if (instr == nullptr)
+  {
+    std::string error_message = InstructionSetupExceptionProlog(*this) + "instruction not found";
+    throw InstructionSetupException(error_message);
+  }
+  auto m_root_instruction = InstructionHelper::CloneInstruction(instr);
 }
 
 ExecutionStatus IncludeProcedure::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   (void)ws;
-  m_proc->ExecuteSingle(ui);
-  return m_proc->GetStatus();
+  auto nested_ws = m_proc->GetWorkspace();
+  m_root_instruction->ExecuteSingle(ui, *nested_ws);
+  return m_root_instruction->GetStatus();
 }
 
 }  // namespace sequencer

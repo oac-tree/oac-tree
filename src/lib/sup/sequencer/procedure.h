@@ -273,6 +273,13 @@ public:
   const Workspace* GetWorkspace() const;
 
   /**
+   * @brief Returns pointer to internal workspace.
+   *
+   * @return workspace.
+   */
+  Workspace* GetWorkspace();
+
+  /**
    * @brief Register an AnyType instance under its own name.
    *
    * @param anytype AnyType instance to register.

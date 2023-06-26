@@ -285,7 +285,12 @@ bool Procedure::AddAttributes(const StringAttributeList& str_attributes)
   return result;
 }
 
-const Workspace *Procedure::GetWorkspace() const
+const Workspace* Procedure::GetWorkspace() const
+{
+  return m_workspace.get();
+}
+
+Workspace* Procedure::GetWorkspace()
 {
   return m_workspace.get();
 }

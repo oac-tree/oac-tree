@@ -46,33 +46,6 @@ Include::Include()
 
 Include::~Include() = default;
 
-ExecutionStatus Include::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
-{
-  if (!HasChild())
-  {
-    return ExecutionStatus::SUCCESS;
-  }
-  auto child_status = GetChildStatus();
-  if (NeedsExecute(child_status))
-  {
-    ExecuteChild(ui, ws);
-  }
-  return CalculateStatus();
-}
-
-bool Include::PostInitialiseVariables(const StringAttributeList& source_attributes)
-{
-  bool result = true;
-  for (auto& attr : source_attributes)
-  {
-    if (!HasAttribute(attr.first))
-    {
-      result = AddAttribute(attr.first, attr.second) && result;
-    }
-  }
-  return result;
-}
-
 void Include::SetupImpl(const Procedure& proc)
 {
   std::string proc_filename = proc.GetFilename();
@@ -100,6 +73,33 @@ void Include::SetupImpl(const Procedure& proc)
   }
   (void)InsertInstruction(std::move(clone), 0);
   SetupChild(sub_proc);
+}
+
+ExecutionStatus Include::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
+{
+  if (!HasChild())
+  {
+    return ExecutionStatus::SUCCESS;
+  }
+  auto child_status = GetChildStatus();
+  if (NeedsExecute(child_status))
+  {
+    ExecuteChild(ui, ws);
+  }
+  return CalculateStatus();
+}
+
+bool Include::PostInitialiseVariables(const StringAttributeList& source_attributes)
+{
+  bool result = true;
+  for (auto& attr : source_attributes)
+  {
+    if (!HasAttribute(attr.first))
+    {
+      result = AddAttribute(attr.first, attr.second) && result;
+    }
+  }
+  return result;
 }
 
 ExecutionStatus Include::CalculateStatus() const

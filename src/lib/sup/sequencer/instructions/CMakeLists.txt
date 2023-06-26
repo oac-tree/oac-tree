@@ -14,6 +14,7 @@ target_sources(sup-sequencer-shared
     ${CMAKE_CURRENT_LIST_DIR}/greaterthan.cpp
     ${CMAKE_CURRENT_LIST_DIR}/greaterthanorequal.cpp
     ${CMAKE_CURRENT_LIST_DIR}/include.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/include_procedure.cpp
     ${CMAKE_CURRENT_LIST_DIR}/increment.cpp
     ${CMAKE_CURRENT_LIST_DIR}/input.cpp
     ${CMAKE_CURRENT_LIST_DIR}/instruction.cpp

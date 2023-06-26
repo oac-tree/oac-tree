@@ -19,27 +19,27 @@
  * of the distribution package.
  ******************************************************************************/
 
-#ifndef SUP_SEQUENCER_INCLUDE_H_
-#define SUP_SEQUENCER_INCLUDE_H_
+#ifndef SUP_SEQUENCER_INCLUDE_PROCEDURE_H_
+#define SUP_SEQUENCER_INCLUDE_PROCEDURE_H_
 
-#include <sup/sequencer/decorator_instruction.h>
+#include <sup/sequencer/instruction.h>
+#include <sup/sequencer/procedure.h>
+
+#include <memory>
 
 namespace sup
 {
 namespace sequencer
 {
 /**
- * @brief Decorator that includes an instruction tree by reference.
- *
- * @details The reference can point to an instruction tree in the same definition
- * file or to one defined in a separate file ('file' attribute).
+ * @brief Instruction that includes an external procedure (workspace and instruction tree).
  */
-class Include : public DecoratorInstruction
+class IncludeProcedure : public Instruction
 {
 public:
-  Include();
+  IncludeProcedure();
 
-  ~Include() override;
+  ~IncludeProcedure() override;
 
   static const std::string Type;
 
@@ -48,13 +48,11 @@ private:
 
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 
-  bool PostInitialiseVariables(const StringAttributeList& source_attributes) override;
-
-  ExecutionStatus CalculateStatus() const;
+  std::unique_ptr<Procedure> m_proc;
 };
 
 }  // namespace sequencer
 
 }  // namespace sup
 
-#endif  // SUP_SEQUENCER_INCLUDE_H_
+#endif  // SUP_SEQUENCER_INCLUDE_PROCEDURE_H_

@@ -32,6 +32,7 @@
 #include "greaterthan.h"
 #include "greaterthanorequal.h"
 #include "include.h"
+#include "include_procedure.h"
 #include "increment.h"
 #include "input.h"
 #include "inverter.h"
@@ -137,6 +138,7 @@ void InitInstructionRegistry(InstructionRegistry& registry)
   (void)RegisterInstruction<Equals>(registry);
   (void)RegisterInstruction<GreaterThan>(registry);
   (void)RegisterInstruction<GreaterThanOrEqual>(registry);
+  (void)RegisterInstruction<IncludeProcedure>(registry);
   (void)RegisterInstruction<Increment>(registry);
   (void)RegisterInstruction<Input>(registry);
   (void)RegisterInstruction<LessThan>(registry);

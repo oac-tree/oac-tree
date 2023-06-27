@@ -36,7 +36,6 @@ const std::string kTestProcedureBody{R"(
   <Sequence name="CopyAndCheck">
       <Copy input="a" output="b"/>
       <Equals lhs="a" rhs="b"/>
-      <Wait timeout="1.0"/>
   </Sequence>
   <Workspace>
       <Local name="a" type='{"type":"uint16"}' value='1' />
@@ -57,8 +56,7 @@ TEST_F(IncludeProcedureTest, RootPath)
 {
   const std::string body{R"(
     <IncludeProcedure file="test_procedure.xml"/>
-    <Workspace>
-    </Workspace>
+    <Workspace/>
 )"};
 
   auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));

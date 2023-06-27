@@ -62,18 +62,6 @@ public:
   const Procedure& GetProcedure(const std::string& filename) const;
 
   /**
-   * @brief Get (clone of) instruction tree from a loaded procedure.
-   *
-   * @param filename Filename of the procedure to load or fetch from the cache.
-   * @param path Path of the root instruction to clone inside the procedure (empty for the root
-   * instruction of the procedure).
-   *
-   * @return Instruction tree.
-   */
-  std::unique_ptr<Instruction> CloneInstructionFromProcedure(const std::string& filename,
-                                                             const std::string& path) const;
-
-  /**
    * @brief Get workspace from loaded procedure.
    *
    * @param filename Filename of the procedure to load or fetch from the cache.
@@ -93,8 +81,6 @@ private:
   // Cache for procedures loaded from files and to be used by include type instructions.
   mutable std::map<std::string, std::unique_ptr<Procedure>> m_procedure_cache;
 };
-
-std::unique_ptr<Instruction> CloneInstructionPath(const Procedure& proc, const std::string& path);
 
 }  // namespace sequencer
 

@@ -24,7 +24,6 @@
 
 #include <sup/sequencer/attribute_handler.h>
 #include <sup/sequencer/execution_status.h>
-#include <sup/sequencer/procedure_store.h>
 
 #include <functional>
 #include <map>
@@ -45,6 +44,7 @@ namespace sequencer
 {
 class Instruction;
 class InstructionTree;
+class ProcedureStore;
 class UserInterface;
 class Variable;
 class Workspace;
@@ -335,7 +335,7 @@ private:
   Procedure* m_parent;
 
   // Cache for other procedures loaded from files and to be used by include nodes.
-  ProcedureStore m_procedure_store;
+  std::unique_ptr<ProcedureStore> m_procedure_store;
 
   const ProcedureStore& GetProcedureStore() const;
 };
@@ -348,6 +348,16 @@ private:
  * @details Applications are free to ignore this setting. It is only provided as a guideline.
  */
 int TickTimeoutMs(Procedure& procedure);
+
+/**
+ * @brief Clone an instruction tree from a procedure with the given root path.
+ *
+ * @param proc Procedure to search in.
+ * @param path Path to the instruction tree to be cloned.
+ *
+ * @returns Cloned instruction tree.
+ */
+std::unique_ptr<Instruction> CloneInstructionPath(const Procedure& proc, const std::string& path);
 
 }  // namespace sequencer
 

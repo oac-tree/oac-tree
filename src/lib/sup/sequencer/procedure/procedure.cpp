@@ -21,6 +21,9 @@
 
 #include <sup/sequencer/procedure.h>
 
+#include <sup/sequencer/instructions/instruction_helper.h>
+#include <sup/sequencer/procedure/procedure_store.h>
+
 #include <sup/sequencer/attribute_utils.h>
 #include <sup/sequencer/constants.h>
 #include <sup/sequencer/exceptions.h>
@@ -43,7 +46,7 @@ Procedure::Procedure()
   , m_attribute_handler{}
   , m_filename{}
   , m_parent{}
-  , m_procedure_store{this}
+  , m_procedure_store{new ProcedureStore{this}}
 {
   m_attribute_handler.AddAttributeDefinition(kTickTimeoutAttributeName, sup::dto::Float64Type);
 }
@@ -302,7 +305,7 @@ const ProcedureStore& Procedure::GetProcedureStore() const
   {
     return m_parent->GetProcedureStore();
   }
-  return m_procedure_store;
+  return *m_procedure_store;
 }
 
 static bool HasRootAttributeSet(const Instruction &instruction)
@@ -331,6 +334,14 @@ int TickTimeoutMs(Procedure& procedure)
     }
   }
   return DefaultSettings::DEFAULT_SLEEP_TIME_MS;
+}
+
+std::unique_ptr<Instruction> CloneInstructionPath(const Procedure& proc, const std::string& path)
+{
+  auto top_instructions = proc.GetTopInstructions();
+  auto instr = path.empty() ? proc.RootInstruction()
+                            : InstructionHelper::FindInstruction(top_instructions, path);
+  return InstructionHelper::CloneInstruction(instr);
 }
 
 }  // namespace sequencer

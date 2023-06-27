@@ -21,8 +21,6 @@
 
 #include "include_procedure.h"
 
-#include "instruction_helper.h"
-
 #include <sup/sequencer/parser/procedure_parser.h>
 
 #include <sup/sequencer/exceptions.h>

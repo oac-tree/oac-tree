@@ -50,7 +50,6 @@ install(FILES
   instruction.h
   log_severity.h
   named_callback_manager.h
-  procedure_store.h
   procedure.h
   runner.h
   scope_guard.h

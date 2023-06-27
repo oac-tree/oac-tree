@@ -27,7 +27,6 @@
 
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/procedure.h>
-#include <sup/sequencer/procedure_store.h>
 
 const std::string PATH_ATTRIBUTE_NAME = "path";
 const std::string FILE_ATTRIBUTE_NAME = "file";

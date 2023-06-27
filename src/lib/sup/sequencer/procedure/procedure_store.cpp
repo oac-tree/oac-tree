@@ -19,9 +19,7 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <sup/sequencer/procedure_store.h>
-
-#include <sup/sequencer/instructions/instruction_helper.h>
+#include "procedure_store.h"
 
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/procedure.h>
@@ -50,13 +48,6 @@ const Procedure& ProcedureStore::GetProcedure(const std::string& filename) const
   return *m_procedure_cache[filename];
 }
 
-std::unique_ptr<Instruction> ProcedureStore::CloneInstructionFromProcedure(
-  const std::string& filename, const std::string& path) const
-{
-  const auto& proc = GetProcedure(filename);
-  return CloneInstructionPath(proc, path);
-}
-
 Workspace* ProcedureStore::GetWorkspace(const std::string& filename) const
 {
   auto it = m_procedure_cache.find(filename);
@@ -70,14 +61,6 @@ Workspace* ProcedureStore::GetWorkspace(const std::string& filename) const
 void ProcedureStore::ClearProcedureCache() const
 {
   m_procedure_cache.clear();
-}
-
-std::unique_ptr<Instruction> CloneInstructionPath(const Procedure& proc, const std::string& path)
-{
-  auto top_instructions = proc.GetTopInstructions();
-  auto instr = path.empty() ? proc.RootInstruction()
-                            : InstructionHelper::FindInstruction(top_instructions, path);
-  return InstructionHelper::CloneInstruction(instr);
 }
 
 }  // namespace sequencer

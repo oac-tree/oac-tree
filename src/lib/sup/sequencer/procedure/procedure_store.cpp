@@ -24,6 +24,7 @@
 #include <sup/sequencer/instructions/instruction_helper.h>
 
 #include <sup/sequencer/exceptions.h>
+#include <sup/sequencer/procedure.h>
 #include <sup/sequencer/sequence_parser.h>
 #include <sup/sequencer/workspace.h>
 

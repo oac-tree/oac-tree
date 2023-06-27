@@ -22,26 +22,16 @@
 #ifndef SUP_SEQUENCER_PROCEDURE_STORE_H_
 #define SUP_SEQUENCER_PROCEDURE_STORE_H_
 
-#include <sup/sequencer/procedure.h>
-
 #include <map>
 #include <memory>
+#include <string>
 
 namespace sup
 {
-namespace dto
-{
-class AnyType;
-class AnyTypeRegistry;
-class AnyValue;
-}  // namespace dto
-
 namespace sequencer
 {
 class Instruction;
-class InstructionTree;
-class UserInterface;
-class Variable;
+class Procedure;
 class Workspace;
 
 /**

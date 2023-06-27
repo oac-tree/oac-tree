@@ -57,9 +57,14 @@ std::unique_ptr<Instruction> ProcedureStore::CloneInstructionFromProcedure(
   return CloneInstructionPath(proc, path);
 }
 
-Workspace& ProcedureStore::GetWorkspace(const std::string& filename) const
+Workspace* ProcedureStore::GetWorkspace(const std::string& filename) const
 {
-  throw InvalidOperationException("ProcedureStore::GetWorkspace(): not implemented");
+  auto it = m_procedure_cache.find(filename);
+  if (it == m_procedure_cache.end())
+  {
+    throw InvalidOperationException("ProcedureStore::GetWorkspace(): procedure was not loaded");
+  }
+  return it->second->GetWorkspace();
 }
 
 void ProcedureStore::ClearProcedureCache() const
@@ -70,7 +75,8 @@ void ProcedureStore::ClearProcedureCache() const
 std::unique_ptr<Instruction> CloneInstructionPath(const Procedure& proc, const std::string& path)
 {
   auto top_instructions = proc.GetTopInstructions();
-  auto instr = InstructionHelper::FindInstruction(top_instructions, path);
+  auto instr = path.empty() ? proc.RootInstruction()
+                            : InstructionHelper::FindInstruction(top_instructions, path);
   return InstructionHelper::CloneInstruction(instr);
 }
 

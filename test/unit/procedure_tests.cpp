@@ -99,9 +99,6 @@ TEST_F(ProcedureTest, DefaultConstructed)
   EXPECT_EQ(empty_proc.RootInstruction(), p_wait);
   instructions = empty_proc.GetTopInstructions();
   EXPECT_EQ(instructions.size(), 1);
-  auto& sub_proc_1 = empty_proc.GetSubProcedure(filename);
-  instructions = sub_proc_1.GetTopInstructions();
-  EXPECT_EQ(instructions.size(), 1);
   std::string wrong_filename = "WrongFile.xml";
   EXPECT_THROW(empty_proc.GetSubProcedure(wrong_filename), sup::xml::ParseException);
 

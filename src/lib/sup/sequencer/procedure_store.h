@@ -78,9 +78,9 @@ public:
    *
    * @param filename Filename of the procedure to load or fetch from the cache.
    *
-   * @return Reference to workspace.
+   * @return Pointer to workspace.
    */
-  Workspace& GetWorkspace(const std::string& filename) const;
+  Workspace* GetWorkspace(const std::string& filename) const;
 
   /**
    * @brief Clear the cached procedures.

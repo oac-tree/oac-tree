@@ -32,6 +32,12 @@
 const std::string PATH_ATTRIBUTE_NAME = "path";
 const std::string FILE_ATTRIBUTE_NAME = "file";
 
+namespace
+{
+using namespace sup::sequencer;
+const Procedure& GetIncludedProcedure(const Procedure& parent, const std::string& filename);
+}  // unnamed namespace
+
 namespace sup
 {
 namespace sequencer
@@ -55,7 +61,7 @@ void Include::SetupImpl(const Procedure& proc)
     auto filename = GetAttributeValue<std::string>(FILE_ATTRIBUTE_NAME);
     proc_filename = GetFullPathName(GetFileDirectory(proc_filename), filename);
   }
-  auto& sub_proc = proc.GetSubProcedure(proc_filename);
+  auto& sub_proc = GetIncludedProcedure(proc, proc_filename);
   auto path = GetAttributeValue<std::string>(PATH_ATTRIBUTE_NAME);
   auto clone = CloneInstructionPath(sub_proc, path);
   if (!clone)
@@ -113,3 +119,17 @@ ExecutionStatus Include::CalculateStatus() const
 }  // namespace sequencer
 
 }  // namespace sup
+
+namespace
+{
+using namespace sup::sequencer;
+const Procedure& GetIncludedProcedure(const Procedure& parent, const std::string& filename)
+{
+  if (filename == parent.GetFilename())
+  {
+    return parent;
+  }
+  return parent.GetSubProcedure(filename);
+}
+}  // unnamed namespace
+

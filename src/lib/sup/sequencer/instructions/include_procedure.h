@@ -23,7 +23,7 @@
 #define SUP_SEQUENCER_INCLUDE_PROCEDURE_H_
 
 #include <sup/sequencer/instruction.h>
-#include <sup/sequencer/procedure.h>
+#include <sup/sequencer/workspace.h>
 
 #include <memory>
 
@@ -48,8 +48,9 @@ private:
 
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 
-  std::unique_ptr<Procedure> m_proc;
   std::unique_ptr<Instruction> m_root_instruction;
+
+  Workspace* m_workspace;
 };
 
 }  // namespace sequencer

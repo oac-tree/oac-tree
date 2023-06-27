@@ -102,12 +102,14 @@ std::vector<const Instruction*> Procedure::GetTopInstructions() const
 
 const Procedure& Procedure::GetSubProcedure(const std::string& filename) const
 {
-  if (filename.empty() || filename == GetFilename())
-  {
-    return *this;
-  }
   auto& store = GetProcedureStore();
   return store.GetProcedure(filename);
+}
+
+Workspace* Procedure::GetSubWorkspace(const std::string& filename) const
+{
+  auto& store = GetProcedureStore();
+  return store.GetWorkspace(filename);
 }
 
 InstructionTree Procedure::GetNextInstructionTree() const

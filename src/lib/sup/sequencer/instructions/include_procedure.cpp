@@ -39,8 +39,8 @@ const std::string IncludeProcedure::Type = "IncludeProcedure";
 
 IncludeProcedure::IncludeProcedure()
   : Instruction(IncludeProcedure::Type)
-  , m_proc{}
   , m_root_instruction{}
+  , m_workspace{}
 {
   AddAttributeDefinition(FILE_ATTRIBUTE_NAME, sup::dto::StringType).SetMandatory();
   AddAttributeDefinition(PATH_ATTRIBUTE_NAME, sup::dto::StringType);
@@ -53,30 +53,22 @@ void IncludeProcedure::SetupImpl(const Procedure& proc)
   std::string parent_proc_filename = proc.GetFilename();
   auto filename = GetAttributeValue<std::string>(FILE_ATTRIBUTE_NAME);
   auto proc_filename = GetFullPathName(GetFileDirectory(parent_proc_filename), filename);
-  m_proc = ParseProcedureFile(proc_filename);
-  if (!m_proc || !m_proc->Setup())
-  {
-    std::string error_message = InstructionSetupExceptionProlog(*this) +
-      "could not load procedure with filename: [" + proc_filename + "]";
-    throw InstructionSetupException(error_message);
-  }
-  auto top_instructions = m_proc->GetTopInstructions();
-  auto instr = HasAttribute(PATH_ATTRIBUTE_NAME) ? InstructionHelper::FindInstruction(
-                   top_instructions, GetAttributeValue<std::string>(PATH_ATTRIBUTE_NAME))
-                                                 : m_proc->RootInstruction();
-  if (instr == nullptr)
+  auto& sub_proc = proc.GetSubProcedure(proc_filename);
+  std::string path =
+      HasAttribute(PATH_ATTRIBUTE_NAME) ? GetAttributeValue<std::string>(PATH_ATTRIBUTE_NAME) : "";
+  m_root_instruction = CloneInstructionPath(sub_proc, path);
+  if (!m_root_instruction)
   {
     std::string error_message = InstructionSetupExceptionProlog(*this) + "instruction not found";
     throw InstructionSetupException(error_message);
   }
-  auto m_root_instruction = InstructionHelper::CloneInstruction(instr);
+  m_workspace = proc.GetSubWorkspace(proc_filename);
 }
 
 ExecutionStatus IncludeProcedure::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   (void)ws;
-  auto nested_ws = m_proc->GetWorkspace();
-  m_root_instruction->ExecuteSingle(ui, *nested_ws);
+  m_root_instruction->ExecuteSingle(ui, *m_workspace);
   return m_root_instruction->GetStatus();
 }
 

@@ -117,6 +117,13 @@ public:
   const Procedure& GetSubProcedure(const std::string& filename) const;
 
   /**
+   * @brief Get workspace pointer from loaded procedure.
+   *
+   * @return Pointer to workspace.
+   */
+  Workspace* GetSubWorkspace(const std::string& filename) const;
+
+  /**
    * @brief Get tree instructions that will be executed next.
    *
    * @return Tree of instructions.

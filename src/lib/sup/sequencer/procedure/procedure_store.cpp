@@ -55,12 +55,17 @@ Workspace* ProcedureStore::GetWorkspace(const std::string& filename) const
   {
     throw InvalidOperationException("ProcedureStore::GetWorkspace(): procedure was not loaded");
   }
-  return it->second->GetWorkspace();
+  auto ws = it->second->GetWorkspace();
+  ws->Setup();
+  return ws;
 }
 
-void ProcedureStore::ClearProcedureCache() const
+void ProcedureStore::ResetProcedures() const
 {
-  m_procedure_cache.clear();
+  for (auto& entry : m_procedure_cache)
+  {
+    entry.second->Reset();
+  }
 }
 
 }  // namespace sequencer

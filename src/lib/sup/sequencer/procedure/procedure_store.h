@@ -71,9 +71,9 @@ public:
   Workspace* GetWorkspace(const std::string& filename) const;
 
   /**
-   * @brief Clear the cached procedures.
+   * @brief Reset all owned procedures.
    */
-  void ClearProcedureCache() const;
+  void ResetProcedures() const;
 
 private:
   Procedure* m_parent;

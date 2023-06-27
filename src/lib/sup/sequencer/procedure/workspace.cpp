@@ -40,6 +40,7 @@ Workspace::Workspace()
    : m_var_map{}
    , m_callbacks{}
    , m_type_registry{new sup::dto::AnyTypeRegistry()}
+   , m_setup_done{false}
 {}
 
 Workspace::~Workspace() = default;
@@ -72,15 +73,21 @@ std::vector<std::string> Workspace::VariableNames() const
 
 void Workspace::Setup()
 {
+  if (m_setup_done)
+  {
+    return;
+  }
   const sup::dto::AnyTypeRegistry* registry = m_type_registry.get();
   std::for_each(m_var_map.begin(), m_var_map.end(),
                 [registry](const decltype(m_var_map)::value_type &pair) {
                   return pair.second->Setup(registry);
                 });
+  m_setup_done = true;
 }
 
 void Workspace::Reset()
 {
+  m_setup_done = false;
   std::for_each(m_var_map.begin(), m_var_map.end(), [](const decltype(m_var_map)::value_type &pair) {
      return pair.second->Reset(); });
 }

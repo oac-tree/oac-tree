@@ -227,6 +227,7 @@ void Procedure::Halt()
 void Procedure::Reset()
 {
   m_workspace->Reset();
+  m_procedure_store->ResetProcedures();
   if (RootInstruction() == nullptr)
   {
     return;

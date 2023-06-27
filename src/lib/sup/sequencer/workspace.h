@@ -199,6 +199,11 @@ private:
   std::unique_ptr<sup::dto::AnyTypeRegistry> m_type_registry;
 
   /**
+   * @brief Flag that indicates setup was already called on this workspace.
+   */
+  bool m_setup_done;
+
+  /**
    * @brief Check if the given Variable name is already present.
    *
    * @param name Name to check.

@@ -47,19 +47,11 @@ const Procedure& ProcedureStore::GetProcedure(const std::string& filename) const
   return *m_procedure_cache[filename];
 }
 
-std::unique_ptr<Instruction> ProcedureStore::CloneInstructionPath(const std::string& filename,
-                                                                  const std::string& path) const
+std::unique_ptr<Instruction> ProcedureStore::CloneInstructionFromProcedure(
+  const std::string& filename, const std::string& path) const
 {
   const auto& proc = GetProcedure(filename);
-  auto top_instructions = proc.GetTopInstructions();
-  auto instr = InstructionHelper::FindInstruction(top_instructions, path);
-  if (instr == nullptr)
-  {
-    std::string error_message = "ProcedureStore::CloneInstructionPath(): could not clone "
-    "instruction tree with filename: [" + filename + "] and path: [" + path + "]";
-    throw InvalidOperationException(error_message);
-  }
-  return InstructionHelper::CloneInstruction(instr);
+  return CloneInstructionPath(proc, path);
 }
 
 std::unique_ptr<Workspace> ProcedureStore::GetWorkspace(const std::string& filename) const
@@ -70,6 +62,13 @@ std::unique_ptr<Workspace> ProcedureStore::GetWorkspace(const std::string& filen
 void ProcedureStore::ClearProcedureCache() const
 {
   m_procedure_cache.clear();
+}
+
+std::unique_ptr<Instruction> CloneInstructionPath(const Procedure& proc, const std::string& path)
+{
+  auto top_instructions = proc.GetTopInstructions();
+  auto instr = InstructionHelper::FindInstruction(top_instructions, path);
+  return InstructionHelper::CloneInstruction(instr);
 }
 
 }  // namespace sequencer

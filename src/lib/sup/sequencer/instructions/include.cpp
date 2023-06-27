@@ -27,6 +27,7 @@
 
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/procedure.h>
+#include <sup/sequencer/procedure_store.h>
 
 const std::string PATH_ATTRIBUTE_NAME = "path";
 const std::string FILE_ATTRIBUTE_NAME = "file";
@@ -55,16 +56,14 @@ void Include::SetupImpl(const Procedure& proc)
     proc_filename = GetFullPathName(GetFileDirectory(proc_filename), filename);
   }
   auto& sub_proc = proc.GetSubProcedure(proc_filename);
-  auto instructions = sub_proc.GetTopInstructions();
   auto path = GetAttributeValue<std::string>(PATH_ATTRIBUTE_NAME);
-  auto instr = InstructionHelper::FindInstruction(instructions, path);
-  if (instr == nullptr)
+  auto clone = CloneInstructionPath(sub_proc, path);
+  if (!clone)
   {
     std::string error_message = InstructionSetupExceptionProlog(*this) +
       "instruction not found, path: [" + path + "]";
     throw InstructionSetupException(error_message);
   }
-  auto clone = InstructionHelper::CloneInstruction(instr);
   if (!InstructionHelper::InitialiseVariableAttributes(*clone, GetStringAttributes()))
   {
     std::string error_message = InstructionSetupExceptionProlog(*this) +

@@ -70,8 +70,8 @@ public:
    *
    * @return Instruction tree.
    */
-  std::unique_ptr<Instruction> CloneInstructionPath(const std::string& filename,
-                                                    const std::string& path) const;
+  std::unique_ptr<Instruction> CloneInstructionFromProcedure(const std::string& filename,
+                                                             const std::string& path) const;
 
   /**
    * @brief Get workspace from loaded procedure.
@@ -91,6 +91,8 @@ private:
   // Cache for procedures loaded from files and to be used by include type instructions.
   mutable std::map<std::string, std::unique_ptr<Procedure>> m_procedure_cache;
 };
+
+std::unique_ptr<Instruction> CloneInstructionPath(const Procedure& proc, const std::string& path);
 
 }  // namespace sequencer
 

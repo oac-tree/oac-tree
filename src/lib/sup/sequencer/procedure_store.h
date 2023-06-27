@@ -46,7 +46,7 @@ class Workspace;
 class ProcedureStore
 {
 public:
-  ProcedureStore();
+  ProcedureStore(Procedure* parent);
   ~ProcedureStore();
 
   /**
@@ -78,9 +78,9 @@ public:
    *
    * @param filename Filename of the procedure to load or fetch from the cache.
    *
-   * @return Workspace.
+   * @return Reference to workspace.
    */
-  std::unique_ptr<Workspace> GetWorkspace(const std::string& filename) const;
+  Workspace& GetWorkspace(const std::string& filename) const;
 
   /**
    * @brief Clear the cached procedures.
@@ -88,6 +88,8 @@ public:
   void ClearProcedureCache() const;
 
 private:
+  Procedure* m_parent;
+
   // Cache for procedures loaded from files and to be used by include type instructions.
   mutable std::map<std::string, std::unique_ptr<Procedure>> m_procedure_cache;
 };

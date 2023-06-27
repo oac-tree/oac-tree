@@ -24,6 +24,7 @@
 
 #include <sup/sequencer/attribute_handler.h>
 #include <sup/sequencer/execution_status.h>
+#include <sup/sequencer/procedure_store.h>
 
 #include <functional>
 #include <map>
@@ -305,6 +306,8 @@ public:
    */
   bool RegisterGenericCallback(const GenericCallback& cb);
 
+  void SetParentProcedure(Procedure* parent);
+
 private:
   std::vector<std::unique_ptr<Instruction>> m_instructions;
   std::unique_ptr<Workspace> m_workspace;
@@ -321,27 +324,13 @@ private:
    */
   std::string m_filename;
 
+  // Parent procedure pointer if this procedure was loaded from another
+  Procedure* m_parent;
+
   // Cache for other procedures loaded from files and to be used by include nodes.
-  mutable std::map<std::string, std::unique_ptr<Procedure>> m_procedure_cache;
+  ProcedureStore m_procedure_store;
 
-  /**
-   * @brief Load a procedure from file or cache.
-   *
-   * @param filename Filename of the procedure file.
-   * @return Pointer to the procedure or nullptr in case of failure to load the procedure.
-   *
-   * @details This method returns a pointer to a const Procedure. The Procedure itself
-   * is owned by the cache.
-   */
-  const Procedure* LoadProcedure(const std::string& filename) const;
-
-  /**
-   * @brief Clear the cached procedures.
-   *
-   * @details This method needs to be called anytime there is a possibility of changes
-   * to the loaded files on disk.
-   */
-  void ClearProcedureCache() const;
+  const ProcedureStore& GetProcedureStore() const;
 };
 
 /**

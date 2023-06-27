@@ -32,8 +32,9 @@ namespace sup
 {
 namespace sequencer
 {
-ProcedureStore::ProcedureStore()
-  : m_procedure_cache{}
+ProcedureStore::ProcedureStore(Procedure* parent)
+  : m_parent{parent}
+  , m_procedure_cache{}
 {}
 
 ProcedureStore::~ProcedureStore() = default;
@@ -42,7 +43,9 @@ const Procedure& ProcedureStore::GetProcedure(const std::string& filename) const
 {
   if (m_procedure_cache.find(filename) == m_procedure_cache.end())
   {
-    m_procedure_cache[filename] = ParseProcedureFile(filename);
+    auto proc = ParseProcedureFile(filename);
+    proc->SetParentProcedure(m_parent);
+    m_procedure_cache[filename] = std::move(proc);
   }
   return *m_procedure_cache[filename];
 }
@@ -54,9 +57,9 @@ std::unique_ptr<Instruction> ProcedureStore::CloneInstructionFromProcedure(
   return CloneInstructionPath(proc, path);
 }
 
-std::unique_ptr<Workspace> ProcedureStore::GetWorkspace(const std::string& filename) const
+Workspace& ProcedureStore::GetWorkspace(const std::string& filename) const
 {
-  return {};
+  throw InvalidOperationException("ProcedureStore::GetWorkspace(): not implemented");
 }
 
 void ProcedureStore::ClearProcedureCache() const

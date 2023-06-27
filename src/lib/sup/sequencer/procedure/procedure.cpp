@@ -37,26 +37,13 @@ namespace sequencer
 {
 static bool HasRootAttributeSet(const Instruction &instruction);
 
-const Procedure *Procedure::LoadProcedure(const std::string &filename) const
-{
-  if (m_procedure_cache.find(filename) == m_procedure_cache.end())
-  {
-    m_procedure_cache[filename] = ParseProcedureFile(filename);
-  }
-  return m_procedure_cache[filename].get();
-}
-
-void Procedure::ClearProcedureCache() const
-{
-  m_procedure_cache.clear();
-}
-
 Procedure::Procedure()
   : m_instructions{}
   , m_workspace{new Workspace()}
   , m_attribute_handler{}
   , m_filename{}
-  , m_procedure_cache{}
+  , m_parent{}
+  , m_procedure_store{this}
 {
   m_attribute_handler.AddAttributeDefinition(kTickTimeoutAttributeName, sup::dto::Float64Type);
 }
@@ -119,15 +106,8 @@ const Procedure& Procedure::GetSubProcedure(const std::string& filename) const
   {
     return *this;
   }
-  auto loaded_proc = LoadProcedure(filename);
-  if (!loaded_proc)
-  {
-    std::string error_message =
-      "sup::sequencer::Procedure::GetSubProcedure: could not load procedure with filename [" +
-      filename + "]";
-    throw ParseException(error_message);
-  }
-  return *loaded_proc;
+  auto& store = GetProcedureStore();
+  return store.GetProcedure(filename);
 }
 
 InstructionTree Procedure::GetNextInstructionTree() const
@@ -217,7 +197,6 @@ bool Procedure::Setup()
   {
     return true;
   }
-  ClearProcedureCache();
   RootInstruction()->Setup(*this);
   return true;
 }
@@ -308,6 +287,20 @@ const sup::dto::AnyTypeRegistry* Procedure::GetTypeRegistry() const
 bool Procedure::RegisterGenericCallback(const GenericCallback& cb)
 {
   return m_workspace->RegisterGenericCallback(cb);
+}
+
+void Procedure::SetParentProcedure(Procedure* parent)
+{
+  m_parent = parent;
+}
+
+const ProcedureStore& Procedure::GetProcedureStore() const
+{
+  if (m_parent)
+  {
+    return m_parent->GetProcedureStore();
+  }
+  return m_procedure_store;
 }
 
 static bool HasRootAttributeSet(const Instruction &instruction)

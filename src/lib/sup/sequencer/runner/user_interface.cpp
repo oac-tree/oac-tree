@@ -58,7 +58,7 @@ bool UserInterface::GetUserValue(sup::dto::AnyValue& value, const std::string& d
   return GetUserValueImpl(value, description);
 }
 
-int UserInterface::GetUserChoice(const std::vector<std::pair<std::string, int>>& options,
+int UserInterface::GetUserChoice(const std::vector<std::string>& options,
                                  const sup::dto::AnyValue& metadata)
 {
   std::lock_guard<std::mutex> lock(m_ui_mutex);
@@ -101,7 +101,7 @@ bool UserInterface::GetUserValueImpl(sup::dto::AnyValue& value, const std::strin
   return false;
 }
 
-int UserInterface::GetUserChoiceImpl(const std::vector<std::pair<std::string, int>>& options,
+int UserInterface::GetUserChoiceImpl(const std::vector<std::string>& options,
                                      const sup::dto::AnyValue& metadata)
 {
   (void)options;
@@ -174,18 +174,6 @@ std::string GetMainTextFromMetadata(const sup::dto::AnyValue& metadata)
     return metadata[Constants::USER_CHOICES_TEXT_NAME].As<std::string>();
   }
   return {};
-}
-
-std::vector<std::pair<std::string, int>> CreateIndexedOptions(
-  const std::vector<std::string>& option_names)
-{
-  std::vector<std::pair<std::string, int>> result;
-  int index = 0;
-  for (const auto& option_name : option_names)
-  {
-    result.emplace_back(option_name, index++);
-  }
-  return result;
 }
 
 }  // namespace sequencer

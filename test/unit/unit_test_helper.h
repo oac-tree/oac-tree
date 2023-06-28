@@ -66,14 +66,14 @@ public:
   void SetStatus(bool status);
   void SetValue(sup::dto::AnyValue& value);
 
-  std::vector<std::pair<std::string, int>> GetOptions() const;
+  std::vector<std::string> GetOptions() const;
   const sup::dto::AnyValue* GetMetadata() const;
 
 private:
   bool m_status = false;
   int m_choice = -1;
   sup::dto::AnyValue m_value;
-  std::vector<std::pair<std::string, int>> m_options;
+  std::vector<std::string> m_options;
   std::unique_ptr<sup::dto::AnyValue> m_metadata;
 
   /**
@@ -81,7 +81,7 @@ private:
    */
   void UpdateInstructionStatusImpl(const sup::sequencer::Instruction* instruction) override;
   bool GetUserValueImpl(sup::dto::AnyValue& value, const std::string& description) override;
-  int GetUserChoiceImpl(const std::vector<std::pair<std::string, int>>& options,
+  int GetUserChoiceImpl(const std::vector<std::string>& options,
                         const sup::dto::AnyValue& metadata) override;
 };
 

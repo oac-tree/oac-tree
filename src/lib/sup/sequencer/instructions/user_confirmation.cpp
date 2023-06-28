@@ -60,7 +60,7 @@ ExecutionStatus UserConfirmation::ExecuteSingleImpl(UserInterface& ui, Workspace
   metadata.AddMember(Constants::USER_CHOICES_TEXT_NAME, description);
   metadata.AddMember(Constants::USER_CHOICES_DIALOG_TYPE_NAME,
                      {sup::dto::UnsignedInteger32Type, dialog_type::kConfirmation});
-  auto options = CreateIndexedOptions( { ok_text, cancel_text });
+  std::vector<std::string> options = { ok_text, cancel_text };
   int choice = ui.GetUserChoice(options, metadata);
   return choice == 0 ? ExecutionStatus::SUCCESS : ExecutionStatus::FAILURE;
 }

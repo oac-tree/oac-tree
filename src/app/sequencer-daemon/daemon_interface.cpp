@@ -66,7 +66,7 @@ bool DaemonInterface::GetUserValueImpl(sup::dto::AnyValue &, const std::string &
   return false;
 }
 
-int DaemonInterface::GetUserChoiceImpl(const std::vector<std::pair<std::string, int>>& options,
+int DaemonInterface::GetUserChoiceImpl(const std::vector<std::string>& options,
                                        const sup::dto::AnyValue& metadata)
 {
   std::string error_message = "DaemonInterface::GetUserChoiceImpl(): is not implemented";

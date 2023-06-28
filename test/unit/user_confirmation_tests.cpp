@@ -58,10 +58,8 @@ TEST(UserConfirmation, GetUserConfirmation)
   EXPECT_TRUE(TryAndExecute(proc, ui));
   auto options = ui.GetOptions();
   ASSERT_EQ(options.size(), 2);
-  EXPECT_EQ(options[0].first, DEFAULT_OK_TEXT);
-  EXPECT_EQ(options[0].second, 0);
-  EXPECT_EQ(options[1].first, DEFAULT_CANCEL_TEXT);
-  EXPECT_EQ(options[1].second, 1);
+  EXPECT_EQ(options[0], DEFAULT_OK_TEXT);
+  EXPECT_EQ(options[1], DEFAULT_CANCEL_TEXT);
   auto metadata = ui.GetMetadata();
   ASSERT_TRUE(metadata->HasField(Constants::USER_CHOICES_TEXT_NAME));
 
@@ -113,10 +111,8 @@ TEST(UserConfirmation, OptionLabels)
     // Check passed default option values
     auto options = ui.GetOptions();
     ASSERT_EQ(options.size(), 2);
-    EXPECT_EQ(options[0].first, DEFAULT_OK_TEXT);
-    EXPECT_EQ(options[0].second, 0);
-    EXPECT_EQ(options[1].first, DEFAULT_CANCEL_TEXT);
-    EXPECT_EQ(options[1].second, 1);
+    EXPECT_EQ(options[0], DEFAULT_OK_TEXT);
+    EXPECT_EQ(options[1], DEFAULT_CANCEL_TEXT);
   }
   {
     // Running UserConfirmation with custom option labels
@@ -137,10 +133,8 @@ TEST(UserConfirmation, OptionLabels)
     // Check passed default option values
     auto options = ui.GetOptions();
     ASSERT_EQ(options.size(), 2);
-    EXPECT_EQ(options[0].first, ok_label);
-    EXPECT_EQ(options[0].second, 0);
-    EXPECT_EQ(options[1].first, cancel_label);
-    EXPECT_EQ(options[1].second, 1);
+    EXPECT_EQ(options[0], ok_label);
+    EXPECT_EQ(options[1], cancel_label);
   }
 }
 

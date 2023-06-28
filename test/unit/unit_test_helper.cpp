@@ -112,7 +112,7 @@ void MockUI::SetValue(sup::dto::AnyValue &value)
   m_value = value;
 }
 
-std::vector<std::pair<std::string, int>> MockUI::GetOptions() const
+std::vector<std::string> MockUI::GetOptions() const
 {
   return m_options;
 }
@@ -138,7 +138,7 @@ bool MockUI::GetUserValueImpl(sup::dto::AnyValue &value, const std::string &desc
   return m_status;
 }
 
-int MockUI::GetUserChoiceImpl(const std::vector<std::pair<std::string, int>>& options,
+int MockUI::GetUserChoiceImpl(const std::vector<std::string>& options,
                               const sup::dto::AnyValue& metadata)
 {
   m_options = options;

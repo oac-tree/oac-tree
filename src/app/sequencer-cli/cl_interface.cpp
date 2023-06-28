@@ -105,7 +105,7 @@ bool CLInterface::GetUserValueImpl(sup::dto::AnyValue &value, const std::string 
   return true;
 }
 
-int CLInterface::GetUserChoiceImpl(const std::vector<std::pair<std::string, int>>& options,
+int CLInterface::GetUserChoiceImpl(const std::vector<std::string>& options,
                                    const sup::dto::AnyValue& metadata)
 {
   std::string message = GetMainTextFromMetadata(metadata);
@@ -116,7 +116,7 @@ int CLInterface::GetUserChoiceImpl(const std::vector<std::pair<std::string, int>
   std::cout << message << std::endl;
   for (int i = 0; i < options.size(); ++i)
   {
-    std::cout << i + 1 << ": " << options[i].first << std::endl;
+    std::cout << i + 1 << ": " << options[i] << std::endl;
   }
   int input = -1;
   std::string input_str;
@@ -141,8 +141,8 @@ int CLInterface::GetUserChoiceImpl(const std::vector<std::pair<std::string, int>
     m_logger.LogMessage(log::SUP_SEQ_LOG_ERR, error_message);
     return -1;
   }
-  std::cout << options[input].first << " selected" << std::endl;
-  return options[input].second;
+  std::cout << options[input] << " selected" << std::endl;
+  return input;
 }
 
 void CLInterface::MessageImpl(const std::string& message)

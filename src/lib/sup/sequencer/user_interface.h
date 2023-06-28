@@ -101,8 +101,7 @@ public:
   /**
    * @brief Method to request the user to choose one of the given options.
    *
-   * @param optoins List of options the user can choose; each option is a string and a
-   *                corresponding value.
+   * @param options List of options the user can choose; each option is a string.
    * @param metadata Structure that encodes optional metadata that could be used by the
    *                 UserInterface to properly display the choice.
    *
@@ -122,7 +121,7 @@ public:
    *   ...                                Future extension appear here
    * @note Non-Virtual Interface.
    */
-  int GetUserChoice(const std::vector<std::pair<std::string, int>>& options,
+  int GetUserChoice(const std::vector<std::string>& options,
                     const sup::dto::AnyValue& metadata = {});
 
   /**
@@ -181,12 +180,12 @@ private:
 
   /**
    * @brief Private virtual implementation of
-   * UserInterface::GetUserChoice(const std::vector<std::pair<std::string, int>>& options,
+   * UserInterface::GetUserChoice(const std::vector<std::string>& options,
    *                              const sup::dto::AnyValue& metadata)
    *
    * @note Default implementation returns -1.
    */
-  virtual int GetUserChoiceImpl(const std::vector<std::pair<std::string, int>>& options,
+  virtual int GetUserChoiceImpl(const std::vector<std::string>& options,
                                 const sup::dto::AnyValue& metadata);
 
   /**
@@ -214,9 +213,6 @@ sup::dto::AnyValue CreateUserChoiceMetadata();
 bool IsUserChoiceMetadata(const sup::dto::AnyValue& metadata);
 
 std::string GetMainTextFromMetadata(const sup::dto::AnyValue& metadata);
-
-std::vector<std::pair<std::string, int>> CreateIndexedOptions(
-  const std::vector<std::string>& option_names);
 
 }  // namespace sequencer
 

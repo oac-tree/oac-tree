@@ -110,7 +110,7 @@ std::vector<const Instruction*> UserChoice::NextInstructionsImpl() const
   return result;
 }
 
-std::vector<std::pair<std::string, int>> UserChoice::GetChoices() const
+std::vector<std::string> UserChoice::GetChoices() const
 {
   std::vector<std::string> option_names;
   for (auto instruction : ChildInstructions())
@@ -118,7 +118,7 @@ std::vector<std::pair<std::string, int>> UserChoice::GetChoices() const
     std::string description = instruction->GetName() + " (type:" + instruction->GetType() + ")";
     option_names.push_back(description);
   }
-  return CreateIndexedOptions(option_names);
+  return option_names;
 }
 
 }  // namespace sequencer

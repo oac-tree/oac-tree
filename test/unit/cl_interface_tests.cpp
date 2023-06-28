@@ -138,7 +138,7 @@ TEST_F(CLInterfaceTest, GetUserValueUnsupportedType)
 
 TEST_F(CLInterfaceTest, GetUserChoice)
 {
-  auto options = CreateIndexedOptions({"one", "two"});
+  auto options = std::vector<std::string>({"one", "two"});
   std::istringstream input("2");
   CinRedirector redirect(input);
   auto choice = cli.GetUserChoice(options);
@@ -150,7 +150,7 @@ TEST_F(CLInterfaceTest, GetUserChoice)
 TEST_F(CLInterfaceTest, GetUserChoiceParseError)
 {
   EXPECT_TRUE(m_log_entries.empty());
-  auto options = CreateIndexedOptions({"one", "two"});
+  auto options = std::vector<std::string>({"one", "two"});
   std::istringstream input("one");
   CinRedirector redirect(input);
   auto choice = cli.GetUserChoice(options);
@@ -161,7 +161,7 @@ TEST_F(CLInterfaceTest, GetUserChoiceParseError)
 TEST_F(CLInterfaceTest, GetUserChoiceOutOfBounds)
 {
   EXPECT_TRUE(m_log_entries.empty());
-  auto options = CreateIndexedOptions({"one", "two"});
+  auto options = std::vector<std::string>({"one", "two"});
   std::istringstream input("3");
   CinRedirector redirect(input);
   auto choice = cli.GetUserChoice(options);

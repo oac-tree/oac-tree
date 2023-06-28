@@ -92,7 +92,7 @@ TEST_F(UserInterfaceTest, GetUserValueDispatch)
 
 TEST_F(UserInterfaceTest, GetUserChoiceDispatch)
 {
-  std::vector<std::pair<std::string,int>> options = { {"yes", 0}, {"no", 1} };
+  std::vector<std::string> options = {"yes", "no" };
   auto metadata = CreateUserChoiceMetadata();
   EXPECT_CALL(mock_ui, PutValueImpl(_, _)).Times(0);
   EXPECT_CALL(mock_ui, GetUserValueImpl(_, _)).Times(0);
@@ -120,7 +120,7 @@ TEST_F(UserInterfaceTest, GetUserValueDefault)
 
 TEST_F(UserInterfaceTest, GetUserChoiceDefault)
 {
-  std::vector<std::pair<std::string,int>> options;
+  std::vector<std::string> options;
   EXPECT_EQ(empty_ui.GetUserChoice(options), -1);
 }
 

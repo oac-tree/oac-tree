@@ -79,7 +79,7 @@ TEST_F(DaemonInterfaceTest, GetUserValue)
 TEST_F(DaemonInterfaceTest, GetUserChoice)
 {
   EXPECT_TRUE(m_log_entries.empty());
-  auto options = CreateIndexedOptions({"one", "two"});
+  auto options = std::vector<std::string>({"one", "two"});
   EXPECT_EQ(daemon_interface.GetUserChoice(options), -1);
   EXPECT_FALSE(m_log_entries.empty());
 }

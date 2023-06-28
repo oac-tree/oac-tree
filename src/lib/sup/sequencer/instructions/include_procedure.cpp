@@ -70,6 +70,7 @@ void IncludeProcedure::SetupImpl(const Procedure& proc)
   }
   m_root_instruction->Setup(sub_proc);
   m_workspace = proc.GetSubWorkspace(proc_filename);
+  m_workspace->Setup();
 }
 
 ExecutionStatus IncludeProcedure::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)

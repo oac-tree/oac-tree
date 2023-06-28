@@ -211,6 +211,11 @@ bool Workspace::RegisterCallback(const std::string& name, const VariableCallback
   return m_callbacks.RegisterCallback(name, cb, listener);
 }
 
+bool Workspace::IsSuccessfullySetup() const
+{
+  return m_setup_done;
+}
+
 bool Workspace::ContainsVariableName(const std::string& name) const
 {
   if (m_var_map.find(name) == m_var_map.end())

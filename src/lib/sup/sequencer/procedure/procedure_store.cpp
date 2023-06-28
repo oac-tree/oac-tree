@@ -56,7 +56,6 @@ Workspace* ProcedureStore::GetWorkspace(const std::string& filename) const
     throw InvalidOperationException("ProcedureStore::GetWorkspace(): procedure was not loaded");
   }
   auto ws = it->second->GetWorkspace();
-  ws->Setup();
   return ws;
 }
 

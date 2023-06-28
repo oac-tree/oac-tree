@@ -61,6 +61,10 @@ public:
    * @param filename Filename of the procedure to load or fetch from the cache.
    *
    * @return Pointer to workspace.
+   *
+   * @note The returned workspace may already have been setup, but it's the client's responsibility
+   * to ensure that is the case (calling Setup() twice on a workspace is null operation, so it's
+   * safe to do that to be sure).
    */
   Workspace* GetWorkspace(const std::string& filename) const;
 

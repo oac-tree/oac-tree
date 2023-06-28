@@ -183,6 +183,14 @@ public:
    */
   bool RegisterCallback(const std::string& name, const VariableCallback& cb, void* listener);
 
+  /**
+   * @brief Query if the workspace was already successfully setup.
+   *
+   * @note Adding variables after a successful setup requires resetting the workspace and calling
+   * Setup() again.
+   */
+  bool IsSuccessfullySetup() const;
+
 private:
   /**
    * @brief Map from Variable names to Variable pointers.

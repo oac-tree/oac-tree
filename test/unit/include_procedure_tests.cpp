@@ -152,7 +152,7 @@ TEST_F(IncludeProcedureTest, TwoLevelInclude)
 TEST_F(IncludeProcedureTest, VariableAttributes)
 {
   const std::string body{R"(
-    <IncludeProcedure file="test_procedure_2.xml" path="IncludeWait" timeout="0.05" />
+    <IncludeProcedure file="test_procedure_2.xml" path="IncludeWait" timeout="0" />
     <Workspace/>
 )"};
 

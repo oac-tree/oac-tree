@@ -72,7 +72,7 @@ void Include::SetupImpl(const Procedure& proc)
   if (!InstructionHelper::InitialiseVariableAttributes(*clone, GetStringAttributes()))
   {
     std::string error_message = InstructionSetupExceptionProlog(*this) +
-      "could not initialise variable attributes for child instruction";
+      "could not initialise variable attributes for child instruction(s)";
     throw InstructionSetupException(error_message);
   }
   (void)InsertInstruction(std::move(clone), 0);

@@ -48,6 +48,8 @@ private:
 
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 
+  bool PostInitialiseVariables(const StringAttributeList& source_attributes) override;
+
   std::unique_ptr<Instruction> m_root_instruction;
 
   Workspace* m_workspace;

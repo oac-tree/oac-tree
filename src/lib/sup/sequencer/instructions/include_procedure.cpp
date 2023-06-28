@@ -21,6 +21,8 @@
 
 #include "include_procedure.h"
 
+#include "instruction_helper.h"
+
 #include <sup/sequencer/parser/procedure_parser.h>
 
 #include <sup/sequencer/exceptions.h>
@@ -60,6 +62,12 @@ void IncludeProcedure::SetupImpl(const Procedure& proc)
     std::string error_message = InstructionSetupExceptionProlog(*this) + "instruction not found";
     throw InstructionSetupException(error_message);
   }
+  if (!InstructionHelper::InitialiseVariableAttributes(*m_root_instruction, GetStringAttributes()))
+  {
+    std::string error_message = InstructionSetupExceptionProlog(*this) +
+      "could not initialise variable attributes for child instruction(s)";
+    throw InstructionSetupException(error_message);
+  }
   m_root_instruction->Setup(sub_proc);
   m_workspace = proc.GetSubWorkspace(proc_filename);
 }
@@ -69,6 +77,19 @@ ExecutionStatus IncludeProcedure::ExecuteSingleImpl(UserInterface& ui, Workspace
   (void)ws;
   m_root_instruction->ExecuteSingle(ui, *m_workspace);
   return m_root_instruction->GetStatus();
+}
+
+bool IncludeProcedure::PostInitialiseVariables(const StringAttributeList& source_attributes)
+{
+  bool result = true;
+  for (auto& attr : source_attributes)
+  {
+    if (!HasAttribute(attr.first))
+    {
+      result = AddAttribute(attr.first, attr.second) && result;
+    }
+  }
+  return result;
 }
 
 }  // namespace sequencer

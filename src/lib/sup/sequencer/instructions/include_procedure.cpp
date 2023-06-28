@@ -59,7 +59,8 @@ void IncludeProcedure::SetupImpl(const Procedure& proc)
   m_root_instruction = CloneInstructionPath(sub_proc, path);
   if (!m_root_instruction)
   {
-    std::string error_message = InstructionSetupExceptionProlog(*this) + "instruction not found";
+    std::string error_message = InstructionSetupExceptionProlog(*this) + "instruction not found, "
+      "path [" + path + "]";
     throw InstructionSetupException(error_message);
   }
   if (!InstructionHelper::InitialiseVariableAttributes(*m_root_instruction, GetStringAttributes()))
@@ -85,6 +86,11 @@ bool IncludeProcedure::PostInitialiseVariables(const StringAttributeList& source
   bool result = true;
   for (auto& attr : source_attributes)
   {
+    // Do not propagate standard attributes of this instruction:
+    if (IsDefinedAttributeName(*this, attr.first))
+    {
+      continue;
+    }
     if (!HasAttribute(attr.first))
     {
       result = AddAttribute(attr.first, attr.second) && result;

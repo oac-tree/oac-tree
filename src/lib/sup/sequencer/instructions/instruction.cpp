@@ -408,6 +408,23 @@ sup::dto::AnyValue ParseAnyValueAttributePair(const Instruction& instruction,
   return val_parser.MoveAnyValue();
 }
 
+std::vector<std::string> GetDefinedAttributeNames(const Instruction& instruction)
+{
+  std::vector<std::string> result;
+  for (const auto& attr_def : instruction.GetAttributeDefinitions())
+  {
+    result.push_back(attr_def.GetName());
+  }
+  return result;
+}
+
+bool IsDefinedAttributeName(const Instruction& instruction, const std::string& attr_name)
+{
+  auto defined_attr_names = GetDefinedAttributeNames(instruction);
+  auto it = std::find(defined_attr_names.begin(), defined_attr_names.end(), attr_name);
+  return it != defined_attr_names.end();
+}
+
 }  // namespace sequencer
 
 }  // namespace sup

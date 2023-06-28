@@ -523,6 +523,26 @@ sup::dto::AnyValue ParseAnyValueAttributePair(const Instruction& instruction,
                                               const std::string& type_attr_name,
                                               const std::string& value_attr_name);
 
+/**
+ * @brief Query all attribute names that are predefined for the given instruction.
+ *
+ * @param instruction Instruction to query.
+ *
+ * @return List of attribute names.
+ */
+std::vector<std::string> GetDefinedAttributeNames(const Instruction& instruction);
+
+/**
+ * @brief Query if an attribute name is among the predefined ones of the given instruction.
+ *
+ * @param instruction Instruction to query.
+ * @param attr_name Attribute name to check.
+ *
+ * @return True if the given name is among the predefined attribute names of the given
+ * instruction.
+ */
+bool IsDefinedAttributeName(const Instruction& instruction, const std::string& attr_name);
+
 }  // namespace sequencer
 
 }  // namespace sup

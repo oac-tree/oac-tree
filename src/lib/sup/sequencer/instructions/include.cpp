@@ -98,6 +98,11 @@ bool Include::PostInitialiseVariables(const StringAttributeList& source_attribut
   bool result = true;
   for (auto& attr : source_attributes)
   {
+    // Do not propagate standard attributes of this instruction:
+    if (IsDefinedAttributeName(*this, attr.first))
+    {
+      continue;
+    }
     if (!HasAttribute(attr.first))
     {
       result = AddAttribute(attr.first, attr.second) && result;

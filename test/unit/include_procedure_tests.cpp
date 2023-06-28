@@ -26,20 +26,34 @@
 #include <sup/sequencer/generic_utils.h>
 #include <sup/sequencer/sequence_parser.h>
 
+#include <sup/xml/exceptions.h>
+
 #include <gtest/gtest.h>
 
 using namespace sup::sequencer;
 
-const std::string kTestProcedureFileName = "test_procedure.xml";
+const std::string kTestProcedureFileName_1 = "test_procedure_1.xml";
 
-const std::string kTestProcedureBody{R"(
-  <Sequence name="CopyAndCheck">
+const std::string kTestProcedureBody_1{R"(
+  <Sequence name="CopyAndCheck" isRoot="True">
       <Copy input="a" output="b"/>
-      <Equals lhs="a" rhs="b"/>
+      <Equals name="Check" lhs="a" rhs="b"/>
   </Sequence>
+  <Inverter name="AlwaysFails">
+      <Wait/>
+  </Inverter>
   <Workspace>
       <Local name="a" type='{"type":"uint16"}' value='1' />
       <Local name="b" type='{"type":"uint16"}' value='0' />
+  </Workspace>
+)"};
+
+const std::string kTestProcedureFileName_2 = "test_procedure_2.xml";
+
+const std::string kTestProcedureBody_2{R"(
+  <IncludeProcedure file="test_procedure_1.xml"/>
+  <Workspace>
+      <Local name="a" type='{"type":"string"}' value='"does_not_matter"' />
   </Workspace>
 )"};
 
@@ -49,13 +63,82 @@ protected:
   IncludeProcedureTest();
   virtual ~IncludeProcedureTest();
 private:
-  sup::UnitTestHelper::TemporaryTestFile m_test_file;
+  sup::UnitTestHelper::TemporaryTestFile m_test_file_1;
+  sup::UnitTestHelper::TemporaryTestFile m_test_file_2;
 };
+
+TEST_F(IncludeProcedureTest, Attributes)
+{
+  Procedure proc;
+  auto instr = GlobalInstructionRegistry().Create("IncludeProcedure");
+  ASSERT_NE(instr.get(), nullptr);
+
+  // Missing file attribute
+  EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
+
+  // Correct file attribute
+  EXPECT_TRUE(instr->AddAttribute("file", "test_procedure_1.xml"));
+  EXPECT_NO_THROW(instr->Setup(proc));
+
+  // Wrong instruction path attribute
+  EXPECT_TRUE(instr->AddAttribute("path", "does_not_exist"));
+  EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
+}
+
+TEST_F(IncludeProcedureTest, WrongFile)
+{
+  Procedure proc;
+  auto instr = GlobalInstructionRegistry().Create("IncludeProcedure");
+  ASSERT_NE(instr.get(), nullptr);
+
+  // Missing file attribute
+  EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
+
+  // Wrong file attribute
+  EXPECT_TRUE(instr->AddAttribute("file", "does_not_exist.xml"));
+  EXPECT_THROW(instr->Setup(proc), sup::xml::ParseException);
+}
 
 TEST_F(IncludeProcedureTest, RootPath)
 {
   const std::string body{R"(
-    <IncludeProcedure file="test_procedure.xml"/>
+    <IncludeProcedure file="test_procedure_1.xml"/>
+    <Workspace/>
+)"};
+
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST_F(IncludeProcedureTest, TopInstruction)
+{
+  const std::string body{R"(
+    <IncludeProcedure file="test_procedure_1.xml" path="AlwaysFails"/>
+    <Workspace/>
+)"};
+
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+}
+
+TEST_F(IncludeProcedureTest, NestedInstruction)
+{
+  const std::string body{R"(
+    <IncludeProcedure file="test_procedure_1.xml" path="CopyAndCheck.Check"/>
+    <Workspace/>
+)"};
+
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+}
+
+TEST_F(IncludeProcedureTest, TwoLevelInclude)
+{
+  const std::string body{R"(
+    <IncludeProcedure file="test_procedure_2.xml"/>
     <Workspace/>
 )"};
 
@@ -65,8 +148,10 @@ TEST_F(IncludeProcedureTest, RootPath)
 }
 
 IncludeProcedureTest::IncludeProcedureTest()
-  : m_test_file{kTestProcedureFileName,
-                sup::UnitTestHelper::CreateProcedureString(kTestProcedureBody)}
+  : m_test_file_1{kTestProcedureFileName_1,
+                sup::UnitTestHelper::CreateProcedureString(kTestProcedureBody_1)}
+  , m_test_file_2{kTestProcedureFileName_2,
+                sup::UnitTestHelper::CreateProcedureString(kTestProcedureBody_2)}
 {}
 
 IncludeProcedureTest::~IncludeProcedureTest() = default;

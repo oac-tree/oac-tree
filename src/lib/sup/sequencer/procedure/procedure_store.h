@@ -35,13 +35,7 @@ class Procedure;
 class Workspace;
 
 /**
- * @brief Procedure contains a tree of instructions
- *
- * @details A Procedure object contains a full instruction tree and a workspace
- * @note The client of the Procedure, i.e. the object responsible for its creation and
- * destruction, needs to ensure that the Procedure is correctly set up before executing it (by
- * calling the Setup method on it). Likewise, the client needs to call Reset on the Procedure
- * before destroying the UserInterface class. Reset will block until all threads have terminated.
+ * @brief ProcedureStore manages a cache of loaded subprocedures.
  */
 class ProcedureStore
 {

@@ -55,12 +55,12 @@ void IncludeProcedure::SetupImpl(const Procedure& proc)
   std::string path =
       HasAttribute(PATH_ATTRIBUTE_NAME) ? GetAttributeValue<std::string>(PATH_ATTRIBUTE_NAME) : "";
   m_root_instruction = CloneInstructionPath(sub_proc, path);
-  m_root_instruction->Setup(sub_proc);
   if (!m_root_instruction)
   {
     std::string error_message = InstructionSetupExceptionProlog(*this) + "instruction not found";
     throw InstructionSetupException(error_message);
   }
+  m_root_instruction->Setup(sub_proc);
   m_workspace = proc.GetSubWorkspace(proc_filename);
 }
 

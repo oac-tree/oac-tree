@@ -39,6 +39,7 @@ const std::string kTestProcedureBody_1{R"(
       <Copy input="a" output="b"/>
       <Equals name="Check" lhs="a" rhs="b"/>
   </Sequence>
+  <Wait name="ParameterizedWait" timeout="$timeout"/>
   <Inverter name="AlwaysFails">
       <Wait/>
   </Inverter>
@@ -51,7 +52,8 @@ const std::string kTestProcedureBody_1{R"(
 const std::string kTestProcedureFileName_2 = "test_procedure_2.xml";
 
 const std::string kTestProcedureBody_2{R"(
-  <IncludeProcedure file="test_procedure_1.xml"/>
+  <IncludeProcedure name="IncludeRoot" file="test_procedure_1.xml"/>
+  <IncludeProcedure name="IncludeWait" file="test_procedure_1.xml" path="ParameterizedWait"/>
   <Workspace>
       <Local name="a" type='{"type":"string"}' value='"does_not_matter"' />
   </Workspace>
@@ -138,7 +140,19 @@ TEST_F(IncludeProcedureTest, NestedInstruction)
 TEST_F(IncludeProcedureTest, TwoLevelInclude)
 {
   const std::string body{R"(
-    <IncludeProcedure file="test_procedure_2.xml"/>
+    <IncludeProcedure file="test_procedure_2.xml" path="IncludeRoot"/>
+    <Workspace/>
+)"};
+
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST_F(IncludeProcedureTest, VariableAttributes)
+{
+  const std::string body{R"(
+    <IncludeProcedure file="test_procedure_2.xml" path="IncludeWait" timeout="0.05" />
     <Workspace/>
 )"};
 

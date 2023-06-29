@@ -65,10 +65,7 @@ std::unique_ptr<Procedure> ParseProcedure(const sup::xml::TreeData& data,
       "> instead of: <" + Constants::PROCEDURE_ELEMENT_NAME + ">";
     throw ParseException(error_message);
   }
-  auto result = std::unique_ptr<Procedure>(new Procedure());
-
-  // Add current filename
-  result->SetFilename(filename);
+  auto result = std::unique_ptr<Procedure>(new Procedure(filename));
 
   // Load plugins and register types first
   ParsePreamble(result.get(), data, filename);

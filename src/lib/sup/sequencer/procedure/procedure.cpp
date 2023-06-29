@@ -40,11 +40,11 @@ namespace sequencer
 {
 static bool HasRootAttributeSet(const Instruction &instruction);
 
-Procedure::Procedure()
+Procedure::Procedure(const std::string& filename)
   : m_instructions{}
   , m_workspace{new Workspace()}
   , m_attribute_handler{}
-  , m_filename{}
+  , m_filename{filename}
   , m_parent{}
   , m_procedure_store{new ProcedureStore{this}}
 {
@@ -55,11 +55,6 @@ Procedure::~Procedure()
 {
   // Wait for termination of instructions first:
   Reset();
-}
-
-void Procedure::SetFilename(const std::string &filename)
-{
-  m_filename = filename;
 }
 
 std::string Procedure::GetFilename() const

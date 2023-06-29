@@ -83,9 +83,6 @@ TEST_F(ProcedureTest, DefaultConstructed)
   // Test constructed
   EXPECT_TRUE(empty_proc.GetFilename().empty());
   EXPECT_EQ(empty_proc.GetStatus(), ExecutionStatus::SUCCESS);
-  std::string filename = "TestFile.xml";
-  EXPECT_NO_THROW(empty_proc.SetFilename(filename));
-  EXPECT_EQ(empty_proc.GetFilename(), filename);
 
   // Empty instruction list
   EXPECT_EQ(empty_proc.RootInstruction(), nullptr);
@@ -194,9 +191,6 @@ TEST_F(ProcedureTest, ConstructedFromString)
   ASSERT_NE(loaded_proc.get(), nullptr);
   EXPECT_TRUE(loaded_proc->GetFilename().empty());
   EXPECT_EQ(loaded_proc->GetStatus(), ExecutionStatus::NOT_STARTED);
-  std::string filename = "TestFile.xml";
-  EXPECT_NO_THROW(loaded_proc->SetFilename(filename));
-  EXPECT_EQ(loaded_proc->GetFilename(), filename);
 
   // Instruction list
   auto root = loaded_proc->RootInstruction();

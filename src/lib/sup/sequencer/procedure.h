@@ -66,16 +66,13 @@ class Procedure
 public:
   using GenericCallback = std::function<void(const std::string&, const sup::dto::AnyValue&, bool)>;
 
-  Procedure();
-  ~Procedure();
-
   /**
-   * @brief Set the filename of this procedure (if loaded from file).
+   * @brief Constructor.
    *
-   * @param filename Filename of this procedure.
-   * @details This filename is used for external includes with relative pathnames.
+   * @param filename Filename of this procedure or empty if not created from file.
    */
-  void SetFilename(const std::string& filename);
+  Procedure(const std::string& filename = "");
+  ~Procedure();
 
   /**
    * @brief Get the filename of this procedure (if loaded from file).

@@ -21,9 +21,11 @@
 
 #include <sup/sequencer/procedure_context.h>
 
+#include <sup/sequencer/instructions/instruction_helper.h>
 #include <sup/sequencer/procedure/procedure_store.h>
 
 #include <sup/sequencer/instruction.h>
+#include <sup/sequencer/procedure.h>
 
 namespace sup
 {
@@ -44,18 +46,23 @@ std::string ProcedureContext::GetFilename() const
 
 const Procedure& ProcedureContext::GetProcedure(const std::string& filename) const
 {
-  return m_procedure_store->GetProcedure(filename);
+  return m_procedure_store->LoadProcedure(filename);
 }
 
 Workspace* ProcedureContext::GetWorkspace(const std::string& filename) const
 {
-  return m_procedure_store->GetWorkspace(filename);
+  auto& proc = m_procedure_store->LoadProcedure(filename);
+  return proc.GetWorkspace();
 }
 
 std::unique_ptr<Instruction> ProcedureContext::CloneInstructionPath(
   const std::string& filename, const std::string& path) const
 {
-  return m_procedure_store->CloneInstructionPath(filename, path);
+  auto& proc = m_procedure_store->LoadProcedure(filename);
+  auto top_instructions = proc.GetTopInstructions();
+  auto instr = path.empty() ? proc.RootInstruction()
+                            : InstructionHelper::FindInstruction(top_instructions, path);
+  return InstructionHelper::CloneInstruction(instr);
 }
 
 }  // namespace sequencer

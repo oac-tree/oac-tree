@@ -44,40 +44,10 @@ public:
   ~ProcedureStore();
 
   /**
-   * @brief Get procedure reference to a loaded procedure.
-   *
-   * @param filename Filename of the procedure to load or fetch from the cache.
-   *
-   * @return Reference to procedure.
-   *
-   * @details The ProcedureStore keeps a cache of loaded procedures to prevent loading the same
-   * procedure file multiple times.
+   * @brief Retrieve (and possibly load) procedure from cache.
    */
-  const Procedure& GetProcedure(const std::string& filename) const;
+  Procedure& LoadProcedure(const std::string& filename) const;
 
-  /**
-   * @brief Get workspace from loaded procedure.
-   *
-   * @param filename Filename of the procedure to load or fetch from the cache.
-   *
-   * @return Pointer to workspace.
-   *
-   * @note The returned workspace may already have been setup, but it's the client's responsibility
-   * to ensure that is the case (calling Setup() twice on a workspace is null operation, so it's
-   * safe to do that to be sure).
-   */
-  Workspace* GetWorkspace(const std::string& filename) const;
-
-  /**
-   * @brief Clone an instruction tree wth given path from a procedure with given name.
-   *
-   * @param filename Filename of the procedure to load or fetch from the cache.
-   * @param filename Path to the root of the instruction tree to clone.
-   *
-   * @return Pointer to workspace.
-   */
-  std::unique_ptr<Instruction> CloneInstructionPath(const std::string& filename,
-                                                    const std::string& path) const;
   /**
    * @brief Reset all owned procedures.
    */
@@ -88,9 +58,6 @@ private:
 
   // Cache for procedures loaded from files and to be used by include type instructions.
   mutable std::map<std::string, std::unique_ptr<Procedure>> m_procedure_cache;
-
-  // Retrieve (and possibly load) procedure from cache.
-  Procedure* LoadProcedure(const std::string& filename) const;
 };
 
 }  // namespace sequencer

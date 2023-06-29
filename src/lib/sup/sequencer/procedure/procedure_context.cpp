@@ -21,8 +21,9 @@
 
 #include <sup/sequencer/procedure_context.h>
 
+#include <sup/sequencer/procedure/procedure_store.h>
+
 #include <sup/sequencer/instruction.h>
-#include <sup/sequencer/procedure_store.h>
 
 namespace sup
 {

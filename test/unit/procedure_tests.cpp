@@ -29,7 +29,7 @@
 
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/instruction_registry.h>
-#include <sup/sequencer/procedure_store.h>
+#include <sup/sequencer/procedure_context.h>
 #include <sup/sequencer/sequence_parser.h>
 #include <sup/sequencer/variable.h>
 #include <sup/sequencer/variable_registry.h>

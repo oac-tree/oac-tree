@@ -22,13 +22,13 @@
 #include <sup/sequencer/procedure.h>
 
 #include <sup/sequencer/instructions/instruction_helper.h>
+#include <sup/sequencer/procedure/procedure_store.h>
 
 #include <sup/sequencer/attribute_utils.h>
 #include <sup/sequencer/constants.h>
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/instruction.h>
 #include <sup/sequencer/instruction_tree.h>
-#include <sup/sequencer/procedure_store.h>
 #include <sup/sequencer/sequence_parser.h>
 #include <sup/sequencer/workspace.h>
 

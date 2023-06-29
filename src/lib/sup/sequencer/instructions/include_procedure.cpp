@@ -26,7 +26,7 @@
 #include <sup/sequencer/parser/procedure_parser.h>
 
 #include <sup/sequencer/exceptions.h>
-#include <sup/sequencer/procedure_store.h>
+#include <sup/sequencer/procedure_context.h>
 #include <sup/sequencer/sequence_parser.h>
 
 const std::string FILE_ATTRIBUTE_NAME = "file";

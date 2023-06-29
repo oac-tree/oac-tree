@@ -19,7 +19,7 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <sup/sequencer/procedure_store.h>
+#include "procedure_store.h"
 
 #include <sup/sequencer/instructions/instruction_helper.h>
 

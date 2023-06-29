@@ -19,7 +19,9 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "procedure_store.h"
+#include <sup/sequencer/procedure_store.h>
+
+#include <sup/sequencer/instructions/instruction_helper.h>
 
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/procedure.h>
@@ -33,30 +35,35 @@ namespace sequencer
 ProcedureStore::ProcedureStore(Procedure* parent)
   : m_parent{parent}
   , m_procedure_cache{}
-{}
+{
+  if (parent == nullptr)
+  {
+    throw InvalidOperationException("ProcedureStore constuctor called with nullptr");
+  }
+}
 
 ProcedureStore::~ProcedureStore() = default;
 
 const Procedure& ProcedureStore::GetProcedure(const std::string& filename) const
 {
-  if (m_procedure_cache.find(filename) == m_procedure_cache.end())
-  {
-    auto proc = ParseProcedureFile(filename);
-    proc->SetParentProcedure(m_parent);
-    m_procedure_cache[filename] = std::move(proc);
-  }
-  return *m_procedure_cache[filename];
+  auto proc = LoadProcedure(filename);
+  return *proc;
 }
 
 Workspace* ProcedureStore::GetWorkspace(const std::string& filename) const
 {
-  auto it = m_procedure_cache.find(filename);
-  if (it == m_procedure_cache.end())
-  {
-    throw InvalidOperationException("ProcedureStore::GetWorkspace(): procedure was not loaded");
-  }
-  auto ws = it->second->GetWorkspace();
-  return ws;
+  auto proc = LoadProcedure(filename);
+  return proc->GetWorkspace();
+}
+
+std::unique_ptr<Instruction> ProcedureStore::CloneInstructionPath(const std::string& filename,
+                                                                  const std::string& path) const
+{
+  auto proc = LoadProcedure(filename);
+  auto top_instructions = proc->GetTopInstructions();
+  auto instr = path.empty() ? proc->RootInstruction()
+                            : InstructionHelper::FindInstruction(top_instructions, path);
+  return InstructionHelper::CloneInstruction(instr);
 }
 
 void ProcedureStore::ResetProcedures() const
@@ -65,6 +72,21 @@ void ProcedureStore::ResetProcedures() const
   {
     entry.second->Reset();
   }
+}
+
+Procedure* ProcedureStore::LoadProcedure(const std::string& filename) const
+{
+  if (filename == m_parent->GetFilename())
+  {
+    return m_parent;
+  }
+  if (m_procedure_cache.find(filename) == m_procedure_cache.end())
+  {
+    auto proc = ParseProcedureFile(filename);
+    proc->SetParentProcedure(m_parent);
+    m_procedure_cache[filename] = std::move(proc);
+  }
+  return m_procedure_cache[filename].get();
 }
 
 }  // namespace sequencer

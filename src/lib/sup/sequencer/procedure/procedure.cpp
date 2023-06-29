@@ -22,13 +22,13 @@
 #include <sup/sequencer/procedure.h>
 
 #include <sup/sequencer/instructions/instruction_helper.h>
-#include <sup/sequencer/procedure/procedure_store.h>
 
 #include <sup/sequencer/attribute_utils.h>
 #include <sup/sequencer/constants.h>
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/instruction.h>
 #include <sup/sequencer/instruction_tree.h>
+#include <sup/sequencer/procedure_store.h>
 #include <sup/sequencer/sequence_parser.h>
 #include <sup/sequencer/workspace.h>
 
@@ -103,16 +103,9 @@ std::vector<const Instruction*> Procedure::GetTopInstructions() const
   return result;
 }
 
-const Procedure& Procedure::GetSubProcedure(const std::string& filename) const
+ProcedureContext Procedure::GetContext() const
 {
-  auto& store = GetProcedureStore();
-  return store.GetProcedure(filename);
-}
-
-Workspace* Procedure::GetSubWorkspace(const std::string& filename) const
-{
-  auto& store = GetProcedureStore();
-  return store.GetWorkspace(filename);
+  return { GetFilename(), std::addressof(GetProcedureStore()) };
 }
 
 InstructionTree Procedure::GetNextInstructionTree() const
@@ -335,14 +328,6 @@ int TickTimeoutMs(Procedure& procedure)
     }
   }
   return DefaultSettings::DEFAULT_SLEEP_TIME_MS;
-}
-
-std::unique_ptr<Instruction> CloneInstructionPath(const Procedure& proc, const std::string& path)
-{
-  auto top_instructions = proc.GetTopInstructions();
-  auto instr = path.empty() ? proc.RootInstruction()
-                            : InstructionHelper::FindInstruction(top_instructions, path);
-  return InstructionHelper::CloneInstruction(instr);
 }
 
 }  // namespace sequencer

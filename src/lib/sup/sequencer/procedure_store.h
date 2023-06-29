@@ -69,6 +69,16 @@ public:
   Workspace* GetWorkspace(const std::string& filename) const;
 
   /**
+   * @brief Clone an instruction tree wth given path from a procedure with given name.
+   *
+   * @param filename Filename of the procedure to load or fetch from the cache.
+   * @param filename Path to the root of the instruction tree to clone.
+   *
+   * @return Pointer to workspace.
+   */
+  std::unique_ptr<Instruction> CloneInstructionPath(const std::string& filename,
+                                                    const std::string& path) const;
+  /**
    * @brief Reset all owned procedures.
    */
   void ResetProcedures() const;
@@ -78,6 +88,9 @@ private:
 
   // Cache for procedures loaded from files and to be used by include type instructions.
   mutable std::map<std::string, std::unique_ptr<Procedure>> m_procedure_cache;
+
+  // Retrieve (and possibly load) procedure from cache.
+  Procedure* LoadProcedure(const std::string& filename) const;
 };
 
 }  // namespace sequencer

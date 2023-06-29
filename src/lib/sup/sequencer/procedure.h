@@ -24,6 +24,7 @@
 
 #include <sup/sequencer/attribute_handler.h>
 #include <sup/sequencer/execution_status.h>
+#include <sup/sequencer/procedure_context.h>
 
 #include <functional>
 #include <map>
@@ -106,22 +107,11 @@ public:
   std::vector<const Instruction*> GetTopInstructions() const;
 
   /**
-   * @brief Get procedure reference to this or loaded procedure.
+   * @brief Get the procedure's context, like its filename and the main ProcedureStore.
    *
-   * @return Reference to procedure.
-   *
-   * @details If the filename argument is not empty or equal to this procedure's filename,
-   * this method will first look into the procedure cache to see if this file was already loaded.
-   * If not, it will load it into the cache before returning a reference.
+   * @return ProcedureContext structure.
    */
-  const Procedure& GetSubProcedure(const std::string& filename) const;
-
-  /**
-   * @brief Get workspace pointer from loaded procedure.
-   *
-   * @return Pointer to workspace.
-   */
-  Workspace* GetSubWorkspace(const std::string& filename) const;
+  ProcedureContext GetContext() const;
 
   /**
    * @brief Get tree instructions that will be executed next.
@@ -348,16 +338,6 @@ private:
  * @details Applications are free to ignore this setting. It is only provided as a guideline.
  */
 int TickTimeoutMs(Procedure& procedure);
-
-/**
- * @brief Clone an instruction tree from a procedure with the given root path.
- *
- * @param proc Procedure to search in.
- * @param path Path to the instruction tree to be cloned.
- *
- * @returns Cloned instruction tree.
- */
-std::unique_ptr<Instruction> CloneInstructionPath(const Procedure& proc, const std::string& path);
 
 }  // namespace sequencer
 

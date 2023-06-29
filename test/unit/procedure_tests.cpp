@@ -29,6 +29,7 @@
 
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/instruction_registry.h>
+#include <sup/sequencer/procedure_store.h>
 #include <sup/sequencer/sequence_parser.h>
 #include <sup/sequencer/variable.h>
 #include <sup/sequencer/variable_registry.h>
@@ -100,7 +101,9 @@ TEST_F(ProcedureTest, DefaultConstructed)
   instructions = empty_proc.GetTopInstructions();
   EXPECT_EQ(instructions.size(), 1);
   std::string wrong_filename = "WrongFile.xml";
-  EXPECT_THROW(empty_proc.GetSubProcedure(wrong_filename), sup::xml::ParseException);
+  auto proc_context = empty_proc.GetContext();
+  EXPECT_THROW(proc_context.procedure_store->GetProcedure(wrong_filename),
+               sup::xml::ParseException);
 
   // Variables
   auto variables = empty_proc.VariableNames();
@@ -259,7 +262,8 @@ TEST_F(ProcedureTest, ExternalInclude)
   auto proc = ParseProcedureFile(external_include_file_name);
   ASSERT_TRUE(static_cast<bool>(proc));
 
-  auto& sub_proc = proc->GetSubProcedure(parallel_sequence_file_name);
+  auto proc_context = proc->GetContext();
+  auto& sub_proc = proc_context.procedure_store->GetProcedure(parallel_sequence_file_name);
   auto ext_instructions = sub_proc.GetTopInstructions();
   EXPECT_GT(ext_instructions.size(), 0);
 

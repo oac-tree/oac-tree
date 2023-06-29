@@ -26,16 +26,11 @@
 #include <sup/sequencer/parser/procedure_parser.h>
 
 #include <sup/sequencer/exceptions.h>
+#include <sup/sequencer/procedure_store.h>
 #include <sup/sequencer/procedure.h>
 
 const std::string PATH_ATTRIBUTE_NAME = "path";
 const std::string FILE_ATTRIBUTE_NAME = "file";
-
-namespace
-{
-using namespace sup::sequencer;
-const Procedure& GetIncludedProcedure(const Procedure& parent, const std::string& filename);
-}  // unnamed namespace
 
 namespace sup
 {
@@ -54,15 +49,15 @@ Include::~Include() = default;
 
 void Include::SetupImpl(const Procedure& proc)
 {
-  std::string proc_filename = proc.GetFilename();
+  auto proc_context = proc.GetContext();
+  std::string proc_filename = proc_context.procedure_filename;
   if (HasAttribute(FILE_ATTRIBUTE_NAME))
   {
     auto filename = GetAttributeValue<std::string>(FILE_ATTRIBUTE_NAME);
     proc_filename = GetFullPathName(GetFileDirectory(proc_filename), filename);
   }
-  auto& sub_proc = GetIncludedProcedure(proc, proc_filename);
   auto path = GetAttributeValue<std::string>(PATH_ATTRIBUTE_NAME);
-  auto clone = CloneInstructionPath(sub_proc, path);
+  auto clone = proc_context.procedure_store->CloneInstructionPath(proc_filename, path);
   if (!clone)
   {
     std::string error_message = InstructionSetupExceptionProlog(*this) +
@@ -76,6 +71,7 @@ void Include::SetupImpl(const Procedure& proc)
     throw InstructionSetupException(error_message);
   }
   (void)InsertInstruction(std::move(clone), 0);
+  auto& sub_proc = proc_context.procedure_store->GetProcedure(proc_filename);
   SetupChild(sub_proc);
 }
 
@@ -123,17 +119,3 @@ ExecutionStatus Include::CalculateStatus() const
 }  // namespace sequencer
 
 }  // namespace sup
-
-namespace
-{
-using namespace sup::sequencer;
-const Procedure& GetIncludedProcedure(const Procedure& parent, const std::string& filename)
-{
-  if (filename == parent.GetFilename())
-  {
-    return parent;
-  }
-  return parent.GetSubProcedure(filename);
-}
-}  // unnamed namespace
-

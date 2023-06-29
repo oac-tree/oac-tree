@@ -22,22 +22,69 @@
 #ifndef SUP_SEQUENCER_PROCEDURE_CONTEXT_H_
 #define SUP_SEQUENCER_PROCEDURE_CONTEXT_H_
 
+#include <memory>
 #include <string>
 
 namespace sup
 {
 namespace sequencer
 {
+class Instruction;
+class Procedure;
 class ProcedureStore;
+class Workspace;
 
 /**
  * @brief Structure containing the context of a procedure.
  *
  */
-struct ProcedureContext
+class ProcedureContext
 {
-  std::string procedure_filename;
-  const ProcedureStore* procedure_store;
+public:
+  ProcedureContext(const std::string& filename, const ProcedureStore& procedure_store);
+  ~ProcedureContext();
+
+  /**
+   * @brief Get filename of the current context.
+   */
+  std::string GetFilename() const;
+
+  /**
+   * @brief Get procedure reference to a loaded procedure.
+   *
+   * @param filename Filename of the procedure to fetch from the store.
+   *
+   * @return Reference to procedure.
+   */
+  const Procedure& GetProcedure(const std::string& filename) const;
+
+  /**
+   * @brief Get workspace from loaded procedure.
+   *
+   * @param filename Filename of the procedure to fetch from the store.
+   *
+   * @return Pointer to workspace.
+   *
+   * @note The returned workspace may already have been setup, but it's the client's responsibility
+   * to ensure that is the case (calling Setup() twice on a workspace is null operation, so it's
+   * safe to do that to be sure).
+   */
+  Workspace* GetWorkspace(const std::string& filename) const;
+
+  /**
+   * @brief Clone an instruction tree wth given path from a procedure with given name.
+   *
+   * @param filename Filename of the procedure to fetch from the store.
+   * @param filename Path to the root of the instruction tree to clone.
+   *
+   * @return Pointer to workspace.
+   */
+  std::unique_ptr<Instruction> CloneInstructionPath(const std::string& filename,
+                                                    const std::string& path) const;
+
+private:
+  std::string m_procedure_filename;
+  const ProcedureStore* m_procedure_store;
 };
 
 }  // namespace sequencer

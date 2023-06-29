@@ -50,14 +50,14 @@ Include::~Include() = default;
 void Include::SetupImpl(const Procedure& proc)
 {
   auto proc_context = proc.GetContext();
-  std::string proc_filename = proc_context.procedure_filename;
+  std::string proc_filename = proc_context.GetFilename();
   if (HasAttribute(FILE_ATTRIBUTE_NAME))
   {
     auto filename = GetAttributeValue<std::string>(FILE_ATTRIBUTE_NAME);
     proc_filename = GetFullPathName(GetFileDirectory(proc_filename), filename);
   }
   auto path = GetAttributeValue<std::string>(PATH_ATTRIBUTE_NAME);
-  auto clone = proc_context.procedure_store->CloneInstructionPath(proc_filename, path);
+  auto clone = proc_context.CloneInstructionPath(proc_filename, path);
   if (!clone)
   {
     std::string error_message = InstructionSetupExceptionProlog(*this) +
@@ -71,7 +71,7 @@ void Include::SetupImpl(const Procedure& proc)
     throw InstructionSetupException(error_message);
   }
   (void)InsertInstruction(std::move(clone), 0);
-  auto& sub_proc = proc_context.procedure_store->GetProcedure(proc_filename);
+  auto& sub_proc = proc_context.GetProcedure(proc_filename);
   SetupChild(sub_proc);
 }
 

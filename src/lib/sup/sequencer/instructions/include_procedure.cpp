@@ -52,12 +52,12 @@ IncludeProcedure::~IncludeProcedure() = default;
 void IncludeProcedure::SetupImpl(const Procedure& proc)
 {
   auto proc_context = proc.GetContext();
-  std::string parent_proc_filename = proc_context.procedure_filename;
+  std::string parent_proc_filename = proc_context.GetFilename();
   auto filename = GetAttributeValue<std::string>(FILE_ATTRIBUTE_NAME);
   auto proc_filename = GetFullPathName(GetFileDirectory(parent_proc_filename), filename);
   std::string path =
       HasAttribute(PATH_ATTRIBUTE_NAME) ? GetAttributeValue<std::string>(PATH_ATTRIBUTE_NAME) : "";
-  m_root_instruction = proc_context.procedure_store->CloneInstructionPath(proc_filename, path);
+  m_root_instruction = proc_context.CloneInstructionPath(proc_filename, path);
   if (!m_root_instruction)
   {
     std::string error_message = InstructionSetupExceptionProlog(*this) + "instruction not found, "
@@ -70,9 +70,9 @@ void IncludeProcedure::SetupImpl(const Procedure& proc)
       "could not initialise variable attributes for child instruction(s)";
     throw InstructionSetupException(error_message);
   }
-  auto& sub_proc = proc_context.procedure_store->GetProcedure(proc_filename);
+  auto& sub_proc = proc_context.GetProcedure(proc_filename);
   m_root_instruction->Setup(sub_proc);
-  m_workspace = proc_context.procedure_store->GetWorkspace(proc_filename);
+  m_workspace = proc_context.GetWorkspace(proc_filename);
   m_workspace->Setup();
 }
 

@@ -102,8 +102,7 @@ TEST_F(ProcedureTest, DefaultConstructed)
   EXPECT_EQ(instructions.size(), 1);
   std::string wrong_filename = "WrongFile.xml";
   auto proc_context = empty_proc.GetContext();
-  EXPECT_THROW(proc_context.procedure_store->GetProcedure(wrong_filename),
-               sup::xml::ParseException);
+  EXPECT_THROW(proc_context.GetProcedure(wrong_filename), sup::xml::ParseException);
 
   // Variables
   auto variables = empty_proc.VariableNames();
@@ -263,7 +262,7 @@ TEST_F(ProcedureTest, ExternalInclude)
   ASSERT_TRUE(static_cast<bool>(proc));
 
   auto proc_context = proc->GetContext();
-  auto& sub_proc = proc_context.procedure_store->GetProcedure(parallel_sequence_file_name);
+  auto& sub_proc = proc_context.GetProcedure(parallel_sequence_file_name);
   auto ext_instructions = sub_proc.GetTopInstructions();
   EXPECT_GT(ext_instructions.size(), 0);
 

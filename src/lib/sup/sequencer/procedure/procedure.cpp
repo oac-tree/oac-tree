@@ -105,7 +105,7 @@ std::vector<const Instruction*> Procedure::GetTopInstructions() const
 
 ProcedureContext Procedure::GetContext() const
 {
-  return { GetFilename(), std::addressof(GetProcedureStore()) };
+  return ProcedureContext(GetFilename(), GetProcedureStore());
 }
 
 InstructionTree Procedure::GetNextInstructionTree() const

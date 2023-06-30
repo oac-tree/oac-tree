@@ -86,7 +86,7 @@ ExecutionStatus Include::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   {
     ExecuteChild(ui, ws);
   }
-  return CalculateStatus();
+  return GetChildStatus();
 }
 
 bool Include::PostInitialiseVariables(const StringAttributeList& source_attributes)
@@ -105,15 +105,6 @@ bool Include::PostInitialiseVariables(const StringAttributeList& source_attribut
     }
   }
   return result;
-}
-
-ExecutionStatus Include::CalculateStatus() const
-{
-  if (!HasChild())
-  {
-    return ExecutionStatus::SUCCESS;
-  }
-  return GetChildStatus();
 }
 
 }  // namespace sequencer

@@ -39,8 +39,7 @@ namespace sequencer
 const std::string IncludeProcedure::Type = "IncludeProcedure";
 
 IncludeProcedure::IncludeProcedure()
-  : Instruction(IncludeProcedure::Type)
-  , m_root_instruction{}
+  : DecoratorInstruction(IncludeProcedure::Type)
   , m_workspace{}
 {
   AddAttributeDefinition(FILE_ATTRIBUTE_NAME, sup::dto::StringType).SetMandatory();
@@ -57,30 +56,39 @@ void IncludeProcedure::SetupImpl(const Procedure& proc)
   auto proc_filename = GetFullPathName(GetFileDirectory(parent_proc_filename), filename);
   std::string path =
       HasAttribute(PATH_ATTRIBUTE_NAME) ? GetAttributeValue<std::string>(PATH_ATTRIBUTE_NAME) : "";
-  m_root_instruction = proc_context.CloneInstructionPath(proc_filename, path);
-  if (!m_root_instruction)
+  auto instr_clone = proc_context.CloneInstructionPath(proc_filename, path);
+  if (!instr_clone)
   {
     std::string error_message = InstructionSetupExceptionProlog(*this) + "instruction not found, "
       "path [" + path + "]";
     throw InstructionSetupException(error_message);
   }
-  if (!InstructionHelper::InitialiseVariableAttributes(*m_root_instruction, GetStringAttributes()))
+  if (!InstructionHelper::InitialiseVariableAttributes(*instr_clone, GetStringAttributes()))
   {
     std::string error_message = InstructionSetupExceptionProlog(*this) +
       "could not initialise variable attributes for child instruction(s)";
     throw InstructionSetupException(error_message);
   }
-  auto& sub_proc = proc_context.GetProcedure(proc_filename);
-  m_root_instruction->Setup(sub_proc);
+  (void)InsertInstruction(std::move(instr_clone), 0);
   m_workspace = proc_context.GetWorkspace(proc_filename);
   m_workspace->Setup();
+  auto& sub_proc = proc_context.GetProcedure(proc_filename);
+  SetupChild(sub_proc);
 }
 
 ExecutionStatus IncludeProcedure::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
+  if (!HasChild())
+  {
+    return ExecutionStatus::SUCCESS;
+  }
   (void)ws;
-  m_root_instruction->ExecuteSingle(ui, *m_workspace);
-  return m_root_instruction->GetStatus();
+  auto child_status = GetChildStatus();
+  if (NeedsExecute(child_status))
+  {
+    ExecuteChild(ui, *m_workspace);
+  }
+  return GetChildStatus();
 }
 
 bool IncludeProcedure::PostInitialiseVariables(const StringAttributeList& source_attributes)

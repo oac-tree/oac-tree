@@ -49,8 +49,6 @@ private:
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 
   bool PostInitialiseVariables(const StringAttributeList& source_attributes) override;
-
-  ExecutionStatus CalculateStatus() const;
 };
 
 }  // namespace sequencer

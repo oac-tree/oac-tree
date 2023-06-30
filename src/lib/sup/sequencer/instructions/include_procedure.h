@@ -22,7 +22,7 @@
 #ifndef SUP_SEQUENCER_INCLUDE_PROCEDURE_H_
 #define SUP_SEQUENCER_INCLUDE_PROCEDURE_H_
 
-#include <sup/sequencer/instruction.h>
+#include <sup/sequencer/decorator_instruction.h>
 #include <sup/sequencer/workspace.h>
 
 #include <memory>
@@ -32,9 +32,9 @@ namespace sup
 namespace sequencer
 {
 /**
- * @brief Instruction that includes an external procedure (workspace and instruction tree).
+ * @brief Decorator instruction that includes an external procedure (workspace and instruction tree).
  */
-class IncludeProcedure : public Instruction
+class IncludeProcedure : public DecoratorInstruction
 {
 public:
   IncludeProcedure();
@@ -49,8 +49,6 @@ private:
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 
   bool PostInitialiseVariables(const StringAttributeList& source_attributes) override;
-
-  std::unique_ptr<Instruction> m_root_instruction;
 
   Workspace* m_workspace;
 };

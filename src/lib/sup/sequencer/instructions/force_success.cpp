@@ -35,10 +35,6 @@ ForceSuccess::~ForceSuccess() = default;
 
 ExecutionStatus ForceSuccess::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  if (!HasChild())
-  {
-    return ExecutionStatus::SUCCESS;
-  }
   ExecuteChild(ui, ws);
 
   auto status = GetChildStatus();

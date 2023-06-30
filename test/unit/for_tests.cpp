@@ -37,6 +37,10 @@ TEST(For, Setup)
   auto instr = GlobalInstructionRegistry().Create("For");
   EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
 
+  auto wait = GlobalInstructionRegistry().Create("Wait");
+  ASSERT_TRUE(AppendChildInstruction(*instr, std::move(wait)));
+  EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
+
   EXPECT_TRUE(instr->AddAttribute("elementVar", "i"));
   EXPECT_TRUE(instr->AddAttribute("arrayVar", "a"));
   EXPECT_NO_THROW(instr->Setup(proc));

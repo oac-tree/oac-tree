@@ -57,10 +57,6 @@ void ForInstruction::InitHook()
 
 ExecutionStatus ForInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  if (!HasChild())
-  {
-    return ExecutionStatus::SUCCESS;
-  }
   sup::dto::AnyValue array;
   if (!GetValueFromAttributeName(*this, ws, ui, ARRAY_ATTR_NAME, array))
   {

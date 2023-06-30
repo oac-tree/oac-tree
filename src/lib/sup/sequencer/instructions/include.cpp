@@ -77,10 +77,6 @@ void Include::SetupImpl(const Procedure& proc)
 
 ExecutionStatus Include::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  if (!HasChild())
-  {
-    return ExecutionStatus::SUCCESS;
-  }
   auto child_status = GetChildStatus();
   if (NeedsExecute(child_status))
   {

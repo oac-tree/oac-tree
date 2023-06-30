@@ -35,10 +35,6 @@ Inverter::~Inverter() = default;
 
 ExecutionStatus Inverter::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  if (!HasChild())
-  {
-    return ExecutionStatus::SUCCESS;
-  }
   auto child_status = GetChildStatus();
   if (NeedsExecute(child_status))
   {
@@ -49,10 +45,6 @@ ExecutionStatus Inverter::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 
 ExecutionStatus Inverter::CalculateStatus() const
 {
-  if (!HasChild())
-  {
-    return ExecutionStatus::SUCCESS;
-  }
   auto child_status = GetChildStatus();
   auto status = child_status;
 

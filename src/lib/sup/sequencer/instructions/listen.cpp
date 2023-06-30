@@ -53,10 +53,6 @@ Listen::~Listen() = default;
 
 ExecutionStatus Listen::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  if (!HasChild())
-  {
-    return ExecutionStatus::SUCCESS;
-  }
   if (!cb_guard.IsValid())
   {
     var_changed = false;

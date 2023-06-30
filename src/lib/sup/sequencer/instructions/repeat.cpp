@@ -63,7 +63,7 @@ void Repeat::SetupImpl(const Procedure& proc)
 
 ExecutionStatus Repeat::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  if (!HasChild() || m_max_count == 0)
+  if (m_max_count == 0)
   {
     return ExecutionStatus::SUCCESS;
   }

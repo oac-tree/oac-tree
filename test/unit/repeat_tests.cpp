@@ -35,6 +35,10 @@ TEST(Repeat, Setup)
 {
   Procedure proc;
   auto instr = GlobalInstructionRegistry().Create("Repeat");
+  EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
+
+  auto wait = GlobalInstructionRegistry().Create("Wait");
+  ASSERT_TRUE(AppendChildInstruction(*instr, std::move(wait)));
   EXPECT_NO_THROW(instr->Setup(proc));
 
   EXPECT_TRUE(instr->AddAttribute("maxCount", "five"));

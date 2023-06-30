@@ -39,10 +39,8 @@ Instruction::Category DecoratorInstruction::GetCategory() const
 
 void DecoratorInstruction::SetupChild(const Procedure &proc)
 {
-  if (m_child)
-  {
-    m_child->Setup(proc);
-  }
+  AssertChildPresent();
+  m_child->Setup(proc);
 }
 
 bool DecoratorInstruction::HasChild() const
@@ -52,19 +50,14 @@ bool DecoratorInstruction::HasChild() const
 
 ExecutionStatus DecoratorInstruction::GetChildStatus() const
 {
-  if (m_child)
-  {
-    return m_child->GetStatus();
-  }
-  return ExecutionStatus::NOT_STARTED;
+  AssertChildPresent();
+  return m_child->GetStatus();
 }
 
 void DecoratorInstruction::ExecuteChild(UserInterface& ui, Workspace& ws)
 {
-  if (m_child)
-  {
-    m_child->ExecuteSingle(ui, ws);
-  }
+  AssertChildPresent();
+  m_child->ExecuteSingle(ui, ws);
 }
 
 void DecoratorInstruction::ResetChild()
@@ -137,6 +130,16 @@ std::unique_ptr<Instruction> DecoratorInstruction::TakeInstructionImpl(int index
 void DecoratorInstruction::SetupImpl(const Procedure &proc)
 {
   SetupChild(proc);
+}
+
+void DecoratorInstruction::AssertChildPresent() const
+{
+  if (!m_child)
+  {
+    std::string error_message = InstructionSetupExceptionProlog(*this) +
+      "Decorator instruction requires a child instruction";
+    throw InstructionSetupException(error_message);
+  }
 }
 
 }  // namespace sequencer

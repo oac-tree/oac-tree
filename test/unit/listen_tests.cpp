@@ -44,6 +44,10 @@ TEST_F(ListenTest, Setup)
   auto instr = GlobalInstructionRegistry().Create("Listen");
   EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
 
+  auto wait = GlobalInstructionRegistry().Create("Wait");
+  ASSERT_TRUE(AppendChildInstruction(*instr, std::move(wait)));
+  EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
+
   EXPECT_TRUE(instr->AddAttribute("varNames", "var1,var2"));
   EXPECT_NO_THROW(instr->Setup(proc));
 }

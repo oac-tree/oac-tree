@@ -110,6 +110,10 @@ TEST(Choice, Setup)
   auto instr = GlobalInstructionRegistry().Create("Choice");
   EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
 
+  auto wait = GlobalInstructionRegistry().Create("Wait");
+  ASSERT_TRUE(AppendChildInstruction(*instr, std::move(wait)));
+  EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
+
   EXPECT_TRUE(instr->AddAttribute("varName", "var"));
   EXPECT_NO_THROW(instr->Setup(proc));
 }

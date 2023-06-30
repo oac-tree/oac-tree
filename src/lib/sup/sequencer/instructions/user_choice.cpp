@@ -46,10 +46,6 @@ ExecutionStatus UserChoice::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   (void)ws;
 
-  if (!HasChildren())
-  {
-    return ExecutionStatus::SUCCESS;
-  }
   // Negative number for choice member variable indicates choice was not made yet
   if (m_choice < 0)
   {

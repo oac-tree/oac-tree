@@ -79,6 +79,7 @@ private:
   bool InsertInstructionImpl(std::unique_ptr<Instruction>&& child, int index) override;
   std::unique_ptr<Instruction> TakeInstructionImpl(int index) override;
   void SetupImpl(const Procedure &proc) override;
+  void AssertChildrenPresent() const;
 
   std::vector<std::unique_ptr<Instruction>> m_children;
 };

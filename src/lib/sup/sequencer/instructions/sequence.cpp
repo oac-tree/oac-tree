@@ -35,10 +35,6 @@ Sequence::~Sequence() = default;
 
 ExecutionStatus Sequence::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  if (!HasChildren())
-  {
-    return ExecutionStatus::SUCCESS;
-  }
   for (auto instruction : ChildInstructions())
   {
     auto child_status = instruction->GetStatus();

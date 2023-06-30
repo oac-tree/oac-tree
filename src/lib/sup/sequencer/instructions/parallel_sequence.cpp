@@ -81,10 +81,6 @@ void ParallelSequence::SetupImpl(const Procedure &proc)
 
 ExecutionStatus ParallelSequence::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  if (!HasChildren())
-  {
-    return ExecutionStatus::SUCCESS;
-  }
   for (auto &wrapper : m_wrappers)
   {
     auto wrapper_status = wrapper.GetStatus();

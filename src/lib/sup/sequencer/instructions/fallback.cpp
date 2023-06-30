@@ -35,10 +35,6 @@ Fallback::~Fallback() = default;
 
 ExecutionStatus Fallback::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  if (!HasChildren())
-  {
-    return ExecutionStatus::SUCCESS;
-  }
   for (auto instruction : ChildInstructions())
   {
     auto child_status = instruction->GetStatus();

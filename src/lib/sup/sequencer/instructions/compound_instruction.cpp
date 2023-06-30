@@ -36,6 +36,7 @@ Instruction::Category CompoundInstruction::GetCategory() const
 
 void CompoundInstruction::SetupChildren(const Procedure& proc)
 {
+  AssertChildrenPresent();
   for (auto& instruction : m_children)
   {
     instruction->Setup(proc);
@@ -115,6 +116,17 @@ void CompoundInstruction::SetupImpl(const Procedure& proc)
 {
   SetupChildren(proc);
 }
+
+void CompoundInstruction::AssertChildrenPresent() const
+{
+  if (!HasChildren())
+  {
+    std::string error_message = InstructionSetupExceptionProlog(*this) +
+      "Compound instruction requires at least one child instruction";
+    throw InstructionSetupException(error_message);
+  }
+}
+
 
 }  // namespace sequencer
 

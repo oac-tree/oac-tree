@@ -135,7 +135,7 @@ void Runner::ExecuteProcedure()
   }
   while (!IsFinished() && !m_halt.load())
   {
-    auto next_instructions = m_proc->GetNextInstructions();
+    auto next_instructions = GetNextInstructions(*m_proc);
     if (!next_instructions.empty())
     {
       m_current_breakpoint_instructions = HandleBreakpoints(m_breakpoints, next_instructions);

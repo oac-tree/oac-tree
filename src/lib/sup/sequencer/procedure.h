@@ -119,14 +119,6 @@ public:
   InstructionTree GetNextInstructionTree() const;
 
   /**
-   * @brief Get list of instructions that will be executed next.
-   *
-   * @return List of instructions.
-   * @details This method should only be called in between execution steps.
-   */
-  std::vector<const Instruction*> GetNextInstructions() const;
-
-  /**
    * @brief Get number of top-level instructions.
    */
   int GetInstructionCount() const;
@@ -336,6 +328,24 @@ private:
  */
 int TickTimeoutMs(Procedure& procedure);
 
+  /**
+   * @brief Get list of instructions that will be executed next.
+   *
+   * @param proc Procedure to query.
+   *
+   * @return List of instructions.
+   * @details This method should only be called in between execution steps.
+   */
+std::vector<const Instruction*> GetNextInstructions(const Procedure& proc);
+
+  /**
+   * @brief Get list of instruction leaves that will be executed next.
+   *
+   * @param proc Procedure to query.
+   *
+   * @return List of instruction leaves.
+   * @details This method should only be called in between execution steps.
+   */
 std::vector<const Instruction*> GetNextLeaves(const Procedure& proc);
 
 }  // namespace sequencer

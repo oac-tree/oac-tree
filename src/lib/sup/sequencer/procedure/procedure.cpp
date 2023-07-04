@@ -113,16 +113,6 @@ InstructionTree Procedure::GetNextInstructionTree() const
   return CreateNextInstructionTree(root);
 }
 
-std::vector<const Instruction*> Procedure::GetNextInstructions() const
-{
-  auto root = RootInstruction();
-  if (root == nullptr || !ReadyForExecute(root->GetStatus()))
-  {
-    return {};
-  }
-  return FlattenBFS(CreateNextInstructionTree(root));
-}
-
 int Procedure::GetInstructionCount() const
 {
   return static_cast<int>(m_instructions.size());
@@ -325,9 +315,23 @@ int TickTimeoutMs(Procedure& procedure)
   return DefaultSettings::DEFAULT_SLEEP_TIME_MS;
 }
 
+std::vector<const Instruction*> GetNextInstructions(const Procedure& proc)
+{
+  auto tree = proc.GetNextInstructionTree();
+  if (tree.IsEmpty())
+  {
+    return {};
+  }
+  return FlattenBFS(tree);
+}
+
 std::vector<const Instruction*> GetNextLeaves(const Procedure& proc)
 {
   auto tree = proc.GetNextInstructionTree();
+  if (tree.IsEmpty())
+  {
+    return {};
+  }
   return GetLeaves(tree);
 }
 

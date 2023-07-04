@@ -330,7 +330,7 @@ TEST_F(RunnerTest, Pause)
   EXPECT_FALSE(runner.IsFinished());
   EXPECT_FALSE(runner.IsRunning());
   // Query next instructions list
-  auto next_instructions = sync_proc->GetNextInstructions();
+  auto next_instructions = GetNextInstructions(*sync_proc);
   EXPECT_EQ(next_instructions.size(), 3);
   // Query leaves
   auto next_leaves = GetNextLeaves(*sync_proc);
@@ -374,7 +374,7 @@ TEST_F(RunnerTest, EnabledBreakpoint)
   runner.SetTickCallback();
 
   // Fetch next instructions and set a breakpoint on the Inverter instruction
-  auto next_instructions = sync_proc->GetNextInstructions();
+  auto next_instructions = GetNextInstructions(*sync_proc);
   EXPECT_EQ(next_instructions.size(), 3);
   auto predicate = [](const Instruction* instruction) {
     return instruction->GetType() == "Inverter";
@@ -436,7 +436,7 @@ TEST_F(RunnerTest, DisabledBreakpoint)
   runner.SetTickCallback();
 
   // Fetch next instructions and set a breakpoint on the Inverter instruction
-  auto next_instructions = sync_proc->GetNextInstructions();
+  auto next_instructions = GetNextInstructions(*sync_proc);
   EXPECT_EQ(next_instructions.size(), 3);
   auto predicate = [](const Instruction* instruction) {
     return instruction->GetType() == "Inverter";

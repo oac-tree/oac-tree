@@ -25,6 +25,7 @@
 #include "mock_user_interface.h"
 #include "unit_test_helper.h"
 
+#include <sup/sequencer/instruction_registry.h>
 #include <sup/sequencer/sequence_parser.h>
 
 #include <gtest/gtest.h>
@@ -135,6 +136,12 @@ TEST_F(RunnerTest, NoProcedure)
   EXPECT_NO_THROW(runner.ExecuteSingle());
   EXPECT_TRUE(runner.IsFinished());
   EXPECT_FALSE(runner.IsRunning());
+
+  // Trying to set breakpoints at non-existing instructions
+  EXPECT_THROW(runner.SetBreakpoint(nullptr), InvalidOperationException);
+  auto instr = GlobalInstructionRegistry().Create("Wait");
+  ASSERT_NE(instr.get(), nullptr);
+  EXPECT_THROW(runner.SetBreakpoint(instr.get()), InvalidOperationException);
 }
 
 TEST_F(RunnerTest, ExecuteSingle)
@@ -350,6 +357,12 @@ TEST_F(RunnerTest, EnabledBreakpoint)
   EXPECT_EQ(sync_proc->GetStatus(), ExecutionStatus::NOT_STARTED);
   EXPECT_FALSE(runner.IsFinished());
   EXPECT_FALSE(runner.IsRunning());
+
+  // Trying to set breakpoints at non-existing instructions
+  EXPECT_THROW(runner.SetBreakpoint(nullptr), InvalidOperationException);
+  auto instr = GlobalInstructionRegistry().Create("Wait");
+  ASSERT_NE(instr.get(), nullptr);
+  EXPECT_THROW(runner.SetBreakpoint(instr.get()), InvalidOperationException);
 
   // Set callback to pause runner and execute
   auto cb = [&runner](const Procedure&) { runner.Pause(); };

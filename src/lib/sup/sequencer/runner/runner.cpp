@@ -21,6 +21,8 @@
 
 #include <sup/sequencer/runner.h>
 
+#include <sup/sequencer/exceptions.h>
+#include <sup/sequencer/instruction_tree.h>
 #include <sup/sequencer/procedure.h>
 #include <sup/sequencer/user_interface.h>
 
@@ -34,12 +36,6 @@ using sup::sequencer::Breakpoint;
 using sup::sequencer::Instruction;
 std::vector<Breakpoint>::iterator FindBreakpoint(std::vector<Breakpoint>& breakpoints,
                                                  const Instruction* instruction);
-}
-
-namespace sup
-{
-namespace sequencer
-{
 std::vector<Breakpoint*> CurrentBreakpoints(
   std::vector<Breakpoint>& breakpoints, const std::vector<const Instruction*>& next_instructions);
 
@@ -47,6 +43,12 @@ std::vector<const Instruction*> HandleBreakpoints(
   std::vector<Breakpoint>& breakpoints, const std::vector<const Instruction*>& next_instructions);
 
 void ResetBreakpoints(std::vector<Breakpoint>& breakpoints);
+}
+
+namespace sup
+{
+namespace sequencer
+{
 
 Runner::Runner(UserInterface& ui)
   : m_proc{nullptr}
@@ -76,6 +78,12 @@ void Runner::SetTickCallback(TickCallback cb)
 
 void Runner::SetBreakpoint(const Instruction* instruction)
 {
+  if (!InstructionPresent(instruction))
+  {
+    std::string error_message =
+      "Runner::SetBreakpoint: trying to set a breakpoint at non-existent instruction";
+    throw InvalidOperationException(error_message);
+  }
   auto it = FindBreakpoint(m_breakpoints, instruction);
   if (it == m_breakpoints.end())
   {
@@ -194,6 +202,51 @@ bool Runner::IsRunning() const
   return (status == ExecutionStatus::RUNNING);
 }
 
+bool Runner::InstructionPresent(const Instruction* instruction) const
+{
+  if (!m_proc || !instruction)
+  {
+    return false;
+  }
+  auto root_instr = m_proc->RootInstruction();
+  if (!root_instr)
+  {
+    return false;
+  }
+  auto instructions = FlattenBFS(CreateFullInstructionTree(root_instr));
+  auto found_it = std::find(instructions.begin(), instructions.end(), instruction);
+  return found_it != instructions.end();
+}
+
+TimeoutWhenRunning::TimeoutWhenRunning(int ms)
+  : m_timeout_ms{ms}
+{}
+
+TimeoutWhenRunning::~TimeoutWhenRunning() = default;
+
+void TimeoutWhenRunning::operator()(const Procedure& proc) const
+{
+  if (proc.GetStatus() == ExecutionStatus::RUNNING && m_timeout_ms > 0)
+  {
+    std::this_thread::sleep_for(std::chrono::milliseconds(m_timeout_ms));
+  }
+}
+
+}  // namespace sequencer
+
+}  // namespace sup
+
+namespace
+{
+std::vector<Breakpoint>::iterator FindBreakpoint(std::vector<Breakpoint>& breakpoints,
+                                                 const Instruction* instruction)
+{
+  auto predicate = [instruction](Breakpoint& breakpoint) {
+    return breakpoint.GetInstruction() == instruction;
+  };
+  return std::find_if(breakpoints.begin(), breakpoints.end(), predicate);
+}
+
 std::vector<Breakpoint*> CurrentBreakpoints(
   std::vector<Breakpoint>& breakpoints, const std::vector<const Instruction*>& next_instructions)
 {
@@ -242,34 +295,4 @@ void ResetBreakpoints(std::vector<Breakpoint>& breakpoints)
     }
   }
 }
-
-TimeoutWhenRunning::TimeoutWhenRunning(int ms)
-  : m_timeout_ms{ms}
-{}
-
-TimeoutWhenRunning::~TimeoutWhenRunning() = default;
-
-void TimeoutWhenRunning::operator()(const Procedure& proc) const
-{
-  if (proc.GetStatus() == ExecutionStatus::RUNNING && m_timeout_ms > 0)
-  {
-    std::this_thread::sleep_for(std::chrono::milliseconds(m_timeout_ms));
-  }
-}
-
-}  // namespace sequencer
-
-}  // namespace sup
-
-namespace
-{
-std::vector<Breakpoint>::iterator FindBreakpoint(std::vector<Breakpoint>& breakpoints,
-                                                 const Instruction* instruction)
-{
-  auto predicate = [instruction](Breakpoint& breakpoint) {
-    return breakpoint.GetInstruction() == instruction;
-  };
-  return std::find_if(breakpoints.begin(), breakpoints.end(), predicate);
-}
-
 }

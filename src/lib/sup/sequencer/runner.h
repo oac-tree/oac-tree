@@ -167,6 +167,8 @@ public:
   bool IsRunning() const;
 
 private:
+  bool InstructionPresent(const Instruction* instruction) const;
+
   Procedure* m_proc;
   UserInterface& m_ui;
   TickCallback m_tick_cb;

@@ -68,6 +68,11 @@ InstructionTree CreateFullInstructionTree(const Instruction* root);
 InstructionTree CreateNextInstructionTree(const Instruction* root);
 
 /**
+ * @brief Retrieve the leaves of an instruction tree.
+*/
+std::vector<const Instruction*> GetLeaves(const InstructionTree& tree);
+
+/**
  * @brief Flatten an InstructionTree using breadth-first search.
 */
 std::vector<const Instruction*> FlattenBFS(const InstructionTree& tree);

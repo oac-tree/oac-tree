@@ -325,6 +325,12 @@ int TickTimeoutMs(Procedure& procedure)
   return DefaultSettings::DEFAULT_SLEEP_TIME_MS;
 }
 
+std::vector<const Instruction*> GetNextLeaves(const Procedure& proc)
+{
+  auto tree = proc.GetNextInstructionTree();
+  return GetLeaves(tree);
+}
+
 }  // namespace sequencer
 
 }  // namespace sup

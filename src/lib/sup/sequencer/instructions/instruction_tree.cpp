@@ -117,6 +117,33 @@ InstructionTree CreateInstructionTree(const Instruction* root, InstructionChildS
   return result;
 }
 
+std::vector<const Instruction*> GetLeaves(const InstructionTree& tree)
+{
+  std::vector<const Instruction*> result;
+  std::deque<const InstructionTree*> stack;
+  std::deque<const InstructionTree*> temp_stack;
+  stack.push_back(&tree);
+  while(!stack.empty())
+  {
+    while (!stack.empty())
+    {
+      auto node = stack.front();
+      stack.pop_front();
+      auto child_nodes = node->GetChildren();
+      for (auto child_node : child_nodes)
+      {
+        temp_stack.push_back(child_node);
+      }
+      if (child_nodes.empty())
+      {
+        result.push_back(node->GetInstruction());
+      }
+    }
+    std::swap(stack, temp_stack);
+  }
+  return result;
+}
+
 std::vector<const Instruction*> FlattenBFS(const InstructionTree& tree)
 {
   std::vector<const Instruction*> result;

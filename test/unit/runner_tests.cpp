@@ -322,8 +322,16 @@ TEST_F(RunnerTest, Pause)
   EXPECT_NO_THROW(runner.ExecuteProcedure());
   EXPECT_FALSE(runner.IsFinished());
   EXPECT_FALSE(runner.IsRunning());
+  // Query next instructions list
   auto next_instructions = sync_proc->GetNextInstructions();
   EXPECT_EQ(next_instructions.size(), 3);
+  // Query leaves
+  auto next_leaves = GetNextLeaves(*sync_proc);
+  ASSERT_EQ(next_leaves.size(), 1);
+  auto found_it = std::find(next_instructions.begin(), next_instructions.end(), next_leaves[0]);
+  EXPECT_NE(found_it, next_instructions.end());
+
+  // Start again
   EXPECT_NO_THROW(runner.ExecuteProcedure());
   EXPECT_TRUE(runner.IsFinished());
   EXPECT_FALSE(runner.IsRunning());
@@ -376,6 +384,14 @@ TEST_F(RunnerTest, EnabledBreakpoint)
   ASSERT_EQ(breakpoints.size(), 1);
   EXPECT_EQ(breakpoints[0].GetInstruction(), *it);
   EXPECT_EQ(breakpoints[0].GetStatus(), Breakpoint::kReleased);
+
+  // Query leaves
+  auto next_leaves = GetNextLeaves(*sync_proc);
+  ASSERT_EQ(next_leaves.size(), 1);
+  auto found_it = std::find(next_instructions.begin(), next_instructions.end(), next_leaves[0]);
+  EXPECT_NE(found_it, next_instructions.end());
+  // Leave instruction is not the Inverter!
+  EXPECT_NE(next_leaves[0], *it);
 
   // Next execute will pass the breakpoint
   EXPECT_NO_THROW(runner.ExecuteProcedure());

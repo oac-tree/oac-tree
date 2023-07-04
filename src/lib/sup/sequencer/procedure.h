@@ -336,6 +336,8 @@ private:
  */
 int TickTimeoutMs(Procedure& procedure);
 
+std::vector<const Instruction*> GetNextLeaves(const Procedure& proc);
+
 }  // namespace sequencer
 
 }  // namespace sup

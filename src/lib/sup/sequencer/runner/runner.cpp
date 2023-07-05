@@ -145,11 +145,6 @@ void Runner::ExecuteProcedure()
       }
     }
     ExecuteSingle();
-    ResetBreakpoints(m_breakpoints);
-    if (m_tick_cb)
-    {
-      m_tick_cb(*m_proc);
-    }
   }
 }
 
@@ -158,6 +153,11 @@ void Runner::ExecuteSingle()
   if (m_proc)
   {
     m_proc->ExecuteSingle(m_ui);
+    ResetBreakpoints(m_breakpoints);
+    if (m_tick_cb)
+    {
+      m_tick_cb(*m_proc);
+    }
   }
 }
 

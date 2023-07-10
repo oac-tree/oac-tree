@@ -11,10 +11,6 @@ add_subdirectory(procedure)
 add_subdirectory(runner)
 add_subdirectory(variables)
 
-if(NOT DEFINED ENV{NO_PLUGINS})
-    add_subdirectory(plugins)
-endif()
-
 set_target_properties(sup-sequencer-shared PROPERTIES
     VERSION ${LIBVERSION}
     SOVERSION ${LIBSOVERSION}

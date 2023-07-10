@@ -27,6 +27,7 @@
 
 #include <sup/dto/anytype.h>
 #include <sup/dto/anyvalue.h>
+#include <sup/dto/anyvalue_helper.h>
 
 #include <memory>
 
@@ -54,38 +55,31 @@ LocalVariable::~LocalVariable() {}
 
 bool LocalVariable::GetValueImpl(sup::dto::AnyValue& value) const
 {
-  if (sup::dto::IsEmptyValue(*m_value))
+  if (sup::dto::IsEmptyValue(m_value))
   {
     return false;
   }
-  if (!sup::dto::IsEmptyValue(value) && value.GetType() != m_value->GetType())
-  {
-    return false;
-  }
-  value = *m_value;
-  return true;
+  return sup::dto::TryAssign(value, m_value);
 }
 
 bool LocalVariable::SetValueImpl(const sup::dto::AnyValue& value)
 {
-  if (!sup::dto::IsEmptyValue(*m_value) && value.GetType() != m_value->GetType())
+  if (!sup::dto::TryAssignIfEmptyOrConvert(m_value, value))
   {
     return false;
   }
-  *m_value = value;
   Notify(value, true);
   return true;
 }
 
 void LocalVariable::SetupImpl(const sup::dto::AnyTypeRegistry& registry)
 {
-  auto parsed_value = ParseAnyValueAttributePair(*this, JSON_TYPE, JSON_VALUE, registry);
-  m_value.reset(new sup::dto::AnyValue{parsed_value});
+  m_value = ParseAnyValueAttributePair(*this, JSON_TYPE, JSON_VALUE, registry);
 }
 
 void LocalVariable::ResetImpl()
 {
-  m_value.reset();
+  m_value = sup::dto::AnyValue{};
 }
 
 }  // namespace sequencer

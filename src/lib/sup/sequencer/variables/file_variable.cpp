@@ -56,12 +56,7 @@ bool FileVariable::GetValueImpl(sup::dto::AnyValue& value) const
     return false;
   }
   auto parsed_val = parser.MoveAnyValue();
-  if (!sup::dto::IsEmptyValue(value) && value.GetType() != parsed_val.GetType())
-  {
-    return false;
-  }
-  value = parsed_val;
-  return true;
+  return sup::dto::TryAssign(value, parsed_val);
 }
 
 bool FileVariable::SetValueImpl(const sup::dto::AnyValue& value)

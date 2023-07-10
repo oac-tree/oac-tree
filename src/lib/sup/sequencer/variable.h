@@ -94,7 +94,8 @@ public:
    * @param fieldname optional field name.
    * @return true on success.
    *
-   * @note Non-virtual interface.
+   * @note Non-virtual interface. This member function will fail, i.e. return false, if value is
+   * non-empty and the value to be retrieved cannot be converted to value's type.
    */
   bool GetValue(sup::dto::AnyValue& value, const std::string& fieldname = {}) const;
 
@@ -105,7 +106,8 @@ public:
    * @param fieldname optional field name.
    * @return true on success.
    *
-   * @note Non-virtual interface.
+   * @note Non-virtual interface. This member function does not enforce any type constraints on
+   * the value. Variable implementations are fully responsible to enforce this if needed.
    */
   bool SetValue(const sup::dto::AnyValue& value, const std::string& fieldname = {});
 

@@ -24,8 +24,6 @@
 
 #include <sup/sequencer/variable.h>
 
-#include <memory>
-
 namespace sup
 {
 namespace sequencer
@@ -34,18 +32,24 @@ namespace sequencer
  * @brief Variable that is hosted locally in the workspace.
  *
  * @details A LocalVariable with only a type attribute (no value attribute) will
- * allocate an AnyValue, but subsequent GetValue calls will return false until an
- * explicit successful SetValue occurs. The rationale is that it does not make sense to
- * query an zero-initialized value and that this allows for triggering instruction
- * execution on availability of a workspace variable.
+ * allocate a zero-initialized AnyValue with the given type.
  */
 class LocalVariable : public Variable
 {
+public:
+  LocalVariable();
+
+  ~LocalVariable() override;
+
+  /**
+   * @brief Class name for VariableRegistry.
+   */
+  static const std::string Type;
 private:
   /**
    * @brief Encapsulated AnyValue.
    */
-  std::unique_ptr<sup::dto::AnyValue> m_value;
+  sup::dto::AnyValue m_value;
 
   /**
    * @brief See sup::sequencer::Variable.
@@ -54,23 +58,6 @@ private:
   bool SetValueImpl(const sup::dto::AnyValue& value) override;
   void SetupImpl(const sup::dto::AnyTypeRegistry& registry) override;
   void ResetImpl() override;
-
-protected:
-public:
-  /**
-   * @brief Constructor.
-   */
-  LocalVariable();
-
-  /**
-   * @brief Destructor.
-   */
-  ~LocalVariable() override;
-
-  /**
-   * @brief Class name for VariableRegistry.
-   */
-  static const std::string Type;
 };
 
 }  // namespace sequencer

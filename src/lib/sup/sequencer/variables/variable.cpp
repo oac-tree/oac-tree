@@ -33,8 +33,6 @@
 
 namespace
 {
-bool TryStrictAssignment(sup::dto::AnyValue& dest, const std::string& dest_field,
-                         const sup::dto::AnyValue& src, const std::string& src_field);
 std::string VariableSetupExceptionMessage(const sup::sequencer::Variable& var,
                                           const std::vector<std::string>& failed_constraints);
 }  // unnamed namespace
@@ -99,7 +97,12 @@ bool Variable::GetValue(sup::dto::AnyValue &value, const std::string &fieldname)
   {
     return false;
   }
-  return TryStrictAssignment(value, {}, var_copy, fieldname);
+  if (!fieldname.empty() && !var_copy.HasField(fieldname))
+  {
+    return false;
+  }
+  const auto& src_value = fieldname.empty() ? var_copy : var_copy[fieldname];
+  return sup::dto::TryAssignIfEmptyOrConvert(value, src_value);
 }
 
 bool Variable::SetValue(const sup::dto::AnyValue &value, const std::string &fieldname)
@@ -118,7 +121,11 @@ bool Variable::SetValue(const sup::dto::AnyValue &value, const std::string &fiel
   {
     return false;
   }
-  if (!TryStrictAssignment(var_copy, fieldname, value, {}))
+  if (!var_copy.HasField(fieldname))
+  {
+    return false;
+  }
+  if (!sup::dto::TryAssign(var_copy[fieldname], value))
   {
     return false;
   }
@@ -263,27 +270,6 @@ sup::dto::AnyValue ParseAnyValueAttributePair(const Variable& variable,
 
 namespace
 {
-bool TryStrictAssignment(sup::dto::AnyValue& dest, const std::string& dest_field,
-                         const sup::dto::AnyValue& src, const std::string& src_field)
-{
-  if (!dest_field.empty() && !dest.HasField(dest_field))
-  {
-    return false;
-  }
-  if (!src_field.empty() && !src.HasField(src_field))
-  {
-    return false;
-  }
-  auto& dest_val = dest_field.empty() ? dest : dest[dest_field];
-  const auto& src_val = src_field.empty() ? src : src[src_field];
-  if (!sup::dto::IsEmptyValue(dest_val) && dest_val.GetType() != src_val.GetType())
-  {
-    return false;
-  }
-  dest_val = src_val;
-  return true;
-}
-
 std::string VariableSetupExceptionMessage(const sup::sequencer::Variable& var,
                                           const std::vector<std::string>& failed_constraints)
 {

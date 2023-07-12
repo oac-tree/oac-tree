@@ -34,11 +34,16 @@
 
 #include <sup/dto/anyvalue.h>
 
+namespace
+{
+using sup::sequencer::Instruction;
+bool HasRootAttributeSet(const Instruction &instruction);
+}  // unnamed namespace
+
 namespace sup
 {
 namespace sequencer
 {
-static bool HasRootAttributeSet(const Instruction &instruction);
 
 Procedure::Procedure(const std::string& filename)
   : m_instructions{}
@@ -289,7 +294,12 @@ void Procedure::SetParentProcedure(Procedure* parent)
 }
 
 void Procedure::SetupPreamble()
-{}
+{
+  for (auto plugin_path : m_preamble.GetPluginPaths())
+  {
+    LoadPlugin(plugin_path);
+  }
+}
 
 const ProcedureStore& Procedure::GetProcedureStore() const
 {
@@ -298,21 +308,6 @@ const ProcedureStore& Procedure::GetProcedureStore() const
     return m_parent->GetProcedureStore();
   }
   return *m_procedure_store;
-}
-
-static bool HasRootAttributeSet(const Instruction &instruction)
-{
-  if (!instruction.HasAttribute(kIsRootAttribute))
-  {
-    return false;
-  }
-  auto attr_val = instruction.GetAttributeString(kIsRootAttribute);
-  auto parsed = utils::ParseAttributeString(sup::dto::BooleanType, attr_val);
-  if (!parsed.first)
-  {
-    return false;
-  }
-  return parsed.second.As<bool>();
 }
 
 int TickTimeoutMs(Procedure& procedure)
@@ -351,3 +346,22 @@ std::vector<const Instruction*> GetNextLeaves(const Procedure& proc)
 }  // namespace sequencer
 
 }  // namespace sup
+
+namespace
+{
+using namespace sup::sequencer;
+bool HasRootAttributeSet(const Instruction &instruction)
+{
+  if (!instruction.HasAttribute(kIsRootAttribute))
+  {
+    return false;
+  }
+  auto attr_val = instruction.GetAttributeString(kIsRootAttribute);
+  auto parsed = utils::ParseAttributeString(sup::dto::BooleanType, attr_val);
+  if (!parsed.first)
+  {
+    return false;
+  }
+  return parsed.second.As<bool>();
+}
+}  // unnamed namespace

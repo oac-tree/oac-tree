@@ -26,7 +26,6 @@
 
 #include <sup/sequencer/constants.h>
 #include <sup/sequencer/exceptions.h>
-#include <sup/sequencer/generic_utils.h>
 #include <sup/sequencer/sequence_parser.h>
 
 #include <sup/dto/anytype.h>
@@ -45,7 +44,6 @@ namespace
 {
 void ParsePreamble(Procedure* procedure, const sup::xml::TreeData& data,
                    const std::string& filename);
-void ParseAndLoadPlugin(const std::string& plugin_name);
 void RegisterTypeInformation(Procedure* procedure, const sup::xml::TreeData& child,
                              const std::string& filename);
 void ParseProcedureChildren(Procedure* procedure, const sup::xml::TreeData& data);
@@ -110,7 +108,6 @@ void ParsePreamble(Procedure* procedure, const sup::xml::TreeData& data,
     if (child.GetNodeName() == Constants::PLUGIN_ELEMENT_NAME)
     {
       auto plugin_name = child.GetContent();
-      ParseAndLoadPlugin(plugin_name);
       procedure->GetPreamble().AddPluginPath(plugin_name);
     }
     else if (child.GetNodeName() == Constants::REGISTERTYPE_ELEMENT_NAME)
@@ -118,18 +115,6 @@ void ParsePreamble(Procedure* procedure, const sup::xml::TreeData& data,
       RegisterTypeInformation(procedure, child, filename);
     }
   }
-}
-
-void ParseAndLoadPlugin(const std::string& plugin_name)
-{
-  if (plugin_name.empty())
-  {
-    std::string error_message =
-      "sup::sequencer::ParseAndLoadPlugin(): mandatory content missing for element of type: <" +
-      Constants::PLUGIN_ELEMENT_NAME + ">";
-    throw ParseException(error_message);
-  }
-  LoadPlugin(plugin_name);
 }
 
 void RegisterTypeInformation(Procedure* procedure, const sup::xml::TreeData& child,

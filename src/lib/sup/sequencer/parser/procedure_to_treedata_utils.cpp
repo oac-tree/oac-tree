@@ -33,13 +33,15 @@
 
 namespace internal
 {
+using namespace sup::sequencer;
+
 template <typename T, typename... Args>
 std::unique_ptr<T> make_unique(Args&&... args)
 {
   return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
 }
 
-std::unique_ptr<sup::xml::TreeData> CreateTreeData(const sup::sequencer::Instruction* instruction)
+std::unique_ptr<sup::xml::TreeData> CreateTreeData(const Instruction* instruction)
 {
   auto tree_data = internal::make_unique<sup::xml::TreeData>(instruction->GetType());
   for (const auto& it : instruction->GetStringAttributes())
@@ -49,13 +51,34 @@ std::unique_ptr<sup::xml::TreeData> CreateTreeData(const sup::sequencer::Instruc
   return tree_data;
 }
 
-void Iterate(const sup::sequencer::Instruction* instruction, sup::xml::TreeData* parent)
+void Iterate(const Instruction* instruction, sup::xml::TreeData* parent)
 {
   for (auto& child : instruction->ChildInstructions())
   {
     auto tree_data = CreateTreeData(child);
     Iterate(child, tree_data.get());
     parent->AddChild(*tree_data);
+  }
+}
+
+void AddPreamble(sup::xml::TreeData& parent, const ProcedurePreamble& preamble)
+{
+  for (auto& type_registration : preamble.GetTypeRegistrations())
+  {
+    auto tree_data =
+        internal::make_unique<sup::xml::TreeData>(Constants::REGISTERTYPE_ELEMENT_NAME);
+    auto attr_name = type_registration.GetRegistrationMode() == TypeRegistrationInfo::kJSONFile
+                         ? Constants::REGISTERTYPE_JSON_FILE_ATTRIBUTE
+                         : Constants::REGISTERTYPE_JSON_TYPE_ATTRIBUTE;
+    tree_data->AddAttribute(attr_name, type_registration.GetString());
+    parent.AddChild(*tree_data);
+  }
+  for (auto& plugin_path : preamble.GetPluginPaths())
+  {
+    auto tree_data =
+        internal::make_unique<sup::xml::TreeData>(Constants::PLUGIN_ELEMENT_NAME);
+    tree_data->SetContent(plugin_path);
+    parent.AddChild(*tree_data);
   }
 }
 
@@ -68,6 +91,7 @@ namespace sequencer
 std::unique_ptr<sup::xml::TreeData> ToTreeData(const Procedure& procedure)
 {
   auto result = internal::make_unique<sup::xml::TreeData>(Constants::PROCEDURE_ELEMENT_NAME);
+  internal::AddPreamble(*result, procedure.GetPreamble());
   for (auto instruction : procedure.GetTopInstructions())
   {
     result->AddChild(*ToTreeData(*instruction));

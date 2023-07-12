@@ -75,11 +75,13 @@ const char VARNAME_DELIMITER = ',';
 
 namespace Constants
 {
-// XML element names
+// XML element and attribute names
 const std::string PROCEDURE_ELEMENT_NAME = "Procedure";
 const std::string WORKSPACE_ELEMENT_NAME = "Workspace";
 const std::string PLUGIN_ELEMENT_NAME = "Plugin";
 const std::string REGISTERTYPE_ELEMENT_NAME = "RegisterType";
+const std::string REGISTERTYPE_JSON_FILE_ATTRIBUTE = "jsonfile";
+const std::string REGISTERTYPE_JSON_TYPE_ATTRIBUTE = "jsontype";
 
 // User choice related constants
 const std::string USER_CHOICES_METADATA_NAME = "sup::sequencerUserChoiceMetadata/v1.0";

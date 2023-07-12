@@ -52,7 +52,7 @@ TEST(SequenceWorkspace, CopyVariable)
 
   auto proc = sup::sequencer::ParseProcedureFile(file_name);
   ASSERT_TRUE(proc.get() != nullptr);
-  EXPECT_TRUE(proc->Setup());
+  EXPECT_NO_THROW(proc->Setup());
 
   sup::UnitTestHelper::EmptyUserInterface ui;
   proc->ExecuteSingle(ui);

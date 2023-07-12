@@ -168,7 +168,7 @@ bool Procedure::GetVariableValue(std::string name, sup::dto::AnyValue& value) co
   return m_workspace->GetValue(name, value);
 }
 
-bool Procedure::Setup()
+void Procedure::Setup()
 {
   if (!m_attribute_handler.ValidateAttributes())
   {
@@ -176,13 +176,12 @@ bool Procedure::Setup()
                                 FormatFailedConstraints(m_attribute_handler.GetFailedConstraints());
     throw ProcedureSetupException(error_message);
   }
+  SetupPreamble();
   m_workspace->Setup();
-  if (RootInstruction() == nullptr)
+  if (RootInstruction() != nullptr)
   {
-    return true;
+    RootInstruction()->Setup(*this);
   }
-  RootInstruction()->Setup(*this);
-  return true;
 }
 
 void Procedure::ExecuteSingle(UserInterface& ui)
@@ -288,6 +287,9 @@ void Procedure::SetParentProcedure(Procedure* parent)
 {
   m_parent = parent;
 }
+
+void Procedure::SetupPreamble()
+{}
 
 const ProcedureStore& Procedure::GetProcedureStore() const
 {

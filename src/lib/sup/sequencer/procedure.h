@@ -170,10 +170,8 @@ public:
 
   /**
    * @brief Setup the procedure.
-   *
-   * @return true on successful setup.
    */
-  bool Setup();
+  void Setup();
 
   /**
    * @brief Execute single step of procedure.
@@ -335,6 +333,11 @@ private:
 
   // Cache for other procedures loaded from files and to be used by include nodes.
   std::unique_ptr<ProcedureStore> m_procedure_store;
+
+  /**
+   * @brief Register types and load plugins defined in the preamble.
+   */
+  void SetupPreamble();
 
   const ProcedureStore& GetProcedureStore() const;
 };

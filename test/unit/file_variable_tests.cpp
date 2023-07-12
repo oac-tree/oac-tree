@@ -60,7 +60,7 @@ TEST_F(FileVariableTest, FileWrite)
 
   auto proc = ParseProcedureString(proc_str);
   ASSERT_TRUE(proc.get() != nullptr);
-  ASSERT_TRUE(proc->Setup());
+  ASSERT_NO_THROW(proc->Setup());
 
   sup::UnitTestHelper::EmptyUserInterface ui;
   proc->ExecuteSingle(ui);
@@ -138,7 +138,7 @@ TEST_F(FileVariableTest, FileSuccess)
   auto proc = ParseProcedureString(proc_str);
 
   ASSERT_TRUE(static_cast<bool>(proc));
-  ASSERT_TRUE(proc->Setup());
+  ASSERT_NO_THROW(proc->Setup());
 
   sup::UnitTestHelper::EmptyUserInterface ui;
   ExecutionStatus exec = ExecutionStatus::FAILURE;

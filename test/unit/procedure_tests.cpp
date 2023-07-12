@@ -260,7 +260,7 @@ TEST_F(ProcedureTest, ExternalInclude)
   auto ext_instructions = sub_proc.GetTopInstructions();
   EXPECT_GT(ext_instructions.size(), 0);
 
-  EXPECT_TRUE(proc->Setup());
+  EXPECT_NO_THROW(proc->Setup());
 }
 
 ProcedureTest::ProcedureTest()

@@ -79,7 +79,8 @@ TEST(Condition, Default)
 
   auto proc = ParseProcedureFile(file_name);
   ASSERT_TRUE(proc.get() != nullptr);
-  ASSERT_TRUE(proc->Setup());
+
+  ASSERT_NO_THROW(proc->Setup());
 
   sup::UnitTestHelper::EmptyUserInterface ui;
   proc->ExecuteSingle(ui);

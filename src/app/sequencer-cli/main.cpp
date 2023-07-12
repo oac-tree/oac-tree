@@ -81,13 +81,7 @@ int main(int argc, char* argv[])
     logger.LogMessage(log::SUP_SEQ_LOG_ERR, error_message);
     return 1;
   }
-
-  if (!proc->Setup())
-  {
-    std::string error_message = "main(): could not setup procedure from file [" + filename + "]";
-    logger.LogMessage(log::SUP_SEQ_LOG_ERR, error_message);
-    return 1;
-  }
+  proc->Setup();
 
   CLInterface ui(logger);
   Runner runner(ui);

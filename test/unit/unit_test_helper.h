@@ -116,10 +116,7 @@ static inline bool TryAndExecuteNoReset(std::unique_ptr<sup::sequencer::Procedur
 {
   bool status = static_cast<bool>(proc);
 
-  if (status)
-  {  // Setup procedure
-    status = proc->Setup();
-  }
+  proc->Setup();
 
   if (status)
   {

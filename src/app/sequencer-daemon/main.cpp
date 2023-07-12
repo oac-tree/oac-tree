@@ -76,13 +76,7 @@ int main(int argc, char* argv[])
     logger.Error(error_message);
     return 1;
   }
-
-  if (!proc->Setup())
-  {
-    std::string error_message = "main(): could not setup procedure from file [" + filename + "]";
-    logger.Error(error_message);
-    return 1;
-  }
+  proc->Setup();
 
   DaemonInterface ui(logger);
   Runner runner(ui);

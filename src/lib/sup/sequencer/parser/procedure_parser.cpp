@@ -47,7 +47,7 @@ namespace
 {
 void ParsePreamble(Procedure* procedure, const sup::xml::TreeData& data,
                    const std::string& filename);
-void ParseAndLoadPlugin(const sup::xml::TreeData& child);
+void ParseAndLoadPlugin(const std::string& plugin_name);
 void RegisterTypeInformation(Procedure* procedure, const sup::xml::TreeData& child,
                              const std::string& filename);
 void ParseProcedureChildren(Procedure* procedure, const sup::xml::TreeData& data);
@@ -111,7 +111,9 @@ void ParsePreamble(Procedure* procedure, const sup::xml::TreeData& data,
   {
     if (child.GetNodeName() == Constants::PLUGIN_ELEMENT_NAME)
     {
-      ParseAndLoadPlugin(child);
+      auto plugin_name = child.GetContent();
+      ParseAndLoadPlugin(plugin_name);
+      procedure->GetPreamble().AddPluginPath(plugin_name);
     }
     else if (child.GetNodeName() == Constants::REGISTERTYPE_ELEMENT_NAME)
     {
@@ -120,9 +122,8 @@ void ParsePreamble(Procedure* procedure, const sup::xml::TreeData& data,
   }
 }
 
-void ParseAndLoadPlugin(const sup::xml::TreeData& child)
+void ParseAndLoadPlugin(const std::string& plugin_name)
 {
-  auto plugin_name = child.GetContent();
   if (plugin_name.empty())
   {
     std::string error_message =
@@ -138,6 +139,8 @@ void RegisterTypeInformation(Procedure* procedure, const sup::xml::TreeData& chi
 {
   sup::dto::AnyType parsed_type;
   sup::dto::JSONAnyTypeParser parser;
+  TypeRegistrationInfo::RegistrationMode registration_mode = TypeRegistrationInfo::kJSONFile;
+  std::string registration_string;
   if (child.HasAttribute(JSONTYPE_ATTRIBUTE_NAME) == child.HasAttribute(JSONFILE_ATTRIBUTE_NAME))
   {
     std::string error_message =
@@ -156,6 +159,8 @@ void RegisterTypeInformation(Procedure* procedure, const sup::xml::TreeData& chi
       throw ParseException(error_message);
     }
     parsed_type = parser.MoveAnyType();
+    registration_mode = TypeRegistrationInfo::kJSONString;
+    registration_string = child.GetAttribute(JSONTYPE_ATTRIBUTE_NAME);
   }
   if (child.HasAttribute(JSONFILE_ATTRIBUTE_NAME))
   {
@@ -168,6 +173,7 @@ void RegisterTypeInformation(Procedure* procedure, const sup::xml::TreeData& chi
       throw ParseException(error_message);
     }
     parsed_type = parser.MoveAnyType();
+    registration_string = json_filename;
   }
   if (!procedure->RegisterType(parsed_type))
   {
@@ -176,6 +182,7 @@ void RegisterTypeInformation(Procedure* procedure, const sup::xml::TreeData& chi
       sup::dto::AnyTypeToJSONString(parsed_type) + "]";
     throw ParseException(error_message);
   }
+  procedure->GetPreamble().AddTypeRegistration({registration_mode, registration_string});
 }
 
 void ParseProcedureChildren(Procedure* procedure, const sup::xml::TreeData& data)

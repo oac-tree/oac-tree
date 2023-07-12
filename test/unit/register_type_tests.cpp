@@ -109,7 +109,9 @@ TEST(RegisterType, string_success)
 TEST(RegisterType, string_failed)
 {
   auto proc_str = sup::UnitTestHelper::CreateProcedureString(FailedRegisterTypeProcedureString);
-  EXPECT_THROW(ParseProcedureString(proc_str), ParseException);
+  auto proc = ParseProcedureString(proc_str);
+  ASSERT_NE(proc.get(), nullptr);
+  EXPECT_THROW(proc->Setup(), ProcedureSetupException);
 }
 
 TEST(RegisterType, file_success)
@@ -143,5 +145,7 @@ TEST(RegisterType, file_failed)
 {
   auto proc_str = sup::UnitTestHelper::CreateProcedureString(
     FailedRegisterTypeFromFileProcedureString);
-  EXPECT_THROW(ParseProcedureString(proc_str), ParseException);
+  auto proc = ParseProcedureString(proc_str);
+  ASSERT_NE(proc.get(), nullptr);
+  EXPECT_THROW(proc->Setup(), ProcedureSetupException);
 }

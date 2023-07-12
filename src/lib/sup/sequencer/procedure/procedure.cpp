@@ -22,6 +22,7 @@
 #include <sup/sequencer/procedure.h>
 
 #include <sup/sequencer/instructions/instruction_helper.h>
+#include <sup/sequencer/parser/procedure_parser.h>
 #include <sup/sequencer/procedure/procedure_store.h>
 
 #include <sup/sequencer/attribute_utils.h>
@@ -33,11 +34,17 @@
 #include <sup/sequencer/workspace.h>
 
 #include <sup/dto/anyvalue.h>
+#include <sup/dto/anytype_helper.h>
+#include <sup/dto/json_type_parser.h>
 
 namespace
 {
 using sup::sequencer::Instruction;
+using sup::sequencer::TypeRegistrationInfo;
 bool HasRootAttributeSet(const Instruction &instruction);
+sup::dto::AnyType ParseTypeRegistrationInfo(const TypeRegistrationInfo& info,
+                                            const std::string& filename,
+                                            const sup::dto::AnyTypeRegistry* type_registry);
 }  // unnamed namespace
 
 namespace sup
@@ -299,6 +306,17 @@ void Procedure::SetupPreamble()
   {
     LoadPlugin(plugin_path);
   }
+  for (const auto& type_registration : m_preamble.GetTypeRegistrations())
+  {
+    auto anytype = ParseTypeRegistrationInfo(type_registration, GetFilename(), GetTypeRegistry());
+    if (!RegisterType(anytype))
+    {
+      std::string error_message =
+        "Procedure::SetupPreamble(): type could not be registered to the registry: ["
+        + sup::dto::AnyTypeToJSONString(anytype) + "]";
+      throw ProcedureSetupException(error_message);
+    }
+  }
 }
 
 const ProcedureStore& Procedure::GetProcedureStore() const
@@ -363,5 +381,37 @@ bool HasRootAttributeSet(const Instruction &instruction)
     return false;
   }
   return parsed.second.As<bool>();
+}
+
+sup::dto::AnyType ParseTypeRegistrationInfo(const TypeRegistrationInfo& info,
+                                            const std::string& filename,
+                                            const sup::dto::AnyTypeRegistry* type_registry)
+{
+  sup::dto::JSONAnyTypeParser parser;
+  if (info.GetRegistrationMode() == TypeRegistrationInfo::kJSONString)
+  {
+    if (!parser.ParseString(info.GetString(), type_registry))
+    {
+      std::string error_message =
+          "Procedure::SetupPreamble(): could not parse type: [" + info.GetString() + "]";
+      throw ProcedureSetupException(error_message);
+    }
+    return parser.MoveAnyType();
+  }
+  if (info.GetRegistrationMode() == TypeRegistrationInfo::kJSONFile)
+  {
+    auto json_filename = GetFullPathName(GetFileDirectory(filename), info.GetString());
+    if (!parser.ParseFile(json_filename, type_registry))
+    {
+      std::string error_message =
+          "Procedure::SetupPreamble(): could not parse file: [" + json_filename + "]";
+      throw ProcedureSetupException(error_message);
+    }
+    return parser.MoveAnyType();
+  }
+  std::string error_message =
+      "Procedure::SetupPreamble(): unknown type registration mode; must be from JSON file or JSON "
+      "string";
+  throw ProcedureSetupException(error_message);
 }
 }  // unnamed namespace

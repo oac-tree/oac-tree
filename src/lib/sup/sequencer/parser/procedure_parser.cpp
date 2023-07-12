@@ -28,10 +28,6 @@
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/sequence_parser.h>
 
-#include <sup/dto/anytype.h>
-#include <sup/dto/anytype_helper.h>
-#include <sup/dto/json_type_parser.h>
-
 #include <fstream>
 #include <sstream>
 
@@ -42,10 +38,8 @@ namespace sequencer
 
 namespace
 {
-void ParsePreamble(Procedure* procedure, const sup::xml::TreeData& data,
-                   const std::string& filename);
-void RegisterTypeInformation(Procedure* procedure, const sup::xml::TreeData& child,
-                             const std::string& filename);
+void ParsePreamble(Procedure* procedure, const sup::xml::TreeData& data);
+void RegisterTypeInformation(Procedure* procedure, const sup::xml::TreeData& child);
 void ParseProcedureChildren(Procedure* procedure, const sup::xml::TreeData& data);
 void AddWorkspaceVariables(Procedure* procedure, const sup::xml::TreeData& ws_data);
 void ParseAndAddInstruction(Procedure* procedure, const sup::xml::TreeData& instr_data);
@@ -64,7 +58,7 @@ std::unique_ptr<Procedure> ParseProcedure(const sup::xml::TreeData& data,
   auto result = std::unique_ptr<Procedure>(new Procedure(filename));
 
   // Load plugins and register types first
-  ParsePreamble(result.get(), data, filename);
+  ParsePreamble(result.get(), data);
 
   // Add attributes
   result->AddAttributes(data.Attributes());
@@ -100,8 +94,7 @@ std::string GetFileDirectory(const std::string& filename)
 
 namespace
 {
-void ParsePreamble(Procedure* procedure, const sup::xml::TreeData& data,
-                   const std::string& filename)
+void ParsePreamble(Procedure* procedure, const sup::xml::TreeData& data)
 {
   for (const auto& child : data.Children())
   {
@@ -112,16 +105,13 @@ void ParsePreamble(Procedure* procedure, const sup::xml::TreeData& data,
     }
     else if (child.GetNodeName() == Constants::REGISTERTYPE_ELEMENT_NAME)
     {
-      RegisterTypeInformation(procedure, child, filename);
+      RegisterTypeInformation(procedure, child);
     }
   }
 }
 
-void RegisterTypeInformation(Procedure* procedure, const sup::xml::TreeData& child,
-                             const std::string& filename)
+void RegisterTypeInformation(Procedure* procedure, const sup::xml::TreeData& child)
 {
-  sup::dto::AnyType parsed_type;
-  sup::dto::JSONAnyTypeParser parser;
   TypeRegistrationInfo::RegistrationMode registration_mode = TypeRegistrationInfo::kJSONFile;
   std::string registration_string;
   if (child.HasAttribute(Constants::REGISTERTYPE_JSON_TYPE_ATTRIBUTE)
@@ -129,47 +119,20 @@ void RegisterTypeInformation(Procedure* procedure, const sup::xml::TreeData& chi
   {
     std::string error_message =
         "sup::sequencer::RegisterTypeInformation(): element should contain exactly one attribute "
-        "out "
-        "of ("
+        "out of ("
         + Constants::REGISTERTYPE_JSON_TYPE_ATTRIBUTE + ", "
         + Constants::REGISTERTYPE_JSON_FILE_ATTRIBUTE + ")";
     throw ParseException(error_message);
   }
   if (child.HasAttribute(Constants::REGISTERTYPE_JSON_TYPE_ATTRIBUTE))
   {
-    if (!parser.ParseString(child.GetAttribute(Constants::REGISTERTYPE_JSON_TYPE_ATTRIBUTE),
-                            procedure->GetTypeRegistry()))
-    {
-      std::string error_message =
-          "sup::sequencer::RegisterTypeInformation(): could not parse type: ["
-          + child.GetAttribute(Constants::REGISTERTYPE_JSON_TYPE_ATTRIBUTE) + "]";
-      throw ParseException(error_message);
-    }
-    parsed_type = parser.MoveAnyType();
     registration_mode = TypeRegistrationInfo::kJSONString;
     registration_string = child.GetAttribute(Constants::REGISTERTYPE_JSON_TYPE_ATTRIBUTE);
   }
   if (child.HasAttribute(Constants::REGISTERTYPE_JSON_FILE_ATTRIBUTE))
   {
-    auto json_filename =
-        GetFullPathName(GetFileDirectory(filename),
-                        child.GetAttribute(Constants::REGISTERTYPE_JSON_FILE_ATTRIBUTE));
-    if (!parser.ParseFile(json_filename, procedure->GetTypeRegistry()))
-    {
-      std::string error_message =
-          "sup::sequencer::RegisterTypeInformation(): could not parse file: [" + json_filename
-          + "]";
-      throw ParseException(error_message);
-    }
-    parsed_type = parser.MoveAnyType();
-    registration_string = json_filename;
-  }
-  if (!procedure->RegisterType(parsed_type))
-  {
-    std::string error_message =
-        "sup::sequencer::RegisterTypeInformation(): type could not be added to the registry: ["
-        + sup::dto::AnyTypeToJSONString(parsed_type) + "]";
-    throw ParseException(error_message);
+    registration_mode = TypeRegistrationInfo::kJSONFile;
+    registration_string = child.GetAttribute(Constants::REGISTERTYPE_JSON_FILE_ATTRIBUTE);
   }
   procedure->GetPreamble().AddTypeRegistration({registration_mode, registration_string});
 }

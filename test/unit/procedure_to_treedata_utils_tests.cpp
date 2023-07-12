@@ -239,3 +239,53 @@ TEST_F(ProcedureToTreeDataUtilsTest, ProcedureWithSequenceToTreeData)
   EXPECT_EQ(wait_data.GetNodeName(), Wait::Type);
   ASSERT_EQ(wait_data.GetNumberOfChildren(), 0);
 }
+
+TEST_F(ProcedureToTreeDataUtilsTest, ProcedurePreamble)
+{
+  const std::string kPluginPath = "MyPluginPath";
+  const std::string kJSONFilename = "MyJSONFilename";
+  const std::string kJSONType = "MyJSONType";
+
+  Procedure procedure;
+  auto& preamble = procedure.GetPreamble();
+  preamble.AddTypeRegistration({TypeRegistrationInfo::kJSONFile, kJSONFilename});
+  preamble.AddTypeRegistration({TypeRegistrationInfo::kJSONString, kJSONType});
+  preamble.AddPluginPath(kPluginPath);
+
+  // Check top-level element
+  auto tree_data = ToTreeData(procedure);
+  EXPECT_EQ(tree_data->GetNodeName(), Constants::PROCEDURE_ELEMENT_NAME);
+  ASSERT_EQ(tree_data->GetNumberOfChildren(), 4);    // corresponds to preamble and workspace
+  ASSERT_EQ(tree_data->GetNumberOfAttributes(), 0);  // no schema or other attributes
+  EXPECT_TRUE(tree_data->GetContent().empty());
+
+  {
+    // Check type registration with filename element
+    auto child_data = tree_data->Children().at(0);
+    EXPECT_EQ(child_data.GetNodeName(), Constants::REGISTERTYPE_ELEMENT_NAME);
+    EXPECT_EQ(child_data.GetNumberOfChildren(), 0);
+    EXPECT_EQ(child_data.GetNumberOfAttributes(), 1);
+    auto attr_data = child_data.Attributes()[0];
+    EXPECT_EQ(attr_data.first, Constants::REGISTERTYPE_JSON_FILE_ATTRIBUTE);
+    EXPECT_EQ(attr_data.second, kJSONFilename);
+  }
+  {
+    // Check type registration with json type string element
+    auto child_data = tree_data->Children().at(1);
+    EXPECT_EQ(child_data.GetNodeName(), Constants::REGISTERTYPE_ELEMENT_NAME);
+    EXPECT_EQ(child_data.GetNumberOfChildren(), 0);
+    EXPECT_EQ(child_data.GetNumberOfAttributes(), 1);
+    auto attr_data = child_data.Attributes()[0];
+    EXPECT_EQ(attr_data.first, Constants::REGISTERTYPE_JSON_TYPE_ATTRIBUTE);
+    EXPECT_EQ(attr_data.second, kJSONType);
+  }
+  {
+    // Check plugin element
+    auto child_data = tree_data->Children().at(2);
+    EXPECT_EQ(child_data.GetNodeName(), Constants::PLUGIN_ELEMENT_NAME);
+    EXPECT_EQ(child_data.GetNumberOfChildren(), 0);
+    EXPECT_EQ(child_data.GetNumberOfAttributes(), 0);
+    auto content = child_data.GetContent();
+    EXPECT_EQ(content, kPluginPath);
+  }
+}

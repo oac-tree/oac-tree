@@ -68,6 +68,7 @@ const std::string RegisterTypeFromFileProcedureString = {R"(
     </Workspace>
 )"};
 
+
 const std::string FailedRegisterTypeFromFileProcedureString = {R"(
     <RegisterType jsonfile="does_not_exist.json"/>
 )"};
@@ -118,6 +119,22 @@ TEST(RegisterType, file_success)
   auto proc_str = sup::UnitTestHelper::CreateProcedureString(RegisterTypeFromFileProcedureString);
   auto proc = ParseProcedureString(proc_str);
   ASSERT_TRUE(static_cast<bool>(proc));
+
+  // Check if preamble contains correct registration info
+  auto type_registrations = proc->GetPreamble().GetTypeRegistrations();
+  EXPECT_EQ(type_registrations.size(), 2);
+  {
+    auto& type_registration = type_registrations[0];
+    EXPECT_EQ(type_registration.GetRegistrationMode(), TypeRegistrationInfo::kJSONFile);
+    EXPECT_EQ(type_registration.GetString(), "range_uint16.json");
+  }
+  {
+    auto& type_registration = type_registrations[1];
+    EXPECT_EQ(type_registration.GetRegistrationMode(), TypeRegistrationInfo::kJSONString);
+    std::string expected =
+        R"({"type":"ranges_uint16","multiplicity":3,"element":{"type":"range_uint16"}})";
+    EXPECT_EQ(type_registration.GetString(), expected);
+  }
 
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }

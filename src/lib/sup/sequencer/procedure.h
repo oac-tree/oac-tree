@@ -357,7 +357,7 @@ int TickTimeoutMs(Procedure& procedure);
    * @param proc Procedure to query.
    *
    * @return List of instructions.
-   * @details This method should only be called in between execution steps.
+   * @details This function should only be called in between execution steps.
    */
 std::vector<const Instruction*> GetNextInstructions(const Procedure& proc);
 
@@ -367,9 +367,27 @@ std::vector<const Instruction*> GetNextInstructions(const Procedure& proc);
    * @param proc Procedure to query.
    *
    * @return List of instruction leaves.
-   * @details This method should only be called in between execution steps.
+   * @details This function should only be called in between execution steps.
    */
 std::vector<const Instruction*> GetNextLeaves(const Procedure& proc);
+
+  /**
+   * @brief Create an AnyType from a TypeRegistrationInfo object.
+   *
+   * @param info TypeRegistrationInfo object.
+   * @param filename filename of the procedure to which the TypeRegistrationInfo object belongs.
+   * @param type_registry Type registry to use while parsing.
+   *
+   * @return Created AnyType.
+   *
+   * @throw ProcedureSetupException when the parsing did not succeed.
+   *
+   * @details This function does not add the created AnyType to the registry.
+   */
+sup::dto::AnyType ParseTypeRegistrationInfo(const TypeRegistrationInfo& info,
+                                            const std::string& filename,
+                                            const sup::dto::AnyTypeRegistry* type_registry);
+
 
 }  // namespace sequencer
 

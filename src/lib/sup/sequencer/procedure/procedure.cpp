@@ -42,9 +42,6 @@ namespace
 using sup::sequencer::Instruction;
 using sup::sequencer::TypeRegistrationInfo;
 bool HasRootAttributeSet(const Instruction &instruction);
-sup::dto::AnyType ParseTypeRegistrationInfo(const TypeRegistrationInfo& info,
-                                            const std::string& filename,
-                                            const sup::dto::AnyTypeRegistry* type_registry);
 }  // unnamed namespace
 
 namespace sup
@@ -361,28 +358,6 @@ std::vector<const Instruction*> GetNextLeaves(const Procedure& proc)
   return GetLeaves(tree);
 }
 
-}  // namespace sequencer
-
-}  // namespace sup
-
-namespace
-{
-using namespace sup::sequencer;
-bool HasRootAttributeSet(const Instruction &instruction)
-{
-  if (!instruction.HasAttribute(kIsRootAttribute))
-  {
-    return false;
-  }
-  auto attr_val = instruction.GetAttributeString(kIsRootAttribute);
-  auto parsed = utils::ParseAttributeString(sup::dto::BooleanType, attr_val);
-  if (!parsed.first)
-  {
-    return false;
-  }
-  return parsed.second.As<bool>();
-}
-
 sup::dto::AnyType ParseTypeRegistrationInfo(const TypeRegistrationInfo& info,
                                             const std::string& filename,
                                             const sup::dto::AnyTypeRegistry* type_registry)
@@ -413,5 +388,27 @@ sup::dto::AnyType ParseTypeRegistrationInfo(const TypeRegistrationInfo& info,
       "Procedure::SetupPreamble(): unknown type registration mode; must be from JSON file or JSON "
       "string";
   throw ProcedureSetupException(error_message);
+}
+
+}  // namespace sequencer
+
+}  // namespace sup
+
+namespace
+{
+using namespace sup::sequencer;
+bool HasRootAttributeSet(const Instruction &instruction)
+{
+  if (!instruction.HasAttribute(kIsRootAttribute))
+  {
+    return false;
+  }
+  auto attr_val = instruction.GetAttributeString(kIsRootAttribute);
+  auto parsed = utils::ParseAttributeString(sup::dto::BooleanType, attr_val);
+  if (!parsed.first)
+  {
+    return false;
+  }
+  return parsed.second.As<bool>();
 }
 }  // unnamed namespace

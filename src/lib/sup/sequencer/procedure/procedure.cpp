@@ -45,6 +45,7 @@ Procedure::Procedure(const std::string& filename)
   , m_workspace{new Workspace()}
   , m_attribute_handler{}
   , m_filename{filename}
+  , m_preamble{}
   , m_parent{}
   , m_procedure_store{new ProcedureStore{this}}
 {
@@ -256,6 +257,16 @@ const Workspace* Procedure::GetWorkspace() const
 Workspace* Procedure::GetWorkspace()
 {
   return m_workspace.get();
+}
+
+const ProcedurePreamble& Procedure::GetPreamble() const
+{
+  return m_preamble;
+}
+
+ProcedurePreamble& Procedure::GetPreamble()
+{
+  return m_preamble;
 }
 
 bool Procedure::RegisterType(const sup::dto::AnyType& anytype)

@@ -25,6 +25,7 @@
 #include <sup/sequencer/attribute_handler.h>
 #include <sup/sequencer/execution_status.h>
 #include <sup/sequencer/procedure_context.h>
+#include <sup/sequencer/procedure_preamble.h>
 
 #include <functional>
 #include <map>
@@ -267,6 +268,20 @@ public:
   Workspace* GetWorkspace();
 
   /**
+   * @brief Returns procedure's preamble.
+   *
+   * @return ProcedurePreamble object reference.
+   */
+  const ProcedurePreamble& GetPreamble() const;
+
+  /**
+   * @brief Returns procedure's preamble.
+   *
+   * @return ProcedurePreamble object reference.
+   */
+  ProcedurePreamble& GetPreamble();
+
+  /**
    * @brief Register an AnyType instance under its own name.
    *
    * @param anytype AnyType instance to register.
@@ -309,6 +324,11 @@ private:
    * @note This filename may include the relative or absolute paths.
    */
   std::string m_filename;
+
+  /**
+   * @brief Preamble information (loaded plugins and type registrations).
+   */
+  ProcedurePreamble m_preamble;
 
   // Parent procedure pointer if this procedure was loaded from another
   Procedure* m_parent;

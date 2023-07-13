@@ -24,6 +24,8 @@
 
 #include <sup/sequencer/instruction.h>
 
+#include <sup/dto/basic_scalar_types.h>
+
 namespace sup
 {
 namespace sequencer
@@ -51,7 +53,7 @@ private:
   /**
    * @brief Timeout (in nanoseconds).
    */
-  unsigned long m_timeout;
+  sup::dto::int64 m_timeout;
 };
 
 }  // namespace sequencer

@@ -48,13 +48,13 @@ public:
   static const std::string Type;
 
 private:
-  bool force_success;
-  bool var_changed;
-  std::mutex mx;
-  std::condition_variable cv;
-  std::vector<std::string> var_names;
-  std::map<std::string, sup::dto::AnyValue> var_cache;
-  ScopeGuard cb_guard;
+  bool m_force_success;
+  bool m_var_changed;
+  std::mutex m_mtx;
+  std::condition_variable m_cv;
+  std::vector<std::string> m_var_names;
+  std::map<std::string, sup::dto::AnyValue> m_var_cache;
+  ScopeGuard m_cb_guard;
 
   /**
    * @brief Repeatedly execute the child instruction when specific variables are updated.
@@ -71,8 +71,6 @@ private:
    * @brief Calculate this instruction's status from the status of its child instruction.
    */
   ExecutionStatus CalculateStatus() const;
-
-  std::vector<std::string> VariableNames() const;
 
   void UpdateCallback(const std::string& name, const sup::dto::AnyValue& val);
 

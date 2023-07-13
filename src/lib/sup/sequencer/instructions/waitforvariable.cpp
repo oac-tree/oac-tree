@@ -26,11 +26,10 @@
 
 #include <sup/sequencer/constants.h>
 #include <sup/sequencer/exceptions.h>
+#include <sup/sequencer/instruction_utils.h>
 #include <sup/sequencer/generic_utils.h>
 
 #include <sup/dto/anyvalue_helper.h>
-
-#include <cmath>
 
 const std::string TIMEOUT_ATTR_NAME = "timeout";
 const std::string VARNAME_ATTRIBUTE = "varName";
@@ -57,15 +56,7 @@ WaitForVariable::~WaitForVariable() = default;
 
 void WaitForVariable::SetupImpl(const Procedure&)
 {
-  double t = GetAttributeValue<sup::dto::float64>(TIMEOUT_ATTR_NAME);
-  if (t < 0.0 || t > MAX_TIMEOUT_SECONDS)
-  {
-    std::string error_message = InstructionSetupExceptionProlog(*this)
-                                + "could not convert timeout in seconds [" + std::to_string(t)
-                                + "] to nanoseconds (64bit unsigned)";
-    throw InstructionSetupException(error_message);
-  }
-  m_timeout = static_cast<unsigned long>(std::lround(t * 1e9));
+  m_timeout = instruction_utils::GetTimeoutFromAttribute(*this, TIMEOUT_ATTR_NAME);
 }
 
 ExecutionStatus WaitForVariable::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)

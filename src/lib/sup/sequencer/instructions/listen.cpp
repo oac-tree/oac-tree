@@ -21,8 +21,8 @@
 
 #include "listen.h"
 
-#include <sup/sequencer/constants.h>
 #include <sup/sequencer/exceptions.h>
+#include <sup/sequencer/instruction_utils.h>
 
 #include <chrono>
 #include <cstring>
@@ -39,11 +39,11 @@ const std::string Listen::Type = "Listen";
 
 Listen::Listen()
   : DecoratorInstruction(Listen::Type)
-  , force_success{false}
-  , var_changed{false}
-  , var_names{}
-  , var_cache{}
-  , cb_guard{}
+  , m_force_success{false}
+  , m_var_changed{false}
+  , m_var_names{}
+  , m_var_cache{}
+  , m_cb_guard{}
 {
   AddAttributeDefinition(VARNAMES_ATTRIBUTE_NAME, sup::dto::StringType).SetMandatory();
   AddAttributeDefinition(FORCESUCCESS_ATTRIBUTE_NAME, sup::dto::BooleanType);
@@ -53,18 +53,18 @@ Listen::~Listen() = default;
 
 ExecutionStatus Listen::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  if (!cb_guard.IsValid())
+  if (!m_cb_guard.IsValid())
   {
-    var_changed = false;
-    RegisterCallbacks(&ws, var_names);
+    m_var_changed = false;
+    RegisterCallbacks(&ws, m_var_names);
   }
   auto child_status = GetChildStatus();
   if (IsFinishedStatus(child_status))
   {
     ResetChild();
-    std::unique_lock<std::mutex> lk(mx);
-    cv.wait(lk, [this]{ return var_changed || IsHaltRequested(); });
-    var_changed = false;
+    std::unique_lock<std::mutex> lk(m_mtx);
+    m_cv.wait(lk, [this]{ return m_var_changed || IsHaltRequested(); });
+    m_var_changed = false;
     lk.unlock();
     if (IsHaltRequested())
     {
@@ -83,23 +83,23 @@ ExecutionStatus Listen::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 void Listen::HaltImpl()
 {
   HaltChild();
-  cv.notify_one();
+  m_cv.notify_one();
   ClearCallbacks();
 }
 
 void Listen::SetupImpl(const Procedure& proc)
 {
-  force_success = false;
-  var_changed = true;
+  m_force_success = false;
+  m_var_changed = true;
   if (HasAttribute(FORCESUCCESS_ATTRIBUTE_NAME))
   {
-    force_success = GetAttributeValue<bool>(FORCESUCCESS_ATTRIBUTE_NAME);
+    m_force_success = GetAttributeValue<bool>(FORCESUCCESS_ATTRIBUTE_NAME);
   }
-  var_names = VariableNames();
-  var_cache.clear();
-  for (const auto& var_name : var_names)
+  m_var_names = instruction_utils::VariableNamesFromAttribute(*this, VARNAMES_ATTRIBUTE_NAME);
+  m_var_cache.clear();
+  for (const auto& var_name : m_var_names)
   {
-    var_cache[var_name] = {};
+    m_var_cache[var_name] = {};
   }
   return SetupChild(proc);
 }
@@ -111,48 +111,30 @@ ExecutionStatus Listen::CalculateStatus() const
   {
     return ExecutionStatus::NOT_FINISHED;
   }
-  if (force_success && child_status == ExecutionStatus::FAILURE)
+  if (m_force_success && child_status == ExecutionStatus::FAILURE)
   {
     return ExecutionStatus::NOT_FINISHED;
   }
   return child_status;
 }
 
-std::vector<std::string> Listen::VariableNames() const
-{
-  auto var_names_attr = GetAttributeValue<std::string>(VARNAMES_ATTRIBUTE_NAME);
-  std::vector<std::string> result;
-  size_t pos = var_names_attr.find_first_not_of(DefaultSettings::VARNAME_DELIMITER);
-  while (pos != std::string::npos)
-  {
-    auto next = var_names_attr.find_first_of(DefaultSettings::VARNAME_DELIMITER, pos);
-    auto var_name = var_names_attr.substr(pos, next - pos);
-    if (!var_name.empty())
-    {
-      result.push_back(var_name);
-    }
-    pos = var_names_attr.find_first_not_of(DefaultSettings::VARNAME_DELIMITER, next);
-  }
-  return result;
-}
-
 void Listen::UpdateCallback(const std::string& name, const sup::dto::AnyValue& val)
 {
-  std::lock_guard<std::mutex> lk(mx);
-  auto it = var_cache.find(name);
-  if (it == var_cache.end() || it->second == val)
+  std::lock_guard<std::mutex> lk(m_mtx);
+  auto it = m_var_cache.find(name);
+  if (it == m_var_cache.end() || it->second == val)
   {
     return;
   }
-  var_changed = true;
+  m_var_changed = true;
   it->second = val;
-  cv.notify_one();
+  m_cv.notify_one();
 }
 
 void Listen::RegisterCallbacks(
     Workspace* ws, std::vector<std::string> var_names)
 {
-  cb_guard = ws->GetCallbackGuard(this);
+  m_cb_guard = ws->GetCallbackGuard(this);
   for (const auto& var_name : var_names)
   {
     ws->RegisterCallback(
@@ -166,7 +148,7 @@ void Listen::RegisterCallbacks(
 
 void Listen::ClearCallbacks()
 {
-  cb_guard = ScopeGuard{};
+  m_cb_guard = ScopeGuard{};
 }
 
 }  // namespace sequencer

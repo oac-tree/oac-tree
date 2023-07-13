@@ -23,10 +23,10 @@
 
 #include <sup/sequencer/constants.h>
 #include <sup/sequencer/exceptions.h>
+#include <sup/sequencer/instruction_utils.h>
 #include <sup/sequencer/generic_utils.h>
 
 #include <chrono>
-#include <cmath>
 #include <thread>
 
 const std::string TIMEOUT_ATTR_NAME = "timeout";
@@ -50,17 +50,10 @@ Wait::~Wait() = default;
 
 void Wait::SetupImpl(const Procedure&)
 {
+  m_timeout = 0;
   if (HasAttribute(TIMEOUT_ATTR_NAME))
   {
-    double t = GetAttributeValue<sup::dto::float64>(TIMEOUT_ATTR_NAME);
-    if (t < 0.0 || t > MAX_TIMEOUT_SECONDS)
-    {
-        std::string error_message = InstructionSetupExceptionProlog(*this) +
-          "could not convert timeout in seconds [" + std::to_string(t) +
-          "] to nanoseconds (64bit unsigned)";
-        throw InstructionSetupException(error_message);
-    }
-    m_timeout = static_cast<unsigned long>(std::lround(t * 1e9));
+    m_timeout = instruction_utils::GetTimeoutFromAttribute(*this, TIMEOUT_ATTR_NAME);
   }
 }
 

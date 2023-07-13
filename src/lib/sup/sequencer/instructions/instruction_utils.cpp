@@ -1,0 +1,87 @@
+/******************************************************************************
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP - Sequencer
+ *
+ * Description   : Sequencer for operational procedures
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2023 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
+
+#include <sup/sequencer/instruction_utils.h>
+
+#include <sup/sequencer/constants.h>
+#include <sup/sequencer/instruction.h>
+
+#include <cmath>
+
+namespace sup
+{
+namespace sequencer
+{
+namespace instruction_utils
+{
+
+sup::dto::int64 GetTimeoutFromAttribute(const Instruction& instr, const std::string& attr_name)
+{
+  if (!instr.HasAttribute(attr_name))
+  {
+    std::string error_message =
+        InstructionSetupExceptionProlog(instr)
+        + "GetTimeoutFromAttribute(): instruction does not have the correct timeout attribute: ["
+        + attr_name + "]";
+    throw InstructionSetupException(error_message);
+  }
+  double t = instr.GetAttributeValue<sup::dto::float64>(attr_name);
+  if (t < 0.0 || t > kMaxTimeoutSeconds)
+  {
+    std::string error_message = InstructionSetupExceptionProlog(instr)
+                                + "could not convert timeout in seconds [" + std::to_string(t)
+                                + "] to nanoseconds (64bit signed)";
+    throw InstructionSetupException(error_message);
+  }
+  return std::lround(t * 1e9);
+}
+
+std::vector<std::string> VariableNamesFromAttribute(const Instruction& instr,
+                                                    const std::string& attr_name)
+{
+  if (!instr.HasAttribute(attr_name))
+  {
+    std::string error_message =
+        InstructionSetupExceptionProlog(instr)
+        + "VariableNamesFromAttribute(): instruction does not have the correct attribute: ["
+        + attr_name + "]";
+    throw InstructionSetupException(error_message);
+  }
+  auto var_names_attr = instr.GetAttributeValue<std::string>(attr_name);
+  std::vector<std::string> result;
+  size_t pos = var_names_attr.find_first_not_of(DefaultSettings::VARNAME_DELIMITER);
+  while (pos != std::string::npos)
+  {
+    auto next = var_names_attr.find_first_of(DefaultSettings::VARNAME_DELIMITER, pos);
+    auto var_name = var_names_attr.substr(pos, next - pos);
+    if (!var_name.empty())
+    {
+      result.push_back(var_name);
+    }
+    pos = var_names_attr.find_first_not_of(DefaultSettings::VARNAME_DELIMITER, next);
+  }
+  return result;
+}
+}  // namespace instruction_utils
+
+}  // namespace sequencer
+
+}  // namespace sup

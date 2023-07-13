@@ -43,6 +43,7 @@ install(FILES
   generic_utils.h
   instruction_registry.h
   instruction_tree.h
+  instruction_utils.h
   instruction.h
   log_severity.h
   named_callback_manager.h

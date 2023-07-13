@@ -161,8 +161,7 @@ TEST_F(SequencerParserTest, NonExistentPluginError)
         <Wait name="One" timeout="1.0"/>
     </Sequence>
 )"};
-  auto proc = CreateProcedure(body);
-  EXPECT_THROW(proc->Setup(), RuntimeException);
+  EXPECT_THROW(CreateProcedure(body), RuntimeException);
 }
 
 TEST_F(SequencerParserTest, InvalidChildError)

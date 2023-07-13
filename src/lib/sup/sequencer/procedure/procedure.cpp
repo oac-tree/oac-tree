@@ -299,10 +299,6 @@ void Procedure::SetParentProcedure(Procedure* parent)
 
 void Procedure::SetupPreamble()
 {
-  for (auto plugin_path : m_preamble.GetPluginPaths())
-  {
-    LoadPlugin(plugin_path);
-  }
   for (const auto& type_registration : m_preamble.GetTypeRegistrations())
   {
     auto anytype = ParseTypeRegistrationInfo(type_registration, GetFilename(), GetTypeRegistry());

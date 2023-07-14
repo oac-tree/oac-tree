@@ -75,7 +75,7 @@ public:
    * @brief Clone an instruction tree wth given path from a procedure with given name.
    *
    * @param filename Filename of the procedure to fetch from the store.
-   * @param filename Path to the root of the instruction tree to clone.
+   * @param path Path to the root of the instruction tree to clone.
    *
    * @return Pointer to workspace.
    */

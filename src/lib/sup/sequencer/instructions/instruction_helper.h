@@ -54,7 +54,7 @@ std::unique_ptr<Instruction> CloneInstruction(const Instruction* instruction);
  * @brief Initialize variable attributes.
  *
  * @param instruction Instruction tree to initialise.
- * @param instructions List of attributes to use for initialisation.
+ * @param source_attributes List of attributes to use for initialisation.
  *
  * @return true on successful initialisation of variable attributes.
  */

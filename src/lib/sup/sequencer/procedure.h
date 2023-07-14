@@ -121,6 +121,8 @@ public:
 
   /**
    * @brief Get number of top-level instructions.
+   *
+   * @return Number of instructions
    */
   int GetInstructionCount() const;
 
@@ -134,14 +136,17 @@ public:
   /**
    * @brief Inserts Instruction at the specified position.
    *
-   * @param Position in the vector where instruction is inserted.
+   * @param instruction Instruction to be inserted
+   * @param index Position in the vector where instruction is inserted.
+   * @return true on successful insertion.
    */
   bool InsertInstruction(std::unique_ptr<Instruction>&& instruction, int index);
 
   /**
    * @brief Removes Instruction from the specified position.
    *
-   * @param Position in the vector from where instruction is removed.
+   * @param index Position in the vector from where instruction is removed.
+   * @return Removed instruction
    */
   std::unique_ptr<Instruction> TakeInstruction(int index);
 

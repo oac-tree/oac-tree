@@ -1,14 +1,23 @@
 Welcome to sequencer's documentation!
 =====================================
 
-This is a work in progress.
+**sequencer** is a C++ library.
+
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
+
+   variable
 
 Indices and tables
 ==================
 
 * :ref:`genindex`
 * :ref:`search`
+
+
+.. doxygenclass:: sup::sequencer::Procedure
+		  :members: PushInstruction
+		  :members-only:
+

@@ -129,6 +129,8 @@ public:
   /**
    * @brief Push Instruction at top level.
    *
+   * @param instruction Instruction to push.
+   *
    * @throw InvalidOperationException when trying to pass an empty unique_ptr.
    */
   void PushInstruction(std::unique_ptr<Instruction>&& instruction);
@@ -168,6 +170,10 @@ public:
 
   /**
    * @brief Get variable value.
+   *
+   * @param name Variable name
+   *
+   * @param value AnyValue to where the variable will be retrieved.
    *
    * @return true on successful retrieval.
    */

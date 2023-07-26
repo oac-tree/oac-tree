@@ -116,6 +116,10 @@ void ParallelSequence::ResetHook()
 
 std::vector<const Instruction*> ParallelSequence::NextInstructionsImpl() const
 {
+  if (m_wrappers.empty())
+  {
+    return ChildInstructions();
+  }
   std::vector<const Instruction*> result;
   for (auto& wrapper : m_wrappers)
   {

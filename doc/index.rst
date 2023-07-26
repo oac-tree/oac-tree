@@ -8,6 +8,9 @@ Welcome to sequencer's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   procedure
+   userinterface
+   runner
    variable
 
 Indices and tables
@@ -15,3 +18,6 @@ Indices and tables
 
 * :ref:`genindex`
 * :ref:`search`
+
+
+

@@ -13,8 +13,8 @@ To use the ``Runner``, you need to create an instance of this class, passing a r
 
 .. code-block:: c++
 
-   UserInterface myUserInterface;
-   Runner myRunner(myUserInterface);
+   UserInterface my_user_interface;
+   Runner my_runner(my_user_interface);
 
 Setting the Procedure
 ^^^^^^^^^^^^^^^^^^^^^
@@ -23,13 +23,13 @@ Use the ``SetProcedure`` method to set the procedure that will be executed by th
 
 .. code-block:: c++
 
-   Procedure myProcedure;
-   myRunner.SetProcedure(&myProcedure);
+   Procedure my_procedure;
+   my_runner.SetProcedure(&my_procedure);
 
 Setting a Tick Callback
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-The ``SetTickCallback`` method allows you to set a callback function that will be called after each execution step. The callback function should have the signature ``void(const Procedure&)``.
+The ``SetTickCallback`` method allows you to set a callback function that will be called after each execution step. The callback function should have the signature ``void(const Procedure&)``. The callback can be used to query procedure status, the list of next instructions t execute, etc.
 
 .. code-block:: c++
 
@@ -37,21 +37,21 @@ The ``SetTickCallback`` method allows you to set a callback function that will b
        // Implement logic for actions to perform after each execution step
    }
 
-   myRunner.SetTickCallback(MyTickCallback);
+   my_runner.SetTickCallback(MyTickCallback);
 
 Managing Breakpoints
 ^^^^^^^^^^^^^^^^^^^^
 
-Use the methods ``SetBreakpoint``, ``RemoveBreakpoint`` and ``GetBreakpoints`` to manage breakpoints within the procedure. Breakpoints are points in the code where the execution will pause to allow procedures to be verified and tested at the set breakpoints. It is important to note that these methods should not be called during execution. They are intended to be used when the procedure is paused, before/after a single execution step, or after a breakpoint has been triggered.
+Use the methods ``SetBreakpoint``, ``RemoveBreakpoint`` and ``GetBreakpoints`` to manage breakpoints within the procedure. Breakpoints are points in the instruction tree where the execution will pause to allow procedures to be verified and tested at the set breakpoints. It is important to note that these methods should not be called during execution. They are intended to be used when the procedure is paused, before/after a single execution step, or after a breakpoint has been triggered.
 
 .. code-block:: c++
 
-   const Instruction* instructionToBreak = myProcedure.RootInstruction();
-   myRunner.SetBreakpoint(instructionToBreak);
+   const Instruction* instruction_to_break = my_procedure.RootInstruction();
+   my_runner.SetBreakpoint(instruction_to_break);
 
-   std::vector<breakpoint> breaks = myRunner.GetBreakpoints();
+   std::vector<breakpoint> breaks = my_runner.GetBreakpoints();
 
-   myRunner.RemoveBreakpoint(instructionToBreak);
+   my_runner.RemoveBreakpoint(instruction_to_break);
 
 Executing the Procedure
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -60,7 +60,7 @@ To execute the entire procedure, use the ``ExecuteProcedure`` method. The proced
 
 .. code-block:: c++
 
-   myRunner.ExecuteProcedure();
+   my_runner.ExecuteProcedure();
 
 Executing Single Instruction
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -69,7 +69,7 @@ Use the ``ExecuteSingle`` method to execute a single instruction within the proc
 
 .. code-block:: c++
 
-   myRunner.ExecuteSingle();
+   my_runner.ExecuteSingle();
 
 Pausing and Halting Execution
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -78,9 +78,9 @@ You can pause the procedure execution using the ``Pause`` method, and you can ha
 
 .. code-block:: c++
 
-   myRunner.Pause();
+   my_runner.Pause();
    // To resume, call ExecuteProcedure again.
-   myRunner.Halt();
+   my_runner.Halt();
 
 Checking Execution Status
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -89,8 +89,8 @@ The ``IsFinished`` and ``IsRunning`` methods allow you to check the current exec
 
 .. code-block:: c++
 
-   bool finished = myRunner.IsFinished();
-   bool running = myRunner.IsRunning();
+   bool finished = my_runner.IsFinished();
+   bool running = my_runner.IsRunning();
 
 Note that ``IsRunning`` has a very specific meaning in the context of the Sequencer: this member function returns ``true`` only when parts of the executing instruction tree are being run in a separate thread. This function is used to distinguish between instructions waiting to be ticked again and instructions that may require some time to finish before they can proceed. In this way, busy loops can be avoided, i.e. continuously ticking an instruction tree that is being run in a separate thread.
 

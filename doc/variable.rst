@@ -7,6 +7,8 @@ Variable
 
 The ``Variable`` class is an interface for workspace variables, designed to manage and manipulate various types of variables within a software system. It provides an abstract representation of variables with different types and allows users to interact with them uniformly while ensuring thread safety for specific methods.
 
+The Variable class uses ``sup::dto::AnyValue`` as a common interface to represent any structured data.
+
 While all variables are globally accessible by the instructions in a procedure, the backend, i.e. where the values of these variables are stored, could be very diverse: file, memory, network, database, etc.
 
 Architecture
@@ -104,7 +106,7 @@ The `Variable` class supports an attribute system (see `Attribute System`_). Use
 Resetting a Variable
 ^^^^^^^^^^^^^^^^^^^^
 
-The `Reset` method resets the variable to its initial state, similar to when it was first created. For example, it can disconnect from external resources or clear values.
+The `Reset` method resets the variable to the state it had prior to initialization. This means that attributes are still present, but other internal state data is reset. For example, it can disconnect from external resources or clear values.
 
 .. code-block:: c++
 

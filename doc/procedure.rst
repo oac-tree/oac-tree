@@ -1,33 +1,36 @@
 Procedure
 =========
 
-The ``Procedure`` class represents a sequence of instructions to be executed within the Sequencer. It provides methods to manage the execution flow, handle variables, and control the execution status. A procedure can include a series of top-level instructions, each with its own set of operations and logic.
+The ``Procedure`` class represents instruction trees to be executed within the Sequencer and a workspace of globally accessible variables (see :ref:`Variable`). It provides methods to handle variables and instructions, and to manage the execution flow. A procedure can include multiple top-level instructions, where at most one is defined to be the root instruction that will be executed on procedure execution.
 
 Architecture
 ------------
 
-The ``Procedure`` class is responsible for managing a collection of instructions. It contains a vector of top-level instructions, each represented by a derived class of the ``Instruction`` class. The class also includes an internal ``Workspace`` that holds variables and their values during the execution of instructions.
+The ``Procedure`` class is responsible for managing a collection of instruction trees. It contains a vector of top-level instructions, each represented by a derived class of the ``Instruction`` class. The class also includes an internal ``Workspace`` that holds variables and their values during the execution of instructions.
 
 Usage
 -----
 
 Creating a Procedure
 ^^^^^^^^^^^^^^^^^^^^
-   To create a new procedure, instantiate an object of the ``Procedure`` class. Optionally, you can specify the filename if the procedure is loaded from a file:
+
+To create a new procedure, instantiate an object of the ``Procedure`` class. Optionally, you can specify the filename if the procedure is loaded from a file:
 
 .. code-block:: c++
 
    Procedure myProcedure("example.procedure");
 
+This filename argument is used when the procedure contains instructions that include other instructions from files specified by a relative pathname.
 
 Managing Instructions
 ^^^^^^^^^^^^^^^^^^^^^
-   You can add, retrieve, and remove instructions in the procedure. The procedure allows managing instructions at the top level.
+
+You can add, retrieve, and remove instructions in the procedure. The procedure allows managing instructions at the top level.
 
 .. code-block:: c++
 
    // Add a new instruction to the top level
-   std::unique_ptr<Instruction> myInstruction = std::make_unique<MyInstruction>();
+   auto myInstruction = GlobalInstructionRegistry().Create("MyInstruction");
    myProcedure.PushInstruction(std::move(myInstruction));
 
    // Retrieve the root instruction
@@ -38,12 +41,13 @@ Managing Instructions
 
 Managing Variables
 ^^^^^^^^^^^^^^^^^^
-   The procedure can hold and manage variables using the internal workspace. Users can add, retrieve, and list variables associated with the procedure.
+
+The procedure can hold and manage variables using the internal workspace. Users can add, retrieve, and list variables associated with the procedure's workspace.
 
 .. code-block:: c++
 
    // Add a new variable to the procedure's workspace
-   std::unique_ptr<Variable> myVariable = std::make_unique<MyVariable>();
+   auto myVariable = GlobalVariableRegistry().Create("MyVariable");
    myProcedure.AddVariable("var1", std::move(myVariable));
 
    // Retrieve the value of a variable
@@ -57,7 +61,8 @@ Managing Variables
 
 Execution Control
 ^^^^^^^^^^^^^^^^^
-   The procedure can be executed step-by-step using the ``ExecuteSingle`` method. This allows controlling the execution flow and interacting with user interfaces if necessary. The ``Setup`` method prepares the procedure for execution. The procedure can also be halted and reset.
+
+The procedure can be executed step-by-step using the ``ExecuteSingle`` method. This allows controlling the execution flow and validating the procedure at each step. The ``Setup`` method prepares the procedure for execution. The procedure can also be halted and reset.
 
 .. code-block:: c++
 
@@ -76,7 +81,8 @@ Execution Control
 
 Procedure Status and Control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-   Users can retrieve the execution status of the root instruction to determine whether the procedure is still running, has completed, or encountered an error.
+
+Users can retrieve the execution status of the root instruction to determine whether the procedure is still running, has completed, or encountered an error.
 
 .. code-block:: c++
 
@@ -85,7 +91,8 @@ Procedure Status and Control
 
 Attributes
 ^^^^^^^^^^
-   The procedure can have attributes associated with it. Attributes are key-value pairs that store additional information about the procedure.
+
+The procedure can have attributes associated with it. Attributes are key-value pairs that store additional information about the procedure.
 
 .. code-block:: c++
 
@@ -95,18 +102,15 @@ Attributes
    // Retrieve the value of an attribute
    std::string version = myProcedure.GetAttributeString("version");
 
-Remember to refer to the specific derived classes for instructions and variables to understand their specific implementations and functionality.
-
 Additional Notes
 ----------------
 
 The ``Procedure`` class supports various additional features, such as setting up preamble information, registering types and plugins, and handling callbacks for variable updates. Users can refer to the specific class methods, presented in the following section, for more details on these advanced features.
 
-
 Class definition
 ----------------
 
-   Next is presented the definition of the ``Procedure`` class and its main methods.
+Next is presented the definition of the ``Procedure`` class and its main methods.
 
 .. doxygenclass:: sup::sequencer::Procedure
    :members:

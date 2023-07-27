@@ -101,26 +101,6 @@ void Runner::RemoveBreakpoint(const Instruction* instruction)
   m_breakpoints.erase(it);
 }
 
-void Runner::DisableBreakpoint(const Instruction* instruction)
-{
-  auto it = FindBreakpoint(m_breakpoints, instruction);
-  if (it == m_breakpoints.end())
-  {
-    return;
-  }
-  it->SetStatus(Breakpoint::kDisabled);
-}
-
-void Runner::EnableBreakpoint(const Instruction* instruction)
-{
-  auto it = FindBreakpoint(m_breakpoints, instruction);
-  if (it == m_breakpoints.end())
-  {
-    return;
-  }
-  it->SetStatus(Breakpoint::kSet);
-}
-
 std::vector<Breakpoint> Runner::GetBreakpoints() const
 {
   return m_breakpoints;
@@ -254,10 +234,6 @@ std::vector<Breakpoint*> CurrentBreakpoints(
   for (auto& breakpoint : breakpoints)
   {
     auto status = breakpoint.GetStatus();
-    if (status == Breakpoint::kDisabled)
-    {
-      continue;
-    }
     if (std::find(next_instructions.begin(), next_instructions.end(), breakpoint.GetInstruction())
         == next_instructions.end())
     {

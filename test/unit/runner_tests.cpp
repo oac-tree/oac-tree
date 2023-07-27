@@ -451,14 +451,12 @@ TEST_F(RunnerTest, DisabledBreakpoint)
   EXPECT_EQ(breakpoints[0].GetInstruction(), *it);
   EXPECT_EQ(breakpoints[0].GetStatus(), Breakpoint::kSet);
 
-  // Disable breakpoint and check
-  EXPECT_NO_THROW(runner.DisableBreakpoint(*it));
+  // Remove breakpoint and check
+  EXPECT_NO_THROW(runner.RemoveBreakpoint(*it));
   breakpoints = runner.GetBreakpoints();
-  ASSERT_EQ(breakpoints.size(), 1);
-  EXPECT_EQ(breakpoints[0].GetInstruction(), *it);
-  EXPECT_EQ(breakpoints[0].GetStatus(), Breakpoint::kDisabled);
+  ASSERT_EQ(breakpoints.size(), 0);
 
-  // A disabled breakpoint is ignored, so the runner runs to completion
+  // No more breakpoints, so the runner runs to completion
   EXPECT_NO_THROW(runner.ExecuteProcedure());
   EXPECT_TRUE(runner.IsFinished());
   EXPECT_FALSE(runner.IsRunning());

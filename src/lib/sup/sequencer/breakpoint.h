@@ -36,7 +36,6 @@ public:
   enum Status {
     kSet = 0,   // stop execution when breakpoint is hit
     kReleased,  // continue execution and change status to kSet
-    kDisabled   // ignore such breakpoints
   };
 
   Breakpoint(const Instruction* instruction);

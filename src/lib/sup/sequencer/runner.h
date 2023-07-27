@@ -84,29 +84,6 @@ public:
   void RemoveBreakpoint(const Instruction* instruction);
 
   /**
-   * @brief Disable a breakpoint at the given instruction.
-   * @param instruction Pointer to instruction for breakpoint location.
-   *
-   * @details The breakpoint will not be removed, but will be ignored during determination whether
-   * the procedure has to stop executing at the given instruction.
-   *
-   * @note This member function should not be called during execution, but only when it is paused,
-   * before/after a single execution step or after a breakpoint was triggered.
-   */
-  void DisableBreakpoint(const Instruction* instruction);
-
-  /**
-   * @brief Enable a breakpoint at the given instruction.
-   * @param instruction Pointer to instruction for breakpoint location.
-   *
-   * @details The breakpoint will be re-enabled if it exists and was disabled.
-   *
-   * @note This member function should not be called during execution, but only when it is paused,
-   * before/after a single execution step or after a breakpoint was triggered.
-   */
-  void EnableBreakpoint(const Instruction* instruction);
-
-  /**
    * @brief Get a list of breakpoints.
    *
    * @return List of breakpoints.

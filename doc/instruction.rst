@@ -25,11 +25,31 @@ Execution Status
 
 Each instruction has an ``ExecutionStatus`` enumeration that indicates in which phase of execution the instruction currently is:
 
-* `NOT_STARTED`: The instruction is ready for its first execution. This is the state of an instruction that was never executed or just reset.
-* `NOT_FINISHED`: The instruction already received at least one tick, but has not yet finished and is waiting to be ticked again. This state often indicates compound instructions. For example, a `Sequence` instruction that was ticked once, but has multiple child instructions, will report this status, since only its first child was ticked. It expects to be ticked again, so it can propagate those ticks to the other child instructions.
-* `RUNNING`: The instruction, or one of its descendants (child or descendants of child) is executing in a separate thread. The instruction is not truly waiting to be ticked again, but must be ticked at some point to check if those threads have finished executing. The difference with `NOT_FINISHED` is that it would not be beneficial to continuously tick an instruction with the `RUNNING` status, as this would consume unnecessary resources. Typically, a small timeout is used between ticks of an instruction that return this status.
-* `SUCCESS`: the instruction's execution finished successfully.
-* `FAILURE`: the instruction's execution finished with a failure.
+NOT_STARTED
+  The instruction is ready for its first execution. This is the state of an instruction that was never executed or just reset.
+
+NOT_FINISHED
+  The instruction already received at least one tick, but has not yet finished and is waiting to be ticked again. This state often indicates compound instructions. For example, a `Sequence` instruction that was ticked once, but has multiple child instructions, will report this status, since only its first child was ticked. It expects to be ticked again, so it can propagate those ticks to the other child instructions.
+
+RUNNING
+  The instruction, or one of its descendants (child or descendants of child) is executing in a separate thread. The instruction is not truly waiting to be ticked again, but must be ticked at some point to check if those threads have finished executing. The difference with `NOT_FINISHED` is that it would not be beneficial to continuously tick an instruction with the `RUNNING` status, as this would consume unnecessary resources. Typically, a small timeout is used between ticks of an instruction that return this status.
+
+SUCCESS
+  The instruction's execution finished successfully.
+
+FAILURE
+  The instruction's execution finished with a failure.
+
+Execution Logic
+---------------
+
+The non-virtual implementation of ``Instruction::ExecuteSingle`` provides a uniform way of managing the instruction's execution status, calling specific (virtual) hooks on the instruction and notifying the UserInterface of any status updates.
+
+During a single tick, the ``ExecuteSingle`` function will perform the following actions:
+
+* If the status is `NOT_STARTED`, i.e. this is the first time the instruction will be ticked (or just after a reset), the virtual method ``InitHook`` is called, which can be overriden in case some extra code needs to run the first time. Afterwards, the status is put to `NOT_FINISHED` and the UserInterface is notified of this status change.
+* The status is updated with the result of the virtual ``ExecuteSingleImpl`` method. This function needs to be overriden by all concrete instructions and should contain the main execution logic.
+* If the previous step resulted in a change of status, the UserInterface is notified of this change.
 
 Usage
 -----
@@ -113,17 +133,6 @@ Resetting an instruction is mainly used when the same instruction needs to be ex
 .. code-block:: c++
 
    wait->Reset(); // Reset the wait instruction
-
-Execution Logic
----------------
-
-The non-virtual implementation of ``Instruction::ExecuteSingle`` provides a uniform way of managing the instruction's execution status, calling specific (virtual) hooks on the instruction and notifying the UserInterface of any status updates.
-
-During a single tick, the ``ExecuteSingle`` function will perform the following actions:
-
-* If the status is `NOT_STARTED`, i.e. this is the first time the instruction will be ticked (or just after a reset), the virtual method ``InitHook`` is called, which can be overriden in case some extra code needs to run the first time. Afterwards, the status is put to `NOT_FINISHED` and the UserInterface is notified of this status change.
-* The status is updated with the result of the virtual ``ExecuteSingleImpl`` method. This function needs to be overriden by all concrete instructions and should contain the main execution logic.
-* If the previous step resulted in a change of status, the UserInterface is notified of this change.
 
 Class definition
 ----------------

@@ -85,7 +85,7 @@ void Variable::Setup(const sup::dto::AnyTypeRegistry* registry)
   m_setup_successful = true;
 }
 
-bool Variable::GetValue(sup::dto::AnyValue &value, const std::string &fieldname) const
+bool Variable::GetValue(sup::dto::AnyValue& value, const std::string& fieldname) const
 {
   std::lock_guard<std::mutex> lock(m_access_mutex);
   if (!m_setup_successful)
@@ -105,7 +105,7 @@ bool Variable::GetValue(sup::dto::AnyValue &value, const std::string &fieldname)
   return sup::dto::TryAssignIfEmptyOrConvert(value, src_value);
 }
 
-bool Variable::SetValue(const sup::dto::AnyValue &value, const std::string &fieldname)
+bool Variable::SetValue(const sup::dto::AnyValue& value, const std::string& fieldname)
 {
   std::lock_guard<std::mutex> lk(m_access_mutex);
   if (!m_setup_successful)

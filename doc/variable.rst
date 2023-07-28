@@ -20,6 +20,48 @@ The ``Variable`` class is based on the non-virtual interface (NVI) idiom to supp
 
 The ``Variable`` class allows users to define variables of different types. Since it is an abstract base class, concrete variables are implemented in derived classes.
 
+Variable Value Constraints
+--------------------------
+
+The generic non-virtual implementation of ``Variable`` tries not to impose any constraints on the type of values that can be set or read back from a concrete ``Variable``. However, concrete implementations can, and often will, impose specific constraints in the way they override the virtual member functions ``GetValueImpl`` and ``SetValueImpl``.
+
+To clarify the general semantics of getting/setting values to a ``Variable``, the following subsections will detail the internal logic that is provided in the base class implementations.
+
+GetValue
+^^^^^^^^
+
+The full signature of the ``GetValue`` member function is:
+
+.. code-block:: c++
+
+   bool Variable::GetValue(sup::dto::AnyValue& value, const std::string& fieldname) const;
+
+This function will perform the following steps:
+
+* Retrieve the full value of the concrete ``Variable`` by calling the overriden ``GetValueImpl`` member function. Return ``false`` if this fails.
+* If `fieldname` is non-empty, retrieve the substructure identified by this fieldname. Return ``false`` is the value didn't have such a field.
+* If `value` is an empty value, assign the previous result to it. Otherwise, try to convert that result to `value`.
+
+This means that the client of this function can request a conversion of the underlying value by providing an ``AnyValue`` with non-empty type.
+
+SetValue
+^^^^^^^^
+
+The full signature of the ``SetValue`` member function is:
+
+.. code-block:: c++
+
+   bool Variable::SetValue(const sup::dto::AnyValue& value, const std::string& fieldname) const;
+
+This function will perform the following steps:
+
+* If 'fieldname' is empty, return the result of ``SetValueImpl``.
+* Otherwise:
+  * Retrieve the value of the variable by calling ``GetValueImpl``.
+  * If that value does not contain the field with name `fieldname`, return ``false``.
+  * Try to assign `value` to the field with name 'fieldname' and return ``false`` if that fails. Note that this assignment will only fail if the type of the field cannot be changed, i.e. it is an array element or descendant thereof, and conversion fails.
+  * Return the result ``SetValueImpl`` with the updated value as argument.
+
 Usage
 -----
 

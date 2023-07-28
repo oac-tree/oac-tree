@@ -93,7 +93,7 @@ Users can register a callback function to be notified of value updates using the
 Managing Attributes
 ^^^^^^^^^^^^^^^^^^^
 
-The `Variable` class supports an attribute system (see `Attribute System`_). Users can set, retrieve, and manipulate attributes using various attribute-related methods:
+The `Variable` class supports an attribute system (see :ref:`Attribute System`). Users can set, retrieve, and manipulate attributes using various attribute-related methods:
 
 .. code-block:: c++
 
@@ -113,6 +113,8 @@ The `Reset` method resets the variable to the state it had prior to initializati
 .. code-block:: c++
 
    local_var->Reset(); // Reset the numeric variable
+
+.. _Attribute System:
 
 Attribute System
 ----------------

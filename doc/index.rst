@@ -12,6 +12,7 @@ Welcome to sequencer's documentation!
    userinterface
    runner
    variable
+   instruction
 
 Indices and tables
 ==================

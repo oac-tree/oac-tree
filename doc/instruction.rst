@@ -9,9 +9,16 @@ The ``Instruction`` class is an interface for all executable instructions in a p
 
 There are three main categories of instructions:
 
-* Compound instructions: instructions that can have multiple child instructions;
-* Decorator instructions: instructions that have exactly one child instruction;
-* Actions: these are the leafs of instruction trees and represent an concrete action to be taken, while compound and decorator instructions represent the overall execution logic.
+Compound instruction
+  Instruction that can have multiple child instructions.
+
+Decorator instruction
+  Instruction that has exactly one child instruction.
+
+Action
+  These are the leafs of instruction trees and represent a concrete action to be taken. They have no child instructions.
+
+Compound instructions are intended for executing their children with a certain execution logic depending on the implementation (simple sequence, parallel execution, execute until at least one child succeeds, etc). The decorator instruction can be considered as a modifier of the behaviour of the enclosed child (e.g. turn failure into success). Actions, depending on implementation, can perform standard simple operations (wait, print log message, etc) or take care of complex activity (compare variables in sequencer workspace).
 
 Architecture
 ------------
@@ -29,7 +36,7 @@ NOT_STARTED
   The instruction is ready for its first execution. This is the state of an instruction that was never executed or just reset.
 
 NOT_FINISHED
-  The instruction already received at least one tick, but has not yet finished and is waiting to be ticked again. This state often indicates compound instructions. For example, a `Sequence` instruction that was ticked once, but has multiple child instructions, will report this status, since only its first child was ticked. It expects to be ticked again, so it can propagate those ticks to the other child instructions.
+  The instruction already received at least one tick, but has not yet finished and is waiting to be ticked again. This state often indicates compound instructions. For example, a `Sequence` instruction that was ticked once, but has multiple child instructions, will report this status, since only its first child was ticked. It expects to be ticked again, so it can propagate those ticks to the other child instructions. In compound instructions, this status takes precedence over the `RUNNING` status to allow for immediate ticking of child instructions that are waiting.
 
 RUNNING
   The instruction, or one of its descendants (child or descendants of child) is executing in a separate thread. The instruction is not truly waiting to be ticked again, but must be ticked at some point to check if those threads have finished executing. The difference with `NOT_FINISHED` is that it would not be beneficial to continuously tick an instruction with the `RUNNING` status, as this would consume unnecessary resources. Typically, a small timeout is used between ticks of an instruction that return this status.
@@ -38,7 +45,7 @@ SUCCESS
   The instruction's execution finished successfully.
 
 FAILURE
-  The instruction's execution finished with a failure.
+  The instruction's execution finished with a failure. Note that `FAILURE` is not meant to carry a negative connotation and simply means that the expected result has not been achieved. For example, an instruction waiting for a certain condition with a timeout will typically report `FAILURE` if the timeout expires before reaching the condition.
 
 Execution Logic
 ---------------
@@ -81,7 +88,7 @@ The ``Setup`` member function takes a reference to a procedure as an argument. T
 Executing Instructions
 ^^^^^^^^^^^^^^^^^^^^^^
 
-The execution of instruction trees follows a model where the root of the tree is *ticked* until that root reports a status that signifies the termination of the tree's execution. Compound and decorator instructions will propagate these *ticks* to their appropriate child instructions. A single tick of an instruction results in a single call to the ``ExecuteSingle`` member function of the instruction, which is a non-virtual implementation that ends up calling the private member function ``ExecuteSingleImpl`` (see also `Execution Logic`_).
+The execution of instruction trees follows a model where the root of the tree is *ticked* until that root reports a status that signifies the termination of the tree's execution. Compound and decorator instructions will propagate these *ticks* to their appropriate child instructions. A single tick of an instruction results in a single call to the ``ExecuteSingle`` member function of the instruction, leading to a call to the private member function ``ExecuteSingleImpl`` (see also `Execution Logic`_).
 
 For example, to execute the wait instruction:
 
@@ -114,7 +121,7 @@ The `Instruction` class supports the same attribute system as ``Variable``: see 
 Halting an Instruction
 ^^^^^^^^^^^^^^^^^^^^^^
 
-The `Halt` method tries to stop the execution of an instruction. This only makes sense for instructions with status equal to `RUNNING`, as otherwise the caller is in the same thread as the instruction's execution implying that the instruction is not currently executing anything. However, a compound instruction may have descendants running in seperate threads, i.e. with status `RUNNING`, and still report a status of `NOT_FINISHED`, to indicate that there are descendants waiting to be ticked.
+The `Halt` method tries to stop the execution of an instruction. It is typically used in cases where multiple instructions are being executed concurrently (e.g. by using a `ParallelSequence` compound instruction) and a terminal status (success or failure) is reached before all threads have finished executing. The framework will then try to halt the remaining ones to avoid unnecessary delays.
 
 Implementers of custom instructions should try to regularly check the protected function ``IsHaltRequested`` to prevent blocking the execution needlessly.
 

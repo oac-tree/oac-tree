@@ -28,6 +28,7 @@
 #include <sup/sequencer/runner.h>
 #include <sup/sequencer/sequence_parser.h>
 
+#include <exception>
 #include <iostream>
 
 using namespace sup::sequencer;
@@ -74,14 +75,23 @@ int main(int argc, char* argv[])
     return 1;
   }
 
-  auto proc = ParseProcedureFile(filename);
-  if (!proc)
+  std::unique_ptr<Procedure> proc;
+  try
   {
-    std::string error_message = "main(): could not parse procedure file [" + filename + "]";
-    logger.LogMessage(log::SUP_SEQ_LOG_ERR, error_message);
+    proc = ParseProcedureFile(filename);
+    if (!proc)
+    {
+      std::string error_message = "main(): could not parse procedure file [" + filename + "]";
+      logger.LogMessage(log::SUP_SEQ_LOG_ERR, error_message);
+      return 1;
+    }
+    proc->Setup();
+  }
+  catch(const std::exception& e)
+  {
+    logger.LogMessage(log::SUP_SEQ_LOG_CRIT, e.what());
     return 1;
   }
-  proc->Setup();
 
   CLInterface ui(logger);
   Runner runner(ui);

@@ -26,6 +26,7 @@ target_sources(sup-sequencer-shared
     ${CMAKE_CURRENT_LIST_DIR}/lessthan.cpp
     ${CMAKE_CURRENT_LIST_DIR}/lessthanorequal.cpp
     ${CMAKE_CURRENT_LIST_DIR}/listen.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/log_instruction.cpp
     ${CMAKE_CURRENT_LIST_DIR}/message.cpp
     ${CMAKE_CURRENT_LIST_DIR}/output.cpp
     ${CMAKE_CURRENT_LIST_DIR}/parallel_sequence.cpp

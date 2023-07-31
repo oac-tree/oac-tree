@@ -39,6 +39,7 @@
 #include "lessthan.h"
 #include "lessthanorequal.h"
 #include "listen.h"
+#include "log_instruction.h"
 #include "message.h"
 #include "output.h"
 #include "parallel_sequence.h"
@@ -143,6 +144,7 @@ void InitInstructionRegistry(InstructionRegistry& registry)
   (void)RegisterInstruction<Input>(registry);
   (void)RegisterInstruction<LessThan>(registry);
   (void)RegisterInstruction<LessThanOrEqual>(registry);
+  (void)RegisterInstruction<LogInstruction>(registry);
   (void)RegisterInstruction<Message>(registry);
   (void)RegisterInstruction<Output>(registry);
   (void)RegisterInstruction<ResetVariable>(registry);

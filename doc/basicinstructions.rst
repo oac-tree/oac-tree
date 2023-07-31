@@ -1,6 +1,5 @@
-==============
- Instruction
-==============
+Basic Instructions
+==================
 
 Instruction is an abstract interface for all executable instructions. It serves as the base class for various types of instructions.
 Instructions can be of the following categories:
@@ -15,11 +14,11 @@ Next we present the different types of available instructions and some basic exa
 .. _compound:
 
 Compound Instructions
-=====================
+---------------------
 Compound instructions are instructions that have multiple child instructions, and they control the flow of execution among their children based on certain conditions or criteria.
 
 Sequence
---------
+^^^^^^^^
 
 The sequence instruction executes its child instructions in the order they are set.
 
@@ -51,7 +50,7 @@ Sequence Example
 
 
 Parallel Sequence
------------------
+^^^^^^^^^^^^^^^^^
 
 The parallel sequence instruction executes its child instructions in a parallel environment.
 
@@ -81,7 +80,7 @@ Parallel Sequence Example
 .. _choice_exp:
 
 Choice
-------
+^^^^^^
 
 The choice instruction will execute instructions based on their index. That index is passed within a variable that can be a scalar or an array. An index can be repeated inside the array, making the correspondent instruction execution be repeated as many times as it appears in the array. An instruction that has no correspondent call inside the variable, will be ignored.
 
@@ -110,7 +109,7 @@ Choice Example
 
 
 User Choice
------------
+^^^^^^^^^^^
 
 This instruction is similar to ``Choice``, but the selection of the instruction to execute is delegated to the UserInterface.
 
@@ -141,7 +140,7 @@ User Choice Example
 
 
 Fallback
---------
+^^^^^^^^
 
 .. doxygenclass:: sup::sequencer::Fallback
    :members:
@@ -174,12 +173,12 @@ Fallback Example
 .. _decorator:
 
 Decorator Instructions
-======================
+----------------------
 
 Decorator instructions modify or add functionality to a single child instruction, allowing for the addition of behavior to an existing instruction without modifying its core implementation.
 
 For
----
+^^^
 
 .. doxygenclass:: sup::sequencer::ForInstruction
    :members:
@@ -188,7 +187,7 @@ For
 * An example for this instruction is already present in :ref:`seq_exp`.
 
 Force Success
--------------
+^^^^^^^^^^^^^
 
 .. doxygenclass:: sup::sequencer::ForceSuccess
    :members:
@@ -196,7 +195,7 @@ Force Success
 * An example for this instruction is already present in :ref:`uchoice_exp`.
 
 Include
--------
+^^^^^^^
 
 .. doxygenclass:: sup::sequencer::Include
    :members:
@@ -217,13 +216,13 @@ Include Example
 
 
 Include Procedure
------------------
+^^^^^^^^^^^^^^^^^
 
 .. doxygenclass:: sup::sequencer::IncludeProcedure
    :members:
 
 Inverter
---------
+^^^^^^^^
 
 .. doxygenclass:: sup::sequencer::Inverter
    :members:
@@ -231,7 +230,7 @@ Inverter
 * An example for this instruction is already present in :ref:`fall_exp`.
 
 Listen
-------
+^^^^^^
 
 .. doxygenclass:: sup::sequencer::Listen
    :members:
@@ -273,7 +272,7 @@ Listen Example
 
 
 Repeat
-------
+^^^^^^
 
 .. doxygenclass:: sup::sequencer::Repeat
    :members:
@@ -305,12 +304,12 @@ Repeat example
 .. _action:
 
 Action Instructions
-===================
+-------------------
 
 An action instruction represents a discrete operation or step within a larger sequence of instructions. Actions are fundamental building blocks that perform specific tasks or operations to achieve a particular goal. Action instructions are typically used within compound or decorator instructions.
 
 Condition
----------
+^^^^^^^^^
 
 .. doxygenclass:: sup::sequencer::Condition
    :members:
@@ -341,7 +340,7 @@ Condition example
     )"};
 
 Copy
-----
+^^^^
 
 .. doxygenclass:: sup::sequencer::Copy
    :members:
@@ -349,7 +348,7 @@ Copy
 * An example for this instruction is already present in :ref:`par_exp`.
 
 Decrement
----------
+^^^^^^^^^
 
 .. doxygenclass:: sup::sequencer::Decrement
    :members:
@@ -357,7 +356,7 @@ Decrement
 * An example for this instruction is already present in :ref:`repeat_exp`.
 
 Equals
-------
+^^^^^^
 
 .. doxygenclass:: sup::sequencer::Equals
    :members:
@@ -365,7 +364,7 @@ Equals
 * An example for this instruction is already present in :ref:`listen_exp`.
 
 Greater than
-------------
+^^^^^^^^^^^^
 
 .. doxygenclass:: sup::sequencer::GreaterThan
    :members:
@@ -374,7 +373,7 @@ Greater than
 * The Greater Than usage is equal to that of the Less Than that can be seen in :ref:`seq_exp`.
 
 Greater than or Equal
----------------------
+^^^^^^^^^^^^^^^^^^^^^
 
 .. doxygenclass:: sup::sequencer::GreaterThanOrEqual
    :members:
@@ -383,7 +382,7 @@ Greater than or Equal
 
 
 Increment
----------
+^^^^^^^^^
 
 .. doxygenclass:: sup::sequencer::Increment
    :members:
@@ -391,7 +390,7 @@ Increment
 * The Increment usage is equal to that of the Decrement that can be seen in :ref:`seq_exp`.
 
 Input
------
+^^^^^
 
 .. doxygenclass:: sup::sequencer::Input
    :members:
@@ -415,7 +414,7 @@ Input Example
 
 
 Less than
----------
+^^^^^^^^^
 
 .. doxygenclass:: sup::sequencer::LessThan
    :members:
@@ -423,7 +422,7 @@ Less than
 * An example for this instruction is already present in :ref:`seq_exp`.
 
 Less than or Equal
-------------------
+^^^^^^^^^^^^^^^^^^
 
 .. doxygenclass:: sup::sequencer::LessThanOrEqual
    :members:
@@ -431,19 +430,19 @@ Less than or Equal
 * The Less Than or Equal usage is equal to that of the Less Than that can be seen in :ref:`seq_exp`.
 
 Message
--------
+^^^^^^^
 
 .. doxygenclass:: sup::sequencer::Message
    :members:
 
 Output
-------
+^^^^^^
 
 .. doxygenclass:: sup::sequencer::Output
    :members:
 
 Reset Variable
---------------
+^^^^^^^^^^^^^^
 
 .. doxygenclass:: sup::sequencer::ResetVariable
    :members:
@@ -468,13 +467,13 @@ Reset Variable Example
 
 
 User Confirmation
------------------
+^^^^^^^^^^^^^^^^^
 
 .. doxygenclass:: sup::sequencer::UserConfirmation
    :members:
 
 Wait
-----
+^^^^
 
 .. doxygenclass:: sup::sequencer::Wait
    :members:
@@ -482,7 +481,7 @@ Wait
 * An example for this instruction is already present in :ref:`par_exp`.
 
 Wait for Variable
------------------
+^^^^^^^^^^^^^^^^^
 
 .. doxygenclass:: sup::sequencer::WaitForVariable
    :members:

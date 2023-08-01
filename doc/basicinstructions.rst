@@ -23,7 +23,7 @@ Sequence
 
 The sequence instruction executes its child instructions one by one in the order they are defined until:
 
-* A child instruction returns `FAILURE`: `Sequence` also returns `FAILURE`;
+* A child instruction returns `FAILURE`: `Sequencer` also returns `FAILURE`;
 * All child instructions returned `SUCCESS`: `Sequencer` returns `SUCCESS`.
 
 A sequence represents a number of steps that all have to succeed for a specific goal to be reached.
@@ -210,6 +210,17 @@ For
 .. doxygenclass:: sup::sequencer::ForInstruction
    :members:
 
+.. table:: For attributes
+   :class: longtable
+
+   +---------------+---------------+-----------------+-------------------------------------------------------+
+   |Attribute name |Attribute type | Mandatory | Description                                                 |
+   +===============+===============+===========+=============================================================+
+   |elementVar     |StringType     |yes        |Element variable to contain the elements of the cycled array |
+   +---------------+---------------+-----------+-------------------------------------------------------------+
+   |arrayVar       |StringType     |yes        |Array to cycle                                               |
+   +---------------+---------------+-----------+-------------------------------------------------------------+
+
 
 * An example for this instruction is already present in :ref:`Sequence example <seq_exp>`.
 
@@ -219,6 +230,9 @@ Force Success
 .. doxygenclass:: sup::sequencer::ForceSuccess
    :members:
 
+`Force Success` has no specific attributes.
+
+
 * An example for this instruction is already present in :ref:`UserChoice example <uchoice_exp>`.
 
 Include
@@ -226,6 +240,18 @@ Include
 
 .. doxygenclass:: sup::sequencer::Include
    :members:
+
+.. table:: Include attributes
+   :class: longtable
+
+   +---------------+---------------+-----------+------------------------------------------------------+
+   |Attribute name |Attribute type | Mandatory | Description                                          |
+   +===============+===============+===========+==============================================+=======+
+   |path           |StringType     |yes        |Instruction name where to include the new instruction |
+   +---------------+---------------+-----------+------------------------------------------------------+
+   |file           |StringType     |no         |File name where to include the new instruction        |
+   +---------------+---------------+-----------+------------------------------------------------------+
+
 
 Include Example
 ~~~~~~~~~~~~~~~
@@ -248,11 +274,25 @@ Include Procedure
 .. doxygenclass:: sup::sequencer::IncludeProcedure
    :members:
 
+.. table:: Include Procedure attributes
+   :class: longtable
+
+   +---------------+---------------+-----------+------------------------------------------------------+
+   |Attribute name |Attribute type | Mandatory | Description                                          |
+   +===============+===============+===========+==============================================+=======+
+   |file           |StringType     |yes        |File name where to get the instruction to include     |
+   +---------------+---------------+-----------+------------------------------------------------------+
+   |path           |StringType     |no         |Instruction name where to include the new instruction |
+   +---------------+---------------+-----------+------------------------------------------------------+
+
+
 Inverter
 ^^^^^^^^
 
 .. doxygenclass:: sup::sequencer::Inverter
    :members:
+
+`Inverter` has no specific attributes.
 
 * An example for this instruction is already present in :ref:`Fallback example <fall_exp>`.
 
@@ -261,6 +301,17 @@ Listen
 
 .. doxygenclass:: sup::sequencer::Listen
    :members:
+
+.. table:: Listen attributes
+   :class: longtable
+
+   +---------------+---------------+-----------+-------------------------------------------------------+
+   |Attribute name |Attribute type | Mandatory | Description                                           |
+   +===============+===============+===========+==============================================+========+
+   |varNames       |StringType     |yes        |Name of the variable to listen to                      |
+   +---------------+---------------+-----------+-------------------------------------------------------+
+   |forceSuccess   |StringType     |no         |Execute children instruction until successful if active|
+   +---------------+---------------+-----------+-------------------------------------------------------+
 
 .. _listen_exp:
 
@@ -303,6 +354,15 @@ Repeat
 
 .. doxygenclass:: sup::sequencer::Repeat
    :members:
+
+.. table:: Repeat attributes
+   :class: longtable
+
+   +---------------+--------------------+-----------+----------------------------------+
+   |Attribute name |Attribute type      | Mandatory | Description                      |
+   +===============+====================+===========+==================================+
+   |maxCount       |Signedinteger32type |no         |Maximum number of repetitions     |
+   +---------------+--------------------+-----------+----------------------------------+
 
 .. _repeat_exp:
 

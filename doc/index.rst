@@ -8,11 +8,7 @@ Welcome to sequencer's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   procedure
-   userinterface
-   runner
-   variable
-   instruction
+   API
    basicinstructions
 
 Indices and tables

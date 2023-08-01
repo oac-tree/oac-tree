@@ -31,7 +31,7 @@ namespace sequencer
 /**
  * @brief Compound instruction representing a sequence.
  *
- * @note Sequence keeps  executing its children as long as they return SUCCESS. Sequence fails as
+ * @note Sequence keeps executing its children as long as they return SUCCESS. Sequence fails as
  * soon as a child fails.
  */
 class Sequence : public CompoundInstruction

@@ -118,6 +118,7 @@ bool InstructionRegistry::IsRegisteredInstructionName(const std::string& name) c
 void InitInstructionRegistry(InstructionRegistry& registry)
 {
   // Register compound instructions:
+  (void)RegisterInstruction<Choice>(registry);
   (void)RegisterInstruction<Fallback>(registry);
   (void)RegisterInstruction<ParallelSequence>(registry);
   (void)RegisterInstruction<Sequence>(registry);
@@ -132,7 +133,6 @@ void InitInstructionRegistry(InstructionRegistry& registry)
   (void)RegisterInstruction<Repeat>(registry);
 
   // Register leaf instructions:
-  (void)RegisterInstruction<Choice>(registry);
   (void)RegisterInstruction<Condition>(registry);
   (void)RegisterInstruction<Copy>(registry);
   (void)RegisterInstruction<Decrement>(registry);

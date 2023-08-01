@@ -3,13 +3,14 @@ Basic Instructions
 
 Instruction is an abstract interface for all executable instructions. It serves as the base class for various types of instructions.
 Instructions can be of the following categories:
+
 * :ref:`compound` (multiple children)
 * :ref:`decorator` (one child)
 * :ref:`action` (no child instructions)
 
-There are no restrictions beside the number of children on where an instruction can be used. e.g. a compound instruction can be inside an action.
+There are no restrictions beside the number of children on where an instruction can be used. e.g. a compound instruction can be inside another compound instruction.
 
-Next we present the different types of available instructions and some basic examples of how to use them. The examples will contain mainly the necessary xml configuration and some c++ directives to test the instruction.
+Next we present the different types of available instructions and some basic examples of how to use them. The examples will contain mainly the body of a procedure in XML and an explanation of how it behaves.
 
 .. _compound:
 
@@ -20,155 +21,181 @@ Compound instructions are instructions that have multiple child instructions, an
 Sequence
 ^^^^^^^^
 
-The sequence instruction executes its child instructions in the order they are set.
+The sequence instruction executes its child instructions one by one in the order they are defined until:
 
-.. doxygenclass:: sup::sequencer::Sequence
-   :members:
+* A child instruction returns `FAILURE`: `Sequence` also returns `FAILURE`;
+* All child instructions returned `SUCCESS`: `Sequencer` returns `SUCCESS`.
+
+A sequence represents a number of steps that all have to succeed for a specific goal to be reached.
+
+`Sequence` has no specific attributes.
 
 .. _seq_exp:
 
-Sequence Example
-~~~~~~~~~~~~~~~~
+**Example**
 
-.. code-block:: c++
+In the example, the first child will succeed, so the sequence will try the second child, which also succeeds. When the third child returns failure (inverted success), the sequence will stop and return failure.
 
-   const std::string body{
-    R"(
-        <Sequence>
-            <For elementVar="i" arrayVar="arr">
-                <Sequence>
-                    <Increment varName="i"/>
-                    <LessThan lhs="i" rhs="a"/>
-            </For>
-        </Sequence>
-        <Workspace>
-            <Local name="arr" type='{"type":"uint32_arr","element":{"type":"uint32"}}' value="[2,4,6]"/>
-            <Local name="i" type='{"type":"uint32"}' value='0' />
-            <Local name="a" type='{"type":"uint32"}' value='9' />
-        </Workspace>
-    )"};
+.. code-block:: xml
 
+    <Sequence>
+        <Wait name="First" />
+        <Wait name="Second" />
+        <Inverter>
+            <Wait name="Third" />
+        </Inverter>
+    </Sequence>
 
-Parallel Sequence
-^^^^^^^^^^^^^^^^^
+Fallback
+^^^^^^^^
 
-The parallel sequence instruction executes its child instructions in a parallel environment.
+The fallback instruction executes its child instructions one by one in the order they are defined until:
 
-.. doxygenclass:: sup::sequencer::ParallelSequence
-   :members:
+* A child instruction returns `SUCCESS`: `Fallback` also returns `SUCCESS`;
+* All child instructions returned `FAILURE`: `Fallback` returns `FAILURE`.
+
+A fallback can be interpreted as aggregating a number of alternatives to reach a specific goal: as soon as one of these alternatives (child instruction) succeeds, the fallback succeeds.
+
+`Fallback` has no specific attributes.
+
+.. _fall_exp:
+
+**Example**
+
+In the example, the first child will fail (inverted success), so the fallback will try the second child, which succeeds. This will make the fallback succeed and the third child is never executed.
+
+.. code-block:: xml
+
+    <Fallback>
+        <Inverter>
+            <Wait name="One" timeout="0.2" />
+        </Inverter>
+        <Wait name="Two" timeout="0.2" />
+        <Wait name="Three" timeout="3.0" />
+    </Fallback>
+
+ParallelSequence
+^^^^^^^^^^^^^^^^
+
+The parallel sequence instruction executes all its child instructions concurrently. The execution status of the parallel sequence is determined by its attributes (attribute types are denoted by their corresponding `AnyType` from `sup-dto`):
+
+.. list-table::
+   :widths: 25 25 15 50
+   :header-rows: 1
+
+   * - Attribute name
+     - Attribute type
+     - Mandatory
+     - Description
+   * - successThreshold
+     - UnsignedInteger32Type
+     - no
+     - number of children to succeed for the parallel sequence to succeed
+   * - failureThreshold
+     - UnsignedInteger32Type
+     - no
+     - number of children to fail for the parallel sequence to fail
+
+For a parallel sequence with `N` children, the defaults of the above thresholds are `N` and `1` respectively. The sum of both thresholds will always be made to not exceed `N + 1` as that would lead to an undetermined status of the parallel sequence.
+
+.. note::
+
+   As soon as an exit condition is reached, i.e. one of the thresholds was reached, the parallel sequence will halt all remaining child instructions.
 
 .. _par_exp:
 
-Parallel Sequence Example
-~~~~~~~~~~~~~~~~~~~~~~~~~
+**Example**
 
-.. code-block:: c++
+The parallel sequence will execute all its children concurrently. The first two child instructions will return `SUCCESS` after one and two seconds respectively. At this point, the threshold for success is reached and the parallel sequence halts the third child instruction before returning `SUCCESS` itself.
 
-   const std::string body{
-    R"(
-    <ParallelSequence name="parallel" successThreshold="1" failureThreshold="3">
-        <Wait name="wait" timeout="2.0"/>
-        <Copy name="copy" input="input" output="output"/>
-        <Wait name="again" timeout="2.0"/>
+.. code-block:: xml
+
+    <ParallelSequence name="Parallel Wait" successThreshold="2">
+        <Wait name="One" timeout="1.0" />
+        <Wait name="Two" timeout="2.0" />
+        <Wait name="Three" timeout="3.0" />
     </ParallelSequence>
-    <Workspace>
-        <Local name="input" type='{"type":"string"}' value='"undefined"'/>
-        <Local name="output" type='{"type":"string"}' value='"denifednu"'/>
-    </Workspace>
-    )"};
 
 .. _choice_exp:
 
 Choice
 ^^^^^^
 
-The choice instruction will execute instructions based on their index. That index is passed within a variable that can be a scalar or an array. An index can be repeated inside the array, making the correspondent instruction execution be repeated as many times as it appears in the array. An instruction that has no correspondent call inside the variable, will be ignored.
+The choice instruction will execute instructions based on their index. That index is passed from a workspace variable that can be a scalar (single index) or an array (list of indices). An index can be repeated inside the array, making the correspondent instruction execution be repeated as many times as it appears in the array.
 
-.. doxygenclass:: sup::sequencer::Choice
-   :members:
+The execution status returned by the choice instruction follows the same logic as for `Sequence`: a single failure immediately leads to failure and success means all selected child instructions returned success.
 
-Choice Example
-~~~~~~~~~~~~~~
+Attributes:
 
-.. code-block:: c++
+.. list-table::
+   :widths: 25 25 15 50
+   :header-rows: 1
 
-    // this example will execute the two counter and the wait instructions, the inverter will be ignored
-    const std::string body{R"(
-        <Choice varName="choice">
-            <Counter/>
-            <Counter incr="2"/>
+   * - Attribute name
+     - Attribute type
+     - Mandatory
+     - Description
+   * - varName
+     - StringType
+     - yes
+     - name of the workspace variable to fetch the index (or array) from
+
+**Example**
+
+The example below will execute first the second instruction, with index one, then the first and finally, the third child instruction. These all succeed, so the `Choice` will succeed. The last child instruction (inverted wait) will never execute.
+
+.. code-block:: xml
+
+    <Choice varName="choice">
+        <Wait/>
+        <Wait/>
+        <Wait/>
+        <Inverter>
             <Wait/>
-            <Inverter>
-                <Counter/>
-            </Inverter>
-        </Choice>
-        <Workspace>
-            <Local name="choice" type='{"type":"uint32_arr","multiplicity":3,"element":{"type":"uint32"}}' value="[0,1,2]"/>
-        </Workspace>
-    )"};
+        </Inverter>
+    </Choice>
+    <Workspace>
+        <Local name="choice" type='{"type":"uint32_arr","multiplicity":3,"element":{"type":"uint32"}}' value="[1,0,2]"/>
+    </Workspace>
 
+UserChoice
+^^^^^^^^^^
 
-User Choice
-^^^^^^^^^^^
+This instruction delegates to the UserInterface a selection to be made from one of its child instructions. It will then execute that child and directly return its status.
 
-This instruction is similar to ``Choice``, but the selection of the instruction to execute is delegated to the UserInterface.
+Attributes:
 
-.. doxygenclass:: sup::sequencer::UserChoice
-   :members:
+.. list-table::
+   :widths: 25 25 15 50
+   :header-rows: 1
+
+   * - Attribute name
+     - Attribute type
+     - Mandatory
+     - Description
+   * - description
+     - StringType
+     - no
+     - text description that will be passed to the UserInterface to guide selection
+
+.. note::
+
+   If the UserInterface returns an invalid index, i.e. out of bounds for the number of children, the instruction immediately returns `FAILURE`.
 
 .. _uchoice_exp:
 
-User Choice Example
-~~~~~~~~~~~~~~~~~~~
+**Example**
 
-.. code-block:: c++
+In this example, the user is asked to select one of the `Wait` instructions with different timeouts. On valid selection, that instruction will be executed and its status (success) will be returned from the `Choice` instruction.
 
-    // this example will execute the two counter and the wait instructions, the inverter will be ignored
-    const std::string body{R"(
-        <UserChoice varName="choice">
-            <Counter/>
-            <Counter incr="2"/>
-            <Wait/>
-            <Inverter>
-                <Counter/>
-            </Inverter>
-        </UserChoice>
-    )"};
+.. code-block:: xml
 
-    // After the setup, the UserInterface can provide an index to execute an instruction
-      ui.SetChoice(1); // when executed, this option should return the value "2"
-
-
-Fallback
-^^^^^^^^
-
-.. doxygenclass:: sup::sequencer::Fallback
-   :members:
-
-
-.. _fall_exp:
-
-Fallback Example
-~~~~~~~~~~~~~~~~
-
-.. code-block:: c++
-
-    const std::string body{R"(
-        <Fallback>
-            <Inverter name="failure">
-                <Counter/>
-            </Inverter>
-            <ForceSuccess name="success">
-                <Counter/>
-            </ForceSuccess>
-        </Fallback>
-        <Workspace>
-        </Workspace>
-    )"};
-
-    // This example will execute both "Counter", has the Fallback only
-    // stops executing when one instruction is successful
-
+    <Choice description="select wait">
+        <Wait timeout="1.0"/>
+        <Wait timeout="2.0"/>
+        <Wait timeout="3.0"/>
+    </Choice>
+    <Workspace/>
 
 .. _decorator:
 
@@ -184,7 +211,7 @@ For
    :members:
 
 
-* An example for this instruction is already present in :ref:`seq_exp`.
+* An example for this instruction is already present in :ref:`Sequence example <seq_exp>`.
 
 Force Success
 ^^^^^^^^^^^^^
@@ -192,7 +219,7 @@ Force Success
 .. doxygenclass:: sup::sequencer::ForceSuccess
    :members:
 
-* An example for this instruction is already present in :ref:`uchoice_exp`.
+* An example for this instruction is already present in :ref:`UserChoice example <uchoice_exp>`.
 
 Include
 ^^^^^^^
@@ -227,7 +254,7 @@ Inverter
 .. doxygenclass:: sup::sequencer::Inverter
    :members:
 
-* An example for this instruction is already present in :ref:`fall_exp`.
+* An example for this instruction is already present in :ref:`Fallback example <fall_exp>`.
 
 Listen
 ^^^^^^
@@ -345,7 +372,7 @@ Copy
 .. doxygenclass:: sup::sequencer::Copy
    :members:
 
-* An example for this instruction is already present in :ref:`par_exp`.
+* An example for this instruction is already present in :ref:`ParallelSequence example <par_exp>`.
 
 Decrement
 ^^^^^^^^^
@@ -370,7 +397,7 @@ Greater than
    :members:
 
 
-* The Greater Than usage is equal to that of the Less Than that can be seen in :ref:`seq_exp`.
+* The Greater Than usage is equal to that of the Less Than that can be seen in :ref:`Sequence example <seq_exp>`.
 
 Greater than or Equal
 ^^^^^^^^^^^^^^^^^^^^^
@@ -378,7 +405,7 @@ Greater than or Equal
 .. doxygenclass:: sup::sequencer::GreaterThanOrEqual
    :members:
 
-* The Greater Than or Equal usage is equal to that of the Less Than that can be seen in :ref:`seq_exp`.
+* The Greater Than or Equal usage is equal to that of the Less Than that can be seen in :ref:`Sequence example <seq_exp>`.
 
 
 Increment
@@ -387,7 +414,7 @@ Increment
 .. doxygenclass:: sup::sequencer::Increment
    :members:
 
-* The Increment usage is equal to that of the Decrement that can be seen in :ref:`seq_exp`.
+* The Increment usage is equal to that of the Decrement that can be seen in :ref:`Sequence example <seq_exp>`.
 
 Input
 ^^^^^
@@ -419,7 +446,7 @@ Less than
 .. doxygenclass:: sup::sequencer::LessThan
    :members:
 
-* An example for this instruction is already present in :ref:`seq_exp`.
+* An example for this instruction is already present in :ref:`Sequence example <seq_exp>`.
 
 Less than or Equal
 ^^^^^^^^^^^^^^^^^^
@@ -427,7 +454,7 @@ Less than or Equal
 .. doxygenclass:: sup::sequencer::LessThanOrEqual
    :members:
 
-* The Less Than or Equal usage is equal to that of the Less Than that can be seen in :ref:`seq_exp`.
+* The Less Than or Equal usage is equal to that of the Less Than that can be seen in :ref:`Sequence example <seq_exp>`.
 
 Message
 ^^^^^^^
@@ -478,7 +505,7 @@ Wait
 .. doxygenclass:: sup::sequencer::Wait
    :members:
 
-* An example for this instruction is already present in :ref:`par_exp`.
+* An example for this instruction is already present in :ref:`ParallelSequence example <par_exp>`.
 
 Wait for Variable
 ^^^^^^^^^^^^^^^^^

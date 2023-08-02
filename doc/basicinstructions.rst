@@ -233,7 +233,8 @@ Attributes:
 .. _for_exp:
 
 **Example**
-This example will apply the Increment instruction to all elements of the array "arr".
+
+This example will apply the Increment instruction to all elements of the array "arr". Note that the array elements will NOT be changed, as only a copy of those elements is inremented.
 
 .. code-block:: xml
 
@@ -247,12 +248,12 @@ This example will apply the Increment instruction to all elements of the array "
     <Local name="i" type='{"type":"uint32"}' value='0' />
     </Workspace>
 
-Force Success
-^^^^^^^^^^^^^
+ForceSuccess
+^^^^^^^^^^^^
 
-This instructions wrap a child instruction and always return SUCCESS when the child has finished execution.
+This instruction wraps a child instruction and always return SUCCESS when the child has finished execution.
 
-`Force Success` has no specific attributes.
+`ForceSuccess` has no specific attributes.
 
 **Example**
 
@@ -269,7 +270,7 @@ Include
 ^^^^^^^
 
 Decorator that includes an instruction tree by reference.
-The reference can point to an instruction tree in the same definition file or to one defined in a separate file (‘file’ attribute).
+The reference can point to an instruction tree in the same definition file or to one defined in a separate file (`file` attribute).
 
 Attributes:
 
@@ -284,11 +285,11 @@ Attributes:
    * - path
      - StringType
      - yes
-     - Instruction name where to include the new instruction
+     - Name of instruction to include
    * - file
      - StringType
      - no
-     - File name where to include the new instruction
+     - File name from where to include the new instruction
 
 
 **Example**
@@ -305,8 +306,8 @@ This example will include an instruction named "Counts" in sequence named "DontW
    </Workspace>
 
 
-Include Procedure
-^^^^^^^^^^^^^^^^^
+IncludeProcedure
+^^^^^^^^^^^^^^^^
 
 Decorator instruction that includes an external procedure (workspace and instruction tree).
 
@@ -341,7 +342,7 @@ test_procedure_1.xml file:
        <Copy input="a" output="b"/>
        <Equals name="Check" lhs="a" rhs="b"/>
    </Sequence>
-   <Wait name="ParameterizedWait" timeout="$timeout"/>
+   <Wait name="ShortWait" timeout="1.0"/>
    <Inverter name="AlwaysFails">
        <Wait/>
    </Inverter>
@@ -355,7 +356,7 @@ Main procedure:
 .. code-block:: xml
 
    <IncludeProcedure name="IncludeRoot" file="test_procedure_1.xml"/>
-   <IncludeProcedure name="IncludeWait" file="test_procedure_1.xml" path="ParameterizedWait"/>
+   <IncludeProcedure name="IncludeWait" file="test_procedure_1.xml" path="ShortWait"/>
    <Workspace>
        <Local name="a" type='{"type":"string"}' value='"does_not_matter"' />
    </Workspace>
@@ -372,7 +373,7 @@ Instruction that inverts the execution status of its child, interchanging SUCCES
 Listen
 ^^^^^^
 
-Instruction that executes its child instruction each time specific variables are updated.
+Instruction that executes its child instruction each time specific variables are updated. By default, it will only report a finished status (success or failure) when the child instruction fails.
 
 Attributes:
 
@@ -393,11 +394,9 @@ Attributes:
      - no
      - Execute children instruction until successful if active
 
-
 .. _listen_exp:
 
 **Example**
-
 
 This example will "Listen" on the variable "monitor" and check if it is equal to variable "update" everytime "monitor" is updated.
 
@@ -485,7 +484,7 @@ Condition
 ^^^^^^^^^
 
 Instruction that checks a boolean workspace variable.
-Returns SUCCESS if the variable is true and FAILURE otherwise. If the variable is not boolean, it will check if the value is different than 0.
+Returns SUCCESS if the variable is true and FAILURE otherwise. If the variable is not a boolean, it will try to convert it to a boolean first, using the usual arithmetic conversions (e.g. 0 is false). If it cannot be converted to a boolean, the instruction reports FAILURE.
 
 Attributes:
 
@@ -515,22 +514,12 @@ Attributes:
        <Local name="a"
                     type='{"type":"int8"}'
                     value='1' />
-       <Local name="b"
-                    type='{"type":"uint8"}'
-                    value='0' />
-       <Local name="c"
-                    type='{"type":"uint16"}'
-                    value='3' />
-       <Local name="d"
-                    type='{"type":"uint32"}'
-                    value='0' />
    </Workspace>
-
 
 Copy
 ^^^^
 
-Instruction that copies the  value of the "input" variable to the "output" variable
+Instruction that copies the value of the "input" variable to the "output" variable
 
 Attributes:
 
@@ -601,8 +590,8 @@ Attributes:
 
 * An example for this instruction is already present in :ref:`Listen example <listen_exp>`.
 
-Greater than
-^^^^^^^^^^^^
+GreaterThan
+^^^^^^^^^^^
 
 Instruction to check if a variable is greater than other.
 
@@ -628,8 +617,8 @@ Attributes:
 
 * The Greater Than usage is similar to that of the `Equals` that can be seen in :ref:`Listen example <listen_exp>`.
 
-Greater than or Equal
-^^^^^^^^^^^^^^^^^^^^^
+GreaterThanOrEqual
+^^^^^^^^^^^^^^^^^^
 
 Instruction to check if a variable is greater or equal to other.
 
@@ -723,8 +712,8 @@ After the setup, the UserInterface can provide the value to populate the local v
    ui.SetValue(value);
 
 
-Less than
-^^^^^^^^^
+LessThan
+^^^^^^^^
 
 Instruction to check if a variable is smaller than other.
 
@@ -750,8 +739,8 @@ Attributes:
 
 * The Greater Than usage is similar to that of the `Equals` that can be seen in :ref:`Listen example <listen_exp>`.
 
-Less than or Equal
-^^^^^^^^^^^^^^^^^^
+LessThanOrEqual
+^^^^^^^^^^^^^^^
 
 Instruction to check if a variable is smaller or equal to other.
 
@@ -833,8 +822,8 @@ Attributes:
        <Local name="var1" type='{"type":"uint32"}' value='42' />
    </Workspace>
 
-Reset Variable
-^^^^^^^^^^^^^^
+ResetVariable
+^^^^^^^^^^^^^
 
 Instruction to reset a variable to its initial state.
 
@@ -873,8 +862,8 @@ Attributes:
     )"};
 
 
-User Confirmation
-^^^^^^^^^^^^^^^^^
+UserConfirmation
+^^^^^^^^^^^^^^^^
 
 Simple instruction representing a user defined confirmation (success) or rejection (failure).
 
@@ -905,7 +894,7 @@ Wait
 ^^^^
 
 Instruction node that returns SUCCESS after a given timeout.
-The ‘timeout’ attribute is optional. When this attribute is not present, the instruction returns SUCCESS immediately.
+The `timeout` attribute is optional. When this attribute is not present, the instruction returns SUCCESS immediately.
 
 
 Attributes:
@@ -925,10 +914,10 @@ Attributes:
 
 * An example for this instruction is already present in :ref:`ParallelSequence example <par_exp>`.
 
-Wait for Variable
-^^^^^^^^^^^^^^^^^
+WaitForVariable
+^^^^^^^^^^^^^^^
 
-Instruction node that waits ‘timeout’ seconds for a variable to be read.
+Instruction node that waits `timeout` seconds for a variable to be read.
 
 Attributes:
 

@@ -51,9 +51,13 @@ void AsyncWrapper::UpdateStatus()
     return;
   }
   // If this timeouts, m_status is RUNNING because Tick() was called before
+  // If the future is ready, DO NOT return a RUNNING status, as that would prevent the child
+  // from ever being ticked.
   if (m_child_result.wait_for(std::chrono::seconds(0)) == std::future_status::ready)
   {
-    m_status = m_instruction->GetStatus();
+    auto status = m_instruction->GetStatus();
+    m_status = status == ExecutionStatus::RUNNING ? ExecutionStatus::NOT_FINISHED
+                                                  : status;
   }
 }
 
@@ -70,7 +74,7 @@ const Instruction* AsyncWrapper::GetInstruction() const
 void AsyncWrapper::LaunchChild(UserInterface& ui, Workspace& ws)
 {
   m_child_result = std::async(std::launch::async, &Instruction::ExecuteSingle,
-                             m_instruction, std::ref(ui), std::ref(ws));
+                              m_instruction, std::ref(ui), std::ref(ws));
 }
 
 }  // namespace sequencer

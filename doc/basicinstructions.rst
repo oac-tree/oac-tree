@@ -207,54 +207,93 @@ Decorator instructions modify or add functionality to a single child instruction
 For
 ^^^
 
-.. doxygenclass:: sup::sequencer::ForInstruction
-   :members:
+This instruction applies a child instruction to the elements of an array.
 
-.. table:: For attributes
-   :class: longtable
+Executes the child instruction on the elements of an array, until either: the child fails (FAILURE) or the child instruction is applied to all elements of the provided array (SUCCESS).
 
-   +---------------+---------------+-----------------+-------------------------------------------------------+
-   |Attribute name |Attribute type | Mandatory | Description                                                 |
-   +===============+===============+===========+=============================================================+
-   |elementVar     |StringType     |yes        |Element variable to contain the elements of the cycled array |
-   +---------------+---------------+-----------+-------------------------------------------------------------+
-   |arrayVar       |StringType     |yes        |Array to cycle                                               |
-   +---------------+---------------+-----------+-------------------------------------------------------------+
+Attributes:
 
+.. list-table::
+   :widths: 25 25 15 50
+   :header-rows: 1
 
-* An example for this instruction is already present in :ref:`Sequence example <seq_exp>`.
+   * - Attribute name
+     - Attribute type
+     - Mandatory
+     - Description
+   * - elementVar
+     - StringType
+     - yes
+     - Element variable to contain the elements of the cycled array
+   * - arrayVar
+     - StringType
+     - yes
+     - Array to cycle
+
+.. _for_exp:
+
+**Example**
+This example will apply the Increment instruction to all elements of the array "arr".
+
+.. code-block:: xml
+
+    <Sequence>
+        <For elementVar="i" arrayVar="arr">
+            <Increment varName="i"/>
+        </For>
+    </Sequence>
+    <Workspace>
+    <Local name="arr" type='{"type":"uint32_arr","element":{"type":"uint32"}}' value="[2,4,6]"/>
+    <Local name="i" type='{"type":"uint32"}' value='0' />
+    </Workspace>
 
 Force Success
 ^^^^^^^^^^^^^
 
-.. doxygenclass:: sup::sequencer::ForceSuccess
-   :members:
+This instructions wrap a child instruction and always return SUCCESS when the child has finished execution. 
 
 `Force Success` has no specific attributes.
 
+**Example**
 
-* An example for this instruction is already present in :ref:`UserChoice example <uchoice_exp>`.
+.. code-block:: xml
+
+    <ForceSuccess name="success">
+        <Inverter name="failure">
+            <Wait name="wait" />
+        </Inverter>
+    </ForceSuccess>
+
 
 Include
 ^^^^^^^
 
-.. doxygenclass:: sup::sequencer::Include
-   :members:
+Decorator that includes an instruction tree by reference.
+The reference can point to an instruction tree in the same definition file or to one defined in a separate file (‘file’ attribute).
 
-.. table:: Include attributes
-   :class: longtable
+Attributes:
 
-   +---------------+---------------+-----------+------------------------------------------------------+
-   |Attribute name |Attribute type | Mandatory | Description                                          |
-   +===============+===============+===========+==============================================+=======+
-   |path           |StringType     |yes        |Instruction name where to include the new instruction |
-   +---------------+---------------+-----------+------------------------------------------------------+
-   |file           |StringType     |no         |File name where to include the new instruction        |
-   +---------------+---------------+-----------+------------------------------------------------------+
+.. list-table::
+   :widths: 25 25 15 50
+   :header-rows: 1
+
+   * - Attribute name
+     - Attribute type
+     - Mandatory
+     - Description
+   * - path
+     - StringType
+     - yes
+     - Instruction name where to include the new instruction
+   * - file
+     - StringType
+     - no
+     - File name where to include the new instruction
 
 
-Include Example
-~~~~~~~~~~~~~~~
+**Example**
+
+This example will include an instruction named "Counts" in sequence named "DontWait".
 
 .. code-block:: c++
 
@@ -271,26 +310,62 @@ Include Example
 Include Procedure
 ^^^^^^^^^^^^^^^^^
 
-.. doxygenclass:: sup::sequencer::IncludeProcedure
-   :members:
+Decorator instruction that includes an external procedure (workspace and instruction tree).
 
-.. table:: Include Procedure attributes
-   :class: longtable
+Attributes:
 
-   +---------------+---------------+-----------+------------------------------------------------------+
-   |Attribute name |Attribute type | Mandatory | Description                                          |
-   +===============+===============+===========+==============================================+=======+
-   |file           |StringType     |yes        |File name where to get the instruction to include     |
-   +---------------+---------------+-----------+------------------------------------------------------+
-   |path           |StringType     |no         |Instruction name where to include the new instruction |
-   +---------------+---------------+-----------+------------------------------------------------------+
+.. list-table::
+   :widths: 25 25 15 50
+   :header-rows: 1
 
+   * - Attribute name
+     - Attribute type
+     - Mandatory
+     - Description
+   * - file
+     - StringType
+     - yes
+     - File name where to get the instruction to include
+   * - path
+     - StringType
+     - no
+     - Instruction name where to include the new instruction
+
+**Example**
+
+This example will include the procedure in file "test_procedure_1.xml" into the procedure where IncludeProcedure iinstruction is called.
+
+test_procedure_1.xml file:
+
+.. code-block:: xml
+
+   <Sequence name="CopyAndCheck" isRoot="True">
+       <Copy input="a" output="b"/>
+       <Equals name="Check" lhs="a" rhs="b"/>
+   </Sequence>
+   <Wait name="ParameterizedWait" timeout="$timeout"/>
+   <Inverter name="AlwaysFails">
+       <Wait/>
+   </Inverter>
+   <Workspace>
+       <Local name="a" type='{"type":"uint16"}' value='1' />
+       <Local name="b" type='{"type":"uint16"}' value='0' />
+   </Workspace>
+
+Main procedure:
+
+.. code-block:: xml
+
+   <IncludeProcedure name="IncludeRoot" file="test_procedure_1.xml"/>
+   <IncludeProcedure name="IncludeWait" file="test_procedure_1.xml" path="ParameterizedWait"/>
+   <Workspace>
+       <Local name="a" type='{"type":"string"}' value='"does_not_matter"' />
+   </Workspace>
 
 Inverter
 ^^^^^^^^
 
-.. doxygenclass:: sup::sequencer::Inverter
-   :members:
+Instruction that inverts the execution status of its child, interchanging SUCCESS and FAILURE.
 
 `Inverter` has no specific attributes.
 
@@ -299,24 +374,34 @@ Inverter
 Listen
 ^^^^^^
 
-.. doxygenclass:: sup::sequencer::Listen
-   :members:
+Instruction that executes its child instruction each time specific variables are updated.
 
-.. table:: Listen attributes
-   :class: longtable
+Attributes:
 
-   +---------------+---------------+-----------+-------------------------------------------------------+
-   |Attribute name |Attribute type | Mandatory | Description                                           |
-   +===============+===============+===========+==============================================+========+
-   |varNames       |StringType     |yes        |Name of the variable to listen to                      |
-   +---------------+---------------+-----------+-------------------------------------------------------+
-   |forceSuccess   |StringType     |no         |Execute children instruction until successful if active|
-   +---------------+---------------+-----------+-------------------------------------------------------+
+.. list-table::
+   :widths: 25 25 15 50
+   :header-rows: 1
+
+   * - Attribute name
+     - Attribute type
+     - Mandatory
+     - Description
+   * - varNames
+     - StringType
+     - yes
+     - Name of the variable to listen to
+   * - forceSuccess
+     - StringType
+     - no
+     - Execute children instruction until successful if active
+
 
 .. _listen_exp:
 
 Listen Example
 ~~~~~~~~~~~~~~~
+
+This example will "Listen" on the variable "monitor" and check if it is equal to variable "update" everytime "monitor" is updated.
 
 .. code-block:: c++
 
@@ -352,17 +437,25 @@ Listen Example
 Repeat
 ^^^^^^
 
-.. doxygenclass:: sup::sequencer::Repeat
-   :members:
+Instruction that repeats its child a fixed number of times while successful.
 
-.. table:: Repeat attributes
-   :class: longtable
+Repeatedly executes the child instruction, until either: the child fails (FAILURE) or maximum number of repetitions is reached (SUCCESS).
 
-   +---------------+--------------------+-----------+----------------------------------+
-   |Attribute name |Attribute type      | Mandatory | Description                      |
-   +===============+====================+===========+==================================+
-   |maxCount       |Signedinteger32type |no         |Maximum number of repetitions     |
-   +---------------+--------------------+-----------+----------------------------------+
+Attributes:
+
+.. list-table::
+   :widths: 25 25 15 50
+   :header-rows: 1
+
+   * - Attribute name
+     - Attribute type
+     - Mandatory
+     - Description
+   * - maxCount
+     - Signedinteger32type
+     - no
+     - Maximum number of repetitions
+
 
 .. _repeat_exp:
 

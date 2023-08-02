@@ -250,7 +250,7 @@ This example will apply the Increment instruction to all elements of the array "
 Force Success
 ^^^^^^^^^^^^^
 
-This instructions wrap a child instruction and always return SUCCESS when the child has finished execution. 
+This instructions wrap a child instruction and always return SUCCESS when the child has finished execution.
 
 `Force Success` has no specific attributes.
 
@@ -295,16 +295,14 @@ Attributes:
 
 This example will include an instruction named "Counts" in sequence named "DontWait".
 
-.. code-block:: c++
+.. code-block:: xml
 
-    const std::string body{R"(
-        <Sequence name="DontWait">
-            <Wait timeout="$to" />
-        </Sequence>
-        <Include isRoot="true" name="Counts" path="DontWait" to="0.2"/>
-        <Workspace>
-        </Workspace>
-    )"};
+   <Sequence name="DontWait">
+       <Wait timeout="$to" />
+   </Sequence>
+   <Include isRoot="true" name="Counts" path="DontWait" to="0.2"/>
+   <Workspace>
+   </Workspace>
 
 
 Include Procedure
@@ -398,40 +396,37 @@ Attributes:
 
 .. _listen_exp:
 
-Listen Example
-~~~~~~~~~~~~~~~
+**Example**
+
 
 This example will "Listen" on the variable "monitor" and check if it is equal to variable "update" everytime "monitor" is updated.
 
-.. code-block:: c++
+.. code-block:: xml
 
-    static const std::string procedure_body{
-    R"RAW(
-        <Fallback>
-             <ParallelSequence>
-                 <Listen varNames="monitor">
-                    <Inverter>
-                        <Equals lhs="monitor" rhs="update"/>
-                    </Inverter>
-                 </Listen>
-                 <Sequence>
-                    <Copy input="update" output="monitor"/>
-                 </Sequence>
-                 <Inverter>
-                    <Wait timeout="2.0"/>
-                 </Inverter>
-             </ParallelSequence>
-             <Equals lhs="monitor" rhs="update"/>
-        </Fallback>
-        <Workspace>
-            <Local name="monitor"
-                   type='{"type":"uint64"}'
-                   value='0'/>
-            <Local name="update"
-                   type='{"type":"uint64"}'
-                   value='1729'/>
-        </Workspace>
-    )RAW"};
+   <Fallback>
+       <ParallelSequence>
+           <Listen varNames="monitor">
+               <Inverter>
+                   <Equals lhs="monitor" rhs="update"/>
+               </Inverter>
+           </Listen>
+           <Sequence>
+               <Copy input="update" output="monitor"/>
+           </Sequence>
+           <Inverter>
+               <Wait timeout="2.0"/>
+           </Inverter>
+       </ParallelSequence>
+       <Equals lhs="monitor" rhs="update"/>
+   </Fallback>
+   <Workspace>
+       <Local name="monitor"
+                    type='{"type":"uint64"}'
+                    value='0'/>
+       <Local name="update"
+                    type='{"type":"uint64"}'
+                    value='1729'/>
+   </Workspace>
 
 
 Repeat
@@ -459,27 +454,25 @@ Attributes:
 
 .. _repeat_exp:
 
-Repeat example
-~~~~~~~~~~~~~~
+**Example**
 
-.. code-block:: c++
 
-    const std::string body{
-    R"(
-       <ParallelSequence name="parallel">
-           <WaitForVariable timeout="4.0" varName="a" equalsVar="b"/>
-           <Repeat maxCount="8">
-               <Increment varName="a"/>
-           </Repeat>
-           <Repeat maxCount="2">
-                <Decrement varName="b"/>
-           </Repeat>
-       </ParallelSequence>
-       <Workspace>
-           <Local name="a" type='{"type":"uint8"}' value='3' />
-           <Local name="b" type='{"type":"uint8"}' value='13' />
-       </Workspace>
-    )"};
+.. code-block:: xml
+
+   <ParallelSequence name="parallel">
+       <WaitForVariable timeout="4.0" varName="a" equalsVar="b"/>
+       <Repeat maxCount="8">
+           <Increment varName="a"/>
+       </Repeat>
+       <Repeat maxCount="2">
+           <Decrement varName="b"/>
+       </Repeat>
+   </ParallelSequence>
+   <Workspace>
+       <Local name="a" type='{"type":"uint8"}' value='3' />
+       <Local name="b" type='{"type":"uint8"}' value='13' />
+   </Workspace>
+
 
 .. _action:
 
@@ -491,144 +484,378 @@ An action instruction represents a discrete operation or step within a larger se
 Condition
 ^^^^^^^^^
 
-.. doxygenclass:: sup::sequencer::Condition
-   :members:
+Instruction that checks a boolean workspace variable.
+Returns SUCCESS if the variable is true and FAILURE otherwise. If the variable is not boolean, it will check if the value is different than 0.
 
-Condition example
-~~~~~~~~~~~~~~~~~
+Attributes:
 
-.. code-block:: c++
+.. list-table::
+   :widths: 25 25 15 50
+   :header-rows: 1
 
-    const std::string body{R"(
-        <Sequence>
-            <Condition name="Condition" varName="a" />
-        </Sequence>
-        <Workspace>
-            <Local name="a"
-                   type='{"type":"int8"}'
-                   value='1' />
-            <Local name="b"
-                   type='{"type":"uint8"}'
-                   value='0' />
-            <Local name="c"
-                   type='{"type":"uint16"}'
-                   value='3' />
-            <Local name="d"
-                   type='{"type":"uint32"}'
-                   value='0' />
-        </Workspace>
-    )"};
+   * - Attribute name
+     - Attribute type
+     - Mandatory
+     - Description
+   * - varName
+     - StringType
+     - yes
+     - Variable name to check
+
+.. _condition_exp:
+
+**Example**
+
+.. code-block:: xml
+
+   <Sequence>
+       <Condition name="Condition" varName="a" />
+   </Sequence>
+   <Workspace>
+       <Local name="a"
+                    type='{"type":"int8"}'
+                    value='1' />
+       <Local name="b"
+                    type='{"type":"uint8"}'
+                    value='0' />
+       <Local name="c"
+                    type='{"type":"uint16"}'
+                    value='3' />
+       <Local name="d"
+                    type='{"type":"uint32"}'
+                    value='0' />
+   </Workspace>
+
 
 Copy
 ^^^^
 
-.. doxygenclass:: sup::sequencer::Copy
-   :members:
+Instruction that copies the  value of the "input" variable to the "output" variable
 
-* An example for this instruction is already present in :ref:`ParallelSequence example <par_exp>`.
+Attributes:
+
+.. list-table::
+   :widths: 25 25 15 50
+   :header-rows: 1
+
+   * - Attribute name
+     - Attribute type
+     - Mandatory
+     - Description
+   * - input
+     - StringType
+     - yes
+     - Name of the input variable
+   * - output
+     - StringType
+     - yes
+     - Name of the output variable
+
+* An example for this instruction is already present in :ref:`Reset example <reset_exp>`.
 
 Decrement
 ^^^^^^^^^
 
-.. doxygenclass:: sup::sequencer::Decrement
-   :members:
+Instruction to decrement a numeric variable by 1.
 
-* An example for this instruction is already present in :ref:`repeat_exp`.
+Attributes:
+
+.. list-table::
+   :widths: 25 25 15 50
+   :header-rows: 1
+
+   * - Attribute name
+     - Attribute type
+     - Mandatory
+     - Description
+   * - varName
+     - StringType
+     - yes
+     - Name of the variable to decrement
+
+* An example for this instruction is already present in :ref:`Repeat example <repeat_exp>`.
 
 Equals
 ^^^^^^
 
-.. doxygenclass:: sup::sequencer::Equals
-   :members:
+Instruction to check the equality of two variables.
 
-* An example for this instruction is already present in :ref:`listen_exp`.
+Attributes:
+
+.. list-table::
+   :widths: 25 25 15 50
+   :header-rows: 1
+
+   * - Attribute name
+     - Attribute type
+     - Mandatory
+     - Description
+   * - lhs
+     - StringType
+     - yes
+     - Name of the left hand side variable to compare
+   * - rhs
+     - StringType
+     - yes
+     - Name of the right hand side variable to compare
+
+* An example for this instruction is already present in :ref:`Listen example <listen_exp>`.
 
 Greater than
 ^^^^^^^^^^^^
 
-.. doxygenclass:: sup::sequencer::GreaterThan
-   :members:
+Instruction to check if a variable is greater than other.
+
+Attributes:
+
+.. list-table::
+   :widths: 25 25 15 50
+   :header-rows: 1
+
+   * - Attribute name
+     - Attribute type
+     - Mandatory
+     - Description
+   * - lhs
+     - StringType
+     - yes
+     - Name of the left hand side variable to compare
+   * - rhs
+     - StringType
+     - yes
+     - Name of the right hand side variable to compare
 
 
-* The Greater Than usage is equal to that of the Less Than that can be seen in :ref:`Sequence example <seq_exp>`.
+* The Greater Than usage is similar to that of the `Equals` that can be seen in :ref:`Listen example <listen_exp>`.
 
 Greater than or Equal
 ^^^^^^^^^^^^^^^^^^^^^
 
-.. doxygenclass:: sup::sequencer::GreaterThanOrEqual
-   :members:
+Instruction to check if a variable is greater or equal to other.
 
-* The Greater Than or Equal usage is equal to that of the Less Than that can be seen in :ref:`Sequence example <seq_exp>`.
+Attributes:
+
+.. list-table::
+   :widths: 25 25 15 50
+   :header-rows: 1
+
+   * - Attribute name
+     - Attribute type
+     - Mandatory
+     - Description
+   * - lhs
+     - StringType
+     - yes
+     - Name of the left hand side variable to compare
+   * - rhs
+     - StringType
+     - yes
+     - Name of the right hand side variable to compare
+
+
+* The Greater Than usage is similar to that of the `Equals` that can be seen in :ref:`Listen example <listen_exp>`.
 
 
 Increment
 ^^^^^^^^^
 
-.. doxygenclass:: sup::sequencer::Increment
-   :members:
+Instruction to increment a numeric variable by 1.
+
+Attributes:
+
+.. list-table::
+   :widths: 25 25 15 50
+   :header-rows: 1
+
+   * - Attribute name
+     - Attribute type
+     - Mandatory
+     - Description
+   * - varName
+     - StringType
+     - yes
+     - Name of the variable to increment
 
 * The Increment usage is equal to that of the Decrement that can be seen in :ref:`Sequence example <seq_exp>`.
 
 Input
 ^^^^^
 
-.. doxygenclass:: sup::sequencer::Input
-   :members:
+Instruction node that writes a user defined value (from UserInterface) into a workspace variable.
 
-Input Example
-~~~~~~~~~~~~~
+Attributes:
+
+.. list-table::
+   :widths: 25 25 15 50
+   :header-rows: 1
+
+   * - Attribute name
+     - Attribute type
+     - Mandatory
+     - Description
+   * - output
+     - StringType
+     - yes
+     - Name of the variable where to write the user input value
+   * - description
+     - StringType
+     - no
+     - Description of the requested variable
+
+.. _input_exp:
+
+**Example**
+
+.. code-block:: xml
+
+   <Sequence>
+       <Input description="Put some uint32 here" output="uint32"/>
+   </Sequence>
+   <Workspace>
+       <Local name="uint32" type='{"type":"uint32"}'/>
+   </Workspace>
+
+After the setup, the UserInterface can provide the value to populate the local variable
 
 .. code-block:: c++
 
-    const std::string body{R"(
-        <Sequence>
-            <Input description="Put some uint32 here" output="uint32"/>
-        </Sequence>
-        <Workspace>
-            <Local name="uint32" type='{"type":"uint32"}'/>
-        </Workspace>
-    )"};
-    // After the setup, the UserInterface can provide the value to populate the local variable
-    sup::dto::AnyValue value(1234u);
-    ui.SetValue(value);
+   sup::dto::AnyValue value(1234u);
+   ui.SetValue(value);
 
 
 Less than
 ^^^^^^^^^
 
-.. doxygenclass:: sup::sequencer::LessThan
-   :members:
+Instruction to check if a variable is smaller than other.
 
-* An example for this instruction is already present in :ref:`Sequence example <seq_exp>`.
+Attributes:
+
+.. list-table::
+   :widths: 25 25 15 50
+   :header-rows: 1
+
+   * - Attribute name
+     - Attribute type
+     - Mandatory
+     - Description
+   * - lhs
+     - StringType
+     - yes
+     - Name of the left hand side variable to compare
+   * - rhs
+     - StringType
+     - yes
+     - Name of the right hand side variable to compare
+
+
+* The Greater Than usage is similar to that of the `Equals` that can be seen in :ref:`Listen example <listen_exp>`.
 
 Less than or Equal
 ^^^^^^^^^^^^^^^^^^
 
-.. doxygenclass:: sup::sequencer::LessThanOrEqual
-   :members:
+Instruction to check if a variable is smaller or equal to other.
 
-* The Less Than or Equal usage is equal to that of the Less Than that can be seen in :ref:`Sequence example <seq_exp>`.
+Attributes:
+
+.. list-table::
+   :widths: 25 25 15 50
+   :header-rows: 1
+
+   * - Attribute name
+     - Attribute type
+     - Mandatory
+     - Description
+   * - lhs
+     - StringType
+     - yes
+     - Name of the left hand side variable to compare
+   * - rhs
+     - StringType
+     - yes
+     - Name of the right hand side variable to compare
+
+
+* The Greater Than usage is similar to that of the `Equals` that can be seen in :ref:`Listen example <listen_exp>`.
 
 Message
 ^^^^^^^
 
-.. doxygenclass:: sup::sequencer::Message
-   :members:
+Instruction forwarding a text message to the UserInterface.
+
+Attributes:
+
+.. list-table::
+   :widths: 25 25 15 50
+   :header-rows: 1
+
+   * - Attribute name
+     - Attribute type
+     - Mandatory
+     - Description
+   * - Message
+     - StringType
+     - yes
+     - Message to be passed to the UserInterface
+
 
 Output
 ^^^^^^
 
-.. doxygenclass:: sup::sequencer::Output
-   :members:
+Instruction node that outputs a workspace value to the user interface.
+
+Attributes:
+
+.. list-table::
+   :widths: 25 25 15 50
+   :header-rows: 1
+
+   * - Attribute name
+     - Attribute type
+     - Mandatory
+     - Description
+   * - from
+     - StringType
+     - yes
+     - Name of the variable to be displayed in the UserInterface
+   * - description
+     - StringType
+     - no
+     - Description of the displayed variable
+
+**Example**
+
+.. code-block:: xml
+
+   <Sequence>
+       <Output from="var1"/>
+   </Sequence>
+   <Workspace>
+       <Local name="var1" type='{"type":"uint32"}' value='42' />
+   </Workspace>
 
 Reset Variable
 ^^^^^^^^^^^^^^
 
-.. doxygenclass:: sup::sequencer::ResetVariable
-   :members:
+Instruction to reset a variable to its initial state.
 
-Reset Variable Example
-~~~~~~~~~~~~~~~~~~~~~~
+Attributes:
+
+.. list-table::
+   :widths: 25 25 15 50
+   :header-rows: 1
+
+   * - Attribute name
+     - Attribute type
+     - Mandatory
+     - Description
+   * - varName
+     - StringType
+     - yes
+     - Name of the variable to reset
+
+.. _reset_exp:
+
+**Example**
 
 .. code-block:: c++
 
@@ -649,21 +876,81 @@ Reset Variable Example
 User Confirmation
 ^^^^^^^^^^^^^^^^^
 
-.. doxygenclass:: sup::sequencer::UserConfirmation
-   :members:
+Simple instruction representing a user defined confirmation (success) or rejection (failure).
+
+Attributes:
+
+.. list-table::
+   :widths: 25 25 15 50
+   :header-rows: 1
+
+   * - Attribute name
+     - Attribute type
+     - Mandatory
+     - Description
+   * - description
+     - StringType
+     - yes
+     - Description of the needed user confirmation
+   * - okText
+     - StringType
+     - no
+     - text to be displayed in case of positive user confirmation
+   * - cancelText
+     - StringType
+     - no
+     - text to be displayed in case of negative user confirmation
 
 Wait
 ^^^^
 
-.. doxygenclass:: sup::sequencer::Wait
-   :members:
+Instruction node that returns SUCCESS after a given timeout.
+The ‘timeout’ attribute is optional. When this attribute is not present, the instruction returns SUCCESS immediately.
+
+
+Attributes:
+
+.. list-table::
+   :widths: 25 25 15 50
+   :header-rows: 1
+
+   * - Attribute name
+     - Attribute type
+     - Mandatory
+     - Description
+   * - timeout
+     - Float64Type
+     - yes
+     - Maximum time to wait
 
 * An example for this instruction is already present in :ref:`ParallelSequence example <par_exp>`.
 
 Wait for Variable
 ^^^^^^^^^^^^^^^^^
 
-.. doxygenclass:: sup::sequencer::WaitForVariable
-   :members:
+Instruction node that waits ‘timeout’ seconds for a variable to be read.
 
-* An example for this instruction is already present in :ref:`repeat_exp`.
+Attributes:
+
+.. list-table::
+   :widths: 25 25 15 50
+   :header-rows: 1
+
+   * - Attribute name
+     - Attribute type
+     - Mandatory
+     - Description
+   * - timeout
+     - Float64Type
+     - yes
+     - Maximum time to wait
+   * - varName
+     - StringType
+     - yes
+     - name of the variable to be read
+   * - equalsVar
+     - StringType
+     - no
+     - variable to compare. The instruction will wait until the variables are equal or the timout s reached
+
+* An example for this instruction is already present in :ref:`Repeat example <repeat_exp>`.

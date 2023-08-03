@@ -1,6 +1,13 @@
 Changes for 2.1.0:
 
+- Added attribute system
+- Support for breakpoints
+- New instructions: 'For', 'IncludeProcedure', 'UserConfirmation' and 'WaitForVariable'
+- Instruction moved from epics plugin: 'Log'
 - Adapt to sup-dto v1.1
+- Sphinx documentation
+- Catch exceptions in sequencer-cli
+- Bugfix: fix nested parallel sequences (COA-441)
 
 Changes for 2.0.1:
 

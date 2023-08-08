@@ -68,6 +68,10 @@ private:
 
   void HaltImpl() override;
 
+  void ResetHook() override;
+
+  void InitVariableCache();
+
   /**
    * @brief Calculate this instruction's status from the status of its child instruction.
    */

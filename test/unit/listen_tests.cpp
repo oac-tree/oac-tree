@@ -198,3 +198,50 @@ R"RAW(
   EXPECT_TRUE(ws->GetValue("result", result));
   EXPECT_EQ(result.As<sup::dto::uint64>(), 1u);
 }
+
+TEST_F(ListenTest, RepeatedListen)
+{
+  static const std::string procedure_body{
+R"RAW(
+    <Sequence>
+        <Repeat maxCount="3">
+            <Sequence>
+                <Copy name="copy_zero" input="zero" output="live"/>
+                <ParallelSequence name="outer">
+                    <ParallelSequence successThreshold="1" failureThreshold="1">
+                        <Inverter>
+                            <Wait timeout="1.0"/>
+                        </Inverter>
+                        <Inverter>
+                            <Listen varNames="live">
+                                <Inverter>
+                                    <Equals lhs="live" rhs="one"/>
+                                </Inverter>
+                            </Listen>
+                        </Inverter>
+                    </ParallelSequence>
+                    <Sequence name="Set condition to true">
+                        <Wait timeout="0.1"/>
+                        <Copy name="copy_one" input="one" output="live"/>
+                    </Sequence>
+                </ParallelSequence>
+                <Message text="Single success"/>
+            </Sequence>
+        </Repeat>
+        <Message text="WaitForCondition successful!"/>
+    </Sequence>
+    <Workspace>
+        <Local name="live" type='{"type":"uint64"}' value='0' />
+        <Local name="zero" type='{"type":"uint64"}' value='0' />
+        <Local name="one" type='{"type":"uint64"}' value='1' />
+    </Workspace>
+)RAW"};
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
+
+  sup::UnitTestHelper::EmptyUserInterface ui{};
+
+  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  ASSERT_NE(proc.get(), nullptr);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}

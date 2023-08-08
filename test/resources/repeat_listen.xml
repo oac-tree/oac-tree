@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+           name="Procedure for testing purposes"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+    <Sequence>
+        <Repeat maxCount="3">
+            <Sequence>
+                <Copy name="copy_zero" input="zero" output="live"/>
+                <ParallelSequence name="outer">
+                    <ParallelSequence successThreshold="1" failureThreshold="1">
+                        <Inverter>
+                            <Wait timeout="1.0"/>
+                        </Inverter>
+                        <Inverter>
+                            <Listen varNames="live">
+                                <Inverter>
+                                    <Equals lhs="live" rhs="one"/>
+                                </Inverter>
+                            </Listen>
+                        </Inverter>
+                    </ParallelSequence>
+                    <Sequence name="Set condition to true">
+                        <Wait timeout="0.2"/>
+                        <Copy name="copy_one" input="one" output="live"/>
+                    </Sequence>
+                </ParallelSequence>
+                <Message text="Single success"/>
+            </Sequence>
+        </Repeat>
+        <Message text="WaitForCondition successful!"/>
+    </Sequence>
+    <Workspace>
+        <Local name="live" type='{"type":"uint64"}' value='0' />
+        <Local name="zero" type='{"type":"uint64"}' value='0' />
+        <Local name="one" type='{"type":"uint64"}' value='1' />
+    </Workspace>
+</Procedure>

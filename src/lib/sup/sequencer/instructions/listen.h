@@ -56,6 +56,8 @@ private:
   std::map<std::string, sup::dto::AnyValue> m_var_cache;
   ScopeGuard m_cb_guard;
 
+  void SetupImpl(const Procedure& proc) override;
+
   /**
    * @brief Repeatedly execute the child instruction when specific variables are updated.
    * When forceSuccess is not set, the instruction only ends on the child's FAILURE and returns
@@ -65,7 +67,6 @@ private:
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 
   void HaltImpl() override;
-  void SetupImpl(const Procedure& proc) override;
 
   /**
    * @brief Calculate this instruction's status from the status of its child instruction.

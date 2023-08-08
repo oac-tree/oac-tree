@@ -51,6 +51,23 @@ Listen::Listen()
 
 Listen::~Listen() = default;
 
+void Listen::SetupImpl(const Procedure& proc)
+{
+  m_force_success = false;
+  m_var_changed = true;
+  if (HasAttribute(FORCESUCCESS_ATTRIBUTE_NAME))
+  {
+    m_force_success = GetAttributeValue<bool>(FORCESUCCESS_ATTRIBUTE_NAME);
+  }
+  m_var_names = instruction_utils::VariableNamesFromAttribute(*this, VARNAMES_ATTRIBUTE_NAME);
+  m_var_cache.clear();
+  for (const auto& var_name : m_var_names)
+  {
+    m_var_cache[var_name] = {};
+  }
+  return SetupChild(proc);
+}
+
 ExecutionStatus Listen::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   if (!m_cb_guard.IsValid())
@@ -85,23 +102,6 @@ void Listen::HaltImpl()
   HaltChild();
   m_cv.notify_one();
   ClearCallbacks();
-}
-
-void Listen::SetupImpl(const Procedure& proc)
-{
-  m_force_success = false;
-  m_var_changed = true;
-  if (HasAttribute(FORCESUCCESS_ATTRIBUTE_NAME))
-  {
-    m_force_success = GetAttributeValue<bool>(FORCESUCCESS_ATTRIBUTE_NAME);
-  }
-  m_var_names = instruction_utils::VariableNamesFromAttribute(*this, VARNAMES_ATTRIBUTE_NAME);
-  m_var_cache.clear();
-  for (const auto& var_name : m_var_names)
-  {
-    m_var_cache[var_name] = {};
-  }
-  return SetupChild(proc);
 }
 
 ExecutionStatus Listen::CalculateStatus() const

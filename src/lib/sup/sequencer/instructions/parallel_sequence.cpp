@@ -103,8 +103,9 @@ ExecutionStatus ParallelSequence::ExecuteSingleImpl(UserInterface& ui, Workspace
 
 void ParallelSequence::ResetHook()
 {
-  // call Halt when there are descendents running
-  if (GetStatus() == ExecutionStatus::RUNNING)
+  // call Halt when there are possibly descendents running
+  auto status = GetStatus();
+  if (status == ExecutionStatus::RUNNING || status == ExecutionStatus::NOT_FINISHED)
   {
     Halt();
   }

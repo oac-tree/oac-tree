@@ -44,8 +44,8 @@ protected:
   std::unique_ptr<Variable> var3;
 };
 
-const std::string JSON_TYPE = "type";
-const std::string JSON_VALUE = "value";
+const std::string JSON_TYPE_ATTRIBUTE = "type";
+const std::string JSON_VALUE_ATTRIBUTE = "value";
 
 const std::string var1_name = "var1";
 const std::string var2_name = "var2";
@@ -272,7 +272,7 @@ TEST_F(WorkspaceTest, NotifyCallback)
     }));
   std::string name = "FromWorkspace";
   auto var = GlobalVariableRegistry().Create("Local");
-  EXPECT_TRUE(var->AddAttribute(JSON_TYPE, R"RAW({"type":"uint16"})RAW"));
+  EXPECT_TRUE(var->AddAttribute(JSON_TYPE_ATTRIBUTE, R"RAW({"type":"uint16"})RAW"));
   EXPECT_TRUE(ws.AddVariable(name, std::move(var)));
   ws.Setup();
   sup::dto::AnyValue new_value(sup::dto::UnsignedInteger16Type);
@@ -330,7 +330,7 @@ WorkspaceTest::WorkspaceTest()
     , var2{GlobalVariableRegistry().Create("Local")}
     , var3{GlobalVariableRegistry().Create("Local")}
 {
-  var2->AddAttribute(JSON_TYPE, var2_type);
-  var3->AddAttribute(JSON_TYPE, var3_type);
-  var3->AddAttribute(JSON_VALUE, var3_val);
+  var2->AddAttribute(JSON_TYPE_ATTRIBUTE, var2_type);
+  var3->AddAttribute(JSON_TYPE_ATTRIBUTE, var3_type);
+  var3->AddAttribute(JSON_VALUE_ATTRIBUTE, var3_val);
 }

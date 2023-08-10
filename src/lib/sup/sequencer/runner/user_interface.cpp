@@ -24,8 +24,6 @@
 #include <sup/sequencer/constants.h>
 #include <sup/sequencer/log_severity.h>
 
-#include <sup/dto/anyvalue_helper.h>
-
 namespace sup
 {
 namespace sequencer

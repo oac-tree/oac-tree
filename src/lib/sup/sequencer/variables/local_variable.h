@@ -51,6 +51,8 @@ private:
    */
   sup::dto::AnyValue m_value;
 
+  bool IsDynamicallyTyped() const;
+
   /**
    * @brief See sup::sequencer::Variable.
    */

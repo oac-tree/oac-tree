@@ -38,20 +38,32 @@ namespace sequencer
 
 const std::string LocalVariable::Type = "Local";
 
-const std::string JSON_TYPE = "type";
-const std::string JSON_VALUE = "value";
+const std::string JSON_TYPE_ATTRIBUTE = "type";
+const std::string JSON_VALUE_ATTRIBUTE = "value";
+const std::string DYNAMIC_TYPE_ATTRIBUTE = "dynamicType";
 
 LocalVariable::LocalVariable()
   : Variable(LocalVariable::Type)
   , m_value{}
 {
-  AddAttributeDefinition(JSON_TYPE, sup::dto::StringType);
-  AddAttributeDefinition(JSON_VALUE, sup::dto::StringType);
-  AddConstraint(MakeConstraint<Or>(MakeConstraint<Exists>(JSON_TYPE),
-                                   MakeConstraint<Not>(MakeConstraint<Exists>(JSON_VALUE))));
+  AddAttributeDefinition(JSON_TYPE_ATTRIBUTE, sup::dto::StringType);
+  AddAttributeDefinition(JSON_VALUE_ATTRIBUTE, sup::dto::StringType);
+  AddAttributeDefinition(DYNAMIC_TYPE_ATTRIBUTE, sup::dto::BooleanType);
+  AddConstraint(MakeConstraint<Or>(
+                  MakeConstraint<Exists>(JSON_TYPE_ATTRIBUTE),
+                  MakeConstraint<Not>(MakeConstraint<Exists>(JSON_VALUE_ATTRIBUTE))));
 }
 
 LocalVariable::~LocalVariable() {}
+
+bool LocalVariable::IsDynamicallyTyped() const
+{
+  if (!HasAttribute(DYNAMIC_TYPE_ATTRIBUTE))
+  {
+    return false;
+  }
+  return GetAttributeValue<sup::dto::boolean>(DYNAMIC_TYPE_ATTRIBUTE);
+}
 
 bool LocalVariable::GetValueImpl(sup::dto::AnyValue& value) const
 {
@@ -64,17 +76,25 @@ bool LocalVariable::GetValueImpl(sup::dto::AnyValue& value) const
 
 bool LocalVariable::SetValueImpl(const sup::dto::AnyValue& value)
 {
-  if (!sup::dto::TryAssignIfEmptyOrConvert(m_value, value))
+  bool result = false;
+  if (IsDynamicallyTyped())
   {
-    return false;
+    result = sup::dto::TryAssign(m_value, value);
   }
-  Notify(value, true);
-  return true;
+  else
+  {
+    result = sup::dto::TryAssignIfEmptyOrConvert(m_value, value);
+  }
+  if (result)
+  {
+    Notify(value, true);
+  }
+  return result;
 }
 
 void LocalVariable::SetupImpl(const sup::dto::AnyTypeRegistry& registry)
 {
-  m_value = ParseAnyValueAttributePair(*this, JSON_TYPE, JSON_VALUE, registry);
+  m_value = ParseAnyValueAttributePair(*this, JSON_TYPE_ATTRIBUTE, JSON_VALUE_ATTRIBUTE, registry);
 }
 
 void LocalVariable::ResetImpl()

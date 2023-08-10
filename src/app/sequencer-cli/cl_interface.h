@@ -51,7 +51,7 @@ private:
   void MessageImpl(const std::string& message) override;
   void LogImpl(int severity, const std::string& message) override;
 
-  sup::log::BasicLogger m_logger;
+  const sup::log::BasicLogger m_logger;
 };
 
 }  // namespace sequencer

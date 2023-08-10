@@ -24,6 +24,8 @@
 #include <sup/sequencer/constants.h>
 #include <sup/sequencer/log_severity.h>
 
+#include <sup/dto/anyvalue_helper.h>
+
 namespace sup
 {
 namespace sequencer
@@ -54,14 +56,12 @@ bool UserInterface::PutValue(const sup::dto::AnyValue& value, const std::string&
 
 bool UserInterface::GetUserValue(sup::dto::AnyValue& value, const std::string& description)
 {
-  std::lock_guard<std::mutex> lock(m_ui_mutex);
   return GetUserValueImpl(value, description);
 }
 
 int UserInterface::GetUserChoice(const std::vector<std::string>& options,
                                  const sup::dto::AnyValue& metadata)
 {
-  std::lock_guard<std::mutex> lock(m_ui_mutex);
   return GetUserChoiceImpl(options, metadata);
 }
 

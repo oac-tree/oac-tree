@@ -37,6 +37,8 @@ protected:
   LocalVariableTest();
   virtual ~LocalVariableTest();
 
+  void SetupVariables();
+
   LocalVariable empty_var;
   LocalVariable bool_var;
   LocalVariable uint64_var;
@@ -47,6 +49,7 @@ protected:
 
 const std::string JSON_TYPE = "type";
 const std::string JSON_VALUE = "value";
+const std::string DYNAMIC_TYPE_ATTRIBUTE = "dynamicType";
 
 // Function declaration
 
@@ -330,6 +333,72 @@ TEST_F(LocalVariableTest, Float32Type)
   EXPECT_EQ(val, val_2);  // unchanged
 }
 
+TEST_F(LocalVariableTest, IllegalTypeChange)
+{
+  SetupVariables();
+  {
+    // Assign empty value
+    sup::dto::AnyValue value{};
+    EXPECT_TRUE(empty_var.SetValue(value));
+    EXPECT_FALSE(bool_var.SetValue(value));
+    EXPECT_FALSE(uint64_var.SetValue(value));
+    EXPECT_FALSE(float32_var.SetValue(value));
+  }
+  {
+    // Assign wrongly typed value (cannot be converted)
+    sup::dto::AnyValue value = {{
+      {"signed", {sup::dto::SignedInteger8Type, 1}},
+      {"unsigned", {sup::dto::UnsignedInteger8Type, 12}}
+    }};
+    EXPECT_TRUE(empty_var.SetValue(value));
+    EXPECT_FALSE(bool_var.SetValue(value));
+    EXPECT_FALSE(uint64_var.SetValue(value));
+    EXPECT_FALSE(float32_var.SetValue(value));
+  }
+}
+
+TEST_F(LocalVariableTest, LegalTypeChange)
+{
+  EXPECT_TRUE(empty_var.AddAttribute(DYNAMIC_TYPE_ATTRIBUTE, "true"));
+  EXPECT_TRUE(bool_var.AddAttribute(DYNAMIC_TYPE_ATTRIBUTE, "true"));
+  EXPECT_TRUE(uint64_var.AddAttribute(DYNAMIC_TYPE_ATTRIBUTE, "true"));
+  EXPECT_TRUE(float32_var.AddAttribute(DYNAMIC_TYPE_ATTRIBUTE, "true"));
+  SetupVariables();
+  {
+    // Assign empty value
+    sup::dto::AnyValue value{};
+    EXPECT_TRUE(empty_var.SetValue(value));
+    EXPECT_TRUE(bool_var.SetValue(value));
+    EXPECT_TRUE(uint64_var.SetValue(value));
+    EXPECT_TRUE(float32_var.SetValue(value));
+  }
+  {
+    // Assign differently typed value (cannot be converted)
+    sup::dto::AnyValue value = {{
+      {"signed", {sup::dto::SignedInteger8Type, 1}},
+      {"unsigned", {sup::dto::UnsignedInteger8Type, 12}}
+    }};
+    EXPECT_TRUE(empty_var.SetValue(value));
+    EXPECT_TRUE(bool_var.SetValue(value));
+    EXPECT_TRUE(uint64_var.SetValue(value));
+    EXPECT_TRUE(float32_var.SetValue(value));
+  }
+  {
+    // Assign differently typed value to leaf
+    sup::dto::AnyValue value = {{
+      {"signed", {sup::dto::SignedInteger8Type, 1}},
+      {"unsigned", {sup::dto::UnsignedInteger8Type, 12}}
+    }};
+    ASSERT_TRUE(empty_var.SetValue(value));
+    EXPECT_TRUE(empty_var.SetValue(value, "signed"));
+    // Reading back always keeps restrictions on assignment, so an empty variable is required here.
+    sup::dto::AnyValue read_back{};
+    EXPECT_TRUE(empty_var.GetValue(read_back));
+    EXPECT_TRUE(read_back.HasField("signed.signed"));
+  }
+}
+
+
 // TEST_F(LocalVariableTest, WaitForSuccess)
 // {
 //   std::promise<void> ready;
@@ -383,3 +452,11 @@ LocalVariableTest::LocalVariableTest()
 }
 
 LocalVariableTest::~LocalVariableTest() = default;
+
+void LocalVariableTest::SetupVariables()
+{
+  empty_var.Setup();
+  bool_var.Setup();
+  uint64_var.Setup();
+  float32_var.Setup();
+}

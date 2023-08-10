@@ -5,6 +5,13 @@
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
     <Sequence>
         <Copy name="Copy workspace variables" input="var1" output="var2" />
+        <Fallback>
+            <Copy name="Not allowed" input="var1" output="static_var"/>
+            <Sequence>
+                <Copy name="Allowed" input="var1" output="dynamic_var"/>
+                <Message text="Dynamic variable assignment successful!"/>
+            </Sequence>
+        </Fallback>
     </Sequence>
     <Workspace>
         <Local name="var1"
@@ -12,5 +19,13 @@
                value='{"value":1729}' />
         <Local name="var2"
                type='{"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}}]}' />
+        <Local name="dynamic_var"
+               type='{"type":"uint32"}'
+               value='0'
+               dynamicType="true"/>
+        <Local name="static_var"
+               type='{"type":"uint32"}'
+               value='0'
+               dynamicType="false"/>
     </Workspace>
 </Procedure>

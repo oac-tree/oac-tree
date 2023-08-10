@@ -52,6 +52,9 @@ enum DialogType
 
 /**
  * @brief Interface representing user interactions.
+ *
+ * @details Implementers of concrete user interfaces should take care of thread safety, since many
+ * of the member functions can be called from different threads.
  */
 class UserInterface
 {

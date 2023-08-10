@@ -38,7 +38,6 @@ UserInterface::~UserInterface() = default;
 
 void UserInterface::UpdateInstructionStatus(const Instruction* instruction)
 {
-  std::lock_guard<std::mutex> lock(m_ui_mutex);
   UpdateInstructionStatusImpl(instruction);
 }
 
@@ -50,7 +49,6 @@ void UserInterface::VariableUpdated(const std::string& name, const sup::dto::Any
 
 bool UserInterface::PutValue(const sup::dto::AnyValue& value, const std::string& description)
 {
-  std::lock_guard<std::mutex> lock(m_ui_mutex);
   return PutValueImpl(value, description);
 }
 
@@ -67,13 +65,11 @@ int UserInterface::GetUserChoice(const std::vector<std::string>& options,
 
 void UserInterface::Message(const std::string& message)
 {
-  std::lock_guard<std::mutex> lock(m_ui_mutex);
   MessageImpl(message);
 }
 
 void UserInterface::Log(int severity, const std::string& message)
 {
-  std::lock_guard<std::mutex> lock(m_ui_mutex);
   LogImpl(severity, message);
 }
 

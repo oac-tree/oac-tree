@@ -201,11 +201,6 @@ private:
    * @note Default implementation is empty.
    */
   virtual void LogImpl(int severity, const std::string& message);
-
-  /**
-   * @brief Mutex for concurrent access of UserInterface.
-   */
-  mutable std::mutex m_ui_mutex;
 };
 
 sup::dto::AnyValue CreateUserChoiceMetadata();

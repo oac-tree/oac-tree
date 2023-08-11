@@ -1,3 +1,9 @@
+Changes for 2.2.0:
+
+- Documentation update
+- Allow dynamically typed local variables
+- Bugfix: handle Listen instruction reset correctly (COA-461)
+
 Changes for 2.1.0:
 
 - Added attribute system

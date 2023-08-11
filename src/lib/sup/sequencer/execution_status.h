@@ -26,6 +26,9 @@
 
 namespace sup
 {
+/**
+ * @brief Main namespace for the SUP Sequencer
+*/
 namespace sequencer
 {
 /**

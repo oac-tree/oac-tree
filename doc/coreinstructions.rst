@@ -1,5 +1,5 @@
-Basic Instructions
-==================
+Core Instructions
+=================
 
 Instruction is an abstract interface for all executable instructions. It serves as the base class for various types of instructions.
 Instructions can be of the following categories:

@@ -1,15 +1,18 @@
 Welcome to sequencer's documentation!
 =====================================
 
-**sequencer** is a C++ library.
+**sequencer** is a C++ framework for creating and executing automation procedures. It is developed
+in the context of the ITER Supervision and Automation System (SUP).
 
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
+   introduction
+   coreinstructionsvariables
+   plugincreation
    API
-   basicinstructions
 
 Indices and tables
 ==================

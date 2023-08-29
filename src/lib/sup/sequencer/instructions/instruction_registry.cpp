@@ -25,6 +25,7 @@
 #include "condition.h"
 #include "copy.h"
 #include "equals.h"
+#include "var_exists.h"
 #include "decrement.h"
 #include "fallback.h"
 #include "for.h"
@@ -137,6 +138,7 @@ void InitInstructionRegistry(InstructionRegistry& registry)
   (void)RegisterInstruction<Copy>(registry);
   (void)RegisterInstruction<Decrement>(registry);
   (void)RegisterInstruction<Equals>(registry);
+  (void)RegisterInstruction<VarExistsInstruction>(registry);
   (void)RegisterInstruction<GreaterThan>(registry);
   (void)RegisterInstruction<GreaterThanOrEqual>(registry);
   (void)RegisterInstruction<IncludeProcedure>(registry);

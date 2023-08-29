@@ -1,3 +1,6 @@
+find_package(GTest 1.10 REQUIRED)
+include(GoogleTest)
+
 add_subdirectory(unit)
 add_subdirectory(testapp)
 

@@ -3,14 +3,15 @@ add_executable(sequencer-daemon)
 target_compile_features(sequencer-daemon PRIVATE cxx_std_11)
 
 target_sources(sequencer-daemon
-    PRIVATE
-        ${CMAKE_CURRENT_LIST_DIR}/daemon_interface.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/main.cpp
+  PRIVATE
+  daemon_interface.cpp
+  main.cpp
 )
 
-target_link_libraries(sequencer-daemon PRIVATE sup-sequencer-shared)
-
-find_package(sup-utils REQUIRED)
-target_link_libraries(sequencer-daemon PRIVATE sup-utils::sup-log sup-utils::sup-cli)
+target_link_libraries(sequencer-daemon PRIVATE
+  sup-sequencer-shared
+  sup-utils::sup-log
+  sup-utils::sup-cli
+)
 
 install(TARGETS sequencer-daemon RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})

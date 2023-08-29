@@ -3,10 +3,10 @@ add_executable(testapp)
 target_compile_features(testapp PRIVATE cxx_std_11)
 
 target_sources(testapp
-    PRIVATE
-        ${CMAKE_CURRENT_LIST_DIR}/main.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/test_procedure_factory.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/test_ui.cpp
+  PRIVATE
+  main.cpp
+  test_procedure_factory.cpp
+  test_ui.cpp
 )
 
 target_link_libraries(testapp PRIVATE sup-sequencer-shared)

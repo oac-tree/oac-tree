@@ -21,8 +21,6 @@ target_include_directories(sup-sequencer-shared PUBLIC
   $<INSTALL_INTERFACE:include>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/../..>)
 
-find_package(sup-dto REQUIRED)
-find_package(sup-utils REQUIRED)
 target_link_libraries(sup-sequencer-shared PUBLIC sup-dto::sup-dto PRIVATE sup-utils::sup-xml)
 
 install(TARGETS sup-sequencer-shared EXPORT sequencer-targets LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})

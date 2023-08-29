@@ -1,8 +1,8 @@
 target_sources(sup-sequencer-shared
-    PRIVATE
-        ${CMAKE_CURRENT_LIST_DIR}/instruction_parser.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/procedure_parser.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/procedure_to_treedata_utils.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/sequence_parser.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/variable_parser.cpp
+  PRIVATE
+  instruction_parser.cpp
+  procedure_parser.cpp
+  procedure_to_treedata_utils.cpp
+  sequence_parser.cpp
+  variable_parser.cpp
 )

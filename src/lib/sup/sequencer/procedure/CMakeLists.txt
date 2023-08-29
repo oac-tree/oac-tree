@@ -1,9 +1,9 @@
 target_sources(sup-sequencer-shared
-    PRIVATE
-        ${CMAKE_CURRENT_LIST_DIR}/execution_status.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/procedure_context.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/procedure_preamble.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/procedure_store.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/procedure.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/workspace.cpp
+  PRIVATE
+  execution_status.cpp
+  procedure_context.cpp
+  procedure_preamble.cpp
+  procedure_store.cpp
+  procedure.cpp
+  workspace.cpp
 )

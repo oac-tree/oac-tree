@@ -6,8 +6,12 @@ The :ref:`variable` class is an interface for workspace variables, designed to m
 Local Variable
 --------------
 
-This Variable type defines variable directly in the workspace. This variables can be used (read and written to) from the workspace by instructions.
+This Variable type defines a variable in memory. These variables can be used (read and written to) from the workspace by instructions.
 If a variable has a defined type, without a defined value, a zero-initialized AnyValue will be allocated.
+
+Unless the attribute `dynamicType` is equal to 'true', the underlying AnyType of the variable is fixed and all assignments will try to convert to the destination type. The only exception to this rule is when the definition does not include a type. In that case, the variable will be initialized as an `Empty` type and will have a fixed `AnyType` from the moment of its first assignment.
+
+When `dynamicType` is set, all assignments to it will have the semantics of normal `AnyValue` assignments, i.e. types can change.
 
 Attributes:
 
@@ -30,7 +34,7 @@ Attributes:
    * - dynamicType
      - BooleanType
      - no
-     - defines if the variable is dynamic
+     - defines if the variable's type is dynamic
 
 .. _local_exp:
 
@@ -53,7 +57,9 @@ In the example, two local variables are defined, and variable "a" is copied to v
 File Variable
 -------------
 
-This Variable type defines variable that will read and write values from a file.
+This Variable type defines a variable that will read and write values from a file.
+
+A file variable does not impose extra type constraints during assignment. It does however inherit the constraints from the underlying `AnyValue`, such as immutable element types for arrays.
 
 Attributes:
 
@@ -72,7 +78,7 @@ Attributes:
    * - pretty
      - BooleanType
      - no
-     - defines if variable is written with pretty print
+     - defines if the JSON representation is written with pretty printing
 
 .. _file_exp:
 
@@ -87,8 +93,8 @@ In the example, the variable "input" is copied to the variable "file", that writ
     </Sequence>
     <Workspace>
         <Local name="input"
-            type='{"type":"MyStruct","attributes":[{"value":{"type":"float32"}}]}'
-            value='{"value":0.0}'/>
+               type='{"type":"MyStruct","attributes":[{"value":{"type":"float32"}}]}'
+               value='{"value":0.0}'/>
         <File name="file"
-            fileName="/tmp/variable.bck"/>
+              fileName="/tmp/variable.bck"/>
     </Workspace>

@@ -19,14 +19,11 @@
  * of the distribution package.
  ******************************************************************************/
 
-// TODO need to import this correctly, might need to change the empty ui class to add the vector
-// with log entries.
-
 #include "sup/sequencer/execution_status.h"
 #include <sup/sequencer/instructions/log_instruction.h>
 #include <sup/sequencer/log_severity.h>
 
-// #include "unit_test_helper.h"
+#include "unit_test_helper.h"
 
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/instruction_registry.h>
@@ -74,34 +71,12 @@ static const std::string LOGVARIABLEPROCEDURE = R"RAW(<?xml version="1.0" encodi
 class LogInstructionTest : public ::testing::Test
 {
 public:
-  using LogEntry = std::pair<int, std::string>;
-
-  //! Test interface for Message method.
-  class TestInterface : public UserInterface
-  {
-  public:
-    TestInterface() = default;
-
-    void UpdateInstructionStatusImpl(const Instruction *instruction) override {}
-    void LogImpl(int severity, const std::string& message) override
-    {
-      m_log_entries.emplace_back(severity, message);
-    }
-
-    // std::string ui_log;
-
-    std::string GetFullLog() const;
-
-    std::vector<LogEntry> m_log_entries;
-  };
-
   size_t NumberOfLogEntries() const;
   std::pair<int, std::string> LastLogEntry() const;
 
-
 protected:
   Procedure proc;
-  TestInterface ui;
+  sup::UnitTestHelper::TestLogUserInterface ui;
   Workspace ws;
 };
 

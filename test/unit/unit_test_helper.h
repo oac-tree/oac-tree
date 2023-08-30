@@ -94,6 +94,23 @@ public:
   ~EmptyUserInterface() = default;
 };
 
+class TestLogUserInterface : public sup::sequencer::UserInterface
+{
+public:
+  using LogEntry = std::pair<int, std::string>;
+
+  TestLogUserInterface() = default;
+
+  void UpdateInstructionStatusImpl(const sup::sequencer::Instruction *instruction) override {}
+
+  void LogImpl(int severity, const std::string& message) override
+  {
+    m_log_entries.emplace_back(severity, message);
+  }
+
+  std::vector<LogEntry> m_log_entries;
+};
+
 class TemporaryTestFile
 {
 private:

@@ -50,6 +50,7 @@ target_sources(unit-tests
     user_choice_tests.cpp
     user_confirmation_tests.cpp
     user_interface_tests.cpp
+    var_exists_tests.cpp
     variable_registry_tests.cpp
     wait_tests.cpp
     waitforvariable_tests.cpp

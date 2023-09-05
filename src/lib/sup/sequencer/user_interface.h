@@ -59,7 +59,6 @@ enum DialogType
 class UserInterface
 {
 public:
-  UserInterface();
 
   virtual ~UserInterface();
 
@@ -67,9 +66,8 @@ public:
    * @brief Method called when instruction's execution status changes.
    *
    * @param instruction Instruction that has new execution status.
-   * @note Non-Virtual Interface.
    */
-  void UpdateInstructionStatus(const Instruction* instruction);
+  virtual void UpdateInstructionStatus(const Instruction* instruction) = 0;
 
   /**
    * @brief Method called when a workspace Variable has received a value update.
@@ -77,9 +75,8 @@ public:
    * @param name Name of the Variable.
    * @param value New value of the Variable.
    * @param connected Boolean indicating if variable is connected.
-   * @note Non-Virtual Interface.
    */
-  void VariableUpdated(const std::string& name, const sup::dto::AnyValue& value, bool connected);
+  virtual void VariableUpdated(const std::string& name, const sup::dto::AnyValue& value, bool connected) = 0;
 
   /**
    * @brief Method to put the value.
@@ -87,9 +84,8 @@ public:
    * @param value Value to put into UI.
    * @param description Optional description of the value.
    * @return true on successful retrieval of a value, false otherwise.
-   * @note Non-Virtual Interface.
    */
-  bool PutValue(const sup::dto::AnyValue& value, const std::string& description = {});
+  virtual bool PutValue(const sup::dto::AnyValue& value, const std::string& description) = 0;
 
   /**
    * @brief Method to request the user to input a value.
@@ -97,9 +93,8 @@ public:
    * @param value Value to be filled in.
    * @param description Optional description of the value.
    * @return true on successful retrieval of a value, false otherwise.
-   * @note Non-Virtual Interface.
    */
-  bool GetUserValue(sup::dto::AnyValue& value, const std::string& description = {});
+  virtual bool GetUserValue(sup::dto::AnyValue& value, const std::string& description) = 0;
 
   /**
    * @brief Method to request the user to choose one of the given options.
@@ -122,24 +117,22 @@ public:
    *   string details (opt)               Details about the user choice, which could be displayed
    *                                      on request
    *   ...                                Future extension appear here
-   * @note Non-Virtual Interface.
    */
-  int GetUserChoice(const std::vector<std::string>& options,
-                    const sup::dto::AnyValue& metadata = {});
+  virtual int GetUserChoice(const std::vector<std::string>& options,
+                    const sup::dto::AnyValue& metadata) = 0;
 
   /**
    * @brief Method called to display a message.
+   * @param message Message to be displayed.
    *
-   * @note Non-Virtual Interface.
    */
-  void Message(const std::string& message);
+  virtual void Message(const std::string& message) = 0;
 
   /**
    * @brief Method called to log a message.
    *
-   * @note Non-Virtual Interface.
    */
-  void Log(int severity, const std::string& message);
+  virtual void Log(int severity, const std::string& message) = 0;
 
   /**
    * @brief Convenience method to log an error message.
@@ -150,60 +143,6 @@ public:
    * @brief Convenience method to log a warning message.
    */
   void LogWarning(const std::string& message);
-
-private:
-  /**
-   * @brief Private pure virtual implementation of
-   * UserInterface::UpdateInstructionStatus(const Instruction * instruction).
-   */
-  virtual void UpdateInstructionStatusImpl(const Instruction* instruction) = 0;
-
-  /**
-   * @brief Private virtual implementation of
-   * UserInterface::VariableUpdated(const std::string& name, const sup::dto::AnyValue& value).
-   */
-  virtual void VariableUpdatedImpl(const std::string& name, const sup::dto::AnyValue& value,
-                                   bool connected);
-
-  /**
-   * @brief Private virtual implementation of
-   * UserInterface::PutValue(const AnyValue & value, const std::string & description).
-   *
-   * @note Default implementation returns false.
-   */
-  virtual bool PutValueImpl(const sup::dto::AnyValue& value, const std::string& description);
-
-  /**
-   * @brief Private virtual implementation of
-   * UserInterface::GetUserValue(AnyValue & value, const std::string & description).
-   *
-   * @note Default implementation returns false.
-   */
-  virtual bool GetUserValueImpl(sup::dto::AnyValue& value, const std::string& description);
-
-  /**
-   * @brief Private virtual implementation of
-   * UserInterface::GetUserChoice(const std::vector<std::string>& options,
-   *                              const sup::dto::AnyValue& metadata)
-   *
-   * @note Default implementation returns -1.
-   */
-  virtual int GetUserChoiceImpl(const std::vector<std::string>& options,
-                                const sup::dto::AnyValue& metadata);
-
-  /**
-   * @brief Private virtual implementation of UserInterface::Message().
-   *
-   * @note Default implementation is empty.
-   */
-  virtual void MessageImpl(const std::string& message);
-
-  /**
-   * @brief Private virtual implementation of UserInterface::Log().
-   *
-   * @note Default implementation is empty.
-   */
-  virtual void LogImpl(int severity, const std::string& message);
 };
 
 sup::dto::AnyValue CreateUserChoiceMetadata();

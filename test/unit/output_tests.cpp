@@ -38,20 +38,31 @@ public:
   class TestInterface : public UserInterface
   {
   public:
-    TestInterface(unsigned par) : m_value(sup::dto::UnsignedInteger32Type)
-    {
-      m_value = par;
-    }
+    TestInterface(unsigned par) : m_value(sup::dto::UnsignedInteger32Type) { m_value = par; }
 
-    bool PutValueImpl(const sup::dto::AnyValue &value, const std::string &description) override
+    bool PutValue(const sup::dto::AnyValue& value, const std::string& description) override
     {
       m_value = value;
       return true;
     }
 
-    bool GetUserValueImpl(sup::dto::AnyValue &, const std::string &) override { return true; }
+    bool GetUserValue(sup::dto::AnyValue&, const std::string&) override { return true; }
 
-    void UpdateInstructionStatusImpl(const Instruction *instruction) override {}
+    void UpdateInstructionStatus(const Instruction* instruction) override {}
+
+    void VariableUpdated(const std::string& name, const sup::dto::AnyValue& value,
+                         bool connected) override
+    {
+    }
+
+    int GetUserChoice(const std::vector<std::string>& options,
+                      const sup::dto::AnyValue& metadata) override
+    {
+      return -1;
+    }
+    void Message(const std::string& message) override {}
+    void Log(int severity, const std::string& message) override {}
+
     sup::dto::AnyValue m_value;
   };
 };

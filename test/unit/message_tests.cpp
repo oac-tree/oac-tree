@@ -41,11 +41,31 @@ public:
   public:
     TestInterface() = default;
 
-    void UpdateInstructionStatusImpl(const Instruction *instruction) override {}
-    void MessageImpl(const std::string& message) override { ui_message = message; }
+    void UpdateInstructionStatus(const Instruction* instruction) override {}
+    void VariableUpdated(const std::string& name, const sup::dto::AnyValue& value,
+                         bool connected) override
+    {
+    }
+    bool PutValue(const sup::dto::AnyValue& value, const std::string& description) override
+    {
+      return false;
+    }
+    bool GetUserValue(sup::dto::AnyValue& value, const std::string& description) override
+    {
+      return false;
+    }
+    int GetUserChoice(const std::vector<std::string>& options,
+                      const sup::dto::AnyValue& metadata) override
+    {
+      return -1;
+    }
+    void Log(int severity, const std::string& message) override {}
+
+    void Message(const std::string& message) override { ui_message = message; }
 
     std::string ui_message;
   };
+
 protected:
   Procedure proc;
   TestInterface ui;

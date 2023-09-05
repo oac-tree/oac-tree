@@ -44,14 +44,18 @@ DaemonInterface::DaemonInterface(const sup::log::DefaultLogger& logger)
 
 DaemonInterface::~DaemonInterface() = default;
 
-void DaemonInterface::UpdateInstructionStatusImpl(const Instruction *instruction)
+void DaemonInterface::UpdateInstructionStatus(const Instruction *instruction)
 {
   std::string info_message = "Instruction (" + instruction->GetType() + ":" +
     instruction->GetName() + ") : " + StatusToString(instruction->GetStatus());
   m_logger.Info(info_message);
 }
 
-bool DaemonInterface::PutValueImpl(const sup::dto::AnyValue &value, const std::string &description)
+void DaemonInterface::VariableUpdated(const std::string& name, const sup::dto::AnyValue& value,
+                                      bool connected)
+{}
+
+bool DaemonInterface::PutValue(const sup::dto::AnyValue &value, const std::string &description)
 {
   std::string json_rep = sup::dto::ValuesToJSONString(value);
   std::string info_message = description + " (" + value.GetTypeName() + "):" + json_rep;
@@ -59,27 +63,27 @@ bool DaemonInterface::PutValueImpl(const sup::dto::AnyValue &value, const std::s
   return true;
 }
 
-bool DaemonInterface::GetUserValueImpl(sup::dto::AnyValue &, const std::string &)
+bool DaemonInterface::GetUserValue(sup::dto::AnyValue &, const std::string &)
 {
-  std::string error_message = "DaemonInterface::GetUserValueImpl(): is not implemented";
+  std::string error_message = "DaemonInterface::GetUserValue(): is not implemented";
   m_logger.Error(error_message);
   return false;
 }
 
-int DaemonInterface::GetUserChoiceImpl(const std::vector<std::string>& options,
+int DaemonInterface::GetUserChoice(const std::vector<std::string>& options,
                                        const sup::dto::AnyValue& metadata)
 {
-  std::string error_message = "DaemonInterface::GetUserChoiceImpl(): is not implemented";
+  std::string error_message = "DaemonInterface::GetUserChoice(): is not implemented";
   m_logger.Error(error_message);
   return -1;
 }
 
-void DaemonInterface::MessageImpl(const std::string& message)
+void DaemonInterface::Message(const std::string& message)
 {
   m_logger.Info(message);
 }
 
-void DaemonInterface::LogImpl(int severity, const std::string& message)
+void DaemonInterface::Log(int severity, const std::string& message)
 {
   auto& mem_func_map = LogMemberFunctionMap();
   auto it = mem_func_map.find(severity);

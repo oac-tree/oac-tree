@@ -31,45 +31,7 @@ namespace sequencer
 const sup::dto::AnyType USER_CHOICE_METADATA_ANYTYPE =
   sup::dto::EmptyStructType(Constants::USER_CHOICES_METADATA_NAME);
 
-UserInterface::UserInterface() = default;
 UserInterface::~UserInterface() = default;
-
-void UserInterface::UpdateInstructionStatus(const Instruction* instruction)
-{
-  UpdateInstructionStatusImpl(instruction);
-}
-
-void UserInterface::VariableUpdated(const std::string& name, const sup::dto::AnyValue& value,
-                                    bool connected)
-{
-  VariableUpdatedImpl(name, value, connected);
-}
-
-bool UserInterface::PutValue(const sup::dto::AnyValue& value, const std::string& description)
-{
-  return PutValueImpl(value, description);
-}
-
-bool UserInterface::GetUserValue(sup::dto::AnyValue& value, const std::string& description)
-{
-  return GetUserValueImpl(value, description);
-}
-
-int UserInterface::GetUserChoice(const std::vector<std::string>& options,
-                                 const sup::dto::AnyValue& metadata)
-{
-  return GetUserChoiceImpl(options, metadata);
-}
-
-void UserInterface::Message(const std::string& message)
-{
-  MessageImpl(message);
-}
-
-void UserInterface::Log(int severity, const std::string& message)
-{
-  LogImpl(severity, message);
-}
 
 void UserInterface::LogError(const std::string& message)
 {
@@ -80,34 +42,6 @@ void UserInterface::LogWarning(const std::string& message)
 {
   Log(log::SUP_SEQ_LOG_WARNING, message);
 }
-
-void UserInterface::VariableUpdatedImpl(const std::string& name, const sup::dto::AnyValue& value,
-                                        bool connected)
-{}
-
-bool UserInterface::PutValueImpl(const sup::dto::AnyValue& value, const std::string& description)
-{
-  return false;
-}
-
-bool UserInterface::GetUserValueImpl(sup::dto::AnyValue& value, const std::string& description)
-{
-  return false;
-}
-
-int UserInterface::GetUserChoiceImpl(const std::vector<std::string>& options,
-                                     const sup::dto::AnyValue& metadata)
-{
-  (void)options;
-  (void)metadata;
-  return -1;
-}
-
-void UserInterface::MessageImpl(const std::string&)
-{}
-
-void UserInterface::LogImpl(int, const std::string&)
-{}
 
 sup::dto::AnyValue CreateUserChoiceMetadata()
 {

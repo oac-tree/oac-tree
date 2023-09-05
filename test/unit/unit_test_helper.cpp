@@ -122,9 +122,9 @@ const sup::dto::AnyValue* MockUI::GetMetadata() const
   return m_metadata.get();
 }
 
-void MockUI::UpdateInstructionStatusImpl(const Instruction *instruction) {}
+void MockUI::UpdateInstructionStatus(const Instruction *instruction) {}
 
-bool MockUI::GetUserValueImpl(sup::dto::AnyValue &value, const std::string &description)
+bool MockUI::GetUserValue(sup::dto::AnyValue &value, const std::string &description)
 {
   if (sup::dto::IsEmptyValue(value))
   {
@@ -138,13 +138,21 @@ bool MockUI::GetUserValueImpl(sup::dto::AnyValue &value, const std::string &desc
   return m_status;
 }
 
-int MockUI::GetUserChoiceImpl(const std::vector<std::string>& options,
+int MockUI::GetUserChoice(const std::vector<std::string>& options,
                               const sup::dto::AnyValue& metadata)
 {
   m_options = options;
   m_metadata.reset(new sup::dto::AnyValue{metadata});
   return m_choice;
 }
+
+void MockUI::VariableUpdated(const std::string& name, const sup::dto::AnyValue& value, bool connected) {}
+bool MockUI::PutValue(const sup::dto::AnyValue& value, const std::string& description)
+{
+  return false;
+}
+void MockUI::Message(const std::string& message) {}
+void MockUI::Log(int severity, const std::string& message) {}
 
 TemporaryTestFile::TemporaryTestFile(std::string filename_, std::string contents)
     : filename{filename_}

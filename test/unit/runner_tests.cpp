@@ -147,7 +147,7 @@ TEST_F(RunnerTest, NoProcedure)
 TEST_F(RunnerTest, ExecuteSingle)
 {
   // Set Expectations on mock UserInterface calls
-  EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(_)).Times(AtLeast(12));
+  EXPECT_CALL(mock_ui, UpdateInstructionStatus(_)).Times(AtLeast(12));
 
   // Test preconditions
   Runner runner(mock_ui);
@@ -183,7 +183,7 @@ TEST_F(RunnerTest, ExecuteSingle)
 TEST_F(RunnerTest, ExecuteProcedure)
 {
   // Set Expectations on mock UserInterface calls
-  EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(_)).Times(AtLeast(12));
+  EXPECT_CALL(mock_ui, UpdateInstructionStatus(_)).Times(AtLeast(12));
 
   // Test preconditions
   Runner runner(mock_ui);
@@ -208,17 +208,17 @@ TEST_F(RunnerTest, UICalls)
   {
     InSequence seq;
     EXPECT_CALL(mock_ui,
-                UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::NOT_FINISHED)));
+                UpdateInstructionStatus(HasExecutionStatus(ExecutionStatus::NOT_FINISHED)));
     EXPECT_CALL(mock_ui,
-                UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::NOT_FINISHED)));
-    EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::SUCCESS)));
+                UpdateInstructionStatus(HasExecutionStatus(ExecutionStatus::NOT_FINISHED)));
+    EXPECT_CALL(mock_ui, UpdateInstructionStatus(HasExecutionStatus(ExecutionStatus::SUCCESS)));
     EXPECT_CALL(mock_ui,
-                UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::NOT_FINISHED)));
+                UpdateInstructionStatus(HasExecutionStatus(ExecutionStatus::NOT_FINISHED)));
     EXPECT_CALL(mock_ui,
-                UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::NOT_FINISHED)));
-    EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::SUCCESS)));
-    EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::FAILURE)));
-    EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::FAILURE)));
+                UpdateInstructionStatus(HasExecutionStatus(ExecutionStatus::NOT_FINISHED)));
+    EXPECT_CALL(mock_ui, UpdateInstructionStatus(HasExecutionStatus(ExecutionStatus::SUCCESS)));
+    EXPECT_CALL(mock_ui, UpdateInstructionStatus(HasExecutionStatus(ExecutionStatus::FAILURE)));
+    EXPECT_CALL(mock_ui, UpdateInstructionStatus(HasExecutionStatus(ExecutionStatus::FAILURE)));
   }
 
   // Test preconditions
@@ -243,8 +243,8 @@ TEST_F(RunnerTest, UIVariableCalls)
   // Set Expectations on mock UserInterface calls
   sup::dto::AnyValue val(sup::dto::UnsignedInteger64Type);
   val = sup::dto::uint64(1729);
-  EXPECT_CALL(mock_ui, VariableUpdatedImpl("var2", HasSameValue(val), true)).Times(Exactly(1));
-  EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(_)).Times(AtLeast(4));
+  EXPECT_CALL(mock_ui, VariableUpdated("var2", HasSameValue(val), true)).Times(Exactly(1));
+  EXPECT_CALL(mock_ui, UpdateInstructionStatus(_)).Times(AtLeast(4));
 
   // Test preconditions
   Runner runner(mock_ui);

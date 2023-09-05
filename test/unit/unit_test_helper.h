@@ -69,29 +69,51 @@ public:
   std::vector<std::string> GetOptions() const;
   const sup::dto::AnyValue* GetMetadata() const;
 
+  /**
+   * @brief See sup::sequencer::UserInterface.
+   */
+  void UpdateInstructionStatus(const sup::sequencer::Instruction* instruction) override;
+  bool GetUserValue(sup::dto::AnyValue& value, const std::string& description = {}) override;
+  int GetUserChoice(const std::vector<std::string>& options,
+                        const sup::dto::AnyValue& metadata = {}) override;
+
+  void VariableUpdated(const std::string& name, const sup::dto::AnyValue& value, bool connected) override;
+  bool PutValue(const sup::dto::AnyValue& value, const std::string& description = {}) override;
+  void Message(const std::string& message) override;
+  void Log(int severity, const std::string& message) override;
+
 private:
   bool m_status = false;
   int m_choice = -1;
   sup::dto::AnyValue m_value;
   std::vector<std::string> m_options;
   std::unique_ptr<sup::dto::AnyValue> m_metadata;
-
-  /**
-   * @brief See sup::sequencer::UserInterface.
-   */
-  void UpdateInstructionStatusImpl(const sup::sequencer::Instruction* instruction) override;
-  bool GetUserValueImpl(sup::dto::AnyValue& value, const std::string& description) override;
-  int GetUserChoiceImpl(const std::vector<std::string>& options,
-                        const sup::dto::AnyValue& metadata) override;
 };
 
 class EmptyUserInterface : public sup::sequencer::UserInterface
 {
-private:
-  void UpdateInstructionStatusImpl(const sup::sequencer::Instruction* instruction) override {}
 public:
   EmptyUserInterface() = default;
   ~EmptyUserInterface() = default;
+  void UpdateInstructionStatus(const sup::sequencer::Instruction* instruction) override {}
+  void VariableUpdated(const std::string& name, const sup::dto::AnyValue& value,
+                       bool connected) override
+  {
+  }
+  bool PutValue(const sup::dto::AnyValue& value, const std::string& description = {}) override
+  {
+    return false;
+  }
+  bool GetUserValue(sup::dto::AnyValue& value, const std::string& description = {}) override
+  {
+    return false;
+  }
+  int GetUserChoice(const std::vector<std::string>& options, const sup::dto::AnyValue& metadata = {}) override
+  {
+    return -1;
+  }
+  void Message(const std::string& message) override {}
+  void Log(int severity, const std::string& message) override {}
 };
 
 class TestLogUserInterface : public sup::sequencer::UserInterface
@@ -101,9 +123,27 @@ public:
 
   TestLogUserInterface() = default;
 
-  void UpdateInstructionStatusImpl(const sup::sequencer::Instruction *instruction) override {}
+  void UpdateInstructionStatus(const sup::sequencer::Instruction *instruction) override {}
 
-  void LogImpl(int severity, const std::string& message) override
+  void VariableUpdated(const std::string& name, const sup::dto::AnyValue& value,
+                       bool connected) override
+  {
+  }
+  bool PutValue(const sup::dto::AnyValue& value, const std::string& description) override
+  {
+    return false;
+  }
+  bool GetUserValue(sup::dto::AnyValue& value, const std::string& description) override
+  {
+    return false;
+  }
+  int GetUserChoice(const std::vector<std::string>& options, const sup::dto::AnyValue& metadata) override
+  {
+    return -1;
+  }
+  void Message(const std::string& message) override {}
+
+  void Log(int severity, const std::string& message) override
   {
     m_log_entries.emplace_back(severity, message);
   }

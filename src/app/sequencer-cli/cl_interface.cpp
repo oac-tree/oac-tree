@@ -44,14 +44,14 @@ CLInterface::CLInterface(const sup::log::BasicLogger& logger)
 
 CLInterface::~CLInterface() = default;
 
-void CLInterface::UpdateInstructionStatusImpl(const Instruction *instruction)
+void CLInterface::UpdateInstructionStatus(const Instruction *instruction)
 {
   std::string info_message = "Instruction (" + instruction->GetType() + ":" +
     instruction->GetName() + ") : " + StatusToString(instruction->GetStatus());
   m_logger.LogMessage(log::SUP_SEQ_LOG_INFO, info_message);
 }
 
-void CLInterface::VariableUpdatedImpl(const std::string& name, const sup::dto::AnyValue& value,
+void CLInterface::VariableUpdated(const std::string& name, const sup::dto::AnyValue& value,
                                       bool connected)
 {
   std::string info_message;
@@ -67,7 +67,7 @@ void CLInterface::VariableUpdatedImpl(const std::string& name, const sup::dto::A
   m_logger.LogMessage(log::SUP_SEQ_LOG_INFO, info_message);
 }
 
-bool CLInterface::PutValueImpl(const sup::dto::AnyValue &value, const std::string &description)
+bool CLInterface::PutValue(const sup::dto::AnyValue &value, const std::string &description)
 {
   std::cout << description << " (" << value.GetTypeName() << "): ";
   std::string json_rep = sup::dto::ValuesToJSONString(value);
@@ -79,13 +79,13 @@ bool CLInterface::PutValueImpl(const sup::dto::AnyValue &value, const std::strin
   return true;
 }
 
-bool CLInterface::GetUserValueImpl(sup::dto::AnyValue &value, const std::string &description)
+bool CLInterface::GetUserValue(sup::dto::AnyValue &value, const std::string &description)
 {
   if (!sup::dto::IsScalarValue(value))
   {
     auto json_type = sup::dto::AnyTypeToJSONString(value.GetType());
     std::string error_message =
-      "sup::sequencer::CLInterface::GetUserValueImpl(): only scalar values are supported, "
+      "sup::sequencer::CLInterface::GetUserValue(): only scalar values are supported, "
       "requested type was [" + json_type + "]";
     m_logger.LogMessage(log::SUP_SEQ_LOG_ERR, error_message);
     return false;
@@ -97,7 +97,7 @@ bool CLInterface::GetUserValueImpl(sup::dto::AnyValue &value, const std::string 
   {
     auto json_type = sup::dto::AnyTypeToJSONString(value.GetType());
     std::string error_message =
-      "sup::sequencer::CLInterface::GetUserValueImpl(): user provided value [" + input +
+      "sup::sequencer::CLInterface::GetUserValue(): user provided value [" + input +
       "] could not be parsed to type [" + json_type + "]";
     m_logger.LogMessage(log::SUP_SEQ_LOG_ERR, error_message);
     return false;
@@ -105,7 +105,7 @@ bool CLInterface::GetUserValueImpl(sup::dto::AnyValue &value, const std::string 
   return true;
 }
 
-int CLInterface::GetUserChoiceImpl(const std::vector<std::string>& options,
+int CLInterface::GetUserChoice(const std::vector<std::string>& options,
                                    const sup::dto::AnyValue& metadata)
 {
   std::string message = GetMainTextFromMetadata(metadata);
@@ -126,7 +126,7 @@ int CLInterface::GetUserChoiceImpl(const std::vector<std::string>& options,
   if (istr.fail())
   {
     std::string error_message =
-      "sup::sequencer::CLInterface::GetUserChoiceImpl(): user provided value [" + input_str +
+      "sup::sequencer::CLInterface::GetUserChoice(): user provided value [" + input_str +
       "] could not be parsed to integer";
     m_logger.LogMessage(log::SUP_SEQ_LOG_ERR, error_message);
     return -1;
@@ -136,7 +136,7 @@ int CLInterface::GetUserChoiceImpl(const std::vector<std::string>& options,
   if (input < 0 || input >= options.size())
   {
     std::string error_message =
-      "sup::sequencer::CLInterface::GetUserChoiceImpl(): user provided value [" +
+      "sup::sequencer::CLInterface::GetUserChoice(): user provided value [" +
       std::to_string(input) + "] must be in the range [1, " + std::to_string(options.size()) + "]";
     m_logger.LogMessage(log::SUP_SEQ_LOG_ERR, error_message);
     return -1;
@@ -145,12 +145,12 @@ int CLInterface::GetUserChoiceImpl(const std::vector<std::string>& options,
   return input;
 }
 
-void CLInterface::MessageImpl(const std::string& message)
+void CLInterface::Message(const std::string& message)
 {
   std::cout << message << std::endl;
 }
 
-void CLInterface::LogImpl(int severity, const std::string& message)
+void CLInterface::Log(int severity, const std::string& message)
 {
   m_logger.LogMessage(severity, message);
 }

@@ -20,6 +20,7 @@
  ******************************************************************************/
 
 #include "mock_user_interface.h"
+#include "unit_test_helper.h"
 
 #include <sup/sequencer/instruction.h>
 #include <sup/sequencer/instruction_registry.h>
@@ -31,12 +32,6 @@
 
 using namespace sup::sequencer;
 
-class EmptyUserInterface : public UserInterface
-{
-private:
-  void UpdateInstructionStatusImpl(const Instruction* instruction) override{};
-};
-
 class UserInterfaceTest : public ::testing::Test
 {
 protected:
@@ -44,7 +39,7 @@ protected:
   virtual ~UserInterfaceTest();
 
   MockUserInterface mock_ui;
-  EmptyUserInterface empty_ui;
+  sup::UnitTestHelper::EmptyUserInterface empty_ui;
   Workspace empty_ws;
   std::unique_ptr<Instruction> wait;
 };
@@ -58,7 +53,7 @@ using ::testing::Return;
 TEST_F(UserInterfaceTest, UpdateInstructionStatusDispatch)
 {
   EXPECT_CALL(mock_ui,
-              UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::NOT_STARTED)));
+              UpdateInstructionStatus(HasExecutionStatus(ExecutionStatus::NOT_STARTED)));
   mock_ui.UpdateInstructionStatus(wait.get());
 }
 
@@ -66,12 +61,12 @@ TEST_F(UserInterfaceTest, PutValueDispatch)
 {
   sup::dto::AnyValue val;
   std::string description = "TestPutValue";
-  EXPECT_CALL(mock_ui, PutValueImpl(_, description))
+  EXPECT_CALL(mock_ui, PutValue(_, description))
       .Times(2)
       .WillOnce(Return(false))
       .WillOnce(Return(true));
-  EXPECT_CALL(mock_ui, GetUserValueImpl(_, _)).Times(0);
-  EXPECT_CALL(mock_ui, GetUserChoiceImpl(_, _)).Times(0);
+  EXPECT_CALL(mock_ui, GetUserValue(_, _)).Times(0);
+  EXPECT_CALL(mock_ui, GetUserChoice(_, _)).Times(0);
   EXPECT_FALSE(mock_ui.PutValue(val, description));
   EXPECT_TRUE(mock_ui.PutValue(val, description));
 }
@@ -80,12 +75,12 @@ TEST_F(UserInterfaceTest, GetUserValueDispatch)
 {
   sup::dto::AnyValue val;
   std::string description = "TestGetUserValue";
-  EXPECT_CALL(mock_ui, PutValueImpl(_, _)).Times(0);
-  EXPECT_CALL(mock_ui, GetUserValueImpl(_, description))
+  EXPECT_CALL(mock_ui, PutValue(_, _)).Times(0);
+  EXPECT_CALL(mock_ui, GetUserValue(_, description))
       .Times(2)
       .WillOnce(Return(false))
       .WillOnce(Return(true));
-  EXPECT_CALL(mock_ui, GetUserChoiceImpl(_, _)).Times(0);
+  EXPECT_CALL(mock_ui, GetUserChoice(_, _)).Times(0);
   EXPECT_FALSE(mock_ui.GetUserValue(val, description));
   EXPECT_TRUE(mock_ui.GetUserValue(val, description));
 }
@@ -94,9 +89,9 @@ TEST_F(UserInterfaceTest, GetUserChoiceDispatch)
 {
   std::vector<std::string> options = {"yes", "no" };
   auto metadata = CreateUserChoiceMetadata();
-  EXPECT_CALL(mock_ui, PutValueImpl(_, _)).Times(0);
-  EXPECT_CALL(mock_ui, GetUserValueImpl(_, _)).Times(0);
-  EXPECT_CALL(mock_ui, GetUserChoiceImpl(options, metadata))
+  EXPECT_CALL(mock_ui, PutValue(_, _)).Times(0);
+  EXPECT_CALL(mock_ui, GetUserValue(_, _)).Times(0);
+  EXPECT_CALL(mock_ui, GetUserChoice(options, metadata))
       .Times(2)
       .WillOnce(Return(-1))
       .WillOnce(Return(0));
@@ -130,8 +125,8 @@ TEST_F(UserInterfaceTest, InstructionExecution)
   {
     InSequence seq;
     EXPECT_CALL(mock_ui,
-                UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::NOT_FINISHED)));
-    EXPECT_CALL(mock_ui, UpdateInstructionStatusImpl(HasExecutionStatus(ExecutionStatus::SUCCESS)));
+                UpdateInstructionStatus(HasExecutionStatus(ExecutionStatus::NOT_FINISHED)));
+    EXPECT_CALL(mock_ui, UpdateInstructionStatus(HasExecutionStatus(ExecutionStatus::SUCCESS)));
   }
   wait->ExecuteSingle(mock_ui, empty_ws);
 }

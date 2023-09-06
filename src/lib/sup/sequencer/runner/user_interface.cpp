@@ -43,6 +43,37 @@ void UserInterface::LogWarning(const std::string& message)
   Log(log::SUP_SEQ_LOG_WARNING, message);
 }
 
+DefaultUserInterface::DefaultUserInterface() = default;
+
+DefaultUserInterface::~DefaultUserInterface() = default;
+
+void DefaultUserInterface::UpdateInstructionStatus(const Instruction*)
+{}
+
+void DefaultUserInterface::VariableUpdated(const std::string&, const sup::dto::AnyValue&, bool)
+{}
+
+bool DefaultUserInterface::PutValue(const sup::dto::AnyValue&, const std::string&)
+{
+  return false;
+}
+
+bool DefaultUserInterface::GetUserValue(sup::dto::AnyValue&, const std::string&)
+{
+  return false;
+}
+
+int DefaultUserInterface::GetUserChoice(const std::vector<std::string>&, const sup::dto::AnyValue&)
+{
+  return -1;
+}
+
+void DefaultUserInterface::Message(const std::string&)
+{}
+
+void DefaultUserInterface::Log(int, const std::string&)
+{}
+
 sup::dto::AnyValue CreateUserChoiceMetadata()
 {
   sup::dto::AnyValue result{USER_CHOICE_METADATA_ANYTYPE};

@@ -116,7 +116,7 @@ TEST_F(UserInterfaceTest, GetUserValueDefault)
 TEST_F(UserInterfaceTest, GetUserChoiceDefault)
 {
   std::vector<std::string> options;
-  EXPECT_EQ(empty_ui.GetUserChoice(options), -1);
+  EXPECT_EQ(empty_ui.GetUserChoice(options, {}), -1);
 }
 
 TEST_F(UserInterfaceTest, InstructionExecution)

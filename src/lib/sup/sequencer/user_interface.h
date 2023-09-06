@@ -145,6 +145,29 @@ public:
   void LogWarning(const std::string& message);
 };
 
+/**
+ * @brief UserInterface with default implementations of virtual methods.
+ *
+ * @details The default implementations do as least as possible, i.e. nothing or returning a
+ * status that indicates it could not perform the action.
+ */
+class DefaultUserInterface : public UserInterface
+{
+public:
+  DefaultUserInterface();
+  ~DefaultUserInterface();
+
+  void UpdateInstructionStatus(const Instruction* instruction) override;
+  void VariableUpdated(const std::string& name, const sup::dto::AnyValue& value,
+                       bool connected) override;
+  bool PutValue(const sup::dto::AnyValue& value, const std::string& description) override;
+  bool GetUserValue(sup::dto::AnyValue& value, const std::string& description) override;
+  int GetUserChoice(const std::vector<std::string>& options,
+                    const sup::dto::AnyValue& metadata) override;
+  void Message(const std::string& message) override;
+  void Log(int severity, const std::string& message) override;
+};
+
 sup::dto::AnyValue CreateUserChoiceMetadata();
 
 bool IsUserChoiceMetadata(const sup::dto::AnyValue& metadata);

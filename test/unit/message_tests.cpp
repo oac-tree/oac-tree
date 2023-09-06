@@ -36,30 +36,10 @@ class MessageTest : public ::testing::Test
 {
 public:
   //! Test interface for Message method.
-  class TestInterface : public UserInterface
+  class TestInterface : public DefaultUserInterface
   {
   public:
     TestInterface() = default;
-
-    void UpdateInstructionStatus(const Instruction* instruction) override {}
-    void VariableUpdated(const std::string& name, const sup::dto::AnyValue& value,
-                         bool connected) override
-    {
-    }
-    bool PutValue(const sup::dto::AnyValue& value, const std::string& description) override
-    {
-      return false;
-    }
-    bool GetUserValue(sup::dto::AnyValue& value, const std::string& description) override
-    {
-      return false;
-    }
-    int GetUserChoice(const std::vector<std::string>& options,
-                      const sup::dto::AnyValue& metadata) override
-    {
-      return -1;
-    }
-    void Log(int severity, const std::string& message) override {}
 
     void Message(const std::string& message) override { ui_message = message; }
 

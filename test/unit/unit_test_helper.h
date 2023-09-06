@@ -54,7 +54,7 @@ private:
                                                     sup::sequencer::Workspace& ws) override;
 };
 
-class MockUI : public sup::sequencer::UserInterface
+class MockUI : public sup::sequencer::DefaultUserInterface
 {
 public:
   MockUI();
@@ -72,15 +72,9 @@ public:
   /**
    * @brief See sup::sequencer::UserInterface.
    */
-  void UpdateInstructionStatus(const sup::sequencer::Instruction* instruction) override;
-  bool GetUserValue(sup::dto::AnyValue& value, const std::string& description = {}) override;
+  bool GetUserValue(sup::dto::AnyValue& value, const std::string& description) override;
   int GetUserChoice(const std::vector<std::string>& options,
-                        const sup::dto::AnyValue& metadata = {}) override;
-
-  void VariableUpdated(const std::string& name, const sup::dto::AnyValue& value, bool connected) override;
-  bool PutValue(const sup::dto::AnyValue& value, const std::string& description = {}) override;
-  void Message(const std::string& message) override;
-  void Log(int severity, const std::string& message) override;
+                    const sup::dto::AnyValue& metadata) override;
 
 private:
   bool m_status = false;
@@ -90,58 +84,14 @@ private:
   std::unique_ptr<sup::dto::AnyValue> m_metadata;
 };
 
-class EmptyUserInterface : public sup::sequencer::UserInterface
-{
-public:
-  EmptyUserInterface() = default;
-  ~EmptyUserInterface() = default;
-  void UpdateInstructionStatus(const sup::sequencer::Instruction* instruction) override {}
-  void VariableUpdated(const std::string& name, const sup::dto::AnyValue& value,
-                       bool connected) override
-  {
-  }
-  bool PutValue(const sup::dto::AnyValue& value, const std::string& description = {}) override
-  {
-    return false;
-  }
-  bool GetUserValue(sup::dto::AnyValue& value, const std::string& description = {}) override
-  {
-    return false;
-  }
-  int GetUserChoice(const std::vector<std::string>& options, const sup::dto::AnyValue& metadata = {}) override
-  {
-    return -1;
-  }
-  void Message(const std::string& message) override {}
-  void Log(int severity, const std::string& message) override {}
-};
+using EmptyUserInterface = sup::sequencer::DefaultUserInterface;
 
-class TestLogUserInterface : public sup::sequencer::UserInterface
+class TestLogUserInterface : public sup::sequencer::DefaultUserInterface
 {
 public:
   using LogEntry = std::pair<int, std::string>;
 
   TestLogUserInterface() = default;
-
-  void UpdateInstructionStatus(const sup::sequencer::Instruction *instruction) override {}
-
-  void VariableUpdated(const std::string& name, const sup::dto::AnyValue& value,
-                       bool connected) override
-  {
-  }
-  bool PutValue(const sup::dto::AnyValue& value, const std::string& description) override
-  {
-    return false;
-  }
-  bool GetUserValue(sup::dto::AnyValue& value, const std::string& description) override
-  {
-    return false;
-  }
-  int GetUserChoice(const std::vector<std::string>& options, const sup::dto::AnyValue& metadata) override
-  {
-    return -1;
-  }
-  void Message(const std::string& message) override {}
 
   void Log(int severity, const std::string& message) override
   {

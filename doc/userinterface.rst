@@ -22,6 +22,8 @@ To use the `UserInterface`, you need to create an implementation of this class t
        // Implement the virtual methods of UserInterface here
    };
 
+Alternatively, one can derive from `DefaultUserInterface`, which provides default empty implementations of all pure virtual methods in `UserInterface`. This allows one to implement only the methods that are relevant for the use case at hand.
+
 Updating Instruction Status
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

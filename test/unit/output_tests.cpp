@@ -35,7 +35,7 @@ class OutputTest : public ::testing::Test
 {
 public:
   //! Test interface which accepts values from the workspace.
-  class TestInterface : public UserInterface
+  class TestInterface : public DefaultUserInterface
   {
   public:
     TestInterface(unsigned par) : m_value(sup::dto::UnsignedInteger32Type) { m_value = par; }
@@ -47,21 +47,6 @@ public:
     }
 
     bool GetUserValue(sup::dto::AnyValue&, const std::string&) override { return true; }
-
-    void UpdateInstructionStatus(const Instruction* instruction) override {}
-
-    void VariableUpdated(const std::string& name, const sup::dto::AnyValue& value,
-                         bool connected) override
-    {
-    }
-
-    int GetUserChoice(const std::vector<std::string>& options,
-                      const sup::dto::AnyValue& metadata) override
-    {
-      return -1;
-    }
-    void Message(const std::string& message) override {}
-    void Log(int severity, const std::string& message) override {}
 
     sup::dto::AnyValue m_value;
   };

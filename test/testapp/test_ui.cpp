@@ -19,23 +19,3 @@ void TestUI::UpdateInstructionStatus(const Instruction* instruction)
   std::cout << "Instruction: " << instruction_type << ": ";
   std::cout << StatusToString(status) << std::endl;
 }
-
-void TestUI::VariableUpdated(const std::string& name, const sup::dto::AnyValue& value,
-                             bool connected)
-{
-}
-bool TestUI::PutValue(const sup::dto::AnyValue& value, const std::string& description)
-{
-  return false;
-}
-bool TestUI::GetUserValue(sup::dto::AnyValue& value, const std::string& description)
-{
-  return false;
-}
-int TestUI::GetUserChoice(const std::vector<std::string>& options,
-                          const sup::dto::AnyValue& metadata)
-{
-  return -1;
-}
-void TestUI::Message(const std::string& message) {}
-void TestUI::Log(int severity, const std::string& message) {}

@@ -50,6 +50,7 @@ int main(int argc, char* argv[])
       .SetParameter(true)
       .SetValueName("log_level")
       .SetDefaultValue("WARNING");
+  parser.AddOption({"-V", "--validate"}, "Only parse and setup the procedure without running it");
 
   if (!parser.Parse(argc, argv))
   {
@@ -93,6 +94,11 @@ int main(int argc, char* argv[])
     return 1;
   }
 
+  if (parser.IsSet("--validate"))
+  {
+    std::cout << "Procedure parsing and setup successful: " << filename << std::endl;
+    return 0;  // Early exit.
+  }
   CLInterface ui(logger);
   Runner runner(ui);
   runner.SetProcedure(proc.get());

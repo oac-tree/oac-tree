@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+           name="Procedure for testing inclusion of external procedures"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+    <Sequence isRoot="True">
+        <CopyToProcedure file="instruction_definitions/simple_copy.xml" input="one" output="in"/>
+        <IncludeProcedure file="instruction_definitions/simple_copy.xml" path="CopyToOut"/>
+        <CopyToProcedure file="instruction_definitions/simple_copy.xml" input="zero" output="in"/>
+        <IncludeProcedure file="instruction_definitions/simple_copy.xml" path="CopyToOut"/>
+    </Sequence>
+    <Workspace>
+        <Local name="zero" type='{"type":"uint64"}' value='0' />
+        <Local name="one" type='{"type":"uint64"}' value='1' />
+        <Local name="return" type='{"type":"uint64"}' value='0' />
+    </Workspace>
+</Procedure>

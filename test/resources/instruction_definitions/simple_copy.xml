@@ -4,8 +4,8 @@
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
     <Sequence name="CopyToOut" >
+        <Output from="in" description="Input of external procedure"/>
         <Copy input="in" output="out"/>
-        <Output from="in" description="Input variable"/>
     </Sequence>
     <Workspace>
         <Local name="in" type='{"type":"uint64"}' value='0' />

@@ -4,14 +4,19 @@
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
     <Sequence isRoot="True">
+        <Output from="return" description="Return in main procedure (before)"/>
         <CopyToProcedure file="instruction_definitions/simple_copy.xml" input="one" output="in"/>
         <IncludeProcedure file="instruction_definitions/simple_copy.xml" path="CopyToOut"/>
-        <CopyToProcedure file="instruction_definitions/simple_copy.xml" input="zero" output="in"/>
+        <CopyFromProcedure file="instruction_definitions/simple_copy.xml" input="out" output="return"/>
+        <Output from="return" description="Return in main procedure (after one)"/>
+        <CopyToProcedure file="instruction_definitions/simple_copy.xml" input="two" output="in"/>
         <IncludeProcedure file="instruction_definitions/simple_copy.xml" path="CopyToOut"/>
+        <CopyFromProcedure file="instruction_definitions/simple_copy.xml" input="out" output="return"/>
+        <Output from="return" description="Return in main procedure (after two)"/>
     </Sequence>
     <Workspace>
-        <Local name="zero" type='{"type":"uint64"}' value='0' />
         <Local name="one" type='{"type":"uint64"}' value='1' />
+        <Local name="two" type='{"type":"uint64"}' value='2' />
         <Local name="return" type='{"type":"uint64"}' value='0' />
     </Workspace>
 </Procedure>

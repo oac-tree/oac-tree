@@ -131,6 +131,7 @@ void InitInstructionRegistry(InstructionRegistry& registry)
   (void)RegisterInstruction<ForInstruction>(registry);
   (void)RegisterInstruction<ForceSuccess>(registry);
   (void)RegisterInstruction<Include>(registry);
+  (void)RegisterInstruction<IncludeProcedure>(registry);
   (void)RegisterInstruction<Inverter>(registry);
   (void)RegisterInstruction<Listen>(registry);
   (void)RegisterInstruction<Repeat>(registry);
@@ -142,10 +143,8 @@ void InitInstructionRegistry(InstructionRegistry& registry)
   (void)RegisterInstruction<Copy>(registry);
   (void)RegisterInstruction<Decrement>(registry);
   (void)RegisterInstruction<Equals>(registry);
-  (void)RegisterInstruction<VarExistsInstruction>(registry);
   (void)RegisterInstruction<GreaterThan>(registry);
   (void)RegisterInstruction<GreaterThanOrEqual>(registry);
-  (void)RegisterInstruction<IncludeProcedure>(registry);
   (void)RegisterInstruction<Increment>(registry);
   (void)RegisterInstruction<Input>(registry);
   (void)RegisterInstruction<LessThan>(registry);
@@ -155,6 +154,7 @@ void InitInstructionRegistry(InstructionRegistry& registry)
   (void)RegisterInstruction<Output>(registry);
   (void)RegisterInstruction<ResetVariable>(registry);
   (void)RegisterInstruction<UserConfirmation>(registry);
+  (void)RegisterInstruction<VarExistsInstruction>(registry);
   (void)RegisterInstruction<Wait>(registry);
   (void)RegisterInstruction<WaitForVariable>(registry);
 }

@@ -516,6 +516,62 @@ Attributes:
                     value='1' />
    </Workspace>
 
+CopyFromProcedure
+^^^^^^^^^^^^^^^^^
+
+Instruction that copies a variable from the workspace of an external procedure into the current workspace.
+
+Attributes:
+
+.. list-table::
+   :widths: 25 25 15 50
+   :header-rows: 1
+
+   * - Attribute name
+     - Attribute type
+     - Mandatory
+     - Description
+   * - file
+     - StringType
+     - yes
+     - Filename for the included procedure
+   * - input
+     - StringType
+     - yes
+     - Name of the input variable in the included procedure
+   * - output
+     - StringType
+     - yes
+     - Name of the output variable in the current procedure
+
+CopyToProcedure
+^^^^^^^^^^^^^^^
+
+Instruction that copies a variable from the current workspace into a workspace of an external procedure. When including (parts of) that external procedure later, it will have access to the copied value.
+
+Attributes:
+
+.. list-table::
+   :widths: 25 25 15 50
+   :header-rows: 1
+
+   * - Attribute name
+     - Attribute type
+     - Mandatory
+     - Description
+   * - file
+     - StringType
+     - yes
+     - Filename for the included procedure
+   * - input
+     - StringType
+     - yes
+     - Name of the input variable in the current procedure
+   * - output
+     - StringType
+     - yes
+     - Name of the output variable in the included procedure
+
 Copy
 ^^^^
 
@@ -766,6 +822,38 @@ Attributes:
 
 * The Greater Than usage is similar to that of the `Equals` that can be seen in :ref:`Listen example <listen_exp>`.
 
+Log
+^^^
+
+Instruction that sends a message and/or variable value to the sequencer log, which is handled by the specific UserInterface used.
+
+Attributes:
+
+.. list-table::
+   :widths: 25 25 15 50
+   :header-rows: 1
+
+   * - Attribute name
+     - Attribute type
+     - Mandatory
+     - Description
+   * - message
+     - StringType
+     - no
+     - Text message to log
+   * - input
+     - StringType
+     - no
+     - Name of variable to log
+   * - severity
+     - StringType
+     - no
+     - Severity of the log message
+
+Note that either the `message` or `input` attribute (or both) need to be defined.
+
+The `severity` attribute needs to be one of the following (in decreasing order of severity): emergency, alert, critical, error, warning, notice, info, debug, trace. In the absence of this attribute, the default severity is `info`.
+
 Message
 ^^^^^^^
 
@@ -889,6 +977,27 @@ Attributes:
      - StringType
      - no
      - text to be displayed in case of negative user confirmation
+
+VarExists
+^^^^^^^^^
+
+Instruction that checks the existence of a variable in the current workspace.
+
+
+Attributes:
+
+.. list-table::
+   :widths: 25 25 15 50
+   :header-rows: 1
+
+   * - Attribute name
+     - Attribute type
+     - Mandatory
+     - Description
+   * - varName
+     - StringType
+     - yes
+     - Name of variable to check
 
 Wait
 ^^^^

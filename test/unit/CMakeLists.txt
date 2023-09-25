@@ -12,7 +12,9 @@ target_sources(unit-tests
     compound_instruction_tests.cpp
     condition_tests.cpp
     constraint_tests.cpp
+    copy_from_procedure_tests.cpp
     copy_tests.cpp
+    copy_to_procedure_tests.cpp
     daemon_interface_tests.cpp
     decorator_instruction_tests.cpp
     decrement_tests.cpp

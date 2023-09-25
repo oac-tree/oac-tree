@@ -19,8 +19,8 @@
  * of the distribution package.
  ******************************************************************************/
 
-#ifndef SUP_SEQUENCER_COPY_TO_PROCEDURE_H_
-#define SUP_SEQUENCER_COPY_TO_PROCEDURE_H_
+#ifndef SUP_SEQUENCER_COPY_FROM_PROCEDURE_H_
+#define SUP_SEQUENCER_COPY_FROM_PROCEDURE_H_
 
 #include <sup/sequencer/instruction.h>
 #include <sup/sequencer/workspace.h>
@@ -30,19 +30,18 @@ namespace sup
 namespace sequencer
 {
 /**
- * @brief Instruction that copies a variable from the current workspace into a workspace of an
- * external procedure. When including (parts of) that external procedure later, it will have access
- * to the copied value.
+ * @brief Instruction that copies a variable from the workspace of an external procedure into the
+ * current workspace.
  *
  * @sa IncludeProcedure
- * @sa CopyFromProcedureInstruction
+ * @sa CopyToProcedureInstruction
  */
-class CopyToProcedureInstruction : public Instruction
+class CopyFromProcedureInstruction : public Instruction
 {
 public:
-  CopyToProcedureInstruction();
+  CopyFromProcedureInstruction();
 
-  ~CopyToProcedureInstruction() override;
+  ~CopyFromProcedureInstruction() override;
 
   static const std::string Type;
 
@@ -58,4 +57,4 @@ private:
 
 }  // namespace sup
 
-#endif  // SUP_SEQUENCER_COPY_TO_PROCEDURE_H_
+#endif  // SUP_SEQUENCER_COPY_FROM_PROCEDURE_H_

@@ -23,6 +23,7 @@
 
 #include "choice.h"
 #include "condition.h"
+#include "copy_from_procedure.h"
 #include "copy_to_procedure.h"
 #include "copy.h"
 #include "equals.h"
@@ -136,6 +137,7 @@ void InitInstructionRegistry(InstructionRegistry& registry)
 
   // Register leaf instructions:
   (void)RegisterInstruction<Condition>(registry);
+  (void)RegisterInstruction<CopyFromProcedureInstruction>(registry);
   (void)RegisterInstruction<CopyToProcedureInstruction>(registry);
   (void)RegisterInstruction<Copy>(registry);
   (void)RegisterInstruction<Decrement>(registry);

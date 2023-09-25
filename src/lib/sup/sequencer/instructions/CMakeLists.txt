@@ -4,6 +4,7 @@ target_sources(sup-sequencer-shared
     choice.cpp
     compound_instruction.cpp
     condition.cpp
+    copy_to_procedure.cpp
     copy.cpp
     decorator_instruction.cpp
     decrement.cpp

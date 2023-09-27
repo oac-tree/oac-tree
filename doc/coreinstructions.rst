@@ -390,9 +390,9 @@ Attributes:
      - yes
      - Name of the variable to listen to
    * - forceSuccess
-     - StringType
+     - BooleanType
      - no
-     - Execute children instruction until successful if active
+     - Always handle child as successful if active (only halt will exit the loop)
 
 .. _listen_exp:
 

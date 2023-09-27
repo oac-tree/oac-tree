@@ -869,7 +869,7 @@ Attributes:
      - Attribute type
      - Mandatory
      - Description
-   * - Message
+   * - text
      - StringType
      - yes
      - Message to be passed to the UserInterface

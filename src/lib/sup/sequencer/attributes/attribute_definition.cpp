@@ -21,6 +21,8 @@
 
 #include <sup/sequencer/attribute_definition.h>
 
+#include "attribute_properties.h"
+
 namespace sup
 {
 namespace sequencer
@@ -28,11 +30,26 @@ namespace sequencer
 AttributeDefinition::AttributeDefinition(const std::string& name,
                                          const sup::dto::AnyType& value_type)
   : m_name{name}
-  , m_value_type{value_type}
-  , m_is_mandatory{false}
+  , m_properties{new AttributeProperties(value_type)}
 {}
 
 AttributeDefinition::~AttributeDefinition() = default;
+
+AttributeDefinition::AttributeDefinition(const AttributeDefinition& other)
+  : m_name{other.m_name}
+  , m_properties{new AttributeProperties(*other.m_properties)}
+{}
+
+AttributeDefinition::AttributeDefinition(AttributeDefinition&& other) noexcept = default;
+
+AttributeDefinition& AttributeDefinition::operator=(const AttributeDefinition& other) &
+{
+  m_name = other.m_name;
+  *m_properties = *other.m_properties;
+  return *this;
+}
+
+AttributeDefinition& AttributeDefinition::operator=(AttributeDefinition&& other) & noexcept = default;
 
 std::string AttributeDefinition::GetName() const
 {
@@ -41,17 +58,17 @@ std::string AttributeDefinition::GetName() const
 
 sup::dto::AnyType AttributeDefinition::GetType() const
 {
-  return m_value_type;
+  return m_properties->GetType();
 }
 
 bool AttributeDefinition::IsMandatory() const
 {
-  return m_is_mandatory;
+  return m_properties->IsMandatory();
 }
 
 AttributeDefinition& AttributeDefinition::SetMandatory(bool mandatory)
 {
-  m_is_mandatory = mandatory;
+  m_properties->SetMandatory(mandatory);
   return *this;
 }
 

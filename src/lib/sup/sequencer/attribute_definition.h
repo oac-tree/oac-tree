@@ -24,9 +24,8 @@
 
 #include <sup/dto/anytype.h>
 
-#include <map>
+#include <memory>
 #include <string>
-#include <vector>
 
 namespace sup
 {
@@ -37,6 +36,8 @@ namespace attributes
 const std::string kNameAttribute = "name";
 }
 
+class AttributeProperties;
+
 /**
  * @brief Class that defines a specific attribute by name and type.
  */
@@ -46,6 +47,12 @@ public:
   AttributeDefinition(const std::string& name, const sup::dto::AnyType& value_type);
   ~AttributeDefinition();
 
+  AttributeDefinition(const AttributeDefinition& other);
+  AttributeDefinition(AttributeDefinition&& other) noexcept;
+
+  AttributeDefinition& operator=(const AttributeDefinition& other) &;
+  AttributeDefinition& operator=(AttributeDefinition&& other) & noexcept;
+
   std::string GetName() const;
   sup::dto::AnyType GetType() const;
   bool IsMandatory() const;
@@ -54,8 +61,7 @@ public:
 
 private:
   std::string m_name;
-  sup::dto::AnyType m_value_type;
-  bool m_is_mandatory;
+  std::unique_ptr<AttributeProperties> m_properties;
 };
 
 }  // namespace sequencer

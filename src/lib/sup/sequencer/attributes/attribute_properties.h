@@ -42,6 +42,12 @@ public:
   AttributeProperties(const sup::dto::AnyType& value_type);
   ~AttributeProperties();
 
+  AttributeProperties(const AttributeProperties& other) = default;
+  AttributeProperties(AttributeProperties&& other) = default;
+
+  AttributeProperties& operator=(const AttributeProperties& other) = default;
+  AttributeProperties& operator=(AttributeProperties&& other) = default;
+
   sup::dto::AnyType GetType() const;
 
   bool IsMandatory() const;

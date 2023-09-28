@@ -59,6 +59,16 @@ const int TIMING_ACCURACY_MS = 50;
 const char VAR_ATTRIBUTE_CHAR = '$';
 
 /**
+ * @brief When used as the first character of an instruction attribute's value, this character
+ * indicates the value needs to be fetched from the workspace using the variable name that follows
+ * the character.
+ *
+ * @note Instructions can decide to support this mechanism. If not explicitly enabled, it is not
+ * supported.
+ */
+const char WORKSPACE_ATTRIBUTE_CHAR = '@';
+
+/**
  * @brief Character to be used as a separator between different elements of an instruction path.
  *
  * @note See the Include instruction for more details.

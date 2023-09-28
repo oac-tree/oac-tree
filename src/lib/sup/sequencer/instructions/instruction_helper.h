@@ -72,6 +72,16 @@ bool InitialiseVariableAttributes(Instruction& instruction,
 bool InitialiseVariableAttributes(AttributeHandler& attribute_handler,
                                   const StringAttributeList& source_attributes);
 
+/**
+ * @brief Check if attribute string starts with a given character.
+ *
+ * @param attr_str Attribute string.
+ * @param c Character to check.
+ *
+ * @return true when the attribute string starts with the given character, false otherwise.
+ */
+bool AttributeStartsWith(const std::string& attr_str, char c);
+
 }  // namespace InstructionHelper
 
 }  // namespace sequencer

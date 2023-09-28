@@ -20,8 +20,11 @@
  ******************************************************************************/
 
 #include <sup/sequencer/attribute_handler.h>
+#include <sup/sequencer/constants.h>
+#include <sup/sequencer/workspace.h>
 
-#include "attribute_validator.h"
+#include <sup/sequencer/attributes/attribute_validator.h>
+#include <sup/sequencer/instructions/instruction_helper.h>
 
 #include <algorithm>
 #include <sstream>
@@ -111,18 +114,50 @@ std::vector<std::string> AttributeHandler::GetFailedConstraints() const
 
 sup::dto::AnyValue AttributeHandler::GetValue(const std::string& attr_name) const
 {
+  const auto str_attr = GetStringAttribute(attr_name);
+  return TryCreateAnyValue(str_attr);
+}
+
+sup::dto::AnyValue AttributeHandler::GetValue(const std::string& attr_name,
+                                              const Workspace& ws) const
+{
+  const auto str_attr = GetStringAttribute(attr_name);
+  const auto str_attr_val = str_attr.second;
+  if (InstructionHelper::AttributeStartsWith(str_attr_val,
+                                             DefaultSettings::WORKSPACE_ATTRIBUTE_CHAR))
+  {
+    sup::dto::AnyValue result;
+    const auto var_name = str_attr_val.substr(1u);
+    if (!ws.GetValue(var_name, result))
+    {
+      std::string message = "AttributeHandler::GetValue(): could not fetch variable value [" +
+                            var_name + "] from workspace";
+      throw RuntimeException(message);
+    }
+    return result;
+  }
+  return TryCreateAnyValue(str_attr);
+}
+
+StringAttribute AttributeHandler::GetStringAttribute(const std::string& attr_name) const
+{
   auto it = FindStringAttribute(m_str_attributes, attr_name);
   if (it == m_str_attributes.end())
   {
-    std::string message = "AttributeHandler::GetValue(): no attribute with name [" +
+    std::string message = "AttributeHandler::GetStringAttribute(): no attribute with name [" +
                           attr_name + "]";
     throw RuntimeException(message);
   }
-  auto result = m_impl->attr_validator.TryCreateAnyValue(*it);
+  return *it;
+}
+
+sup::dto::AnyValue AttributeHandler::TryCreateAnyValue(const StringAttribute& str_attr) const
+{
+  auto result = m_impl->attr_validator.TryCreateAnyValue(str_attr);
   if (!result.second.empty())
   {
-    std::string message = "AttributeHandler::GetValue(): failed to create value of name [" +
-                          attr_name + "] because of constraint:\n" + result.second;
+    std::string message = "AttributeHandler::TryCreateAnyValue(): failed to create value of name ["
+                          + str_attr.first + "] because of constraint:\n" + result.second;
     throw RuntimeException(message);
   }
   return result.first;

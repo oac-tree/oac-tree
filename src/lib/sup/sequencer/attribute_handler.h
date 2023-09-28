@@ -32,6 +32,8 @@ namespace sup
 {
 namespace sequencer
 {
+class Workspace;
+
 /**
  * @brief Class that handles the consistency of a set of attributes according to given constraints.
  */
@@ -64,10 +66,14 @@ public:
 
   sup::dto::AnyValue GetValue(const std::string& attr_name) const;
 
+  sup::dto::AnyValue GetValue(const std::string& attr_name, const Workspace& ws) const;
+
   template <typename T>
   T GetValueAs(const std::string& attr_name) const;
 
 private:
+  StringAttribute GetStringAttribute(const std::string& attr_name) const;
+  sup::dto::AnyValue TryCreateAnyValue(const StringAttribute& str_attr) const;
   struct AttributeHandlerImpl;
   std::unique_ptr<AttributeHandlerImpl> m_impl;
   StringAttributeList m_str_attributes;

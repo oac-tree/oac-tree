@@ -1,9 +1,9 @@
 target_sources(sup-sequencer-shared
   PRIVATE
-  execution_status.cpp
-  procedure_context.cpp
-  procedure_preamble.cpp
-  procedure_store.cpp
-  procedure.cpp
-  workspace.cpp
+    execution_status.cpp
+    procedure_context.cpp
+    procedure_preamble.cpp
+    procedure_store.cpp
+    procedure.cpp
+    workspace.cpp
 )

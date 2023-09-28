@@ -24,7 +24,12 @@
 #include <sup/sequencer/attribute_handler.h>
 #include <sup/sequencer/attribute_utils.h>
 #include <sup/sequencer/concrete_constraints.h>
+#include <sup/sequencer/constants.h>
 #include <sup/sequencer/exceptions.h>
+
+#include <sup/sequencer/instructions/instruction_helper.h>
+
+#include <sup/dto/anyvalue_helper.h>
 
 #include <algorithm>
 
@@ -83,6 +88,11 @@ std::vector<std::string> AttributeValidator::ValidateAttributes(
   auto failed_constraints = CheckMandatoryConstraints(m_attribute_definitions, str_attributes);
   for (const auto& str_attr : str_attributes)
   {
+    if (InstructionHelper::AttributeStartsWith(str_attr.second,
+                                               DefaultSettings::WORKSPACE_ATTRIBUTE_CHAR))
+    {
+      continue;  // Don't validate attribute values referring to workspace variables
+    }
     auto result = TryCreateAnyValue(str_attr);
     if (!result.second.empty())
     {
@@ -115,6 +125,25 @@ std::pair<sup::dto::AnyValue, std::string> AttributeValidator::TryCreateAnyValue
   }
   auto failed_constraint =
     MakeConstraint<sup::sequencer::FixedType>(str_attr.first, attr_type).GetRepresentation();
+  return { {}, failed_constraint };
+}
+
+std::pair<sup::dto::AnyValue, std::string> AttributeValidator::TryConvertAnyValue(
+  const std::string& attr_name, const sup::dto::AnyValue& value) const
+{
+  auto it = FindAttributeDefinition(m_attribute_definitions, attr_name);
+  if (it == m_attribute_definitions.end())
+  {
+    return { value, "" };
+  }
+  const auto attr_type = it->GetType();
+  sup::dto::AnyValue result{attr_type};
+  if (sup::dto::TryConvert(result, value))
+  {
+    return { result, "" };
+  }
+  auto failed_constraint =
+    MakeConstraint<sup::sequencer::FixedType>(attr_name, attr_type).GetRepresentation();
   return { {}, failed_constraint };
 }
 

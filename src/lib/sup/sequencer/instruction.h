@@ -277,6 +277,21 @@ protected:
                                               const sup::dto::AnyType& value_type);
 
   /**
+   * @brief Get an AnyValue representation of an attribute. If the attribute string value starts
+   * with '@', it will fetch the value from the workspace with the variable name following that
+   * character.
+   *
+   * @param attr_name Attribute name.
+   * @param ws Workspace to use when the value needs to be fetched.
+   * @param ui UserInterface to use for logging errors or warnings.
+   * @param value Output value when successful.
+   *
+   * @return True on success.
+   * @throws RuntimeException if the attribute with the given name is not present.
+   */
+  bool GetAttributeAnyValue(const std::string& attr_name, const Workspace& ws,
+                            UserInterface& ui, sup::dto::AnyValue& value) const;
+  /**
    * @brief Add an attribute constraint.
    *
    * @param constraint Attribute constraint.
@@ -488,6 +503,21 @@ std::string InstructionWarningProlog(const Instruction& instruction);
 bool GetValueFromAttributeName(const Instruction& instruction, const Workspace& ws,
                                UserInterface& ui, const std::string& attr_name,
                                sup::dto::AnyValue& value);
+
+/**
+ * @brief Fetch variable (and field) with the given name and copy it.
+ *
+ * @param instruction Instruction requiring the variable.
+ * @param ws Workspace containing the variables
+ * @param ui UserInterface to use to report errors or warnings.
+ * @param var_name Variable name.
+ * @param value AnyValue to copy to.
+ *
+ * @return True if successful.
+ */
+bool GetValueFromVariableName(const Instruction& instruction, const Workspace& ws,
+                              UserInterface& ui, const std::string& var_name,
+                              sup::dto::AnyValue& value);
 
 /**
  * @brief Set variable (and field) with name contained in the instruction's attribute.

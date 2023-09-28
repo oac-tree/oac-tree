@@ -20,11 +20,9 @@
  ******************************************************************************/
 
 #include <sup/sequencer/attribute_handler.h>
-#include <sup/sequencer/constants.h>
 #include <sup/sequencer/workspace.h>
 
 #include <sup/sequencer/attributes/attribute_validator.h>
-#include <sup/sequencer/instructions/instruction_helper.h>
 
 #include <algorithm>
 #include <sstream>
@@ -118,32 +116,10 @@ sup::dto::AnyValue AttributeHandler::GetValue(const std::string& attr_name) cons
   return TryCreateAnyValue(str_attr);
 }
 
-sup::dto::AnyValue AttributeHandler::GetValue(const std::string& attr_name,
-                                              const Workspace& ws) const
+std::pair<sup::dto::AnyValue, std::string> AttributeHandler::GetConvertedValue(
+  const std::string& attr_name, const sup::dto::AnyValue& value) const
 {
-  const auto str_attr = GetStringAttribute(attr_name);
-  const auto str_attr_val = str_attr.second;
-  if (!InstructionHelper::AttributeStartsWith(str_attr_val,
-                                             DefaultSettings::WORKSPACE_ATTRIBUTE_CHAR))
-  {
-    return TryCreateAnyValue(str_attr);
-  }
-  sup::dto::AnyValue result;
-  const auto var_name = str_attr_val.substr(1u);
-  if (!ws.GetValue(var_name, result))
-  {
-    std::string message = "AttributeHandler::GetValue(): could not fetch variable value [" +
-                          var_name + "] from workspace";
-    throw RuntimeException(message);
-  }
-  auto converted = m_impl->attr_validator.TryConvertAnyValue(attr_name, result);
-  if (!converted.second.empty())
-  {
-    std::string message = "AttributeHandler::GetValue(): failed to create value of name ["
-                          + attr_name + "] because of constraint:\n" + converted.second;
-    throw RuntimeException(message);
-  }
-  return converted.first;
+  return m_impl->attr_validator.TryConvertAnyValue(attr_name, value);
 }
 
 StringAttribute AttributeHandler::GetStringAttribute(const std::string& attr_name) const

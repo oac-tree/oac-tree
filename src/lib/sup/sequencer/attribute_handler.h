@@ -66,7 +66,8 @@ public:
 
   sup::dto::AnyValue GetValue(const std::string& attr_name) const;
 
-  sup::dto::AnyValue GetValue(const std::string& attr_name, const Workspace& ws) const;
+  std::pair<sup::dto::AnyValue, std::string> GetConvertedValue(
+    const std::string& attr_name, const sup::dto::AnyValue& value) const;
 
   template <typename T>
   T GetValueAs(const std::string& attr_name) const;

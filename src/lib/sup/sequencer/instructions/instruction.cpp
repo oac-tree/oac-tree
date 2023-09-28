@@ -23,10 +23,12 @@
 
 #include "instruction_helper.h"
 
+#include <sup/sequencer/constants.h>
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/user_interface.h>
 #include <sup/sequencer/workspace.h>
 
+#include <sup/dto/anyvalue_helper.h>
 #include <sup/dto/json_type_parser.h>
 #include <sup/dto/json_value_parser.h>
 
@@ -216,6 +218,33 @@ AttributeDefinition& Instruction::AddAttributeDefinition(const std::string& attr
   return m_attribute_handler.AddAttributeDefinition(attr_name, value_type);
 }
 
+bool Instruction::GetAttributeAnyValue(const std::string& attr_name, const Workspace& ws,
+                                       UserInterface& ui, sup::dto::AnyValue& value) const
+{
+  const auto attr_str = GetAttributeString(attr_name);
+  if (!InstructionHelper::AttributeStartsWith(attr_str, DefaultSettings::WORKSPACE_ATTRIBUTE_CHAR))
+  {
+    sup::dto::AnyValue temp = m_attribute_handler.GetValue(attr_name);
+  }
+  sup::dto::AnyValue ws_val;
+  if (!GetValueFromVariableName(*this, ws, ui, attr_str.substr(1u), ws_val))
+  {
+    return false;
+  }
+  const auto converted = m_attribute_handler.GetConvertedValue(attr_name, ws_val);
+  if (!converted.second.empty())
+  {
+    // LOG error!
+    return false;
+  }
+  if (!sup::dto::TryAssign(value, converted.first))
+  {
+    // LOG error!
+    return false;
+  }
+  return true;
+}
+
 void Instruction::AddConstraint(Constraint constraint)
 {
   return m_attribute_handler.AddConstraint(constraint);
@@ -323,14 +352,21 @@ bool GetValueFromAttributeName(const Instruction& instruction, const Workspace& 
                                sup::dto::AnyValue& value)
 {
   auto input_field_name = instruction.GetAttributeValue<std::string>(attr_name);
-  if (input_field_name.empty())
+  return GetValueFromVariableName(instruction, ws, ui, input_field_name, value);
+}
+
+bool GetValueFromVariableName(const Instruction& instruction, const Workspace& ws,
+                              UserInterface& ui, const std::string& var_name,
+                              sup::dto::AnyValue& value)
+{
+  if (var_name.empty())
   {
     std::string error_message = InstructionErrorProlog(instruction) +
       "trying to fetch variable with empty name";
     ui.LogError(error_message);
     return false;
   }
-  auto input_var_name = SplitFieldName(input_field_name).first;
+  auto input_var_name = SplitFieldName(var_name).first;
   if (!ws.HasVariable(input_var_name))
   {
     std::string error_message = InstructionErrorProlog(instruction) +
@@ -338,10 +374,10 @@ bool GetValueFromAttributeName(const Instruction& instruction, const Workspace& 
     ui.LogError(error_message);
     return false;
   }
-  if (!ws.GetValue(input_field_name, value))
+  if (!ws.GetValue(var_name, value))
   {
     std::string warning_message = InstructionErrorProlog(instruction) +
-      "could not read input field with name [" + input_field_name + "] from workspace";
+      "could not read input field with name [" + var_name + "] from workspace";
     ui.LogWarning(warning_message);
     return false;
   }

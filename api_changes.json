@@ -17,6 +17,9 @@
         "lhs" : "leftVar",
         "rhs" : "rightVar"
       },
+      "Input": {
+        "output" : "outputVar"
+      },
       "LessThan": {
         "lhs" : "leftVar",
         "rhs" : "rightVar"

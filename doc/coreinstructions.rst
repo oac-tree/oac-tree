@@ -575,7 +575,7 @@ Attributes:
 Copy
 ^^^^
 
-Instruction that copies the value of the "input" variable to the "output" variable
+Instruction that copies the value of an input variable to an output variable
 
 Attributes:
 
@@ -635,11 +635,11 @@ Attributes:
      - Attribute type
      - Mandatory
      - Description
-   * - lhs
+   * - leftVar
      - StringType
      - yes
      - Name of the left hand side variable to compare
-   * - rhs
+   * - rightVar
      - StringType
      - yes
      - Name of the right hand side variable to compare
@@ -661,11 +661,11 @@ Attributes:
      - Attribute type
      - Mandatory
      - Description
-   * - lhs
+   * - leftVar
      - StringType
      - yes
      - Name of the left hand side variable to compare
-   * - rhs
+   * - rightVar
      - StringType
      - yes
      - Name of the right hand side variable to compare
@@ -688,11 +688,11 @@ Attributes:
      - Attribute type
      - Mandatory
      - Description
-   * - lhs
+   * - leftVar
      - StringType
      - yes
      - Name of the left hand side variable to compare
-   * - rhs
+   * - rightVar
      - StringType
      - yes
      - Name of the right hand side variable to compare
@@ -738,7 +738,7 @@ Attributes:
      - Attribute type
      - Mandatory
      - Description
-   * - output
+   * - outputVar
      - StringType
      - yes
      - Name of the variable where to write the user input value
@@ -754,7 +754,7 @@ Attributes:
 .. code-block:: xml
 
    <Sequence>
-       <Input description="Put some uint32 here" output="uint32"/>
+       <Input description="Put some uint32 here" outputVar="uint32"/>
    </Sequence>
    <Workspace>
        <Local name="uint32" type='{"type":"uint32"}'/>
@@ -783,11 +783,11 @@ Attributes:
      - Attribute type
      - Mandatory
      - Description
-   * - lhs
+   * - leftVar
      - StringType
      - yes
      - Name of the left hand side variable to compare
-   * - rhs
+   * - rightVar
      - StringType
      - yes
      - Name of the right hand side variable to compare
@@ -810,11 +810,11 @@ Attributes:
      - Attribute type
      - Mandatory
      - Description
-   * - lhs
+   * - leftVar
      - StringType
      - yes
      - Name of the left hand side variable to compare
-   * - rhs
+   * - rightVar
      - StringType
      - yes
      - Name of the right hand side variable to compare

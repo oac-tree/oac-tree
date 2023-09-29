@@ -27,7 +27,7 @@
 
 #include <sup/dto/anyvalue_helper.h>
 
-const std::string OUTPUT_VARIABLE_ATTR_NAME = "output";
+const std::string OUTPUT_VARIABLE_ATTR_NAME = "outputVar";
 const std::string DESCRIPTION_ATTR_NAME = "description";
 
 namespace sup

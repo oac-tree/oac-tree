@@ -8,8 +8,8 @@
         <Wait name="One" timeout="1.0" />
         <Wait name="Two" timeout="2.0" />
         <Wait name="Three" timeout="3.0" />
-        <Input output="number" description="Some number" />
-        <Input output="name" description="Name" />
+        <Input outputVar="number" description="Some number" />
+        <Input outputVar="name" description="Name" />
     </ParallelSequence>
     <Workspace>
         <Local name="number"

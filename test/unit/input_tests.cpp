@@ -36,7 +36,7 @@ TEST(Input, Setup)
   auto instr = GlobalInstructionRegistry().Create("Input");
   EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
 
-  EXPECT_TRUE(instr->AddAttribute("output", "out_var"));
+  EXPECT_TRUE(instr->AddAttribute("outputVar", "out_var"));
   EXPECT_NO_THROW(instr->Setup(proc));
 }
 
@@ -44,7 +44,7 @@ TEST(Input, GetUserValue_success)
 {
   const std::string body{R"(
     <Sequence>
-        <Input description="Put some uint32 here" output="uint32"/>
+        <Input description="Put some uint32 here" outputVar="uint32"/>
     </Sequence>
     <Workspace>
         <Local name="uint32" type='{"type":"uint32"}'/>
@@ -70,7 +70,7 @@ TEST(Input, GetUserValue_failure)
 {
   const std::string body{R"(
     <Sequence>
-        <Input description="Put some uint32 here" output="uint32"/>
+        <Input description="Put some uint32 here" outputVar="uint32"/>
     </Sequence>
     <Workspace>
         <Local name="uint32" type='{"type":"uint32"}'/>
@@ -88,7 +88,7 @@ TEST(Input, Variable_uninitialised)
 {
   const std::string body{R"(
     <Sequence>
-        <Input description="Put some uint32 here" output="uint32"/>
+        <Input description="Put some uint32 here" outputVar="uint32"/>
     </Sequence>
     <Workspace>
         <Local name="uint32"/>
@@ -108,7 +108,7 @@ TEST(Input, Variable_undefined)
 {
   const std::string body{R"(
     <Sequence>
-        <Input description="Put some uint32 here" output="uint32"/>
+        <Input description="Put some uint32 here" outputVar="uint32"/>
     </Sequence>
     <Workspace>
     </Workspace>

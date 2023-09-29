@@ -30,8 +30,8 @@
 #include <sup/sequencer/sequence_parser.h>
 
 const std::string FILE_ATTRIBUTE_NAME = "file";
-const std::string INPUT_VARIABLE_ATTR_NAME = "input";
-const std::string OUTPUT_VARIABLE_ATTR_NAME = "output";
+const std::string INPUT_VARIABLE_ATTR_NAME = "inputVar";
+const std::string OUTPUT_VARIABLE_ATTR_NAME = "outputVar";
 
 namespace sup
 {

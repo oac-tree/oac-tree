@@ -67,11 +67,11 @@ TEST_F(CopyFromProcedureTest, Setup)
   EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
 
   // Correct input attribute, missing output
-  EXPECT_TRUE(instr->AddAttribute("input", "in_var"));
+  EXPECT_TRUE(instr->AddAttribute("inputVar", "in_var"));
   EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
 
   // Correct output attribute, but file doesn't exist
-  EXPECT_TRUE(instr->AddAttribute("output", "out_var"));
+  EXPECT_TRUE(instr->AddAttribute("outputVar", "out_var"));
   EXPECT_THROW(instr->Setup(proc), sup::xml::ParseException);
 
   // Existing filename works
@@ -82,7 +82,7 @@ TEST_F(CopyFromProcedureTest, Setup)
 TEST_F(CopyFromProcedureTest, MissingInputVar)
 {
   const std::string body{R"(
-    <CopyFromProcedure file="test_copy_from_procedure.xml" input="does_not_exist" output="c"/>
+    <CopyFromProcedure file="test_copy_from_procedure.xml" inputVar="does_not_exist" outputVar="c"/>
     <Workspace>
         <Local name="c" type='{"type":"uint16"}' value='2' />
     </Workspace>
@@ -96,7 +96,7 @@ TEST_F(CopyFromProcedureTest, MissingInputVar)
 TEST_F(CopyFromProcedureTest, MissingOutputVar)
 {
   const std::string body{R"(
-    <CopyFromProcedure file="test_copy_from_procedure.xml" input="a" output="does_not_exist"/>
+    <CopyFromProcedure file="test_copy_from_procedure.xml" inputVar="a" outputVar="does_not_exist"/>
     <Workspace>
         <Local name="c" type='{"type":"uint16"}' value='2' />
     </Workspace>
@@ -110,7 +110,7 @@ TEST_F(CopyFromProcedureTest, MissingOutputVar)
 TEST_F(CopyFromProcedureTest, Success)
 {
   const std::string body{R"(
-    <CopyFromProcedure file="test_copy_from_procedure.xml" input="b" output="c"/>
+    <CopyFromProcedure file="test_copy_from_procedure.xml" inputVar="b" outputVar="c"/>
     <Workspace>
         <Local name="c" type='{"type":"uint16"}' value='2' />
     </Workspace>
@@ -128,9 +128,9 @@ TEST_F(CopyFromProcedureTest, SuccessBothWays)
         <Inverter>
             <Equals lhs="result" rhs="c"/>
         </Inverter>
-        <CopyToProcedure file="test_copy_from_procedure.xml" input="c" output="a"/>
+        <CopyToProcedure file="test_copy_from_procedure.xml" inputVar="c" outputVar="a"/>
         <IncludeProcedure file="test_copy_from_procedure.xml" path="InternalCopy"/>
-        <CopyFromProcedure file="test_copy_from_procedure.xml" input="b" output="result"/>
+        <CopyFromProcedure file="test_copy_from_procedure.xml" inputVar="b" outputVar="result"/>
         <Equals lhs="result" rhs="c"/>
     </Sequence>
     <Workspace>

@@ -65,11 +65,11 @@ TEST_F(CopyToProcedureTest, Setup)
   EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
 
   // Correct input attribute, missing output
-  EXPECT_TRUE(instr->AddAttribute("input", "in_var"));
+  EXPECT_TRUE(instr->AddAttribute("inputVar", "in_var"));
   EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
 
   // Correct output attribute, but file doesn't exist
-  EXPECT_TRUE(instr->AddAttribute("output", "out_var"));
+  EXPECT_TRUE(instr->AddAttribute("outputVar", "out_var"));
   EXPECT_THROW(instr->Setup(proc), sup::xml::ParseException);
 
   // Existing filename works
@@ -80,7 +80,7 @@ TEST_F(CopyToProcedureTest, Setup)
 TEST_F(CopyToProcedureTest, MissingInputVar)
 {
   const std::string body{R"(
-    <CopyToProcedure file="test_copy_to_procedure.xml" input="does_not_exist" output="a"/>
+    <CopyToProcedure file="test_copy_to_procedure.xml" inputVar="does_not_exist" outputVar="a"/>
     <Workspace>
         <Local name="c" type='{"type":"uint16"}' value='2' />
     </Workspace>
@@ -94,7 +94,7 @@ TEST_F(CopyToProcedureTest, MissingInputVar)
 TEST_F(CopyToProcedureTest, MissingOutputVar)
 {
   const std::string body{R"(
-    <CopyToProcedure file="test_copy_to_procedure.xml" input="c" output="does_not_exist"/>
+    <CopyToProcedure file="test_copy_to_procedure.xml" inputVar="c" outputVar="does_not_exist"/>
     <Workspace>
         <Local name="c" type='{"type":"uint16"}' value='2' />
     </Workspace>
@@ -108,7 +108,7 @@ TEST_F(CopyToProcedureTest, MissingOutputVar)
 TEST_F(CopyToProcedureTest, Success)
 {
   const std::string body{R"(
-    <CopyToProcedure file="test_copy_to_procedure.xml" input="c" output="a"/>
+    <CopyToProcedure file="test_copy_to_procedure.xml" inputVar="c" outputVar="a"/>
     <Workspace>
         <Local name="c" type='{"type":"uint16"}' value='2' />
     </Workspace>

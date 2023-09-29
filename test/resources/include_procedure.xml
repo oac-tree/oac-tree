@@ -5,13 +5,13 @@
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
     <Sequence isRoot="True">
         <Output from="return" description="Return in main procedure (before)"/>
-        <CopyToProcedure file="instruction_definitions/simple_copy.xml" input="one" output="in"/>
+        <CopyToProcedure file="instruction_definitions/simple_copy.xml" inputVar="one" outputVar="in"/>
         <IncludeProcedure file="instruction_definitions/simple_copy.xml" path="CopyToOut"/>
-        <CopyFromProcedure file="instruction_definitions/simple_copy.xml" input="out" output="return"/>
+        <CopyFromProcedure file="instruction_definitions/simple_copy.xml" inputVar="out" outputVar="return"/>
         <Output from="return" description="Return in main procedure (after one)"/>
-        <CopyToProcedure file="instruction_definitions/simple_copy.xml" input="two" output="in"/>
+        <CopyToProcedure file="instruction_definitions/simple_copy.xml" inputVar="two" outputVar="in"/>
         <IncludeProcedure file="instruction_definitions/simple_copy.xml" path="CopyToOut"/>
-        <CopyFromProcedure file="instruction_definitions/simple_copy.xml" input="out" output="return"/>
+        <CopyFromProcedure file="instruction_definitions/simple_copy.xml" inputVar="out" outputVar="return"/>
         <Output from="return" description="Return in main procedure (after two)"/>
     </Sequence>
     <Workspace>

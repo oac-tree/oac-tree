@@ -26,6 +26,8 @@
 
 #include <sup/log/basic_logger.h>
 
+#include <mutex>
+
 namespace sup
 {
 namespace sequencer
@@ -52,6 +54,7 @@ public:
 
 private:
   const sup::log::BasicLogger m_logger;
+  mutable std::mutex m_mtx;
 };
 
 }  // namespace sequencer

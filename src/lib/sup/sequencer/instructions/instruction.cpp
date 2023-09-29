@@ -218,8 +218,8 @@ AttributeDefinition& Instruction::AddAttributeDefinition(const std::string& attr
   return m_attribute_handler.AddAttributeDefinition(attr_name, value_type);
 }
 
-bool Instruction::GetAttributeAnyValue(const std::string& attr_name, const Workspace& ws,
-                                       UserInterface& ui, sup::dto::AnyValue& value) const
+bool Instruction::GetVariableAttributeAnyValue(const std::string& attr_name, const Workspace& ws,
+                                               UserInterface& ui, sup::dto::AnyValue& value) const
 {
   const auto attr_str = GetAttributeString(attr_name);
   if (!InstructionHelper::AttributeStartsWith(attr_str, DefaultSettings::WORKSPACE_ATTRIBUTE_CHAR))
@@ -234,12 +234,18 @@ bool Instruction::GetAttributeAnyValue(const std::string& attr_name, const Works
   const auto converted = m_attribute_handler.GetConvertedValue(attr_name, ws_val);
   if (!converted.second.empty())
   {
-    // LOG error!
+    const std::string error = InstructionErrorProlog(*this) +
+      "failed to create appropriate AnyValue from variable [" + attr_name +
+      "] because of constraint:\n" + converted.second;
+    ui.LogError(error);
     return false;
   }
   if (!sup::dto::TryAssign(value, converted.first))
   {
-    // LOG error!
+    const std::string error = InstructionErrorProlog(*this) +
+      "could not assign retrieved variable value with name [" + attr_name +
+      "] to passed output parameter";
+    ui.LogError(error);
     return false;
   }
   return true;

@@ -289,8 +289,8 @@ protected:
    * @return True on success.
    * @throws RuntimeException if the attribute with the given name is not present.
    */
-  bool GetAttributeAnyValue(const std::string& attr_name, const Workspace& ws,
-                            UserInterface& ui, sup::dto::AnyValue& value) const;
+  bool GetVariableAttributeAnyValue(const std::string& attr_name, const Workspace& ws,
+                                    UserInterface& ui, sup::dto::AnyValue& value) const;
   /**
    * @brief Add an attribute constraint.
    *

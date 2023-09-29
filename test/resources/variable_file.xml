@@ -5,8 +5,8 @@
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
     <Sequence>
         <Copy name="copy"
-            input="input"
-            output="file"/>
+            inputVar="input"
+            outputVar="file"/>
     </Sequence>
     <Workspace>
         <Local name="input"

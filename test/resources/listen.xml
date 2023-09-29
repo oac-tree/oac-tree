@@ -6,7 +6,7 @@
     <ParallelSequence>
         <Listen varNames="monitor">
             <Sequence>
-                <Copy input="monitor" output="result" />
+                <Copy inputVar="monitor" outputVar="result" />
                 <Output from="monitor" description="Updated monitor" />
                 <Inverter>
                     <Equals lhs="monitor" rhs="update" />
@@ -15,7 +15,7 @@
         </Listen>
         <Sequence>
             <Wait timeout="0.2" />
-            <Copy input="update" output="monitor"/>
+            <Copy inputVar="update" outputVar="monitor"/>
         </Sequence>
         <Inverter>
             <Wait timeout="2.0" />

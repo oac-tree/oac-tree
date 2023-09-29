@@ -45,7 +45,7 @@ TEST_F(FileVariableTest, FileWrite)
 {
   const std::string body{R"(
     <Sequence>
-        <Copy name="copy" input="input" output="file"/>
+        <Copy name="copy" inputVar="input" outputVar="file"/>
     </Sequence>
     <Workspace>
         <Local name="input"
@@ -114,10 +114,10 @@ TEST_F(FileVariableTest, FileSuccess)
   const std::string body{R"(
     <Sequence>
         <!-- Expected datatype -->
-        <Copy name="default" input="input" output="file"/>
-        <Copy name="value" input="value" output="file.value"/>
+        <Copy name="default" inputVar="input" outputVar="file"/>
+        <Copy name="value" inputVar="value" outputVar="file.value"/>
         <!-- Should be math expression -->
-        <Copy name="severity" input="severity" output="file.severity"/>
+        <Copy name="severity" inputVar="severity" outputVar="file.severity"/>
     </Sequence>
     <Workspace>
         <Local name="input"

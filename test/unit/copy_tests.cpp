@@ -42,16 +42,16 @@ TEST(Copy, Setup)
   auto instr = GlobalInstructionRegistry().Create("Copy");
   EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
 
-  EXPECT_TRUE(instr->AddAttribute("input", "in_var"));
+  EXPECT_TRUE(instr->AddAttribute("inputVar", "in_var"));
   EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
-  EXPECT_TRUE(instr->AddAttribute("output", "out_var"));
+  EXPECT_TRUE(instr->AddAttribute("outputVar", "out_var"));
   EXPECT_NO_THROW(instr->Setup(proc));
 }
 
 TEST(Copy, Success)
 {
   const std::string body{R"(
-    <Copy name="copy_test" input="in_var" output="out_var"/>
+    <Copy name="copy_test" inputVar="in_var" outputVar="out_var"/>
     <Workspace>
         <Local name="in_var"
                type='{"type":"sup::test::MyType/v1.0","attributes":[{"timestamp":{"type":"uint64"}}]}'
@@ -68,7 +68,7 @@ TEST(Copy, Success)
 TEST(Copy, MissingInputVariable)
 {
   const std::string body{R"(
-    <Copy name="copy_test" input="in_var" output="out_var"/>
+    <Copy name="copy_test" inputVar="in_var" outputVar="out_var"/>
     <Workspace>
         <Local name="out_var"/>
     </Workspace>
@@ -82,7 +82,7 @@ TEST(Copy, MissingInputVariable)
 TEST(Copy, MissingOutputVariable)
 {
   const std::string body{R"(
-    <Copy name="copy_test" input="in_var" output="out_var"/>
+    <Copy name="copy_test" inputVar="in_var" outputVar="out_var"/>
     <Workspace>
         <Local name="in_var"
                type='{"type":"sup::test::MyType/v1.0","attributes":[{"timestamp":{"type":"uint64"}}]}'
@@ -98,7 +98,7 @@ TEST(Copy, MissingOutputVariable)
 TEST(Copy, IncompatibleVariables)
 {
   const std::string body{R"(
-    <Copy name="copy_test" input="in_var" output="out_var"/>
+    <Copy name="copy_test" inputVar="in_var" outputVar="out_var"/>
     <Workspace>
         <Local name="in_var"
                type='{"type":"sup::test::MyType/v1.0","attributes":[{"timestamp":{"type":"uint64"}}]}'

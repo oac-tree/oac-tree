@@ -4,10 +4,10 @@
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
     <Choice varName="sel">
-        <Copy name="zero" input="a" output="res" />
+        <Copy name="zero" inputVar="a" outputVar="res" />
         <Wait timeout="0.5" />
-        <Copy name="one" input="b" output="res" />
-        <Copy name="two" input="c" output="res" />
+        <Copy name="one" inputVar="b" outputVar="res" />
+        <Copy name="two" inputVar="c" outputVar="res" />
     </Choice>
     <Workspace>
         <Local name="res"

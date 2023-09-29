@@ -53,9 +53,9 @@ TEST(Choice, Default)  // Static initialisation
 {
   const std::string body{R"(
    <Choice varName="sel">
-        <Copy name="zero" input="a" output="res" />
-        <Copy name="one" input="b" output="res" />
-        <Copy name="two" input="c" output="res" />
+        <Copy name="zero" inputVar="a" outputVar="res" />
+        <Copy name="one" inputVar="b" outputVar="res" />
+        <Copy name="two" inputVar="c" outputVar="res" />
     </Choice>
     <Workspace>
         <Local name="res"

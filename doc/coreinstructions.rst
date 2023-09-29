@@ -339,7 +339,7 @@ test_procedure_1.xml file:
 .. code-block:: xml
 
    <Sequence name="CopyAndCheck" isRoot="True">
-       <Copy input="a" output="b"/>
+       <Copy inputVar="a" outputVar="b"/>
        <Equals name="Check" lhs="a" rhs="b"/>
    </Sequence>
    <Wait name="ShortWait" timeout="1.0"/>
@@ -410,7 +410,7 @@ This example will "Listen" on the variable "monitor" and check if it is equal to
                </Inverter>
            </Listen>
            <Sequence>
-               <Copy input="update" output="monitor"/>
+               <Copy inputVar="update" outputVar="monitor"/>
            </Sequence>
            <Inverter>
                <Wait timeout="2.0"/>
@@ -535,11 +535,11 @@ Attributes:
      - StringType
      - yes
      - Filename for the included procedure
-   * - input
+   * - inputVar
      - StringType
      - yes
      - Name of the input variable in the included procedure
-   * - output
+   * - outputVar
      - StringType
      - yes
      - Name of the output variable in the current procedure
@@ -563,11 +563,11 @@ Attributes:
      - StringType
      - yes
      - Filename for the included procedure
-   * - input
+   * - inputVar
      - StringType
      - yes
      - Name of the input variable in the current procedure
-   * - output
+   * - outputVar
      - StringType
      - yes
      - Name of the output variable in the included procedure
@@ -587,11 +587,11 @@ Attributes:
      - Attribute type
      - Mandatory
      - Description
-   * - input
+   * - inputVar
      - StringType
      - yes
      - Name of the input variable
-   * - output
+   * - outputVar
      - StringType
      - yes
      - Name of the output variable
@@ -934,20 +934,18 @@ Attributes:
 
 **Example**
 
-.. code-block:: c++
+.. code-block:: xml
 
-    const std::string body{R"(
-        <Sequence>
-            <Copy input="a" output="target"/>
-            <ResetVariable varName="target"/>
-            <Copy input="b" output="target"/>
-        </Sequence>
-        <Workspace>
-            <Local name="target"/>
-            <Local name="a" type='{"type":"uint8"}' value='1' />
-            <Local name="b" type='{"type":"string"}' value='"some name"' />
-        </Workspace>
-    )"};
+   <Sequence>
+       <Copy inputVar="a" outputVar="target"/>
+       <ResetVariable varName="target"/>
+       <Copy inputVar="b" outputVar="target"/>
+   </Sequence>
+   <Workspace>
+       <Local name="target"/>
+       <Local name="a" type='{"type":"uint8"}' value='1' />
+       <Local name="b" type='{"type":"string"}' value='"some name"' />
+   </Workspace>
 
 
 UserConfirmation

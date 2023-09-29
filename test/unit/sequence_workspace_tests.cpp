@@ -35,7 +35,7 @@ TEST(SequenceWorkspace, CopyVariable)
 {
   const std::string body{R"(
     <Sequence>
-        <Copy name="Copy workspace variables" input="var1" output="var2" />
+        <Copy name="Copy workspace variables" inputVar="var1" outputVar="var2" />
     </Sequence>
     <Workspace>
         <Local name="var1"

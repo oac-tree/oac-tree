@@ -64,7 +64,7 @@ R"RAW(
         </Inverter>
       </Listen>
       <Sequence>
-        <Copy input="update" output="monitor"/>
+        <Copy inputVar="update" outputVar="monitor"/>
       </Sequence>
       <Inverter>
         <Wait timeout="2.0"/>
@@ -111,7 +111,7 @@ R"RAW(
       <Inverter>
         <Sequence>
           <Wait timeout="0.1"/>
-          <Copy input="update" output="result"/>
+          <Copy inputVar="update" outputVar="result"/>
         </Sequence>
       </Inverter>
     </ParallelSequence>
@@ -162,14 +162,14 @@ R"RAW(
             </Fallback>
         </Listen>
         <Sequence>
-            <Copy input="one" output="monitor"/>
+            <Copy inputVar="one" outputVar="monitor"/>
         </Sequence>
         <Inverter>
             <Wait timeout="2.0" />
         </Inverter>
     </ParallelSequence>
     <Sequence name="SetVarAndFail">
-        <Copy input="one" output="result"/>
+        <Copy inputVar="one" outputVar="result"/>
         <Inverter>
             <Wait/>
         </Inverter>
@@ -206,7 +206,7 @@ R"RAW(
     <Sequence>
         <Repeat maxCount="3">
             <Sequence>
-                <Copy name="copy_zero" input="zero" output="live"/>
+                <Copy name="copy_zero" inputVar="zero" outputVar="live"/>
                 <ParallelSequence name="outer">
                     <ParallelSequence successThreshold="1" failureThreshold="1">
                         <Inverter>
@@ -222,7 +222,7 @@ R"RAW(
                     </ParallelSequence>
                     <Sequence name="Set condition to true">
                         <Wait timeout="0.1"/>
-                        <Copy name="copy_one" input="one" output="live"/>
+                        <Copy name="copy_one" inputVar="one" outputVar="live"/>
                     </Sequence>
                 </ParallelSequence>
                 <Message text="Single success"/>

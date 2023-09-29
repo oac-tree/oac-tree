@@ -36,7 +36,7 @@ const std::string kTestExternalProcedureFilename = "test_copy_from_procedure.xml
 
 const std::string kTestExternalProcedureBody{R"(
   <Sequence name="InternalCopy">
-      <Copy input="a" output="b"/>
+      <Copy inputVar="a" outputVar="b"/>
   </Sequence>
   <Workspace>
       <Local name="a" type='{"type":"uint16"}' value='0' />

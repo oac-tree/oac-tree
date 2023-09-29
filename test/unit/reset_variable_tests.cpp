@@ -44,9 +44,9 @@ TEST(ResetVariable, CopyWithReset)
 {
   const std::string body{R"(
     <Sequence>
-        <Copy input="a" output="target"/>
+        <Copy inputVar="a" outputVar="target"/>
         <ResetVariable varName="target"/>
-        <Copy input="b" output="target"/>
+        <Copy inputVar="b" outputVar="target"/>
     </Sequence>
     <Workspace>
         <Local name="target"/>
@@ -66,8 +66,8 @@ TEST(ResetVariable, CopyWithoutReset)
 {
   const std::string body{R"(
     <Sequence>
-        <Copy input="a" output="target"/>
-        <Copy input="b" output="target"/>
+        <Copy inputVar="a" outputVar="target"/>
+        <Copy inputVar="b" outputVar="target"/>
     </Sequence>
     <Workspace>
         <Local name="target"/>

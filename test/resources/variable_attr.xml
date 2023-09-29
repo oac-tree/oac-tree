@@ -6,15 +6,15 @@
     <Sequence>
         <!-- Expected datatype -->
         <Copy name="default"
-            input="input"
-            output="file"/>
+            inputVar="input"
+            outputVar="file"/>
         <Copy name="value"
-            input="value"
-            output="file.value"/>
+            inputVar="value"
+            outputVar="file.value"/>
         <!-- Should be math expression -->
         <Copy name="severity"
-            input="severity"
-            output="file.severity"/>
+            inputVar="severity"
+            outputVar="file.severity"/>
     </Sequence>
     <Workspace>
         <Local name="input"

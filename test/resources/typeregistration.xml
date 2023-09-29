@@ -6,9 +6,9 @@
     <RegisterType jsonfile="range_uint32.json"/>
     <RegisterType jsontype='{"type":"ranges_uint32","multiplicity":3,"element":{"type":"range_uint32"}}'/>
     <Sequence>
-        <Copy name="Copy range variables" input="var1" output="var2" />
-        <Copy name="Copy ranges variables" input="var3" output="var4" />
-        <Copy name="Copy ranges to file" input="var4" output="file" />
+        <Copy name="Copy range variables" inputVar="var1" outputVar="var2" />
+        <Copy name="Copy ranges variables" inputVar="var3" outputVar="var4" />
+        <Copy name="Copy ranges to file" inputVar="var4" outputVar="file" />
     </Sequence>
     <Workspace>
         <Local name="var1" type='{"type":"range_uint32"}'

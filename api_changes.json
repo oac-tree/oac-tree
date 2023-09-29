@@ -1,0 +1,10 @@
+{
+  "v3.0": {
+    "instr_attributes": {
+      "Copy": {
+        "input" : "inputVar",
+        "output" : "outputVar"
+      }
+    }
+  }
+}

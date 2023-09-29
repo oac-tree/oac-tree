@@ -4,9 +4,9 @@
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
     <Sequence>
-        <Copy input="a" output="target"/>
+        <Copy inputVar="a" outputVar="target"/>
         <ResetVariable varName="target"/>
-        <Copy input="b" output="target"/>
+        <Copy inputVar="b" outputVar="target"/>
     </Sequence>
     <Workspace>
         <Local name="target"/>

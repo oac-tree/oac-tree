@@ -6,7 +6,7 @@
     <Sequence>
         <Repeat maxCount="3">
             <Sequence>
-                <Copy name="copy_zero" input="zero" output="live"/>
+                <Copy name="copy_zero" inputVar="zero" outputVar="live"/>
                 <ParallelSequence name="outer">
                     <ParallelSequence successThreshold="1" failureThreshold="1">
                         <Inverter>
@@ -22,7 +22,7 @@
                     </ParallelSequence>
                     <Sequence name="Set condition to true">
                         <Wait timeout="0.2"/>
-                        <Copy name="copy_one" input="one" output="live"/>
+                        <Copy name="copy_one" inputVar="one" outputVar="live"/>
                     </Sequence>
                 </ParallelSequence>
                 <Message text="Single success"/>

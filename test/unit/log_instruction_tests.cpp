@@ -46,16 +46,16 @@ static const std::string LOGVARIABLEPROCEDURE = R"RAW(<?xml version="1.0" encodi
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
     <Sequence>
-        <Copy input="a" output="out"/>
+        <Copy inputVar="a" outputVar="out"/>
         <Log input="out" severity="critical"/>
         <ResetVariable varName="out"/>
-        <Copy input="b" output="out"/>
+        <Copy inputVar="b" outputVar="out"/>
         <Log input="out" severity="error"/>
         <ResetVariable varName="out"/>
-        <Copy input="c" output="out"/>
+        <Copy inputVar="c" outputVar="out"/>
         <Log input="out" severity="warning"/>
         <ResetVariable varName="out"/>
-        <Copy input="d" output="out"/>
+        <Copy inputVar="d" outputVar="out"/>
         <Log input="out" severity="notice"/>
     </Sequence>
     <Workspace>

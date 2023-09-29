@@ -73,7 +73,7 @@ const std::string ProcedureParallelBuiltinString =
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
     <ParallelSequence name="parallel" successThreshold="1" failureThreshold="3">
         <Wait name="wait" timeout="2.0"/>
-        <Copy name="copy" input="input" output="output"/>
+        <Copy name="copy" inputVar="input" outputVar="output"/>
         <Wait name="again" timeout="2.0"/>
     </ParallelSequence>
     <Workspace>

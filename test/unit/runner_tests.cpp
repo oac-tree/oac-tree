@@ -92,7 +92,7 @@ const std::string CopyVariableProcedureString =
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
     <Sequence>
-        <Copy name="Copy workspace variables" input="var1" output="var2" />
+        <Copy name="Copy workspace variables" inputVar="var1" outputVar="var2" />
     </Sequence>
     <Workspace>
         <Local name="var1"

@@ -53,9 +53,9 @@ R"RAW(
       </Listen>
     </Inverter>
     <Sequence>
-      <Copy input="one" output="inner_exit_cond"/>
+      <Copy inputVar="one" outputVar="inner_exit_cond"/>
       <Wait timeout="0.1"/>
-      <Copy input="one" output="outer_exit_cond"/>
+      <Copy inputVar="one" outputVar="outer_exit_cond"/>
     </Sequence>
   </ParallelSequence>
   <Workspace>
@@ -102,7 +102,7 @@ R"RAW(
         <Inverter>
           <Sequence>
             <Equals lhs="outer_exit_cond" rhs="one"/>
-            <Copy input="one" output="inner_exit_cond"/>
+            <Copy inputVar="one" outputVar="inner_exit_cond"/>
             <Inverter>
               <Listen varNames="inner_exit_cond">
                   <Inverter>
@@ -115,7 +115,7 @@ R"RAW(
       </Listen>
     </Inverter>
     <Sequence>
-      <Copy input="one" output="outer_exit_cond"/>
+      <Copy inputVar="one" outputVar="outer_exit_cond"/>
     </Sequence>
   </ParallelSequence>
   <Workspace>
@@ -167,7 +167,7 @@ R"RAW(
         <Inverter>
           <Sequence>
             <Equals lhs="exit_cond" rhs="one"/>
-            <Copy input="zero" output="exit_cond"/>
+            <Copy inputVar="zero" outputVar="exit_cond"/>
             <Inverter>
               <Listen varNames="exit_cond">
                 <Sequence>
@@ -182,7 +182,7 @@ R"RAW(
       </Listen>
     </Inverter>
     <Sequence>
-      <Copy input="one" output="exit_cond"/>
+      <Copy inputVar="one" outputVar="exit_cond"/>
     </Sequence>
   </ParallelSequence>
   <Workspace>
@@ -243,13 +243,13 @@ R"RAW(
       </Inverter>
       <Sequence>
         <Wait timeout="0.2"/>
-        <Copy input="one" output="listen_stuck_monitor"/>
+        <Copy inputVar="one" outputVar="listen_stuck_monitor"/>
       </Sequence>
     </ParallelSequence>
     <Sequence>
-      <Copy input="one" output="exit_cond"/>
+      <Copy inputVar="one" outputVar="exit_cond"/>
       <Wait timeout="0.1"/>
-      <Copy input="zero" output="exit_cond"/>
+      <Copy inputVar="zero" outputVar="exit_cond"/>
     </Sequence>
   </ParallelSequence>
   <Workspace>

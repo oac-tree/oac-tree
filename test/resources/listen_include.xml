@@ -18,14 +18,14 @@
         </Listen>
         <Sequence>
             <Wait timeout="0.2" />
-            <Copy input="one" output="monitor"/>
+            <Copy inputVar="one" outputVar="monitor"/>
         </Sequence>
         <Inverter>
             <Wait timeout="2.0" />
         </Inverter>
     </ParallelSequence>
     <Sequence name="SetVarAndFail">
-        <Copy input="one" output="result"/>
+        <Copy inputVar="one" outputVar="result"/>
         <Inverter>
             <Wait/>
         </Inverter>

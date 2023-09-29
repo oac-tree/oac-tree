@@ -45,7 +45,7 @@ In the example, two local variables are defined, and variable "a" is copied to v
 .. code-block:: xml
 
     <Sequence>
-        <Copy name="copy" input="a" output="b"/>
+        <Copy name="copy" inputVar="a" outputVar="b"/>
     </Sequence>
     <Workspace>
         <Local name="a" type='{"type":"uint8"}' value='1' />
@@ -89,7 +89,7 @@ In the example, the variable "input" is copied to the variable "file", that writ
 .. code-block:: xml
 
     <Sequence>
-        <Copy name="copy" input="input" output="file"/>
+        <Copy name="copy" inputVar="input" outputVar="file"/>
     </Sequence>
     <Workspace>
         <Local name="input"

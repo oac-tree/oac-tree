@@ -34,8 +34,8 @@ const std::string RegisterTypeProcedureString{R"(
     <RegisterType jsontype='{"type":"range_uint32","attributes":[{"min":{"type":"uint32"}},{"max":{"type":"uint32"}}]}'/>
     <RegisterType jsontype='{"type":"ranges_uint32","multiplicity":3,"element":{"type":"range_uint32"}}'/>
     <Sequence>
-        <Copy name="Copy range variables" input="var1" output="var2" />
-        <Copy name="Copy ranges variables" input="var3" output="var4" />
+        <Copy name="Copy range variables" inputVar="var1" outputVar="var2" />
+        <Copy name="Copy ranges variables" inputVar="var3" outputVar="var4" />
     </Sequence>
     <Workspace>
         <Local name="var1" type='{"type":"range_uint32"}'
@@ -55,8 +55,8 @@ const std::string RegisterTypeFromFileProcedureString = {R"(
     <RegisterType jsonfile="range_uint16.json"/>
     <RegisterType jsontype='{"type":"ranges_uint16","multiplicity":3,"element":{"type":"range_uint16"}}'/>
     <Sequence>
-        <Copy name="Copy range variables" input="var1" output="var2" />
-        <Copy name="Copy ranges variables" input="var3" output="var4" />
+        <Copy name="Copy range variables" inputVar="var1" outputVar="var2" />
+        <Copy name="Copy ranges variables" inputVar="var3" outputVar="var4" />
     </Sequence>
     <Workspace>
         <Local name="var1" type='{"type":"range_uint16"}'

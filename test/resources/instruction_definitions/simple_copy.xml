@@ -5,7 +5,7 @@
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
     <Sequence name="CopyToOut" >
         <Output from="in" description="Input of external procedure"/>
-        <Copy input="in" output="out"/>
+        <Copy inputVar="in" outputVar="out"/>
     </Sequence>
     <Workspace>
         <Local name="in" type='{"type":"uint64"}' value='0' />

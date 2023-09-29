@@ -149,7 +149,7 @@ TEST_F(IncludeProcedureTest, TwoLevelInclude)
   ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
-TEST_F(IncludeProcedureTest, VariableAttributes)
+TEST_F(IncludeProcedureTest,PlaceholderAttributes)
 {
   const std::string body{R"(
     <IncludeProcedure file="test_procedure_2.xml" path="IncludeWait" timeout="0" />

@@ -58,7 +58,7 @@ std::unique_ptr<Instruction> CloneInstruction(const Instruction* instruction);
  *
  * @return true on successful initialisation of variable attributes.
  */
-bool InitialiseVariableAttributes(Instruction& instruction,
+bool InitialisePlaceholderAttributes(Instruction& instruction,
                                   const StringAttributeList& source_attributes);
 
 /**
@@ -69,7 +69,7 @@ bool InitialiseVariableAttributes(Instruction& instruction,
  *
  * @return true on successful initialisation of variable attributes.
  */
-bool InitialiseVariableAttributes(AttributeHandler& attribute_handler,
+bool InitialisePlaceholderAttributes(AttributeHandler& attribute_handler,
                                   const StringAttributeList& source_attributes);
 
 /**

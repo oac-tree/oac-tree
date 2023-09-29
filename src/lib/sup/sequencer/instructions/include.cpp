@@ -64,7 +64,7 @@ void Include::SetupImpl(const Procedure& proc)
       "instruction not found, path: [" + path + "]";
     throw InstructionSetupException(error_message);
   }
-  if (!InstructionHelper::InitialiseVariableAttributes(*clone, GetStringAttributes()))
+  if (!InstructionHelper::InitialisePlaceholderAttributes(*clone, GetStringAttributes()))
   {
     std::string error_message = InstructionSetupExceptionProlog(*this) +
       "could not initialise variable attributes for child instruction(s)";

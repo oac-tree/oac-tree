@@ -193,7 +193,7 @@ public:
    * @param source_attributes List containing variable name - value pairs.
    * @return true when all variable attributes were correctly initialised.
    */
-  bool InitialiseVariableAttributes(const StringAttributeList& source_attributes);
+  bool InitialisePlaceholderAttributes(const StringAttributeList& source_attributes);
 
   /**
    * @brief Get attribute value with given name and type.

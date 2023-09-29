@@ -90,18 +90,18 @@ std::unique_ptr<Instruction> CloneInstruction(const Instruction* instruction)
   return std::move(result);
 }
 
-bool InitialiseVariableAttributes(Instruction& instruction,
+bool InitialisePlaceholderAttributes(Instruction& instruction,
                                   const StringAttributeList& source_attributes)
 {
-  bool result = instruction.InitialiseVariableAttributes(source_attributes);
+  bool result = instruction.InitialisePlaceholderAttributes(source_attributes);
   for (auto child : instruction.ChildInstructions())
   {
-    result = InitialiseVariableAttributes(*child, source_attributes) && result;
+    result = InitialisePlaceholderAttributes(*child, source_attributes) && result;
   }
   return result;
 }
 
-bool InitialiseVariableAttributes(AttributeHandler& attribute_handler,
+bool InitialisePlaceholderAttributes(AttributeHandler& attribute_handler,
                                   const StringAttributeList& source_attributes)
 {
   bool result = true;

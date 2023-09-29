@@ -164,10 +164,10 @@ bool Instruction::AddAttributes(const StringAttributeList& attributes)
   return result;
 }
 
-bool Instruction::InitialiseVariableAttributes(const StringAttributeList& source_attributes)
+bool Instruction::InitialisePlaceholderAttributes(const StringAttributeList& source_attributes)
 {
   bool status =
-    InstructionHelper::InitialiseVariableAttributes(m_attribute_handler, source_attributes) &&
+    InstructionHelper::InitialisePlaceholderAttributes(m_attribute_handler, source_attributes) &&
     PostInitialiseVariables(source_attributes);
   return status;
 }

@@ -26,7 +26,7 @@
     <artifactId>sequencer</artifactId>
     <packaging>codac</packaging>
     <!-- See ChangeLog file for details -->
-    <version>2.1.0</version>
+    <version>3.0.0</version>
     <name>SUP sequencer module</name>
     <description>The engine for the Sequencer. Provides execution and (de)serialization of procedures.</description>
     <url>http://www.iter.org/</url>

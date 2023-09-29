@@ -1016,7 +1016,7 @@ Attributes:
      - Description
    * - timeout
      - Float64Type
-     - yes
+     - no
      - Maximum time to wait
 
 * An example for this instruction is already present in :ref:`ParallelSequence example <par_exp>`.

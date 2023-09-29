@@ -50,18 +50,9 @@ Wait::~Wait() = default;
 
 ExecutionStatus Wait::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  sup::dto::float64 timeout_sec = 0.0;
-  if (HasAttribute(TIMEOUT_ATTR_NAME) &&
-      !GetVariableAttributeAs(TIMEOUT_ATTR_NAME, ws, ui, timeout_sec))
-  {
-    return ExecutionStatus::FAILURE;
-  }
   sup::dto::int64 timeout_ns;
-  if (!instruction_utils::ConvertToTimeoutNanoseconds(timeout_sec, timeout_ns))
+  if (!GetTimeout(ui, ws, timeout_ns))
   {
-    const std::string warning_message = InstructionWarningProlog(*this) + "could not retrieve " +
-      "timeout value within limits: " + std::to_string(timeout_sec);
-    ui.LogWarning(warning_message);
     return ExecutionStatus::FAILURE;
   }
   auto finish = utils::GetNanosecsSinceEpoch() + timeout_ns;
@@ -75,6 +66,25 @@ ExecutionStatus Wait::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   }
   return ExecutionStatus::SUCCESS;
 }
+
+bool Wait::GetTimeout(UserInterface& ui, Workspace& ws, sup::dto::int64& timeout_ns) const
+{
+  sup::dto::float64 timeout_sec = 0.0;
+  if (HasAttribute(TIMEOUT_ATTR_NAME) &&
+      !GetVariableAttributeAs(TIMEOUT_ATTR_NAME, ws, ui, timeout_sec))
+  {
+    return false;
+  }
+  if (!instruction_utils::ConvertToTimeoutNanoseconds(timeout_sec, timeout_ns))
+  {
+    const std::string warning_message = InstructionWarningProlog(*this) + "could not retrieve " +
+      "timeout value within limits: " + std::to_string(timeout_sec);
+    ui.LogWarning(warning_message);
+    return false;
+  }
+  return true;
+}
+
 
 }  // namespace sequencer
 

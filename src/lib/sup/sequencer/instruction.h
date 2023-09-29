@@ -202,12 +202,54 @@ public:
    * @return Attribute value of requested type.
    *
    * @throws RuntimeException when attribute with given name was not found or its value could not
-   * be converted to the requested type.
+   * be converted to the requested type. With proper attribute definitions in place, this will not
+   * happen as an exception would already be thrown during Instruction::Setup().
    */
   template <typename T>
   T GetAttributeValue(const std::string& attr_name) const
   {
     return m_attribute_handler.GetValueAs<T>(attr_name);
+  }
+
+  /**
+   * @brief Get an AnyValue representation of an attribute. If the attribute string value starts
+   * with '@', it will fetch the value from the workspace with the variable name following that
+   * character.
+   *
+   * @param attr_name Attribute name.
+   * @param ws Workspace to use when the value needs to be fetched.
+   * @param ui UserInterface to use for logging errors or warnings.
+   * @param value Output value when successful.
+   *
+   * @return True on success.
+   * @throws RuntimeException if the attribute with the given name is not present.
+   */
+  bool GetVariableAttributeAnyValue(const std::string& attr_name, const Workspace& ws,
+                                    UserInterface& ui, sup::dto::AnyValue& value) const;
+
+  /**
+   * @brief Get a representation of type T of an attribute. If the attribute string value starts
+   * with '@', it will fetch the value from the workspace with the variable name following that
+   * character.
+   *
+   * @param attr_name Attribute name.
+   * @param ws Workspace to use when the value needs to be fetched.
+   * @param ui UserInterface to use for logging errors or warnings.
+   * @param val Output value when successful.
+   *
+   * @return True on success.
+   * @throws RuntimeException if the attribute with the given name is not present.
+   */
+  template <typename T>
+  bool GetVariableAttributeAs(const std::string& attr_name, const Workspace& ws,
+                              UserInterface& ui, T& val) const
+  {
+    sup::dto::AnyValue temp;
+    if (!GetVariableAttributeAnyValue(attr_name, ws, ui, temp))
+    {
+      return false;
+    }
+    return temp.As(val);
   }
 
   /**
@@ -275,47 +317,6 @@ protected:
    */
   AttributeDefinition& AddAttributeDefinition(const std::string& attr_name,
                                               const sup::dto::AnyType& value_type);
-
-  /**
-   * @brief Get an AnyValue representation of an attribute. If the attribute string value starts
-   * with '@', it will fetch the value from the workspace with the variable name following that
-   * character.
-   *
-   * @param attr_name Attribute name.
-   * @param ws Workspace to use when the value needs to be fetched.
-   * @param ui UserInterface to use for logging errors or warnings.
-   * @param value Output value when successful.
-   *
-   * @return True on success.
-   * @throws RuntimeException if the attribute with the given name is not present.
-   */
-  bool GetVariableAttributeAnyValue(const std::string& attr_name, const Workspace& ws,
-                                    UserInterface& ui, sup::dto::AnyValue& value) const;
-
-  /**
-   * @brief Get a representation of type T of an attribute. If the attribute string value starts
-   * with '@', it will fetch the value from the workspace with the variable name following that
-   * character.
-   *
-   * @param attr_name Attribute name.
-   * @param ws Workspace to use when the value needs to be fetched.
-   * @param ui UserInterface to use for logging errors or warnings.
-   * @param val Output value when successful.
-   *
-   * @return True on success.
-   * @throws RuntimeException if the attribute with the given name is not present.
-   */
-  template <typename T>
-  bool GetVariableAttributeAs(const std::string& attr_name, const Workspace& ws,
-                              UserInterface& ui, T& val) const
-  {
-    sup::dto::AnyValue temp;
-    if (!GetVariableAttributeAnyValue(attr_name, ws, ui, temp))
-    {
-      return false;
-    }
-    return temp.As(val);
-  }
 
   /**
    * @brief Add an attribute constraint.

@@ -45,8 +45,6 @@ public:
 
 private:
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
-
-  bool GetTimeout(UserInterface& ui, Workspace& ws, sup::dto::int64& timeout_ns) const;
 };
 
 }  // namespace sequencer

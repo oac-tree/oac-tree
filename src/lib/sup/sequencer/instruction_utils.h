@@ -22,6 +22,8 @@
 #ifndef SUP_SEQUENCER_INSTRUCTION_UTILS_H_
 #define SUP_SEQUENCER_INSTRUCTION_UTILS_H_
 
+#include <sup/sequencer/instruction.h>
+
 #include <sup/dto/basic_scalar_types.h>
 
 #include <string>
@@ -31,50 +33,63 @@ namespace sup
 {
 namespace sequencer
 {
-class Instruction;
-
 namespace instruction_utils
 {
 
 const double kMaxTimeoutSeconds = 9.2e9; // More than 290 years. This should be enough...
 
-  /**
-   * @brief Convert a floating point timeout in seconds to integer nanoseconds. Also checks for
-   * limits (positive and smaller that kMaxTimeoutSeconds)
-   *
-   * @param timeout_sec Timeout in seconds.
-   * @param timeout_ns Output timeout in nanoseconds.
-   *
-   * @return True on success, false otherwise.
-   */
+/**
+ * @brief Convert a floating point timeout in seconds to integer nanoseconds. Also checks for
+ * limits (positive and smaller that kMaxTimeoutSeconds)
+ *
+ * @param timeout_sec Timeout in seconds.
+ * @param timeout_ns Output timeout in nanoseconds.
+ *
+ * @return True on success, false otherwise.
+ */
 bool ConvertToTimeoutNanoseconds(sup::dto::float64 timeout_sec, sup::dto::int64& timeout_ns);
 
-  /**
-   * @brief Get timeout attribute from an instruction and convert it from a floating point value
-   * in seconds to an 64bit integer in nanoseconds.
-   *
-   * @param instr Instruction that holds the attribute.
-   * @param attr_name Name of attribute that holds the timeout in seconds.
-   *
-   * @return Timeout in nanoseconds.
-   *
-   * @throws InstructionSetupException when the attribute is not present or its value is negative
-   * or larger than the maximum (kMaxTimeoutSeconds).
-   */
+/**
+ * @brief Retrieve a timeout in nanoseconds from a variable attribute that encodes a floating point
+ * timeout in seconds.
+ *
+ * @param instr Instruction to query.
+ * @param ui UserInterface to use for logging warnings/errors.
+ * @param ws Workspace to use if value needs to be fetched from a variable.
+ * @param attr_name Attribute name.
+ * @param timeout_ns Output timeout in nanoseconds.
+ *
+ * @return True on success, false otherwise.
+ */
+bool GetVariableTimeoutAttribute(const Instruction& instr, UserInterface& ui, Workspace& ws,
+                                 const std::string& attr_name, sup::dto::int64& timeout_ns);
+
+/**
+ * @brief Get timeout attribute from an instruction and convert it from a floating point value
+ * in seconds to an 64bit integer in nanoseconds.
+ *
+ * @param instr Instruction that holds the attribute.
+ * @param attr_name Name of attribute that holds the timeout in seconds.
+ *
+ * @return Timeout in nanoseconds.
+ *
+ * @throws InstructionSetupException when the attribute is not present or its value is negative
+ * or larger than the maximum (kMaxTimeoutSeconds).
+ */
 sup::dto::int64 GetTimeoutFromAttribute(const Instruction& instr, const std::string& attr_name);
 
-  /**
-   * @brief Get a list of variable names from an instruction attribute.
-   *
-   * @param instr Instruction that holds the attribute.
-   * @param attr_name Name of attribute that holds a list of variable names.
-   *
-   * @return List of variable names.
-   *
-   * @throws InstructionSetupException when the attribute is not present.
-   *
-   * @note Variable names should be separated by VARNAME_DELIMITER, defined in constants.h.
-   */
+/**
+ * @brief Get a list of variable names from an instruction attribute.
+ *
+ * @param instr Instruction that holds the attribute.
+ * @param attr_name Name of attribute that holds a list of variable names.
+ *
+ * @return List of variable names.
+ *
+ * @throws InstructionSetupException when the attribute is not present.
+ *
+ * @note Variable names should be separated by VARNAME_DELIMITER, defined in constants.h.
+ */
 std::vector<std::string> VariableNamesFromAttribute(const Instruction& instr,
                                                     const std::string& attr_name);
 

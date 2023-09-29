@@ -23,6 +23,7 @@
 
 #include <sup/sequencer/constants.h>
 #include <sup/sequencer/instruction.h>
+#include <sup/sequencer/user_interface.h>
 
 #include <cmath>
 
@@ -40,6 +41,25 @@ bool ConvertToTimeoutNanoseconds(sup::dto::float64 timeout_sec, sup::dto::int64&
     return false;
   }
   timeout_ns = std::lround(timeout_sec * 1e9);
+  return true;
+}
+
+bool GetVariableTimeoutAttribute(const Instruction& instr, UserInterface& ui, Workspace& ws,
+                                 const std::string& attr_name, sup::dto::int64& timeout_ns)
+{
+  sup::dto::float64 timeout_sec = 0.0;
+  if (instr.HasAttribute(attr_name) &&
+      !instr.GetVariableAttributeAs(attr_name, ws, ui, timeout_sec))
+  {
+    return false;
+  }
+  if (!instruction_utils::ConvertToTimeoutNanoseconds(timeout_sec, timeout_ns))
+  {
+    const std::string warning_message = InstructionWarningProlog(instr) + "could not retrieve " +
+      "timeout value within limits: " + std::to_string(timeout_sec);
+    ui.LogWarning(warning_message);
+    return false;
+  }
   return true;
 }
 

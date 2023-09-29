@@ -9,7 +9,7 @@
                 <Copy inputVar="monitor" outputVar="result" />
                 <Output from="monitor" description="Updated monitor" />
                 <Inverter>
-                    <Equals lhs="monitor" rhs="update" />
+                    <Equals leftVar="monitor" rightVar="update" />
                 </Inverter>
             </Sequence>
         </Listen>

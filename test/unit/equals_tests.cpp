@@ -36,16 +36,16 @@ TEST(Equals, Setup)
   auto instr = GlobalInstructionRegistry().Create("Equals");
   EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
 
-  EXPECT_TRUE(instr->AddAttribute("lhs", "left_var"));
+  EXPECT_TRUE(instr->AddAttribute("leftVar", "left_var"));
   EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
-  EXPECT_TRUE(instr->AddAttribute("rhs", "right_var"));
+  EXPECT_TRUE(instr->AddAttribute("rightVar", "right_var"));
   EXPECT_NO_THROW(instr->Setup(proc));
 }
 
 TEST(Equals, Equals_success)
 {
   const std::string body{R"(
-    <Equals lhs="a" rhs="b"/>
+    <Equals leftVar="a" rightVar="b"/>
     <Workspace>
         <Local name="a" type='{"type":"uint8"}' value='1' />
         <Local name="b" type='{"type":"uint8"}' value='1' />
@@ -62,7 +62,7 @@ TEST(Equals, Equals_success)
 TEST(Equals, Equals_failure)
 {
   const std::string body{R"(
-    <Equals lhs="a" rhs="b"/>
+    <Equals leftVar="a" rightVar="b"/>
     <Workspace>
         <Local name="a" type='{"type":"uint8"}' value='1' />
         <Local name="b" type='{"type":"uint8"}' value='3' />

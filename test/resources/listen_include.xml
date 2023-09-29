@@ -7,12 +7,12 @@
         <ForceSuccess>
             <Include name="Test Setup of Listen child" path="TestSetupListen"/>
         </ForceSuccess>
-        <Equals lhs="result" rhs="one"/>
+        <Equals leftVar="result" rightVar="one"/>
     </Sequence>
     <ParallelSequence name="TestSetupListen">
         <Listen varNames="monitor">
             <Fallback>
-                <Equals lhs="monitor" rhs="zero" />
+                <Equals leftVar="monitor" rightVar="zero" />
                 <Include name="Set variable and fail" path="SetVarAndFail"/>
             </Fallback>
         </Listen>

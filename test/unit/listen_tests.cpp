@@ -60,7 +60,7 @@ R"RAW(
     <ParallelSequence>
       <Listen varNames="monitor">
         <Inverter>
-          <Equals lhs="monitor" rhs="update"/>
+          <Equals leftVar="monitor" rightVar="update"/>
         </Inverter>
       </Listen>
       <Sequence>
@@ -70,7 +70,7 @@ R"RAW(
         <Wait timeout="2.0"/>
       </Inverter>
     </ParallelSequence>
-    <Equals lhs="monitor" rhs="update"/>
+    <Equals leftVar="monitor" rightVar="update"/>
   </Fallback>
   <Workspace>
     <Local name="monitor"
@@ -106,7 +106,7 @@ R"RAW(
   <Fallback>
     <ParallelSequence>
       <Listen varNames="result" forceSuccess="On">
-          <Equals lhs="result" rhs="update"/>
+          <Equals leftVar="result" rightVar="update"/>
       </Listen>
       <Inverter>
         <Sequence>
@@ -115,7 +115,7 @@ R"RAW(
         </Sequence>
       </Inverter>
     </ParallelSequence>
-    <Equals lhs="result" rhs="update"/>
+    <Equals leftVar="result" rightVar="update"/>
   </Fallback>
   <Workspace>
     <Local name="update"
@@ -152,12 +152,12 @@ R"RAW(
         <ForceSuccess>
             <Include name="Test Setup of Listen child" path="TestSetupListen"/>
         </ForceSuccess>
-        <Equals lhs="result" rhs="one"/>
+        <Equals leftVar="result" rightVar="one"/>
     </Sequence>
     <ParallelSequence name="TestSetupListen">
         <Listen varNames="monitor">
             <Fallback>
-                <Equals lhs="monitor" rhs="zero" />
+                <Equals leftVar="monitor" rightVar="zero" />
                 <Include name="Set variable and fail" path="SetVarAndFail"/>
             </Fallback>
         </Listen>
@@ -215,7 +215,7 @@ R"RAW(
                         <Inverter>
                             <Listen varNames="live">
                                 <Inverter>
-                                    <Equals lhs="live" rhs="one"/>
+                                    <Equals leftVar="live" rightVar="one"/>
                                 </Inverter>
                             </Listen>
                         </Inverter>

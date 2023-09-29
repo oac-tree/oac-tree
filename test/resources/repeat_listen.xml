@@ -15,7 +15,7 @@
                         <Inverter>
                             <Listen varNames="live">
                                 <Inverter>
-                                    <Equals lhs="live" rhs="one"/>
+                                    <Equals leftVar="live" rightVar="one"/>
                                 </Inverter>
                             </Listen>
                         </Inverter>

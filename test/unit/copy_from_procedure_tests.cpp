@@ -126,12 +126,12 @@ TEST_F(CopyFromProcedureTest, SuccessBothWays)
   const std::string body{R"(
     <Sequence>
         <Inverter>
-            <Equals lhs="result" rhs="c"/>
+            <Equals leftVar="result" rightVar="c"/>
         </Inverter>
         <CopyToProcedure file="test_copy_from_procedure.xml" inputVar="c" outputVar="a"/>
         <IncludeProcedure file="test_copy_from_procedure.xml" path="InternalCopy"/>
         <CopyFromProcedure file="test_copy_from_procedure.xml" inputVar="b" outputVar="result"/>
-        <Equals lhs="result" rhs="c"/>
+        <Equals leftVar="result" rightVar="c"/>
     </Sequence>
     <Workspace>
         <Local name="c" type='{"type":"uint16"}' value='2' />

@@ -37,7 +37,7 @@ const std::string kTestProcedureFileName_1 = "test_procedure_1.xml";
 const std::string kTestProcedureBody_1{R"(
   <Sequence name="CopyAndCheck" isRoot="True">
       <Copy inputVar="a" outputVar="b"/>
-      <Equals name="Check" lhs="a" rhs="b"/>
+      <Equals name="Check" leftVar="a" rightVar="b"/>
   </Sequence>
   <Wait name="ParameterizedWait" timeout="$timeout"/>
   <Inverter name="AlwaysFails">

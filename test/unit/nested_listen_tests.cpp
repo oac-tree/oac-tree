@@ -40,11 +40,11 @@ R"RAW(
       <Listen varNames="outer_exit_cond">
         <Inverter>
           <Sequence>
-            <Equals lhs="outer_exit_cond" rhs="one"/>
+            <Equals leftVar="outer_exit_cond" rightVar="one"/>
             <Inverter>
               <Listen varNames="inner_exit_cond">
                   <Inverter>
-                    <Equals lhs="inner_exit_cond" rhs="one"/>
+                    <Equals leftVar="inner_exit_cond" rightVar="one"/>
                   </Inverter>
               </Listen>
             </Inverter>
@@ -101,12 +101,12 @@ R"RAW(
       <Listen varNames="outer_exit_cond">
         <Inverter>
           <Sequence>
-            <Equals lhs="outer_exit_cond" rhs="one"/>
+            <Equals leftVar="outer_exit_cond" rightVar="one"/>
             <Copy inputVar="one" outputVar="inner_exit_cond"/>
             <Inverter>
               <Listen varNames="inner_exit_cond">
                   <Inverter>
-                    <Equals lhs="inner_exit_cond" rhs="one"/>
+                    <Equals leftVar="inner_exit_cond" rightVar="one"/>
                   </Inverter>
               </Listen>
             </Inverter>
@@ -166,13 +166,13 @@ R"RAW(
       <Listen varNames="exit_cond">
         <Inverter>
           <Sequence>
-            <Equals lhs="exit_cond" rhs="one"/>
+            <Equals leftVar="exit_cond" rightVar="one"/>
             <Copy inputVar="zero" outputVar="exit_cond"/>
             <Inverter>
               <Listen varNames="exit_cond">
                 <Sequence>
                   <Inverter>
-                    <Equals lhs="exit_cond" rhs="zero"/>
+                    <Equals leftVar="exit_cond" rightVar="zero"/>
                   </Inverter>
                 </Sequence>
               </Listen>
@@ -229,11 +229,11 @@ R"RAW(
         <Listen varNames="exit_cond">
           <Inverter>
             <Sequence>
-              <Equals lhs="exit_cond" rhs="zero"/>
+              <Equals leftVar="exit_cond" rightVar="zero"/>
               <Inverter>
                 <Listen varNames="exit_cond">
                   <Inverter>
-                    <Equals lhs="exit_cond" rhs="one"/>
+                    <Equals leftVar="exit_cond" rightVar="one"/>
                   </Inverter>
                 </Listen>
               </Inverter>

@@ -340,7 +340,7 @@ test_procedure_1.xml file:
 
    <Sequence name="CopyAndCheck" isRoot="True">
        <Copy inputVar="a" outputVar="b"/>
-       <Equals name="Check" lhs="a" rhs="b"/>
+       <Equals name="Check" leftVar="a" rightVar="b"/>
    </Sequence>
    <Wait name="ShortWait" timeout="1.0"/>
    <Inverter name="AlwaysFails">
@@ -406,7 +406,7 @@ This example will "Listen" on the variable "monitor" and check if it is equal to
        <ParallelSequence>
            <Listen varNames="monitor">
                <Inverter>
-                   <Equals lhs="monitor" rhs="update"/>
+                   <Equals leftVar="monitor" rightVar="update"/>
                </Inverter>
            </Listen>
            <Sequence>
@@ -416,7 +416,7 @@ This example will "Listen" on the variable "monitor" and check if it is equal to
                <Wait timeout="2.0"/>
            </Inverter>
        </ParallelSequence>
-       <Equals lhs="monitor" rhs="update"/>
+       <Equals leftVar="monitor" rightVar="update"/>
    </Fallback>
    <Workspace>
        <Local name="monitor"

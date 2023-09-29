@@ -4,6 +4,10 @@
       "Copy": {
         "input" : "inputVar",
         "output" : "outputVar"
+      },
+      "Equals": {
+        "lhs" : "leftVar",
+        "rhs" : "rightVar"
       }
     }
   }

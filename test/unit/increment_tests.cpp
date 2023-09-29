@@ -46,7 +46,7 @@ TEST(Increment, IncrementSuccess)
     R"(
     <Sequence>
         <Increment varName="a"/>
-        <Equals lhs="a" rhs="b"/>
+        <Equals leftVar="a" rightVar="b"/>
     </Sequence>
     <Workspace>
         <Local name="a" type='{"type":"uint8"}' value='1' />
@@ -67,7 +67,7 @@ TEST(Increment, IncrementFailure)
     R"(
     <Sequence>
         <Increment varName="a"/>
-        <Equals lhs="a" rhs="b"/>
+        <Equals leftVar="a" rightVar="b"/>
     </Sequence>
     <Workspace>
         <Local name="a" type='{"type":"uint8"}' value='1' />
@@ -88,7 +88,7 @@ TEST(Increment, IncrementFloatSuccess)
     R"(
     <Sequence>
         <Increment varName="a"/>
-        <Equals lhs="a" rhs="b"/>
+        <Equals leftVar="a" rightVar="b"/>
     </Sequence>
     <Workspace>
         <Local name="a" type='{"type":"float32"}' value='4' />

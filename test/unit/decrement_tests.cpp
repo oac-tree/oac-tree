@@ -46,7 +46,7 @@ TEST(Decrement, DecrementSuccess)
     R"(
     <Sequence>
         <Decrement varName="a"/>
-        <Equals lhs="a" rhs="b"/>
+        <Equals leftVar="a" rightVar="b"/>
     </Sequence>
     <Workspace>
         <Local name="a" type='{"type":"int8"}' value='5' />
@@ -67,7 +67,7 @@ TEST(Decrement, DecrementFailure)
     R"(
     <Sequence>
         <Decrement varName="a"/>
-        <Equals lhs="a" rhs="b"/>
+        <Equals leftVar="a" rightVar="b"/>
     </Sequence>
     <Workspace>
         <Local name="a" type='{"type":"int8"}' value='1' />
@@ -88,7 +88,7 @@ TEST(Decrement, DecrementFloatSuccess)
     R"(
     <Sequence>
         <Decrement varName="a"/>
-        <Equals lhs="a" rhs="b"/>
+        <Equals leftVar="a" rightVar="b"/>
     </Sequence>
     <Workspace>
         <Local name="a" type='{"type":"float32"}' value='5' />

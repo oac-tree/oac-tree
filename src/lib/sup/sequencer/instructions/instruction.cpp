@@ -225,9 +225,18 @@ bool Instruction::GetVariableAttributeAnyValue(const std::string& attr_name, con
   if (!InstructionHelper::AttributeStartsWith(attr_str, DefaultSettings::WORKSPACE_ATTRIBUTE_CHAR))
   {
     sup::dto::AnyValue temp = m_attribute_handler.GetValue(attr_name);
+    if (!sup::dto::TryAssign(value, temp))
+    {
+      const std::string error = InstructionErrorProlog(*this) +
+        "could not assign retrieved value of attribute [" + attr_name +
+        "] to passed output parameter";
+      ui.LogError(error);
+      return false;
+    }
   }
   sup::dto::AnyValue ws_val;
-  if (!GetValueFromVariableName(*this, ws, ui, attr_str.substr(1u), ws_val))
+  const auto var_name = attr_str.substr(1u);
+  if (!GetValueFromVariableName(*this, ws, ui, var_name, ws_val))
   {
     return false;
   }
@@ -235,7 +244,7 @@ bool Instruction::GetVariableAttributeAnyValue(const std::string& attr_name, con
   if (!converted.second.empty())
   {
     const std::string error = InstructionErrorProlog(*this) +
-      "failed to create appropriate AnyValue from variable [" + attr_name +
+      "failed to create appropriate AnyValue from variable [" + var_name +
       "] because of constraint:\n" + converted.second;
     ui.LogError(error);
     return false;
@@ -243,7 +252,7 @@ bool Instruction::GetVariableAttributeAnyValue(const std::string& attr_name, con
   if (!sup::dto::TryAssign(value, converted.first))
   {
     const std::string error = InstructionErrorProlog(*this) +
-      "could not assign retrieved variable value with name [" + attr_name +
+      "could not assign retrieved variable value with name [" + var_name +
       "] to passed output parameter";
     ui.LogError(error);
     return false;

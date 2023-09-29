@@ -291,6 +291,32 @@ protected:
    */
   bool GetVariableAttributeAnyValue(const std::string& attr_name, const Workspace& ws,
                                     UserInterface& ui, sup::dto::AnyValue& value) const;
+
+  /**
+   * @brief Get a representation of type T of an attribute. If the attribute string value starts
+   * with '@', it will fetch the value from the workspace with the variable name following that
+   * character.
+   *
+   * @param attr_name Attribute name.
+   * @param ws Workspace to use when the value needs to be fetched.
+   * @param ui UserInterface to use for logging errors or warnings.
+   * @param val Output value when successful.
+   *
+   * @return True on success.
+   * @throws RuntimeException if the attribute with the given name is not present.
+   */
+  template <typename T>
+  bool GetVariableAttributeAs(const std::string& attr_name, const Workspace& ws,
+                              UserInterface& ui, T& val) const
+  {
+    sup::dto::AnyValue temp;
+    if (!GetVariableAttributeAnyValue(attr_name, ws, ui, temp))
+    {
+      return false;
+    }
+    return temp.As(val);
+  }
+
   /**
    * @brief Add an attribute constraint.
    *

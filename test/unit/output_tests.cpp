@@ -58,7 +58,7 @@ TEST_F(OutputTest, Setup)
   auto instr = GlobalInstructionRegistry().Create("Output");
   EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
 
-  EXPECT_TRUE(instr->AddAttribute("from", "var"));
+  EXPECT_TRUE(instr->AddAttribute("fromVar", "var"));
   EXPECT_NO_THROW(instr->Setup(proc));
 }
 
@@ -69,7 +69,7 @@ TEST_F(OutputTest, PutInteger)
   static const std::string procedure_body{
       R"RAW(
   <Sequence>
-    <Output from="var1"/>
+    <Output fromVar="var1"/>
   </Sequence>
   <Workspace>
     <Local name="var1" type='{"type":"uint32"}' value='42' />

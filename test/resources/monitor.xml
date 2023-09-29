@@ -6,7 +6,7 @@
     <RegisterType jsonfile="pcs_config_t.json"/>
     <Sequence isRoot="True">
         <Wait timeout="1.0"/>
-        <Output from="pps-config" description="PCS configuration: " />
+        <Output fromVar="pps-config" description="PCS configuration: " />
     </Sequence>
     <Workspace>
         <Local name="pps-config" type='{"type":"pcs_config_t"}'/>

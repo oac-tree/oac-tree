@@ -4,7 +4,7 @@
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
     <Sequence name="CopyToOut" >
-        <Output from="in" description="Input of external procedure"/>
+        <Output fromVar="in" description="Input of external procedure"/>
         <Copy inputVar="in" outputVar="out"/>
     </Sequence>
     <Workspace>

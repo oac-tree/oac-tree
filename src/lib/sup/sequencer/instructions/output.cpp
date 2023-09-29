@@ -25,7 +25,7 @@
 #include <sup/sequencer/user_interface.h>
 #include <sup/sequencer/workspace.h>
 
-const std::string FROM_ATTRIBUTE_NAME{"from"};
+const std::string FROM_ATTRIBUTE_NAME{"fromVar"};
 const std::string DESCR_ATTRIBUTE_NAME{"description"};
 
 namespace sup

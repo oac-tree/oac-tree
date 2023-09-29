@@ -841,7 +841,7 @@ Attributes:
      - StringType
      - no
      - Text message to log
-   * - input
+   * - inputVar
      - StringType
      - no
      - Name of variable to log
@@ -850,7 +850,7 @@ Attributes:
      - no
      - Severity of the log message
 
-Note that either the `message` or `input` attribute (or both) need to be defined.
+Note that either the `message` or `inputVar` attribute (or both) need to be defined.
 
 The `severity` attribute needs to be one of the following (in decreasing order of severity): emergency, alert, critical, error, warning, notice, info, debug, trace. In the absence of this attribute, the default severity is `info`.
 
@@ -890,7 +890,7 @@ Attributes:
      - Attribute type
      - Mandatory
      - Description
-   * - from
+   * - fromVar
      - StringType
      - yes
      - Name of the variable to be displayed in the UserInterface
@@ -904,7 +904,7 @@ Attributes:
 .. code-block:: xml
 
    <Sequence>
-       <Output from="var1"/>
+       <Output fromVar="var1"/>
    </Sequence>
    <Workspace>
        <Local name="var1" type='{"type":"uint32"}' value='42' />

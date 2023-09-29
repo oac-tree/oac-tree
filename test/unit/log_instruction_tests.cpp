@@ -47,16 +47,16 @@ static const std::string LOGVARIABLEPROCEDURE = R"RAW(<?xml version="1.0" encodi
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
     <Sequence>
         <Copy inputVar="a" outputVar="out"/>
-        <Log input="out" severity="critical"/>
+        <Log inputVar="out" severity="critical"/>
         <ResetVariable varName="out"/>
         <Copy inputVar="b" outputVar="out"/>
-        <Log input="out" severity="error"/>
+        <Log inputVar="out" severity="error"/>
         <ResetVariable varName="out"/>
         <Copy inputVar="c" outputVar="out"/>
-        <Log input="out" severity="warning"/>
+        <Log inputVar="out" severity="warning"/>
         <ResetVariable varName="out"/>
         <Copy inputVar="d" outputVar="out"/>
-        <Log input="out" severity="notice"/>
+        <Log inputVar="out" severity="notice"/>
     </Sequence>
     <Workspace>
         <Local name="a" type='{"type":"int8"}' value='1' />
@@ -161,7 +161,7 @@ TEST_F(LogInstructionTest, VariableDoesNotExist)
   ASSERT_TRUE(static_cast<bool>(instruction));
 
   Procedure proc;
-  EXPECT_TRUE(instruction->AddAttribute("input", "does_not_exist"));
+  EXPECT_TRUE(instruction->AddAttribute("inputVar", "does_not_exist"));
   EXPECT_NO_THROW(instruction->Setup(proc));
 
   Workspace ws;
@@ -187,7 +187,7 @@ TEST_F(LogInstructionTest, VariableCannotBeRead)
   EXPECT_NO_THROW(ws.Setup());
 
   Procedure proc;
-  EXPECT_TRUE(instruction->AddAttribute("input", "var"));
+  EXPECT_TRUE(instruction->AddAttribute("inputVar", "var"));
   EXPECT_NO_THROW(instruction->Setup(proc));
 
   EXPECT_EQ(NumberOfLogEntries(), 0);
@@ -214,7 +214,7 @@ TEST_F(LogInstructionTest, VariableSuccess)
   EXPECT_NO_THROW(ws.Setup());
 
   Procedure proc;
-  EXPECT_TRUE(instruction->AddAttribute("input", "var"));
+  EXPECT_TRUE(instruction->AddAttribute("inputVar", "var"));
   EXPECT_NO_THROW(instruction->Setup(proc));
 
   EXPECT_EQ(NumberOfLogEntries(), 0);

@@ -47,7 +47,7 @@ const std::string LogInstruction::Type = "Log";
 const std::string LOG_SOURCE = "sup::sequencer";
 
 const std::string MESSAGE_ATTRIBUTE_NAME = "message";
-const std::string INPUT_ATTRIBUTE_NAME = "input";
+const std::string INPUT_ATTRIBUTE_NAME = "inputVar";
 const std::string SEVERITY_ATTRIBUTE_NAME = "severity";
 
 LogInstruction::LogInstruction()

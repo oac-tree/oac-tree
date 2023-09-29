@@ -5,7 +5,7 @@
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
     <Sequence>
         <Input outputVar="var1" description="Your name:" />
-        <Output from="var1" description="Hello" />
+        <Output fromVar="var1" description="Hello" />
     </Sequence>
     <Workspace>
         <Local name="var1"

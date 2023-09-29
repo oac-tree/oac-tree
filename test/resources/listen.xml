@@ -7,7 +7,7 @@
         <Listen varNames="monitor">
             <Sequence>
                 <Copy inputVar="monitor" outputVar="result" />
-                <Output from="monitor" description="Updated monitor" />
+                <Output fromVar="monitor" description="Updated monitor" />
                 <Inverter>
                     <Equals leftVar="monitor" rightVar="update" />
                 </Inverter>

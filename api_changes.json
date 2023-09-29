@@ -27,6 +27,12 @@
       "LessThanOrEqual": {
         "lhs" : "leftVar",
         "rhs" : "rightVar"
+      },
+      "Log": {
+        "input" : "inputVar"
+      },
+      "Output": {
+        "from" : "fromVar"
       }
     }
   }

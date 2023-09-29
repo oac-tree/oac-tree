@@ -63,32 +63,43 @@ TEST(Wait, Registration)
 TEST(Wait, Procedure_success)
 {
   sup::UnitTestHelper::EmptyUserInterface ui;
-  auto proc = ParseProcedureString(
-      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-      "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-      "           name=\"Trivial procedure for testing purposes\"\n"
-      "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-      "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-      "    <Wait timeout=\"0.1\"/>\n"
-      "    <Workspace/>\n"
-      "</Procedure>");
+  const std::string procedure_body{
+R"RAW(
+  <Wait timeout="0.1"/>
+  <Workspace/>
+)RAW"};
 
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
+  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST(Wait, VariableTimeout)
+{
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  const std::string procedure_body{
+R"RAW(
+  <Wait timeout="@mytimeout"/>
+  <Workspace>
+    <Local name="mytimeout" type='{"type":"float64"}' value='0.1'/>
+  </Workspace>
+)RAW"};
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
+  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
 TEST(Wait, SetupImpl_throw)
 {
   sup::UnitTestHelper::EmptyUserInterface ui;
-  auto proc = ParseProcedureString(
-      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-      "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
-      "           name=\"Trivial procedure for testing purposes\"\n"
-      "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-      "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
-      "    <Wait timeout=\"not-a-number\"/>\n"
-      "    <Workspace/>\n"
-      "</Procedure>");
+  const std::string procedure_body{
+R"RAW(
+  <Wait timeout="not-a-number"/>
+  <Workspace/>
+)RAW"};
 
-  // Should have expect failure in Setup but the exception does not cause SetupImpl to fail.
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
+  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
   EXPECT_THROW(sup::UnitTestHelper::TryAndExecute(proc, ui), InstructionSetupException);
 }

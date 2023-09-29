@@ -36,16 +36,16 @@ TEST(GreaterThan, Setup)
   auto instr = GlobalInstructionRegistry().Create("GreaterThan");
   EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
 
-  EXPECT_TRUE(instr->AddAttribute("lhs", "left_var"));
+  EXPECT_TRUE(instr->AddAttribute("leftVar", "left_var"));
   EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
-  EXPECT_TRUE(instr->AddAttribute("rhs", "right_var"));
+  EXPECT_TRUE(instr->AddAttribute("rightVar", "right_var"));
   EXPECT_NO_THROW(instr->Setup(proc));
 }
 
 TEST(GreaterThan, GreaterThan_success)
 {
   const std::string body{R"(
-    <GreaterThan lhs="a" rhs="b"/>
+    <GreaterThan leftVar="a" rightVar="b"/>
     <Workspace>
         <Local name="a" type='{"type":"uint64"}' value='15' />
         <Local name="b" type='{"type":"uint64"}' value='10' />
@@ -65,7 +65,7 @@ TEST(GreaterThan, GreaterThan_success)
 TEST(GreaterThan, GreaterThan_failure)
 {
   const std::string body{R"(
-    <GreaterThan lhs="a" rhs="b"/>
+    <GreaterThan leftVar="a" rightVar="b"/>
     <Workspace>
         <Local name="a" type='{"type":"uint64"}' value='4' />
         <Local name="b" type='{"type":"uint64"}' value='10' />
@@ -88,16 +88,16 @@ TEST(LessThan, Setup)
   auto instr = GlobalInstructionRegistry().Create("LessThan");
   EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
 
-  EXPECT_TRUE(instr->AddAttribute("lhs", "left_var"));
+  EXPECT_TRUE(instr->AddAttribute("leftVar", "left_var"));
   EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
-  EXPECT_TRUE(instr->AddAttribute("rhs", "right_var"));
+  EXPECT_TRUE(instr->AddAttribute("rightVar", "right_var"));
   EXPECT_NO_THROW(instr->Setup(proc));
 }
 
 TEST(LessThan, LessThan_success)
 {
   const std::string body{R"(
-    <LessThan lhs="a" rhs="b"/>
+    <LessThan leftVar="a" rightVar="b"/>
     <Workspace>
         <Local name="a" type='{"type":"float64"}' value='5' />
         <Local name="b" type='{"type":"uint64"}' value='10' />
@@ -117,7 +117,7 @@ TEST(LessThan, LessThan_success)
 TEST(LessThan, LessThan_failure)
 {
   const std::string body{R"(
-    <LessThan lhs="a" rhs="b"/>
+    <LessThan leftVar="a" rightVar="b"/>
     <Workspace>
         <Local name="a" type='{"type":"uint64"}' value='24' />
         <Local name="b" type='{"type":"uint64"}' value='10' />

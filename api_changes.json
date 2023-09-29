@@ -8,6 +8,22 @@
       "Equals": {
         "lhs" : "leftVar",
         "rhs" : "rightVar"
+      },
+      "GreaterThan": {
+        "lhs" : "leftVar",
+        "rhs" : "rightVar"
+      },
+      "GreaterThanOrEqual": {
+        "lhs" : "leftVar",
+        "rhs" : "rightVar"
+      },
+      "LessThan": {
+        "lhs" : "leftVar",
+        "rhs" : "rightVar"
+      },
+      "LessThanOrEqual": {
+        "lhs" : "leftVar",
+        "rhs" : "rightVar"
       }
     }
   }

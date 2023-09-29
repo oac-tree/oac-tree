@@ -32,8 +32,8 @@
 #include <iostream>
 #include <string>
 
-const std::string LEFT_VARIABLE_ATTR_NAME = "lhs";
-const std::string RIGHT_VARIABLE_ATTR_NAME = "rhs";
+const std::string LEFT_VARIABLE_ATTR_NAME = "leftVar";
+const std::string RIGHT_VARIABLE_ATTR_NAME = "rightVar";
 
 namespace sup
 {

@@ -30,9 +30,9 @@ namespace sup
 namespace sequencer
 {
 
-const std::string ResetVariable::Type = "ResetVariable";
-
 const std::string VARNAME_ATTRIBUTE = "varName";
+
+const std::string ResetVariable::Type = "ResetVariable";
 
 ResetVariable::ResetVariable()
   : Instruction(ResetVariable::Type)

@@ -222,7 +222,7 @@ bool Instruction::GetVariableAttributeAnyValue(const std::string& attr_name, con
                                                UserInterface& ui, sup::dto::AnyValue& value) const
 {
   const auto attr_str = GetAttributeString(attr_name);
-  if (!InstructionHelper::AttributeStartsWith(attr_str, DefaultSettings::WORKSPACE_ATTRIBUTE_CHAR))
+  if (!InstructionHelper::AttributeStartsWith(attr_str, DefaultSettings::VARIABLE_ATTRIBUTE_CHAR))
   {
     sup::dto::AnyValue temp = m_attribute_handler.GetValue(attr_name);
     if (!sup::dto::TryAssign(value, temp))
@@ -233,6 +233,7 @@ bool Instruction::GetVariableAttributeAnyValue(const std::string& attr_name, con
       ui.LogError(error);
       return false;
     }
+    return true;
   }
   sup::dto::AnyValue ws_val;
   const auto var_name = attr_str.substr(1u);

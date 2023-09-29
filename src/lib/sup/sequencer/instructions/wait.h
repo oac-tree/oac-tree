@@ -24,8 +24,6 @@
 
 #include <sup/sequencer/instruction.h>
 
-#include <sup/dto/basic_scalar_types.h>
-
 namespace sup
 {
 namespace sequencer
@@ -46,14 +44,7 @@ public:
   static const std::string Type;
 
 private:
-  void SetupImpl(const Procedure& proc) override;
-
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
-
-  /**
-   * @brief Timeout (in nanoseconds).
-   */
-  sup::dto::int64 m_timeout;
 };
 
 }  // namespace sequencer

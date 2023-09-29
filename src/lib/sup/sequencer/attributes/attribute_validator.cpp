@@ -89,7 +89,7 @@ std::vector<std::string> AttributeValidator::ValidateAttributes(
   for (const auto& str_attr : str_attributes)
   {
     if (InstructionHelper::AttributeStartsWith(str_attr.second,
-                                               DefaultSettings::WORKSPACE_ATTRIBUTE_CHAR))
+                                               DefaultSettings::VARIABLE_ATTRIBUTE_CHAR))
     {
       continue;  // Don't validate attribute values referring to workspace variables
     }

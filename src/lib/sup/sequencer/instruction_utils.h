@@ -39,6 +39,17 @@ namespace instruction_utils
 const double kMaxTimeoutSeconds = 9.2e9; // More than 290 years. This should be enough...
 
   /**
+   * @brief Convert a floating point timeout in seconds to integer nanoseconds. Also checks for
+   * limits (positive and smaller that kMaxTimeoutSeconds)
+   *
+   * @param timeout_sec Timeout in seconds.
+   * @param timeout_ns Output timeout in nanoseconds.
+   *
+   * @return True on success, false otherwise.
+   */
+bool ConvertToTimeoutNanoseconds(sup::dto::float64 timeout_sec, sup::dto::int64& timeout_ns);
+
+  /**
    * @brief Get timeout attribute from an instruction and convert it from a floating point value
    * in seconds to an 64bit integer in nanoseconds.
    *

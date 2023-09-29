@@ -33,6 +33,16 @@ namespace sequencer
 namespace instruction_utils
 {
 
+bool ConvertToTimeoutNanoseconds(sup::dto::float64 timeout_sec, sup::dto::int64& timeout_ns)
+{
+  if (timeout_sec < 0.0 || timeout_sec > kMaxTimeoutSeconds)
+  {
+    return false;
+  }
+  timeout_ns = std::lround(timeout_sec * 1e9);
+  return true;
+}
+
 sup::dto::int64 GetTimeoutFromAttribute(const Instruction& instr, const std::string& attr_name)
 {
   if (!instr.HasAttribute(attr_name))
@@ -44,14 +54,15 @@ sup::dto::int64 GetTimeoutFromAttribute(const Instruction& instr, const std::str
     throw InstructionSetupException(error_message);
   }
   double t = instr.GetAttributeValue<sup::dto::float64>(attr_name);
-  if (t < 0.0 || t > kMaxTimeoutSeconds)
+  sup::dto::int64 result;
+  if (!ConvertToTimeoutNanoseconds(t, result))
   {
     std::string error_message = InstructionSetupExceptionProlog(instr)
                                 + "could not convert timeout in seconds [" + std::to_string(t)
                                 + "] to nanoseconds (64bit signed)";
     throw InstructionSetupException(error_message);
   }
-  return std::lround(t * 1e9);
+  return result;
 }
 
 std::vector<std::string> VariableNamesFromAttribute(const Instruction& instr,

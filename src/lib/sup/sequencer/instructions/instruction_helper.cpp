@@ -108,7 +108,7 @@ bool InitialisePlaceholderAttributes(AttributeHandler& attribute_handler,
   for (auto& attr : attribute_handler.GetStringAttributes())
   {
     auto attr_value = attr.second;
-    if (AttributeStartsWith(attr_value, DefaultSettings::VAR_ATTRIBUTE_CHAR))
+    if (AttributeStartsWith(attr_value, DefaultSettings::PLACEHOLDER_ATTRIBUTE_CHAR))
     {
       auto var_name = attr_value.substr(1);
       auto it = FindStringAttribute(source_attributes, var_name);

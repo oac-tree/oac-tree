@@ -56,7 +56,7 @@ const int TIMING_ACCURACY_MS = 50;
  *
  * @note See the Include instruction for more details.
  */
-const char VAR_ATTRIBUTE_CHAR = '$';
+const char PLACEHOLDER_ATTRIBUTE_CHAR = '$';
 
 /**
  * @brief When used as the first character of an instruction attribute's value, this character
@@ -66,7 +66,7 @@ const char VAR_ATTRIBUTE_CHAR = '$';
  * @note Instructions can decide to support this mechanism. If not explicitly enabled, it is not
  * supported.
  */
-const char WORKSPACE_ATTRIBUTE_CHAR = '@';
+const char VARIABLE_ATTRIBUTE_CHAR = '@';
 
 /**
  * @brief Character to be used as a separator between different elements of an instruction path.

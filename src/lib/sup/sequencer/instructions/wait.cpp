@@ -25,6 +25,7 @@
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/instruction_utils.h>
 #include <sup/sequencer/generic_utils.h>
+#include <sup/sequencer/user_interface.h>
 
 #include <chrono>
 #include <thread>
@@ -41,27 +42,29 @@ const std::string Wait::Type = "Wait";
 
 Wait::Wait()
   : Instruction(Wait::Type)
-  , m_timeout(0)
 {
   AddAttributeDefinition(TIMEOUT_ATTR_NAME, sup::dto::Float64Type);
 }
 
 Wait::~Wait() = default;
 
-void Wait::SetupImpl(const Procedure&)
-{
-  m_timeout = 0;
-  if (HasAttribute(TIMEOUT_ATTR_NAME))
-  {
-    m_timeout = instruction_utils::GetTimeoutFromAttribute(*this, TIMEOUT_ATTR_NAME);
-  }
-}
-
 ExecutionStatus Wait::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  (void)ui;
-  (void)ws;
-  auto finish = utils::GetNanosecsSinceEpoch() + m_timeout;
+  sup::dto::float64 timeout_sec = 0.0;
+  if (HasAttribute(TIMEOUT_ATTR_NAME) &&
+      !GetVariableAttributeAs(TIMEOUT_ATTR_NAME, ws, ui, timeout_sec))
+  {
+    return ExecutionStatus::FAILURE;
+  }
+  sup::dto::int64 timeout_ns;
+  if (!instruction_utils::ConvertToTimeoutNanoseconds(timeout_sec, timeout_ns))
+  {
+    const std::string warning_message = InstructionWarningProlog(*this) + "could not retrieve " +
+      "timeout value within limits: " + std::to_string(timeout_sec);
+    ui.LogWarning(warning_message);
+    return ExecutionStatus::FAILURE;
+  }
+  auto finish = utils::GetNanosecsSinceEpoch() + timeout_ns;
   while (!IsHaltRequested() && finish > utils::GetNanosecsSinceEpoch())
   {
     std::this_thread::sleep_for(std::chrono::milliseconds(DefaultSettings::TIMING_ACCURACY_MS));

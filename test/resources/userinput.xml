@@ -6,14 +6,12 @@
     <Sequence>
         <Input outputVar="var1" description="Public profile (true/false)" />
         <Input outputVar="var2" description="Your name" />
-        <Input outputVar="var3" description="ID number" />
+        <Input outputVar="var3" description="@alt_descr" />
     </Sequence>
     <Workspace>
-        <Local name="var1"
-               type='{"type":"bool"}' />
-        <Local name="var2"
-               type='{"type":"string"}' />
-        <Local name="var3"
-               type='{"type":"uint64"}'/>
+        <Local name="var1" type='{"type":"bool"}' />
+        <Local name="var2" type='{"type":"string"}' />
+        <Local name="var3" type='{"type":"uint64"}'/>
+        <Local name="alt_descr" type='{"type":"string"}' value='"Your age"' />
     </Workspace>
 </Procedure>

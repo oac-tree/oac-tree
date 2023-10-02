@@ -52,9 +52,12 @@ ExecutionStatus Input::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   {
     return ExecutionStatus::FAILURE;
   }
-  auto description =
-    HasAttribute(DESCRIPTION_ATTR_NAME) ? GetAttributeValue<std::string>(DESCRIPTION_ATTR_NAME)
-                                        : "";
+  std::string description;
+  if (HasAttribute(DESCRIPTION_ATTR_NAME) &&
+      !GetVariableAttributeAs(DESCRIPTION_ATTR_NAME, ws, ui, description))
+  {
+    return ExecutionStatus::FAILURE;
+  }
   if (!ui.GetUserValue(value, description))
   {
     std::string warning_message = InstructionWarningProlog(*this) +

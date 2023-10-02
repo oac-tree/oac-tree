@@ -45,7 +45,11 @@ Message::~Message() = default;
 ExecutionStatus Message::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   (void)ws;
-  std::string message = GetAttributeValue<std::string>(TEXT_ATTRIBUTE);
+  std::string message;
+  if (!GetVariableAttributeAs(TEXT_ATTRIBUTE, ws, ui, message))
+  {
+    return ExecutionStatus::FAILURE;
+  }
   ui.Message(message);
   return ExecutionStatus::SUCCESS;
 }

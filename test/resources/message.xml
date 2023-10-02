@@ -9,8 +9,9 @@
         <Wait timeout="1.0"/>
         <Message text="One second passed"/>
         <Wait timeout="1.0"/>
-        <Message text="End of sequence"/>
+        <Message text="@alt_message"/>
     </Sequence>
     <Workspace>
+        <Local name="alt_message" type='{"type":"string"}' value='"Hello, world!"' />
     </Workspace>
 </Procedure>

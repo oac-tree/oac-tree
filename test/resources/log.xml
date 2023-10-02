@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+           name="Trivial procedure for testing purposes"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+    <Sequence>
+        <Log message="Hello" severity="warning" />
+        <Log message="@alt_message" severity="@alt_severity" />
+    </Sequence>
+    <Workspace>
+        <Local name="alt_message" type='{"type":"string"}' value='"world"' />
+        <Local name="alt_severity" type='{"type":"string"}' value='"error"' />
+    </Workspace>
+</Procedure>

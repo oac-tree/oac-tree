@@ -67,7 +67,11 @@ ExecutionStatus LogInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& 
   int severity = log::SUP_SEQ_LOG_INFO;  // Default severity if not explicitly specified
   if (HasAttribute(SEVERITY_ATTRIBUTE_NAME))
   {
-    auto severity_str = GetAttributeValue<std::string>(SEVERITY_ATTRIBUTE_NAME);
+    std::string severity_str;
+    if (!GetVariableAttributeAs(SEVERITY_ATTRIBUTE_NAME, ws, ui, severity_str))
+    {
+      return ExecutionStatus::FAILURE;
+    }
     severity = SeverityFromString(severity_str);
     if (severity < 0)
     {
@@ -80,7 +84,12 @@ ExecutionStatus LogInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& 
   std::ostringstream oss;
   if (HasAttribute(MESSAGE_ATTRIBUTE_NAME))
   {
-    oss << GetAttributeValue<std::string>(MESSAGE_ATTRIBUTE_NAME);
+    std::string message;
+    if (!GetVariableAttributeAs(MESSAGE_ATTRIBUTE_NAME, ws, ui, message))
+    {
+      return ExecutionStatus::FAILURE;
+    }
+    oss << message;
   }
   if (HasAttribute(INPUT_ATTRIBUTE_NAME))
   {

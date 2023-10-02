@@ -45,7 +45,6 @@ const std::string WaitForVariable::Type = "WaitForVariable";
 
 WaitForVariable::WaitForVariable()
   : Instruction(WaitForVariable::Type)
-  , m_timeout(0)
 {
   AddAttributeDefinition(VARNAME_ATTRIBUTE, sup::dto::StringType).SetMandatory();
   AddAttributeDefinition(TIMEOUT_ATTR_NAME, sup::dto::Float64Type).SetMandatory();
@@ -54,13 +53,13 @@ WaitForVariable::WaitForVariable()
 
 WaitForVariable::~WaitForVariable() = default;
 
-void WaitForVariable::SetupImpl(const Procedure&)
-{
-  m_timeout = instruction_utils::GetTimeoutFromAttribute(*this, TIMEOUT_ATTR_NAME);
-}
-
 ExecutionStatus WaitForVariable::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
+  sup::dto::int64 timeout_ns;
+  if (!instruction_utils::GetVariableTimeoutAttribute(*this, ui, ws, TIMEOUT_ATTR_NAME, timeout_ns))
+  {
+    return ExecutionStatus::FAILURE;
+  }
   int dummy_listener;  // to get a unique address
   std::mutex mx;
   std::condition_variable cv;
@@ -80,7 +79,7 @@ ExecutionStatus WaitForVariable::ExecuteSingleImpl(UserInterface& ui, Workspace&
                         return IsHaltRequested() || success;
                       };
   std::unique_lock<std::mutex> lk(mx);
-  auto result = cv.wait_for(lk, std::chrono::nanoseconds(m_timeout), predicate);
+  auto result = cv.wait_for(lk, std::chrono::nanoseconds(timeout_ns), predicate);
 
   return success ? ExecutionStatus::SUCCESS
                  : ExecutionStatus::FAILURE;

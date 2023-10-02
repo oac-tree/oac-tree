@@ -48,8 +48,6 @@ public:
   static const std::string Type;
 
 private:
-  void SetupImpl(const Procedure& proc) override;
-
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 
   void RegisterCallback(Workspace& ws, std::condition_variable& cv,
@@ -59,11 +57,6 @@ private:
                         bool other_available, const sup::dto::AnyValue& other_value) const;
 
   bool CheckCondition(Workspace& ws) const;
-
-  /**
-   * @brief Timeout (in nanoseconds).
-   */
-  sup::dto::int64 m_timeout;
 };
 
 }  // namespace sequencer

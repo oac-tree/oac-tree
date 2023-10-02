@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+           name="Trivial procedure for testing purposes"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+    <ParallelSequence>
+        <Sequence>
+            <WaitForVariable timeout="2.0" varName="var1" equalsVar="var2"/>
+            <Message text="First wait ok"/>
+        </Sequence>
+        <Sequence>
+            <WaitForVariable timeout="@alt_timeout" varName="var2" equalsVar="var1"/>
+            <Message text="Second wait ok"/>
+        </Sequence>
+        <Sequence>
+            <Wait timeout="1.0"/>
+            <Copy inputVar="var2" outputVar="var1"/>
+        </Sequence>
+    </ParallelSequence>
+    <Workspace>
+        <Local name="var1" type='{"type":"uint32"}' value='1'/>
+        <Local name="var2" type='{"type":"uint32"}' value='2'/>
+        <Local name="alt_timeout" type='{"type":"float64"}' value='2.0'/>
+    </Workspace>
+</Procedure>

@@ -49,9 +49,12 @@ ExecutionStatus UserChoice::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   // Negative number for choice member variable indicates choice was not made yet
   if (m_choice < 0)
   {
-    std::string main_text =
-      HasAttribute(DESCRIPTION_ATTRIBUTE) ? GetAttributeValue<std::string>(DESCRIPTION_ATTRIBUTE)
-                                          : "";
+    std::string main_text;
+    if (HasAttribute(DESCRIPTION_ATTRIBUTE) &&
+        !GetVariableAttributeAs(DESCRIPTION_ATTRIBUTE, ws, ui, main_text))
+    {
+      return ExecutionStatus::FAILURE;
+    }
     auto metadata = CreateUserChoiceMetadata();
     metadata.AddMember(Constants::USER_CHOICES_TEXT_NAME, main_text);
     metadata.AddMember(Constants::USER_CHOICES_DIALOG_TYPE_NAME,

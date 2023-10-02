@@ -3,7 +3,7 @@
            name="Procedure for testing user choices"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
-    <UserChoice description="Select how long to wait">
+    <UserChoice description="@descr">
         <Wait name="Don't wait" timeout="0.0"/>
         <Wait name="Wait one second" timeout="1.0"/>
         <Wait name="Wait two seconds" timeout="2.0"/>
@@ -17,5 +17,6 @@
         <Wait name="Wait ten seconds" timeout="10.0"/>
     </UserChoice>
     <Workspace>
+        <Local name="descr" type='{"type":"string"}' value='"Select how long to wait"' />
     </Workspace>
 </Procedure>

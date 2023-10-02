@@ -8,9 +8,12 @@
         <Wait timeout="1.0"/>
         <UserConfirmation description="Select Ok to proceed"/>
         <Wait timeout="1.0"/>
-        <UserConfirmation description="Almost there. Proceed?" okText="yes"/>
+        <UserConfirmation description="@descr" okText="@ok_text" cancelText="@cancel_text"/>
         <Wait timeout="1.0"/>
     </Sequence>
     <Workspace>
+        <Local name="descr" type='{"type":"string"}' value='"Almost there. Proceed?"' />
+        <Local name="ok_text" type='{"type":"string"}' value='"Positive"' />
+        <Local name="cancel_text" type='{"type":"string"}' value='"Negative"' />
     </Workspace>
 </Procedure>

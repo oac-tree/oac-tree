@@ -49,13 +49,23 @@ UserConfirmation::~UserConfirmation() = default;
 
 ExecutionStatus UserConfirmation::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  (void)ws;
-  auto description = GetAttributeValue<std::string>(DESCRIPTION_ATTRIBUTE);
-  std::string ok_text =
-      HasAttribute(OK_ATTRIBUTE) ? GetAttributeValue<std::string>(OK_ATTRIBUTE) : DEFAULT_OK_TEXT;
-  std::string cancel_text = HasAttribute(CANCEL_ATTRIBUTE)
-                                ? GetAttributeValue<std::string>(CANCEL_ATTRIBUTE)
-                                : DEFAULT_CANCEL_TEXT;
+  std::string description;
+  if (!GetVariableAttributeAs(DESCRIPTION_ATTRIBUTE, ws, ui, description))
+  {
+    return ExecutionStatus::FAILURE;
+  }
+  std::string ok_text = DEFAULT_OK_TEXT;
+  if (HasAttribute(OK_ATTRIBUTE) &&
+      !GetVariableAttributeAs(OK_ATTRIBUTE, ws, ui, ok_text))
+  {
+    return ExecutionStatus::FAILURE;
+  }
+  std::string cancel_text = DEFAULT_CANCEL_TEXT;
+  if (HasAttribute(CANCEL_ATTRIBUTE) &&
+      !GetVariableAttributeAs(CANCEL_ATTRIBUTE, ws, ui, cancel_text))
+  {
+    return ExecutionStatus::FAILURE;
+  }
   auto metadata = CreateUserChoiceMetadata();
   metadata.AddMember(Constants::USER_CHOICES_TEXT_NAME, description);
   metadata.AddMember(Constants::USER_CHOICES_DIALOG_TYPE_NAME,

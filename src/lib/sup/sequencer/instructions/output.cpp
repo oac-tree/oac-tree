@@ -50,9 +50,12 @@ ExecutionStatus Output::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   {
     return ExecutionStatus::FAILURE;
   }
-  auto description =
-    HasAttribute(DESCR_ATTRIBUTE_NAME) ? GetAttributeValue<std::string>(DESCR_ATTRIBUTE_NAME)
-                                       : "";
+  std::string description;
+  if (HasAttribute(DESCR_ATTRIBUTE_NAME) &&
+      !GetVariableAttributeAs(DESCR_ATTRIBUTE_NAME, ws, ui, description))
+  {
+    return ExecutionStatus::FAILURE;
+  }
   return ui.PutValue(value, description) ? ExecutionStatus::SUCCESS : ExecutionStatus::FAILURE;
 }
 

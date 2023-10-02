@@ -6,9 +6,10 @@
     <Sequence>
         <Input outputVar="var1" description="Your name:" />
         <Output fromVar="var1" description="Hello" />
+        <Output fromVar="var1" description="@alt_descr" />
     </Sequence>
     <Workspace>
-        <Local name="var1"
-               type='{"type":"string"}' />
+        <Local name="var1" type='{"type":"string"}' />
+        <Local name="alt_descr" type='{"type":"string"}' value='"My variable"' />
     </Workspace>
 </Procedure>

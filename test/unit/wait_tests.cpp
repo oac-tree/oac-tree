@@ -90,6 +90,37 @@ R"RAW(
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
+TEST(Wait, VariableTimeoutWrongType)
+{
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  const std::string procedure_body{
+R"RAW(
+  <Wait timeout="@mytimeout"/>
+  <Workspace>
+    <Local name="mytimeout" type='{"type":"string"}' value='"1.0"'/>
+  </Workspace>
+)RAW"};
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
+  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+}
+
+TEST(Wait, VariableTimeoutNotPresent)
+{
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  const std::string procedure_body{
+R"RAW(
+  <Wait timeout="@mytimeout"/>
+  <Workspace>
+  </Workspace>
+)RAW"};
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
+  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+}
+
 TEST(Wait, SetupImpl_throw)
 {
   sup::UnitTestHelper::EmptyUserInterface ui;

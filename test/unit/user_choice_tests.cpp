@@ -25,6 +25,8 @@
 
 #include <gtest/gtest.h>
 
+using namespace sup::sequencer;
+
 TEST(UserChoice, GetUserChoice)
 {
   using sup::UnitTestHelper::CounterInstruction;
@@ -44,7 +46,7 @@ TEST(UserChoice, GetUserChoice)
 )"};
 
   auto proc =
-      sup::sequencer::ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+      ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
   ASSERT_TRUE(proc.get() != nullptr);
 
   ui.SetChoice(0);
@@ -61,14 +63,85 @@ TEST(UserChoice, GetUserChoice)
 
   // Instruction called and return failure
   ui.SetChoice(3);
-  EXPECT_TRUE(TryAndExecute(proc, ui, sup::sequencer::ExecutionStatus::FAILURE));
+  EXPECT_TRUE(TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
   EXPECT_EQ(CounterInstruction::GetCount(), 4);
 
   // Invalid choices
 
   ui.SetChoice(4);
-  EXPECT_TRUE(TryAndExecute(proc, ui, sup::sequencer::ExecutionStatus::FAILURE));
+  EXPECT_TRUE(TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
 
   ui.SetChoice(-1);
-  EXPECT_TRUE(TryAndExecute(proc, ui, sup::sequencer::ExecutionStatus::FAILURE));
+  EXPECT_TRUE(TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+}
+
+TEST(UserChoice, VariableDescription)
+{
+  using sup::UnitTestHelper::CounterInstruction;
+  using sup::UnitTestHelper::TryAndExecute;
+
+  sup::UnitTestHelper::MockUI ui;
+  const std::string body{R"(
+    <UserChoice description="@desc">
+        <Wait/>
+        <Wait/>
+    </UserChoice>
+    <Workspace>
+        <Local name="desc" type='{"type":"string"}' value='"Hello"'/>
+    </Workspace>
+)"};
+
+  auto proc =
+      ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  ASSERT_TRUE(proc.get() != nullptr);
+
+  ui.SetChoice(0);
+  EXPECT_TRUE(TryAndExecute(proc, ui));
+}
+
+TEST(UserChoice, VariableDescriptionWrongType)
+{
+  using sup::UnitTestHelper::CounterInstruction;
+  using sup::UnitTestHelper::TryAndExecute;
+
+  sup::UnitTestHelper::MockUI ui;
+  const std::string body{R"(
+    <UserChoice description="@desc">
+        <Wait/>
+        <Wait/>
+    </UserChoice>
+    <Workspace>
+        <Local name="desc" type='{"type":"float32"}' value='4.3'/>
+    </Workspace>
+)"};
+
+  auto proc =
+      ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  ASSERT_TRUE(proc.get() != nullptr);
+
+  ui.SetChoice(0);
+  EXPECT_TRUE(TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+}
+
+TEST(UserChoice, VariableDescriptionNotPresent)
+{
+  using sup::UnitTestHelper::CounterInstruction;
+  using sup::UnitTestHelper::TryAndExecute;
+
+  sup::UnitTestHelper::MockUI ui;
+  const std::string body{R"(
+    <UserChoice description="@desc">
+        <Wait/>
+        <Wait/>
+    </UserChoice>
+    <Workspace>
+    </Workspace>
+)"};
+
+  auto proc =
+      ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  ASSERT_TRUE(proc.get() != nullptr);
+
+  ui.SetChoice(0);
+  EXPECT_TRUE(TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
 }

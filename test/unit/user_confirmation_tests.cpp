@@ -39,11 +39,10 @@ const std::string DEFAULT_OK_TEXT = "Ok";
 const std::string DEFAULT_CANCEL_TEXT = "Cancel";
 
 using namespace sup::sequencer;
+using sup::UnitTestHelper::TryAndExecute;
 
 TEST(UserConfirmation, GetUserConfirmation)
 {
-  using sup::UnitTestHelper::TryAndExecute;
-
   sup::UnitTestHelper::MockUI ui;
   const std::string body{R"(
     <UserConfirmation description="Ok to proceed?"/>
@@ -165,3 +164,63 @@ TEST(UserConfirmation, Metadata)
   EXPECT_EQ((*metadata)[Constants::USER_CHOICES_DIALOG_TYPE_NAME].As<sup::dto::uint32>(),
              dialog_type::kConfirmation);
 }
+
+TEST(UserConfirmation, VariableAttributes)
+{
+  sup::UnitTestHelper::MockUI ui;
+  const std::string body{R"(
+  <UserConfirmation description="@descr" okText="@yes" cancelText="@no"/>
+  <Workspace>
+    <Local name="descr" type='{"type":"string"}' value='"Proceed"'/>
+    <Local name="yes" type='{"type":"string"}' value='"yes"'/>
+    <Local name="no" type='{"type":"string"}' value='"no"'/>
+  </Workspace>
+)"};
+
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  ASSERT_TRUE(proc.get() != nullptr);
+
+  // zero indicates success branch
+  ui.SetChoice(0);
+  EXPECT_TRUE(TryAndExecute(proc, ui));
+}
+
+TEST(UserConfirmation, VariableAttributesWrongType)
+{
+  sup::UnitTestHelper::MockUI ui;
+  const std::string body{R"(
+  <UserConfirmation description="@descr" okText="@yes" cancelText="@no"/>
+  <Workspace>
+    <Local name="descr" type='{"type":"string"}' value='"Proceed"'/>
+    <Local name="yes" type='{"type":"float32"}' value='4.3'/>
+    <Local name="no" type='{"type":"string"}' value='"no"'/>
+  </Workspace>
+)"};
+
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  ASSERT_TRUE(proc.get() != nullptr);
+
+  // zero indicates success branch
+  ui.SetChoice(0);
+  EXPECT_TRUE(TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+}
+
+TEST(UserConfirmation, VariableAttributesNotPresent)
+{
+  sup::UnitTestHelper::MockUI ui;
+  const std::string body{R"(
+  <UserConfirmation description="@descr" okText="@yes" cancelText="@no"/>
+  <Workspace>
+    <Local name="descr" type='{"type":"string"}' value='"Proceed"'/>
+    <Local name="yes" type='{"type":"string"}' value='"yes"'/>
+  </Workspace>
+)"};
+
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  ASSERT_TRUE(proc.get() != nullptr);
+
+  // zero indicates success branch
+  ui.SetChoice(0);
+  EXPECT_TRUE(TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+}
+

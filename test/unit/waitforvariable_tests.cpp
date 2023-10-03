@@ -147,3 +147,63 @@ TEST(WaitForVariable, WaitForVariableParallelMultipleSuccess)
   ASSERT_TRUE(proc.get() != nullptr);
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
+
+TEST(WaitForVariable, VariableTimeout)
+{
+  const std::string body{
+      R"(
+    <Sequence>
+        <WaitForVariable timeout="@mytimeout" varName="a"/>
+    </Sequence>
+    <Workspace>
+        <Local name="mytimeout" type='{"type":"float64"}' value='0.1'/>
+        <Local name="a" type='{"type":"uint8"}' value='3' />
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST(WaitForVariable, VariableTimeoutWrongType)
+{
+  const std::string body{
+      R"(
+    <Sequence>
+        <WaitForVariable timeout="@mytimeout" varName="a"/>
+    </Sequence>
+    <Workspace>
+        <Local name="mytimeout" type='{"type":"string"}' value='"oops"'/>
+        <Local name="a" type='{"type":"uint8"}' value='3' />
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+}
+
+TEST(WaitForVariable, VariableTimeoutNotPresent)
+{
+  const std::string body{
+      R"(
+    <Sequence>
+        <WaitForVariable timeout="@mytimeout" varName="a"/>
+    </Sequence>
+    <Workspace>
+        <Local name="a" type='{"type":"uint8"}' value='3' />
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+}
+

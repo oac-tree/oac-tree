@@ -244,6 +244,56 @@ TEST_F(LogInstructionTest, ParsedProcedure)
   EXPECT_EQ(NumberOfLogEntries(), 4);
 }
 
+TEST_F(LogInstructionTest, VariableAttributes)
+{
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  const std::string procedure_body{
+R"RAW(
+  <Log message="@msg" severity="@sev"/>
+  <Workspace>
+    <Local name="msg" type='{"type":"string"}' value='"Hello"'/>
+    <Local name="sev" type='{"type":"string"}' value='"critical"'/>
+  </Workspace>
+)RAW"};
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
+  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST_F(LogInstructionTest, VariableAttributesWrongType)
+{
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  const std::string procedure_body{
+R"RAW(
+  <Log message="@msg" severity="@sev"/>
+  <Workspace>
+    <Local name="msg" type='{"type":"string"}' value='"Hello"'/>
+    <Local name="sev" type='{"type":"float32"}' value='3.14'/>
+  </Workspace>
+)RAW"};
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
+  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+}
+
+TEST_F(LogInstructionTest, VariableAttributesNotPresent)
+{
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  const std::string procedure_body{
+R"RAW(
+  <Log message="@msg" severity="@sev"/>
+  <Workspace>
+    <Local name="msg" type='{"type":"string"}' value='"Hello"'/>
+  </Workspace>
+)RAW"};
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
+  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+}
+
 size_t LogInstructionTest::NumberOfLogEntries() const
 {
   return ui.m_log_entries.size();

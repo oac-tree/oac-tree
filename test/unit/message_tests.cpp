@@ -21,9 +21,12 @@
 
 #include <sup/sequencer/instructions/message.h>
 
+#include "unit_test_helper.h"
+
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/instruction_registry.h>
 #include <sup/sequencer/procedure.h>
+#include <sup/sequencer/sequence_parser.h>
 #include <sup/sequencer/user_interface.h>
 #include <sup/sequencer/workspace.h>
 
@@ -92,3 +95,51 @@ TEST_F(MessageTest, FromRegistry)
 
   EXPECT_EQ(ui.ui_message, message);
 }
+
+TEST_F(MessageTest, VariableText)
+{
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  const std::string procedure_body{
+R"RAW(
+  <Message text="@msg"/>
+  <Workspace>
+    <Local name="msg" type='{"type":"string"}' value='"Hello"'/>
+  </Workspace>
+)RAW"};
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
+  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST_F(MessageTest, VariableTextWrongType)
+{
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  const std::string procedure_body{
+R"RAW(
+  <Message text="@msg"/>
+  <Workspace>
+    <Local name="msg" type='{"type":"int16"}' value='42'/>
+  </Workspace>
+)RAW"};
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
+  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+}
+
+TEST_F(MessageTest, VariableTextNotPresent)
+{
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  const std::string procedure_body{
+R"RAW(
+  <Message text="@msg"/>
+  <Workspace>
+  </Workspace>
+)RAW"};
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
+  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+}
+

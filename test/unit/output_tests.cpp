@@ -90,3 +90,68 @@ TEST_F(OutputTest, PutInteger)
   // checking that Output instruction has propagated the value to the interface
   EXPECT_EQ(ui.m_value.As<unsigned>(), 42);
 }
+
+TEST_F(OutputTest, VariableDescription)
+{
+  static const std::string procedure_body{
+      R"RAW(
+  <Sequence>
+    <Output description="@descr" fromVar="var1"/>
+  </Sequence>
+  <Workspace>
+    <Local name="descr" type='{"type":"string"}' value='"Hello"'/>
+    <Local name="var1" type='{"type":"uint32"}' value='42' />
+  </Workspace>
+)RAW"};
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
+
+  const unsigned expected{22};
+  TestInterface ui{expected};
+  // initial state
+  EXPECT_EQ(ui.m_value.As<unsigned>(), expected);
+
+  auto proc = ParseProcedureString(procedure_string);
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::SUCCESS));
+
+  // checking that Output instruction has propagated the value to the interface
+  EXPECT_EQ(ui.m_value.As<unsigned>(), 42);
+}
+
+TEST_F(OutputTest, VariableDescriptionWrongType)
+{
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  static const std::string procedure_body{
+      R"RAW(
+  <Sequence>
+    <Output description="@descr" fromVar="var1"/>
+  </Sequence>
+  <Workspace>
+    <Local name="descr" type='{"type":"float32"}' value='4.3'/>
+    <Local name="var1" type='{"type":"uint32"}' value='42' />
+  </Workspace>
+)RAW"};
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
+  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+}
+
+TEST_F(OutputTest, VariableDescriptionNotPresent)
+{
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  static const std::string procedure_body{
+      R"RAW(
+  <Sequence>
+    <Output description="@descr" fromVar="var1"/>
+  </Sequence>
+  <Workspace>
+    <Local name="var1" type='{"type":"uint32"}' value='42' />
+  </Workspace>
+)RAW"};
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
+  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+}

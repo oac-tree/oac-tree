@@ -40,7 +40,7 @@ TEST(Input, Setup)
   EXPECT_NO_THROW(instr->Setup(proc));
 }
 
-TEST(Input, GetUserValue_success)
+TEST(Input, GetUserValueSuccess)
 {
   const std::string body{R"(
     <Sequence>
@@ -66,7 +66,7 @@ TEST(Input, GetUserValue_success)
   EXPECT_EQ(var_value.As<sup::dto::uint32>(), 1234u);
 }
 
-TEST(Input, GetUserValue_failure)
+TEST(Input, GetUserValueFailure)
 {
   const std::string body{R"(
     <Sequence>
@@ -84,7 +84,7 @@ TEST(Input, GetUserValue_failure)
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
 }
 
-TEST(Input, Variable_uninitialised)
+TEST(Input, VariableUninitialised)
 {
   const std::string body{R"(
     <Sequence>
@@ -104,7 +104,7 @@ TEST(Input, Variable_uninitialised)
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
 }
 
-TEST(Input, Variable_undefined)
+TEST(Input, VariableUndefined)
 {
   const std::string body{R"(
     <Sequence>
@@ -122,6 +122,28 @@ TEST(Input, Variable_undefined)
   ui.SetValue(value);
 
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+}
+
+TEST(Input, VariableDescription)
+{
+  const std::string body{R"(
+    <Sequence>
+        <Input description="@descr" outputVar="uint32"/>
+    </Sequence>
+    <Workspace>
+        <Local name="descr" type='{"type":"string"}' value='"Give me a number"'/>
+        <Local name="uint32" type='{"type":"uint32"}'/>
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::MockUI ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  sup::dto::AnyValue value(1234u);
+  ui.SetStatus(true);
+  ui.SetValue(value);
+
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
 // ToDo - Workspace variable not updated

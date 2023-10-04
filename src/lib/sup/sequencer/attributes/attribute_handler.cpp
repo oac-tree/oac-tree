@@ -20,9 +20,11 @@
  ******************************************************************************/
 
 #include <sup/sequencer/attribute_handler.h>
+#include <sup/sequencer/constants.h>
 #include <sup/sequencer/workspace.h>
 
 #include <sup/sequencer/attributes/attribute_validator.h>
+#include <sup/sequencer/instructions/instruction_helper.h>
 
 #include <algorithm>
 #include <sstream>
@@ -191,6 +193,48 @@ std::string FormatFailedConstraints(const std::vector<std::string>& failed_const
   }
   return oss.str();
 }
+
+AttributeValueInfo GetAttributeValueInfo(const StringAttributeList& str_attributes,
+                                         const std::vector<AttributeDefinition>& attr_defs,
+                                         const std::string& attr_name)
+{
+  const auto it_attr = FindStringAttribute(str_attributes, attr_name);
+  if (it_attr == str_attributes.end())
+  {
+    const std::string error =
+      "GetAttributeValueInfo(): trying to get info on non-existing attribute";
+    throw RuntimeException(error);
+  }
+  const auto attr_val = it_attr->second;
+  const auto it_def = std::find_if(attr_defs.begin(), attr_defs.end(),
+                                   [attr_name](const AttributeDefinition& attr_def){
+                                     return attr_def.GetName() == attr_name;
+                                   });
+  if (it_def == attr_defs.end())
+  {
+    // Without definition, it is assumed to be a literal value.
+    return { false, attr_val };
+  }
+  const auto cat = it_def->GetCategory();
+  switch (cat)
+  {
+  case AttributeCategory::kLiteral:
+    break;
+  case AttributeCategory::kVariableName:
+    return { true, attr_val };
+  case AttributeCategory::kBoth:
+    if (InstructionHelper::AttributeStartsWith(attr_val, DefaultSettings::VARIABLE_ATTRIBUTE_CHAR))
+    {
+      return { true, attr_val.substr(1u) };
+    }
+    break;
+  default:
+    break;
+  }
+  // Default case is literal.
+  return { false, attr_val };
+}
+
 }  // namespace sequencer
 
 }  // namespace sup

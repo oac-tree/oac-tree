@@ -35,6 +35,16 @@ namespace sequencer
 class Workspace;
 
 /**
+ * @brief Provides information on an attributes value: if m_is_varname is true, m_value contains
+ * a workspace variable name; if not, it contains a string to be interpreted as a literal value.
+ */
+struct AttributeValueInfo
+{
+  bool m_is_varname;
+  std::string m_value;
+};
+
+/**
  * @brief Class that handles the consistency of a set of attributes according to given constraints.
  */
 class AttributeHandler
@@ -107,6 +117,9 @@ StringAttributeList::const_iterator FindStringAttribute(const StringAttributeLis
 std::string FormatFailedConstraints(const std::vector<std::string>& failed_constraints,
                                     const std::string& prefix = "\n");
 
+AttributeValueInfo GetAttributeValueInfo(const StringAttributeList& str_attributes,
+                                         const std::vector<AttributeDefinition>& attr_defs,
+                                         const std::string& attr_name);
 
 }  // namespace sequencer
 

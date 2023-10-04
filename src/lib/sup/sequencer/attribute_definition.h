@@ -35,8 +35,20 @@ namespace attributes
 {
 const std::string kNameAttribute = "name";
 }
-
 class AttributeProperties;
+
+/**
+ * @brief Category of an attribute indicating if the attribute's value needs to be interpreted as
+ * a literal (typed) value, the name of a workspace variable that contains the value or both. When
+ * the category is `kBoth`, an `@` prefix in the value indicates this refers to a workspace
+ * variable.
+ */
+enum class AttributeCategory
+{
+  kLiteral = 0,
+  kVariableName,
+  kBoth
+};
 
 /**
  * @brief Class that defines a specific attribute by name and type.

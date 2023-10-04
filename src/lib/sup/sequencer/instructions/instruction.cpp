@@ -221,6 +221,11 @@ AttributeDefinition& Instruction::AddAttributeDefinition(const std::string& attr
 bool Instruction::GetVariableAttributeAnyValue(const std::string& attr_name, const Workspace& ws,
                                                UserInterface& ui, sup::dto::AnyValue& value) const
 {
+  if (!HasAttribute(attr_name))
+  {
+    // If this attribute was mandatory, Instruction::Setup would have thrown.
+    return true;
+  }
   const auto attr_str = GetAttributeString(attr_name);
   if (!InstructionHelper::AttributeStartsWith(attr_str, DefaultSettings::VARIABLE_ATTRIBUTE_CHAR))
   {

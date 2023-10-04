@@ -66,9 +66,20 @@ bool AttributeDefinition::IsMandatory() const
   return m_properties->IsMandatory();
 }
 
+AttributeCategory AttributeDefinition::GetCategory() const
+{
+  return m_properties->GetCategory();
+}
+
 AttributeDefinition& AttributeDefinition::SetMandatory(bool mandatory)
 {
   m_properties->SetMandatory(mandatory);
+  return *this;
+}
+
+AttributeDefinition& AttributeDefinition::SetCategory(AttributeCategory cat)
+{
+  m_properties->SetCategory(cat);
   return *this;
 }
 

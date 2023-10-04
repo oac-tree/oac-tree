@@ -29,6 +29,7 @@ namespace sequencer
 AttributeProperties::AttributeProperties(const sup::dto::AnyType& value_type)
   : m_value_type{value_type}
   , m_is_mandatory{false}
+  , m_category{AttributeCategory::kLiteral}
 {}
 
 AttributeProperties::~AttributeProperties() = default;
@@ -43,9 +44,19 @@ bool AttributeProperties::IsMandatory() const
   return m_is_mandatory;
 }
 
+AttributeCategory AttributeProperties::GetCategory() const
+{
+  return m_category;
+}
+
 void AttributeProperties::SetMandatory(bool mandatory)
 {
   m_is_mandatory = mandatory;
+}
+
+void AttributeProperties::SetCategory(AttributeCategory cat)
+{
+  m_category = cat;
 }
 
 }  // namespace sequencer

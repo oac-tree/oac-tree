@@ -42,6 +42,8 @@ class AttributeProperties;
  * a literal (typed) value, the name of a workspace variable that contains the value or both. When
  * the category is `kBoth`, an `@` prefix in the value indicates this refers to a workspace
  * variable.
+ *
+ * @note The default category for an attribute is `kLiteral`.
  */
 enum class AttributeCategory
 {
@@ -68,8 +70,10 @@ public:
   std::string GetName() const;
   sup::dto::AnyType GetType() const;
   bool IsMandatory() const;
+  AttributeCategory GetCategory() const;
 
   AttributeDefinition& SetMandatory(bool mandatory = true);
+  AttributeDefinition& SetCategory(AttributeCategory cat);
 
 private:
   std::string m_name;

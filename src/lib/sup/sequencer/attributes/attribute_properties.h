@@ -22,6 +22,8 @@
 #ifndef SUP_SEQUENCER_ATTRIBUTE_PROPERTIES_H_
 #define SUP_SEQUENCER_ATTRIBUTE_PROPERTIES_H_
 
+#include <sup/sequencer/attribute_definition.h>
+
 #include <sup/dto/anytype.h>
 
 #include <map>
@@ -52,11 +54,16 @@ public:
 
   bool IsMandatory() const;
 
+  AttributeCategory GetCategory() const;
+
   void SetMandatory(bool mandatory);
+
+  void SetCategory(AttributeCategory cat);
 
 private:
   sup::dto::AnyType m_value_type;
   bool m_is_mandatory;
+  AttributeCategory m_category;
 };
 
 }  // namespace sequencer

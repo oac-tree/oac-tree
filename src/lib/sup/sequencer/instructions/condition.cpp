@@ -38,25 +38,17 @@ const std::string Condition::Type = "Condition";
 Condition::Condition()
   : Instruction(Condition::Type)
 {
-  AddAttributeDefinition(CONDITION_VARIABLE_ATTR_NAME, sup::dto::StringType).SetMandatory();
+  AddAttributeDefinition(CONDITION_VARIABLE_ATTR_NAME)
+    .SetCategory(AttributeCategory::kVariableName).SetMandatory();
 }
 
 Condition::~Condition() = default;
 
 ExecutionStatus Condition::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  sup::dto::AnyValue var;
-  if (!GetValueFromAttributeName(*this, ws, ui, CONDITION_VARIABLE_ATTR_NAME, var))
-  {
-    return ExecutionStatus::FAILURE;
-  }
   sup::dto::boolean result = false;
-  if (!var.As(result))
+  if (!GetAttributeValueAs(CONDITION_VARIABLE_ATTR_NAME, ws, ui, result))
   {
-    std::string warning_message =
-      InstructionWarningProlog(*this) + "could not parse workspace field with name [" +
-      GetAttributeValue<std::string>(CONDITION_VARIABLE_ATTR_NAME) + "] to a boolean";
-    ui.LogWarning(warning_message);
     return ExecutionStatus::FAILURE;
   }
   return result ? ExecutionStatus::SUCCESS : ExecutionStatus::FAILURE;

@@ -213,9 +213,14 @@ std::unique_ptr<Instruction> Instruction::TakeInstruction(int index)
 }
 
 AttributeDefinition& Instruction::AddAttributeDefinition(const std::string& attr_name,
-                                                      const sup::dto::AnyType& value_type)
+                                                         const sup::dto::AnyType& value_type)
 {
   return m_attribute_handler.AddAttributeDefinition(attr_name, value_type);
+}
+
+AttributeDefinition& Instruction::AddAttributeDefinition(const std::string& attr_name)
+{
+  return AddAttributeDefinition(attr_name, sup::dto::StringType);
 }
 
 bool Instruction::GetAttributeValue(const std::string& attr_name, const Workspace& ws,

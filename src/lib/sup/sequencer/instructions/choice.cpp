@@ -47,7 +47,8 @@ Choice::Choice()
   , m_instruction_list{}
   , m_instruction_list_initialized{false}
 {
-  AddAttributeDefinition(SELECTOR_VARIABLE_ATTR_NAME, sup::dto::StringType).SetMandatory();
+  AddAttributeDefinition(SELECTOR_VARIABLE_ATTR_NAME)
+    .SetCategory(AttributeCategory::kVariableName).SetMandatory();
 }
 
 Choice::~Choice() = default;
@@ -109,7 +110,7 @@ std::vector<const Instruction*> Choice::NextInstructionsImpl() const
 bool Choice::CreateInstructionList(UserInterface& ui, Workspace& ws)
 {
   sup::dto::AnyValue selector;
-  if (!GetValueFromAttributeName(*this, ws, ui, SELECTOR_VARIABLE_ATTR_NAME, selector))
+  if (!GetAttributeValue(SELECTOR_VARIABLE_ATTR_NAME, ws, ui, selector))
   {
     return false;
   }

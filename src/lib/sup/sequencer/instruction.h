@@ -27,6 +27,7 @@
 
 #include <sup/sequencer/attribute_handler.h>
 #include <sup/sequencer/execution_status.h>
+#include <sup/sequencer/user_interface.h>
 
 #include <sup/dto/anyvalue.h>
 
@@ -212,7 +213,7 @@ public:
    * error when they are not present.
    */
   bool GetAttributeValue(const std::string& attr_name, const Workspace& ws,
-                            UserInterface& ui, sup::dto::AnyValue& value) const;
+                         UserInterface& ui, sup::dto::AnyValue& value) const;
 
   /**
    * @brief Get a representation of type T of an attribute's value. This function handles attributes
@@ -224,19 +225,15 @@ public:
    * @param ui UserInterface to use for logging errors or warnings.
    * @param val Output value when successful.
    *
-   * @return True on success.
+   * @return True on success or when the attribute is not present.
+   *
+   * @note The reason for returning true in the absence of the attribute is that mandatory
+   * attributes are already checked during setup and non-mandatory attributes should not cause an
+   * error when they are not present.
    */
   template <typename T>
   bool GetAttributeValueAs(const std::string& attr_name, const Workspace& ws,
-                           UserInterface& ui, T& val) const
-  {
-    sup::dto::AnyValue temp;
-    if (!GetAttributeValue(attr_name, ws, ui, temp))
-    {
-      return false;
-    }
-    return temp.As(val);
-  }
+                           UserInterface& ui, T& val) const;
 
   /**
    * @brief Get attribute value with given name and type.
@@ -360,6 +357,14 @@ protected:
    */
   AttributeDefinition& AddAttributeDefinition(const std::string& attr_name,
                                               const sup::dto::AnyType& value_type);
+
+  /**
+   * @brief Adds an attribute definition with the given name and default type: StringType
+   *
+   * @param attr_name Attribute name.
+   * @return Newly added attribute definition.
+  */
+  AttributeDefinition& AddAttributeDefinition(const std::string& attr_name);
 
   /**
    * @brief Add an attribute constraint.
@@ -558,6 +563,27 @@ std::string InstructionErrorProlog(const Instruction& instruction);
  * @return String containing the prolog to be used for the warning message.
  */
 std::string InstructionWarningProlog(const Instruction& instruction);
+
+// Definition needs to come after declaration of InstructionWarningProlog
+template <typename T>
+bool Instruction::GetAttributeValueAs(const std::string& attr_name, const Workspace& ws,
+                                      UserInterface& ui, T& val) const
+{
+  sup::dto::AnyValue temp;
+  if (!GetAttributeValue(attr_name, ws, ui, temp))
+  {
+    return false;
+  }
+  if (!temp.As(val))
+  {
+    std::string warning_message =
+      InstructionWarningProlog(*this) + "could not convert attribute with name ["
+      + attr_name + "] to the expected type";
+    ui.LogWarning(warning_message);
+    return false;
+  }
+  return true;
+}
 
 /**
  * @brief Fetch variable (and field) with name contained in the instruction's attribute and copy it.

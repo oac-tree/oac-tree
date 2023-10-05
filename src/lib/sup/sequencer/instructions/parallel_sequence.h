@@ -50,8 +50,6 @@ public:
 private:
   void InitHook() override;
 
-  void SetupImpl(const Procedure& proc) override;
-
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 
   void ResetHook() override;
@@ -68,6 +66,8 @@ private:
    * of each child instruction.
    */
   void InitWrappers();
+
+  void InitThresholds(UserInterface& ui, Workspace& ws);
 
   std::vector<AsyncWrapper> m_wrappers;
 

@@ -569,6 +569,10 @@ template <typename T>
 bool Instruction::GetAttributeValueAs(const std::string& attr_name, const Workspace& ws,
                                       UserInterface& ui, T& val) const
 {
+  if (!HasAttribute(attr_name))
+  {
+    return true;
+  }
   sup::dto::AnyValue temp;
   if (!GetAttributeValue(attr_name, ws, ui, temp))
   {

@@ -45,7 +45,7 @@ Listen::Listen()
   , m_var_cache{}
   , m_cb_guard{}
 {
-  AddAttributeDefinition(VARNAMES_ATTRIBUTE_NAME, sup::dto::StringType).SetMandatory();
+  AddAttributeDefinition(VARNAMES_ATTRIBUTE_NAME).SetMandatory();
   AddAttributeDefinition(FORCESUCCESS_ATTRIBUTE_NAME, sup::dto::BooleanType);
 }
 
@@ -53,12 +53,7 @@ Listen::~Listen() = default;
 
 void Listen::SetupImpl(const Procedure& proc)
 {
-  m_force_success = false;
   m_var_changed = true;
-  if (HasAttribute(FORCESUCCESS_ATTRIBUTE_NAME))
-  {
-    m_force_success = GetAttributeValue<bool>(FORCESUCCESS_ATTRIBUTE_NAME);
-  }
   m_var_names = instruction_utils::VariableNamesFromAttribute(*this, VARNAMES_ATTRIBUTE_NAME);
   InitVariableCache();
   return SetupChild(proc);
@@ -66,6 +61,11 @@ void Listen::SetupImpl(const Procedure& proc)
 
 ExecutionStatus Listen::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
+  m_force_success = false;
+  if (!GetAttributeValueAs(FORCESUCCESS_ATTRIBUTE_NAME, ws, ui, m_force_success))
+  {
+    return ExecutionStatus::FAILURE;
+  }
   if (!m_cb_guard.IsValid())
   {
     m_var_changed = false;

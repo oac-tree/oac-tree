@@ -43,9 +43,11 @@ CopyToProcedureInstruction::CopyToProcedureInstruction()
   : Instruction(CopyToProcedureInstruction::Type)
   , m_workspace{}
 {
-  AddAttributeDefinition(FILE_ATTRIBUTE_NAME, sup::dto::StringType).SetMandatory();
-  AddAttributeDefinition(INPUT_VARIABLE_ATTR_NAME, sup::dto::StringType).SetMandatory();
-  AddAttributeDefinition(OUTPUT_VARIABLE_ATTR_NAME, sup::dto::StringType).SetMandatory();
+  AddAttributeDefinition(FILE_ATTRIBUTE_NAME).SetMandatory();
+  AddAttributeDefinition(INPUT_VARIABLE_ATTR_NAME)
+    .SetCategory(AttributeCategory::kVariableName).SetMandatory();
+  AddAttributeDefinition(OUTPUT_VARIABLE_ATTR_NAME)
+    .SetCategory(AttributeCategory::kVariableName).SetMandatory();
 }
 
 CopyToProcedureInstruction::~CopyToProcedureInstruction() = default;
@@ -63,7 +65,7 @@ void CopyToProcedureInstruction::SetupImpl(const Procedure& proc)
 ExecutionStatus CopyToProcedureInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   sup::dto::AnyValue value;
-  if (!GetValueFromAttributeName(*this, ws, ui, INPUT_VARIABLE_ATTR_NAME, value))
+  if (!GetAttributeValue(INPUT_VARIABLE_ATTR_NAME, ws, ui, value))
   {
     return ExecutionStatus::FAILURE;
   }

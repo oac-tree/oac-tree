@@ -41,8 +41,10 @@ const std::string GreaterThan::Type = "GreaterThan";
 GreaterThan::GreaterThan()
   : Instruction(GreaterThan::Type)
 {
-  AddAttributeDefinition(LEFT_VARIABLE_ATTR_NAME, sup::dto::StringType).SetMandatory();
-  AddAttributeDefinition(RIGHT_VARIABLE_ATTR_NAME, sup::dto::StringType).SetMandatory();
+  AddAttributeDefinition(LEFT_VARIABLE_ATTR_NAME)
+    .SetCategory(AttributeCategory::kVariableName).SetMandatory();
+  AddAttributeDefinition(RIGHT_VARIABLE_ATTR_NAME)
+    .SetCategory(AttributeCategory::kVariableName).SetMandatory();
 }
 
 GreaterThan::~GreaterThan() = default;
@@ -50,12 +52,12 @@ GreaterThan::~GreaterThan() = default;
 ExecutionStatus GreaterThan::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   sup::dto::AnyValue lhs;
-  if (!GetValueFromAttributeName(*this, ws, ui, LEFT_VARIABLE_ATTR_NAME, lhs))
+  if (!GetAttributeValue(LEFT_VARIABLE_ATTR_NAME, ws, ui, lhs))
   {
     return ExecutionStatus::FAILURE;
   }
   sup::dto::AnyValue rhs;
-  if (!GetValueFromAttributeName(*this, ws, ui, RIGHT_VARIABLE_ATTR_NAME, rhs))
+  if (!GetAttributeValue(RIGHT_VARIABLE_ATTR_NAME, ws, ui, rhs))
   {
     return ExecutionStatus::FAILURE;
   }

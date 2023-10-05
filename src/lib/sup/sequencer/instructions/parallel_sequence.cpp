@@ -50,37 +50,9 @@ void ParallelSequence::InitHook()
   InitWrappers();
 }
 
-void ParallelSequence::SetupImpl(const Procedure &proc)
-{
-  SetupChildren(proc);
-
-  // default values for thresholds:
-  auto N = static_cast<sup::dto::uint32>(ChildInstructions().size());
-  m_success_th = N;
-  m_failure_th = 1;
-  bool success_th_from_attributes = false;
-  if (HasAttribute(SUCCESS_THRESHOLD_ATTRIBUTE))
-  {
-    m_success_th = std::min(N, GetAttributeValue<sup::dto::uint32>(SUCCESS_THRESHOLD_ATTRIBUTE));
-    success_th_from_attributes = true;
-  }
-  if (HasAttribute(FAILURE_THRESHOLD_ATTRIBUTE))
-  {
-    auto th = std::min(N, GetAttributeValue<sup::dto::uint32>(FAILURE_THRESHOLD_ATTRIBUTE));
-    if (success_th_from_attributes)
-    {
-      m_failure_th = std::min(th, N - m_success_th + 1);
-    }
-    else
-    {
-      m_failure_th = th;
-      m_success_th = N - th + 1;
-    }
-  }
-}
-
 ExecutionStatus ParallelSequence::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
+  InitThresholds(ui, ws);
   for (auto &wrapper : m_wrappers)
   {
     auto wrapper_status = wrapper.GetStatus();
@@ -171,6 +143,18 @@ void ParallelSequence::InitWrappers()
   {
     m_wrappers.emplace_back(child);
   }
+}
+
+void ParallelSequence::InitThresholds(UserInterface& ui, Workspace& ws)
+{
+  auto N = static_cast<sup::dto::uint32>(ChildInstructions().size());
+  m_success_th = N;
+  // Literal attributes can't fail:
+  (void)GetAttributeValueAs(SUCCESS_THRESHOLD_ATTRIBUTE, ws, ui, m_success_th);
+  m_success_th = std::min(N, m_success_th);
+  m_failure_th = 1;
+  (void)GetAttributeValueAs(FAILURE_THRESHOLD_ATTRIBUTE, ws, ui, m_failure_th);
+  m_failure_th = std::min(m_failure_th, N - m_success_th + 1);
 }
 
 }  // namespace sequencer

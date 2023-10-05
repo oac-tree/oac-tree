@@ -37,16 +37,16 @@ const std::string TEXT_ATTRIBUTE = "text";
 Message::Message()
   : Instruction(Message::Type)
 {
-  AddAttributeDefinition(TEXT_ATTRIBUTE, sup::dto::StringType).SetMandatory();
+  AddAttributeDefinition(TEXT_ATTRIBUTE)
+    .SetCategory(AttributeCategory::kBoth).SetMandatory();
 }
 
 Message::~Message() = default;
 
 ExecutionStatus Message::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  (void)ws;
   std::string message;
-  if (!GetVariableAttributeAs(TEXT_ATTRIBUTE, ws, ui, message))
+  if (!GetAttributeValueAs(TEXT_ATTRIBUTE, ws, ui, message))
   {
     return ExecutionStatus::FAILURE;
   }

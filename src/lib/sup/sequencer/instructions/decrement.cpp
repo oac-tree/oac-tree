@@ -40,24 +40,27 @@ const std::string VARNAME_ATTRIBUTE = "varName";
 Decrement::Decrement()
   : Instruction(Decrement::Type)
 {
-  AddAttributeDefinition(VARNAME_ATTRIBUTE, sup::dto::StringType).SetMandatory();
+  AddAttributeDefinition(VARNAME_ATTRIBUTE)
+    .SetCategory(AttributeCategory::kVariableName).SetMandatory();
 }
 
 Decrement::~Decrement() = default;
 
 ExecutionStatus Decrement::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  auto var_name = GetAttributeValue<std::string>(VARNAME_ATTRIBUTE);
   sup::dto::AnyValue value;
-  if (!GetValueFromAttributeName(*this, ws, ui, VARNAME_ATTRIBUTE, value))
+  if (!GetAttributeValue(VARNAME_ATTRIBUTE, ws, ui, value))
   {
     return ExecutionStatus::FAILURE;
   }
   if (!sup::dto::Decrement(value))
   {
+    const std::string warning = InstructionErrorProlog(*this) +
+      "could not decrement variable reffered to in attribute [" + VARNAME_ATTRIBUTE + "]";
+    ui.LogWarning(warning);
     return ExecutionStatus::FAILURE;
   }
-  if (!ws.SetValue(var_name, value))
+  if (!SetValueFromAttributeName(*this, ws, ui, VARNAME_ATTRIBUTE, value))
   {
     return ExecutionStatus::FAILURE;
   }

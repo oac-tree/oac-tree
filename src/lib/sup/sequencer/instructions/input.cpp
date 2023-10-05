@@ -39,8 +39,10 @@ const std::string Input::Type = "Input";
 Input::Input()
   : Instruction(Input::Type)
 {
-  AddAttributeDefinition(OUTPUT_VARIABLE_ATTR_NAME, sup::dto::StringType).SetMandatory();
-  AddAttributeDefinition(DESCRIPTION_ATTR_NAME, sup::dto::StringType);
+  AddAttributeDefinition(OUTPUT_VARIABLE_ATTR_NAME)
+    .SetCategory(AttributeCategory::kVariableName).SetMandatory();
+  AddAttributeDefinition(DESCRIPTION_ATTR_NAME)
+    .SetCategory(AttributeCategory::kBoth);
 }
 
 Input::~Input() = default;
@@ -48,13 +50,12 @@ Input::~Input() = default;
 ExecutionStatus Input::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   sup::dto::AnyValue value;
-  if (!GetValueFromAttributeName(*this, ws, ui, OUTPUT_VARIABLE_ATTR_NAME, value))
+  if (!GetAttributeValue(OUTPUT_VARIABLE_ATTR_NAME, ws, ui, value))
   {
     return ExecutionStatus::FAILURE;
   }
   std::string description;
-  if (HasAttribute(DESCRIPTION_ATTR_NAME) &&
-      !GetVariableAttributeAs(DESCRIPTION_ATTR_NAME, ws, ui, description))
+  if (!GetAttributeValueAs(DESCRIPTION_ATTR_NAME, ws, ui, description))
   {
     return ExecutionStatus::FAILURE;
   }

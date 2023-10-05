@@ -33,8 +33,10 @@ const std::string Copy::Type = "Copy";
 Copy::Copy()
   : Instruction(Copy::Type)
 {
-  AddAttributeDefinition(INPUT_VARIABLE_ATTR_NAME, sup::dto::StringType).SetMandatory();
-  AddAttributeDefinition(OUTPUT_VARIABLE_ATTR_NAME, sup::dto::StringType).SetMandatory();
+  AddAttributeDefinition(INPUT_VARIABLE_ATTR_NAME)
+    .SetCategory(AttributeCategory::kVariableName).SetMandatory();
+  AddAttributeDefinition(OUTPUT_VARIABLE_ATTR_NAME)
+    .SetCategory(AttributeCategory::kVariableName).SetMandatory();
 }
 
 Copy::~Copy() = default;
@@ -42,7 +44,7 @@ Copy::~Copy() = default;
 ExecutionStatus Copy::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   sup::dto::AnyValue value;
-  if (!GetValueFromAttributeName(*this, ws, ui, INPUT_VARIABLE_ATTR_NAME, value))
+  if (!GetAttributeValue(INPUT_VARIABLE_ATTR_NAME, ws, ui, value))
   {
     return ExecutionStatus::FAILURE;
   }

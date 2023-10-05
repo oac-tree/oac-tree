@@ -41,8 +41,8 @@ const std::string Include::Type = "Include";
 Include::Include()
   : DecoratorInstruction(Include::Type)
 {
-  AddAttributeDefinition(PATH_ATTRIBUTE_NAME, sup::dto::StringType).SetMandatory();
-  AddAttributeDefinition(FILE_ATTRIBUTE_NAME, sup::dto::StringType);
+  AddAttributeDefinition(PATH_ATTRIBUTE_NAME).SetMandatory();
+  AddAttributeDefinition(FILE_ATTRIBUTE_NAME);
 }
 
 Include::~Include() = default;
@@ -53,10 +53,10 @@ void Include::SetupImpl(const Procedure& proc)
   std::string proc_filename = proc_context.GetFilename();
   if (HasAttribute(FILE_ATTRIBUTE_NAME))
   {
-    auto filename = GetAttributeValue<std::string>(FILE_ATTRIBUTE_NAME);
+    auto filename = GetAttributeString(FILE_ATTRIBUTE_NAME);
     proc_filename = GetFullPathName(GetFileDirectory(proc_filename), filename);
   }
-  auto path = GetAttributeValue<std::string>(PATH_ATTRIBUTE_NAME);
+  auto path = GetAttributeString(PATH_ATTRIBUTE_NAME);
   auto clone = proc_context.CloneInstructionPath(proc_filename, path);
   if (!clone)
   {

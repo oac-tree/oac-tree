@@ -53,9 +53,9 @@ const std::string SEVERITY_ATTRIBUTE_NAME = "severity";
 LogInstruction::LogInstruction()
   : Instruction(Type)
 {
-  AddAttributeDefinition(MESSAGE_ATTRIBUTE_NAME, sup::dto::StringType);
-  AddAttributeDefinition(INPUT_ATTRIBUTE_NAME, sup::dto::StringType);
-  AddAttributeDefinition(SEVERITY_ATTRIBUTE_NAME, sup::dto::StringType);
+  AddAttributeDefinition(MESSAGE_ATTRIBUTE_NAME).SetCategory(AttributeCategory::kBoth);
+  AddAttributeDefinition(INPUT_ATTRIBUTE_NAME).SetCategory(AttributeCategory::kVariableName);
+  AddAttributeDefinition(SEVERITY_ATTRIBUTE_NAME).SetCategory(AttributeCategory::kBoth);
   AddConstraint(MakeConstraint<Or>(MakeConstraint<Exists>(MESSAGE_ATTRIBUTE_NAME),
                                    MakeConstraint<Exists>(INPUT_ATTRIBUTE_NAME)));
 }
@@ -64,40 +64,33 @@ LogInstruction::~LogInstruction() = default;
 
 ExecutionStatus LogInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  int severity = log::SUP_SEQ_LOG_INFO;  // Default severity if not explicitly specified
-  if (HasAttribute(SEVERITY_ATTRIBUTE_NAME))
+  std::string severity_str = "info";
+  if (!GetAttributeValueAs(SEVERITY_ATTRIBUTE_NAME, ws, ui, severity_str))
   {
-    std::string severity_str;
-    if (!GetVariableAttributeAs(SEVERITY_ATTRIBUTE_NAME, ws, ui, severity_str))
-    {
-      return ExecutionStatus::FAILURE;
-    }
-    severity = SeverityFromString(severity_str);
-    if (severity < 0)
-    {
-      std::string error_message = InstructionErrorProlog(*this) +
-        "could not parse severity [" + severity_str + "] as valid severity level";
-      ui.LogError(error_message);
-      return ExecutionStatus::FAILURE;
-    }
+    return ExecutionStatus::FAILURE;
+  }
+  auto severity = SeverityFromString(severity_str);
+  if (severity < 0)
+  {
+    std::string error_message = InstructionErrorProlog(*this) +
+      "could not parse severity [" + severity_str + "] as valid severity level";
+    ui.LogError(error_message);
+    return ExecutionStatus::FAILURE;
+  }
+  std::string message;
+  if (!GetAttributeValueAs(MESSAGE_ATTRIBUTE_NAME, ws, ui, message))
+  {
+    return ExecutionStatus::FAILURE;
   }
   std::ostringstream oss;
-  if (HasAttribute(MESSAGE_ATTRIBUTE_NAME))
+  oss << message;
+  sup::dto::AnyValue value;
+  if (!GetAttributeValue(INPUT_ATTRIBUTE_NAME, ws, ui, value))
   {
-    std::string message;
-    if (!GetVariableAttributeAs(MESSAGE_ATTRIBUTE_NAME, ws, ui, message))
-    {
-      return ExecutionStatus::FAILURE;
-    }
-    oss << message;
+    return ExecutionStatus::FAILURE;
   }
-  if (HasAttribute(INPUT_ATTRIBUTE_NAME))
+  if (!sup::dto::IsEmptyValue(value))
   {
-    sup::dto::AnyValue value;
-    if (!GetValueFromAttributeName(*this, ws, ui, INPUT_ATTRIBUTE_NAME, value))
-    {
-      return ExecutionStatus::FAILURE;
-    }
     oss << sup::dto::ValuesToJSONString(value);
   }
   ui.Log(severity, oss.str());

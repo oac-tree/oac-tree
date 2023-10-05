@@ -37,8 +37,10 @@ const std::string Output::Type = "Output";
 Output::Output()
   : Instruction(Output::Type)
 {
-  AddAttributeDefinition(FROM_ATTRIBUTE_NAME, sup::dto::StringType).SetMandatory();
-  AddAttributeDefinition(DESCR_ATTRIBUTE_NAME, sup::dto::StringType);
+  AddAttributeDefinition(FROM_ATTRIBUTE_NAME)
+    .SetCategory(AttributeCategory::kVariableName).SetMandatory();
+  AddAttributeDefinition(DESCR_ATTRIBUTE_NAME)
+    .SetCategory(AttributeCategory::kBoth);
 }
 
 Output::~Output() = default;
@@ -46,13 +48,12 @@ Output::~Output() = default;
 ExecutionStatus Output::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   sup::dto::AnyValue value;
-  if (!GetValueFromAttributeName(*this, ws, ui, FROM_ATTRIBUTE_NAME, value))
+  if (!GetAttributeValue(FROM_ATTRIBUTE_NAME, ws, ui, value))
   {
     return ExecutionStatus::FAILURE;
   }
   std::string description;
-  if (HasAttribute(DESCR_ATTRIBUTE_NAME) &&
-      !GetVariableAttributeAs(DESCR_ATTRIBUTE_NAME, ws, ui, description))
+  if (!GetAttributeValueAs(DESCR_ATTRIBUTE_NAME, ws, ui, description))
   {
     return ExecutionStatus::FAILURE;
   }

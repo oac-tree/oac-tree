@@ -43,9 +43,11 @@ CopyFromProcedureInstruction::CopyFromProcedureInstruction()
   : Instruction(CopyFromProcedureInstruction::Type)
   , m_workspace{}
 {
-  AddAttributeDefinition(FILE_ATTRIBUTE_NAME, sup::dto::StringType).SetMandatory();
-  AddAttributeDefinition(INPUT_VARIABLE_ATTR_NAME, sup::dto::StringType).SetMandatory();
-  AddAttributeDefinition(OUTPUT_VARIABLE_ATTR_NAME, sup::dto::StringType).SetMandatory();
+  AddAttributeDefinition(FILE_ATTRIBUTE_NAME).SetMandatory();
+  AddAttributeDefinition(INPUT_VARIABLE_ATTR_NAME)
+    .SetCategory(AttributeCategory::kVariableName).SetMandatory();
+  AddAttributeDefinition(OUTPUT_VARIABLE_ATTR_NAME)
+    .SetCategory(AttributeCategory::kVariableName).SetMandatory();
 }
 
 CopyFromProcedureInstruction::~CopyFromProcedureInstruction() = default;
@@ -54,7 +56,7 @@ void CopyFromProcedureInstruction::SetupImpl(const Procedure& proc)
 {
   auto proc_context = proc.GetContext();
   std::string parent_proc_filename = proc_context.GetFilename();
-  auto filename = GetAttributeValue<std::string>(FILE_ATTRIBUTE_NAME);
+  auto filename = GetAttributeString(FILE_ATTRIBUTE_NAME);
   auto proc_filename = GetFullPathName(GetFileDirectory(parent_proc_filename), filename);
   m_workspace = proc_context.GetWorkspace(proc_filename);
   m_workspace->Setup();
@@ -63,7 +65,7 @@ void CopyFromProcedureInstruction::SetupImpl(const Procedure& proc)
 ExecutionStatus CopyFromProcedureInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   sup::dto::AnyValue value;
-  if (!GetValueFromAttributeName(*this, *m_workspace, ui, INPUT_VARIABLE_ATTR_NAME, value))
+  if (!GetAttributeValue(INPUT_VARIABLE_ATTR_NAME, *m_workspace, ui, value))
   {
     return ExecutionStatus::FAILURE;
   }

@@ -196,6 +196,49 @@ public:
   bool InitialisePlaceholderAttributes(const StringAttributeList& source_attributes);
 
   /**
+   * @brief Get an AnyValue representation of an attribute. This function handles attributes that
+   * encode literal values, values that need to be fetched from a workspace variable or both,
+   * depending on the attribute's definition.
+   *
+   * @param attr_name Attribute name.
+   * @param ws Workspace to use when the value needs to be fetched.
+   * @param ui UserInterface to use for logging errors or warnings.
+   * @param value Output value when successful.
+   *
+   * @return True on success or when the attribute is not present.
+   *
+   * @note The reason for returning true in the absence of the attribute is that mandatory
+   * attributes are already checked during setup and non-mandatory attributes should not cause an
+   * error when they are not present.
+   */
+  bool GetAttributeValue(const std::string& attr_name, const Workspace& ws,
+                            UserInterface& ui, sup::dto::AnyValue& value) const;
+
+  /**
+   * @brief Get a representation of type T of an attribute's value. This function handles attributes
+   * that encode literal values, values that need to be fetched from a workspace variable or both,
+   * depending on the attribute's definition.
+   *
+   * @param attr_name Attribute name.
+   * @param ws Workspace to use when the value needs to be fetched.
+   * @param ui UserInterface to use for logging errors or warnings.
+   * @param val Output value when successful.
+   *
+   * @return True on success.
+   */
+  template <typename T>
+  bool GetAttributeValueAs(const std::string& attr_name, const Workspace& ws,
+                           UserInterface& ui, T& val) const
+  {
+    sup::dto::AnyValue temp;
+    if (!GetAttributeValue(attr_name, ws, ui, temp))
+    {
+      return false;
+    }
+    return temp.As(val);
+  }
+
+  /**
    * @brief Get attribute value with given name and type.
    *
    * @param attr_name Attribute name.

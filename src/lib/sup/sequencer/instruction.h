@@ -415,7 +415,7 @@ private:
    * @brief Private method that is always called before delegating further execution to the
    * private virtual Instruction::ExecuteSingleImpl(UserInterface * ui, Workspace * ws).
    *
-   * @details If the instruction was not yet executed it calls Instruction::InitHook(),
+   * @details If the instruction was not yet executed it calls Instruction::InitHook,
    * changes the status to ExecutionStatus::NOT_FINISHED and informs the user interface of a
    * status change.
    */
@@ -453,7 +453,7 @@ private:
    * configuration state of the instruction.
    * @note Default implementation is empty.
    */
-  virtual void InitHook();
+  virtual void InitHook(UserInterface& ui, Workspace& ws);
 
   /**
    * @brief Private implementation of the execute action.

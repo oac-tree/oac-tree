@@ -327,7 +327,7 @@ void Instruction::Preamble(UserInterface& ui, Workspace& ws)
 {
   if (GetStatus() == ExecutionStatus::NOT_STARTED)
   {
-    InitHook();
+    InitHook(ui, ws);
     SetStatus(ExecutionStatus::NOT_FINISHED);
     ui.UpdateInstructionStatus(this);
   }
@@ -343,7 +343,7 @@ void Instruction::Postamble(UserInterface& ui)
 
 void Instruction::SetupImpl(const Procedure&) {}
 
-void Instruction::InitHook() {}
+void Instruction::InitHook(UserInterface&, Workspace&) {}
 
 void Instruction::HaltImpl() {}
 

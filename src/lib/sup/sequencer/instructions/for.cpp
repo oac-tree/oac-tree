@@ -52,7 +52,7 @@ ForInstruction::ForInstruction()
 
 ForInstruction::~ForInstruction() = default;
 
-void ForInstruction::InitHook()
+void ForInstruction::InitHook(UserInterface& ui, Workspace& ws)
 {
   m_count = 0;
 }

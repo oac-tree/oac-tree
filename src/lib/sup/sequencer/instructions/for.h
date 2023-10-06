@@ -45,7 +45,7 @@ public:
   static const std::string Type;
 
 private:
-  void InitHook() override;
+  void InitHook(UserInterface& ui, Workspace& ws) override;
 
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 

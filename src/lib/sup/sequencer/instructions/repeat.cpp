@@ -43,7 +43,7 @@ Repeat::Repeat()
 
 Repeat::~Repeat() = default;
 
-void Repeat::InitHook()
+void Repeat::InitHook(UserInterface& ui, Workspace& ws)
 {
   m_count = 0;
 }

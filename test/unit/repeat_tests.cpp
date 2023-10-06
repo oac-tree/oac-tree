@@ -109,3 +109,59 @@ TEST(Repeat, Procedure_attribute)
   EXPECT_THROW(sup::UnitTestHelper::TryAndExecute(proc, ui), InstructionSetupException);
   EXPECT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 0);
 }
+
+TEST(Repeat, VariableAttribute)
+{
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  const std::string procedure_body{
+R"RAW(
+  <Repeat maxCount="@reps">
+      <Counter/>
+  </Repeat>
+  <Workspace>
+    <Local name="reps" type='{"type":"uint16"}' value='5'/>
+  </Workspace>
+)RAW"};
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
+  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+  EXPECT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 5);
+}
+
+TEST(Repeat, VariableAttributeWrongType)
+{
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  const std::string procedure_body{
+R"RAW(
+  <Repeat maxCount="@reps">
+      <Counter/>
+  </Repeat>
+  <Workspace>
+    <Local name="reps" type='{"type":"string"}' value='"3"'/>
+  </Workspace>
+)RAW"};
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
+  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+  EXPECT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 0);
+}
+
+TEST(Repeat, VariableAttributeNotPresent)
+{
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  const std::string procedure_body{
+R"RAW(
+  <Repeat maxCount="@reps">
+      <Counter/>
+  </Repeat>
+  <Workspace>
+  </Workspace>
+)RAW"};
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
+  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+  EXPECT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 0);
+}

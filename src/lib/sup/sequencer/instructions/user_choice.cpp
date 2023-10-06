@@ -37,21 +37,18 @@ UserChoice::UserChoice()
   : CompoundInstruction(UserChoice::Type)
   , m_choice{-1}
 {
-  AddAttributeDefinition(DESCRIPTION_ATTRIBUTE, sup::dto::StringType);
+  AddAttributeDefinition(DESCRIPTION_ATTRIBUTE).SetCategory(AttributeCategory::kBoth);
 }
 
 UserChoice::~UserChoice() = default;
 
 ExecutionStatus UserChoice::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  (void)ws;
-
   // Negative number for choice member variable indicates choice was not made yet
   if (m_choice < 0)
   {
     std::string main_text;
-    if (HasAttribute(DESCRIPTION_ATTRIBUTE) &&
-        !GetVariableAttributeAs(DESCRIPTION_ATTRIBUTE, ws, ui, main_text))
+    if (!GetAttributeValueAs(DESCRIPTION_ATTRIBUTE, ws, ui, main_text))
     {
       return ExecutionStatus::FAILURE;
     }

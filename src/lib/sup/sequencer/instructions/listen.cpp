@@ -46,7 +46,8 @@ Listen::Listen()
   , m_cb_guard{}
 {
   AddAttributeDefinition(VARNAMES_ATTRIBUTE_NAME).SetMandatory();
-  AddAttributeDefinition(FORCESUCCESS_ATTRIBUTE_NAME, sup::dto::BooleanType);
+  AddAttributeDefinition(FORCESUCCESS_ATTRIBUTE_NAME, sup::dto::BooleanType)
+    .SetCategory(AttributeCategory::kBoth);
 }
 
 Listen::~Listen() = default;

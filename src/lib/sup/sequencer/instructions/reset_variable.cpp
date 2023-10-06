@@ -37,14 +37,15 @@ const std::string ResetVariable::Type = "ResetVariable";
 ResetVariable::ResetVariable()
   : Instruction(ResetVariable::Type)
 {
-  AddAttributeDefinition(VARNAME_ATTRIBUTE, sup::dto::StringType).SetMandatory();
+  AddAttributeDefinition(VARNAME_ATTRIBUTE)
+    .SetCategory(AttributeCategory::kVariableName).SetMandatory();
 }
 
 ResetVariable::~ResetVariable() = default;
 
 ExecutionStatus ResetVariable::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  auto var_name = GetAttributeValue<std::string>(VARNAME_ATTRIBUTE);
+  auto var_name = GetAttributeString(VARNAME_ATTRIBUTE);
   if (!ws.HasVariable(var_name))
   {
     std::string error_message = InstructionErrorProlog(*this) +

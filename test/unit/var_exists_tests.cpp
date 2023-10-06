@@ -116,7 +116,7 @@ TEST_F(VarExistTest, FailureNoField)
   ASSERT_TRUE(proc.get() != nullptr);
 
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
-  EXPECT_EQ(ui.m_log_entries.size(), 0);
+  EXPECT_NE(ui.m_log_entries.size(), 0);
 }
 
 TEST_F(VarExistTest, FailureField)
@@ -133,7 +133,7 @@ TEST_F(VarExistTest, FailureField)
   ASSERT_TRUE(proc.get() != nullptr);
 
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
-  EXPECT_EQ(ui.m_log_entries.size(), 0);
+  EXPECT_NE(ui.m_log_entries.size(), 0);
 }
 
 VarExistTest::VarExistTest()

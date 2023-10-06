@@ -245,3 +245,79 @@ R"RAW(
   ASSERT_NE(proc.get(), nullptr);
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
+
+TEST_F(ListenTest, VariableAttribute)
+{
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  const std::string procedure_body{
+R"RAW(
+  <Fallback>
+    <ParallelSequence>
+      <Listen varNames="result" forceSuccess="@force">
+          <Equals leftVar="result" rightVar="update"/>
+      </Listen>
+      <Inverter>
+        <Sequence>
+          <Wait timeout="0.1"/>
+          <Copy inputVar="update" outputVar="result"/>
+        </Sequence>
+      </Inverter>
+    </ParallelSequence>
+    <Equals leftVar="result" rightVar="update"/>
+  </Fallback>
+  <Workspace>
+    <Local name="update"
+           type='{"type":"uint64"}'
+           value='1729'/>
+    <Local name="result"
+           type='{"type":"uint64"}'
+           value='0'/>
+    <Local name="force" type='{"type":"bool"}' value='true'/>
+  </Workspace>
+)RAW"};
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
+  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST_F(ListenTest, VariableAttributeWrongType)
+{
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  const std::string procedure_body{
+R"RAW(
+  <ParallelSequence>
+    <Listen varNames="result" forceSuccess="@force">
+        <Wait/>
+    </Listen>
+    <Wait/>
+  </ParallelSequence>
+  <Workspace>
+    <Local name="force" type='{"type":"string"}' value='"false"'/>
+  </Workspace>
+)RAW"};
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
+  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+}
+
+TEST_F(ListenTest, VariableAttributeNotPresent)
+{
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  const std::string procedure_body{
+R"RAW(
+  <ParallelSequence>
+    <Listen varNames="result" forceSuccess="@force">
+        <Wait/>
+    </Listen>
+    <Wait/>
+  </ParallelSequence>
+  <Workspace>
+  </Workspace>
+)RAW"};
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
+  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+}

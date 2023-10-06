@@ -35,23 +35,16 @@ const std::string VarExistsInstruction::Type = "VarExists";
 VarExistsInstruction::VarExistsInstruction()
   : Instruction(VarExistsInstruction::Type)
 {
-  AddAttributeDefinition(VARNAME_ATTRIBUTE, sup::dto::StringType).SetMandatory();
+  AddAttributeDefinition(VARNAME_ATTRIBUTE)
+    .SetCategory(AttributeCategory::kVariableName).SetMandatory();
 }
 
 VarExistsInstruction::~VarExistsInstruction() = default;
 
 ExecutionStatus VarExistsInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  auto input_field_name = GetAttributeValue<std::string>(VARNAME_ATTRIBUTE);
-  if (input_field_name.empty())
-  {
-    std::string error_message = InstructionErrorProlog(*this) +
-      "trying to query existence of variable with empty name";
-    ui.LogError(error_message);
-    return ExecutionStatus::FAILURE;
-  }
   sup::dto::AnyValue value;
-  if (!ws.GetValue(input_field_name, value))
+  if (!GetAttributeValue(VARNAME_ATTRIBUTE, ws, ui, value))
   {
     return ExecutionStatus::FAILURE;
   }

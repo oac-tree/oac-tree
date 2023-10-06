@@ -46,9 +46,11 @@ const std::string WaitForVariable::Type = "WaitForVariable";
 WaitForVariable::WaitForVariable()
   : Instruction(WaitForVariable::Type)
 {
-  AddAttributeDefinition(VARNAME_ATTRIBUTE, sup::dto::StringType).SetMandatory();
-  AddAttributeDefinition(TIMEOUT_ATTR_NAME, sup::dto::Float64Type).SetMandatory();
-  AddAttributeDefinition(EQUALVAR_ATTRIBUTE, sup::dto::StringType);
+  AddAttributeDefinition(VARNAME_ATTRIBUTE)
+    .SetCategory(AttributeCategory::kVariableName).SetMandatory();
+  AddAttributeDefinition(TIMEOUT_ATTR_NAME, sup::dto::Float64Type)
+    .SetCategory(AttributeCategory::kBoth).SetMandatory();
+  AddAttributeDefinition(EQUALVAR_ATTRIBUTE).SetCategory(AttributeCategory::kVariableName);
 }
 
 WaitForVariable::~WaitForVariable() = default;
@@ -66,16 +68,16 @@ ExecutionStatus WaitForVariable::ExecuteSingleImpl(UserInterface& ui, Workspace&
 
   // Register callbacks:
   auto cb_guard = ws.GetCallbackGuard(&dummy_listener);
-  RegisterCallback(ws, cv, &dummy_listener, GetAttributeValue<std::string>(VARNAME_ATTRIBUTE));
+  RegisterCallback(ws, cv, &dummy_listener, GetAttributeString(VARNAME_ATTRIBUTE));
   if (HasAttribute(EQUALVAR_ATTRIBUTE))
   {
-    RegisterCallback(ws, cv, &dummy_listener, GetAttributeValue<std::string>(EQUALVAR_ATTRIBUTE));
+    RegisterCallback(ws, cv, &dummy_listener, GetAttributeString(EQUALVAR_ATTRIBUTE));
   }
 
   // Wait for condition to be satisfied, halt or timeout:
   bool success = false;
   auto predicate = [&]{
-                        success = CheckCondition(ws);
+                        success = CheckCondition(ui, ws);
                         return IsHaltRequested() || success;
                       };
   std::unique_lock<std::mutex> lk(mx);
@@ -114,18 +116,17 @@ bool WaitForVariable::SuccessCondition(
   return var_value == other_value;
 }
 
-bool WaitForVariable::CheckCondition(Workspace& ws) const
+bool WaitForVariable::CheckCondition(UserInterface& ui, Workspace& ws) const
 {
   sup::dto::AnyValue var_value;
   sup::dto::AnyValue other_value;
 
-  bool var_available = ws.GetValue(GetAttributeValue<std::string>(VARNAME_ATTRIBUTE), var_value) &&
-                      !sup::dto::IsEmptyValue(var_value);
-  bool other_available;
+
+  bool var_available = GetAttributeValue(VARNAME_ATTRIBUTE, ws, ui, var_value);
+  bool other_available = false;
   if (HasAttribute(EQUALVAR_ATTRIBUTE))
   {
-    other_available = ws.GetValue(GetAttributeValue<std::string>(EQUALVAR_ATTRIBUTE), other_value) &&
-                      !sup::dto::IsEmptyValue(other_value);
+    other_available = GetAttributeValue(EQUALVAR_ATTRIBUTE, ws, ui, other_value);
   }
   return SuccessCondition(var_available, var_value, other_available, other_value);
 }

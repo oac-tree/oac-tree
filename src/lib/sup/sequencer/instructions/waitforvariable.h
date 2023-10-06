@@ -56,7 +56,7 @@ private:
   bool SuccessCondition(bool var_available, const sup::dto::AnyValue& var_value,
                         bool other_available, const sup::dto::AnyValue& other_value) const;
 
-  bool CheckCondition(Workspace& ws) const;
+  bool CheckCondition(UserInterface& ui, Workspace& ws) const;
 };
 
 }  // namespace sequencer

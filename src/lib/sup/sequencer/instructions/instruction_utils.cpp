@@ -48,8 +48,7 @@ bool GetVariableTimeoutAttribute(const Instruction& instr, UserInterface& ui, Wo
                                  const std::string& attr_name, sup::dto::int64& timeout_ns)
 {
   sup::dto::float64 timeout_sec = 0.0;
-  if (instr.HasAttribute(attr_name) &&
-      !instr.GetVariableAttributeAs(attr_name, ws, ui, timeout_sec))
+  if (!instr.GetAttributeValueAs(attr_name, ws, ui, timeout_sec))
   {
     return false;
   }

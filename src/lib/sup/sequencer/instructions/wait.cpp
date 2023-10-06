@@ -43,7 +43,8 @@ const std::string Wait::Type = "Wait";
 Wait::Wait()
   : Instruction(Wait::Type)
 {
-  AddAttributeDefinition(TIMEOUT_ATTR_NAME, sup::dto::Float64Type);
+  AddAttributeDefinition(TIMEOUT_ATTR_NAME, sup::dto::Float64Type)
+    .SetCategory(AttributeCategory::kBoth);
 }
 
 Wait::~Wait() = default;

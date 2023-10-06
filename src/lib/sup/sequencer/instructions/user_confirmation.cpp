@@ -40,9 +40,10 @@ const std::string DEFAULT_CANCEL_TEXT = "Cancel";
 UserConfirmation::UserConfirmation()
   : Instruction(UserConfirmation::Type)
 {
-  AddAttributeDefinition(DESCRIPTION_ATTRIBUTE, sup::dto::StringType).SetMandatory();
-  AddAttributeDefinition(OK_ATTRIBUTE, sup::dto::StringType);
-  AddAttributeDefinition(CANCEL_ATTRIBUTE, sup::dto::StringType);
+  AddAttributeDefinition(DESCRIPTION_ATTRIBUTE)
+    .SetCategory(AttributeCategory::kBoth).SetMandatory();
+  AddAttributeDefinition(OK_ATTRIBUTE).SetCategory(AttributeCategory::kBoth);
+  AddAttributeDefinition(CANCEL_ATTRIBUTE).SetCategory(AttributeCategory::kBoth);
 }
 
 UserConfirmation::~UserConfirmation() = default;
@@ -50,19 +51,17 @@ UserConfirmation::~UserConfirmation() = default;
 ExecutionStatus UserConfirmation::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   std::string description;
-  if (!GetVariableAttributeAs(DESCRIPTION_ATTRIBUTE, ws, ui, description))
+  if (!GetAttributeValueAs(DESCRIPTION_ATTRIBUTE, ws, ui, description))
   {
     return ExecutionStatus::FAILURE;
   }
   std::string ok_text = DEFAULT_OK_TEXT;
-  if (HasAttribute(OK_ATTRIBUTE) &&
-      !GetVariableAttributeAs(OK_ATTRIBUTE, ws, ui, ok_text))
+  if (!GetAttributeValueAs(OK_ATTRIBUTE, ws, ui, ok_text))
   {
     return ExecutionStatus::FAILURE;
   }
   std::string cancel_text = DEFAULT_CANCEL_TEXT;
-  if (HasAttribute(CANCEL_ATTRIBUTE) &&
-      !GetVariableAttributeAs(CANCEL_ATTRIBUTE, ws, ui, cancel_text))
+  if (!GetAttributeValueAs(CANCEL_ATTRIBUTE, ws, ui, cancel_text))
   {
     return ExecutionStatus::FAILURE;
   }

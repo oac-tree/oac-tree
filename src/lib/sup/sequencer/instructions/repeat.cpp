@@ -38,22 +38,25 @@ Repeat::Repeat()
   , m_count{0}
   , m_init_ok{false}
 {
-  AddAttributeDefinition(MAXCOUNT_ATTR_NAME, sup::dto::SignedInteger32Type);
+  AddAttributeDefinition(MAXCOUNT_ATTR_NAME, sup::dto::SignedInteger32Type)
+    .SetCategory(AttributeCategory::kBoth);
 }
 
 Repeat::~Repeat() = default;
 
-void Repeat::SetupImpl(const Procedure& proc)
+bool Repeat::InitHook(UserInterface& ui, Workspace& ws)
 {
-  if (HasAttribute(MAXCOUNT_ATTR_NAME))
+  m_count = 0;
+  m_max_count = 0;
+  if (!GetAttributeValueAs(MAXCOUNT_ATTR_NAME, ws, ui, m_max_count))
   {
-    m_max_count = GetAttributeValue<sup::dto::int32>(MAXCOUNT_ATTR_NAME);
-    if (m_max_count < 0)
-    {
-      m_max_count = -1;
-    }
+    return false;
   }
-  SetupChild(proc);
+  if (m_max_count < 0)
+  {
+    m_max_count = -1;
+  }
+  return true;
 }
 
 ExecutionStatus Repeat::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
@@ -77,11 +80,6 @@ ExecutionStatus Repeat::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
     m_count++;
   }
   return CalculateStatus();
-}
-
-void Repeat::ResetHook()
-{
-  m_count = 0;
 }
 
 ExecutionStatus Repeat::CalculateStatus() const

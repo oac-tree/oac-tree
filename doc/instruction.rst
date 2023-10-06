@@ -116,7 +116,11 @@ The `Instruction` class supports the same attribute system as ``Variable``: see 
    wait->AddAttribute("timeout", "1.0");
 
    // Retrieve attribute value
-   double timeout = wait->GetAttributeValue<double>("timeout");
+   double timeout = SOME_DEFAULT_VALUE;
+   if (!GetAttributeValueAs("timeout", ws, ui, timeout))
+   {
+     // some error occured, act accordingly...
+   }
 
 Halting an Instruction
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -170,7 +174,7 @@ Attribute categories define how the attribute's value needs to be retrieved:
 
 * `AttributeCategory::kLiteral`: the string value of the attribute will be parsed into the correct type,
 * `AttributeCategory::kVariableName`: the string value of the attribute refers to a workspace variable field and that field's value will be fetched from the workspace,
-* `AttributeCategory::kLiteral`: in this case, both options are possible: if the attribute's string value starts with an `@` character, the rest will be interpreted as a variable field; otherwise, it is treated as a literal attribute.
+* `AttributeCategory::kBoth`: in this case, both options are possible: if the attribute's string value starts with an `@` character, the rest will be interpreted as a variable field; otherwise, it is treated as a literal attribute.
 
 As an example, consider creating a variable `MyInstruction`, that has three predefined attributes:
 

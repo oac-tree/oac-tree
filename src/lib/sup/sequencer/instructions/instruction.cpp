@@ -425,7 +425,7 @@ bool GetValueFromAttributeName(const Instruction& instruction, const Workspace& 
                                UserInterface& ui, const std::string& attr_name,
                                sup::dto::AnyValue& value)
 {
-  auto input_field_name = instruction.GetAttributeValue<std::string>(attr_name);
+  auto input_field_name = instruction.GetAttributeString(attr_name);
   return GetValueFromVariableName(instruction, ws, ui, input_field_name, value);
 }
 
@@ -470,7 +470,7 @@ bool SetValueFromAttributeName(const Instruction& instruction, Workspace& ws,
                                UserInterface& ui, const std::string& attr_name,
                                const sup::dto::AnyValue& value)
 {
-  auto output_field_name = instruction.GetAttributeValue<std::string>(attr_name);
+  auto output_field_name = instruction.GetAttributeString(attr_name);
   if (output_field_name.empty())
   {
     std::string error_message = InstructionErrorProlog(instruction) +
@@ -502,7 +502,7 @@ sup::dto::AnyValue ParseAnyValueAttributePair(const Instruction& instruction,
                                               const std::string& type_attr_name,
                                               const std::string& value_attr_name)
 {
-  auto type_str = instruction.GetAttributeValue<std::string>(type_attr_name);
+  auto type_str = instruction.GetAttributeString(type_attr_name);
   sup::dto::JSONAnyTypeParser type_parser;
   auto registry = ws.GetTypeRegistry();
   if (!type_parser.ParseString(type_str, registry))
@@ -513,7 +513,7 @@ sup::dto::AnyValue ParseAnyValueAttributePair(const Instruction& instruction,
     return {};
   }
   sup::dto::AnyType anytype = type_parser.MoveAnyType();
-  auto val_str = instruction.GetAttributeValue<std::string>(value_attr_name);
+  auto val_str = instruction.GetAttributeString(value_attr_name);
   sup::dto::JSONAnyValueParser val_parser;
   if (!val_parser.TypedParseString(anytype, val_str))
   {

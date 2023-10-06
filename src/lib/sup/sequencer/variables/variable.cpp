@@ -238,7 +238,7 @@ sup::dto::AnyValue ParseAnyValueAttributePair(const Variable& variable,
   {
     return {};
   }
-  auto type_str = variable.GetAttributeValue<std::string>(type_attr_name);
+  auto type_str = variable.GetAttributeString(type_attr_name);
   sup::dto::JSONAnyTypeParser type_parser;
   if (!type_parser.ParseString(type_str, &registry))
   {
@@ -250,7 +250,7 @@ sup::dto::AnyValue ParseAnyValueAttributePair(const Variable& variable,
   auto parsed_type = type_parser.MoveAnyType();
   if (variable.HasAttribute(value_attr_name))
   {
-    auto val_str = variable.GetAttributeValue<std::string>(value_attr_name);
+    auto val_str = variable.GetAttributeString(value_attr_name);
     sup::dto::JSONAnyValueParser value_parser;
     if (!value_parser.TypedParseString(parsed_type, val_str))
     {

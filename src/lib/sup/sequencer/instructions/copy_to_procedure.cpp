@@ -56,7 +56,7 @@ void CopyToProcedureInstruction::SetupImpl(const Procedure& proc)
 {
   auto proc_context = proc.GetContext();
   std::string parent_proc_filename = proc_context.GetFilename();
-  auto filename = GetAttributeValue<std::string>(FILE_ATTRIBUTE_NAME);
+  auto filename = GetAttributeString(FILE_ATTRIBUTE_NAME);
   auto proc_filename = GetFullPathName(GetFileDirectory(parent_proc_filename), filename);
   m_workspace = proc_context.GetWorkspace(proc_filename);
   m_workspace->Setup();

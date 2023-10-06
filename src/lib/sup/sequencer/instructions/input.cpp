@@ -63,7 +63,7 @@ ExecutionStatus Input::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   {
     std::string warning_message = InstructionWarningProlog(*this) +
       "did not receive compatible user value for field [" +
-      GetAttributeValue<std::string>(OUTPUT_VARIABLE_ATTR_NAME) + "[ in workspace";
+      GetAttributeString(OUTPUT_VARIABLE_ATTR_NAME) + "[ in workspace";
     ui.LogWarning(warning_message);
     return ExecutionStatus::FAILURE;
   }

@@ -51,7 +51,7 @@ FileVariable::~FileVariable() = default;
 bool FileVariable::GetValueImpl(sup::dto::AnyValue& value) const
 {
   sup::dto::JSONAnyValueParser parser;
-  if (!parser.ParseFile(GetAttributeValue<std::string>(FILENAME_ATTR_NAME)))
+  if (!parser.ParseFile(GetAttributeString(FILENAME_ATTR_NAME)))
   {
     return false;
   }
@@ -68,7 +68,7 @@ bool FileVariable::SetValueImpl(const sup::dto::AnyValue& value)
   }
   try
   {
-    sup::dto::AnyValueToJSONFile(value, GetAttributeValue<std::string>(FILENAME_ATTR_NAME),
+    sup::dto::AnyValueToJSONFile(value, GetAttributeString(FILENAME_ATTR_NAME),
                                  pretty_json);
     Notify(value, true);
   }

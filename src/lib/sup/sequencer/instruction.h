@@ -413,13 +413,13 @@ private:
 
   /**
    * @brief Private method that is always called before delegating further execution to the
-   * private virutal Instruction::ExecuteSingleImple(UserInterface * ui, Workspace * ws).
+   * private virtual Instruction::ExecuteSingleImpl(UserInterface * ui, Workspace * ws).
    *
    * @details If the instruction was not yet executed it calls Instruction::InitHook(),
    * changes the status to ExecutionStatus::NOT_FINISHED and informs the user interface of a
    * status change.
    */
-  void Preamble(UserInterface& ui);
+  void Preamble(UserInterface& ui, Workspace& ws);
 
   /**
    * @brief Private method that is always called the delegated execution to the

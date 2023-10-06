@@ -104,7 +104,7 @@ void Instruction::Setup(const Procedure& proc)
 
 void Instruction::ExecuteSingle(UserInterface& ui, Workspace& ws)
 {
-  Preamble(ui);
+  Preamble(ui, ws);
   m_status_before = GetStatus();
   SetStatus(ExecuteSingleImpl(ui, ws));
   Postamble(ui);
@@ -323,7 +323,7 @@ void Instruction::SetStatus(ExecutionStatus status)
   m_status = status;
 }
 
-void Instruction::Preamble(UserInterface& ui)
+void Instruction::Preamble(UserInterface& ui, Workspace& ws)
 {
   if (GetStatus() == ExecutionStatus::NOT_STARTED)
   {

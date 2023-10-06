@@ -160,7 +160,15 @@ bool ParallelSequence::InitThresholds(UserInterface& ui, Workspace& ws)
   {
     return false;
   }
-  m_failure_th = std::min(m_failure_th, N - m_success_th + 1);
+  if (HasAttribute(SUCCESS_THRESHOLD_ATTRIBUTE))
+  {
+    m_failure_th = std::min(m_failure_th, N - m_success_th + 1);
+  }
+  else if (HasAttribute(FAILURE_THRESHOLD_ATTRIBUTE))
+  {
+    m_failure_th = std::min(N, m_failure_th);
+    m_success_th = N + 1 - m_failure_th;
+  }
   return true;
 }
 

@@ -96,7 +96,7 @@ The parallel sequence instruction executes all its child instructions concurrent
      - no
      - number of children to fail for the parallel sequence to fail
 
-For a parallel sequence with `N` children, the defaults of the above thresholds are `N` and `1` respectively. The sum of both thresholds will always be made to not exceed `N + 1` as that would lead to an undetermined status of the parallel sequence.
+For a parallel sequence with `N` children, the defaults of the above thresholds are `N` and `1` respectively. The sum of both thresholds will always be made to not exceed `N + 1` as that would lead to an undetermined status of the parallel sequence. If needed, that means that the real failure threshold could be made smaller than is indicated in the attribute.
 
 .. note::
 

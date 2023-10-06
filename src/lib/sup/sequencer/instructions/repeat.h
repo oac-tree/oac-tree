@@ -44,11 +44,11 @@ public:
   static const std::string Type;
 
 private:
-  void InitHook(UserInterface& ui, Workspace& ws) override;
-
   void SetupImpl(const Procedure& proc) override;
 
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
+
+  void ResetHook() override;
 
   /**
    * @brief Calculate this instruction's status from the status of its child instruction

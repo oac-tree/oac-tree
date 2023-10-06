@@ -54,7 +54,7 @@ TEST(For, Registration)
   ASSERT_TRUE(it != names.end());
 }
 
-TEST(For, Procedure_success)
+TEST(For, Success)
 {
   const std::string body{
     R"(
@@ -76,7 +76,7 @@ TEST(For, Procedure_success)
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
-TEST(For, Procedure_not_array_failure)
+TEST(For, NotAnArray)
 {
   const std::string body{
     R"(
@@ -98,7 +98,7 @@ TEST(For, Procedure_not_array_failure)
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
 }
 
-TEST(For, Procedure_type_failure)
+TEST(For, TypeMismatch)
 {
   const std::string body{
     R"(

@@ -45,14 +45,14 @@ ParallelSequence::ParallelSequence()
 ParallelSequence::~ParallelSequence() = default;
 
 
-void ParallelSequence::InitHook(UserInterface& ui, Workspace& ws)
+bool ParallelSequence::InitHook(UserInterface& ui, Workspace& ws)
 {
   InitWrappers();
+  return InitThresholds(ui, ws);
 }
 
 ExecutionStatus ParallelSequence::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  InitThresholds(ui, ws);
   for (auto &wrapper : m_wrappers)
   {
     auto wrapper_status = wrapper.GetStatus();
@@ -145,16 +145,23 @@ void ParallelSequence::InitWrappers()
   }
 }
 
-void ParallelSequence::InitThresholds(UserInterface& ui, Workspace& ws)
+bool ParallelSequence::InitThresholds(UserInterface& ui, Workspace& ws)
 {
   auto N = static_cast<sup::dto::uint32>(ChildInstructions().size());
   m_success_th = N;
   // Literal attributes can't fail:
-  (void)GetAttributeValueAs(SUCCESS_THRESHOLD_ATTRIBUTE, ws, ui, m_success_th);
+  if (!GetAttributeValueAs(SUCCESS_THRESHOLD_ATTRIBUTE, ws, ui, m_success_th))
+  {
+    return false;
+  }
   m_success_th = std::min(N, m_success_th);
   m_failure_th = 1;
-  (void)GetAttributeValueAs(FAILURE_THRESHOLD_ATTRIBUTE, ws, ui, m_failure_th);
+  if (!GetAttributeValueAs(FAILURE_THRESHOLD_ATTRIBUTE, ws, ui, m_failure_th))
+  {
+    return false;
+  }
   m_failure_th = std::min(m_failure_th, N - m_success_th + 1);
+  return true;
 }
 
 }  // namespace sequencer

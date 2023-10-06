@@ -48,7 +48,7 @@ public:
   static const std::string Type;
 
 private:
-  void InitHook(UserInterface& ui, Workspace& ws) override;
+  bool InitHook(UserInterface& ui, Workspace& ws) override;
 
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 
@@ -67,7 +67,7 @@ private:
    */
   void InitWrappers();
 
-  void InitThresholds(UserInterface& ui, Workspace& ws);
+  bool InitThresholds(UserInterface& ui, Workspace& ws);
 
   std::vector<AsyncWrapper> m_wrappers;
 

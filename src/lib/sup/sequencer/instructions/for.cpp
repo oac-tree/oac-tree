@@ -43,6 +43,7 @@ const std::string ForInstruction::Type = "For";
 ForInstruction::ForInstruction()
   : DecoratorInstruction(ForInstruction::Type)
   , m_count{0}
+  , m_array{}
 {
   AddAttributeDefinition(ARRAY_ATTR_NAME)
     .SetCategory(AttributeCategory::kVariableName).SetMandatory();
@@ -52,19 +53,19 @@ ForInstruction::ForInstruction()
 
 ForInstruction::~ForInstruction() = default;
 
-void ForInstruction::InitHook(UserInterface& ui, Workspace& ws)
+bool ForInstruction::InitHook(UserInterface& ui, Workspace& ws)
 {
   m_count = 0;
+  if (!GetAttributeValue(ARRAY_ATTR_NAME, ws, ui, m_array))
+  {
+    return false;
+  }
+  return true;
 }
 
 ExecutionStatus ForInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  sup::dto::AnyValue array;
-  if (!GetAttributeValue(ARRAY_ATTR_NAME, ws, ui, array))
-  {
-    return ExecutionStatus::FAILURE;
-  }
-  if (!dto::IsArrayValue(array))
+  if (!sup::dto::IsArrayValue(m_array))
   {
     std::string warning_message = InstructionWarningProlog(*this) +
       "For instruction expects an array but variable with name [" +
@@ -72,17 +73,17 @@ ExecutionStatus ForInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& 
     ui.LogWarning(warning_message);
     return ExecutionStatus::FAILURE;
   }
-  int max_count = array.NumberOfElements();
+  int max_count = m_array.NumberOfElements();
   if (max_count == 0)
   {
     return ExecutionStatus::SUCCESS;
   }
-  dto::AnyValue i;
-  if (!GetAttributeValue(ELEMENT_ATTR_NAME, ws, ui, i))
+  dto::AnyValue element_val;
+  if (!GetAttributeValue(ELEMENT_ATTR_NAME, ws, ui, element_val))
   {
     return ExecutionStatus::FAILURE;
   }
-  if (i.GetType() != array.GetType().ElementType())
+  if (element_val.GetType() != m_array.GetType().ElementType())
   {
     std::string warning_message =
       InstructionWarningProlog(*this) + "The element [" +
@@ -92,7 +93,7 @@ ExecutionStatus ForInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& 
     return ExecutionStatus::FAILURE;
   }
 
-  if (!SetValueFromAttributeName(*this, ws, ui, ELEMENT_ATTR_NAME, array[m_count]))
+  if (!SetValueFromAttributeName(*this, ws, ui, ELEMENT_ATTR_NAME, m_array[m_count]))
   {
     std::string warning_message = InstructionWarningProlog(*this) +
       "Could not write current array value to element variable with name [" +

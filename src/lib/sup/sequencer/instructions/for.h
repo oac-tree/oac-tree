@@ -45,7 +45,7 @@ public:
   static const std::string Type;
 
 private:
-  void InitHook(UserInterface& ui, Workspace& ws) override;
+  bool InitHook(UserInterface& ui, Workspace& ws) override;
 
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 
@@ -56,6 +56,7 @@ private:
   ExecutionStatus CalculateStatus(int max_count) const;
 
   int m_count;
+  sup::dto::AnyValue m_array;
 };
 
 }  // namespace sequencer

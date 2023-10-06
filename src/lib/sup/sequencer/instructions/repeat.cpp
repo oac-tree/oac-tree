@@ -43,11 +43,6 @@ Repeat::Repeat()
 
 Repeat::~Repeat() = default;
 
-void Repeat::InitHook(UserInterface& ui, Workspace& ws)
-{
-  m_count = 0;
-}
-
 void Repeat::SetupImpl(const Procedure& proc)
 {
   if (HasAttribute(MAXCOUNT_ATTR_NAME))
@@ -82,6 +77,11 @@ ExecutionStatus Repeat::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
     m_count++;
   }
   return CalculateStatus();
+}
+
+void Repeat::ResetHook()
+{
+  m_count = 0;
 }
 
 ExecutionStatus Repeat::CalculateStatus() const

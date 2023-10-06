@@ -58,6 +58,8 @@ private:
 
   void SetupImpl(const Procedure& proc) override;
 
+  bool InitHook(UserInterface& ui, Workspace& ws) override;
+
   /**
    * @brief Repeatedly execute the child instruction when specific variables are updated.
    * When forceSuccess is not set, the instruction only ends on the child's FAILURE and returns

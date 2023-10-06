@@ -106,7 +106,10 @@ void Instruction::ExecuteSingle(UserInterface& ui, Workspace& ws)
 {
   Preamble(ui, ws);
   m_status_before = GetStatus();
-  SetStatus(ExecuteSingleImpl(ui, ws));
+  if (NeedsExecute(m_status_before))
+  {
+    SetStatus(ExecuteSingleImpl(ui, ws));
+  }
   Postamble(ui);
 }
 
@@ -327,8 +330,14 @@ void Instruction::Preamble(UserInterface& ui, Workspace& ws)
 {
   if (GetStatus() == ExecutionStatus::NOT_STARTED)
   {
-    InitHook(ui, ws);
-    SetStatus(ExecutionStatus::NOT_FINISHED);
+    if (!InitHook(ui, ws))
+    {
+      SetStatus(ExecutionStatus::FAILURE);
+    }
+    else
+    {
+      SetStatus(ExecutionStatus::NOT_FINISHED);
+    }
     ui.UpdateInstructionStatus(this);
   }
 }
@@ -343,7 +352,10 @@ void Instruction::Postamble(UserInterface& ui)
 
 void Instruction::SetupImpl(const Procedure&) {}
 
-void Instruction::InitHook(UserInterface&, Workspace&) {}
+bool Instruction::InitHook(UserInterface&, Workspace&)
+{
+  return true;
+}
 
 void Instruction::HaltImpl() {}
 

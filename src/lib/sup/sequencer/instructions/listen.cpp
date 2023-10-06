@@ -59,13 +59,18 @@ void Listen::SetupImpl(const Procedure& proc)
   return SetupChild(proc);
 }
 
-ExecutionStatus Listen::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
+bool Listen::InitHook(UserInterface& ui, Workspace& ws)
 {
   m_force_success = false;
   if (!GetAttributeValueAs(FORCESUCCESS_ATTRIBUTE_NAME, ws, ui, m_force_success))
   {
-    return ExecutionStatus::FAILURE;
+    return false;
   }
+  return true;
+}
+
+ExecutionStatus Listen::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
+{
   if (!m_cb_guard.IsValid())
   {
     m_var_changed = false;

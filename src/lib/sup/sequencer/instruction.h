@@ -447,13 +447,15 @@ private:
   /**
    * @brief Private hook that is called at the start of the first ExecuteSingle call.
    *
+   * @return true on successful initialization.
+   *
    * @details This hook is meant to establish a correct starting state (e.g. reset internal
    * counters) and will be called every time the instruction is executed afresh, i.e. restarted
    * from scratch. See Instruction::SetupImpl(const Procedure & proc) for establishing correct
    * configuration state of the instruction.
    * @note Default implementation is empty.
    */
-  virtual void InitHook(UserInterface& ui, Workspace& ws);
+  virtual bool InitHook(UserInterface& ui, Workspace& ws);
 
   /**
    * @brief Private implementation of the execute action.

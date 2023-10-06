@@ -54,7 +54,7 @@ The non-virtual implementation of ``Instruction::ExecuteSingle`` provides a unif
 
 During a single tick, the ``ExecuteSingle`` function will perform the following actions:
 
-* If the status is `NOT_STARTED`, i.e. this is the first time the instruction will be ticked (or just after a reset), the virtual method ``InitHook`` is called, which can be overriden in case some extra code needs to run the first time. Afterwards, the status is put to `NOT_FINISHED` and the UserInterface is notified of this status change.
+* If the status is `NOT_STARTED`, i.e. this is the first time the instruction will be ticked (or just after a reset), the virtual method ``InitHook`` is called, which can be overriden in case some extra code needs to run the first time. Afterwards, if the initialization was successful, the status is put to `NOT_FINISHED` and the UserInterface is notified of this status change.
 * The status is updated with the result of the virtual ``ExecuteSingleImpl`` method. This function needs to be overriden by all concrete instructions and should contain the main execution logic.
 * If the previous step resulted in a change of status, the UserInterface is notified of this change.
 

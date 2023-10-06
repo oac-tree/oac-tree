@@ -156,56 +156,10 @@ The `Reset` method resets the variable to the state it had prior to initializati
 
    local_var->Reset(); // Reset the numeric variable
 
-.. _Attribute System:
-
 Attribute System
 ----------------
 
-The attribute system, together with a fixed typename for each concrete variable implementation, allows for handling variables in an opaque way: together they fully define the behavior of a variable and no implementation specific methods are required to initialize them. This system makes it possible to fully instantiate and initialize variables in a data-driven way and is used when parsing procedure XML files.
-
-As an example, consider a procedure XML file containing the following variable definition element:
-
-.. code-block:: xml
-
-   <Local name="my_variable" type='{"type":"uint8"}' value='1'>
-
-During parsing, this will result in the following method calls:
-
-.. code-block:: c++
-
-   auto var = GlobalVariableRegistry().Create("Local");
-   var->AddAttribute("name", "my_variable");
-   var->AddAttribute("type", R"RAW({"type":"uint8"})RAW");
-   var->AddAttribute("value", "1");
-   var->Setup(registry);  // The registry is passed from the workspace.
-
-The attribute system also supports constraints that may result in throwing an exception during the `setup` phase. This provides feedback to the client about missed mandatory attributes, wrongly formatted ones, etc. Since all variables, and instructions, are initiaized before execution of a procedure, this provides `fail fast` behavior.
-
-Implementers of concrete variable types can use protected member functions to signal which attributes are defined by the variable, which types they have, if they are mandatory and other more complex constraints.
-
-As an example, consider creating a variable `MyVariable`, that has four predefined attributes:
-
-* "country": a mandatory string;
-* "max_retry": an optional unsigned integer;
-* "left": an optional string;
-* "right": an optional string.
-
-Furthermore, assume that exactly one of the attributes `left` or `right` needs to be present. All this information can then be encoded in the constructor of the concrete variable:
-
-.. code-block:: c++
-
-   MyVariable::MyVariable()
-     : Variable("MyVariable")
-   {
-     AddAttributeDefinition("country", sup::dto::StringType).SetMandatory();
-     AddAttributeDefinition("max_retry", sup::dto::UnsignedInteger16Type);
-     AddAttributeDefinition("left", sup::dto::StringType);
-     AddAttributeDefinition("right", sup::dto::StringType);
-     AddConstraint(MakeConstraint<Xor>(MakeConstraint<Exists>("left"),
-                                       MakeConstraint<Exists>("right")));
-   }
-
-The generic implementation of the ``Setup`` method will ensure that if no exceptions were thrown, all these conditions are satisfied after setup.
+The attribute system, together with a fixed typename for each concrete variable implementation, allows for handling variables in an opaque way: together they fully define the behavior of a variable and no implementation specific methods are required to initialize them. This system makes it possible to fully instantiate and initialize variables in a data-driven way and is used when parsing procedure XML files. See :ref:`Attribute System` in the `Instruction` documentation for more information on the attribute system.
 
 Class definition
 ----------------

@@ -54,8 +54,8 @@ The non-virtual implementation of ``Instruction::ExecuteSingle`` provides a unif
 
 During a single tick, the ``ExecuteSingle`` function will perform the following actions:
 
-* If the status is `NOT_STARTED`, i.e. this is the first time the instruction will be ticked (or just after a reset), the virtual method ``InitHook`` is called, which can be overriden in case some extra code needs to run the first time. Afterwards, if the initialization was successful, the status is put to `NOT_FINISHED` and the UserInterface is notified of this status change.
-* The status is updated with the result of the virtual ``ExecuteSingleImpl`` method. This function needs to be overriden by all concrete instructions and should contain the main execution logic.
+* If the status is `NOT_STARTED`, i.e. this is the first time the instruction will be ticked (or just after a reset), the virtual method ``InitHook`` is called, which can be overriden in case some extra code needs to run the first time. Afterwards, if the initialization was successful, the status is put to `NOT_FINISHED` and the UserInterface is notified of this status change. If the initialization failed, the status is set to `FAILURE` and the UserInterface is notified.
+* If the initialzation was successful, the status is updated with the result of the virtual ``ExecuteSingleImpl`` method. This function needs to be overriden by all concrete instructions and should contain the main execution logic.
 * If the previous step resulted in a change of status, the UserInterface is notified of this change.
 
 Usage
@@ -140,6 +140,92 @@ Resetting an instruction is mainly used when the same instruction needs to be ex
 .. code-block:: c++
 
    wait->Reset(); // Reset the wait instruction
+
+.. _Attribute System:
+
+Attribute System
+----------------
+
+The attribute system allows to parameterize instructions in a custom way. Each instruction can declare which attributes it supports, their types, if they are mandatory and what those attributes refer to.
+
+As an example, consider a procedure XML file containing the following instruction element:
+
+.. code-block:: xml
+
+   <Wait timeout="3.0"/>
+
+During parsing, this will result in the following method calls:
+
+.. code-block:: c++
+
+   auto instr = GlobalInstructionRegistry().Create("Wait");
+   instr->AddAttribute("timeout", "3.0");
+   instr->Setup();
+
+The attribute system also supports constraints that may result in throwing an exception during the `setup` phase. This provides feedback to the client about missed mandatory attributes, wrongly formatted ones, etc. Since all variables and instructions are initialized before execution of a procedure, this provides `fail fast` behavior.
+
+Implementers of concrete instruction types can use protected member functions to signal which attributes are defined by the variable, which types they have, their category, if they are mandatory and other more complex constraints.
+
+Attribute categories define how the attribute's value needs to be retrieved:
+
+* `AttributeCategory::kLiteral`: the string value of the attribute will be parsed into the correct type,
+* `AttributeCategory::kVariableName`: the string value of the attribute refers to a workspace variable field and that field's value will be fetched from the workspace,
+* `AttributeCategory::kLiteral`: in this case, both options are possible: if the attribute's string value starts with an `@` character, the rest will be interpreted as a variable field; otherwise, it is treated as a literal attribute.
+
+As an example, consider creating a variable `MyInstruction`, that has three predefined attributes:
+
+* "country": a mandatory string that can be literal or refer to a variable field;
+* "max_retry": an optional unsigned integer (literal);
+* "phoneVar": an optional string that refers to a variable field.
+
+Furthermore, assume that exactly one of the attributes `max_retry` or `phoneVar` needs to be present. All this information can then be encoded in the constructor of the concrete variable:
+
+.. code-block:: c++
+
+   MyInstruction::MyInstruction()
+     : Instruction(MyInstruction::Type)
+   {
+     AddAttributeDefinition("country").SetCategory(AttributeCategory::kBoth).SetMandatory();
+     AddAttributeDefinition("max_retry", sup::dto::UnsignedInteger16Type);
+     AddAttributeDefinition("phoneVar").SetCategory(AttributeCategory::kVariableName);
+     AddConstraint(MakeConstraint<Xor>(MakeConstraint<Exists>("max_retry"),
+                                       MakeConstraint<Exists>("phoneVar")));
+   }
+
+As you can see, the `country` attribute did not need to define a type, as `sup::dto::StringType` is the default. Likewise, `kLiteral` is the default category for attributes and does not need to be specified in case of the `max_retry` attribute.
+The generic implementation of the ``Setup`` method will ensure that if no exceptions were thrown, all these conditions are satisfied after setup.
+
+Furthermore, `Instruction` provides a public API to retrieve an attribute's value, taking into account its category. This means that the handling of the `@` character and the choice between literal interpretation and fetching from a variable field is performed automatically. The API consists of two methods: one that retrieves an `AnyValue` and a templated one that tries to cast to a custom type. The following example shows how this works for the above defined `MyInstruction`:
+
+.. code-block:: c++
+
+   ExecutionStatus MyInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
+   {
+     std::string country;
+     if (!GetAttributeValueAs("country", ws, ui, country))
+     {
+       return ExecutionStatus::FAILURE;
+     }
+     // provide a default value for when the attribute is not present
+     sup::dto::uint16 max_retry = 2;
+     // note that GetAttributeValueAs does not return false when the attribute is not present
+     if (!GetAttributeValueAs("max_retry", ws, ui, max_retry))
+     {
+       return ExecutionStatus::FAILURE;
+     }
+     sup::dto::AnyValue phone_nr; // defaul empty
+     // now we retrieve the AnyValue from the variable field
+     if (!GetAttributeValue("phoneVar", ws, ui, phone_nr))
+     {
+       return ExecutionStatus::FAILURE;
+     }
+     ...
+     return ExecutionStatus::SUCCESS;
+   }
+
+.. note::
+
+   In the case of attributes that always refer to variable fields, the indicated type of the attribute is not really important and can best be left to the default (`sup::dto::StringType`). This is because the retrieval to an `AnyValue` of the attribute will not take into account the indicated type. If `GetAttributeValueAs` is used however, that function will signal issues with conversion to the `UserInterface`.
 
 Class definition
 ----------------

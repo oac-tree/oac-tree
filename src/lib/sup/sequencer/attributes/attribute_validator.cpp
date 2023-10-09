@@ -128,25 +128,6 @@ std::pair<sup::dto::AnyValue, std::string> AttributeValidator::TryCreateAnyValue
   return { {}, failed_constraint };
 }
 
-std::pair<sup::dto::AnyValue, std::string> AttributeValidator::TryConvertAnyValue(
-  const std::string& attr_name, const sup::dto::AnyValue& value) const
-{
-  auto it = FindAttributeDefinition(m_attribute_definitions, attr_name);
-  if (it == m_attribute_definitions.end())
-  {
-    return { value, "" };
-  }
-  const auto attr_type = it->GetType();
-  sup::dto::AnyValue result{attr_type};
-  if (sup::dto::TryConvert(result, value))
-  {
-    return { result, "" };
-  }
-  auto failed_constraint =
-    MakeConstraint<sup::sequencer::FixedType>(attr_name, attr_type).GetRepresentation();
-  return { {}, failed_constraint };
-}
-
 bool AttributeValidator::HasAttributeDefinition(const std::string& attr_name) const
 {
   auto it = FindAttributeDefinition(m_attribute_definitions, attr_name);

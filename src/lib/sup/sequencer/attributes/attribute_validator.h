@@ -56,9 +56,6 @@ public:
   std::pair<sup::dto::AnyValue, std::string> TryCreateAnyValue(
     const StringAttribute& str_attr) const;
 
-  std::pair<sup::dto::AnyValue, std::string> TryConvertAnyValue(
-    const std::string& attr_name, const sup::dto::AnyValue& value) const;
-
 private:
   bool HasAttributeDefinition(const std::string& attr_name) const;
   std::vector<AttributeDefinition> m_attribute_definitions;

@@ -70,15 +70,12 @@ unsigned long CounterInstruction::GetCount()
 
 ExecutionStatus CounterInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  if (HasAttribute(INCREMENT_ATTRIBUTE_NAME))
+  sup::dto::uint64 increment = 1u;
+  if (!GetAttributeValueAs(INCREMENT_ATTRIBUTE_NAME, ws, ui, increment))
   {
-    counter += GetAttributeValue<sup::dto::uint64>(INCREMENT_ATTRIBUTE_NAME);
+    return ExecutionStatus::FAILURE;
   }
-  else
-  {
-    counter++;
-  }
-
+  counter += increment;
   return ExecutionStatus::SUCCESS;
 }
 

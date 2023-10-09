@@ -65,20 +65,6 @@ bool GetVariableTimeoutAttribute(const Instruction& instr, UserInterface& ui, Wo
                                  const std::string& attr_name, sup::dto::int64& timeout_ns);
 
 /**
- * @brief Get timeout attribute from an instruction and convert it from a floating point value
- * in seconds to an 64bit integer in nanoseconds.
- *
- * @param instr Instruction that holds the attribute.
- * @param attr_name Name of attribute that holds the timeout in seconds.
- *
- * @return Timeout in nanoseconds.
- *
- * @throws InstructionSetupException when the attribute is not present or its value is negative
- * or larger than the maximum (kMaxTimeoutSeconds).
- */
-sup::dto::int64 GetTimeoutFromAttribute(const Instruction& instr, const std::string& attr_name);
-
-/**
  * @brief Get a list of variable names from an instruction attribute.
  *
  * @param instr Instruction that holds the attribute.

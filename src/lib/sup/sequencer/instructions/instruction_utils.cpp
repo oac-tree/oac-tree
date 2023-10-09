@@ -62,28 +62,6 @@ bool GetVariableTimeoutAttribute(const Instruction& instr, UserInterface& ui, Wo
   return true;
 }
 
-sup::dto::int64 GetTimeoutFromAttribute(const Instruction& instr, const std::string& attr_name)
-{
-  if (!instr.HasAttribute(attr_name))
-  {
-    std::string error_message =
-        InstructionSetupExceptionProlog(instr)
-        + "GetTimeoutFromAttribute(): instruction does not have the correct timeout attribute: ["
-        + attr_name + "]";
-    throw InstructionSetupException(error_message);
-  }
-  double t = instr.GetAttributeValue<sup::dto::float64>(attr_name);
-  sup::dto::int64 result;
-  if (!ConvertToTimeoutNanoseconds(t, result))
-  {
-    std::string error_message = InstructionSetupExceptionProlog(instr)
-                                + "could not convert timeout in seconds [" + std::to_string(t)
-                                + "] to nanoseconds (64bit signed)";
-    throw InstructionSetupException(error_message);
-  }
-  return result;
-}
-
 std::vector<std::string> VariableNamesFromAttribute(const Instruction& instr,
                                                     const std::string& attr_name)
 {

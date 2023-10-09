@@ -34,9 +34,15 @@
 
 namespace
 {
+using sup::sequencer::Instruction;
+using sup::sequencer::Workspace;
+using sup::sequencer::UserInterface;
 std::string WrapOptionalInstructionNameString(const std::string& instr_name);
-std::string InstructionSetupExceptionMessage(const sup::sequencer::Instruction& instruction,
+std::string InstructionSetupExceptionMessage(const Instruction& instruction,
                                              const std::vector<std::string>& failed_constraints);
+bool GetValueFromVariableName(const Instruction& instruction, const Workspace& ws,
+                              UserInterface& ui, const std::string& var_name,
+                              sup::dto::AnyValue& value);
 }  // unnamed namespace
 
 namespace sup
@@ -262,54 +268,6 @@ bool Instruction::GetAttributeValue(const std::string& attr_name, const Workspac
   return true;
 }
 
-bool Instruction::GetVariableAttributeAnyValue(const std::string& attr_name, const Workspace& ws,
-                                               UserInterface& ui, sup::dto::AnyValue& value) const
-{
-  if (!HasAttribute(attr_name))
-  {
-    // If this attribute was mandatory, Instruction::Setup would have thrown.
-    return true;
-  }
-  const auto attr_str = GetAttributeString(attr_name);
-  if (!InstructionHelper::AttributeStartsWith(attr_str, DefaultSettings::VARIABLE_ATTRIBUTE_CHAR))
-  {
-    sup::dto::AnyValue temp = m_attribute_handler.GetValue(attr_name);
-    if (!sup::dto::TryAssign(value, temp))
-    {
-      const std::string error = InstructionErrorProlog(*this) +
-        "could not assign retrieved value of attribute [" + attr_name +
-        "] to passed output parameter";
-      ui.LogError(error);
-      return false;
-    }
-    return true;
-  }
-  sup::dto::AnyValue ws_val;
-  const auto var_name = attr_str.substr(1u);
-  if (!GetValueFromVariableName(*this, ws, ui, var_name, ws_val))
-  {
-    return false;
-  }
-  const auto converted = m_attribute_handler.GetConvertedValue(attr_name, ws_val);
-  if (!converted.second.empty())
-  {
-    const std::string error = InstructionErrorProlog(*this) +
-      "failed to create appropriate AnyValue from variable [" + var_name +
-      "] because of constraint:\n" + converted.second;
-    ui.LogError(error);
-    return false;
-  }
-  if (!sup::dto::TryAssign(value, converted.first))
-  {
-    const std::string error = InstructionErrorProlog(*this) +
-      "could not assign retrieved variable value with name [" + var_name +
-      "] to passed output parameter";
-    ui.LogError(error);
-    return false;
-  }
-  return true;
-}
-
 void Instruction::AddConstraint(Constraint constraint)
 {
   return m_attribute_handler.AddConstraint(constraint);
@@ -421,51 +379,6 @@ std::string InstructionWarningProlog(const Instruction& instruction)
   return "Instruction " + optional_name + "of type <" + instr_type + "> warning: ";
 }
 
-bool GetValueFromAttributeName(const Instruction& instruction, const Workspace& ws,
-                               UserInterface& ui, const std::string& attr_name,
-                               sup::dto::AnyValue& value)
-{
-  auto input_field_name = instruction.GetAttributeString(attr_name);
-  return GetValueFromVariableName(instruction, ws, ui, input_field_name, value);
-}
-
-bool GetValueFromVariableName(const Instruction& instruction, const Workspace& ws,
-                              UserInterface& ui, const std::string& var_name,
-                              sup::dto::AnyValue& value)
-{
-  if (var_name.empty())
-  {
-    std::string error_message = InstructionErrorProlog(instruction) +
-      "trying to fetch variable with empty name";
-    ui.LogError(error_message);
-    return false;
-  }
-  auto input_var_name = SplitFieldName(var_name).first;
-  if (!ws.HasVariable(input_var_name))
-  {
-    std::string error_message = InstructionErrorProlog(instruction) +
-      "workspace does not contain input variable with name [" + input_var_name + "]";
-    ui.LogError(error_message);
-    return false;
-  }
-  sup::dto::AnyValue tmp_val;
-  if (!ws.GetValue(var_name, tmp_val))
-  {
-    std::string warning_message = InstructionErrorProlog(instruction) +
-      "could not read input field with name [" + var_name + "] from workspace";
-    ui.LogWarning(warning_message);
-    return false;
-  }
-  if (!sup::dto::TryAssign(value, tmp_val))
-  {
-    std::string warning_message = InstructionErrorProlog(instruction) +
-      "could not asssign value of field with name [" + var_name + "] to passed output parameter";
-    ui.LogError(warning_message);
-    return false;
-  }
-  return true;
-}
-
 bool SetValueFromAttributeName(const Instruction& instruction, Workspace& ws,
                                UserInterface& ui, const std::string& attr_name,
                                const sup::dto::AnyValue& value)
@@ -565,6 +478,43 @@ std::string InstructionSetupExceptionMessage(const sup::sequencer::Instruction& 
     InstructionSetupExceptionProlog(instruction) + "Failed attribute constraint(s):" +
     sup::sequencer::FormatFailedConstraints(failed_constraints);
   return message;
+}
+
+bool GetValueFromVariableName(const Instruction& instruction, const Workspace& ws,
+                              UserInterface& ui, const std::string& var_name,
+                              sup::dto::AnyValue& value)
+{
+  if (var_name.empty())
+  {
+    std::string error_message = InstructionErrorProlog(instruction) +
+      "trying to fetch variable with empty name";
+    ui.LogError(error_message);
+    return false;
+  }
+  auto input_var_name = sup::sequencer::SplitFieldName(var_name).first;
+  if (!ws.HasVariable(input_var_name))
+  {
+    std::string error_message = InstructionErrorProlog(instruction) +
+      "workspace does not contain input variable with name [" + input_var_name + "]";
+    ui.LogError(error_message);
+    return false;
+  }
+  sup::dto::AnyValue tmp_val;
+  if (!ws.GetValue(var_name, tmp_val))
+  {
+    std::string warning_message = InstructionErrorProlog(instruction) +
+      "could not read input field with name [" + var_name + "] from workspace";
+    ui.LogWarning(warning_message);
+    return false;
+  }
+  if (!sup::dto::TryAssign(value, tmp_val))
+  {
+    std::string warning_message = InstructionErrorProlog(instruction) +
+      "could not asssign value of field with name [" + var_name + "] to passed output parameter";
+    ui.LogError(warning_message);
+    return false;
+  }
+  return true;
 }
 
 }  // unnamed namespace

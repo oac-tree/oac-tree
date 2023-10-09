@@ -62,9 +62,9 @@ bool FileVariable::GetValueImpl(sup::dto::AnyValue& value) const
 bool FileVariable::SetValueImpl(const sup::dto::AnyValue& value)
 {
   bool pretty_json = false;
-  if (HasAttribute(PRETTY_JSON_ATTR_NAME))
+  if (!GetAttributeValue(PRETTY_JSON_ATTR_NAME, pretty_json))
   {
-    pretty_json = GetAttributeValue<bool>(PRETTY_JSON_ATTR_NAME);
+    return false;
   }
   try
   {

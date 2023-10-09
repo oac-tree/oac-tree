@@ -194,15 +194,22 @@ public:
    * @brief Get attribute value with given name and type.
    *
    * @param attr_name Attribute name.
-   * @return Attribute value of requested type.
+   * @param val Output parameter for value.
    *
-   * @throws RuntimeException when attribute with given name was not found or its value could not
-   * be converted to the requested type.
+   * @return True on success or when the attribute is not present.
+   *
+   * @note The reason for returning true in the absence of the attribute is that mandatory
+   * attributes are already checked during setup and non-mandatory attributes should not cause an
+   * error when they are not present.
    */
   template <typename T>
-  T GetAttributeValue(const std::string& attr_name) const
+  bool GetAttributeValue(const std::string& attr_name, T& val) const
   {
-    return m_attribute_handler.GetValueAs<T>(attr_name);
+    if (!HasAttribute(attr_name))
+    {
+      return true;
+    }
+    return m_attribute_handler.GetValueAs(attr_name, val);
   }
 
   /**

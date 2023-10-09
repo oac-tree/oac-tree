@@ -98,9 +98,10 @@ TEST_F(AttributeHandlerTest, GetValueAs)
   EXPECT_NO_THROW(handler.AddStringAttribute(kStrAttrName, kStrAttrValue));
   EXPECT_TRUE(handler.ValidateAttributes());
   std::string str_val;
-  EXPECT_NO_THROW(str_val = handler.GetValueAs<std::string>(kStrAttrName));
-  EXPECT_THROW(str_val = handler.GetValueAs<std::string>(kDoubleAttrName), RuntimeException);
-  EXPECT_THROW(handler.GetValueAs<double>(kStrAttrName), RuntimeException);
+  EXPECT_TRUE(handler.GetValueAs(kStrAttrName, str_val));
+  EXPECT_FALSE(handler.GetValueAs(kDoubleAttrName, str_val));
+  double double_val;
+  EXPECT_FALSE(handler.GetValueAs(kStrAttrName, double_val));
 }
 
 TEST_F(AttributeHandlerTest, MandatoryAttributes)
@@ -144,15 +145,18 @@ TEST_F(AttributeHandlerTest, MandatoryAttributes)
   failed_constraints = handler.GetFailedConstraints();
   EXPECT_EQ(failed_constraints.size(), 0);
   // Inspect anyvalue values
-  auto str_val = handler.GetValue(kStrAttrName);
+  sup::dto::AnyValue str_val;
+  EXPECT_TRUE(handler.GetValue(kStrAttrName, str_val));
   EXPECT_FALSE(sup::dto::IsEmptyValue(str_val));
   EXPECT_EQ(str_val.GetType(), sup::dto::StringType);
   EXPECT_EQ(str_val.As<std::string>(), kStrAttrValue);
-  auto double_val = handler.GetValue(kDoubleAttrName);
+  sup::dto::AnyValue double_val;
+  EXPECT_TRUE(handler.GetValue(kDoubleAttrName, double_val));
   EXPECT_FALSE(sup::dto::IsEmptyValue(double_val));
   EXPECT_EQ(double_val.GetType(), sup::dto::Float64Type);
   EXPECT_EQ(double_val.As<double>(), 3.14);
-  auto bool_val = handler.GetValue(kBoolAttrName);
+  sup::dto::AnyValue bool_val;
+  EXPECT_TRUE(handler.GetValue(kBoolAttrName, bool_val));
   EXPECT_FALSE(sup::dto::IsEmptyValue(bool_val));
   EXPECT_EQ(bool_val.GetType(), sup::dto::BooleanType);
   EXPECT_EQ(bool_val.As<bool>(), true);
@@ -166,7 +170,8 @@ TEST_F(AttributeHandlerTest, NonDefinedAttributes)
   EXPECT_TRUE(handler.ValidateAttributes());
   auto failed_constraints = handler.GetFailedConstraints();
   EXPECT_EQ(failed_constraints.size(), 0);
-  auto bool_val = handler.GetValue(kBoolAttrName);
+  sup::dto::AnyValue bool_val;
+  EXPECT_TRUE(handler.GetValue(kBoolAttrName, bool_val));
   EXPECT_FALSE(sup::dto::IsEmptyValue(bool_val));
   EXPECT_EQ(bool_val.GetType(), sup::dto::StringType);
   EXPECT_EQ(bool_val.As<std::string>(), kBoolAttrValue);

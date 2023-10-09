@@ -145,7 +145,11 @@ The `Variable` class supports an attribute system (see :ref:`Attribute System`).
 
    // Retrieve attribute values
    std::string units = local_var->GetAttributeString("units");
-   int precision = local_var->GetAttributeValue<int>("precision");
+   int precision;
+   if (!local_var->GetAttributeValue("precision", precision))
+   {
+     // deal with error retrieving the attribute's value as an integer...
+   }
 
 Resetting a Variable
 ^^^^^^^^^^^^^^^^^^^^

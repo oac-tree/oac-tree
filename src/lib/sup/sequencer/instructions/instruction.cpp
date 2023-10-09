@@ -246,22 +246,11 @@ bool Instruction::GetAttributeValue(const std::string& attr_name, const Workspac
   {
     return GetValueFromVariableName(*this, ws, ui, val_info.m_value, value);
   }
-  sup::dto::AnyValue tmp_val;
-  try
-  {
-    tmp_val = m_attribute_handler.GetValue(attr_name);
-  }
-  catch(const MessageException& e)
-  {
-    const std::string error = InstructionErrorProlog(*this) + e.what();
-    ui.LogError(error);
-    return false;
-  }
-  if (!sup::dto::TryAssign(value, tmp_val))
+  if (!m_attribute_handler.GetValue(attr_name, value))
   {
     const std::string error = InstructionErrorProlog(*this) +
-      "could not assign retrieved value of attribute [" + attr_name +
-      "] to passed output parameter";
+      "could not retrieve AnyValue of attribute [" + attr_name + "] or assign it to passed output "
+      "parameter";
     ui.LogError(error);
     return false;
   }

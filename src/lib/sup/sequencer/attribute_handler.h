@@ -74,35 +74,30 @@ public:
 
   std::vector<std::string> GetFailedConstraints() const;
 
-  sup::dto::AnyValue GetValue(const std::string& attr_name) const;
-
-  std::pair<sup::dto::AnyValue, std::string> GetConvertedValue(
-    const std::string& attr_name, const sup::dto::AnyValue& value) const;
+  bool GetValue(const std::string& attr_name, sup::dto::AnyValue& value) const;
 
   template <typename T>
-  T GetValueAs(const std::string& attr_name) const;
+  bool GetValueAs(const std::string& attr_name, T& val) const;
 
 private:
-  StringAttribute GetStringAttribute(const std::string& attr_name) const;
-  sup::dto::AnyValue TryCreateAnyValue(const StringAttribute& str_attr) const;
   struct AttributeHandlerImpl;
   std::unique_ptr<AttributeHandlerImpl> m_impl;
   StringAttributeList m_str_attributes;
 };
 
 template <typename T>
-T AttributeHandler::GetValueAs(const std::string& attr_name) const
+bool AttributeHandler::GetValueAs(const std::string& attr_name, T& val) const
 {
-  auto val = GetValue(attr_name);
-  T result;
-  if (!val.As(result))
+  sup::dto::AnyValue anyvalue;
+  if (!GetValue(attr_name, anyvalue))
   {
-    std::string message =
-      "AttributeHandler::GetValueAs(): could not convert attribute with name [" + attr_name +
-      "] to requested type";
-    throw RuntimeException(message);
+    return false;
   }
-  return result;
+  if (!anyvalue.As(val))
+  {
+    return false;
+  }
+  return true;
 }
 
 std::string GetStringAttributeValue(const StringAttributeList& str_attributes,

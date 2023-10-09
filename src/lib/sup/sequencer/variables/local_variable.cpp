@@ -58,11 +58,12 @@ LocalVariable::~LocalVariable() {}
 
 bool LocalVariable::IsDynamicallyTyped() const
 {
-  if (!HasAttribute(DYNAMIC_TYPE_ATTRIBUTE))
+  bool is_dynamic = false;
+  if (!GetAttributeValue(DYNAMIC_TYPE_ATTRIBUTE, is_dynamic))
   {
     return false;
   }
-  return GetAttributeValue<sup::dto::boolean>(DYNAMIC_TYPE_ATTRIBUTE);
+  return is_dynamic;
 }
 
 bool LocalVariable::GetValueImpl(sup::dto::AnyValue& value) const

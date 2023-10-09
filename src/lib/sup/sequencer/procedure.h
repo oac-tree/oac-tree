@@ -259,7 +259,14 @@ public:
   template <typename T>
   T GetAttributeValue(const std::string& attr_name) const
   {
-    return m_attribute_handler.GetValueAs<T>(attr_name);
+    T val;
+    if (!m_attribute_handler.GetValueAs(attr_name, val))
+    {
+      const std::string message = "Procedure::GetAttributeValue(): no attribute with name [" +
+                                  attr_name + "]";
+      throw RuntimeException(message);
+    }
+    return val;
   }
 
   /**

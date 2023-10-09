@@ -26,6 +26,8 @@
 #include <sup/sequencer/attributes/attribute_validator.h>
 #include <sup/sequencer/instructions/instruction_helper.h>
 
+#include <sup/dto/anyvalue_helper.h>
+
 #include <algorithm>
 #include <sstream>
 
@@ -112,40 +114,23 @@ std::vector<std::string> AttributeHandler::GetFailedConstraints() const
   return m_impl->failed_constraints;
 }
 
-sup::dto::AnyValue AttributeHandler::GetValue(const std::string& attr_name) const
-{
-  const auto str_attr = GetStringAttribute(attr_name);
-  return TryCreateAnyValue(str_attr);
-}
-
-std::pair<sup::dto::AnyValue, std::string> AttributeHandler::GetConvertedValue(
-  const std::string& attr_name, const sup::dto::AnyValue& value) const
-{
-  return m_impl->attr_validator.TryConvertAnyValue(attr_name, value);
-}
-
-StringAttribute AttributeHandler::GetStringAttribute(const std::string& attr_name) const
+bool AttributeHandler::GetValue(const std::string& attr_name, sup::dto::AnyValue& value) const
 {
   auto it = FindStringAttribute(m_str_attributes, attr_name);
   if (it == m_str_attributes.end())
   {
-    std::string message = "AttributeHandler::GetStringAttribute(): no attribute with name [" +
-                          attr_name + "]";
-    throw RuntimeException(message);
+    return false;
   }
-  return *it;
-}
-
-sup::dto::AnyValue AttributeHandler::TryCreateAnyValue(const StringAttribute& str_attr) const
-{
-  auto result = m_impl->attr_validator.TryCreateAnyValue(str_attr);
+  auto result = m_impl->attr_validator.TryCreateAnyValue(*it);
   if (!result.second.empty())
   {
-    std::string message = "AttributeHandler::TryCreateAnyValue(): failed to create value of name ["
-                          + str_attr.first + "] because of constraint:\n" + result.second;
-    throw RuntimeException(message);
+    return false;
   }
-  return result.first;
+  if (!sup::dto::TryAssign(value, result.first))
+  {
+    return false;
+  }
+  return true;
 }
 
 std::string GetStringAttributeValue(const StringAttributeList& str_attributes,

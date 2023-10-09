@@ -46,6 +46,8 @@ std::vector<std::string> CheckMandatoryConstraints(
 std::vector<AttributeDefinition>::const_iterator FindAttributeDefinition(
   const std::vector<AttributeDefinition>& attribute_definitions,
   const std::string& attr_name);
+
+bool AttributeRefersToVariable(const AttributeDefinition& attr_def, const std::string& attr_val);
 }  // unnamed namespace
 
 namespace sup
@@ -88,12 +90,13 @@ std::vector<std::string> AttributeValidator::ValidateAttributes(
   auto failed_constraints = CheckMandatoryConstraints(m_attribute_definitions, str_attributes);
   for (const auto& str_attr : str_attributes)
   {
-    if (InstructionHelper::AttributeStartsWith(str_attr.second,
-                                               DefaultSettings::VARIABLE_ATTRIBUTE_CHAR))
+    auto it = FindAttributeDefinition(m_attribute_definitions, str_attr.first);
+    if (it != m_attribute_definitions.end() &&
+        AttributeRefersToVariable(*it, str_attr.second))
     {
       continue;  // Don't validate attribute values referring to workspace variables
     }
-    auto result = TryCreateAnyValue(str_attr);
+    auto result = TryCreateAnyValueImpl(str_attr, it);
     if (!result.second.empty())
     {
       failed_constraints.push_back(result.second);
@@ -113,11 +116,17 @@ std::pair<sup::dto::AnyValue, std::string> AttributeValidator::TryCreateAnyValue
   const StringAttribute& str_attr) const
 {
   auto it = FindAttributeDefinition(m_attribute_definitions, str_attr.first);
-  if (it == m_attribute_definitions.end())
+  return TryCreateAnyValueImpl(str_attr, it);
+}
+
+std::pair<sup::dto::AnyValue, std::string> AttributeValidator::TryCreateAnyValueImpl(
+    const StringAttribute& str_attr, AttributeDefinitionIterator attr_def_it) const
+{
+  if (attr_def_it == m_attribute_definitions.end())
   {
     return { sup::dto::AnyValue(str_attr.second), "" };
   }
-  auto attr_type = it->GetType();
+  auto attr_type = attr_def_it->GetType();
   auto parsed = sup::sequencer::utils::ParseAttributeString(attr_type, str_attr.second);
   if (parsed.first)
   {
@@ -170,6 +179,23 @@ std::vector<sup::sequencer::AttributeDefinition>::const_iterator FindAttributeDe
                      return attr_def.GetName() == attr_name;
                    };
   return std::find_if(attribute_definitions.begin(), attribute_definitions.end(), predicate);
+}
+
+bool AttributeRefersToVariable(const AttributeDefinition& attr_def, const std::string& attr_val)
+{
+  using sup::sequencer::AttributeCategory;
+  using sup::sequencer::InstructionHelper::AttributeStartsWith;
+  const auto attr_cat = attr_def.GetCategory();
+  if (attr_cat == AttributeCategory::kVariableName)
+  {
+    return true;
+  }
+  if (attr_cat == AttributeCategory::kBoth &&
+      AttributeStartsWith(attr_val, sup::sequencer::DefaultSettings::VARIABLE_ATTRIBUTE_CHAR))
+  {
+    return true;
+  }
+  return false;
 }
 
 }  // unnamed namespace

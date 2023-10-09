@@ -57,6 +57,10 @@ public:
     const StringAttribute& str_attr) const;
 
 private:
+  using AttributeDefinitionIterator = std::vector<AttributeDefinition>::const_iterator;
+
+  std::pair<sup::dto::AnyValue, std::string> TryCreateAnyValueImpl(
+    const StringAttribute& str_attr, AttributeDefinitionIterator attr_def_it) const;
   bool HasAttributeDefinition(const std::string& attr_name) const;
   std::vector<AttributeDefinition> m_attribute_definitions;
   std::vector<Constraint> m_custom_constraints;

@@ -22,6 +22,7 @@
 #include "local_variable.h"
 
 #include <sup/sequencer/concrete_constraints.h>
+#include <sup/sequencer/constants.h>
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/procedure.h>
 
@@ -38,20 +39,16 @@ namespace sequencer
 
 const std::string LocalVariable::Type = "Local";
 
-const std::string JSON_TYPE_ATTRIBUTE = "type";
-const std::string JSON_VALUE_ATTRIBUTE = "value";
-const std::string DYNAMIC_TYPE_ATTRIBUTE = "dynamicType";
-
 LocalVariable::LocalVariable()
   : Variable(LocalVariable::Type)
   , m_value{}
 {
-  AddAttributeDefinition(JSON_TYPE_ATTRIBUTE, sup::dto::StringType);
-  AddAttributeDefinition(JSON_VALUE_ATTRIBUTE, sup::dto::StringType);
-  AddAttributeDefinition(DYNAMIC_TYPE_ATTRIBUTE, sup::dto::BooleanType);
+  AddAttributeDefinition(Constants::TYPE_ATTRIBUTE_NAME, sup::dto::StringType);
+  AddAttributeDefinition(Constants::VALUE_ATTRIBUTE_NAME, sup::dto::StringType);
+  AddAttributeDefinition(Constants::IS_DYNAMIC_TYPE_ATTRIBUTE_NAME, sup::dto::BooleanType);
   AddConstraint(MakeConstraint<Or>(
-                  MakeConstraint<Exists>(JSON_TYPE_ATTRIBUTE),
-                  MakeConstraint<Not>(MakeConstraint<Exists>(JSON_VALUE_ATTRIBUTE))));
+                  MakeConstraint<Exists>(Constants::TYPE_ATTRIBUTE_NAME),
+                  MakeConstraint<Not>(MakeConstraint<Exists>(Constants::VALUE_ATTRIBUTE_NAME))));
 }
 
 LocalVariable::~LocalVariable() {}
@@ -59,7 +56,7 @@ LocalVariable::~LocalVariable() {}
 bool LocalVariable::IsDynamicallyTyped() const
 {
   bool is_dynamic = false;
-  if (!GetAttributeValue(DYNAMIC_TYPE_ATTRIBUTE, is_dynamic))
+  if (!GetAttributeValue(Constants::IS_DYNAMIC_TYPE_ATTRIBUTE_NAME, is_dynamic))
   {
     return false;
   }
@@ -95,7 +92,8 @@ bool LocalVariable::SetValueImpl(const sup::dto::AnyValue& value)
 
 void LocalVariable::SetupImpl(const sup::dto::AnyTypeRegistry& registry)
 {
-  m_value = ParseAnyValueAttributePair(*this, JSON_TYPE_ATTRIBUTE, JSON_VALUE_ATTRIBUTE, registry);
+  m_value = ParseAnyValueAttributePair(
+    *this, Constants::TYPE_ATTRIBUTE_NAME, Constants::VALUE_ATTRIBUTE_NAME, registry);
 }
 
 void LocalVariable::ResetImpl()

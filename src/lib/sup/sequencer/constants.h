@@ -131,6 +131,12 @@ const std::string CANCEL_TEXT_ATTRIBUTE_NAME = "cancelText";
 const std::string TIMEOUT_SEC_ATTRIBUTE_NAME = "timeout";
 const std::string EQUALS_VARIABLE_NAME_ATTRIBUTE_NAME = "equalsVar";
 
+// Variable attribute names
+const std::string TYPE_ATTRIBUTE_NAME = "type";
+const std::string VALUE_ATTRIBUTE_NAME = "value";
+const std::string IS_DYNAMIC_TYPE_ATTRIBUTE_NAME = "dynamicType";
+const std::string PRETTY_JSON_ATTRIBUTE_NAME = "pretty";
+
 } // namespace Constants
 
 }  // namespace sequencer

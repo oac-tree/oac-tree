@@ -22,6 +22,7 @@
 #include "file_variable.h"
 
 #include <sup/sequencer/concrete_constraints.h>
+#include <sup/sequencer/constants.h>
 #include <sup/sequencer/generic_utils.h>
 
 #include <sup/dto/anyvalue_helper.h>
@@ -29,9 +30,6 @@
 
 #include <fstream>
 #include <sstream>
-
-const std::string FILENAME_ATTR_NAME = "fileName";
-const std::string PRETTY_JSON_ATTR_NAME = "pretty";
 
 namespace sup
 {
@@ -42,8 +40,8 @@ const std::string FileVariable::Type = "File";
 FileVariable::FileVariable()
   : Variable(FileVariable::Type)
 {
-  AddAttributeDefinition(FILENAME_ATTR_NAME, sup::dto::StringType).SetMandatory();
-  AddAttributeDefinition(PRETTY_JSON_ATTR_NAME, sup::dto::BooleanType);
+  AddAttributeDefinition(Constants::FILENAME_ATTRIBUTE_NAME, sup::dto::StringType).SetMandatory();
+  AddAttributeDefinition(Constants::PRETTY_JSON_ATTRIBUTE_NAME, sup::dto::BooleanType);
 }
 
 FileVariable::~FileVariable() = default;
@@ -51,7 +49,7 @@ FileVariable::~FileVariable() = default;
 bool FileVariable::GetValueImpl(sup::dto::AnyValue& value) const
 {
   sup::dto::JSONAnyValueParser parser;
-  if (!parser.ParseFile(GetAttributeString(FILENAME_ATTR_NAME)))
+  if (!parser.ParseFile(GetAttributeString(Constants::FILENAME_ATTRIBUTE_NAME)))
   {
     return false;
   }
@@ -62,13 +60,13 @@ bool FileVariable::GetValueImpl(sup::dto::AnyValue& value) const
 bool FileVariable::SetValueImpl(const sup::dto::AnyValue& value)
 {
   bool pretty_json = false;
-  if (!GetAttributeValue(PRETTY_JSON_ATTR_NAME, pretty_json))
+  if (!GetAttributeValue(Constants::PRETTY_JSON_ATTRIBUTE_NAME, pretty_json))
   {
     return false;
   }
   try
   {
-    sup::dto::AnyValueToJSONFile(value, GetAttributeString(FILENAME_ATTR_NAME),
+    sup::dto::AnyValueToJSONFile(value, GetAttributeString(Constants::FILENAME_ATTRIBUTE_NAME),
                                  pretty_json);
     Notify(value, true);
   }

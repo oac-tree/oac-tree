@@ -27,6 +27,6 @@
             type='{"type":"uint32"}'
             value='7'/>
         <File name="file"
-            fileName="/tmp/variable.bck"/>
+            file="/tmp/variable.bck"/>
     </Workspace>
 </Procedure>

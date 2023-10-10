@@ -52,7 +52,7 @@ TEST_F(FileVariableTest, FileWrite)
             type='{"type":"MyStruct","attributes":[{"value":{"type":"float32"}}]}'
             value='{"value":0.0}'/>
         <File name="file"
-            fileName="variable.bck"/>
+            file="variable.bck"/>
     </Workspace>
 )"};
 
@@ -91,7 +91,7 @@ TEST_F(FileVariableTest, Setup)
   EXPECT_FALSE(variable->GetValue(value));
   EXPECT_TRUE(sup::dto::IsEmptyValue(value));
 
-  EXPECT_TRUE(variable->AddAttribute("fileName", "some_file"));
+  EXPECT_TRUE(variable->AddAttribute("file", "some_file"));
   EXPECT_NO_THROW(variable->Setup());
 }
 
@@ -101,7 +101,7 @@ TEST_F(FileVariableTest, FileDoesNotExist)
 
   ASSERT_NE(variable.get(), nullptr);
 
-  EXPECT_TRUE(variable->AddAttribute("fileName", "does_not_exist"));
+  EXPECT_TRUE(variable->AddAttribute("file", "does_not_exist"));
   EXPECT_NO_THROW(variable->Setup());
 
   sup::dto::AnyValue value;  // Placeholder
@@ -129,7 +129,7 @@ TEST_F(FileVariableTest, FileSuccess)
         <Local name="severity"
             type='{"type":"uint32"}'
             value='7'/>
-        <File name="file" fileName="variable.bck"/>
+        <File name="file" file="variable.bck"/>
     </Workspace>
 )"};
 

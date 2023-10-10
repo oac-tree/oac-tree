@@ -34,6 +34,11 @@
       "Output": {
         "from" : "fromVar"
       }
+    },
+    "variable_attributes": {
+      "File": {
+        "fileName": "file"
+      }
     }
   }
 }

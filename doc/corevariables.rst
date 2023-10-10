@@ -71,7 +71,7 @@ Attributes:
      - Attribute type
      - Mandatory
      - Description
-   * - fileName
+   * - file
      - StringType
      - yes
      - name of the file where variables are defined
@@ -96,5 +96,5 @@ In the example, the variable "input" is copied to the variable "file", that writ
                type='{"type":"MyStruct","attributes":[{"value":{"type":"float32"}}]}'
                value='{"value":0.0}'/>
         <File name="file"
-              fileName="/tmp/variable.bck"/>
+              file="/tmp/variable.bck"/>
     </Workspace>

@@ -13,6 +13,6 @@
             type='{"type":"MyStruct","attributes":[{"value":{"type":"float32"}}]}'
             value='{"value":0.0}'/>
         <File name="file"
-            fileName="/tmp/variable.bck"/>
+            file="/tmp/variable.bck"/>
     </Workspace>
 </Procedure>

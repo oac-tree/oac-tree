@@ -20,9 +20,11 @@
  ******************************************************************************/
 
 #include "for.h"
-#include "sup/sequencer/execution_status.h"
-#include "sup/sequencer/instruction.h"
-#include "sup/sequencer/user_interface.h"
+
+#include <sup/sequencer/constants.h>
+#include <sup/sequencer/execution_status.h>
+#include <sup/sequencer/instruction.h>
+#include <sup/sequencer/user_interface.h>
 #include <sup/dto/basic_scalar_types.h>
 #include <sup/sequencer/workspace.h>
 
@@ -30,9 +32,6 @@
 #include <sup/dto/anyvalue.h>
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/generic_utils.h>
-
-const std::string ARRAY_ATTR_NAME = "arrayVar";
-const std::string ELEMENT_ATTR_NAME = "elementVar";
 
 namespace sup
 {
@@ -45,9 +44,9 @@ ForInstruction::ForInstruction()
   , m_count{0}
   , m_array{}
 {
-  AddAttributeDefinition(ARRAY_ATTR_NAME)
+  AddAttributeDefinition(Constants::ARRAY_VARIABLE_NAME_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kVariableName).SetMandatory();
-  AddAttributeDefinition(ELEMENT_ATTR_NAME)
+  AddAttributeDefinition(Constants::ELEMENT_VARIABLE_NAME_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kVariableName).SetMandatory();
 }
 
@@ -56,7 +55,7 @@ ForInstruction::~ForInstruction() = default;
 bool ForInstruction::InitHook(UserInterface& ui, Workspace& ws)
 {
   m_count = 0;
-  if (!GetAttributeValue(ARRAY_ATTR_NAME, ws, ui, m_array))
+  if (!GetAttributeValue(Constants::ARRAY_VARIABLE_NAME_ATTRIBUTE_NAME, ws, ui, m_array))
   {
     return false;
   }
@@ -69,7 +68,7 @@ ExecutionStatus ForInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& 
   {
     std::string warning_message = InstructionWarningProlog(*this) +
       "For instruction expects an array but variable with name [" +
-      GetAttributeString(ARRAY_ATTR_NAME) + "] is not one.";
+      GetAttributeString(Constants::ARRAY_VARIABLE_NAME_ATTRIBUTE_NAME) + "] is not one.";
     ui.LogWarning(warning_message);
     return ExecutionStatus::FAILURE;
   }
@@ -79,7 +78,7 @@ ExecutionStatus ForInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& 
     return ExecutionStatus::SUCCESS;
   }
   dto::AnyValue element_val;
-  if (!GetAttributeValue(ELEMENT_ATTR_NAME, ws, ui, element_val))
+  if (!GetAttributeValue(Constants::ELEMENT_VARIABLE_NAME_ATTRIBUTE_NAME, ws, ui, element_val))
   {
     return ExecutionStatus::FAILURE;
   }
@@ -87,17 +86,18 @@ ExecutionStatus ForInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& 
   {
     std::string warning_message =
       InstructionWarningProlog(*this) + "The element [" +
-      GetAttributeString(ELEMENT_ATTR_NAME) + "] and the elements of array [" +
-      GetAttributeString(ARRAY_ATTR_NAME) + "] have to be of the same type.";
+      GetAttributeString(Constants::ELEMENT_VARIABLE_NAME_ATTRIBUTE_NAME) + "] and the elements of array [" +
+      GetAttributeString(Constants::ARRAY_VARIABLE_NAME_ATTRIBUTE_NAME) + "] have to be of the same type.";
     ui.LogWarning(warning_message);
     return ExecutionStatus::FAILURE;
   }
 
-  if (!SetValueFromAttributeName(*this, ws, ui, ELEMENT_ATTR_NAME, m_array[m_count]))
+  if (!SetValueFromAttributeName(*this, ws, ui, Constants::ELEMENT_VARIABLE_NAME_ATTRIBUTE_NAME,
+                                 m_array[m_count]))
   {
     std::string warning_message = InstructionWarningProlog(*this) +
       "Could not write current array value to element variable with name [" +
-      GetAttributeString(ELEMENT_ATTR_NAME) + "]";
+      GetAttributeString(Constants::ELEMENT_VARIABLE_NAME_ATTRIBUTE_NAME) + "]";
     ui.LogWarning(warning_message);
     return ExecutionStatus::FAILURE;
   }

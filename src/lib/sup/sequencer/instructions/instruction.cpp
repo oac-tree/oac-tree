@@ -58,8 +58,8 @@ Instruction::Instruction(const std::string &type)
     , m_attribute_handler{}
     , m_status_mutex{}
 {
-  AddAttributeDefinition(attributes::kNameAttribute, sup::dto::StringType);
-  AddAttributeDefinition(kIsRootAttribute, sup::dto::BooleanType);
+  AddAttributeDefinition(Constants::NAME_ATTRIBUTE_NAME, sup::dto::StringType);
+  AddAttributeDefinition(Constants::IS_ROOT_ATTRIBUTE_NAME, sup::dto::BooleanType);
 }
 
 Instruction::~Instruction() = default;
@@ -76,18 +76,18 @@ std::string Instruction::GetType() const
 
 std::string Instruction::GetName() const
 {
-  return GetAttributeString(attributes::kNameAttribute);
+  return GetAttributeString(Constants::NAME_ATTRIBUTE_NAME);
 }
 
 void Instruction::SetName(const std::string &name)
 {
-  if (HasAttribute(attributes::kNameAttribute))
+  if (HasAttribute(Constants::NAME_ATTRIBUTE_NAME))
   {
-    SetAttribute(attributes::kNameAttribute, name);
+    SetAttribute(Constants::NAME_ATTRIBUTE_NAME, name);
   }
   else
   {
-    AddAttribute(attributes::kNameAttribute, name);
+    AddAttribute(Constants::NAME_ATTRIBUTE_NAME, name);
   }
 }
 

@@ -21,12 +21,10 @@
 
 #include "output.h"
 
+#include <sup/sequencer/constants.h>
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/user_interface.h>
 #include <sup/sequencer/workspace.h>
-
-const std::string FROM_ATTRIBUTE_NAME{"fromVar"};
-const std::string DESCR_ATTRIBUTE_NAME{"description"};
 
 namespace sup
 {
@@ -37,9 +35,9 @@ const std::string Output::Type = "Output";
 Output::Output()
   : Instruction(Output::Type)
 {
-  AddAttributeDefinition(FROM_ATTRIBUTE_NAME)
+  AddAttributeDefinition(Constants::FROM_VARIABLE_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kVariableName).SetMandatory();
-  AddAttributeDefinition(DESCR_ATTRIBUTE_NAME)
+  AddAttributeDefinition(Constants::DESCRIPTION_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kBoth);
 }
 
@@ -48,12 +46,12 @@ Output::~Output() = default;
 ExecutionStatus Output::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   sup::dto::AnyValue value;
-  if (!GetAttributeValue(FROM_ATTRIBUTE_NAME, ws, ui, value))
+  if (!GetAttributeValue(Constants::FROM_VARIABLE_ATTRIBUTE_NAME, ws, ui, value))
   {
     return ExecutionStatus::FAILURE;
   }
   std::string description;
-  if (!GetAttributeValueAs(DESCR_ATTRIBUTE_NAME, ws, ui, description))
+  if (!GetAttributeValueAs(Constants::DESCRIPTION_ATTRIBUTE_NAME, ws, ui, description))
   {
     return ExecutionStatus::FAILURE;
   }

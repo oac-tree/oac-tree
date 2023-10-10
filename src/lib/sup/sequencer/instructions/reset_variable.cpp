@@ -21,6 +21,7 @@
 
 #include "reset_variable.h"
 
+#include <sup/sequencer/constants.h>
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/user_interface.h>
 #include <sup/sequencer/workspace.h>
@@ -30,14 +31,12 @@ namespace sup
 namespace sequencer
 {
 
-const std::string VARNAME_ATTRIBUTE = "varName";
-
 const std::string ResetVariable::Type = "ResetVariable";
 
 ResetVariable::ResetVariable()
   : Instruction(ResetVariable::Type)
 {
-  AddAttributeDefinition(VARNAME_ATTRIBUTE)
+  AddAttributeDefinition(Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kVariableName).SetMandatory();
 }
 
@@ -45,7 +44,7 @@ ResetVariable::~ResetVariable() = default;
 
 ExecutionStatus ResetVariable::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  auto var_name = GetAttributeString(VARNAME_ATTRIBUTE);
+  auto var_name = GetAttributeString(Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME);
   if (!ws.HasVariable(var_name))
   {
     std::string error_message = InstructionErrorProlog(*this) +

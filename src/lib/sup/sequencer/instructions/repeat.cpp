@@ -21,10 +21,9 @@
 
 #include "repeat.h"
 
+#include <sup/sequencer/constants.h>
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/generic_utils.h>
-
-const std::string MAXCOUNT_ATTR_NAME = "maxCount";
 
 namespace sup
 {
@@ -38,7 +37,7 @@ Repeat::Repeat()
   , m_count{0}
   , m_init_ok{false}
 {
-  AddAttributeDefinition(MAXCOUNT_ATTR_NAME, sup::dto::SignedInteger32Type)
+  AddAttributeDefinition(Constants::MAX_COUNT_ATTRIBUTE_NAME, sup::dto::SignedInteger32Type)
     .SetCategory(AttributeCategory::kBoth);
 }
 
@@ -48,7 +47,7 @@ bool Repeat::InitHook(UserInterface& ui, Workspace& ws)
 {
   m_count = 0;
   m_max_count = 0;
-  if (!GetAttributeValueAs(MAXCOUNT_ATTR_NAME, ws, ui, m_max_count))
+  if (!GetAttributeValueAs(Constants::MAX_COUNT_ATTRIBUTE_NAME, ws, ui, m_max_count))
   {
     return false;
   }

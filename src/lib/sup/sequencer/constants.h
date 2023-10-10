@@ -85,7 +85,7 @@ const char VARNAME_DELIMITER = ',';
 
 namespace Constants
 {
-// XML element and attribute names
+// Top level XML element and attribute names
 const std::string PROCEDURE_ELEMENT_NAME = "Procedure";
 const std::string WORKSPACE_ELEMENT_NAME = "Workspace";
 const std::string PLUGIN_ELEMENT_NAME = "Plugin";
@@ -101,6 +101,35 @@ const std::string USER_CHOICES_MODAL_NAME = "modal";
 const std::string USER_CHOICES_TITLE_NAME = "title";
 const std::string USER_CHOICES_INFORMATIVE_TEXT_NAME = "informative";
 const std::string USER_CHOICES_DETAILS_NAME = "details";
+
+// Universal instruction attribute names
+const std::string IS_ROOT_ATTRIBUTE_NAME = "isRoot";
+const std::string NAME_ATTRIBUTE_NAME = "name";
+
+// Instruction attribute names
+const std::string GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME = "varName";
+const std::string INPUT_VARIABLE_NAME_ATTRIBUTE_NAME = "inputVar";
+const std::string OUTPUT_VARIABLE_NAME_ATTRIBUTE_NAME = "outputVar";
+const std::string FILENAME_ATTRIBUTE_NAME = "file";
+const std::string PATH_ATTRIBUTE_NAME = "path";
+const std::string LEFT_VARIABLE_NAME_ATTRIBUTE_NAME = "leftVar";
+const std::string RIGHT_VARIABLE_NAME_ATTRIBUTE_NAME = "rightVar";
+const std::string ARRAY_VARIABLE_NAME_ATTRIBUTE_NAME = "arrayVar";
+const std::string ELEMENT_VARIABLE_NAME_ATTRIBUTE_NAME = "elementVar";
+const std::string DESCRIPTION_ATTRIBUTE_NAME = "description";
+const std::string VARIABLE_NAMES_ATTRIBUTE_NAME = "varNames";
+const std::string FORCE_SUCCESS_ATTRIBUTE_NAME = "forceSuccess";
+const std::string MESSAGE_ATTRIBUTE_NAME = "message";
+const std::string SEVERITY_ATTRIBUTE_NAME = "severity";
+const std::string TEXT_ATTRIBUTE_NAME = "text";
+const std::string FROM_VARIABLE_ATTRIBUTE_NAME = "fromVar";
+const std::string SUCCESS_THRESHOLD_ATTRIBUTE_NAME = "successThreshold";
+const std::string FAILURE_THRESHOLD_ATTRIBUTE_NAME = "failureThreshold";
+const std::string MAX_COUNT_ATTRIBUTE_NAME = "maxCount";
+const std::string OK_TEXT_ATTRIBUTE_NAME = "okText";
+const std::string CANCEL_TEXT_ATTRIBUTE_NAME = "cancelText";
+const std::string TIMEOUT_SEC_ATTRIBUTE_NAME = "timeout";
+const std::string EQUALS_VARIABLE_NAME_ATTRIBUTE_NAME = "equalsVar";
 
 } // namespace Constants
 

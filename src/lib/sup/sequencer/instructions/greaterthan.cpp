@@ -21,16 +21,15 @@
 
 #include "greaterthan.h"
 
-#include <sup/dto/anyvalue.h>
-#include <sup/dto/basic_scalar_types.h>
+#include <sup/sequencer/constants.h>
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/execution_status.h>
 #include <sup/sequencer/user_interface.h>
 #include <sup/sequencer/workspace.h>
-#include <sup/dto/anyvalue_operations.h>
 
-const std::string LEFT_VARIABLE_ATTR_NAME = "leftVar";
-const std::string RIGHT_VARIABLE_ATTR_NAME = "rightVar";
+#include <sup/dto/anyvalue.h>
+#include <sup/dto/basic_scalar_types.h>
+#include <sup/dto/anyvalue_operations.h>
 
 namespace sup
 {
@@ -41,9 +40,9 @@ const std::string GreaterThan::Type = "GreaterThan";
 GreaterThan::GreaterThan()
   : Instruction(GreaterThan::Type)
 {
-  AddAttributeDefinition(LEFT_VARIABLE_ATTR_NAME)
+  AddAttributeDefinition(Constants::LEFT_VARIABLE_NAME_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kVariableName).SetMandatory();
-  AddAttributeDefinition(RIGHT_VARIABLE_ATTR_NAME)
+  AddAttributeDefinition(Constants::RIGHT_VARIABLE_NAME_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kVariableName).SetMandatory();
 }
 
@@ -52,12 +51,12 @@ GreaterThan::~GreaterThan() = default;
 ExecutionStatus GreaterThan::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   sup::dto::AnyValue lhs;
-  if (!GetAttributeValue(LEFT_VARIABLE_ATTR_NAME, ws, ui, lhs))
+  if (!GetAttributeValue(Constants::LEFT_VARIABLE_NAME_ATTRIBUTE_NAME, ws, ui, lhs))
   {
     return ExecutionStatus::FAILURE;
   }
   sup::dto::AnyValue rhs;
-  if (!GetAttributeValue(RIGHT_VARIABLE_ATTR_NAME, ws, ui, rhs))
+  if (!GetAttributeValue(Constants::RIGHT_VARIABLE_NAME_ATTRIBUTE_NAME, ws, ui, rhs))
   {
     return ExecutionStatus::FAILURE;
   }

@@ -35,8 +35,6 @@ namespace sup
 {
 namespace sequencer
 {
-const std::string kIsRootAttribute = "isRoot";
-
 class Procedure;
 class UserInterface;
 class Workspace;

@@ -21,13 +21,12 @@
 
 #include "condition.h"
 
+#include <sup/sequencer/constants.h>
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/user_interface.h>
 #include <sup/sequencer/workspace.h>
 
 #include <sup/dto/anyvalue.h>
-
-const std::string CONDITION_VARIABLE_ATTR_NAME = "varName";
 
 namespace sup
 {
@@ -38,7 +37,7 @@ const std::string Condition::Type = "Condition";
 Condition::Condition()
   : Instruction(Condition::Type)
 {
-  AddAttributeDefinition(CONDITION_VARIABLE_ATTR_NAME)
+  AddAttributeDefinition(Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kVariableName).SetMandatory();
 }
 
@@ -47,7 +46,7 @@ Condition::~Condition() = default;
 ExecutionStatus Condition::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   sup::dto::boolean result = false;
-  if (!GetAttributeValueAs(CONDITION_VARIABLE_ATTR_NAME, ws, ui, result))
+  if (!GetAttributeValueAs(Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME, ws, ui, result))
   {
     return ExecutionStatus::FAILURE;
   }

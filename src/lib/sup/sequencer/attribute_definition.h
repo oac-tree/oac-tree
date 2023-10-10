@@ -31,10 +31,6 @@ namespace sup
 {
 namespace sequencer
 {
-namespace attributes
-{
-const std::string kNameAttribute = "name";
-}
 class AttributeProperties;
 
 /**

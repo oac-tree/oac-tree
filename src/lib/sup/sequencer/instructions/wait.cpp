@@ -30,8 +30,6 @@
 #include <chrono>
 #include <thread>
 
-const std::string TIMEOUT_ATTR_NAME = "timeout";
-
 const double MAX_TIMEOUT_SECONDS = 18.4e9;  // More than 500 years. This should be enough...
 
 namespace sup
@@ -43,7 +41,7 @@ const std::string Wait::Type = "Wait";
 Wait::Wait()
   : Instruction(Wait::Type)
 {
-  AddAttributeDefinition(TIMEOUT_ATTR_NAME, sup::dto::Float64Type)
+  AddAttributeDefinition(Constants::TIMEOUT_SEC_ATTRIBUTE_NAME, sup::dto::Float64Type)
     .SetCategory(AttributeCategory::kBoth);
 }
 
@@ -52,7 +50,8 @@ Wait::~Wait() = default;
 ExecutionStatus Wait::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   sup::dto::int64 timeout_ns;
-  if (!instruction_utils::GetVariableTimeoutAttribute(*this, ui, ws, TIMEOUT_ATTR_NAME, timeout_ns))
+  if (!instruction_utils::GetVariableTimeoutAttribute(
+            *this, ui, ws, Constants::TIMEOUT_SEC_ATTRIBUTE_NAME, timeout_ns))
   {
     return ExecutionStatus::FAILURE;
   }

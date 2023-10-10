@@ -30,20 +30,17 @@ namespace sequencer
 {
 const std::string UserConfirmation::Type = "UserConfirmation";
 
-const std::string DESCRIPTION_ATTRIBUTE = "description";
-const std::string OK_ATTRIBUTE = "okText";
-const std::string CANCEL_ATTRIBUTE = "cancelText";
-
 const std::string DEFAULT_OK_TEXT = "Ok";
 const std::string DEFAULT_CANCEL_TEXT = "Cancel";
 
 UserConfirmation::UserConfirmation()
   : Instruction(UserConfirmation::Type)
 {
-  AddAttributeDefinition(DESCRIPTION_ATTRIBUTE)
+  AddAttributeDefinition(Constants::DESCRIPTION_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kBoth).SetMandatory();
-  AddAttributeDefinition(OK_ATTRIBUTE).SetCategory(AttributeCategory::kBoth);
-  AddAttributeDefinition(CANCEL_ATTRIBUTE).SetCategory(AttributeCategory::kBoth);
+  AddAttributeDefinition(Constants::OK_TEXT_ATTRIBUTE_NAME).SetCategory(AttributeCategory::kBoth);
+  AddAttributeDefinition(Constants::CANCEL_TEXT_ATTRIBUTE_NAME)
+    .SetCategory(AttributeCategory::kBoth);
 }
 
 UserConfirmation::~UserConfirmation() = default;
@@ -51,17 +48,17 @@ UserConfirmation::~UserConfirmation() = default;
 ExecutionStatus UserConfirmation::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   std::string description;
-  if (!GetAttributeValueAs(DESCRIPTION_ATTRIBUTE, ws, ui, description))
+  if (!GetAttributeValueAs(Constants::DESCRIPTION_ATTRIBUTE_NAME, ws, ui, description))
   {
     return ExecutionStatus::FAILURE;
   }
   std::string ok_text = DEFAULT_OK_TEXT;
-  if (!GetAttributeValueAs(OK_ATTRIBUTE, ws, ui, ok_text))
+  if (!GetAttributeValueAs(Constants::OK_TEXT_ATTRIBUTE_NAME, ws, ui, ok_text))
   {
     return ExecutionStatus::FAILURE;
   }
   std::string cancel_text = DEFAULT_CANCEL_TEXT;
-  if (!GetAttributeValueAs(CANCEL_ATTRIBUTE, ws, ui, cancel_text))
+  if (!GetAttributeValueAs(Constants::CANCEL_TEXT_ATTRIBUTE_NAME, ws, ui, cancel_text))
   {
     return ExecutionStatus::FAILURE;
   }

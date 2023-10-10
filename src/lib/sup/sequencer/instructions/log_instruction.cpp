@@ -22,6 +22,7 @@
 #include "log_instruction.h"
 
 #include <sup/sequencer/concrete_constraints.h>
+#include <sup/sequencer/constants.h>
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/log_severity.h>
 #include <sup/sequencer/user_interface.h>
@@ -44,20 +45,16 @@ namespace sequencer {
 
 const std::string LogInstruction::Type = "Log";
 
-const std::string LOG_SOURCE = "sup::sequencer";
-
-const std::string MESSAGE_ATTRIBUTE_NAME = "message";
-const std::string INPUT_ATTRIBUTE_NAME = "inputVar";
-const std::string SEVERITY_ATTRIBUTE_NAME = "severity";
-
 LogInstruction::LogInstruction()
   : Instruction(Type)
 {
-  AddAttributeDefinition(MESSAGE_ATTRIBUTE_NAME).SetCategory(AttributeCategory::kBoth);
-  AddAttributeDefinition(INPUT_ATTRIBUTE_NAME).SetCategory(AttributeCategory::kVariableName);
-  AddAttributeDefinition(SEVERITY_ATTRIBUTE_NAME).SetCategory(AttributeCategory::kBoth);
-  AddConstraint(MakeConstraint<Or>(MakeConstraint<Exists>(MESSAGE_ATTRIBUTE_NAME),
-                                   MakeConstraint<Exists>(INPUT_ATTRIBUTE_NAME)));
+  AddAttributeDefinition(Constants::MESSAGE_ATTRIBUTE_NAME).SetCategory(AttributeCategory::kBoth);
+  AddAttributeDefinition(Constants::INPUT_VARIABLE_NAME_ATTRIBUTE_NAME)
+    .SetCategory(AttributeCategory::kVariableName);
+  AddAttributeDefinition(Constants::SEVERITY_ATTRIBUTE_NAME).SetCategory(AttributeCategory::kBoth);
+  AddConstraint(
+    MakeConstraint<Or>(MakeConstraint<Exists>(Constants::MESSAGE_ATTRIBUTE_NAME),
+                       MakeConstraint<Exists>(Constants::INPUT_VARIABLE_NAME_ATTRIBUTE_NAME)));
 }
 
 LogInstruction::~LogInstruction() = default;
@@ -65,7 +62,7 @@ LogInstruction::~LogInstruction() = default;
 ExecutionStatus LogInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   std::string severity_str = "info";
-  if (!GetAttributeValueAs(SEVERITY_ATTRIBUTE_NAME, ws, ui, severity_str))
+  if (!GetAttributeValueAs(Constants::SEVERITY_ATTRIBUTE_NAME, ws, ui, severity_str))
   {
     return ExecutionStatus::FAILURE;
   }
@@ -78,14 +75,14 @@ ExecutionStatus LogInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& 
     return ExecutionStatus::FAILURE;
   }
   std::string message;
-  if (!GetAttributeValueAs(MESSAGE_ATTRIBUTE_NAME, ws, ui, message))
+  if (!GetAttributeValueAs(Constants::MESSAGE_ATTRIBUTE_NAME, ws, ui, message))
   {
     return ExecutionStatus::FAILURE;
   }
   std::ostringstream oss;
   oss << message;
   sup::dto::AnyValue value;
-  if (!GetAttributeValue(INPUT_ATTRIBUTE_NAME, ws, ui, value))
+  if (!GetAttributeValue(Constants::INPUT_VARIABLE_NAME_ATTRIBUTE_NAME, ws, ui, value))
   {
     return ExecutionStatus::FAILURE;
   }

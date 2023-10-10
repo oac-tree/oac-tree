@@ -164,8 +164,8 @@ void AddWorkspaceVariables(Procedure* procedure, const sup::xml::TreeData& ws_da
 {
   for (auto &var_data : ws_data.Children())
   {
-    auto name = var_data.HasAttribute(attributes::kNameAttribute)
-                ? var_data.GetAttribute(attributes::kNameAttribute) : "";
+    auto name = var_data.HasAttribute(Constants::NAME_ATTRIBUTE_NAME)
+                ? var_data.GetAttribute(Constants::NAME_ATTRIBUTE_NAME) : "";
     if (name.empty())
     {
       std::string error_message =

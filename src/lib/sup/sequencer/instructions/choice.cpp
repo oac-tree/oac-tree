@@ -21,6 +21,7 @@
 
 #include "choice.h"
 
+#include <sup/sequencer/constants.h>
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/procedure.h>
 #include <sup/sequencer/user_interface.h>
@@ -32,8 +33,6 @@ namespace
 {
 bool GetIndexListFromVariable(std::vector<std::size_t>& list, const sup::dto::AnyValue& var);
 }  // unnamed namespace
-
-const std::string SELECTOR_VARIABLE_ATTR_NAME = "varName";
 
 namespace sup
 {
@@ -47,7 +46,7 @@ Choice::Choice()
   , m_instruction_list{}
   , m_instruction_list_initialized{false}
 {
-  AddAttributeDefinition(SELECTOR_VARIABLE_ATTR_NAME)
+  AddAttributeDefinition(Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kVariableName).SetMandatory();
 }
 
@@ -110,7 +109,7 @@ std::vector<const Instruction*> Choice::NextInstructionsImpl() const
 bool Choice::CreateInstructionList(UserInterface& ui, Workspace& ws)
 {
   sup::dto::AnyValue selector;
-  if (!GetAttributeValue(SELECTOR_VARIABLE_ATTR_NAME, ws, ui, selector))
+  if (!GetAttributeValue(Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME, ws, ui, selector))
   {
     return false;
   }

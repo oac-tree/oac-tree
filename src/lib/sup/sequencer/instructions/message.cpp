@@ -21,6 +21,7 @@
 
 #include "message.h"
 
+#include <sup/sequencer/constants.h>
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/instruction.h>
 #include <sup/sequencer/user_interface.h>
@@ -32,12 +33,10 @@ namespace sequencer
 
 const std::string Message::Type = "Message";
 
-const std::string TEXT_ATTRIBUTE = "text";
-
 Message::Message()
   : Instruction(Message::Type)
 {
-  AddAttributeDefinition(TEXT_ATTRIBUTE)
+  AddAttributeDefinition(Constants::TEXT_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kBoth).SetMandatory();
 }
 
@@ -46,7 +45,7 @@ Message::~Message() = default;
 ExecutionStatus Message::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   std::string message;
-  if (!GetAttributeValueAs(TEXT_ATTRIBUTE, ws, ui, message))
+  if (!GetAttributeValueAs(Constants::TEXT_ATTRIBUTE_NAME, ws, ui, message))
   {
     return ExecutionStatus::FAILURE;
   }

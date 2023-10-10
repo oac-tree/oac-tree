@@ -21,6 +21,7 @@
 
 #include "parallel_sequence.h"
 
+#include <sup/sequencer/constants.h>
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/generic_utils.h>
 
@@ -30,16 +31,15 @@ namespace sequencer
 {
 const std::string ParallelSequence::Type = "ParallelSequence";
 
-const std::string SUCCESS_THRESHOLD_ATTRIBUTE = "successThreshold";
-const std::string FAILURE_THRESHOLD_ATTRIBUTE = "failureThreshold";
-
 ParallelSequence::ParallelSequence()
   : CompoundInstruction(ParallelSequence::Type)
   , m_success_th{0}
   , m_failure_th{0}
 {
-  AddAttributeDefinition(SUCCESS_THRESHOLD_ATTRIBUTE, sup::dto::UnsignedInteger32Type);
-  AddAttributeDefinition(FAILURE_THRESHOLD_ATTRIBUTE, sup::dto::UnsignedInteger32Type);
+  AddAttributeDefinition(Constants::SUCCESS_THRESHOLD_ATTRIBUTE_NAME,
+                         sup::dto::UnsignedInteger32Type);
+  AddAttributeDefinition(Constants::FAILURE_THRESHOLD_ATTRIBUTE_NAME,
+                         sup::dto::UnsignedInteger32Type);
 }
 
 ParallelSequence::~ParallelSequence() = default;
@@ -150,22 +150,22 @@ bool ParallelSequence::InitThresholds(UserInterface& ui, Workspace& ws)
   auto N = static_cast<sup::dto::uint32>(ChildInstructions().size());
   m_success_th = N;
   // Literal attributes can't fail:
-  if (!GetAttributeValueAs(SUCCESS_THRESHOLD_ATTRIBUTE, ws, ui, m_success_th))
+  if (!GetAttributeValueAs(Constants::SUCCESS_THRESHOLD_ATTRIBUTE_NAME, ws, ui, m_success_th))
   {
     return false;
   }
   m_success_th = std::min(N, m_success_th);
   m_failure_th = 1;
-  if (!GetAttributeValueAs(FAILURE_THRESHOLD_ATTRIBUTE, ws, ui, m_failure_th))
+  if (!GetAttributeValueAs(Constants::FAILURE_THRESHOLD_ATTRIBUTE_NAME, ws, ui, m_failure_th))
   {
     return false;
   }
   m_failure_th = std::min(N, m_failure_th);
-  if (HasAttribute(SUCCESS_THRESHOLD_ATTRIBUTE))
+  if (HasAttribute(Constants::SUCCESS_THRESHOLD_ATTRIBUTE_NAME))
   {
     m_failure_th = std::min(m_failure_th, N - m_success_th + 1);
   }
-  else if (HasAttribute(FAILURE_THRESHOLD_ATTRIBUTE))
+  else if (HasAttribute(Constants::FAILURE_THRESHOLD_ATTRIBUTE_NAME))
   {
     m_success_th = N + 1 - m_failure_th;
   }

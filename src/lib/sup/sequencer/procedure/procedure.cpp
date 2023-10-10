@@ -395,11 +395,11 @@ namespace
 using namespace sup::sequencer;
 bool HasRootAttributeSet(const Instruction &instruction)
 {
-  if (!instruction.HasAttribute(kIsRootAttribute))
+  if (!instruction.HasAttribute(Constants::IS_ROOT_ATTRIBUTE_NAME))
   {
     return false;
   }
-  auto attr_val = instruction.GetAttributeString(kIsRootAttribute);
+  auto attr_val = instruction.GetAttributeString(Constants::IS_ROOT_ATTRIBUTE_NAME);
   auto parsed = utils::ParseAttributeString(sup::dto::BooleanType, attr_val);
   if (!parsed.first)
   {

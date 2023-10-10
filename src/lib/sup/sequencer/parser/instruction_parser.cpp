@@ -22,6 +22,7 @@
 #include "instruction_parser.h"
 
 #include <sup/sequencer/compound_instruction.h>
+#include <sup/sequencer/constants.h>
 #include <sup/sequencer/decorator_instruction.h>
 #include <sup/sequencer/instructions/include.h>
 #include <sup/sequencer/instruction_registry.h>
@@ -86,11 +87,11 @@ static void AddChildInstructions(Instruction *instruction,
 
 static std::string GetNameAttribute(const sup::xml::TreeData& data)
 {
-  if (!data.HasAttribute(attributes::kNameAttribute))
+  if (!data.HasAttribute(Constants::NAME_ATTRIBUTE_NAME))
   {
     return {};
   }
-  return data.GetAttribute(attributes::kNameAttribute);
+  return data.GetAttribute(Constants::NAME_ATTRIBUTE_NAME);
 }
 
 }  // namespace sequencer

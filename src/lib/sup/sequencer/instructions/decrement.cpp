@@ -21,12 +21,13 @@
 
 #include "decrement.h"
 
-#include <sup/dto/anyvalue.h>
-#include <sup/dto/anyvalue_operations.h>
+#include <sup/sequencer/constants.h>
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/user_interface.h>
 #include <sup/sequencer/workspace.h>
 
+#include <sup/dto/anyvalue.h>
+#include <sup/dto/anyvalue_operations.h>
 
 namespace sup
 {
@@ -35,12 +36,10 @@ namespace sequencer
 
 const std::string Decrement::Type = "Decrement";
 
-const std::string VARNAME_ATTRIBUTE = "varName";
-
 Decrement::Decrement()
   : Instruction(Decrement::Type)
 {
-  AddAttributeDefinition(VARNAME_ATTRIBUTE)
+  AddAttributeDefinition(Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kVariableName).SetMandatory();
 }
 
@@ -49,18 +48,20 @@ Decrement::~Decrement() = default;
 ExecutionStatus Decrement::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   sup::dto::AnyValue value;
-  if (!GetAttributeValue(VARNAME_ATTRIBUTE, ws, ui, value))
+  if (!GetAttributeValue(Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME, ws, ui, value))
   {
     return ExecutionStatus::FAILURE;
   }
   if (!sup::dto::Decrement(value))
   {
     const std::string warning = InstructionErrorProlog(*this) +
-      "could not decrement variable reffered to in attribute [" + VARNAME_ATTRIBUTE + "]";
+      "could not decrement variable reffered to in attribute [" +
+      Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME + "]";
     ui.LogWarning(warning);
     return ExecutionStatus::FAILURE;
   }
-  if (!SetValueFromAttributeName(*this, ws, ui, VARNAME_ATTRIBUTE, value))
+  if (!SetValueFromAttributeName(*this, ws, ui, Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME,
+                                 value))
   {
     return ExecutionStatus::FAILURE;
   }

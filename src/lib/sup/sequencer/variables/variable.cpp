@@ -21,6 +21,7 @@
 
 #include <sup/sequencer/variable.h>
 
+#include <sup/sequencer/constants.h>
 #include <sup/sequencer/exceptions.h>
 
 #include <sup/dto/anytype_registry.h>
@@ -51,7 +52,7 @@ Variable::Variable(const std::string &type)
   , m_update_cond{}
   , m_notify_cb{}
 {
-  AddAttributeDefinition(attributes::kNameAttribute, sup::dto::StringType);
+  AddAttributeDefinition(Constants::NAME_ATTRIBUTE_NAME, sup::dto::StringType);
 }
 
 Variable::~Variable() = default;
@@ -63,12 +64,12 @@ std::string Variable::GetType() const
 
 std::string Variable::GetName() const
 {
-  return GetAttributeString(attributes::kNameAttribute);
+  return GetAttributeString(Constants::NAME_ATTRIBUTE_NAME);
 }
 
 void Variable::SetName(const std::string &name)
 {
-  AddAttribute(attributes::kNameAttribute, name);
+  AddAttribute(Constants::NAME_ATTRIBUTE_NAME, name);
 }
 
 void Variable::Setup(const sup::dto::AnyTypeRegistry* registry)

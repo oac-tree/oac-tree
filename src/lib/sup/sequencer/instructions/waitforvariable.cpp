@@ -31,10 +31,6 @@
 
 #include <sup/dto/anyvalue_helper.h>
 
-const std::string TIMEOUT_ATTR_NAME = "timeout";
-const std::string VARNAME_ATTRIBUTE = "varName";
-const std::string EQUALVAR_ATTRIBUTE = "equalsVar";
-
 const double MAX_TIMEOUT_SECONDS = 18.4e9;  // More than 500 years. This should be enough...
 
 namespace sup
@@ -46,11 +42,12 @@ const std::string WaitForVariable::Type = "WaitForVariable";
 WaitForVariable::WaitForVariable()
   : Instruction(WaitForVariable::Type)
 {
-  AddAttributeDefinition(VARNAME_ATTRIBUTE)
+  AddAttributeDefinition(Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kVariableName).SetMandatory();
-  AddAttributeDefinition(TIMEOUT_ATTR_NAME, sup::dto::Float64Type)
+  AddAttributeDefinition(Constants::TIMEOUT_SEC_ATTRIBUTE_NAME, sup::dto::Float64Type)
     .SetCategory(AttributeCategory::kBoth).SetMandatory();
-  AddAttributeDefinition(EQUALVAR_ATTRIBUTE).SetCategory(AttributeCategory::kVariableName);
+  AddAttributeDefinition(Constants::EQUALS_VARIABLE_NAME_ATTRIBUTE_NAME)
+    .SetCategory(AttributeCategory::kVariableName);
 }
 
 WaitForVariable::~WaitForVariable() = default;
@@ -58,7 +55,8 @@ WaitForVariable::~WaitForVariable() = default;
 ExecutionStatus WaitForVariable::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   sup::dto::int64 timeout_ns;
-  if (!instruction_utils::GetVariableTimeoutAttribute(*this, ui, ws, TIMEOUT_ATTR_NAME, timeout_ns))
+  if (!instruction_utils::GetVariableTimeoutAttribute(
+                *this, ui, ws, Constants::TIMEOUT_SEC_ATTRIBUTE_NAME, timeout_ns))
   {
     return ExecutionStatus::FAILURE;
   }
@@ -68,10 +66,12 @@ ExecutionStatus WaitForVariable::ExecuteSingleImpl(UserInterface& ui, Workspace&
 
   // Register callbacks:
   auto cb_guard = ws.GetCallbackGuard(&dummy_listener);
-  RegisterCallback(ws, cv, &dummy_listener, GetAttributeString(VARNAME_ATTRIBUTE));
-  if (HasAttribute(EQUALVAR_ATTRIBUTE))
+  RegisterCallback(ws, cv, &dummy_listener,
+                   GetAttributeString(Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME));
+  if (HasAttribute(Constants::EQUALS_VARIABLE_NAME_ATTRIBUTE_NAME))
   {
-    RegisterCallback(ws, cv, &dummy_listener, GetAttributeString(EQUALVAR_ATTRIBUTE));
+    RegisterCallback(ws, cv, &dummy_listener,
+                     GetAttributeString(Constants::EQUALS_VARIABLE_NAME_ATTRIBUTE_NAME));
   }
 
   // Wait for condition to be satisfied, halt or timeout:
@@ -105,7 +105,7 @@ bool WaitForVariable::SuccessCondition(
   {
     return false;
   }
-  if (!HasAttribute(EQUALVAR_ATTRIBUTE))
+  if (!HasAttribute(Constants::EQUALS_VARIABLE_NAME_ATTRIBUTE_NAME))
   {
     return true;
   }
@@ -122,11 +122,13 @@ bool WaitForVariable::CheckCondition(UserInterface& ui, Workspace& ws) const
   sup::dto::AnyValue other_value;
 
 
-  bool var_available = GetAttributeValue(VARNAME_ATTRIBUTE, ws, ui, var_value);
+  bool var_available =
+    GetAttributeValue(Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME, ws, ui, var_value);
   bool other_available = false;
-  if (HasAttribute(EQUALVAR_ATTRIBUTE))
+  if (HasAttribute(Constants::EQUALS_VARIABLE_NAME_ATTRIBUTE_NAME))
   {
-    other_available = GetAttributeValue(EQUALVAR_ATTRIBUTE, ws, ui, other_value);
+    other_available =
+      GetAttributeValue(Constants::EQUALS_VARIABLE_NAME_ATTRIBUTE_NAME, ws, ui, other_value);
   }
   return SuccessCondition(var_available, var_value, other_available, other_value);
 }

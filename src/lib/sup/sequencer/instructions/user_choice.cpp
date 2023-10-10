@@ -31,13 +31,12 @@ namespace sequencer
 {
 const std::string UserChoice::Type = "UserChoice";
 
-const std::string DESCRIPTION_ATTRIBUTE = "description";
-
 UserChoice::UserChoice()
   : CompoundInstruction(UserChoice::Type)
   , m_choice{-1}
 {
-  AddAttributeDefinition(DESCRIPTION_ATTRIBUTE).SetCategory(AttributeCategory::kBoth);
+  AddAttributeDefinition(Constants::DESCRIPTION_ATTRIBUTE_NAME)
+    .SetCategory(AttributeCategory::kBoth);
 }
 
 UserChoice::~UserChoice() = default;
@@ -48,7 +47,7 @@ ExecutionStatus UserChoice::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   if (m_choice < 0)
   {
     std::string main_text;
-    if (!GetAttributeValueAs(DESCRIPTION_ATTRIBUTE, ws, ui, main_text))
+    if (!GetAttributeValueAs(Constants::DESCRIPTION_ATTRIBUTE_NAME, ws, ui, main_text))
     {
       return ExecutionStatus::FAILURE;
     }

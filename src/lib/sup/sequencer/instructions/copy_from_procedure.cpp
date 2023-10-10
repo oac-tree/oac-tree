@@ -25,13 +25,10 @@
 
 #include <sup/sequencer/parser/procedure_parser.h>
 
+#include <sup/sequencer/constants.h>
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/procedure_context.h>
 #include <sup/sequencer/sequence_parser.h>
-
-const std::string FILE_ATTRIBUTE_NAME = "file";
-const std::string INPUT_VARIABLE_ATTR_NAME = "inputVar";
-const std::string OUTPUT_VARIABLE_ATTR_NAME = "outputVar";
 
 namespace sup
 {
@@ -43,10 +40,10 @@ CopyFromProcedureInstruction::CopyFromProcedureInstruction()
   : Instruction(CopyFromProcedureInstruction::Type)
   , m_workspace{}
 {
-  AddAttributeDefinition(FILE_ATTRIBUTE_NAME).SetMandatory();
-  AddAttributeDefinition(INPUT_VARIABLE_ATTR_NAME)
+  AddAttributeDefinition(Constants::FILENAME_ATTRIBUTE_NAME).SetMandatory();
+  AddAttributeDefinition(Constants::INPUT_VARIABLE_NAME_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kVariableName).SetMandatory();
-  AddAttributeDefinition(OUTPUT_VARIABLE_ATTR_NAME)
+  AddAttributeDefinition(Constants::OUTPUT_VARIABLE_NAME_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kVariableName).SetMandatory();
 }
 
@@ -56,7 +53,7 @@ void CopyFromProcedureInstruction::SetupImpl(const Procedure& proc)
 {
   auto proc_context = proc.GetContext();
   std::string parent_proc_filename = proc_context.GetFilename();
-  auto filename = GetAttributeString(FILE_ATTRIBUTE_NAME);
+  auto filename = GetAttributeString(Constants::FILENAME_ATTRIBUTE_NAME);
   auto proc_filename = GetFullPathName(GetFileDirectory(parent_proc_filename), filename);
   m_workspace = proc_context.GetWorkspace(proc_filename);
   m_workspace->Setup();
@@ -65,11 +62,12 @@ void CopyFromProcedureInstruction::SetupImpl(const Procedure& proc)
 ExecutionStatus CopyFromProcedureInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   sup::dto::AnyValue value;
-  if (!GetAttributeValue(INPUT_VARIABLE_ATTR_NAME, *m_workspace, ui, value))
+  if (!GetAttributeValue(Constants::INPUT_VARIABLE_NAME_ATTRIBUTE_NAME, *m_workspace, ui, value))
   {
     return ExecutionStatus::FAILURE;
   }
-  if (!SetValueFromAttributeName(*this, ws, ui, OUTPUT_VARIABLE_ATTR_NAME, value))
+  if (!SetValueFromAttributeName(*this, ws, ui, Constants::OUTPUT_VARIABLE_NAME_ATTRIBUTE_NAME,
+                                 value))
   {
     return ExecutionStatus::FAILURE;
   }

@@ -21,15 +21,13 @@
 
 #include "listen.h"
 
+#include <sup/sequencer/constants.h>
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/instruction_utils.h>
 
 #include <chrono>
 #include <cstring>
 #include <thread>
-
-const std::string VARNAMES_ATTRIBUTE_NAME = "varNames";
-const std::string FORCESUCCESS_ATTRIBUTE_NAME = "forceSuccess";
 
 namespace sup
 {
@@ -45,8 +43,8 @@ Listen::Listen()
   , m_var_cache{}
   , m_cb_guard{}
 {
-  AddAttributeDefinition(VARNAMES_ATTRIBUTE_NAME).SetMandatory();
-  AddAttributeDefinition(FORCESUCCESS_ATTRIBUTE_NAME, sup::dto::BooleanType)
+  AddAttributeDefinition(Constants::VARIABLE_NAMES_ATTRIBUTE_NAME).SetMandatory();
+  AddAttributeDefinition(Constants::FORCE_SUCCESS_ATTRIBUTE_NAME, sup::dto::BooleanType)
     .SetCategory(AttributeCategory::kBoth);
 }
 
@@ -55,7 +53,8 @@ Listen::~Listen() = default;
 void Listen::SetupImpl(const Procedure& proc)
 {
   m_var_changed = true;
-  m_var_names = instruction_utils::VariableNamesFromAttribute(*this, VARNAMES_ATTRIBUTE_NAME);
+  m_var_names =
+    instruction_utils::VariableNamesFromAttribute(*this, Constants::VARIABLE_NAMES_ATTRIBUTE_NAME);
   InitVariableCache();
   return SetupChild(proc);
 }
@@ -63,7 +62,7 @@ void Listen::SetupImpl(const Procedure& proc)
 bool Listen::InitHook(UserInterface& ui, Workspace& ws)
 {
   m_force_success = false;
-  if (!GetAttributeValueAs(FORCESUCCESS_ATTRIBUTE_NAME, ws, ui, m_force_success))
+  if (!GetAttributeValueAs(Constants::FORCE_SUCCESS_ATTRIBUTE_NAME, ws, ui, m_force_success))
   {
     return false;
   }

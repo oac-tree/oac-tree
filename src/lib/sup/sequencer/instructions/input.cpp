@@ -21,14 +21,12 @@
 
 #include "input.h"
 
+#include <sup/sequencer/constants.h>
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/user_interface.h>
 #include <sup/sequencer/workspace.h>
 
 #include <sup/dto/anyvalue_helper.h>
-
-const std::string OUTPUT_VARIABLE_ATTR_NAME = "outputVar";
-const std::string DESCRIPTION_ATTR_NAME = "description";
 
 namespace sup
 {
@@ -39,9 +37,9 @@ const std::string Input::Type = "Input";
 Input::Input()
   : Instruction(Input::Type)
 {
-  AddAttributeDefinition(OUTPUT_VARIABLE_ATTR_NAME)
+  AddAttributeDefinition(Constants::OUTPUT_VARIABLE_NAME_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kVariableName).SetMandatory();
-  AddAttributeDefinition(DESCRIPTION_ATTR_NAME)
+  AddAttributeDefinition(Constants::DESCRIPTION_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kBoth);
 }
 
@@ -50,12 +48,12 @@ Input::~Input() = default;
 ExecutionStatus Input::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   sup::dto::AnyValue value;
-  if (!GetAttributeValue(OUTPUT_VARIABLE_ATTR_NAME, ws, ui, value))
+  if (!GetAttributeValue(Constants::OUTPUT_VARIABLE_NAME_ATTRIBUTE_NAME, ws, ui, value))
   {
     return ExecutionStatus::FAILURE;
   }
   std::string description;
-  if (!GetAttributeValueAs(DESCRIPTION_ATTR_NAME, ws, ui, description))
+  if (!GetAttributeValueAs(Constants::DESCRIPTION_ATTRIBUTE_NAME, ws, ui, description))
   {
     return ExecutionStatus::FAILURE;
   }
@@ -63,11 +61,12 @@ ExecutionStatus Input::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   {
     std::string warning_message = InstructionWarningProlog(*this) +
       "did not receive compatible user value for field [" +
-      GetAttributeString(OUTPUT_VARIABLE_ATTR_NAME) + "[ in workspace";
+      GetAttributeString(Constants::OUTPUT_VARIABLE_NAME_ATTRIBUTE_NAME) + "[ in workspace";
     ui.LogWarning(warning_message);
     return ExecutionStatus::FAILURE;
   }
-  if (!SetValueFromAttributeName(*this, ws, ui, OUTPUT_VARIABLE_ATTR_NAME, value))
+  if (!SetValueFromAttributeName(*this, ws, ui, Constants::OUTPUT_VARIABLE_NAME_ATTRIBUTE_NAME,
+                                 value))
   {
     return ExecutionStatus::FAILURE;
   }

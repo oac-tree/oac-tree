@@ -21,10 +21,9 @@
 
 #include "var_exists.h"
 
+#include <sup/sequencer/constants.h>
 #include <sup/sequencer/user_interface.h>
 #include <sup/sequencer/workspace.h>
-
-const std::string VARNAME_ATTRIBUTE = "varName";
 
 namespace sup
 {
@@ -35,7 +34,7 @@ const std::string VarExistsInstruction::Type = "VarExists";
 VarExistsInstruction::VarExistsInstruction()
   : Instruction(VarExistsInstruction::Type)
 {
-  AddAttributeDefinition(VARNAME_ATTRIBUTE)
+  AddAttributeDefinition(Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kVariableName).SetMandatory();
 }
 
@@ -44,7 +43,7 @@ VarExistsInstruction::~VarExistsInstruction() = default;
 ExecutionStatus VarExistsInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   sup::dto::AnyValue value;
-  if (!GetAttributeValue(VARNAME_ATTRIBUTE, ws, ui, value))
+  if (!GetAttributeValue(Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME, ws, ui, value))
   {
     return ExecutionStatus::FAILURE;
   }

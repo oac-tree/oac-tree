@@ -25,12 +25,10 @@
 
 #include <sup/sequencer/parser/procedure_parser.h>
 
+#include <sup/sequencer/constants.h>
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/procedure_context.h>
 #include <sup/sequencer/sequence_parser.h>
-
-const std::string FILE_ATTRIBUTE_NAME = "file";
-const std::string PATH_ATTRIBUTE_NAME = "path";
 
 namespace sup
 {
@@ -42,8 +40,8 @@ IncludeProcedure::IncludeProcedure()
   : DecoratorInstruction(IncludeProcedure::Type)
   , m_workspace{}
 {
-  AddAttributeDefinition(FILE_ATTRIBUTE_NAME).SetMandatory();
-  AddAttributeDefinition(PATH_ATTRIBUTE_NAME);
+  AddAttributeDefinition(Constants::FILENAME_ATTRIBUTE_NAME).SetMandatory();
+  AddAttributeDefinition(Constants::PATH_ATTRIBUTE_NAME);
 }
 
 IncludeProcedure::~IncludeProcedure() = default;
@@ -52,9 +50,9 @@ void IncludeProcedure::SetupImpl(const Procedure& proc)
 {
   auto proc_context = proc.GetContext();
   std::string parent_proc_filename = proc_context.GetFilename();
-  auto filename = GetAttributeString(FILE_ATTRIBUTE_NAME);
+  auto filename = GetAttributeString(Constants::FILENAME_ATTRIBUTE_NAME);
   auto proc_filename = GetFullPathName(GetFileDirectory(parent_proc_filename), filename);
-  std::string path = GetAttributeString(PATH_ATTRIBUTE_NAME);
+  std::string path = GetAttributeString(Constants::PATH_ATTRIBUTE_NAME);
   auto instr_clone = proc_context.CloneInstructionPath(proc_filename, path);
   if (!instr_clone)
   {

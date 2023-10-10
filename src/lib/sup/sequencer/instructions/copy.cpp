@@ -21,8 +21,7 @@
 
 #include "copy.h"
 
-const std::string INPUT_VARIABLE_ATTR_NAME = "inputVar";
-const std::string OUTPUT_VARIABLE_ATTR_NAME = "outputVar";
+#include <sup/sequencer/constants.h>
 
 namespace sup
 {
@@ -33,9 +32,9 @@ const std::string Copy::Type = "Copy";
 Copy::Copy()
   : Instruction(Copy::Type)
 {
-  AddAttributeDefinition(INPUT_VARIABLE_ATTR_NAME)
+  AddAttributeDefinition(Constants::INPUT_VARIABLE_NAME_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kVariableName).SetMandatory();
-  AddAttributeDefinition(OUTPUT_VARIABLE_ATTR_NAME)
+  AddAttributeDefinition(Constants::OUTPUT_VARIABLE_NAME_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kVariableName).SetMandatory();
 }
 
@@ -44,11 +43,12 @@ Copy::~Copy() = default;
 ExecutionStatus Copy::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   sup::dto::AnyValue value;
-  if (!GetAttributeValue(INPUT_VARIABLE_ATTR_NAME, ws, ui, value))
+  if (!GetAttributeValue(Constants::INPUT_VARIABLE_NAME_ATTRIBUTE_NAME, ws, ui, value))
   {
     return ExecutionStatus::FAILURE;
   }
-  if (!SetValueFromAttributeName(*this, ws, ui, OUTPUT_VARIABLE_ATTR_NAME, value))
+  if (!SetValueFromAttributeName(*this, ws, ui, Constants::OUTPUT_VARIABLE_NAME_ATTRIBUTE_NAME,
+                                 value))
   {
     return ExecutionStatus::FAILURE;
   }

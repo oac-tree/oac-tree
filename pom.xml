@@ -190,7 +190,7 @@
                                 <argument>-DCMAKE_INSTALL_LIBDIR=lib</argument>
                                 <argument>-DCMAKE_INSTALL_DOCDIR=doc/${project.artifactId}</argument>
                                 <argument>-DTEST_OUTPUT_DIRECTORY=${project.build.directory}/test</argument>
-                                <argument>-DCOVERAGE=${coverage}</argument>
+                                <argument>-DCOA_COVERAGE=${coverage}</argument>
                                 <argument>${project.build.directory}/SOURCE</argument>
                             </arguments>
                         </configuration>

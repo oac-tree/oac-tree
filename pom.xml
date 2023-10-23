@@ -103,15 +103,16 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-iter-plugin</artifactId>
                 <configuration>
-                    <!-- Copy the sources over to target -->
+                    <!-- Copy source over, needed for proper coverage report building -->
                     <init>
-                        <copy source="src" target="SOURCE/src" />
-                        <copy source="test" target="SOURCE/test" />
-                        <copy source="doc" target="SOURCE/doc" />
-                        <copy source="cmake" target="SOURCE/cmake" />
-                        <copy source="CMakeLists.txt" target="SOURCE/CMakeLists.txt" />
-                        <expand source="ld.so.conf" file="SOURCE/sup-${project.artifactId}.conf"
-                                rpmeval="true" mvneval="true" />
+                        <!-- Copy source over, needed for proper coverage report building -->
+                        <copy source="src" target="src" />
+                        <copy source="test" target="test" />
+                        <copy source="doc" target="doc" />
+                        <copy source="cmake" target="cmake" />
+                        <copy source="CMakeLists.txt" target="CMakeLists.txt" />
+                        <expand source="ld.so.conf" file="sup-${project.artifactId}.conf"
+                            rpmeval="true" mvneval="true" />
                     </init>
                     <!-- Configure packaging and dependencies -->
                     <packaging>
@@ -120,9 +121,9 @@
                             <include type="file" source="lib" target="lib">
                                 <include>*.so.*</include>
                             </include>
-                            <include type="config" source="SOURCE/sup-${project.artifactId}.conf"
-                                     target="ld.so.conf.d/sup-${project.artifactId}.conf"
-                                     altpath="%{_sysconfdir}/ld.so.conf.d/sup-${project.artifactId}.conf" />
+                            <include type="config" source="sup-${project.artifactId}.conf"
+                                target="ld.so.conf.d/sup-${project.artifactId}.conf"
+                                altpath="%{_sysconfdir}/ld.so.conf.d/sup-${project.artifactId}.conf" />
                             <!-- Programs -->
                             <include type="file" source="bin" target="bin">
                                 <include>sequencer-cli</include>
@@ -191,7 +192,7 @@
                                 <argument>-DCMAKE_INSTALL_DOCDIR=doc/${project.artifactId}</argument>
                                 <argument>-DTEST_OUTPUT_DIRECTORY=${project.build.directory}/test</argument>
                                 <argument>-DCOA_COVERAGE=${coverage}</argument>
-                                <argument>${project.build.directory}/SOURCE</argument>
+                                <argument>${project.build.directory}</argument>
                             </arguments>
                         </configuration>
                     </execution>

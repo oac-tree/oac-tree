@@ -36,11 +36,14 @@
         <unit.type>module</unit.type>
         <integrity.level>1</integrity.level>
         <!-- -->
+        <buildpath>build</buildpath>
+        <makefile.args>install</makefile.args>
+        <coverage>false</coverage>
+        <!-- -->
         <cppcheck.args>--enable=all --suppress=missingInclude --inline-suppr</cppcheck.args>
         <sonar.sources.cpp>src</sonar.sources.cpp>
         <sonar.tests.cpp>test</sonar.tests.cpp>
         <sonar.exclusions>src/app/sequencer-cli/main.cpp, src/app/sequencer-daemon/main.cpp, test/**</sonar.exclusions>
-        <coverage>false</coverage>
         <!-- sequencer configuration -->
         <pluginpath>lib/sequencer/plugins</pluginpath>
     </properties>
@@ -186,32 +189,13 @@
                             <workingDirectory>${project.build.directory}</workingDirectory>
                             <arguments>
                                 <!-- CMAKE configuration options -->
-                                <argument>-B${project.build.directory}/BUILD</argument>
+                                <argument>-B${buildpath}</argument>
                                 <argument>-DCMAKE_INSTALL_PREFIX=${project.build.directory}</argument>
                                 <argument>-DCMAKE_INSTALL_LIBDIR=lib</argument>
                                 <argument>-DCMAKE_INSTALL_DOCDIR=doc/${project.artifactId}</argument>
                                 <argument>-DTEST_OUTPUT_DIRECTORY=${project.build.directory}/test</argument>
                                 <argument>-DCOA_COVERAGE=${coverage}</argument>
                                 <argument>${project.build.directory}</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                    <!-- Compile project -->
-                    <execution>
-                        <id>compile</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>cmake</executable>
-                            <workingDirectory>${project.build.directory}</workingDirectory>
-                            <arguments>
-                                <argument>--build</argument>
-                                <argument>${project.build.directory}/BUILD</argument>
-                                <argument>-j4</argument>
-                                <argument>--target</argument>
-                                <argument>install</argument>
                             </arguments>
                         </configuration>
                     </execution>

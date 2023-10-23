@@ -17,9 +17,19 @@ if(CODAC_FOUND)
     set(Python3_EXECUTABLE ${CODAC_PYTHON_EXECUTABLE})
   endif()
 
-  # When operating inside a CODAC CICD system build the documentation
+  # Check if operating inside a CODAC CICD system
   if(CODAC_CICD)
-    set(COA_BUILD_DOCUMENTATION ON)
+    message(STATUS "Detected CODAC CICD system")
+    set(COA_BUILD_TESTS ON)
+
+    # Ideally we would want a cleaner way to detect analysis builds, but are limited by the maven workflow
+    if(COA_COVERAGE)
+      # CODAC CICD with coverage means analysis build, enable parasoft integration
+      set(COA_PARASOFT_INTEGRATION ON)
+    else()
+      # Regular CODAC CICD build, enable documentation for packaging
+      set(COA_BUILD_DOCUMENTATION ON)
+    endif()
   endif()
 else()
   message(STATUS "Compiling without CODAC")

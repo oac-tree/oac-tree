@@ -40,10 +40,10 @@
         <makefile.args>install</makefile.args>
         <coverage>false</coverage>
         <!-- -->
-        <cppcheck.args>--enable=all --suppress=missingInclude --inline-suppr</cppcheck.args>
+        <sonar.language>cpp</sonar.language>
         <sonar.sources.cpp>src</sonar.sources.cpp>
         <sonar.tests.cpp>test</sonar.tests.cpp>
-        <sonar.exclusions>src/app/sequencer-cli/main.cpp, src/app/sequencer-daemon/main.cpp, test/**</sonar.exclusions>
+        <sonar.exclusions>src/app/sequencer-cli/main.cpp, src/app/sequencer-daemon/main.cpp</sonar.exclusions>
         <!-- sequencer configuration -->
         <pluginpath>lib/sequencer/plugins</pluginpath>
     </properties>

@@ -1,8 +1,13 @@
+if(NOT COA_BUILD_TESTS)
+  return()
+endif()
+
 find_package(GTest 1.10 REQUIRED)
 include(GoogleTest)
 
 add_subdirectory(unit)
 add_subdirectory(testapp)
+add_subdirectory(parasoft)
 
 file(WRITE ${TEST_OUTPUT_DIRECTORY}/test.sh
 "#!/bin/bash

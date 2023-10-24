@@ -31,8 +31,6 @@
 
 #include <sup/dto/anyvalue_helper.h>
 
-const double MAX_TIMEOUT_SECONDS = 18.4e9;  // More than 500 years. This should be enough...
-
 namespace sup
 {
 namespace sequencer
@@ -60,17 +58,15 @@ ExecutionStatus WaitForVariable::ExecuteSingleImpl(UserInterface& ui, Workspace&
   {
     return ExecutionStatus::FAILURE;
   }
-  int dummy_listener;  // to get a unique address
-  std::mutex mx;
   std::condition_variable cv;
 
   // Register callbacks:
-  auto cb_guard = ws.GetCallbackGuard(&dummy_listener);
-  RegisterCallback(ws, cv, &dummy_listener,
+  auto cb_guard = ws.GetCallbackGuard(this);
+  RegisterCallback(ws, cv, this,
                    GetAttributeString(Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME));
   if (HasAttribute(Constants::EQUALS_VARIABLE_NAME_ATTRIBUTE_NAME))
   {
-    RegisterCallback(ws, cv, &dummy_listener,
+    RegisterCallback(ws, cv, this,
                      GetAttributeString(Constants::EQUALS_VARIABLE_NAME_ATTRIBUTE_NAME));
   }
 
@@ -80,6 +76,7 @@ ExecutionStatus WaitForVariable::ExecuteSingleImpl(UserInterface& ui, Workspace&
                         success = CheckCondition(ui, ws);
                         return IsHaltRequested() || success;
                       };
+  std::mutex mx;
   std::unique_lock<std::mutex> lk(mx);
   auto result = cv.wait_for(lk, std::chrono::nanoseconds(timeout_ns), predicate);
 
@@ -101,7 +98,7 @@ bool WaitForVariable::SuccessCondition(
   bool var_available, const sup::dto::AnyValue& var_value,
   bool other_available, const sup::dto::AnyValue& other_value) const
 {
-  if (!var_available)
+  if (!var_available || sup::dto::IsEmptyValue(var_value))
   {
     return false;
   }
@@ -120,7 +117,6 @@ bool WaitForVariable::CheckCondition(UserInterface& ui, Workspace& ws) const
 {
   sup::dto::AnyValue var_value;
   sup::dto::AnyValue other_value;
-
 
   bool var_available =
     GetAttributeValue(Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME, ws, ui, var_value);

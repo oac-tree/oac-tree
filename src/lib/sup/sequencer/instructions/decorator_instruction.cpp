@@ -21,6 +21,8 @@
 
 #include <sup/sequencer/decorator_instruction.h>
 
+#include <sup/sequencer/constants.h>
+
 namespace sup
 {
 namespace sequencer
@@ -28,7 +30,9 @@ namespace sequencer
 DecoratorInstruction::DecoratorInstruction(const std::string &type)
   : Instruction(type)
   , m_child{}
-{}
+{
+  AddAttributeDefinition(Constants::SHOW_COLLAPSED_ATTRIBUTE_NAME, sup::dto::BooleanType);
+}
 
 DecoratorInstruction::~DecoratorInstruction() = default;
 

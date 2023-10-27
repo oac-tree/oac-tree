@@ -31,6 +31,8 @@
 
 #include <gtest/gtest.h>
 
+#include <sup/sequencer/constants.h>
+
 using namespace sup::sequencer;
 
 class DecoratorInstructionTest : public ::testing::Test
@@ -51,6 +53,9 @@ public:
 TEST_F(DecoratorInstructionTest, InsertChild)
 {
   TestClass decorator;
+  EXPECT_TRUE(IsDefinedAttributeName(decorator, Constants::IS_ROOT_ATTRIBUTE_NAME));
+  EXPECT_TRUE(IsDefinedAttributeName(decorator, Constants::NAME_ATTRIBUTE_NAME));
+  EXPECT_TRUE(IsDefinedAttributeName(decorator, Constants::SHOW_COLLAPSED_ATTRIBUTE_NAME));
   EXPECT_EQ(decorator.ChildrenCount(), 0);
 
   // inserting children one after another

@@ -24,6 +24,8 @@
 
 #include <gtest/gtest.h>
 
+#include <sup/sequencer/constants.h>
+
 using namespace sup::sequencer;
 
 class CompoundInstructionTest : public ::testing::Test
@@ -40,6 +42,9 @@ public:
 TEST_F(CompoundInstructionTest, InsertChild)
 {
   TestClass compound;
+  EXPECT_TRUE(IsDefinedAttributeName(compound, Constants::IS_ROOT_ATTRIBUTE_NAME));
+  EXPECT_TRUE(IsDefinedAttributeName(compound, Constants::NAME_ATTRIBUTE_NAME));
+  EXPECT_TRUE(IsDefinedAttributeName(compound, Constants::SHOW_COLLAPSED_ATTRIBUTE_NAME));
   EXPECT_EQ(compound.ChildrenCount(), 0);
 
   // inserting children one after another

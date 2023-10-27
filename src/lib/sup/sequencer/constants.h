@@ -105,6 +105,7 @@ const std::string USER_CHOICES_DETAILS_NAME = "details";
 // Universal instruction attribute names
 const std::string IS_ROOT_ATTRIBUTE_NAME = "isRoot";
 const std::string NAME_ATTRIBUTE_NAME = "name";
+const std::string SHOW_COLLAPSED_ATTRIBUTE_NAME = "showCollapsed";
 
 // Instruction attribute names
 const std::string GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME = "varName";

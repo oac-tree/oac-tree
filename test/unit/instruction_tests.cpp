@@ -23,6 +23,8 @@
 
 #include <gtest/gtest.h>
 
+#include <sup/sequencer/constants.h>
+
 using namespace sup::sequencer;
 
 class InstructionTest : public ::testing::Test
@@ -39,6 +41,9 @@ public:
 TEST_F(InstructionTest, SetAttribute)
 {
   TestInstruction instruction;
+  EXPECT_TRUE(IsDefinedAttributeName(instruction, Constants::IS_ROOT_ATTRIBUTE_NAME));
+  EXPECT_TRUE(IsDefinedAttributeName(instruction, Constants::NAME_ATTRIBUTE_NAME));
+  EXPECT_FALSE(IsDefinedAttributeName(instruction, Constants::SHOW_COLLAPSED_ATTRIBUTE_NAME));
 
   // it is not possible to set attribute if it doesn't exist
   EXPECT_FALSE(instruction.SetAttribute("non-existing", "value"));

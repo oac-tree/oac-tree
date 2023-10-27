@@ -21,11 +21,17 @@
 
 #include <sup/sequencer/compound_instruction.h>
 
+#include <sup/sequencer/constants.h>
+
 namespace sup
 {
 namespace sequencer
 {
-CompoundInstruction::CompoundInstruction(const std::string& type) : Instruction(type) {}
+CompoundInstruction::CompoundInstruction(const std::string& type)
+  : Instruction(type)
+{
+  AddAttributeDefinition(Constants::SHOW_COLLAPSED_ATTRIBUTE_NAME, sup::dto::BooleanType);
+}
 
 CompoundInstruction::~CompoundInstruction() = default;
 

@@ -1,7 +1,10 @@
-Changes for 2.2.0:
+Changes for 3.0.0:
 
 - Documentation update
 - Allow dynamically typed local variables
+- Allow attributes to refer to workspace variables and literal values
+- Provide instructions to copy between main and included procedures
+- Make UserInterface a pure interface
 - Bugfix: handle Listen instruction reset correctly (COA-461)
 
 Changes for 2.1.0:

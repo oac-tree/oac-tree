@@ -10,11 +10,11 @@ find_dependency(sup-utils)
 
 if(TARGET sequencer::sequencer)
 else()
-  message(STATUS "sequencer-config.cmake including ${SEQUENCER_CMAKE_DIR}/sequencer-targets.cmake")
+  message(DEBUG "sequencer-config.cmake including ${SEQUENCER_CMAKE_DIR}/sequencer-targets.cmake")
  include("${SEQUENCER_CMAKE_DIR}/sequencer-targets.cmake")
 endif()
 
 set(SEQUENCER_LIBRARIES sequencer::sequencer)
 
-message(STATUS "sequencer-config.cmake in ${CMAKE_CURRENT_LIST_FILE}")
-message(STATUS "SEQUENCER_LIBRARIES ${SEQUENCER_LIBRARIES}")
+message(DEBUG "sequencer-config.cmake in ${CMAKE_CURRENT_LIST_FILE}")
+message(VERBOSE "SEQUENCER_LIBRARIES ${SEQUENCER_LIBRARIES}")

@@ -6,15 +6,15 @@
 #   CODAC_CMAKE_PREFIXES: list of prefixes to help cmake find CODAC packages
 #   CODAC_CICD: operating in a CODAC CICD system if true
 #   CODAC_FOUND: required variable for find_package, helps check if we are in a CODAC Enviorenment
-# 
+#
 # Additional optional components:
 #
 #   site-packages:
 #     CODAC_PYTHONXY_SITE_PACKAGES: python vX.Y CODAC site-packages directory
 #     CODAC_site-packages_FOUND: TRUE if any site-packages dirs were found
-#     
+#
 #   Python:
-#     CODAC_PYTHON_EXECUTABLE: CODAC system python executable, 
+#     CODAC_PYTHON_EXECUTABLE: CODAC system python executable,
 #       when paired with site-packages this executable is aliased with the corresponding site-packages
 #     CODAC_Python_VERSION_MAJOR: CODAC system python major version
 #     CODAC_Python_VERSION_MINOR: CODAC system python minor version
@@ -30,7 +30,7 @@ macro(_CODAC_find_site_packages)
   foreach(_site_packages_dir ${_site_packages_dirs})
     if(_site_packages_dir MATCHES ".*python([0-9]+).([0-9]+).*$")
       set(CODAC_PYTHON${CMAKE_MATCH_1}${CMAKE_MATCH_2}_SITE_PACKAGES ${_site_packages_dir})
-      message(STATUS "Found CODAC python site-packages CODAC_PYTHON${CMAKE_MATCH_1}${CMAKE_MATCH_2}_SITE_PACKAGES: ${CODAC_PYTHON${CMAKE_MATCH_1}${CMAKE_MATCH_2}_SITE_PACKAGES}")
+      message(VERBOSE "Found CODAC python site-packages: CODAC_PYTHON${CMAKE_MATCH_1}${CMAKE_MATCH_2}_SITE_PACKAGES: ${CODAC_PYTHON${CMAKE_MATCH_1}${CMAKE_MATCH_2}_SITE_PACKAGES}")
       set(CODAC_site-packages_FOUND TRUE)
     endif()
   endforeach()
@@ -39,15 +39,10 @@ endmacro()
 # --- Find Python component ---
 macro(_CODAC_find_python)
   find_program(CODAC_PYTHON_EXECUTABLE NAMES python3)
-  if(NOT CODAC_PYTHON_EXECUTABLE)
-    message(STATUS "CODAC Python executable not found")
-    unset(CODAC_PYTHON_EXECUTABLE)
-  endif()
-
-  # Resolve executable symlinks
-  # CODAC systems uses alternatives to select the desired default binary
-  # we resolve symlinks to make sure we have a unchanging configuration after running cmake
   if(CODAC_PYTHON_EXECUTABLE)
+    # Resolve executable symlinks
+    # CODAC systems uses alternatives to select the desired default binary
+    # we resolve symlinks to make sure we have a unchanging configuration after running cmake
     execute_process(
       COMMAND readlink -f ${CODAC_PYTHON_EXECUTABLE}
       RESULT_VARIABLE _result
@@ -78,8 +73,8 @@ macro(_CODAC_find_python)
     endif()
 
     # Alias python with a PYTHONPATH to CODAC site-packages if available
-    if(CODAC_PYTHON${CODAC_Python_VERSION_MAJOR}${CODAC_Python_VERSION_MINOR}_SITE_PACKAGES)
-      message(STATUS "CODAC_PYTHON_EXECUTABLE using site-packages: CODAC_PYTHON${CODAC_Python_VERSION_MAJOR}${CODAC_Python_VERSION_MINOR}_SITE_PACKAGES")
+    if(CODAC_Python_FOUND AND CODAC_PYTHON${CODAC_Python_VERSION_MAJOR}${CODAC_Python_VERSION_MINOR}_SITE_PACKAGES)
+      message(VERBOSE "CODAC_PYTHON_EXECUTABLE using site-packages: CODAC_PYTHON${CODAC_Python_VERSION_MAJOR}${CODAC_Python_VERSION_MINOR}_SITE_PACKAGES")
 
       # Create bash file to alias Python executable with site-packages
       # we do this because cmake doesn't like non monlithic executable names in package_EXECUTABLE macros
@@ -89,11 +84,12 @@ macro(_CODAC_find_python)
 export PYTHONPATH=${CODAC_PYTHON${CODAC_Python_VERSION_MAJOR}${CODAC_Python_VERSION_MINOR}_SITE_PACKAGES}
 ${CODAC_PYTHON_EXECUTABLE} \"$@\"")
       configure_file(${_file} ${_file} FILE_PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ)
-    
-      set(CODAC_PYTHON_EXECUTABLE ${_file})
-  endif()
 
+      set(CODAC_PYTHON_EXECUTABLE ${_file})
+    endif()
   else()
+    message(DEBUG "CODAC Python executable not found")
+    unset(CODAC_PYTHON_EXECUTABLE)
     set(CODAC_Python_FOUND FALSE)
   endif()
 endmacro()
@@ -106,7 +102,7 @@ if(DEFINED ENV{CODAC_ROOT})
       set(CODAC_VERSION $ENV{CODAC_VERSION})
     elseif(${CODAC_DIR} MATCHES ".*codac-([0-9]+\\.[0-9]+)$")
       # This is unlikely to be needed in full CODAC systems
-      # convenient for local systesms with CODAC packages
+      # convenient for local systems with CODAC packages
       set(CODAC_VERSION ${CMAKE_MATCH_1})
     endif()
 

@@ -36,7 +36,8 @@
         <unit.type>module</unit.type>
         <integrity.level>1</integrity.level>
         <!-- -->
-        <buildpath>build</buildpath>
+        <buildpath>BUILD</buildpath>
+        <sourcepath>SOURCE</sourcepath>
         <makefile.args>install</makefile.args>
         <coverage>false</coverage>
         <!-- -->
@@ -108,13 +109,13 @@
                 <configuration>
                     <!-- Copy source over, needed for proper coverage report building -->
                     <init>
-                        <!-- Copy source over, needed for proper coverage report building -->
-                        <copy source="src" target="src" />
-                        <copy source="test" target="test" />
-                        <copy source="doc" target="doc" />
-                        <copy source="cmake" target="cmake" />
-                        <copy source="CMakeLists.txt" target="CMakeLists.txt" />
-                        <expand source="ld.so.conf" file="sup-${project.artifactId}.conf"
+                        <copy source="src" target="${sourcepath}/src" />
+                        <copy source="test" target="${sourcepath}/test" />
+                        <copy source="doc" target="${sourcepath}/doc" />
+                        <copy source="cmake" target="${sourcepath}/cmake" />
+                        <copy source="CMakeLists.txt" target="${sourcepath}/CMakeLists.txt" />
+                        <expand source="ld.so.conf"
+                            file="${sourcepath}/sup-${project.artifactId}.conf"
                             rpmeval="true" mvneval="true" />
                     </init>
                     <!-- Configure packaging and dependencies -->
@@ -124,7 +125,8 @@
                             <include type="file" source="lib" target="lib">
                                 <include>*.so.*</include>
                             </include>
-                            <include type="config" source="sup-${project.artifactId}.conf"
+                            <include type="config"
+                                source="${sourcepath}/sup-${project.artifactId}.conf"
                                 target="ld.so.conf.d/sup-${project.artifactId}.conf"
                                 altpath="%{_sysconfdir}/ld.so.conf.d/sup-${project.artifactId}.conf" />
                             <!-- Programs -->
@@ -195,7 +197,7 @@
                                 <argument>-DCMAKE_INSTALL_DOCDIR=doc/${project.artifactId}</argument>
                                 <argument>-DTEST_OUTPUT_DIRECTORY=${project.build.directory}/test</argument>
                                 <argument>-DCOA_COVERAGE=${coverage}</argument>
-                                <argument>${project.build.directory}</argument>
+                                <argument>${sourcepath}</argument>
                             </arguments>
                         </configuration>
                     </execution>

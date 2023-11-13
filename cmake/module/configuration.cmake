@@ -4,15 +4,18 @@
 
 include(GNUInstallDirs)
 include(CTest)
+include(FindPackageMessage)
 
 # -----------------------------------------------------------------------------
 # CODAC enviorenment
 # -----------------------------------------------------------------------------
 if(NOT COA_NO_CODAC)
-  find_package(CODAC OPTIONAL_COMPONENTS site-packages Python MODULE)
+  find_package(CODAC OPTIONAL_COMPONENTS site-packages Python MODULE QUIET)
 endif()
 
 if(CODAC_FOUND)
+  set(CODAC_FOUND_MESSAGE "Building with CODAC")
+
   # Append CODAC_CMAKE_PREFIXES to cmake seard directories, this helps cmake find packages installed in the CODAC enviorenment
   list(APPEND CMAKE_PREFIX_PATH ${CODAC_CMAKE_PREFIXES})
 
@@ -23,7 +26,8 @@ if(CODAC_FOUND)
 
   # Check if operating inside a CODAC CICD system
   if(CODAC_CICD)
-    message(STATUS "Detected CODAC CICD system")
+    string(APPEND CODAC_FOUND_MESSAGE " CICD environment")
+
     set(COA_BUILD_TESTS ON)
 
     # Ideally we would want a cleaner way to detect analysis builds, but are limited by the maven workflow
@@ -34,9 +38,17 @@ if(CODAC_FOUND)
       # Regular CODAC CICD build, enable documentation for packaging
       set(COA_BUILD_DOCUMENTATION ON)
     endif()
+  else()
+    string(APPEND CODAC_FOUND_MESSAGE " environment")
   endif()
+
+  find_package_message(
+    CODAC_DETAILS
+    "${CODAC_FOUND_MESSAGE}: ${CODAC_DIR} (version \"${CODAC_VERSION}\")"
+    "[${CODAC_FOUND}][${CODAC_DIR}][${CODAC_CICD}][v${CODAC_VERSION}]"
+  )
 else()
-  message(STATUS "Compiling without CODAC")
+  find_package_message(CODAC_DETAILS "Building without CODAC environment" "[${CODAC_FOUND}]")
 endif()
 
 # -----------------------------------------------------------------------------

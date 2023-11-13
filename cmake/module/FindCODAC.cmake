@@ -30,8 +30,11 @@ macro(_CODAC_find_site_packages)
   foreach(_site_packages_dir ${_site_packages_dirs})
     if(_site_packages_dir MATCHES ".*python([0-9]+).([0-9]+).*$")
       set(CODAC_PYTHON${CMAKE_MATCH_1}${CMAKE_MATCH_2}_SITE_PACKAGES ${_site_packages_dir})
-      message(VERBOSE "Found CODAC python site-packages: CODAC_PYTHON${CMAKE_MATCH_1}${CMAKE_MATCH_2}_SITE_PACKAGES: ${CODAC_PYTHON${CMAKE_MATCH_1}${CMAKE_MATCH_2}_SITE_PACKAGES}")
       set(CODAC_site-packages_FOUND TRUE)
+
+      if(NOT CODAC_FIND_QUIETLY)
+        message(VERBOSE "Found CODAC python site-packages: CODAC_PYTHON${CMAKE_MATCH_1}${CMAKE_MATCH_2}_SITE_PACKAGES: ${CODAC_PYTHON${CMAKE_MATCH_1}${CMAKE_MATCH_2}_SITE_PACKAGES}")
+      endif()
     endif()
   endforeach()
 endmacro()
@@ -74,7 +77,9 @@ macro(_CODAC_find_python)
 
     # Alias python with a PYTHONPATH to CODAC site-packages if available
     if(CODAC_Python_FOUND AND CODAC_PYTHON${CODAC_Python_VERSION_MAJOR}${CODAC_Python_VERSION_MINOR}_SITE_PACKAGES)
-      message(VERBOSE "CODAC_PYTHON_EXECUTABLE using site-packages: CODAC_PYTHON${CODAC_Python_VERSION_MAJOR}${CODAC_Python_VERSION_MINOR}_SITE_PACKAGES")
+      if(NOT CODAC_FIND_QUIETLY)
+        message(VERBOSE "CODAC_PYTHON_EXECUTABLE using site-packages: CODAC_PYTHON${CODAC_Python_VERSION_MAJOR}${CODAC_Python_VERSION_MINOR}_SITE_PACKAGES")
+      endif()
 
       # Create bash file to alias Python executable with site-packages
       # we do this because cmake doesn't like non monlithic executable names in package_EXECUTABLE macros
@@ -88,7 +93,10 @@ ${CODAC_PYTHON_EXECUTABLE} \"$@\"")
       set(CODAC_PYTHON_EXECUTABLE ${_file})
     endif()
   else()
-    message(DEBUG "CODAC Python executable not found")
+    if(NOT CODAC_FIND_QUIETLY)
+      message(DEBUG "CODAC Python executable not found")
+    endif()
+
     unset(CODAC_PYTHON_EXECUTABLE)
     set(CODAC_Python_FOUND FALSE)
   endif()

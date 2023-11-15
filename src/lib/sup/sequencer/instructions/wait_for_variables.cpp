@@ -78,7 +78,7 @@ ExecutionStatus WaitForVariables::ExecuteSingleImpl(UserInterface& ui, Workspace
                       };
   std::mutex mx;
   std::unique_lock<std::mutex> lk(mx);
-  auto result = cv.wait_for(lk, std::chrono::nanoseconds(timeout_ns), predicate);
+  (void)cv.wait_for(lk, std::chrono::nanoseconds(timeout_ns), predicate);
 
   return success ? ExecutionStatus::SUCCESS
                  : ExecutionStatus::FAILURE;

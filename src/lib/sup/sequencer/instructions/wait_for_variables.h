@@ -34,7 +34,7 @@ namespace sequencer
 {
 /**
  * @brief Instruction node that waits 'timeout' seconds for all variables of a certain type to be
- * available.
+ * available, i.e. as defined by Variable::IsAvailable().
  *
  * @details The 'timeout' attribute is mandatory.
  */

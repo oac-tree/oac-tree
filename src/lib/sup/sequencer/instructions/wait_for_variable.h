@@ -33,7 +33,7 @@ namespace sup
 namespace sequencer
 {
 /**
- * @brief Instruction node that waits 'timeout' seconds for a variable to be read.
+ * @brief Instruction node that waits 'timeout' seconds for a variable to be readable and non-empty.
  *
  * @details The 'timeout' attribute is mandatory. There is also the 'equalsVar' option, that
  * will wait that the read variable is equal to the one provided in that variable.

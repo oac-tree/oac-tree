@@ -72,7 +72,7 @@ const std::string kTestProcedureBody_3{R"(
   <Workspace>
       <Local name="zero" type='{"type":"uint8"}' value='0' />
       <Local name="one" type='{"type":"uint8"}' value='1' />
-      <Local name="pair" type='simple_struct_t'/>
+      <Local name="pair" type='{"type":"simple_struct_t"}'/>
   </Workspace>
 )"};
 

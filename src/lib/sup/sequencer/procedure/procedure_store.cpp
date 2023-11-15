@@ -51,6 +51,7 @@ Procedure& ProcedureStore::LoadProcedure(const std::string& filename) const
   {
     auto proc = ParseProcedureFile(filename);
     proc->SetParentProcedure(m_parent);
+    proc->SetupPreamble();
     m_procedure_cache[filename] = std::move(proc);
   }
   return *m_procedure_cache[filename];

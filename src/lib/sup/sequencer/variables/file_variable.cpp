@@ -76,7 +76,15 @@ bool FileVariable::SetValueImpl(const sup::dto::AnyValue& value)
   }
   return true;
 }
-
+bool FileVariable::IsAvailableImpl() const
+{
+  sup::dto::JSONAnyValueParser parser;
+  if (!parser.ParseFile(GetAttributeString(Constants::FILENAME_ATTRIBUTE_NAME)))
+  {
+    return false;
+  }
+  return true;
+}
 }  // namespace sequencer
 
 }  // namespace sup

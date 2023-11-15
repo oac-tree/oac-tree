@@ -103,12 +103,8 @@ bool WaitForVariables::CheckCondition(UserInterface& ui, Workspace& ws,
 {
   for (const auto& var_name : var_names)
   {
-    sup::dto::AnyValue var_value;
-    if (!GetAttributeValue(Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME, ws, ui, var_value))
-    {
-      return false;
-    }
-    if (sup::dto::IsEmptyValue(var_value))
+    const auto* var = ws.GetVariable(var_name);
+    if (var == nullptr || !var->IsAvailable())
     {
       return false;
     }

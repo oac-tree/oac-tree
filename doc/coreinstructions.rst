@@ -1024,7 +1024,7 @@ Attributes:
 WaitForVariable
 ^^^^^^^^^^^^^^^
 
-Instruction node that waits `timeout` seconds for a variable to be read.
+Instruction node that waits `timeout` seconds for a variable to be readable and non-empty.
 
 Attributes:
 
@@ -1050,3 +1050,27 @@ Attributes:
      - variable to compare. The instruction will wait until the variables are equal or the timout s reached
 
 * An example for this instruction is already present in :ref:`Repeat example <repeat_exp>`.
+
+WaitForVariables
+^^^^^^^^^^^^^^^^
+
+Instruction node that waits `timeout` seconds for all workspace variables of a given type to be available.
+
+Attributes:
+
+.. list-table::
+   :widths: 25 25 15 50
+   :header-rows: 1
+
+   * - Attribute name
+     - Attribute type
+     - Mandatory
+     - Description
+   * - timeout
+     - Float64Type
+     - yes
+     - Maximum time to wait
+   * - varType
+     - StringType
+     - yes
+     - typename of the variables to check

@@ -22,7 +22,7 @@
 #   - CMake 3.13 - CMP0076: relative source file paths are interpreted as being relative to the current source directory
 cmake_minimum_required(VERSION 3.13)
 
-project(sup-sequencer VERSION 3.0.0)
+project(sup-sequencer VERSION 3.1.0)
 
 option(COA_COVERAGE "Generate unit test coverage information" OFF)
 option(COA_PARASOFT_INTEGRATION "Parasoft integration" OFF)

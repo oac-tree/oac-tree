@@ -19,7 +19,7 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "waitforvariable.h"
+#include "wait_for_variable.h"
 
 #include "sup/sequencer/execution_status.h"
 #include "sup/sequencer/workspace.h"

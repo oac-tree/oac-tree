@@ -131,6 +131,7 @@ const std::string OK_TEXT_ATTRIBUTE_NAME = "okText";
 const std::string CANCEL_TEXT_ATTRIBUTE_NAME = "cancelText";
 const std::string TIMEOUT_SEC_ATTRIBUTE_NAME = "timeout";
 const std::string EQUALS_VARIABLE_NAME_ATTRIBUTE_NAME = "equalsVar";
+const std::string VARIABLE_TYPE_ATTRIBUTE_NAME = "varType";
 
 // Variable attribute names
 const std::string TYPE_ATTRIBUTE_NAME = "type";

@@ -52,7 +52,8 @@
 #include "user_choice.h"
 #include "user_confirmation.h"
 #include "wait.h"
-#include "waitforvariable.h"
+#include "wait_for_variable.h"
+#include "wait_for_variables.h"
 
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/instruction.h>
@@ -157,6 +158,7 @@ void InitInstructionRegistry(InstructionRegistry& registry)
   (void)RegisterInstruction<VarExistsInstruction>(registry);
   (void)RegisterInstruction<Wait>(registry);
   (void)RegisterInstruction<WaitForVariable>(registry);
+  (void)RegisterInstruction<WaitForVariables>(registry);
 }
 
 }  // namespace sequencer

@@ -39,5 +39,6 @@ target_sources(sup-sequencer-shared
     user_confirmation.cpp
     var_exists.cpp
     wait.cpp
-    waitforvariable.cpp
+    wait_for_variable.cpp
+    wait_for_variables.cpp
 )

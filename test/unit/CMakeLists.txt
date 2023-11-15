@@ -55,7 +55,7 @@ target_sources(unit-tests
     var_exists_tests.cpp
     variable_registry_tests.cpp
     wait_tests.cpp
-    waitforvariable_tests.cpp
+    wait_for_variable_tests.cpp
     workspace_tests.cpp
     ../../src/app/sequencer-cli/cl_interface.cpp
     ../../src/app/sequencer-daemon/daemon_interface.cpp

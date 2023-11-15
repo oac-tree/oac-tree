@@ -59,6 +59,23 @@ const std::string kTestProcedureBody_2{R"(
   </Workspace>
 )"};
 
+const std::string kTestProcedureFileName_3 = "test_procedure_3.xml";
+
+const std::string kTestProcedureBody_3{R"(
+  <RegisterType jsontype='{"type":"simple_struct_t","attributes":[{"a":{"type":"uint8"}},{"b":{"type":"uint8"}}]}'/>
+  <Sequence name="CopyAndCheck" isRoot="True">
+      <Copy inputVar="zero" outputVar="pair.a"/>
+      <Copy inputVar="one" outputVar="pair.b"/>
+      <Equals name="Check first" leftVar="pair.a" rightVar="zero"/>
+      <Equals name="Check second" leftVar="pair.b" rightVar="one"/>
+  </Sequence>
+  <Workspace>
+      <Local name="zero" type='{"type":"uint8"}' value='0' />
+      <Local name="one" type='{"type":"uint8"}' value='1' />
+      <Local name="pair" type='simple_struct_t'/>
+  </Workspace>
+)"};
+
 class IncludeProcedureTest : public ::testing::Test
 {
 protected:
@@ -67,6 +84,7 @@ protected:
 private:
   sup::UnitTestHelper::TemporaryTestFile m_test_file_1;
   sup::UnitTestHelper::TemporaryTestFile m_test_file_2;
+  sup::UnitTestHelper::TemporaryTestFile m_test_file_3;
 };
 
 TEST_F(IncludeProcedureTest, Attributes)
@@ -149,10 +167,22 @@ TEST_F(IncludeProcedureTest, TwoLevelInclude)
   ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
-TEST_F(IncludeProcedureTest,PlaceholderAttributes)
+TEST_F(IncludeProcedureTest, PlaceholderAttributes)
 {
   const std::string body{R"(
     <IncludeProcedure file="test_procedure_2.xml" path="IncludeWait" timeout="0" />
+    <Workspace/>
+)"};
+
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  ASSERT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST_F(IncludeProcedureTest, TypeRegistrationInIncluded)
+{
+  const std::string body{R"(
+    <IncludeProcedure file="test_procedure_3.xml"/>
     <Workspace/>
 )"};
 
@@ -166,6 +196,8 @@ IncludeProcedureTest::IncludeProcedureTest()
                 sup::UnitTestHelper::CreateProcedureString(kTestProcedureBody_1)}
   , m_test_file_2{kTestProcedureFileName_2,
                 sup::UnitTestHelper::CreateProcedureString(kTestProcedureBody_2)}
+  , m_test_file_3{kTestProcedureFileName_3,
+                sup::UnitTestHelper::CreateProcedureString(kTestProcedureBody_3)}
 {}
 
 IncludeProcedureTest::~IncludeProcedureTest() = default;

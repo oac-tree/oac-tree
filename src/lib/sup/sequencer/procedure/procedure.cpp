@@ -30,6 +30,7 @@
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/instruction.h>
 #include <sup/sequencer/instruction_tree.h>
+#include <sup/sequencer/instruction_utils.h>
 #include <sup/sequencer/sequence_parser.h>
 #include <sup/sequencer/workspace.h>
 
@@ -371,7 +372,8 @@ sup::dto::AnyType ParseTypeRegistrationInfo(const TypeRegistrationInfo& info,
   }
   if (info.GetRegistrationMode() == TypeRegistrationInfo::kJSONFile)
   {
-    auto json_filename = GetFullPathName(GetFileDirectory(filename), info.GetString());
+    auto json_filename = instruction_utils::GetFullPathName(
+      instruction_utils::GetFileDirectory(filename), info.GetString());
     if (!parser.ParseFile(json_filename, type_registry))
     {
       std::string error_message =

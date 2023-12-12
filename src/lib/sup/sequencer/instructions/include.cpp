@@ -27,6 +27,7 @@
 
 #include <sup/sequencer/constants.h>
 #include <sup/sequencer/exceptions.h>
+#include <sup/sequencer/instruction_utils.h>
 #include <sup/sequencer/procedure_context.h>
 #include <sup/sequencer/procedure.h>
 
@@ -52,7 +53,8 @@ void Include::SetupImpl(const Procedure& proc)
   if (HasAttribute(Constants::FILENAME_ATTRIBUTE_NAME))
   {
     auto filename = GetAttributeString(Constants::FILENAME_ATTRIBUTE_NAME);
-    proc_filename = GetFullPathName(GetFileDirectory(proc_filename), filename);
+    proc_filename = instruction_utils::GetFullPathName(
+      instruction_utils::GetFileDirectory(proc_filename), filename);
   }
   auto path = GetAttributeString(Constants::PATH_ATTRIBUTE_NAME);
   auto clone = proc_context.CloneInstructionPath(proc_filename, path);

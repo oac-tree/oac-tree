@@ -35,9 +35,6 @@ namespace sequencer
 std::unique_ptr<Procedure> ParseProcedure(const sup::xml::TreeData& data,
                                           const std::string& filename = {});
 
-std::string GetFullPathName(const std::string& directory, const std::string& filename);
-
-std::string GetFileDirectory(const std::string& filename);
 }  // namespace sequencer
 
 }  // namespace sup

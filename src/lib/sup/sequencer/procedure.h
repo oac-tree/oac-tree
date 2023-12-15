@@ -406,6 +406,25 @@ sup::dto::AnyType ParseTypeRegistrationInfo(const TypeRegistrationInfo& info,
                                             const std::string& filename,
                                             const sup::dto::AnyTypeRegistry* type_registry);
 
+  /**
+   * @brief Get the path of the given Procedure to allow to resolve relative pathnames.
+   *
+   * @param proc Procedure to query.
+   *
+   * @return Path of the provided Procedure.
+   */
+std::string GetProcedurePath(const Procedure& proc);
+
+  /**
+   * @brief Resolve a filename that may contain a relative pathname with respect to a Procedure's
+   * location.
+   *
+   * @param proc Procedure to query.
+   * @param filename Filename that may contain a relative path.
+   *
+   * @return Resolved filename.
+   */
+std::string ResolveRelativePath(const Procedure& proc, const std::string& filename);
 
 }  // namespace sequencer
 

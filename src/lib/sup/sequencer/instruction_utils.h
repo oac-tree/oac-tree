@@ -79,27 +79,6 @@ bool GetVariableTimeoutAttribute(const Instruction& instr, UserInterface& ui, Wo
 std::vector<std::string> VariableNamesFromAttribute(const Instruction& instr,
                                                     const std::string& attr_name);
 
-/**
- * @brief Create a full pathname from a given directory and filename.
- *
- * @param directory Directory path.
- * @param filename Filename.
- *
- * @return Full pathname, assembling the directory and the filename if the filename does not yet
- * denote an absolute path (starts with '/'), otherwise returns the filename unchanged.
- */
-std::string GetFullPathName(const std::string& directory, const std::string& filename);
-
-/**
- * @brief Get the dirctory part of a filename.
- *
- * @param filename Filename.
- *
- * @return Directory path of a filename or empty string if the filename does not contain any path
- * delimiters ('/').
- */
-std::string GetFileDirectory(const std::string& filename);
-
 }  // namespace instruction_utils
 
 }  // namespace sequencer

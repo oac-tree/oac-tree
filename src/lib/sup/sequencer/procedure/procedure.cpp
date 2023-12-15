@@ -30,7 +30,6 @@
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/instruction.h>
 #include <sup/sequencer/instruction_tree.h>
-#include <sup/sequencer/instruction_utils.h>
 #include <sup/sequencer/sequence_parser.h>
 #include <sup/sequencer/workspace.h>
 
@@ -43,6 +42,15 @@ namespace
 using sup::sequencer::Instruction;
 using sup::sequencer::TypeRegistrationInfo;
 bool HasRootAttributeSet(const Instruction &instruction);
+/**
+ * @brief Create a full pathname from a given directory and filename.
+ */
+std::string GetFullPathName(const std::string& directory, const std::string& filename);
+
+/**
+ * @brief Get the dirctory part of a filename.
+ */
+std::string GetFileDirectory(const std::string& filename);
 }  // unnamed namespace
 
 namespace sup
@@ -372,8 +380,7 @@ sup::dto::AnyType ParseTypeRegistrationInfo(const TypeRegistrationInfo& info,
   }
   if (info.GetRegistrationMode() == TypeRegistrationInfo::kJSONFile)
   {
-    auto json_filename = instruction_utils::GetFullPathName(
-      instruction_utils::GetFileDirectory(filename), info.GetString());
+    auto json_filename = GetFullPathName(GetFileDirectory(filename), info.GetString());
     if (!parser.ParseFile(json_filename, type_registry))
     {
       std::string error_message =
@@ -386,6 +393,16 @@ sup::dto::AnyType ParseTypeRegistrationInfo(const TypeRegistrationInfo& info,
       "Procedure::SetupPreamble(): unknown type registration mode; must be from JSON file or JSON "
       "string";
   throw ProcedureSetupException(error_message);
+}
+
+std::string GetProcedurePath(const Procedure& proc)
+{
+  return GetFileDirectory(proc.GetFilename());
+}
+
+std::string ResolveRelativePath(const Procedure& proc, const std::string& filename)
+{
+  return GetFullPathName(GetProcedurePath(proc), filename);
 }
 
 }  // namespace sequencer
@@ -409,4 +426,29 @@ bool HasRootAttributeSet(const Instruction &instruction)
   }
   return parsed.second.As<bool>();
 }
+
+std::string GetFullPathName(const std::string& directory, const std::string& filename)
+{
+  if (filename.empty())
+  {
+    std::string error_message = "GetFullPathName(): empty filename passed";
+    throw ParseException(error_message);
+  }
+  if (filename.front() == '/')
+  {
+    return filename;
+  }
+  return directory + filename;
+}
+
+std::string GetFileDirectory(const std::string& filename)
+{
+  auto pos = filename.find_last_of('/');
+  if (pos == std::string::npos)
+  {
+    return {};
+  }
+  return filename.substr(0, pos + 1);
+}
+
 }  // unnamed namespace

@@ -27,7 +27,6 @@
 
 #include <sup/sequencer/constants.h>
 #include <sup/sequencer/exceptions.h>
-#include <sup/sequencer/instruction_utils.h>
 #include <sup/sequencer/procedure_context.h>
 #include <sup/sequencer/sequence_parser.h>
 
@@ -49,11 +48,9 @@ IncludeProcedure::~IncludeProcedure() = default;
 
 void IncludeProcedure::SetupImpl(const Procedure& proc)
 {
-  auto proc_context = proc.GetContext();
-  std::string parent_proc_filename = proc_context.GetFilename();
   auto filename = GetAttributeString(Constants::FILENAME_ATTRIBUTE_NAME);
-  auto proc_filename = instruction_utils::GetFullPathName(
-    instruction_utils::GetFileDirectory(parent_proc_filename), filename);
+  auto proc_filename = ResolveRelativePath(proc, filename);
+  auto proc_context = proc.GetContext();
   std::string path = GetAttributeString(Constants::PATH_ATTRIBUTE_NAME);
   auto instr_clone = proc_context.CloneInstructionPath(proc_filename, path);
   if (!instr_clone)

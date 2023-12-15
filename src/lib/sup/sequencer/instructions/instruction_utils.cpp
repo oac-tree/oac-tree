@@ -89,30 +89,6 @@ std::vector<std::string> VariableNamesFromAttribute(const Instruction& instr,
   return result;
 }
 
-std::string GetFullPathName(const std::string& directory, const std::string& filename)
-{
-  if (filename.empty())
-  {
-    std::string error_message = "sup::sequencer::GetFullPathName(): empty filename passed";
-    throw ParseException(error_message);
-  }
-  if (filename.front() == '/')
-  {
-    return filename;
-  }
-  return directory + filename;
-}
-
-std::string GetFileDirectory(const std::string& filename)
-{
-  auto pos = filename.find_last_of('/');
-  if (pos == std::string::npos)
-  {
-    return {};
-  }
-  return filename.substr(0, pos + 1);
-}
-
 }  // namespace instruction_utils
 
 }  // namespace sequencer

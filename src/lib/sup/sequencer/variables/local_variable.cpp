@@ -25,6 +25,7 @@
 #include <sup/sequencer/constants.h>
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/procedure.h>
+#include <sup/sequencer/workspace.h>
 
 #include <sup/dto/anytype.h>
 #include <sup/dto/anyvalue.h>
@@ -90,10 +91,10 @@ bool LocalVariable::SetValueImpl(const sup::dto::AnyValue& value)
   return result;
 }
 
-void LocalVariable::SetupImpl(const sup::dto::AnyTypeRegistry& registry)
+void LocalVariable::SetupImpl(const Workspace& ws)
 {
   m_value = ParseAnyValueAttributePair(
-    *this, Constants::TYPE_ATTRIBUTE_NAME, Constants::VALUE_ATTRIBUTE_NAME, registry);
+    *this, Constants::TYPE_ATTRIBUTE_NAME, Constants::VALUE_ATTRIBUTE_NAME, ws.GetTypeRegistry());
 }
 
 void LocalVariable::ResetImpl()

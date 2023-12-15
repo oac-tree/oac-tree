@@ -75,9 +75,7 @@ public:
   std::pair<int, std::string> LastLogEntry() const;
 
 protected:
-  Procedure proc;
   sup::UnitTestHelper::TestLogUserInterface ui;
-  Workspace ws;
 };
 
 TEST_F(LogInstructionTest, Setup)

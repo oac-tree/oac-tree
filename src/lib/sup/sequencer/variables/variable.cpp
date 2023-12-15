@@ -23,6 +23,7 @@
 
 #include <sup/sequencer/constants.h>
 #include <sup/sequencer/exceptions.h>
+#include <sup/sequencer/workspace.h>
 
 #include <sup/dto/anytype_registry.h>
 #include <sup/dto/anyvalue_helper.h>
@@ -72,7 +73,7 @@ void Variable::SetName(const std::string &name)
   AddAttribute(Constants::NAME_ATTRIBUTE_NAME, name);
 }
 
-void Variable::Setup(const sup::dto::AnyTypeRegistry* registry)
+void Variable::Setup(const Workspace& ws)
 {
   if (!m_attribute_handler.ValidateAttributes())
   {
@@ -80,9 +81,7 @@ void Variable::Setup(const sup::dto::AnyTypeRegistry* registry)
       VariableSetupExceptionMessage(*this, m_attribute_handler.GetFailedConstraints());
     throw VariableSetupException(error_message);
   }
-  sup::dto::AnyTypeRegistry local_registry{};
-  auto& reg = registry == nullptr ? local_registry : *registry;
-  SetupImpl(reg);
+  SetupImpl(ws);
   m_setup_successful = true;
 }
 
@@ -217,7 +216,7 @@ bool Variable::IsAvailableImpl() const
   return true;
 }
 
-void Variable::SetupImpl(const sup::dto::AnyTypeRegistry&)
+void Variable::SetupImpl(const Workspace&)
 {}
 
 void Variable::ResetImpl()

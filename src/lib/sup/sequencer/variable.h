@@ -82,10 +82,11 @@ public:
   /**
    * @brief Setup variable method.
    *
-   * @param registry Type registry.
+   * @param ws Current workspace.
+   *
    * @throw VariableSetupException when the variable could not be setup properly.
    */
-  void Setup(const sup::dto::AnyTypeRegistry* registry = nullptr);
+  void Setup(const Workspace& ws);
 
   /**
    * @brief Get value of variable.
@@ -317,13 +318,13 @@ private:
   /**
    * @brief Setup value of variable.
    *
-   * @param registry Type registry.
+   * @param ws Parent workspace.
    *
    * @throw VariableSetupException when the variable could not be setup properly.
    *
    * @note Private virtual implementation.
    */
-  virtual void SetupImpl(const sup::dto::AnyTypeRegistry& registry);
+  virtual void SetupImpl(const Workspace& ws);
 
   /**
    * @brief Reset variable.

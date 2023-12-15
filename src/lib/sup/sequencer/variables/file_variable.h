@@ -44,11 +44,13 @@ public:
   static const std::string Type;
 
 private:
+  std::string m_workspace_path;
   /**
    * @brief See sup::sequencer::Variable.
    */
   bool GetValueImpl(sup::dto::AnyValue& value) const override;
   bool SetValueImpl(const sup::dto::AnyValue& value) override;
+  void SetupImpl(const Workspace& ws) override;
   bool IsAvailableImpl() const override;
 };
 

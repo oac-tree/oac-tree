@@ -42,11 +42,6 @@ namespace
 using sup::sequencer::Instruction;
 using sup::sequencer::TypeRegistrationInfo;
 bool HasRootAttributeSet(const Instruction &instruction);
-
-/**
- * @brief Get the dirctory part of a filename.
- */
-std::string GetFileDirectory(const std::string& filename);
 }  // unnamed namespace
 
 namespace sup
@@ -56,9 +51,8 @@ namespace sequencer
 
 Procedure::Procedure(const std::string& filename)
   : m_instructions{}
-  , m_workspace{new Workspace()}
+  , m_workspace{new Workspace(filename)}
   , m_attribute_handler{}
-  , m_filename{filename}
   , m_preamble{}
   , m_parent{}
   , m_procedure_store{new ProcedureStore{this}}
@@ -74,7 +68,7 @@ Procedure::~Procedure()
 
 std::string Procedure::GetFilename() const
 {
-  return m_filename;
+  return m_workspace->GetFilename();
 }
 
 Instruction *Procedure::RootInstruction()
@@ -287,7 +281,7 @@ bool Procedure::RegisterType(const sup::dto::AnyType& anytype)
   return m_workspace->RegisterType(anytype);
 }
 
-const sup::dto::AnyTypeRegistry* Procedure::GetTypeRegistry() const
+const sup::dto::AnyTypeRegistry& Procedure::GetTypeRegistry() const
 {
   return m_workspace->GetTypeRegistry();
 }
@@ -361,12 +355,12 @@ std::vector<const Instruction*> GetNextLeaves(const Procedure& proc)
 
 sup::dto::AnyType ParseTypeRegistrationInfo(const TypeRegistrationInfo& info,
                                             const std::string& filename,
-                                            const sup::dto::AnyTypeRegistry* type_registry)
+                                            const sup::dto::AnyTypeRegistry& type_registry)
 {
   sup::dto::JSONAnyTypeParser parser;
   if (info.GetRegistrationMode() == TypeRegistrationInfo::kJSONString)
   {
-    if (!parser.ParseString(info.GetString(), type_registry))
+    if (!parser.ParseString(info.GetString(), std::addressof(type_registry)))
     {
       std::string error_message =
           "Procedure::SetupPreamble(): could not parse type: [" + info.GetString() + "]";
@@ -377,7 +371,7 @@ sup::dto::AnyType ParseTypeRegistrationInfo(const TypeRegistrationInfo& info,
   if (info.GetRegistrationMode() == TypeRegistrationInfo::kJSONFile)
   {
     auto json_filename = GetFullPathName(GetFileDirectory(filename), info.GetString());
-    if (!parser.ParseFile(json_filename, type_registry))
+    if (!parser.ParseFile(json_filename, std::addressof(type_registry)))
     {
       std::string error_message =
           "Procedure::SetupPreamble(): could not parse file: [" + json_filename + "]";
@@ -393,16 +387,25 @@ sup::dto::AnyType ParseTypeRegistrationInfo(const TypeRegistrationInfo& info,
 
 std::string GetFullPathName(const std::string& directory, const std::string& filename)
 {
-  if (filename.empty())
-  {
-    std::string error_message = "GetFullPathName(): empty filename passed";
-    throw ParseException(error_message);
-  }
-  if (filename.front() == '/')
+  if (filename.empty() || filename.front() == '/' || directory.empty())
   {
     return filename;
   }
-  return directory + filename;
+  if (directory.back() == '/')
+  {
+    return directory + filename;
+  }
+  return directory + "/" + filename;
+}
+
+std::string GetFileDirectory(const std::string& filename)
+{
+  auto pos = filename.find_last_of('/');
+  if (pos == std::string::npos)
+  {
+    return {};
+  }
+  return filename.substr(0, pos + 1);
 }
 
 std::string GetProcedurePath(const Procedure& proc)
@@ -435,16 +438,6 @@ bool HasRootAttributeSet(const Instruction &instruction)
     return false;
   }
   return parsed.second.As<bool>();
-}
-
-std::string GetFileDirectory(const std::string& filename)
-{
-  auto pos = filename.find_last_of('/');
-  if (pos == std::string::npos)
-  {
-    return {};
-  }
-  return filename.substr(0, pos + 1);
 }
 
 }  // unnamed namespace

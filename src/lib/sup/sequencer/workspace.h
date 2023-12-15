@@ -48,8 +48,16 @@ public:
   using GenericCallback = std::function<void(const std::string&, const sup::dto::AnyValue&, bool)>;
   using VariableCallback = std::function<void(const sup::dto::AnyValue&, bool)>;
 
-  Workspace();
+  Workspace(const std::string& filename = "");
   ~Workspace();
+
+  /**
+   * @brief Get the filename of the owning procedure (if loaded from file).
+   *
+   * @return Filename of this workspace's procedure.
+   * @details This filename can be used to resolve relative pathnames.
+   */
+  std::string GetFilename() const;
 
   /**
    * @brief Add variable.
@@ -66,6 +74,8 @@ public:
 
   /**
    * @brief Setup all variables.
+   *
+   * @param proc Reference to parent procedure.
    */
   void Setup();
 
@@ -144,9 +154,9 @@ public:
   /**
    * @brief Get the current type registry.
    *
-   * @return Pointer to type registry.
+   * @return Reference to type registry.
    */
-  const sup::dto::AnyTypeRegistry* GetTypeRegistry() const;
+  const sup::dto::AnyTypeRegistry& GetTypeRegistry() const;
 
   /**
    * @brief Get a callback guard object.
@@ -192,6 +202,11 @@ public:
   bool IsSuccessfullySetup() const;
 
 private:
+  /**
+   * @brief Filename of the Procedure it's part of.
+   */
+  std::string m_filename;
+
   /**
    * @brief Map from Variable names to Variable pointers.
    *

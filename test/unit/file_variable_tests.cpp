@@ -26,6 +26,7 @@
 #include <sup/sequencer/sequence_parser.h>
 #include <sup/sequencer/variable.h>
 #include <sup/sequencer/variable_registry.h>
+#include <sup/sequencer/workspace.h>
 
 #include <sup/dto/anyvalue.h>
 #include <sup/dto/json_value_parser.h>
@@ -79,30 +80,32 @@ TEST_F(FileVariableTest, FileWrite)
 
 TEST_F(FileVariableTest, Setup)
 {
+  Workspace ws{""};
   auto variable = GlobalVariableRegistry().Create("File");
 
   ASSERT_NE(variable.get(), nullptr);
-  EXPECT_THROW(variable->Setup(), VariableSetupException);
+  EXPECT_THROW(variable->Setup(ws), VariableSetupException);
 
   EXPECT_TRUE(variable->AddAttribute("irrelevant", "undefined"));
-  EXPECT_THROW(variable->Setup(), VariableSetupException);
+  EXPECT_THROW(variable->Setup(ws), VariableSetupException);
 
   sup::dto::AnyValue value;
   EXPECT_FALSE(variable->GetValue(value));
   EXPECT_TRUE(sup::dto::IsEmptyValue(value));
 
   EXPECT_TRUE(variable->AddAttribute("file", "some_file"));
-  EXPECT_NO_THROW(variable->Setup());
+  EXPECT_NO_THROW(variable->Setup(ws));
 }
 
 TEST_F(FileVariableTest, FileDoesNotExist)
 {
+  Workspace ws{""};
   auto variable = GlobalVariableRegistry().Create("File");
 
   ASSERT_NE(variable.get(), nullptr);
 
   EXPECT_TRUE(variable->AddAttribute("file", "does_not_exist"));
-  EXPECT_NO_THROW(variable->Setup());
+  EXPECT_NO_THROW(variable->Setup(ws));
 
   sup::dto::AnyValue value;  // Placeholder
   EXPECT_FALSE(variable->GetValue(value));
@@ -116,7 +119,6 @@ TEST_F(FileVariableTest, FileSuccess)
         <!-- Expected datatype -->
         <Copy name="default" inputVar="input" outputVar="file"/>
         <Copy name="value" inputVar="value" outputVar="file.value"/>
-        <!-- Should be math expression -->
         <Copy name="severity" inputVar="severity" outputVar="file.severity"/>
     </Sequence>
     <Workspace>

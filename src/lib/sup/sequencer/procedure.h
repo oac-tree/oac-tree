@@ -309,9 +309,9 @@ public:
   /**
    * @brief Get the current type registry.
    *
-   * @return Pointer to type registry.
+   * @return Reference to type registry.
    */
-  const sup::dto::AnyTypeRegistry* GetTypeRegistry() const;
+  const sup::dto::AnyTypeRegistry& GetTypeRegistry() const;
 
   /**
    * @brief Add a generic callback for variable updates.
@@ -338,13 +338,6 @@ private:
    * @brief Attribute handler.
   */
   AttributeHandler m_attribute_handler;
-
-  /**
-   * @brief Name of file from which this procedure was loaded (if loaded form file).
-   *
-   * @note This filename may include the relative or absolute paths.
-   */
-  std::string m_filename;
 
   /**
    * @brief Preamble information (loaded plugins and type registrations).
@@ -404,7 +397,7 @@ std::vector<const Instruction*> GetNextLeaves(const Procedure& proc);
    */
 sup::dto::AnyType ParseTypeRegistrationInfo(const TypeRegistrationInfo& info,
                                             const std::string& filename,
-                                            const sup::dto::AnyTypeRegistry* type_registry);
+                                            const sup::dto::AnyTypeRegistry& type_registry);
 
 /**
  * @brief Create a full pathname from a given directory and filename.
@@ -416,6 +409,16 @@ sup::dto::AnyType ParseTypeRegistrationInfo(const TypeRegistrationInfo& info,
  * denote an absolute path (starts with '/'), otherwise returns the filename unchanged.
  */
 std::string GetFullPathName(const std::string& directory, const std::string& filename);
+
+/**
+ * @brief Get the dirctory part of a filename.
+ *
+ * @param filename Filename.
+ *
+ * @return Directory path of a filename or empty string if the filename does not contain any path
+ * delimiters ('/').
+ */
+std::string GetFileDirectory(const std::string& filename);
 
   /**
    * @brief Get the path of the given Procedure to allow to resolve relative pathnames.

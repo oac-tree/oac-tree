@@ -24,6 +24,8 @@
 #include <sup/sequencer/concrete_constraints.h>
 #include <sup/sequencer/constants.h>
 #include <sup/sequencer/generic_utils.h>
+#include <sup/sequencer/procedure.h>
+#include <sup/sequencer/workspace.h>
 
 #include <sup/dto/anyvalue_helper.h>
 #include <sup/dto/json_value_parser.h>
@@ -39,6 +41,7 @@ const std::string FileVariable::Type = "File";
 
 FileVariable::FileVariable()
   : Variable(FileVariable::Type)
+  , m_workspace_path{}
 {
   AddAttributeDefinition(Constants::FILENAME_ATTRIBUTE_NAME, sup::dto::StringType).SetMandatory();
   AddAttributeDefinition(Constants::PRETTY_JSON_ATTRIBUTE_NAME, sup::dto::BooleanType);
@@ -49,7 +52,9 @@ FileVariable::~FileVariable() = default;
 bool FileVariable::GetValueImpl(sup::dto::AnyValue& value) const
 {
   sup::dto::JSONAnyValueParser parser;
-  if (!parser.ParseFile(GetAttributeString(Constants::FILENAME_ATTRIBUTE_NAME)))
+  auto filename = GetFullPathName(m_workspace_path,
+                                  GetAttributeString(Constants::FILENAME_ATTRIBUTE_NAME));
+  if (!parser.ParseFile(filename))
   {
     return false;
   }
@@ -66,8 +71,9 @@ bool FileVariable::SetValueImpl(const sup::dto::AnyValue& value)
   }
   try
   {
-    sup::dto::AnyValueToJSONFile(value, GetAttributeString(Constants::FILENAME_ATTRIBUTE_NAME),
-                                 pretty_json);
+    auto filename = GetFullPathName(m_workspace_path,
+                                    GetAttributeString(Constants::FILENAME_ATTRIBUTE_NAME));
+    sup::dto::AnyValueToJSONFile(value, filename, pretty_json);
     Notify(value, true);
   }
   catch(const sup::dto::SerializeException&)
@@ -76,10 +82,18 @@ bool FileVariable::SetValueImpl(const sup::dto::AnyValue& value)
   }
   return true;
 }
+
+void FileVariable::SetupImpl(const Workspace& ws)
+{
+  m_workspace_path = GetFileDirectory(ws.GetFilename());
+}
+
 bool FileVariable::IsAvailableImpl() const
 {
   sup::dto::JSONAnyValueParser parser;
-  if (!parser.ParseFile(GetAttributeString(Constants::FILENAME_ATTRIBUTE_NAME)))
+  auto filename = GetFullPathName(m_workspace_path,
+                                  GetAttributeString(Constants::FILENAME_ATTRIBUTE_NAME));
+  if (!parser.ParseFile(filename))
   {
     return false;
   }

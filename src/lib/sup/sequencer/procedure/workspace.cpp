@@ -36,14 +36,20 @@ namespace sup
 {
 namespace sequencer
 {
-Workspace::Workspace()
-   : m_var_map{}
+Workspace::Workspace(const std::string& filename)
+   : m_filename{filename}
+   , m_var_map{}
    , m_callbacks{}
    , m_type_registry{new sup::dto::AnyTypeRegistry()}
    , m_setup_done{false}
 {}
 
 Workspace::~Workspace() = default;
+
+std::string Workspace::GetFilename() const
+{
+  return m_filename;
+}
 
 bool Workspace::AddVariable(const std::string& name, std::unique_ptr<Variable>&& var)
 {
@@ -77,10 +83,9 @@ void Workspace::Setup()
   {
     return;
   }
-  const sup::dto::AnyTypeRegistry* registry = m_type_registry.get();
   std::for_each(m_var_map.begin(), m_var_map.end(),
-                [registry](const decltype(m_var_map)::value_type &pair) {
-                  return pair.second->Setup(registry);
+                [this](const decltype(m_var_map)::value_type &pair) {
+                  return pair.second->Setup(*this);
                 });
   m_setup_done = true;
 }
@@ -100,7 +105,7 @@ bool Workspace::ResetVariable(const std::string& varname)
     return false;
   }
   it->second->Reset();
-  it->second->Setup(m_type_registry.get());
+  it->second->Setup(*this);
   return true;
 }
 
@@ -189,9 +194,9 @@ bool Workspace::RegisterType(const sup::dto::AnyType& anytype)
   return true;
 }
 
-const sup::dto::AnyTypeRegistry* Workspace::GetTypeRegistry() const
+const sup::dto::AnyTypeRegistry& Workspace::GetTypeRegistry() const
 {
-  return m_type_registry.get();
+  return *m_type_registry;
 }
 
 ScopeGuard Workspace::GetCallbackGuard(

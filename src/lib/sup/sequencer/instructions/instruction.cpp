@@ -406,8 +406,8 @@ sup::dto::AnyValue ParseAnyValueAttributePair(const Instruction& instruction,
 {
   auto type_str = instruction.GetAttributeString(type_attr_name);
   sup::dto::JSONAnyTypeParser type_parser;
-  auto registry = ws.GetTypeRegistry();
-  if (!type_parser.ParseString(type_str, registry))
+  const auto& registry = ws.GetTypeRegistry();
+  if (!type_parser.ParseString(type_str, std::addressof(registry)))
   {
     std::string error_message = InstructionErrorProlog(instruction) +
       "could not parse type [" + type_str + "] from attribute [" + type_attr_name + "]";

@@ -23,6 +23,7 @@
 
 #include <sup/sequencer/constants.h>
 #include <sup/sequencer/exceptions.h>
+#include <sup/sequencer/workspace.h>
 
 #include <gtest/gtest.h>
 
@@ -40,6 +41,7 @@ protected:
 
   void SetupVariables();
 
+  Workspace ws;
   LocalVariable empty_var;
   LocalVariable bool_var;
   LocalVariable uint64_var;
@@ -82,7 +84,7 @@ TEST_F(LocalVariableTest, DefaultConstructed)
   EXPECT_TRUE(empty_var.GetName().empty());
   EXPECT_FALSE(empty_var.HasAttribute(Constants::NAME_ATTRIBUTE_NAME));
   EXPECT_FALSE(empty_var.IsAvailable());
-  EXPECT_NO_THROW(empty_var.Setup());
+  EXPECT_NO_THROW(empty_var.Setup(ws));
   EXPECT_TRUE(empty_var.IsAvailable());
 
   // Test Get/SetName
@@ -103,34 +105,34 @@ TEST_F(LocalVariableTest, Setup)
 {
   // Setup without type/value attributes succeeds
   LocalVariable var_no_attr{};
-  EXPECT_NO_THROW(var_no_attr.Setup());
+  EXPECT_NO_THROW(var_no_attr.Setup(ws));
 
   // Setup with only type attribute succeeds if parsing was successful
   LocalVariable var_type_ok{};
   EXPECT_TRUE(var_type_ok.AddAttribute("type", BOOL_TYPE));
-  EXPECT_NO_THROW(var_type_ok.Setup());
+  EXPECT_NO_THROW(var_type_ok.Setup(ws));
 
   // Setup with type and value attributea succeeds if parsing was successful
   LocalVariable var_val_ok{};
   EXPECT_TRUE(var_val_ok.AddAttribute("type", BOOL_TYPE));
   EXPECT_TRUE(var_val_ok.AddAttribute("value", "true"));
-  EXPECT_NO_THROW(var_val_ok.Setup());
+  EXPECT_NO_THROW(var_val_ok.Setup(ws));
 
   // Setup with only type attribute throws if parsing failed
   LocalVariable var_type_not_ok{};
   EXPECT_TRUE(var_type_not_ok.AddAttribute("type", "not_a_type"));
-  EXPECT_THROW(var_type_not_ok.Setup(), VariableSetupException);
+  EXPECT_THROW(var_type_not_ok.Setup(ws), VariableSetupException);
 
   // Setup with type and value attributea throws if parsing failed
   LocalVariable var_val_not_ok{};
   EXPECT_TRUE(var_val_not_ok.AddAttribute("type", BOOL_TYPE));
   EXPECT_TRUE(var_val_not_ok.AddAttribute("value", "on"));
-  EXPECT_THROW(var_val_not_ok.Setup(), VariableSetupException);
+  EXPECT_THROW(var_val_not_ok.Setup(ws), VariableSetupException);
 
   // Setup with only value attribute fails
   LocalVariable var_value_only{};
   EXPECT_TRUE(var_value_only.AddAttribute("value", "some_val"));
-  EXPECT_THROW(var_value_only.Setup(), VariableSetupException);
+  EXPECT_THROW(var_value_only.Setup(ws), VariableSetupException);
 }
 
 TEST_F(LocalVariableTest, AddAttribute)
@@ -152,7 +154,7 @@ TEST_F(LocalVariableTest, AddAttributesPartial)
 
   // Add attributes
   EXPECT_TRUE(empty_var.AddAttributes(attr_partial));
-  EXPECT_NO_THROW(empty_var.Setup());
+  EXPECT_NO_THROW(empty_var.Setup(ws));
 
   // Post conditions
   EXPECT_TRUE(empty_var.HasAttribute(Constants::NAME_ATTRIBUTE_NAME));
@@ -176,13 +178,13 @@ TEST_F(LocalVariableTest, AddAttributesFull)
   EXPECT_FALSE(empty_var.HasAttribute(Constants::NAME_ATTRIBUTE_NAME));
   EXPECT_FALSE(empty_var.HasAttribute(JSON_TYPE_ATTRIBUTE));
   EXPECT_FALSE(empty_var.HasAttribute(JSON_VALUE_ATTRIBUTE));
-  EXPECT_NO_THROW(empty_var.Setup());
+  EXPECT_NO_THROW(empty_var.Setup(ws));
   sup::dto::AnyValue any_value;
   EXPECT_FALSE(empty_var.GetValue(any_value));
 
   // Add attributes
   EXPECT_TRUE(empty_var.AddAttributes(attr_full));
-  EXPECT_NO_THROW(empty_var.Setup());
+  EXPECT_NO_THROW(empty_var.Setup(ws));
 
   // Get attributes
   EXPECT_EQ(empty_var.GetStringAttributes(), attr_full);
@@ -211,7 +213,7 @@ TEST_F(LocalVariableTest, NotifyCallback)
     {
       value = val.As<sup::dto::int32>();
     });
-  EXPECT_NO_THROW(int32_var.Setup());
+  EXPECT_NO_THROW(int32_var.Setup(ws));
   sup::dto::AnyValue new_value(sup::dto::SignedInteger32Type);
   new_value = 1234;
   EXPECT_TRUE(int32_var.SetValue(new_value));
@@ -225,7 +227,7 @@ TEST_F(LocalVariableTest, BooleanType)
   EXPECT_FALSE(bool_var.HasAttribute(Constants::NAME_ATTRIBUTE_NAME));
   EXPECT_TRUE(bool_var.HasAttribute(JSON_TYPE_ATTRIBUTE));
   EXPECT_EQ(bool_var.GetAttributeString(JSON_TYPE_ATTRIBUTE), BOOL_TYPE);
-  EXPECT_NO_THROW(bool_var.Setup());
+  EXPECT_NO_THROW(bool_var.Setup(ws));
   sup::dto::AnyValue any_value;
   EXPECT_TRUE(bool_var.GetValue(any_value));
   bool b = any_value.As<sup::dto::boolean>();
@@ -262,7 +264,7 @@ TEST_F(LocalVariableTest, UnsignedInteger64Type)
   EXPECT_FALSE(uint64_var.HasAttribute(Constants::NAME_ATTRIBUTE_NAME));
   EXPECT_TRUE(uint64_var.HasAttribute(JSON_TYPE_ATTRIBUTE));
   EXPECT_EQ(uint64_var.GetAttributeString(JSON_TYPE_ATTRIBUTE), UINT64_TYPE);
-  EXPECT_NO_THROW(uint64_var.Setup());
+  EXPECT_NO_THROW(uint64_var.Setup(ws));
   sup::dto::AnyValue any_value;
   EXPECT_TRUE(uint64_var.GetValue(any_value));
   sup::dto::uint64 val = any_value.As<sup::dto::uint64>();
@@ -302,7 +304,7 @@ TEST_F(LocalVariableTest, Float32Type)
   EXPECT_FALSE(float32_var.HasAttribute(Constants::NAME_ATTRIBUTE_NAME));
   EXPECT_TRUE(float32_var.HasAttribute(JSON_TYPE_ATTRIBUTE));
   EXPECT_EQ(float32_var.GetAttributeString(JSON_TYPE_ATTRIBUTE), FLOAT32_TYPE);
-  EXPECT_NO_THROW(float32_var.Setup());
+  EXPECT_NO_THROW(float32_var.Setup(ws));
   sup::dto::AnyValue any_value;
   EXPECT_TRUE(float32_var.GetValue(any_value));
   sup::dto::float32 val = any_value.As<sup::dto::float32>();
@@ -407,7 +409,8 @@ static std::string stob(bool b)
 }
 
 LocalVariableTest::LocalVariableTest()
-    : empty_var{}, bool_var{}, uint64_var{}, float32_var{}, attr_partial{}, attr_full{}
+    : ws{}
+    , empty_var{}, bool_var{}, uint64_var{}, float32_var{}, attr_partial{}, attr_full{}
 {
   bool_var.AddAttribute(JSON_TYPE_ATTRIBUTE, BOOL_TYPE);
   bool_var.AddAttribute(JSON_VALUE_ATTRIBUTE, BOOL_VALUE_STR);
@@ -428,8 +431,8 @@ LocalVariableTest::~LocalVariableTest() = default;
 
 void LocalVariableTest::SetupVariables()
 {
-  empty_var.Setup();
-  bool_var.Setup();
-  uint64_var.Setup();
-  float32_var.Setup();
+  empty_var.Setup(ws);
+  bool_var.Setup(ws);
+  uint64_var.Setup(ws);
+  float32_var.Setup(ws);
 }

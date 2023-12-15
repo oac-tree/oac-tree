@@ -87,6 +87,14 @@ private:
   const ProcedureStore* m_procedure_store;
 };
 
+/**
+ * @brief Clone an instruction tree with given root instruction.
+ *
+ * @param instruction Root of the tree to clone.
+ * @return Cloned instruction tree.
+ */
+std::unique_ptr<Instruction> CloneInstructionTree(const Instruction& instruction);
+
 }  // namespace sequencer
 
 }  // namespace sup

@@ -65,6 +65,11 @@ std::unique_ptr<Instruction> ProcedureContext::CloneInstructionPath(
   return InstructionHelper::CloneInstruction(instr);
 }
 
+std::unique_ptr<Instruction> CloneInstructionTree(const Instruction& instruction)
+{
+  return InstructionHelper::CloneInstruction(std::addressof(instruction));
+}
+
 }  // namespace sequencer
 
 }  // namespace sup

@@ -406,6 +406,17 @@ sup::dto::AnyType ParseTypeRegistrationInfo(const TypeRegistrationInfo& info,
                                             const std::string& filename,
                                             const sup::dto::AnyTypeRegistry* type_registry);
 
+/**
+ * @brief Create a full pathname from a given directory and filename.
+ *
+ * @param directory Directory path.
+ * @param filename Filename.
+ *
+ * @return Full pathname, assembling the directory and the filename if the filename does not yet
+ * denote an absolute path (starts with '/'), otherwise returns the filename unchanged.
+ */
+std::string GetFullPathName(const std::string& directory, const std::string& filename);
+
   /**
    * @brief Get the path of the given Procedure to allow to resolve relative pathnames.
    *

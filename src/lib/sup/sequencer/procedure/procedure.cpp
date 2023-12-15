@@ -42,10 +42,6 @@ namespace
 using sup::sequencer::Instruction;
 using sup::sequencer::TypeRegistrationInfo;
 bool HasRootAttributeSet(const Instruction &instruction);
-/**
- * @brief Create a full pathname from a given directory and filename.
- */
-std::string GetFullPathName(const std::string& directory, const std::string& filename);
 
 /**
  * @brief Get the dirctory part of a filename.
@@ -395,6 +391,20 @@ sup::dto::AnyType ParseTypeRegistrationInfo(const TypeRegistrationInfo& info,
   throw ProcedureSetupException(error_message);
 }
 
+std::string GetFullPathName(const std::string& directory, const std::string& filename)
+{
+  if (filename.empty())
+  {
+    std::string error_message = "GetFullPathName(): empty filename passed";
+    throw ParseException(error_message);
+  }
+  if (filename.front() == '/')
+  {
+    return filename;
+  }
+  return directory + filename;
+}
+
 std::string GetProcedurePath(const Procedure& proc)
 {
   return GetFileDirectory(proc.GetFilename());
@@ -425,20 +435,6 @@ bool HasRootAttributeSet(const Instruction &instruction)
     return false;
   }
   return parsed.second.As<bool>();
-}
-
-std::string GetFullPathName(const std::string& directory, const std::string& filename)
-{
-  if (filename.empty())
-  {
-    std::string error_message = "GetFullPathName(): empty filename passed";
-    throw ParseException(error_message);
-  }
-  if (filename.front() == '/')
-  {
-    return filename;
-  }
-  return directory + filename;
 }
 
 std::string GetFileDirectory(const std::string& filename)

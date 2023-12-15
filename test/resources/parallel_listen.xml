@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+           name="Procedure for testing parallel sequences"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd"
+           tickTimeout="0.2">
+    <ParallelSequence isRoot="true" name="Parallel Wait">
+        <Listen varNames="number">
+            <Output description="Number updated in thread 1: " fromVar="number"/>
+        </Listen>
+        <Listen varNames="number">
+            <Output description="Number updated in thread 2: " fromVar="number"/>
+        </Listen>
+        <Sequence>
+            <Repeat maxCount="3">
+                <Sequence>
+                    <Wait timeout="1"/>
+                    <Increment varName="number"/>
+                </Sequence>
+            </Repeat>
+            <Include path="fail"/>
+        </Sequence>
+    </ParallelSequence>
+    <Inverter name="fail">
+        <Wait/>
+    </Inverter>
+    <Workspace>
+        <Local name="number" type='{"type":"uint32"}' value="0"/>
+    </Workspace>
+</Procedure>

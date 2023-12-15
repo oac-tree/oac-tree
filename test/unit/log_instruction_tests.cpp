@@ -100,9 +100,8 @@ TEST_F(LogInstructionTest, SimpleMessage)
   EXPECT_TRUE(instruction->AddAttribute("message", log_message));
   EXPECT_NO_THROW(instruction->Setup(proc));
 
-  Workspace ws;
   EXPECT_EQ(NumberOfLogEntries(), 0);
-  EXPECT_NO_THROW(instruction->ExecuteSingle(ui, ws));
+  EXPECT_NO_THROW(instruction->ExecuteSingle(ui, proc.GetWorkspace()));
   EXPECT_EQ(instruction->GetStatus(), ExecutionStatus::SUCCESS);
   EXPECT_EQ(NumberOfLogEntries(), 1);
   auto last_entry = LastLogEntry();
@@ -121,9 +120,8 @@ TEST_F(LogInstructionTest, MessageWithSeverity)
   EXPECT_TRUE(instruction->AddAttribute("severity", "critical"));
   EXPECT_NO_THROW(instruction->Setup(proc));
 
-  Workspace ws;
   EXPECT_EQ(NumberOfLogEntries(), 0);
-  EXPECT_NO_THROW(instruction->ExecuteSingle(ui, ws));
+  EXPECT_NO_THROW(instruction->ExecuteSingle(ui, proc.GetWorkspace()));
   EXPECT_EQ(instruction->GetStatus(), ExecutionStatus::SUCCESS);
   EXPECT_EQ(NumberOfLogEntries(), 1);
   auto last_entry = LastLogEntry();
@@ -142,9 +140,8 @@ TEST_F(LogInstructionTest, MessageWithSeverityError)
   EXPECT_TRUE(instruction->AddAttribute("severity", "superdupercritical"));
   EXPECT_NO_THROW(instruction->Setup(proc));
 
-  Workspace ws;
   EXPECT_EQ(NumberOfLogEntries(), 0);
-  EXPECT_NO_THROW(instruction->ExecuteSingle(ui, ws));
+  EXPECT_NO_THROW(instruction->ExecuteSingle(ui, proc.GetWorkspace()));
   EXPECT_EQ(instruction->GetStatus(), ExecutionStatus::FAILURE);
   EXPECT_EQ(NumberOfLogEntries(), 1);
   auto last_entry = LastLogEntry();
@@ -162,9 +159,8 @@ TEST_F(LogInstructionTest, VariableDoesNotExist)
   EXPECT_TRUE(instruction->AddAttribute("inputVar", "does_not_exist"));
   EXPECT_NO_THROW(instruction->Setup(proc));
 
-  Workspace ws;
   EXPECT_EQ(NumberOfLogEntries(), 0);
-  EXPECT_NO_THROW(instruction->ExecuteSingle(ui, ws));
+  EXPECT_NO_THROW(instruction->ExecuteSingle(ui, proc.GetWorkspace()));
   EXPECT_EQ(instruction->GetStatus(), ExecutionStatus::FAILURE);
   EXPECT_EQ(NumberOfLogEntries(), 1);
   auto last_entry = LastLogEntry();

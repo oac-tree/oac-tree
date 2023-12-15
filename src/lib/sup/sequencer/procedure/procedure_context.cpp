@@ -49,7 +49,7 @@ const Procedure& ProcedureContext::GetProcedure(const std::string& filename) con
   return m_procedure_store->LoadProcedure(filename);
 }
 
-Workspace* ProcedureContext::GetWorkspace(const std::string& filename) const
+Workspace& ProcedureContext::GetWorkspace(const std::string& filename) const
 {
   auto& proc = m_procedure_store->LoadProcedure(filename);
   return proc.GetWorkspace();

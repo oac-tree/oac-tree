@@ -66,7 +66,7 @@ void IncludeProcedure::SetupImpl(const Procedure& proc)
     throw InstructionSetupException(error_message);
   }
   (void)InsertInstruction(std::move(instr_clone), 0);
-  m_workspace = proc_context.GetWorkspace(proc_filename);
+  m_workspace = std::addressof(proc_context.GetWorkspace(proc_filename));
   m_workspace->Setup();
   auto& sub_proc = proc_context.GetProcedure(proc_filename);
   SetupChild(sub_proc);

@@ -69,8 +69,7 @@ TEST_F(SequencerParserTest, ProcedureOnlyString)
   ASSERT_TRUE(static_cast<bool>(proc));
   EXPECT_EQ(proc->RootInstruction()->GetType(), Sequence::Type);
   EXPECT_EQ(proc->RootInstruction()->ChildrenCount(), 2);
-  ASSERT_NE(proc->GetWorkspace(), nullptr);
-  ASSERT_EQ(proc->GetWorkspace()->GetVariables().size(), 0);
+  ASSERT_EQ(proc->GetWorkspace().GetVariables().size(), 0);
 }
 
 TEST_F(SequencerParserTest, WorkspaceOnly)
@@ -221,7 +220,7 @@ TEST_F(SequencerParserTest, Workspace)
 
   auto proc = ParseProcedureFile(file_name);
   ASSERT_TRUE(static_cast<bool>(proc));
-  auto variables = proc->GetWorkspace()->GetVariables();
+  auto variables = proc->GetWorkspace().GetVariables();
   ASSERT_EQ(variables.size(), 3);
   EXPECT_EQ(variables.at(0)->GetAttributeString("name"), "var1");
   EXPECT_EQ(variables.at(1)->GetAttributeString("name"), "var2");

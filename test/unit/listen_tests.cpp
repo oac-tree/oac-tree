@@ -92,10 +92,9 @@ R"RAW(
     sup::UnitTestHelper::TryAndExecuteNoReset(proc, ui, sup::sequencer::ExecutionStatus::SUCCESS));
 
   // check result variable
-  auto ws = proc->GetWorkspace();
-  ASSERT_NE(ws, nullptr);
+  auto& ws = proc->GetWorkspace();
   sup::dto::AnyValue result{sup::dto::UnsignedInteger64Type};
-  EXPECT_TRUE(ws->GetValue("monitor", result));
+  EXPECT_TRUE(ws.GetValue("monitor", result));
   EXPECT_EQ(result.As<sup::dto::uint64>(), 1729u);
 }
 
@@ -137,10 +136,9 @@ R"RAW(
     sup::UnitTestHelper::TryAndExecuteNoReset(proc, ui, sup::sequencer::ExecutionStatus::SUCCESS));
 
   // check result variable
-  auto ws = proc->GetWorkspace();
-  ASSERT_NE(ws, nullptr);
+  auto& ws = proc->GetWorkspace();
   sup::dto::AnyValue result{sup::dto::UnsignedInteger64Type};
-  EXPECT_TRUE(ws->GetValue("result", result));
+  EXPECT_TRUE(ws.GetValue("result", result));
   EXPECT_EQ(result.As<sup::dto::uint64>(), 1729u);
 }
 
@@ -192,10 +190,9 @@ R"RAW(
     sup::UnitTestHelper::TryAndExecuteNoReset(proc, ui, sup::sequencer::ExecutionStatus::SUCCESS));
 
   // check result variable
-  auto ws = proc->GetWorkspace();
-  ASSERT_NE(ws, nullptr);
+  auto& ws = proc->GetWorkspace();
   sup::dto::AnyValue result{sup::dto::UnsignedInteger64Type};
-  EXPECT_TRUE(ws->GetValue("result", result));
+  EXPECT_TRUE(ws.GetValue("result", result));
   EXPECT_EQ(result.As<sup::dto::uint64>(), 1u);
 }
 

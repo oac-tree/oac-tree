@@ -256,14 +256,14 @@ bool Procedure::AddAttributes(const StringAttributeList& str_attributes)
   return result;
 }
 
-const Workspace* Procedure::GetWorkspace() const
+const Workspace& Procedure::GetWorkspace() const
 {
-  return m_workspace.get();
+  return *m_workspace;
 }
 
-Workspace* Procedure::GetWorkspace()
+Workspace& Procedure::GetWorkspace()
 {
-  return m_workspace.get();
+  return *m_workspace;
 }
 
 const ProcedurePreamble& Procedure::GetPreamble() const

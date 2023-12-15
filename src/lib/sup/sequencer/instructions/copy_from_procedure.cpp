@@ -54,7 +54,7 @@ void CopyFromProcedureInstruction::SetupImpl(const Procedure& proc)
   auto filename = GetAttributeString(Constants::FILENAME_ATTRIBUTE_NAME);
   auto proc_filename = ResolveRelativePath(proc, filename);
   auto proc_context = proc.GetContext();
-  m_workspace = proc_context.GetWorkspace(proc_filename);
+  m_workspace = std::addressof(proc_context.GetWorkspace(proc_filename));
   m_workspace->Setup();
 }
 

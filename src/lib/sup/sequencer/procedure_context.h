@@ -69,7 +69,7 @@ public:
    * to ensure that is the case (calling Setup() twice on a workspace is null operation, so it's
    * safe to do that to be sure).
    */
-  Workspace* GetWorkspace(const std::string& filename) const;
+  Workspace& GetWorkspace(const std::string& filename) const;
 
   /**
    * @brief Clone an instruction tree wth given path from a procedure with given name.

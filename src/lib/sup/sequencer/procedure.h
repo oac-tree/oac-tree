@@ -274,14 +274,14 @@ public:
    *
    * @return workspace.
    */
-  const Workspace* GetWorkspace() const;
+  const Workspace& GetWorkspace() const;
 
   /**
    * @brief Returns pointer to internal workspace.
    *
    * @return workspace.
    */
-  Workspace* GetWorkspace();
+  Workspace& GetWorkspace();
 
   /**
    * @brief Returns procedure's preamble.

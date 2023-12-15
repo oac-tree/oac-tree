@@ -81,12 +81,11 @@ R"RAW(
     sup::UnitTestHelper::TryAndExecuteNoReset(proc, ui, sup::sequencer::ExecutionStatus::SUCCESS));
 
   // check result variable
-  auto ws = proc->GetWorkspace();
-  ASSERT_NE(ws, nullptr);
+  auto& ws = proc->GetWorkspace();
   sup::dto::AnyValue result{sup::dto::UnsignedInteger64Type};
-  EXPECT_TRUE(ws->GetValue("outer_exit_cond", result));
+  EXPECT_TRUE(ws.GetValue("outer_exit_cond", result));
   EXPECT_EQ(result.As<sup::dto::uint64>(), 1u);
-  EXPECT_TRUE(ws->GetValue("inner_exit_cond", result));
+  EXPECT_TRUE(ws.GetValue("inner_exit_cond", result));
   EXPECT_EQ(result.As<sup::dto::uint64>(), 1u);
 }
 
@@ -141,12 +140,11 @@ R"RAW(
     sup::UnitTestHelper::TryAndExecuteNoReset(proc, ui, sup::sequencer::ExecutionStatus::SUCCESS));
 
   // check result variable
-  auto ws = proc->GetWorkspace();
-  ASSERT_NE(ws, nullptr);
+  auto& ws = proc->GetWorkspace();
   sup::dto::AnyValue result{sup::dto::UnsignedInteger64Type};
-  EXPECT_TRUE(ws->GetValue("outer_exit_cond", result));
+  EXPECT_TRUE(ws.GetValue("outer_exit_cond", result));
   EXPECT_EQ(result.As<sup::dto::uint64>(), 1u);
-  EXPECT_TRUE(ws->GetValue("inner_exit_cond", result));
+  EXPECT_TRUE(ws.GetValue("inner_exit_cond", result));
   EXPECT_EQ(result.As<sup::dto::uint64>(), 1u);
 }
 
@@ -208,10 +206,9 @@ R"RAW(
     sup::UnitTestHelper::TryAndExecuteNoReset(proc, ui, sup::sequencer::ExecutionStatus::SUCCESS));
 
   // check result variable
-  auto ws = proc->GetWorkspace();
-  ASSERT_NE(ws, nullptr);
+  auto& ws = proc->GetWorkspace();
   sup::dto::AnyValue result{sup::dto::UnsignedInteger64Type};
-  EXPECT_TRUE(ws->GetValue("exit_cond", result));
+  EXPECT_TRUE(ws.GetValue("exit_cond", result));
   EXPECT_EQ(result.As<sup::dto::uint64>(), 0u);
 }
 
@@ -278,11 +275,10 @@ R"RAW(
     sup::UnitTestHelper::TryAndExecuteNoReset(proc, ui, sup::sequencer::ExecutionStatus::SUCCESS));
 
   // check result variable
-  auto ws = proc->GetWorkspace();
-  ASSERT_NE(ws, nullptr);
+  auto& ws = proc->GetWorkspace();
   sup::dto::AnyValue result{sup::dto::UnsignedInteger64Type};
-  EXPECT_TRUE(ws->GetValue("exit_cond", result));
+  EXPECT_TRUE(ws.GetValue("exit_cond", result));
   EXPECT_EQ(result.As<sup::dto::uint64>(), 0u);
-  EXPECT_TRUE(ws->GetValue("listen_stuck_monitor", result));
+  EXPECT_TRUE(ws.GetValue("listen_stuck_monitor", result));
   EXPECT_EQ(result.As<sup::dto::uint64>(), 1u);
 }

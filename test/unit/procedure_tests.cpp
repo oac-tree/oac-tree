@@ -131,7 +131,7 @@ TEST_F(ProcedureTest, GetWorkspace)
   std::vector<const Variable*> expected({variable.get()});
   procedure.AddVariable("var", std::move(variable));
 
-  EXPECT_EQ(procedure.GetWorkspace()->GetVariables(), expected);
+  EXPECT_EQ(procedure.GetWorkspace().GetVariables(), expected);
 }
 
 TEST_F(ProcedureTest, InsertInstruction)

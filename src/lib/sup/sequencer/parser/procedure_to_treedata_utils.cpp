@@ -96,7 +96,7 @@ std::unique_ptr<sup::xml::TreeData> ToTreeData(const Procedure& procedure)
   {
     result->AddChild(*ToTreeData(*instruction));
   }
-  result->AddChild(*ToTreeData(*procedure.GetWorkspace()));
+  result->AddChild(*ToTreeData(procedure.GetWorkspace()));
   return result;
 }
 

@@ -72,13 +72,6 @@ public:
   void Tick(UserInterface& ui, Workspace& ws);
 
   /**
-   * @brief Try to update state with the execution status of the child instruction
-   *
-   * @note Together with the Tick method, this is the only way wrapper's status can change.
-   */
-  void UpdateStatus();
-
-  /**
    * @brief Get execution status
    */
   ExecutionStatus GetStatus() const;
@@ -103,6 +96,11 @@ private:
    * @brief Track the wrapped instruction
    */
   std::future<void> m_child_result;
+
+  /**
+   * @brief Check if AsyncWrapper's thread is (still) running.
+   */
+  bool WaitingForThread() const;
 
   /**
    * @brief Execution status of the wrapper

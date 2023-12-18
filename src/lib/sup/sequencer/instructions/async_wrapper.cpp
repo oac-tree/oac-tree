@@ -39,25 +39,16 @@ AsyncWrapper::~AsyncWrapper() = default;
 
 void AsyncWrapper::Tick(UserInterface& ui, Workspace& ws)
 {
-  LaunchChild(ui, ws);
-  m_status = ExecutionStatus::RUNNING;
-}
-
-void AsyncWrapper::UpdateStatus()
-{
-  if (!m_child_result.valid())
+  // Only query instruction status and possibly launch child instruction when there's no
+  // unfinished thread.
+  if (!WaitingForThread())
   {
-    // m_status is already NOT_STARTED by construction
-    return;
-  }
-  // If this timeouts, m_status is RUNNING because Tick() was called before
-  // If the future is ready, DO NOT return a RUNNING status, as that would prevent the child
-  // from ever being ticked.
-  if (m_child_result.wait_for(std::chrono::seconds(0)) == std::future_status::ready)
-  {
-    auto status = m_instruction->GetStatus();
-    m_status = status == ExecutionStatus::RUNNING ? ExecutionStatus::NOT_FINISHED
-                                                  : status;
+    m_status = m_instruction->GetStatus();
+    if (NeedsExecute(m_status))
+    {
+      LaunchChild(ui, ws);
+      m_status = ExecutionStatus::RUNNING;
+    }
   }
 }
 
@@ -69,6 +60,19 @@ ExecutionStatus AsyncWrapper::GetStatus() const
 const Instruction* AsyncWrapper::GetInstruction() const
 {
    return m_instruction;
+}
+
+bool AsyncWrapper::WaitingForThread() const
+{
+  if (!m_child_result.valid())
+  {
+    return false;
+  }
+  if (m_child_result.wait_for(std::chrono::seconds(0)) == std::future_status::timeout)
+  {
+    return true;
+  }
+  return false;
 }
 
 void AsyncWrapper::LaunchChild(UserInterface& ui, Workspace& ws)

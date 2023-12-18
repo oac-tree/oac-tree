@@ -5,10 +5,10 @@
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
     <ParallelSequence successThreshold="2" failureThreshold="1">
         <ParallelSequence successThreshold="2" failureThreshold="1">
-            <Wait timeout="1.0"/>
+            <Wait timeout="3.0"/>
             <Wait timeout="1.0"/>
         </ParallelSequence>
-        <Wait timeout="1.0"/>
+        <Wait timeout="2.0"/>
     </ParallelSequence>
     <Workspace/>
 </Procedure>

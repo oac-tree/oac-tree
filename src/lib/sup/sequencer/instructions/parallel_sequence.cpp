@@ -56,13 +56,9 @@ ExecutionStatus ParallelSequence::ExecuteSingleImpl(UserInterface& ui, Workspace
   for (auto &wrapper : m_wrappers)
   {
     auto wrapper_status = wrapper.GetStatus();
-    if (NeedsExecute(wrapper_status) && wrapper_status != ExecutionStatus::RUNNING)
+    if (NeedsExecute(wrapper_status))
     {
       wrapper.Tick(ui, ws);
-    }
-    else
-    {
-      wrapper.UpdateStatus();
     }
   }
   auto status = CalculateCompoundStatus();

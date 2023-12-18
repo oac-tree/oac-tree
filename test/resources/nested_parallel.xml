@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
-           name="Trivial procedure for testing purposes"
+           name="Procedure for testing purposes"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
-    <ParallelSequence name="outer">
-        <ParallelSequence name="inner">
+    <ParallelSequence successThreshold="2" failureThreshold="1">
+        <ParallelSequence successThreshold="2" failureThreshold="1">
+            <Wait timeout="1.0"/>
             <Wait timeout="1.0"/>
         </ParallelSequence>
+        <Wait timeout="1.0"/>
     </ParallelSequence>
     <Workspace/>
 </Procedure>

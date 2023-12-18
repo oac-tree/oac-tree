@@ -43,8 +43,8 @@ void AsyncWrapper::Tick(UserInterface& ui, Workspace& ws)
   // unfinished thread.
   if (!WaitingForThread())
   {
-    m_status = m_instruction->GetStatus();
-    if (NeedsExecute(m_status))
+    auto status_changed = UpdateStatus();
+    if (!status_changed && NeedsExecute(m_status))
     {
       LaunchChild(ui, ws);
       m_status = ExecutionStatus::RUNNING;
@@ -73,6 +73,13 @@ bool AsyncWrapper::WaitingForThread() const
     return true;
   }
   return false;
+}
+
+bool AsyncWrapper::UpdateStatus()
+{
+  auto old_status = m_status;
+  m_status = m_instruction->GetStatus();
+  return m_status != old_status;
 }
 
 void AsyncWrapper::LaunchChild(UserInterface& ui, Workspace& ws)

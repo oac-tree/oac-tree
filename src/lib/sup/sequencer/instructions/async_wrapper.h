@@ -103,6 +103,14 @@ private:
   bool WaitingForThread() const;
 
   /**
+   * @brief Update status with status of child instruction and return true when this changes the
+   * status of this AsyncWrapper.
+   *
+   * @note This method should only be called when there is no thread still executing.
+   */
+  bool UpdateStatus();
+
+  /**
    * @brief Execution status of the wrapper
    */
   void LaunchChild(UserInterface& ui, Workspace& ws);

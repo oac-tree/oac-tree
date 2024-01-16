@@ -67,7 +67,7 @@ ExecutionStatus Repeat::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   auto child_status = GetChildStatus();
   if (child_status == ExecutionStatus::SUCCESS)
   {
-    ResetChild();
+    ResetChild(ui);
   }
   ExecuteChild(ui, ws);
 

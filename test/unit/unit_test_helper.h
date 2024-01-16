@@ -154,7 +154,7 @@ static inline bool TryAndExecute(std::unique_ptr<sup::sequencer::Procedure>& pro
   bool status = TryAndExecuteNoReset(proc, ui, expect);
   if (proc)
   {
-    proc->Reset();
+    proc->Reset(ui);
   }
   return status;
 }

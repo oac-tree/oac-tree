@@ -83,6 +83,6 @@ int main(int argc, char* argv[])
   runner.SetProcedure(proc.get());
   runner.SetTickCallback(TimeoutWhenRunning{TickTimeoutMs(*proc)});
   runner.ExecuteProcedure();
-  proc->Reset();
+  proc->Reset(ui);
   return 0;
 }

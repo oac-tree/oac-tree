@@ -125,10 +125,15 @@ void Instruction::Halt()
   HaltImpl();
 }
 
-void Instruction::Reset()
+void Instruction::Reset(UserInterface& ui)
 {
-  ResetHook();
+  ResetHook(ui);
+  m_status_before = GetStatus();
   SetStatus(ExecutionStatus::NOT_STARTED);
+  if (GetStatus() != m_status_before)
+  {
+    ui.UpdateInstructionStatus(this);
+  }
   m_attribute_handler.ClearFailedConstraints();
   m_halt_requested.store(false);
 }
@@ -306,7 +311,7 @@ bool Instruction::InitHook(UserInterface&, Workspace&)
 
 void Instruction::HaltImpl() {}
 
-void Instruction::ResetHook() {}
+void Instruction::ResetHook(UserInterface&) {}
 
 bool Instruction::PostInitialiseVariables(const StringAttributeList&)
 {

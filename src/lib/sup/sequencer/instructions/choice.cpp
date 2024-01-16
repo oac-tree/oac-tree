@@ -79,11 +79,11 @@ ExecutionStatus Choice::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   return CalculateCompoundStatus();
 }
 
-void Choice::ResetHook()
+void Choice::ResetHook(UserInterface& ui)
 {
   m_instruction_list.clear();
   m_instruction_list_initialized = false;
-  ResetChildren();
+  ResetChildren(ui);
 }
 
 std::vector<const Instruction*> Choice::NextInstructionsImpl() const

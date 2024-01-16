@@ -31,6 +31,7 @@
 #include <sup/sequencer/instruction.h>
 #include <sup/sequencer/instruction_tree.h>
 #include <sup/sequencer/sequence_parser.h>
+#include <sup/sequencer/user_interface.h>
 #include <sup/sequencer/workspace.h>
 
 #include <sup/dto/anyvalue.h>
@@ -63,7 +64,8 @@ Procedure::Procedure(const std::string& filename)
 Procedure::~Procedure()
 {
   // Wait for termination of instructions first:
-  Reset();
+  DefaultUserInterface ui;
+  Reset(ui);
 }
 
 std::string Procedure::GetFilename() const
@@ -210,15 +212,15 @@ void Procedure::Halt()
   RootInstruction()->Halt();
 }
 
-void Procedure::Reset()
+void Procedure::Reset(UserInterface& ui)
 {
   m_workspace->Reset();
-  m_procedure_store->ResetProcedures();
+  m_procedure_store->ResetProcedures(ui);
   if (RootInstruction() == nullptr)
   {
     return;
   }
-  RootInstruction()->Reset();
+  RootInstruction()->Reset(ui);
   m_attribute_handler.ClearFailedConstraints();
 }
 

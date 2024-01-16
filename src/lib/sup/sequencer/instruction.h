@@ -129,13 +129,16 @@ public:
 
   /**
    * @brief Reset execution status
+   *
+   * @param ui UserInterface to handle status updates.
+   *
    * @details This method call blocks until the termination of all descendant instructions
    * running in a separate thread. Destruction of this instruction is safe afterwards.
    * @note This method should only be called on instruction objects that are not currently
    * executing. This is taken care of by waiting for child termination before calling their
    * Instruction::Reset() method.
    */
-  void Reset();
+  void Reset(UserInterface& ui);
 
   /**
    * @brief Indicate presence of attribute with given name.
@@ -421,7 +424,7 @@ private:
    * Instruction::Reset() to all child instructions.
    * @note Default implementation is empty.
    */
-  virtual void ResetHook();
+  virtual void ResetHook(UserInterface& ui);
 
   /**
    * @brief Private hook that is called after variable initialisation.

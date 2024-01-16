@@ -74,7 +74,7 @@ protected:
   /**
    * @brief Call Instruction::Reset() on the child instruction.
    */
-  void ResetChild();
+  void ResetChild(UserInterface& ui);
 
   /**
    * @brief Call Instruction::Halt() on the child instruction.
@@ -82,7 +82,7 @@ protected:
   void HaltChild();
 
 private:
-  void ResetHook() override;
+  void ResetHook(UserInterface& ui) override;
   void HaltImpl() override;
   std::vector<const Instruction*> ChildInstructionsImpl() const override;
   std::vector<const Instruction*> NextInstructionsImpl() const override;

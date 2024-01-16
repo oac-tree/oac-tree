@@ -57,11 +57,11 @@ Procedure& ProcedureStore::LoadProcedure(const std::string& filename) const
   return *m_procedure_cache[filename];
 }
 
-void ProcedureStore::ResetProcedures() const
+void ProcedureStore::ResetProcedures(UserInterface& ui) const
 {
   for (auto& entry : m_procedure_cache)
   {
-    entry.second->Reset();
+    entry.second->Reset(ui);
   }
 }
 

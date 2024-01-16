@@ -84,10 +84,10 @@ ExecutionStatus UserChoice::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   return ExecutionStatus::FAILURE;
 }
 
-void UserChoice::ResetHook()
+void UserChoice::ResetHook(UserInterface& ui)
 {
   m_choice = -1;
-  ResetChildren();
+  ResetChildren(ui);
 }
 
 std::vector<const Instruction*> UserChoice::NextInstructionsImpl() const

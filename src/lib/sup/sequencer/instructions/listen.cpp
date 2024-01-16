@@ -79,7 +79,7 @@ ExecutionStatus Listen::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   auto child_status = GetChildStatus();
   if (IsFinishedStatus(child_status))
   {
-    ResetChild();
+    ResetChild(ui);
     std::unique_lock<std::mutex> lk(m_mtx);
     m_cv.wait(lk, [this]{ return m_var_changed || IsHaltRequested(); });
     m_var_changed = false;
@@ -105,9 +105,9 @@ void Listen::HaltImpl()
   ClearCallbacks();
 }
 
-void Listen::ResetHook()
+void Listen::ResetHook(UserInterface& ui)
 {
-  ResetChild();
+  ResetChild(ui);
   InitVariableCache();
 }
 

@@ -279,6 +279,6 @@ ProcedureTest::~ProcedureTest()
 {
   if (loaded_proc)
   {
-    loaded_proc->Reset();
+    loaded_proc->Reset(mock_ui);
   }
 }

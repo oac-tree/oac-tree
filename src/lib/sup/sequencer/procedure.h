@@ -202,10 +202,12 @@ public:
   /**
    * @brief Reset procedure.
    *
+   * @param ui UserInterface to use for instruction status updates.
+   *
    * @details This method request a halt and blocks until all asynchronous instructions are
    * finished.
    */
-  void Reset();
+  void Reset(UserInterface& ui);
 
   /**
    * @brief Retrieve status of root sequence.

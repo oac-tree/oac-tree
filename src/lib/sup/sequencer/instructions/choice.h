@@ -54,7 +54,7 @@ private:
 
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 
-  void ResetHook() override;
+  void ResetHook(UserInterface& ui) override;
 
   std::vector<const Instruction*> NextInstructionsImpl() const override;
 

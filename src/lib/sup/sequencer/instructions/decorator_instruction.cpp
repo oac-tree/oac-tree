@@ -64,11 +64,11 @@ void DecoratorInstruction::ExecuteChild(UserInterface& ui, Workspace& ws)
   m_child->ExecuteSingle(ui, ws);
 }
 
-void DecoratorInstruction::ResetChild()
+void DecoratorInstruction::ResetChild(UserInterface& ui)
 {
   if (m_child)
   {
-    m_child->Reset();
+    m_child->Reset(ui);
   }
 }
 
@@ -80,9 +80,9 @@ void DecoratorInstruction::HaltChild()
   }
 }
 
-void DecoratorInstruction::ResetHook()
+void DecoratorInstruction::ResetHook(UserInterface& ui)
 {
-  ResetChild();
+  ResetChild(ui);
 }
 
 void DecoratorInstruction::HaltImpl()

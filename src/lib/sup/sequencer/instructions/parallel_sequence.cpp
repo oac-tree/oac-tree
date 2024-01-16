@@ -69,7 +69,7 @@ ExecutionStatus ParallelSequence::ExecuteSingleImpl(UserInterface& ui, Workspace
   return status;
 }
 
-void ParallelSequence::ResetHook()
+void ParallelSequence::ResetHook(UserInterface& ui)
 {
   // call Halt when there are possibly descendents running
   auto status = GetStatus();
@@ -80,7 +80,7 @@ void ParallelSequence::ResetHook()
   // wait for child threads to terminate
   m_wrappers.clear();
   // call reset on child instructions
-  ResetChildren();
+  ResetChildren(ui);
 }
 
 std::vector<const Instruction*> ParallelSequence::NextInstructionsImpl() const

@@ -54,11 +54,11 @@ bool CompoundInstruction::HasChildren() const
   return !m_children.empty();
 }
 
-void CompoundInstruction::ResetChildren()
+void CompoundInstruction::ResetChildren(UserInterface& ui)
 {
   for (auto& instruction : m_children)
   {
-    instruction->Reset();
+    instruction->Reset(ui);
   }
 }
 
@@ -70,9 +70,9 @@ void CompoundInstruction::HaltChildren()
   }
 }
 
-void CompoundInstruction::ResetHook()
+void CompoundInstruction::ResetHook(UserInterface& ui)
 {
-  ResetChildren();
+  ResetChildren(ui);
 }
 
 void CompoundInstruction::HaltImpl()

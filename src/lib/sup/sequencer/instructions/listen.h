@@ -70,7 +70,7 @@ private:
 
   void HaltImpl() override;
 
-  void ResetHook() override;
+  void ResetHook(UserInterface& ui) override;
 
   void InitVariableCache();
 

@@ -32,6 +32,7 @@ namespace sequencer
 {
 class Instruction;
 class Procedure;
+class UserInterface;
 class Workspace;
 
 /**
@@ -51,7 +52,7 @@ public:
   /**
    * @brief Reset all owned procedures.
    */
-  void ResetProcedures() const;
+  void ResetProcedures(UserInterface& ui) const;
 
 private:
   Procedure* m_parent;

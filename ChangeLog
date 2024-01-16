@@ -4,6 +4,7 @@ Changes for 3.1.0:
 - Allow relative pathnames for File variable
 - Improve status reporting in ParallelSequence
 - Bugfix: RegisterType does not work for included procedures (COA-623)
+- Bugfix: Instruction::Reset doesn't notify UI of status update (COA-723)
 
 Changes for 3.0.0:
 

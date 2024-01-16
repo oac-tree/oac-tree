@@ -1,6 +1,9 @@
 Changes for 3.1.0:
 
 - Add WaitForVariables instruction
+- Allow relative pathnames for File variable
+- Improve status reporting in ParallelSequence
+- Bugfix: RegisterType does not work for included procedures (COA-623)
 
 Changes for 3.0.0:
 

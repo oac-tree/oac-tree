@@ -79,7 +79,7 @@ The procedure can be executed step-by-step using the ``ExecuteSingle`` method. T
    my_procedure.Halt();
 
    // Reset the procedure and wait for all asynchronous instructions to finish
-   my_procedure.Reset();
+   my_procedure.Reset(ui);
 
 Procedure Status and Control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^

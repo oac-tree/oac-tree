@@ -143,7 +143,8 @@ Resetting an instruction is mainly used when the same instruction needs to be ex
 
 .. code-block:: c++
 
-   wait->Reset(); // Reset the wait instruction
+   MyUserInterface ui;
+   wait->Reset(ui); // Reset the wait instruction
 
 .. _Attribute System:
 

@@ -322,7 +322,7 @@ const ProcedureStore& Procedure::GetProcedureStore() const
   return *m_procedure_store;
 }
 
-int TickTimeoutMs(Procedure& procedure)
+int TickTimeoutMs(const Procedure& procedure)
 {
   if (procedure.HasAttribute(kTickTimeoutAttributeName))
   {

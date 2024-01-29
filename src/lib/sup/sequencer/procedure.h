@@ -362,7 +362,7 @@ private:
  *
  * @details Applications are free to ignore this setting. It is only provided as a guideline.
  */
-int TickTimeoutMs(Procedure& procedure);
+int TickTimeoutMs(const Procedure& procedure);
 
   /**
    * @brief Get list of instructions that will be executed next.

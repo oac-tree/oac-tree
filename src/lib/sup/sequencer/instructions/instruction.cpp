@@ -112,7 +112,7 @@ void Instruction::ExecuteSingle(UserInterface& ui, Workspace& ws)
 {
   Preamble(ui, ws);
   m_status_before = GetStatus();
-  if (NeedsExecute(m_status_before))
+  if (NeedsExecute(m_status_before) && !IsHaltRequested())
   {
     SetStatus(ExecuteSingleImpl(ui, ws));
   }

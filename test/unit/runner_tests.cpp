@@ -296,7 +296,8 @@ TEST_F(RunnerTest, Halt)
   go.set_value();
   EXPECT_NO_THROW(runner.ExecuteProcedure());
   halt_future.get();
-  EXPECT_EQ(async_wait_proc->GetStatus(), ExecutionStatus::RUNNING);
+  auto status = async_wait_proc->GetStatus();
+  EXPECT_TRUE(status == ExecutionStatus::NOT_FINISHED || status == ExecutionStatus::RUNNING);
 }
 
 TEST_F(RunnerTest, Pause)

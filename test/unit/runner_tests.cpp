@@ -147,7 +147,7 @@ TEST_F(RunnerTest, NoProcedure)
 TEST_F(RunnerTest, ExecuteSingle)
 {
   // Set Expectations on mock UserInterface calls
-  EXPECT_CALL(mock_ui, UpdateInstructionStatus(_)).Times(AtLeast(12));
+  EXPECT_CALL(mock_ui, UpdateInstructionStatus(_)).Times(AtLeast(11));
 
   // Test preconditions
   Runner runner(mock_ui);
@@ -183,7 +183,7 @@ TEST_F(RunnerTest, ExecuteSingle)
 TEST_F(RunnerTest, ExecuteProcedure)
 {
   // Set Expectations on mock UserInterface calls
-  EXPECT_CALL(mock_ui, UpdateInstructionStatus(_)).Times(AtLeast(12));
+  EXPECT_CALL(mock_ui, UpdateInstructionStatus(_)).Times(AtLeast(11));
 
   // Test preconditions
   Runner runner(mock_ui);

@@ -226,6 +226,11 @@ std::unique_ptr<Instruction> Instruction::TakeInstruction(int index)
   return TakeInstructionImpl(index);
 }
 
+bool Instruction::IsHaltRequested() const
+{
+  return m_halt_requested.load();
+}
+
 AttributeDefinition& Instruction::AddAttributeDefinition(const std::string& attr_name,
                                                          const sup::dto::AnyType& value_type)
 {
@@ -265,11 +270,6 @@ bool Instruction::GetAttributeValue(const std::string& attr_name, const Workspac
 void Instruction::AddConstraint(Constraint constraint)
 {
   return m_attribute_handler.AddConstraint(constraint);
-}
-
-bool Instruction::IsHaltRequested() const
-{
-  return m_halt_requested.load();
 }
 
 void Instruction::SetStatus(ExecutionStatus status)

@@ -291,6 +291,11 @@ public:
    */
   std::unique_ptr<Instruction> TakeInstruction(int index);
 
+  /**
+   * @brief Check if a request to halt this instruction was issued.
+   */
+  bool IsHaltRequested() const;
+
 protected:
   /**
    * @brief Add an attribute definition with the given name and type.
@@ -316,11 +321,6 @@ protected:
    * @param constraint Attribute constraint.
    */
   void AddConstraint(Constraint constraint);
-
-  /**
-   * @brief Check if a request to halt this instruction was issued.
-   */
-  bool IsHaltRequested() const;
 
 private:
   /**

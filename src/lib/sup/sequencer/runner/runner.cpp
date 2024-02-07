@@ -22,6 +22,7 @@
 #include <sup/sequencer/runner.h>
 
 #include <sup/sequencer/exceptions.h>
+#include <sup/sequencer/instruction.h>
 #include <sup/sequencer/instruction_tree.h>
 #include <sup/sequencer/procedure.h>
 #include <sup/sequencer/user_interface.h>
@@ -166,9 +167,17 @@ bool Runner::IsFinished() const
   {
     return true;
   }
-
   auto status = m_proc->GetStatus();
-  return (status == ExecutionStatus::SUCCESS || status == ExecutionStatus::FAILURE);
+  if (status == ExecutionStatus::SUCCESS || status == ExecutionStatus::FAILURE)
+  {
+    return true;
+  }
+  auto root_instr = m_proc->RootInstruction();
+  if (root_instr == nullptr || root_instr->IsHaltRequested())
+  {
+    return true;
+  }
+  return false;
 }
 
 bool Runner::IsRunning() const

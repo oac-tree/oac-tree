@@ -22,6 +22,8 @@
 #ifndef SUP_SEQUENCER_JOB_STATES_H_
 #define SUP_SEQUENCER_JOB_STATES_H_
 
+#include <string>
+
 namespace sup
 {
 namespace sequencer
@@ -36,6 +38,8 @@ enum class JobState
   kFailed,
   kHalted
 };
+
+std::string ToString(JobState state);
 
 bool IsFinishedJobState(JobState state);
 

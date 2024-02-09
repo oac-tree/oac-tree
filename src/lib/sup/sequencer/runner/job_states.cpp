@@ -21,12 +21,32 @@
 
 #include <sup/sequencer/job_states.h>
 
+#include <map>
 #include <set>
 
 namespace sup
 {
 namespace sequencer
 {
+
+std::string ToString(JobState state)
+{
+  static const std::map<JobState, std::string> state_to_string = {
+    { JobState::kInitial, "Initial" },
+    { JobState::kPaused, "Paused" },
+    { JobState::kStepping, "Stepping" },
+    { JobState::kRunning, "Running" },
+    { JobState::kSucceeded, "Success" },
+    { JobState::kFailed, "Failure" },
+    { JobState::kHalted, "Halted" }
+  };
+  auto iter = state_to_string.find(state);
+  if (iter == state_to_string.end())
+  {
+    return "Unknown JobState";
+  }
+  return iter->second;
+}
 
 bool IsFinishedJobState(JobState state)
 {

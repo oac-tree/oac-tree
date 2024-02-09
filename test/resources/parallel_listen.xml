@@ -4,7 +4,7 @@
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd"
            tickTimeout="0.2">
-    <ParallelSequence isRoot="true" name="Parallel Wait">
+    <ParallelSequence isRoot="true" name="Parallel Wait" successThreshold="1">
         <Listen varNames="number">
             <Output description="Number updated in thread 1: " fromVar="number"/>
         </Listen>
@@ -18,7 +18,6 @@
                     <Increment varName="number"/>
                 </Sequence>
             </Repeat>
-            <Include path="fail"/>
         </Sequence>
     </ParallelSequence>
     <Inverter name="fail">

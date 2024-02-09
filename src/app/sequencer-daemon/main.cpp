@@ -24,10 +24,10 @@
 #include <sup/cli/command_line_parser.h>
 #include <sup/log/default_loggers.h>
 #include <sup/sequencer/application_utils.h>
+#include <sup/sequencer/job_controller.h>
+#include <sup/sequencer/job_state_monitor.h>
 #include <sup/sequencer/generic_utils.h>
 #include <sup/sequencer/log_severity.h>
-#include <sup/sequencer/runner.h>
-#include <sup/sequencer/sequence_parser.h>
 
 #include <iostream>
 
@@ -72,10 +72,13 @@ int main(int argc, char* argv[])
     return 1;
   }
 
-  Runner runner(ui);
-  runner.SetProcedure(proc.get());
-  runner.SetTickCallback(TimeoutWhenRunning{TickTimeoutMs(*proc)});
-  runner.ExecuteProcedure();
-  proc->Reset(ui);
+  JobStateMonitor monitor;
+  JobController job_controller(*proc, ui, monitor.GetStateCallback());
+  job_controller.Start();
+
+  auto end_state = monitor.WaitForFinished();
+  std::string message = "Procedure ended with state: " + ToString(end_state);
+  logger.Info(message);
+
   return 0;
 }

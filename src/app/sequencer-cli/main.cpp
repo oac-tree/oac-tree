@@ -23,6 +23,7 @@
 
 #include <sup/cli/command_line_parser.h>
 #include <sup/log/default_loggers.h>
+#include <sup/sequencer/application_utils.h>
 #include <sup/sequencer/generic_utils.h>
 #include <sup/sequencer/log_severity.h>
 #include <sup/sequencer/runner.h>
@@ -70,27 +71,13 @@ int main(int argc, char* argv[])
                       };
 
   sup::log::BasicLogger logger(log_function, "sequencer-cli", severity);
-  if (!utils::FileExists(filename))
-  {
-    std::cout << "main(): Procedure file not found [" + filename + "]" << std::endl;
-    return 1;
-  }
+  CLInterface ui(logger);
 
-  std::unique_ptr<Procedure> proc;
-  try
+  utils::ProcedureLoader loader{filename};
+  std::unique_ptr<Procedure> proc = loader.ParseAndSetup();
+  if (!proc)
   {
-    proc = ParseProcedureFile(filename);
-    if (!proc)
-    {
-      std::string error_message = "main(): could not parse procedure file [" + filename + "]";
-      logger.LogMessage(log::SUP_SEQ_LOG_ERR, error_message);
-      return 1;
-    }
-    proc->Setup();
-  }
-  catch(const std::exception& e)
-  {
-    logger.LogMessage(log::SUP_SEQ_LOG_CRIT, e.what());
+    logger.LogMessage(log::SUP_SEQ_LOG_ERR, loader.GetErrorMessage());
     return 1;
   }
 
@@ -99,7 +86,6 @@ int main(int argc, char* argv[])
     std::cout << "Procedure parsing and setup successful: " << filename << std::endl;
     return 0;  // Early exit.
   }
-  CLInterface ui(logger);
   Runner runner(ui);
   runner.SetProcedure(proc.get());
   runner.SetTickCallback(TimeoutWhenRunning{TickTimeoutMs(*proc)});

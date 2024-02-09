@@ -23,6 +23,7 @@
 
 #include <sup/cli/command_line_parser.h>
 #include <sup/log/default_loggers.h>
+#include <sup/sequencer/application_utils.h>
 #include <sup/sequencer/generic_utils.h>
 #include <sup/sequencer/log_severity.h>
 #include <sup/sequencer/runner.h>
@@ -61,24 +62,16 @@ int main(int argc, char* argv[])
   auto severity = sup::sequencer::log::GetSeverityFromString(severity_name);
   auto logger = sup::log::CreateDefaultSysLogger("sequencer-daemon");
   logger.SetMaxSeverity(severity);
+  DaemonInterface ui(logger);
 
-  if (!utils::FileExists(filename))
-  {
-    std::string error_message = "main(): file not found [" + filename + "]";
-    logger.Error(error_message);
-    return 1;
-  }
-
-  auto proc = ParseProcedureFile(filename);
+  utils::ProcedureLoader loader{filename};
+  std::unique_ptr<Procedure> proc = loader.ParseAndSetup();
   if (!proc)
   {
-    std::string error_message = "main(): could not parse procedure file [" + filename + "]";
-    logger.Error(error_message);
+    logger.Error(loader.GetErrorMessage());
     return 1;
   }
-  proc->Setup();
 
-  DaemonInterface ui(logger);
   Runner runner(ui);
   runner.SetProcedure(proc.get());
   runner.SetTickCallback(TimeoutWhenRunning{TickTimeoutMs(*proc)});

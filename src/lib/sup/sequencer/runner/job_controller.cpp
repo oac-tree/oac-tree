@@ -296,7 +296,7 @@ void JobController::StepProcedure()
 bool JobController::SwitchStateOnFinished()
 {
   auto status = m_proc.GetStatus();
-  if (m_runner.IsFinished() && IsFinishedStatus(status))
+  if (IsFinishedStatus(status))
   {
     if (m_proc.GetStatus() == ExecutionStatus::SUCCESS)
     {

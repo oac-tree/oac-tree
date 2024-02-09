@@ -19,28 +19,25 @@
  * of the distribution package.
  ******************************************************************************/
 
-#ifndef SUP_SEQUENCER_JOB_STATES_H_
-#define SUP_SEQUENCER_JOB_STATES_H_
+#include <sup/sequencer/job_states.h>
+
+#include <set>
 
 namespace sup
 {
 namespace sequencer
 {
-enum class JobState
-{
-  kInitial = 0,
-  kPaused,
-  kStepping,
-  kRunning,
-  kSucceeded,
-  kFailed,
-  kHalted
-};
 
-bool IsFinishedJobState(JobState state);
+bool IsFinishedJobState(JobState state)
+{
+  static const std::set<JobState> finished_states = {
+    JobState::kSucceeded,
+    JobState::kFailed,
+    JobState::kHalted
+  };
+  return finished_states.find(state) != finished_states.end();
+}
 
 }  // namespace sequencer
 
 }  // namespace sup
-
-#endif  // SUP_SEQUENCER_JOB_STATES_H_

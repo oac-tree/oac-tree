@@ -4,6 +4,8 @@ target_sources(sup-sequencer-shared
     job_command_queue.cpp
     job_commands.cpp
     job_controller.cpp
+    job_state_monitor.cpp
+    job_states.cpp
     runner.cpp
     user_interface.cpp
 )

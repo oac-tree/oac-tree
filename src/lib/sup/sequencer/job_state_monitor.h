@@ -19,28 +19,40 @@
  * of the distribution package.
  ******************************************************************************/
 
-#ifndef SUP_SEQUENCER_JOB_STATES_H_
-#define SUP_SEQUENCER_JOB_STATES_H_
+#ifndef SUP_SEQUENCER_JOB_STATE_MONITOR_H_
+#define SUP_SEQUENCER_JOB_STATE_MONITOR_H_
+
+#include <sup/sequencer/job_states.h>
+
+#include <condition_variable>
+#include <functional>
+#include <mutex>
 
 namespace sup
 {
 namespace sequencer
 {
-enum class JobState
+class JobStateMonitor
 {
-  kInitial = 0,
-  kPaused,
-  kStepping,
-  kRunning,
-  kSucceeded,
-  kFailed,
-  kHalted
-};
+public:
+  JobStateMonitor();
+  ~JobStateMonitor();
 
-bool IsFinishedJobState(JobState state);
+  std::function<void(JobState)> GetStateCallback();
+
+  JobState WaitForFinished() const;
+
+  bool WaitForState(JobState state, double seconds) const;
+
+private:
+  void OnStateChange(JobState state);
+  JobState m_state;
+  mutable std::mutex m_mtx;
+  mutable std::condition_variable m_cv;
+};
 
 }  // namespace sequencer
 
 }  // namespace sup
 
-#endif  // SUP_SEQUENCER_JOB_STATES_H_
+#endif  // SUP_SEQUENCER_JOB_STATE_MONITOR_H_

@@ -22,16 +22,13 @@
 #include "unit_test_helper.h"
 
 #include <sup/sequencer/job_controller.h>
-
+#include <sup/sequencer/job_state_monitor.h>
 #include <sup/sequencer/sequence_parser.h>
 #include <sup/sequencer/user_interface.h>
 
 #include <gtest/gtest.h>
 
 #include <atomic>
-#include <chrono>
-#include <condition_variable>
-#include <mutex>
 
 const std::string kTestParallelProcedureBody{R"(
   <ParallelSequence>
@@ -68,31 +65,15 @@ protected:
 
   std::function<void(JobState)> GetStateCallback()
   {
-    return [this](JobState state){
-      OnStateChange(state);
-    };
+    return m_monitor.GetStateCallback();
   }
 
-  void OnStateChange(JobState state)
+  bool WaitForState(JobState state, double seconds = 1.0)
   {
-    {
-      std::lock_guard<std::mutex> lk{m_mtx};
-      m_state = state;
-    }
-    m_cv.notify_one();
+    return m_monitor.WaitForState(state, seconds);
   }
 
-  bool WaitForState(JobState state, int seconds = 1)
-  {
-    std::unique_lock<std::mutex> lk{m_mtx};
-    return m_cv.wait_for(lk, std::chrono::seconds(seconds), [this, state](){
-      return m_state == state;
-    });
-  }
-
-  JobState m_state;
-  std::mutex m_mtx;
-  std::condition_variable m_cv;
+  JobStateMonitor m_monitor;
 };
 
 TEST_F(JobControllerTest, Constructed)

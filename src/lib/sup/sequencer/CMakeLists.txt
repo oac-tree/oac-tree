@@ -47,6 +47,7 @@ install(FILES
   job_command_queue.h
   job_commands.h
   job_controller.h
+  job_state_monitor.h
   job_states.h
   log_severity.h
   named_callback_manager.h

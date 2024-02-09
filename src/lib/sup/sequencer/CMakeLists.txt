@@ -43,6 +43,10 @@ install(FILES
   instruction_tree.h
   instruction_utils.h
   instruction.h
+  job_command_queue.h
+  job_commands.h
+  job_controller.h
+  job_states.h
   log_severity.h
   named_callback_manager.h
   procedure_context.h

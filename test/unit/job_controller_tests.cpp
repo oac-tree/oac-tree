@@ -21,6 +21,7 @@
 
 #include "unit_test_helper.h"
 
+#include <sup/sequencer/application_utils.h>
 #include <sup/sequencer/job_controller.h>
 #include <sup/sequencer/job_state_monitor.h>
 #include <sup/sequencer/sequence_parser.h>
@@ -63,17 +64,11 @@ protected:
   JobControllerTest() = default;
   virtual ~JobControllerTest() = default;
 
-  std::function<void(JobState)> GetStateCallback()
-  {
-    return m_monitor.GetStateCallback();
-  }
-
   bool WaitForState(JobState state, double seconds = 1.0)
   {
     return m_monitor.WaitForState(state, seconds);
   }
-
-  JobStateMonitor m_monitor;
+  utils::SimpleJobStateMonitor m_monitor;
 };
 
 TEST_F(JobControllerTest, Constructed)
@@ -81,7 +76,7 @@ TEST_F(JobControllerTest, Constructed)
   DefaultUserInterface ui;
   auto proc = ParseProcedureString(
     sup::UnitTestHelper::CreateProcedureString(kTestParallelProcedureBody));
-  JobController controller{*proc, ui, GetStateCallback()};
+  JobController controller{*proc, ui, m_monitor};
   EXPECT_TRUE(WaitForState(JobState::kInitial));
   controller.Start();
   EXPECT_TRUE(WaitForState(JobState::kRunning));
@@ -93,7 +88,7 @@ TEST_F(JobControllerTest, Halted)
   DefaultUserInterface ui;
   auto proc = ParseProcedureString(
     sup::UnitTestHelper::CreateProcedureString(kTestParallelProcedureBody));
-  JobController controller{*proc, ui, GetStateCallback()};
+  JobController controller{*proc, ui, m_monitor};
   EXPECT_TRUE(WaitForState(JobState::kInitial));
   controller.Start();
   EXPECT_TRUE(WaitForState(JobState::kRunning));
@@ -106,7 +101,7 @@ TEST_F(JobControllerTest, PauseStep)
   DefaultUserInterface ui;
   auto proc = ParseProcedureString(
     sup::UnitTestHelper::CreateProcedureString(kTestSequenceProcedureBody));
-  JobController controller{*proc, ui, GetStateCallback()};
+  JobController controller{*proc, ui, m_monitor};
   EXPECT_TRUE(WaitForState(JobState::kInitial));
   controller.Start();
   controller.Pause();
@@ -120,7 +115,7 @@ TEST_F(JobControllerTest, StepReset)
   DefaultUserInterface ui;
   auto proc = ParseProcedureString(
     sup::UnitTestHelper::CreateProcedureString(kTestStepProcedureBody));
-  JobController controller{*proc, ui, GetStateCallback()};
+  JobController controller{*proc, ui, m_monitor};
   EXPECT_TRUE(WaitForState(JobState::kInitial));
   controller.Step();
   EXPECT_TRUE(WaitForState(JobState::kStepping));

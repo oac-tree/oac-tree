@@ -22,9 +22,12 @@
 #ifndef SUP_SEQUENCER_APPLICATON_UTILS_H_
 #define SUP_SEQUENCER_APPLICATON_UTILS_H_
 
+#include <sup/sequencer/job_state_monitor.h>
 #include <sup/sequencer/procedure.h>
 
+#include <condition_variable>
 #include <memory>
+#include <mutex>
 #include <string>
 
 namespace sup
@@ -51,6 +54,28 @@ public:
 private:
   std::string m_filename;
   std::string m_error_message;
+};
+
+/**
+ * @brief Simple implementation of JobStateMonitor that provides member functions that wait for
+ * certain JobState conditions.
+ *
+ */
+class SimpleJobStateMonitor : public JobStateMonitor
+{
+public:
+  SimpleJobStateMonitor();
+  ~SimpleJobStateMonitor();
+
+  void OnStateChange(JobState state) override;
+
+  JobState WaitForFinished() const;
+
+  bool WaitForState(JobState state, double seconds) const;
+private:
+  JobState m_state;
+  mutable std::mutex m_mtx;
+  mutable std::condition_variable m_cv;
 };
 
 }  // namespace utils

@@ -72,8 +72,8 @@ int main(int argc, char* argv[])
     return 1;
   }
 
-  JobStateMonitor monitor;
-  JobController job_controller(*proc, ui, monitor.GetStateCallback());
+  utils::SimpleJobStateMonitor monitor;
+  JobController job_controller(*proc, ui, monitor);
   job_controller.Start();
 
   auto end_state = monitor.WaitForFinished();

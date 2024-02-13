@@ -86,8 +86,8 @@ int main(int argc, char* argv[])
     std::cout << "Procedure parsing and setup successful: " << filename << std::endl;
     return 0;  // Early exit.
   }
-  JobStateMonitor monitor;
-  JobController job_controller(*proc, ui, monitor.GetStateCallback());
+  utils::SimpleJobStateMonitor monitor;
+  JobController job_controller(*proc, ui, monitor);
   job_controller.Start();
 
   auto end_state = monitor.WaitForFinished();

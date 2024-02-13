@@ -23,6 +23,7 @@
 #define SUP_SEQUENCER_JOB_CONTROLLER_H_
 
 #include <sup/sequencer/job_command_queue.h>
+#include <sup/sequencer/job_state_monitor.h>
 #include <sup/sequencer/job_states.h>
 
 #include <sup/sequencer/procedure.h>
@@ -55,7 +56,7 @@ public:
    * @param cb Callback function object for state changes.
    */
   explicit JobController(sup::sequencer::Procedure& proc, sup::sequencer::UserInterface& ui,
-                         std::function<void(JobState)> cb = {});
+                         JobStateMonitor& state_monitor);
 
   ~JobController();
 
@@ -90,7 +91,7 @@ private:
   sup::sequencer::UserInterface& m_ui;
   sup::sequencer::Runner m_runner;
 
-  std::function<void(JobState)> m_state_cb;
+  JobStateMonitor& m_state_monitor;
 
   JobCommandQueue m_command_queue;
 

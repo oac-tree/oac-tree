@@ -24,31 +24,20 @@
 
 #include <sup/sequencer/job_states.h>
 
-#include <condition_variable>
-#include <functional>
-#include <mutex>
-
 namespace sup
 {
 namespace sequencer
 {
+/**
+ * @brief Pure interface for objects that can receive JobState updates from JobController.
+ *
+ */
 class JobStateMonitor
 {
 public:
-  JobStateMonitor();
   ~JobStateMonitor();
 
-  std::function<void(JobState)> GetStateCallback();
-
-  JobState WaitForFinished() const;
-
-  bool WaitForState(JobState state, double seconds) const;
-
-private:
-  void OnStateChange(JobState state);
-  JobState m_state;
-  mutable std::mutex m_mtx;
-  mutable std::condition_variable m_cv;
+  virtual void OnStateChange(JobState state) = 0;
 };
 
 }  // namespace sequencer

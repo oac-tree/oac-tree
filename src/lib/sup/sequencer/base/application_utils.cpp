@@ -24,6 +24,9 @@
 #include <sup/sequencer/generic_utils.h>
 #include <sup/sequencer/sequence_parser.h>
 
+#include <chrono>
+#include <cmath>
+
 namespace sup
 {
 namespace sequencer
@@ -68,6 +71,42 @@ std::unique_ptr<Procedure> ProcedureLoader::ParseAndSetup()
 std::string ProcedureLoader::GetErrorMessage() const
 {
   return m_error_message;
+}
+
+SimpleJobStateMonitor::SimpleJobStateMonitor()
+  : m_state{JobState::kInitial}
+  , m_mtx{}
+  , m_cv{}
+{}
+
+SimpleJobStateMonitor::~SimpleJobStateMonitor() = default;
+
+void SimpleJobStateMonitor::OnStateChange(JobState state)
+{
+  {
+    std::lock_guard<std::mutex> lk{m_mtx};
+    m_state = state;
+  }
+  m_cv.notify_one();
+}
+
+JobState SimpleJobStateMonitor::WaitForFinished() const
+{
+  auto pred = [this](){
+    return IsFinishedJobState(m_state);
+  };
+  std::unique_lock<std::mutex> lk{m_mtx};
+  m_cv.wait(lk, pred);
+  return m_state;
+}
+
+bool SimpleJobStateMonitor::WaitForState(JobState state, double seconds) const
+{
+  auto duration = std::chrono::nanoseconds(std::lround(seconds * 1e9));
+  std::unique_lock<std::mutex> lk{m_mtx};
+  return m_cv.wait_for(lk, duration, [this, state](){
+    return m_state == state;
+  });
 }
 
 }  // namespace utils

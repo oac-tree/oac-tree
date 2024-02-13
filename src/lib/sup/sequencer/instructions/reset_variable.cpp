@@ -49,7 +49,7 @@ ExecutionStatus ResetVariable::ExecuteSingleImpl(UserInterface& ui, Workspace& w
   {
     std::string error_message = InstructionErrorProlog(*this) +
       "workspace does not contain variable with name [" + var_name + "]";
-    ui.LogError(error_message);
+    LogError(ui, error_message);
     return ExecutionStatus::FAILURE;
   }
   if (!ws.ResetVariable(var_name))

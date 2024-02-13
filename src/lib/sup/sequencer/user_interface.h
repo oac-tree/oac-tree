@@ -119,7 +119,7 @@ public:
    *   ...                                Future extension appear here
    */
   virtual int GetUserChoice(const std::vector<std::string>& options,
-                    const sup::dto::AnyValue& metadata) = 0;
+                            const sup::dto::AnyValue& metadata) = 0;
 
   /**
    * @brief Method called to display a message.
@@ -133,17 +133,23 @@ public:
    *
    */
   virtual void Log(int severity, const std::string& message) = 0;
-
-  /**
-   * @brief Convenience method to log an error message.
-   */
-  void LogError(const std::string& message);
-
-  /**
-   * @brief Convenience method to log a warning message.
-   */
-  void LogWarning(const std::string& message);
 };
+
+/**
+ * @brief Convenience function to log an error to a UserInterface object.
+ *
+ * @param ui UserInterface that will handle the logging.
+ * @param message Error message to log.
+ */
+void LogError(UserInterface& ui, const std::string& message);
+
+/**
+ * @brief Convenience function to log a warning to a UserInterface object.
+ *
+ * @param ui UserInterface that will handle the logging.
+ * @param message Warning message to log.
+ */
+void LogWarning(UserInterface& ui, const std::string& message);
 
 /**
  * @brief UserInterface with default implementations of virtual methods.

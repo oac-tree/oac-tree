@@ -69,7 +69,7 @@ ExecutionStatus ForInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& 
     std::string warning_message = InstructionWarningProlog(*this) +
       "For instruction expects an array but variable with name [" +
       GetAttributeString(Constants::ARRAY_VARIABLE_NAME_ATTRIBUTE_NAME) + "] is not one.";
-    ui.LogWarning(warning_message);
+    LogWarning(ui, warning_message);
     return ExecutionStatus::FAILURE;
   }
   int max_count = m_array.NumberOfElements();
@@ -88,7 +88,7 @@ ExecutionStatus ForInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& 
       InstructionWarningProlog(*this) + "The element [" +
       GetAttributeString(Constants::ELEMENT_VARIABLE_NAME_ATTRIBUTE_NAME) + "] and the elements of array [" +
       GetAttributeString(Constants::ARRAY_VARIABLE_NAME_ATTRIBUTE_NAME) + "] have to be of the same type.";
-    ui.LogWarning(warning_message);
+    LogWarning(ui, warning_message);
     return ExecutionStatus::FAILURE;
   }
 
@@ -98,7 +98,7 @@ ExecutionStatus ForInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& 
     std::string warning_message = InstructionWarningProlog(*this) +
       "Could not write current array value to element variable with name [" +
       GetAttributeString(Constants::ELEMENT_VARIABLE_NAME_ATTRIBUTE_NAME) + "]";
-    ui.LogWarning(warning_message);
+    LogWarning(ui, warning_message);
     return ExecutionStatus::FAILURE;
   }
 

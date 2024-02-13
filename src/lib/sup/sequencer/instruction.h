@@ -529,7 +529,7 @@ bool Instruction::GetAttributeValueAs(const std::string& attr_name, const Worksp
     std::string warning_message =
       InstructionWarningProlog(*this) + "could not convert attribute with name ["
       + attr_name + "] to the expected type";
-    ui.LogWarning(warning_message);
+    LogWarning(ui, warning_message);
     return false;
   }
   return true;

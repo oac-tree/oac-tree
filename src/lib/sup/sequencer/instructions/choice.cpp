@@ -119,7 +119,7 @@ bool Choice::CreateInstructionList(UserInterface& ui, Workspace& ws)
     auto selector_json = sup::dto::ValuesToJSONString(selector);
     std::string error_message = InstructionErrorProlog(*this) +
       "could not parse selector variable as index or array of indices: [" + selector_json + "]";
-    ui.LogError(error_message);
+    LogError(ui, error_message);
     return false;
   }
   std::vector<Instruction*> instr_list;
@@ -131,7 +131,7 @@ bool Choice::CreateInstructionList(UserInterface& ui, Workspace& ws)
       std::string error_message = InstructionErrorProlog(*this) +
         "index [" + std::to_string(idx) + "] out of bounds for number of child instructions [" +
         std::to_string(child_instructions.size()) + "]";
-      ui.LogError(error_message);
+      LogError(ui, error_message);
       return false;
     }
     instr_list.push_back(child_instructions[idx]);

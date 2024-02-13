@@ -33,14 +33,14 @@ const sup::dto::AnyType USER_CHOICE_METADATA_ANYTYPE =
 
 UserInterface::~UserInterface() = default;
 
-void UserInterface::LogError(const std::string& message)
+void LogError(UserInterface& ui, const std::string& message)
 {
-  Log(log::SUP_SEQ_LOG_ERR, message);
+  ui.Log(log::SUP_SEQ_LOG_ERR, message);
 }
 
-void UserInterface::LogWarning(const std::string& message)
+void LogWarning(UserInterface& ui, const std::string& message)
 {
-  Log(log::SUP_SEQ_LOG_WARNING, message);
+  ui.Log(log::SUP_SEQ_LOG_WARNING, message);
 }
 
 DefaultUserInterface::DefaultUserInterface() = default;

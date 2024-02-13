@@ -261,7 +261,7 @@ bool Instruction::GetAttributeValue(const std::string& attr_name, const Workspac
     const std::string error = InstructionErrorProlog(*this) +
       "could not retrieve AnyValue of attribute [" + attr_name + "] or assign it to passed output "
       "parameter";
-    ui.LogError(error);
+    LogError(ui, error);
     return false;
   }
   return true;
@@ -382,7 +382,7 @@ bool SetValueFromAttributeName(const Instruction& instruction, Workspace& ws,
   {
     std::string error_message = InstructionErrorProlog(instruction) +
       "trying to use variable with empty name";
-    ui.LogError(error_message);
+    LogError(ui, error_message);
     return false;
   }
   auto output_var_name = SplitFieldName(output_field_name).first;
@@ -390,14 +390,14 @@ bool SetValueFromAttributeName(const Instruction& instruction, Workspace& ws,
   {
     std::string error_message = InstructionErrorProlog(instruction) +
       "workspace does not contain output variable with name [" + output_var_name + "]";
-    ui.LogError(error_message);
+    LogError(ui, error_message);
     return false;
   }
   if (!ws.SetValue(output_field_name, value))
   {
     std::string warning_message = InstructionErrorProlog(instruction) +
       "could not write output field with name [" + output_field_name + "] to workspace";
-    ui.LogWarning(warning_message);
+    LogWarning(ui, warning_message);
     return false;
   }
   return true;
@@ -416,7 +416,7 @@ sup::dto::AnyValue ParseAnyValueAttributePair(const Instruction& instruction,
   {
     std::string error_message = InstructionErrorProlog(instruction) +
       "could not parse type [" + type_str + "] from attribute [" + type_attr_name + "]";
-    ui.LogError(error_message);
+    LogError(ui, error_message);
     return {};
   }
   sup::dto::AnyType anytype = type_parser.MoveAnyType();
@@ -427,7 +427,7 @@ sup::dto::AnyValue ParseAnyValueAttributePair(const Instruction& instruction,
     std::string error_message = InstructionErrorProlog(instruction) +
       "could not parse value [" + val_str + "] from attribute [" + value_attr_name +
       "] to type [" + type_str + "]";
-    ui.LogError(error_message);
+    LogError(ui, error_message);
     return {};
   }
   return val_parser.MoveAnyValue();
@@ -482,7 +482,7 @@ bool GetValueFromVariableName(const Instruction& instruction, const Workspace& w
   {
     std::string error_message = InstructionErrorProlog(instruction) +
       "trying to fetch variable with empty name";
-    ui.LogError(error_message);
+    LogError(ui, error_message);
     return false;
   }
   auto input_var_name = sup::sequencer::SplitFieldName(var_name).first;
@@ -490,7 +490,7 @@ bool GetValueFromVariableName(const Instruction& instruction, const Workspace& w
   {
     std::string error_message = InstructionErrorProlog(instruction) +
       "workspace does not contain input variable with name [" + input_var_name + "]";
-    ui.LogError(error_message);
+    LogError(ui, error_message);
     return false;
   }
   sup::dto::AnyValue tmp_val;
@@ -498,14 +498,14 @@ bool GetValueFromVariableName(const Instruction& instruction, const Workspace& w
   {
     std::string warning_message = InstructionErrorProlog(instruction) +
       "could not read input field with name [" + var_name + "] from workspace";
-    ui.LogWarning(warning_message);
+    LogWarning(ui, warning_message);
     return false;
   }
   if (!sup::dto::TryAssign(value, tmp_val))
   {
     std::string warning_message = InstructionErrorProlog(instruction) +
       "could not asssign value of field with name [" + var_name + "] to passed output parameter";
-    ui.LogError(warning_message);
+    LogError(ui, warning_message);
     return false;
   }
   return true;

@@ -57,7 +57,7 @@ ExecutionStatus Decrement::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
     const std::string warning = InstructionErrorProlog(*this) +
       "could not decrement variable reffered to in attribute [" +
       Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME + "]";
-    ui.LogWarning(warning);
+    LogWarning(ui, warning);
     return ExecutionStatus::FAILURE;
   }
   if (!SetValueFromAttributeName(*this, ws, ui, Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME,

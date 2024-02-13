@@ -71,7 +71,7 @@ ExecutionStatus LogInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& 
   {
     std::string error_message = InstructionErrorProlog(*this) +
       "could not parse severity [" + severity_str + "] as valid severity level";
-    ui.LogError(error_message);
+    LogError(ui, error_message);
     return ExecutionStatus::FAILURE;
   }
   std::string message;

@@ -56,7 +56,7 @@ bool GetVariableTimeoutAttribute(const Instruction& instr, UserInterface& ui, Wo
   {
     const std::string warning_message = InstructionWarningProlog(instr) + "could not retrieve " +
       "timeout value within limits: " + std::to_string(timeout_sec);
-    ui.LogWarning(warning_message);
+    LogWarning(ui, warning_message);
     return false;
   }
   return true;

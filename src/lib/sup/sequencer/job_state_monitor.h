@@ -38,6 +38,8 @@ public:
   ~JobStateMonitor();
 
   virtual void OnStateChange(JobState state) = 0;
+
+  virtual JobState GetCurrentState() const = 0;
 };
 
 }  // namespace sequencer

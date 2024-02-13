@@ -69,6 +69,8 @@ public:
 
   void OnStateChange(JobState state) override;
 
+  JobState GetCurrentState() const override;
+
   JobState WaitForFinished() const;
 
   bool WaitForState(JobState state, double seconds) const;

@@ -90,6 +90,12 @@ void SimpleJobStateMonitor::OnStateChange(JobState state)
   m_cv.notify_one();
 }
 
+JobState SimpleJobStateMonitor::GetCurrentState() const
+{
+  std::lock_guard<std::mutex> lk{m_mtx};
+  return m_state;
+}
+
 JobState SimpleJobStateMonitor::WaitForFinished() const
 {
   auto pred = [this](){

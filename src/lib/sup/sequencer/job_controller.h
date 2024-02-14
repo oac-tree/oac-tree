@@ -71,7 +71,7 @@ public:
   void Step();
 
   /**
-   * @brief Interrupt the procedure's execution.
+   * @brief Pause the procedure's execution.
    */
   void Pause();
 

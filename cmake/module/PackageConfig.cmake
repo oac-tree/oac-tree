@@ -9,6 +9,7 @@
 #     OUTPUT output_file
 #     INSTALL_DESTINATION install_destination
 #     DEPENDENCIES dependency1 dependency2 ...
+#     dependency1_FIND_OPTIONS option1 option2 ...
 #   )
 #
 #   This function generates a package config file for the package with the given name.
@@ -29,6 +30,7 @@
 #     INSTALL_DESTINATION: The install destination for the package config file, defaults to
 #       <CMAKE_INSTALL_LIBDIR>/cmake/<PACKAGE_NAME>
 #     DEPENDENCIES: A list of dependencies to find, these will be found using find_dependency()
+#     <dependency>_FIND_OPTIONS: A list of options to pass to find_dependency() for the given dependency
 #
 #   TARGETS_FILE and VERSION_FILE must be relative to the directory containing the package config file.
 #
@@ -39,7 +41,16 @@
 include(CMakePackageConfigHelpers)
 
 function(write_package_config_file PACKAGE_NAME)
-  cmake_parse_arguments(PACKAGE "" "VERSION;OUTPUT;TARGETS_FILE;VERSION_FILE;INSTALL_DESTINATION" "DEPENDENCIES" ${ARGN})
+  # Get any arguments that match the pattern <PACKAGE_NAME>_FIND_OPTIONS 
+  # We need this because we don't know which dependencies to consider before parsing the arguments
+  list(APPEND PACKAGE_FIND_OPTIONS_ARGS ${ARGN})
+  list(FILTER PACKAGE_FIND_OPTIONS_ARGS INCLUDE REGEX "^[A-Za-z0-9_\\-]+_FIND_OPTIONS$")
+
+  cmake_parse_arguments(
+    PACKAGE
+    "" "VERSION;OUTPUT;TARGETS_FILE;VERSION_FILE;INSTALL_DESTINATION" "DEPENDENCIES;${PACKAGE_FIND_OPTIONS_ARGS}"
+    ${ARGN}
+  )
 
   if(PACKAGE_UNPARSED_ARGUMENTS)
     message(FATAL_ERROR "write_package_config_file called with unknown arguments: ${PACKAGE_UNPARSED_ARGUMENTS}")
@@ -98,6 +109,10 @@ include(CMakeFindDependencyMacro)
     )
 
     foreach(DEPENDENCY ${PACKAGE_DEPENDENCIES})
+      # Append any specified find options to the dependency
+      list(JOIN PACKAGE_${DEPENDENCY}_FIND_OPTIONS " " DEPENDENCY_FIND_OPTIONS)
+      string(JOIN " " DEPENDENCY ${DEPENDENCY} ${DEPENDENCY_FIND_OPTIONS})
+      # Add the find_dependency() call to the package config file
       string(APPEND PACKAGE_CONFIG_CONTENT "find_dependency(${DEPENDENCY})\n")
     endforeach()
   endif()
@@ -128,7 +143,10 @@ find_package_message(
 
   # Write the package config file template to a temporary file and then configure it
   file(WRITE ${PACKAGE_OUTPUT_TEMP} ${PACKAGE_CONFIG_CONTENT})
-  configure_package_config_file(${PACKAGE_OUTPUT_TEMP} ${PACKAGE_OUTPUT} INSTALL_DESTINATION ${PACKAGE_INSTALL_DESTINATION})
+  configure_package_config_file(
+    ${PACKAGE_OUTPUT_TEMP} ${PACKAGE_OUTPUT}
+    INSTALL_DESTINATION ${PACKAGE_INSTALL_DESTINATION}
+  )
 
   # Remove the temporary file
   file(REMOVE ${PACKAGE_OUTPUT_TEMP})

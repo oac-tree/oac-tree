@@ -242,7 +242,6 @@ std::vector<Breakpoint*> CurrentBreakpoints(
   std::vector<Breakpoint*> current_breakpoints;
   for (auto& breakpoint : breakpoints)
   {
-    auto status = breakpoint.GetStatus();
     if (std::find(next_instructions.begin(), next_instructions.end(), breakpoint.GetInstruction())
         == next_instructions.end())
     {

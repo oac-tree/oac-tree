@@ -1,6 +1,7 @@
 target_sources(sup-sequencer-shared
   PRIVATE
     breakpoint.cpp
+    breakpoint_manager.cpp
     job_command_queue.cpp
     job_commands.cpp
     job_controller.cpp

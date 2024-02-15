@@ -19,14 +19,117 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "breakpoint_manager.h"
+#include <sup/sequencer/breakpoint_manager.h>
+
+#include <sup/sequencer/instruction_tree.h>
+#include <sup/sequencer/procedure.h>
+#include <sup/sequencer/breakpoint.h>
+
+#include <algorithm>
+
+namespace
+{
+using namespace sup::sequencer;
+std::set<const Instruction*> GetInstructionList(const Procedure& proc);
+}  // unnamed namespace
 
 namespace sup
 {
 namespace sequencer
 {
 
+BreakpointManager::BreakpointManager(const Procedure& proc)
+  : m_instruction_list{GetInstructionList(proc)}
+  , m_breakpoints{}
+{}
+
+BreakpointManager::~BreakpointManager() = default;
+
+void BreakpointManager::SetBreakpoint(const Instruction* instruction)
+{
+  if (!IsKnownInstruction(instruction))
+  {
+    std::string error_message =
+      "BreakpointManager::SetBreakpoint: trying to set a breakpoint at non-existent instruction";
+    throw InvalidOperationException(error_message);
+  }
+  auto predicate = [instruction](const Breakpoint& breakpoint) {
+    return breakpoint.GetInstruction() == instruction;
+  };
+  auto iter = std::find_if(m_breakpoints.begin(), m_breakpoints.end(), predicate);
+  if (iter == m_breakpoints.end())
+  {
+    m_breakpoints.emplace_back(instruction);
+  }
+}
+
+void BreakpointManager::RemoveBreakpoint(const Instruction* instruction)
+{
+  auto predicate = [instruction](const Breakpoint& breakpoint) {
+    return breakpoint.GetInstruction() == instruction;
+  };
+  m_breakpoints.remove_if(predicate);
+}
+
+std::vector<const Instruction*> BreakpointManager::HandleBreakpoints(
+  const std::vector<const Instruction*>& next_instructions)
+{
+  std::vector<const Instruction*> result;
+  for (auto& breakpoint : m_breakpoints)
+  {
+    if (std::find(next_instructions.begin(), next_instructions.end(), breakpoint.GetInstruction())
+        == next_instructions.end())
+    {
+      continue;
+    }
+    auto status = breakpoint.GetStatus();
+    if (status == Breakpoint::kSet)
+    {
+      result.push_back(breakpoint.GetInstruction());
+      breakpoint.SetStatus(Breakpoint::kReleased);
+    }
+  }
+  return result;
+}
+
+void BreakpointManager::ResetBreakpoints()
+{
+  for (auto& breakpoint : m_breakpoints)
+  {
+    if (breakpoint.GetStatus() == Breakpoint::kReleased)
+    {
+      breakpoint.SetStatus(Breakpoint::kSet);
+    }
+  }
+}
+
+std::list<Breakpoint> BreakpointManager::GetBreakpoints() const
+{
+  return m_breakpoints;
+}
+
+bool BreakpointManager::IsKnownInstruction(const Instruction* instruction) const
+{
+  auto iter = m_instruction_list.find(instruction);
+  return iter != m_instruction_list.end();
+}
 
 }  // namespace sequencer
 
 }  // namespace sup
+
+namespace
+{
+using namespace sup::sequencer;
+std::set<const Instruction*> GetInstructionList(const Procedure& proc)
+{
+  auto root_instr = proc.RootInstruction();
+  if (!root_instr)
+  {
+    return {};
+  }
+  auto instructions = FlattenBFS(CreateFullInstructionTree(root_instr));
+  return std::set<const Instruction*>{ instructions.begin(), instructions.end() };
+}
+}  // unnamed namespace
+

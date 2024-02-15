@@ -22,6 +22,8 @@
 #ifndef SUP_SEQUENCER_BREAKPOINT_MANAGER_H_
 #define SUP_SEQUENCER_BREAKPOINT_MANAGER_H_
 
+#include <list>
+#include <set>
 #include <vector>
 
 namespace sup
@@ -37,17 +39,24 @@ class Procedure;
 class BreakpointManager
 {
 public:
-  BreakpointManager(const sup::sequencer::Procedure& proc);
+  BreakpointManager(const Procedure& proc);
   ~BreakpointManager();
 
   void SetBreakpoint(const Instruction* instruction);
 
   void RemoveBreakpoint(const Instruction* instruction);
 
-  std::vector<Breakpoint> GetBreakpoints() const;
+  std::vector<const Instruction*> HandleBreakpoints(
+    const std::vector<const Instruction*>& next_instructions);
+
+  void ResetBreakpoints();
+
+  std::list<Breakpoint> GetBreakpoints() const;
 
 private:
-  const std::vector<const Instruction*> m_instruction_list;
+  bool IsKnownInstruction(const Instruction* instruction) const;
+  const std::set<const Instruction*> m_instruction_list;
+  std::list<Breakpoint> m_breakpoints;
 };
 
 }  // namespace sequencer

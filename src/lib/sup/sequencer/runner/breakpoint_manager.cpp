@@ -41,11 +41,13 @@ namespace sequencer
 BreakpointManager::BreakpointManager()
   : m_instruction_list{}
   , m_breakpoints{}
+  , m_mtx{}
 {}
 
 BreakpointManager::BreakpointManager(const Procedure& proc)
   : m_instruction_list{GetInstructionList(proc)}
   , m_breakpoints{}
+  , m_mtx{}
 {}
 
 BreakpointManager::~BreakpointManager() = default;
@@ -61,6 +63,7 @@ void BreakpointManager::SetBreakpoint(const Instruction* instruction)
   auto predicate = [instruction](const Breakpoint& breakpoint) {
     return breakpoint.GetInstruction() == instruction;
   };
+  std::lock_guard<std::mutex> lk{m_mtx};
   auto iter = std::find_if(m_breakpoints.begin(), m_breakpoints.end(), predicate);
   if (iter == m_breakpoints.end())
   {
@@ -73,6 +76,7 @@ void BreakpointManager::RemoveBreakpoint(const Instruction* instruction)
   auto predicate = [instruction](const Breakpoint& breakpoint) {
     return breakpoint.GetInstruction() == instruction;
   };
+  std::lock_guard<std::mutex> lk{m_mtx};
   m_breakpoints.remove_if(predicate);
 }
 
@@ -80,6 +84,7 @@ std::vector<const Instruction*> BreakpointManager::HandleBreakpoints(
   const std::vector<const Instruction*>& next_instructions)
 {
   std::vector<const Instruction*> result;
+  std::lock_guard<std::mutex> lk{m_mtx};
   for (auto& breakpoint : m_breakpoints)
   {
     if (std::find(next_instructions.begin(), next_instructions.end(), breakpoint.GetInstruction())
@@ -99,6 +104,7 @@ std::vector<const Instruction*> BreakpointManager::HandleBreakpoints(
 
 void BreakpointManager::ResetBreakpoints()
 {
+  std::lock_guard<std::mutex> lk{m_mtx};
   for (auto& breakpoint : m_breakpoints)
   {
     if (breakpoint.GetStatus() == Breakpoint::kReleased)
@@ -110,6 +116,7 @@ void BreakpointManager::ResetBreakpoints()
 
 std::list<Breakpoint> BreakpointManager::GetBreakpoints() const
 {
+  std::lock_guard<std::mutex> lk{m_mtx};
   return m_breakpoints;
 }
 

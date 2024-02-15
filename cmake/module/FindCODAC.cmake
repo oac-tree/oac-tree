@@ -81,12 +81,12 @@ macro(_CODAC_find_python)
         message(VERBOSE "CODAC_PYTHON_EXECUTABLE using site-packages: CODAC_PYTHON${CODAC_Python_VERSION_MAJOR}${CODAC_Python_VERSION_MINOR}_SITE_PACKAGES")
       endif()
 
-      # Create bash file to alias Python executable with site-packages
+      # Create a wrapper script with site-packages as PYTHONPATH
       # we do this because cmake doesn't like non monlithic executable names in package_EXECUTABLE macros
       set(_file ${CMAKE_CURRENT_BINARY_DIR}/CODAC_PYTHON_EXECUTABLE.sh)
       file(WRITE ${_file}
 "#!/bin/bash
-export PYTHONPATH=${CODAC_PYTHON${CODAC_Python_VERSION_MAJOR}${CODAC_Python_VERSION_MINOR}_SITE_PACKAGES}
+export PYTHONPATH=${CODAC_PYTHON${CODAC_Python_VERSION_MAJOR}${CODAC_Python_VERSION_MINOR}_SITE_PACKAGES}:\$PYTHONPATH
 ${CODAC_PYTHON_EXECUTABLE} \"$@\"")
       configure_file(${_file} ${_file} FILE_PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ)
 

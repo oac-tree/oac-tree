@@ -19,7 +19,7 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <sup/sequencer/breakpoint_manager.h>
+#include "breakpoint_manager.h"
 
 #include <sup/sequencer/instruction_tree.h>
 #include <sup/sequencer/procedure.h>
@@ -37,6 +37,11 @@ namespace sup
 {
 namespace sequencer
 {
+
+BreakpointManager::BreakpointManager()
+  : m_instruction_list{}
+  , m_breakpoints{}
+{}
 
 BreakpointManager::BreakpointManager(const Procedure& proc)
   : m_instruction_list{GetInstructionList(proc)}

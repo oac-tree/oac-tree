@@ -32,7 +32,6 @@ install(FILES
   attribute_handler.h
   attribute_utils.h
   breakpoint.h
-  breakpoint_manager.h
   compound_instruction.h
   concrete_constraints.h
   constants.h

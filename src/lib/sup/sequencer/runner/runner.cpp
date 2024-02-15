@@ -21,6 +21,8 @@
 
 #include <sup/sequencer/runner.h>
 
+#include "breakpoint_manager.h"
+
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/instruction.h>
 #include <sup/sequencer/instruction_tree.h>
@@ -31,21 +33,6 @@
 #include <chrono>
 #include <thread>
 
-namespace
-{
-using sup::sequencer::Breakpoint;
-using sup::sequencer::Instruction;
-std::vector<Breakpoint>::iterator FindBreakpoint(std::vector<Breakpoint>& breakpoints,
-                                                 const Instruction* instruction);
-std::vector<Breakpoint*> CurrentBreakpoints(
-  std::vector<Breakpoint>& breakpoints, const std::vector<const Instruction*>& next_instructions);
-
-std::vector<const Instruction*> HandleBreakpoints(
-  std::vector<Breakpoint>& breakpoints, const std::vector<const Instruction*>& next_instructions);
-
-void ResetBreakpoints(std::vector<Breakpoint>& breakpoints);
-}
-
 namespace sup
 {
 namespace sequencer
@@ -55,7 +42,7 @@ Runner::Runner(UserInterface& ui)
   : m_proc{nullptr}
   , m_ui{ui}
   , m_tick_cb{}
-  , m_breakpoints{}
+  , m_breakpoint_manager{new BreakpointManager{}}
   , m_current_breakpoint_instructions{}
   , m_halt{false}
 {}
@@ -70,6 +57,7 @@ void Runner::SetProcedure(Procedure* procedure)
     {
       m_ui.VariableUpdated(name, value, connected);
     });
+  m_breakpoint_manager.reset(new BreakpointManager(*m_proc));
 }
 
 void Runner::SetTickCallback(TickCallback cb)
@@ -79,32 +67,18 @@ void Runner::SetTickCallback(TickCallback cb)
 
 void Runner::SetBreakpoint(const Instruction* instruction)
 {
-  if (!InstructionPresent(instruction))
-  {
-    std::string error_message =
-      "Runner::SetBreakpoint: trying to set a breakpoint at non-existent instruction";
-    throw InvalidOperationException(error_message);
-  }
-  auto it = FindBreakpoint(m_breakpoints, instruction);
-  if (it == m_breakpoints.end())
-  {
-    m_breakpoints.emplace_back(instruction);
-  }
+  m_breakpoint_manager->SetBreakpoint(instruction);
 }
 
 void Runner::RemoveBreakpoint(const Instruction* instruction)
 {
-  auto it = FindBreakpoint(m_breakpoints, instruction);
-  if (it == m_breakpoints.end())
-  {
-    return;
-  }
-  m_breakpoints.erase(it);
+  m_breakpoint_manager->RemoveBreakpoint(instruction);
 }
 
 std::vector<Breakpoint> Runner::GetBreakpoints() const
 {
-  return m_breakpoints;
+  auto list = m_breakpoint_manager->GetBreakpoints();
+  return std::vector<Breakpoint>{ list.begin(), list.end() };
 }
 
 void Runner::ExecuteProcedure()
@@ -119,7 +93,7 @@ void Runner::ExecuteProcedure()
     auto next_instructions = GetNextInstructions(*m_proc);
     if (!next_instructions.empty())
     {
-      m_current_breakpoint_instructions = HandleBreakpoints(m_breakpoints, next_instructions);
+      m_current_breakpoint_instructions = m_breakpoint_manager->HandleBreakpoints(next_instructions);
       if (!m_current_breakpoint_instructions.empty())
       {
         return;
@@ -134,7 +108,7 @@ void Runner::ExecuteSingle()
   if (m_proc)
   {
     m_proc->ExecuteSingle(m_ui);
-    ResetBreakpoints(m_breakpoints);
+    m_breakpoint_manager->ResetBreakpoints();
     if (m_tick_cb)
     {
       m_tick_cb(*m_proc);
@@ -224,59 +198,3 @@ void TimeoutWhenRunning::operator()(const Procedure& proc) const
 }  // namespace sequencer
 
 }  // namespace sup
-
-namespace
-{
-std::vector<Breakpoint>::iterator FindBreakpoint(std::vector<Breakpoint>& breakpoints,
-                                                 const Instruction* instruction)
-{
-  auto predicate = [instruction](Breakpoint& breakpoint) {
-    return breakpoint.GetInstruction() == instruction;
-  };
-  return std::find_if(breakpoints.begin(), breakpoints.end(), predicate);
-}
-
-std::vector<Breakpoint*> CurrentBreakpoints(
-  std::vector<Breakpoint>& breakpoints, const std::vector<const Instruction*>& next_instructions)
-{
-  std::vector<Breakpoint*> current_breakpoints;
-  for (auto& breakpoint : breakpoints)
-  {
-    if (std::find(next_instructions.begin(), next_instructions.end(), breakpoint.GetInstruction())
-        == next_instructions.end())
-    {
-      continue;
-    }
-    current_breakpoints.push_back(&breakpoint);
-  }
-  return current_breakpoints;
-}
-
-std::vector<const Instruction*> HandleBreakpoints(
-  std::vector<Breakpoint>& breakpoints, const std::vector<const Instruction*>& next_instructions)
-{
-  std::vector<const Instruction*> result;
-  auto current_breakpoints = CurrentBreakpoints(breakpoints, next_instructions);
-  for (auto current_breakpoint : current_breakpoints)
-  {
-    auto status = current_breakpoint->GetStatus();
-    if (status == Breakpoint::kSet)
-    {
-      result.push_back(current_breakpoint->GetInstruction());
-      current_breakpoint->SetStatus(Breakpoint::kReleased);
-    }
-  }
-  return result;
-}
-
-void ResetBreakpoints(std::vector<Breakpoint>& breakpoints)
-{
-  for (auto& breakpoint : breakpoints)
-  {
-    if (breakpoint.GetStatus() == Breakpoint::kReleased)
-    {
-      breakpoint.SetStatus(Breakpoint::kSet);
-    }
-  }
-}
-}

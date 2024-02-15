@@ -19,7 +19,6 @@
  * of the distribution package.
  ******************************************************************************/
 
-
 #include <sup/sequencer/runner.h>
 
 #include "mock_user_interface.h"

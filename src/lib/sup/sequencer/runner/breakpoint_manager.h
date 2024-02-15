@@ -39,7 +39,8 @@ class Procedure;
 class BreakpointManager
 {
 public:
-  BreakpointManager(const Procedure& proc);
+  BreakpointManager();
+  explicit BreakpointManager(const Procedure& proc);
   ~BreakpointManager();
 
   void SetBreakpoint(const Instruction* instruction);

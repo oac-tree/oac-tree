@@ -26,6 +26,7 @@
 
 #include <atomic>
 #include <functional>
+#include <memory>
 #include <vector>
 
 namespace sup
@@ -33,6 +34,7 @@ namespace sup
 namespace sequencer
 {
 
+class BreakpointManager;
 class Instruction;
 class Procedure;
 class UserInterface;
@@ -149,7 +151,7 @@ private:
   Procedure* m_proc;
   UserInterface& m_ui;
   TickCallback m_tick_cb;
-  std::vector<Breakpoint> m_breakpoints;
+  std::unique_ptr<BreakpointManager> m_breakpoint_manager;
   std::vector<const Instruction*> m_current_breakpoint_instructions;
   std::atomic_bool m_halt;
 };

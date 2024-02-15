@@ -50,6 +50,23 @@ JobController::~JobController()
   Terminate();
 }
 
+void JobController::SetBreakpoint(const Instruction* instruction)
+{
+  try
+  {
+    m_runner.SetBreakpoint(instruction);
+  }
+  catch(const MessageException&)
+  {
+    // Ignore.
+  }
+}
+
+void JobController::RemoveBreakpoint(const Instruction* instruction)
+{
+ m_runner.RemoveBreakpoint(instruction);
+}
+
 void JobController::Start()
 {
   m_command_queue.Push(JobCommand::kStart);

@@ -60,7 +60,21 @@ public:
 
   ~JobController();
 
+   /**
+   * @brief Set a breakpoint at the given instruction.
+   *
+   * @param instruction Pointer to instruction for breakpoint location.
+   */
+  void SetBreakpoint(const Instruction* instruction);
+
   /**
+   * @brief Remove a breakpoint at the given instruction (if it exists).
+   *
+   * @param instruction Pointer to instruction for breakpoint location.
+   */
+  void RemoveBreakpoint(const Instruction* instruction);
+
+ /**
    * @brief Run the procedure in a continuous manner if allowed.
    */
   void Start();

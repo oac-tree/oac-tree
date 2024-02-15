@@ -71,6 +71,8 @@ public:
    * @brief Set a breakpoint at the given instruction.
    * @param instruction Pointer to instruction for breakpoint location.
    *
+   * @throws InvalidOperationException when instruction is unknown.
+   *
    * @note This member function should not be called during execution, but only when it is paused,
    * before/after a single execution step or after a breakpoint was triggered.
    */

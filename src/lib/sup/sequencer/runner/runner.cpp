@@ -65,14 +65,14 @@ void Runner::SetTickCallback(TickCallback cb)
   m_tick_cb = cb;
 }
 
-void Runner::SetBreakpoint(const Instruction* instruction)
+bool Runner::SetBreakpoint(const Instruction* instruction)
 {
-  m_breakpoint_manager->SetBreakpoint(instruction);
+  return m_breakpoint_manager->SetBreakpoint(instruction);
 }
 
-void Runner::RemoveBreakpoint(const Instruction* instruction)
+bool Runner::RemoveBreakpoint(const Instruction* instruction)
 {
-  m_breakpoint_manager->RemoveBreakpoint(instruction);
+  return m_breakpoint_manager->RemoveBreakpoint(instruction);
 }
 
 std::vector<Breakpoint> Runner::GetBreakpoints() const

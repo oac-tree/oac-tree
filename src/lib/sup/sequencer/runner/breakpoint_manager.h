@@ -62,19 +62,20 @@ public:
    * @brief Set a Breakpoint at the given instruction.
    *
    * @param instruction Instruction for the breakpoint.
+   * @return True when a new breakpoint was added, i.e. it wasn't already there.
    *
    * @throws InvalidOperationException when instruction is unknown.
    */
-  void SetBreakpoint(const Instruction* instruction);
+  bool SetBreakpoint(const Instruction* instruction);
 
   /**
    * @brief Remove a breakpoint at the given instruction.
    *
    * @param instruction Breakpoint instruction to remove.
-   *
-   * @note Does nothing when no such breakpoint is set.
+   * @return True when an existing breakpoint was removed, false when there was no breakpoint
+   * associated with the given instruction or the instruction was unknown.
    */
-  void RemoveBreakpoint(const Instruction* instruction);
+  bool RemoveBreakpoint(const Instruction* instruction);
 
   /**
    * @brief Check if there's a breakpoint set for any of the given instructions. If so, it releases

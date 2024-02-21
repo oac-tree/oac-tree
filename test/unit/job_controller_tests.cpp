@@ -150,6 +150,7 @@ TEST_F(JobControllerTest, StepReset)
 
 TEST_F(JobControllerTest, Breakpoints)
 {
+  // Setup procedure and controller
   DefaultUserInterface ui;
   auto proc = ParseProcedureString(
     sup::UnitTestHelper::CreateProcedureString(kTestStepProcedureBody));
@@ -157,12 +158,25 @@ TEST_F(JobControllerTest, Breakpoints)
   EXPECT_TRUE(WaitForState(JobState::kInitial));
   auto root_instr = proc->RootInstruction();
   EXPECT_EQ(m_monitor.GetBreakpointUpdateCount(), 0u);
+
+  // Add breakpoint to root
   controller.SetBreakpoint(root_instr);
+  EXPECT_EQ(m_monitor.GetBreakpointUpdateCount(), 1u);
+  // Adding breakpoint to non-existing instruction does nothing
+  controller.SetBreakpoint(nullptr);
   EXPECT_EQ(m_monitor.GetBreakpointUpdateCount(), 1u);
   controller.Start();
   EXPECT_TRUE(WaitForState(JobState::kPaused));
+
+  // Remove breakpoint
   controller.RemoveBreakpoint(root_instr);
   EXPECT_EQ(m_monitor.GetBreakpointUpdateCount(), 2u);
+  // Trying to remove non-existent breakpoint does nothing
+  controller.RemoveBreakpoint(root_instr);
+  controller.RemoveBreakpoint(nullptr);
+  EXPECT_EQ(m_monitor.GetBreakpointUpdateCount(), 2u);
+
+  // Finish procedure
   controller.Start();
   EXPECT_TRUE(WaitForState(JobState::kSucceeded));
 }

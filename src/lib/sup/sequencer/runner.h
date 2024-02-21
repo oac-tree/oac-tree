@@ -76,7 +76,7 @@ public:
    * @note This member function should not be called during execution, but only when it is paused,
    * before/after a single execution step or after a breakpoint was triggered.
    */
-  void SetBreakpoint(const Instruction* instruction);
+  bool SetBreakpoint(const Instruction* instruction);
 
   /**
    * @brief Remove a breakpoint at the given instruction (if it exists).
@@ -85,7 +85,7 @@ public:
    * @note This member function should not be called during execution, but only when it is paused,
    * before/after a single execution step or after a breakpoint was triggered.
    */
-  void RemoveBreakpoint(const Instruction* instruction);
+  bool RemoveBreakpoint(const Instruction* instruction);
 
   /**
    * @brief Get a list of breakpoints.

@@ -52,7 +52,7 @@ BreakpointManager::BreakpointManager(const Procedure& proc)
 
 BreakpointManager::~BreakpointManager() = default;
 
-void BreakpointManager::SetBreakpoint(const Instruction* instruction)
+bool BreakpointManager::SetBreakpoint(const Instruction* instruction)
 {
   if (!IsKnownInstruction(instruction))
   {
@@ -68,16 +68,24 @@ void BreakpointManager::SetBreakpoint(const Instruction* instruction)
   if (iter == m_breakpoints.end())
   {
     m_breakpoints.emplace_back(instruction);
+    return true;
   }
+  return false;
 }
 
-void BreakpointManager::RemoveBreakpoint(const Instruction* instruction)
+bool BreakpointManager::RemoveBreakpoint(const Instruction* instruction)
 {
   auto predicate = [instruction](const Breakpoint& breakpoint) {
     return breakpoint.GetInstruction() == instruction;
   };
   std::lock_guard<std::mutex> lk{m_mtx};
-  m_breakpoints.remove_if(predicate);
+  auto iter = std::find_if(m_breakpoints.begin(), m_breakpoints.end(), predicate);
+  if (iter == m_breakpoints.end())
+  {
+    return false;
+  }
+  m_breakpoints.erase(iter);
+  return true;
 }
 
 std::vector<const Instruction*> BreakpointManager::HandleBreakpoints(

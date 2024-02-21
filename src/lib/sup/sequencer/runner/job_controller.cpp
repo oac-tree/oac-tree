@@ -54,8 +54,10 @@ void JobController::SetBreakpoint(const Instruction* instruction)
 {
   try
   {
-    m_runner.SetBreakpoint(instruction);
-    m_state_monitor.OnBreakpointChange(instruction, true);
+    if (m_runner.SetBreakpoint(instruction))
+    {
+      m_state_monitor.OnBreakpointChange(instruction, true);
+    }
   }
   catch(const MessageException&)
   {
@@ -65,8 +67,10 @@ void JobController::SetBreakpoint(const Instruction* instruction)
 
 void JobController::RemoveBreakpoint(const Instruction* instruction)
 {
- m_runner.RemoveBreakpoint(instruction);
- m_state_monitor.OnBreakpointChange(instruction, false);
+  if (m_runner.RemoveBreakpoint(instruction))
+  {
+    m_state_monitor.OnBreakpointChange(instruction, false);
+  }
 }
 
 void JobController::Start()

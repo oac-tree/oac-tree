@@ -45,7 +45,7 @@ namespace utils
 class ProcedureLoader
 {
 public:
-  ProcedureLoader(const std::string& filename);
+  explicit ProcedureLoader(const std::string& filename);
   ~ProcedureLoader();
 
   std::unique_ptr<Procedure> ParseAndSetup();

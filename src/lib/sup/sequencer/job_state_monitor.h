@@ -38,7 +38,7 @@ class Instruction;
 class JobStateMonitor
 {
 public:
-  ~JobStateMonitor();
+  virtual ~JobStateMonitor();
 
   virtual void OnStateChange(JobState state) noexcept = 0;
 

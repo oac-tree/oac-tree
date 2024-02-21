@@ -58,6 +58,25 @@ const std::string kTestStepProcedureBody{R"(
 using namespace sup::sequencer;
 using namespace sup::sequencer;
 
+class TestJobStateMonitor : public utils::SimpleJobStateMonitor
+{
+public:
+  TestJobStateMonitor()
+    : utils::SimpleJobStateMonitor{}
+    , m_breakpoint_updates{}
+  {}
+  ~TestJobStateMonitor() = default;
+
+  void OnBreakpointChange(const Instruction*, bool) noexcept override
+  {
+    ++m_breakpoint_updates;
+  }
+
+  sup::dto::uint32 GetBreakpointUpdateCount() const { return m_breakpoint_updates; }
+private:
+  sup::dto::uint32 m_breakpoint_updates;
+};
+
 class JobControllerTest : public ::testing::Test
 {
 protected:
@@ -68,7 +87,7 @@ protected:
   {
     return m_monitor.WaitForState(state, seconds);
   }
-  utils::SimpleJobStateMonitor m_monitor;
+  TestJobStateMonitor m_monitor;
 };
 
 TEST_F(JobControllerTest, Constructed)
@@ -125,6 +144,25 @@ TEST_F(JobControllerTest, StepReset)
   EXPECT_TRUE(WaitForState(JobState::kSucceeded));
   controller.Reset();
   EXPECT_TRUE(WaitForState(JobState::kInitial));
+  controller.Start();
+  EXPECT_TRUE(WaitForState(JobState::kSucceeded));
+}
+
+TEST_F(JobControllerTest, Breakpoints)
+{
+  DefaultUserInterface ui;
+  auto proc = ParseProcedureString(
+    sup::UnitTestHelper::CreateProcedureString(kTestStepProcedureBody));
+  JobController controller{*proc, ui, m_monitor};
+  EXPECT_TRUE(WaitForState(JobState::kInitial));
+  auto root_instr = proc->RootInstruction();
+  EXPECT_EQ(m_monitor.GetBreakpointUpdateCount(), 0u);
+  controller.SetBreakpoint(root_instr);
+  EXPECT_EQ(m_monitor.GetBreakpointUpdateCount(), 1u);
+  controller.Start();
+  EXPECT_TRUE(WaitForState(JobState::kPaused));
+  controller.RemoveBreakpoint(root_instr);
+  EXPECT_EQ(m_monitor.GetBreakpointUpdateCount(), 2u);
   controller.Start();
   EXPECT_TRUE(WaitForState(JobState::kSucceeded));
 }

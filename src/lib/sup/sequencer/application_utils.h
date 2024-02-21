@@ -60,6 +60,8 @@ private:
  * @brief Simple implementation of JobStateMonitor that provides member functions that wait for
  * certain JobState conditions.
  *
+ * @note This implementation ignores any updates on instruction breakpoints.
+ *
  */
 class SimpleJobStateMonitor : public JobStateMonitor
 {
@@ -67,9 +69,11 @@ public:
   SimpleJobStateMonitor();
   ~SimpleJobStateMonitor();
 
-  void OnStateChange(JobState state) override;
+  void OnStateChange(JobState state) noexcept override;
 
-  JobState GetCurrentState() const override;
+  void OnBreakpointChange(const Instruction* instruction, bool breakpoint_set) noexcept override;
+
+  JobState GetCurrentState() const noexcept override;
 
   JobState WaitForFinished() const;
 

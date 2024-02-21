@@ -28,8 +28,11 @@ namespace sup
 {
 namespace sequencer
 {
+class Instruction;
 /**
  * @brief Pure interface for objects that can receive JobState updates from JobController.
+ *
+ * @note The member functions are all declared noexcept as implementations should not throw.
  *
  */
 class JobStateMonitor
@@ -37,9 +40,11 @@ class JobStateMonitor
 public:
   ~JobStateMonitor();
 
-  virtual void OnStateChange(JobState state) = 0;
+  virtual void OnStateChange(JobState state) noexcept = 0;
 
-  virtual JobState GetCurrentState() const = 0;
+  virtual void OnBreakpointChange(const Instruction* instruction, bool breakpoint_set) noexcept = 0;
+
+  virtual JobState GetCurrentState() const noexcept = 0;
 };
 
 }  // namespace sequencer

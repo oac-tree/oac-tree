@@ -81,7 +81,7 @@ SimpleJobStateMonitor::SimpleJobStateMonitor()
 
 SimpleJobStateMonitor::~SimpleJobStateMonitor() = default;
 
-void SimpleJobStateMonitor::OnStateChange(JobState state)
+void SimpleJobStateMonitor::OnStateChange(JobState state) noexcept
 {
   {
     std::lock_guard<std::mutex> lk{m_mtx};
@@ -90,7 +90,15 @@ void SimpleJobStateMonitor::OnStateChange(JobState state)
   m_cv.notify_one();
 }
 
-JobState SimpleJobStateMonitor::GetCurrentState() const
+void SimpleJobStateMonitor::OnBreakpointChange(const Instruction* instruction,
+                                               bool breakpoint_set) noexcept
+{
+  // Ignore breakpoint updates
+  (void)instruction;
+  (void)breakpoint_set;
+}
+
+JobState SimpleJobStateMonitor::GetCurrentState() const noexcept
 {
   std::lock_guard<std::mutex> lk{m_mtx};
   return m_state;

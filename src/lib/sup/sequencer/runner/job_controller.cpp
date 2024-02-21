@@ -55,6 +55,7 @@ void JobController::SetBreakpoint(const Instruction* instruction)
   try
   {
     m_runner.SetBreakpoint(instruction);
+    m_state_monitor.OnBreakpointChange(instruction, true);
   }
   catch(const MessageException&)
   {
@@ -65,6 +66,7 @@ void JobController::SetBreakpoint(const Instruction* instruction)
 void JobController::RemoveBreakpoint(const Instruction* instruction)
 {
  m_runner.RemoveBreakpoint(instruction);
+ m_state_monitor.OnBreakpointChange(instruction, false);
 }
 
 void JobController::Start()
@@ -279,6 +281,11 @@ void JobController::RunProcedure()
   };
   m_runner.SetTickCallback(tick_callback);
   m_runner.ExecuteProcedure();
+  // If a breakpoint was hit, set state to paused before handling other commands in the queue:
+  if (m_runner.GetCurrentBreakpointInstructions().size() != 0)
+  {
+    SetState(JobState::kPaused);
+  }
 }
 
 void JobController::ProcessCommandsWhenRunning()
@@ -300,11 +307,10 @@ void JobController::StepProcedure()
 {
   m_runner.SetTickCallback(EmptyTickCallback{});
   m_runner.ExecuteSingle();
-  if (SwitchStateOnFinished())
+  if (!SwitchStateOnFinished())
   {
-    return;
+    SetState(JobState::kPaused);
   }
-  SetState(JobState::kPaused);
 }
 
 bool JobController::SwitchStateOnFinished()

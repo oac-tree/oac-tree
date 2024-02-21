@@ -73,7 +73,7 @@ public:
 
   void OnBreakpointChange(const Instruction* instruction, bool breakpoint_set) noexcept override;
 
-  JobState GetCurrentState() const noexcept override;
+  JobState GetCurrentState() const;
 
   JobState WaitForFinished() const;
 

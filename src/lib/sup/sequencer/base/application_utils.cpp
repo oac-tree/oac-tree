@@ -98,7 +98,7 @@ void SimpleJobStateMonitor::OnBreakpointChange(const Instruction* instruction,
   (void)breakpoint_set;
 }
 
-JobState SimpleJobStateMonitor::GetCurrentState() const noexcept
+JobState SimpleJobStateMonitor::GetCurrentState() const
 {
   std::lock_guard<std::mutex> lk{m_mtx};
   return m_state;

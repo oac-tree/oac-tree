@@ -43,8 +43,6 @@ public:
   virtual void OnStateChange(JobState state) noexcept = 0;
 
   virtual void OnBreakpointChange(const Instruction* instruction, bool breakpoint_set) noexcept = 0;
-
-  virtual JobState GetCurrentState() const noexcept = 0;
 };
 
 }  // namespace sequencer

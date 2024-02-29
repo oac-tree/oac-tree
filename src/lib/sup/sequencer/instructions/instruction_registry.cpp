@@ -54,6 +54,7 @@
 #include "wait.h"
 #include "wait_for_variable.h"
 #include "wait_for_variables.h"
+#include "add_member.h"
 
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/instruction.h>
@@ -159,6 +160,7 @@ void InitInstructionRegistry(InstructionRegistry& registry)
   (void)RegisterInstruction<Wait>(registry);
   (void)RegisterInstruction<WaitForVariable>(registry);
   (void)RegisterInstruction<WaitForVariables>(registry);
+  (void)RegisterInstruction<AddMember>(registry);
 }
 
 }  // namespace sequencer

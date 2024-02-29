@@ -41,4 +41,5 @@ target_sources(sup-sequencer-shared
     wait.cpp
     wait_for_variable.cpp
     wait_for_variables.cpp
+    add_member.cpp
 )

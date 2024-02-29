@@ -30,21 +30,42 @@ namespace sequencer
 {
 class Instruction;
 class Procedure;
+
 /**
  * @brief Pure interface for objects that can receive JobState updates from JobController.
  *
  * @note The member functions are all declared noexcept as implementations should not throw.
- *
  */
 class JobStateMonitor
 {
 public:
   virtual ~JobStateMonitor();
 
+  /**
+   * @brief This member function will be called every time the JobController changes state.
+   *
+   * @param state New state of the JobController.
+   */
   virtual void OnStateChange(JobState state) noexcept = 0;
 
+  /**
+   * @brief This member function will be called every time a breakpoint is set or removed.
+   *
+   * @param instruction Pointer to the Instruction for which the breakpoint status changed.
+   * @param breakpoint_set Boolean indicating if breakpoint was set (true) or removed (false).
+   */
   virtual void OnBreakpointChange(const Instruction* instruction, bool breakpoint_set) noexcept = 0;
 
+  /**
+   * @brief This member function will be called in between ticks during continuous execution of
+   * the JobController. During stepwise execution, it will never be called.
+   *
+   * @note This member function can be overridden to implement queries on the procedure that could
+   * possibly interfere with execution. Since it is called between ticks, it is safe to call for
+   * example `GetNextLeaves(const Procedure& proc)`.
+   *
+   * @param proc Procedure being executed.
+   */
   virtual void OnProcedureTick(const Procedure& proc) noexcept = 0;
 };
 

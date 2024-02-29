@@ -98,6 +98,12 @@ void SimpleJobStateMonitor::OnBreakpointChange(const Instruction* instruction,
   (void)breakpoint_set;
 }
 
+void SimpleJobStateMonitor::OnProcedureTick(const Procedure& proc) noexcept
+{
+  // Ignore callbacks between ticks
+  (void)proc;
+}
+
 JobState SimpleJobStateMonitor::GetCurrentState() const
 {
   std::lock_guard<std::mutex> lk{m_mtx};

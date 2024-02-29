@@ -277,10 +277,11 @@ void JobController::ExecutionLoop()
 
 void JobController::RunProcedure()
 {
-  auto tick_callback = [this](const sup::sequencer::Procedure& proc){
+  const TimeoutWhenRunning timeout{TickTimeoutMs(m_proc)};
+  auto tick_callback = [this, &timeout](const sup::sequencer::Procedure& proc){
     ProcessCommandsWhenRunning();
-    TimeoutWhenRunning timeout{TickTimeoutMs(proc)};
     timeout(proc);
+    m_state_monitor.OnProcedureTick(proc);
     return;
   };
   m_runner.SetTickCallback(tick_callback);

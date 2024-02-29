@@ -73,6 +73,8 @@ public:
 
   void OnBreakpointChange(const Instruction* instruction, bool breakpoint_set) noexcept override;
 
+  void OnProcedureTick(const Procedure& proc) noexcept override;
+
   JobState GetCurrentState() const;
 
   JobState WaitForFinished() const;

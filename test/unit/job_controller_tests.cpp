@@ -33,16 +33,16 @@
 
 const std::string kTestParallelProcedureBody{R"(
   <ParallelSequence>
-    <Wait timeout="1.0"/>
-    <Wait timeout="1.0"/>
+    <Wait timeout="0.2"/>
+    <Wait timeout="0.2"/>
   </ParallelSequence>
   <Workspace/>
 )"};
 
 const std::string kTestSequenceProcedureBody{R"(
   <Sequence>
-    <Wait timeout="0.5"/>
-    <Wait timeout="0.5"/>
+    <Wait timeout="0.2"/>
+    <Wait timeout="0.2"/>
   </Sequence>
   <Workspace/>
 )"};
@@ -64,6 +64,7 @@ public:
   TestJobStateMonitor()
     : utils::SimpleJobStateMonitor{}
     , m_breakpoint_updates{}
+    , m_ticks{}
   {}
   ~TestJobStateMonitor() = default;
 
@@ -72,9 +73,16 @@ public:
     ++m_breakpoint_updates;
   }
 
+  void OnProcedureTick(const Procedure& proc) noexcept override
+  {
+    ++m_ticks;
+  }
+
   sup::dto::uint32 GetBreakpointUpdateCount() const { return m_breakpoint_updates; }
+  sup::dto::uint32 GetTickCount() const { return m_ticks; }
 private:
   sup::dto::uint32 m_breakpoint_updates;
+  sup::dto::uint32 m_ticks;
 };
 
 class JobControllerTest : public ::testing::Test
@@ -146,6 +154,19 @@ TEST_F(JobControllerTest, StepReset)
   EXPECT_TRUE(WaitForState(JobState::kInitial));
   controller.Start();
   EXPECT_TRUE(WaitForState(JobState::kSucceeded));
+}
+
+TEST_F(JobControllerTest, TickCallbacks)
+{
+  DefaultUserInterface ui;
+  auto proc = ParseProcedureString(
+    sup::UnitTestHelper::CreateProcedureString(kTestStepProcedureBody));
+  JobController controller{*proc, ui, m_monitor};
+  EXPECT_TRUE(WaitForState(JobState::kInitial));
+  EXPECT_EQ(m_monitor.GetTickCount(), 0u);
+  controller.Start();
+  EXPECT_TRUE(WaitForState(JobState::kSucceeded));
+  EXPECT_EQ(m_monitor.GetTickCount(), 2u);
 }
 
 TEST_F(JobControllerTest, Breakpoints)

@@ -1,5 +1,6 @@
 target_sources(sup-sequencer-shared
   PRIVATE
+    add_member.cpp
     async_wrapper.cpp
     choice.cpp
     compound_instruction.cpp
@@ -41,5 +42,4 @@ target_sources(sup-sequencer-shared
     wait.cpp
     wait_for_variable.cpp
     wait_for_variables.cpp
-    add_member.cpp
 )

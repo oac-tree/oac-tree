@@ -49,6 +49,7 @@ TEST(AddMember, AddedUint8Successfully)
       R"(
     <Sequence>
         <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+        <Equals leftVar="var1" rightVar="var2.a"/>
     </Sequence>
     <Workspace>
         <Local name="var1"
@@ -75,6 +76,7 @@ TEST(AddMember, AddedInt8Successfully)
       R"(
     <Sequence>
         <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+        <Equals leftVar="var1" rightVar="var2.a"/>
     </Sequence>
     <Workspace>
         <Local name="var1"
@@ -101,6 +103,7 @@ TEST(AddMember, AddedUint16Successfully)
       R"(
     <Sequence>
         <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+        <Equals leftVar="var1" rightVar="var2.a"/>
     </Sequence>
     <Workspace>
         <Local name="var1"
@@ -127,6 +130,7 @@ TEST(AddMember, AddedInt16Successfully)
       R"(
     <Sequence>
         <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+        <Equals leftVar="var1" rightVar="var2.a"/>
     </Sequence>
     <Workspace>
         <Local name="var1"
@@ -153,6 +157,7 @@ TEST(AddMember, AddedUint32Successfully)
       R"(
     <Sequence>
         <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+        <Equals leftVar="var1" rightVar="var2.a"/>
     </Sequence>
     <Workspace>
         <Local name="var1"
@@ -179,6 +184,7 @@ TEST(AddMember, AddedInt32Successfully)
       R"(
     <Sequence>
         <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+        <Equals leftVar="var1" rightVar="var2.a"/>
     </Sequence>
     <Workspace>
         <Local name="var1"
@@ -205,6 +211,7 @@ TEST(AddMember, AddedUint64Successfully)
       R"(
     <Sequence>
         <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+        <Equals leftVar="var1" rightVar="var2.a"/>
     </Sequence>
     <Workspace>
         <Local name="var1"
@@ -231,6 +238,7 @@ TEST(AddMember, AddedInt64Successfully)
       R"(
     <Sequence>
         <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+        <Equals leftVar="var1" rightVar="var2.a"/>
     </Sequence>
     <Workspace>
         <Local name="var1"
@@ -257,6 +265,7 @@ TEST(AddMember, AddedFloat32Successfully)
       R"(
     <Sequence>
         <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+        <Equals leftVar="var1" rightVar="var2.a"/>
     </Sequence>
     <Workspace>
         <Local name="var1"
@@ -283,6 +292,7 @@ TEST(AddMember, AddedFloat64Successfully)
       R"(
     <Sequence>
         <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+        <Equals leftVar="var1" rightVar="var2.a"/>
     </Sequence>
     <Workspace>
         <Local name="var1"
@@ -309,6 +319,7 @@ TEST(AddMember, AddedChar8Successfully)
       R"(
     <Sequence>
         <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+        <Equals leftVar="var1" rightVar="var2.a"/>
     </Sequence>
     <Workspace>
         <Local name="var1"
@@ -335,6 +346,7 @@ TEST(AddMember, AddedBoolSuccessfully)
       R"(
     <Sequence>
         <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+        <Equals leftVar="var1" rightVar="var2.a"/>
     </Sequence>
     <Workspace>
         <Local name="var1"
@@ -361,6 +373,7 @@ TEST(AddMember, AddedToMultiLevelStructSuccessfully)
       R"(
     <Sequence>
         <AddMember inputVar="var1" varName="a" outputVar="var2.val2"/>
+        <Equals leftVar="var1" rightVar="var2.val2.a"/>
     </Sequence>
     <Workspace>
         <Local name="var1"
@@ -388,6 +401,7 @@ TEST(AddMember, AddedFromAndToMultiLevelStructSuccessfully)
       R"(
     <Sequence>
         <AddMember inputVar="var1.val1" varName="a" outputVar="var2.val2"/>
+        <Equals leftVar="var1.val1" rightVar="var2.val2.a"/>
     </Sequence>
     <Workspace>
         <Local name="var1"
@@ -416,6 +430,7 @@ TEST(AddMember, AddedJiraExampleSuccessfully)
       R"(
     <Sequence>
         <AddMember inputVar="var1.pars" varName="a" outputVar="var2.system.params"/>
+        <Equals leftVar="var1.pars" rightVar="var2.system.params.a"/>
     </Sequence>
     <Workspace>
         <Local name="var1"

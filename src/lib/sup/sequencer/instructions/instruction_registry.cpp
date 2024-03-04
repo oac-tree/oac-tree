@@ -21,6 +21,7 @@
 
 #include <sup/sequencer/instruction_registry.h>
 
+#include "add_member.h"
 #include "choice.h"
 #include "condition.h"
 #include "copy_from_procedure.h"
@@ -54,7 +55,6 @@
 #include "wait.h"
 #include "wait_for_variable.h"
 #include "wait_for_variables.h"
-#include "add_member.h"
 
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/instruction.h>

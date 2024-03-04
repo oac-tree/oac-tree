@@ -4,6 +4,7 @@ target_compile_features(unit-tests PRIVATE cxx_std_11)
 
 target_sources(unit-tests
   PRIVATE
+    add_member_tests.cpp
     attribute_handler_tests.cpp
     attribute_utils_tests.cpp
     choice_tests.cpp
@@ -61,7 +62,6 @@ target_sources(unit-tests
     wait_for_variable_tests.cpp
     wait_for_variables_tests.cpp
     workspace_tests.cpp
-    add_member_tests.cpp
     ../../src/app/sequencer-cli/cl_interface.cpp
     ../../src/app/sequencer-daemon/daemon_interface.cpp
 )

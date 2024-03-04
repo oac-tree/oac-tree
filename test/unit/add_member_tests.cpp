@@ -42,8 +42,8 @@ TEST(AddMember, Setup)
   EXPECT_TRUE(instr->AddAttribute("varName", "var_name"));
   EXPECT_NO_THROW(instr->Setup(proc));
 }
-// <AddMember inputVar="var1.pars" varName="a" outputVar="var2.systems.params"/>
-TEST(AddMember, AddedSuccessFully)
+
+TEST(AddMember, AddedUint8Successfully)
 {
   const std::string body{
       R"(
@@ -51,19 +51,14 @@ TEST(AddMember, AddedSuccessFully)
         <AddMember inputVar="var1" varName="a" outputVar="var2"/>
     </Sequence>
     <Workspace>
-        <Local name="var1" type='{"type":"uint64"}' value='1' />
+        <Local name="var1"
+               dynamicType="true"
+               type='{"type":"uint8"}'
+               value='125'/>
         <Local name="var2"
+               dynamicType="true"
                type='{"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}}]}' />
-               value='{"value":1729}'
-               dynamicType="false"/>
-        <Local name="dynamic_var"
-               type='{"type":"uint32"}'
-               value='0'
-               dynamicType="true"/>
-        <Local name="static_var"
-               type='{"type":"uint32"}'
-               value='0'
-               dynamicType="false"/>
+               value='{"value":1729}'/>
     </Workspace>
 )"};
 
@@ -74,7 +69,7 @@ TEST(AddMember, AddedSuccessFully)
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
-TEST(AddMember, FailAlreadyExists)
+TEST(AddMember, AddedInt8Successfully)
 {
   const std::string body{
       R"(
@@ -82,10 +77,383 @@ TEST(AddMember, FailAlreadyExists)
         <AddMember inputVar="var1" varName="a" outputVar="var2"/>
     </Sequence>
     <Workspace>
-        <Local name="var1" type='{"type":"uint8"}' value='1' />
+        <Local name="var1"
+               dynamicType="true"
+               type='{"type":"int8"}'
+               value='-100'/>
+        <Local name="var2"
+               dynamicType="true"
+               type='{"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}}]}' />
+               value='{"value":1729}'/>
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST(AddMember, AddedUint16Successfully)
+{
+  const std::string body{
+      R"(
+    <Sequence>
+        <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+    </Sequence>
+    <Workspace>
+        <Local name="var1"
+               dynamicType="true"
+               type='{"type":"uint16"}'
+               value='125'/>
+        <Local name="var2"
+               dynamicType="true"
+               type='{"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}}]}' />
+               value='{"value":1729}'/>
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST(AddMember, AddedInt16Successfully)
+{
+  const std::string body{
+      R"(
+    <Sequence>
+        <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+    </Sequence>
+    <Workspace>
+        <Local name="var1"
+               dynamicType="true"
+               type='{"type":"int8"}'
+               value='-100'/>
+        <Local name="var2"
+               dynamicType="true"
+               type='{"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}}]}' />
+               value='{"value":1729}'/>
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST(AddMember, AddedUint32Successfully)
+{
+  const std::string body{
+      R"(
+    <Sequence>
+        <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+    </Sequence>
+    <Workspace>
+        <Local name="var1"
+               dynamicType="true"
+               type='{"type":"uint32"}'
+               value='12345'/>
+        <Local name="var2"
+               dynamicType="true"
+               type='{"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}}]}' />
+               value='{"value":1729}'/>
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST(AddMember, AddedInt32Successfully)
+{
+  const std::string body{
+      R"(
+    <Sequence>
+        <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+    </Sequence>
+    <Workspace>
+        <Local name="var1"
+               dynamicType="true"
+               type='{"type":"int32"}'
+               value='-1234'/>
+        <Local name="var2"
+               dynamicType="true"
+               type='{"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}}]}' />
+               value='{"value":1729}'/>
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST(AddMember, AddedUint64Successfully)
+{
+  const std::string body{
+      R"(
+    <Sequence>
+        <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+    </Sequence>
+    <Workspace>
+        <Local name="var1"
+               dynamicType="true"
+               type='{"type":"uint64"}'
+               value='12345'/>
+        <Local name="var2"
+               dynamicType="true"
+               type='{"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}}]}' />
+               value='{"value":1729}'/>
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST(AddMember, AddedInt64Successfully)
+{
+  const std::string body{
+      R"(
+    <Sequence>
+        <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+    </Sequence>
+    <Workspace>
+        <Local name="var1"
+               dynamicType="true"
+               type='{"type":"int64"}'
+               value='12345'/>
+        <Local name="var2"
+               dynamicType="true"
+               type='{"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}}]}' />
+               value='{"value":1729}'/>
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST(AddMember, AddedFloat32Successfully)
+{
+  const std::string body{
+      R"(
+    <Sequence>
+        <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+    </Sequence>
+    <Workspace>
+        <Local name="var1"
+               dynamicType="true"
+               type='{"type":"float32"}'
+               value='12.3'/>
+        <Local name="var2"
+               dynamicType="true"
+               type='{"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}}]}' />
+               value='{"value":1729}'/>
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST(AddMember, AddedFloat64Successfully)
+{
+  const std::string body{
+      R"(
+    <Sequence>
+        <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+    </Sequence>
+    <Workspace>
+        <Local name="var1"
+               dynamicType="true"
+               type='{"type":"float64"}'
+               value='12.3'/>
+        <Local name="var2"
+               dynamicType="true"
+               type='{"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}}]}' />
+               value='{"value":1729}'/>
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST(AddMember, AddedChar8Successfully)
+{
+  const std::string body{
+      R"(
+    <Sequence>
+        <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+    </Sequence>
+    <Workspace>
+        <Local name="var1"
+               dynamicType="true"
+               type='{"type":"char8"}'
+               value='12'/>
+        <Local name="var2"
+               dynamicType="true"
+               type='{"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}}]}' />
+               value='{"value":1729}'/>
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST(AddMember, AddedBoolSuccessfully)
+{
+  const std::string body{
+      R"(
+    <Sequence>
+        <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+    </Sequence>
+    <Workspace>
+        <Local name="var1"
+               dynamicType="true"
+               type='{"type":"bool"}'
+               value='0'/>
+        <Local name="var2"
+               dynamicType="true"
+               type='{"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}}]}' />
+               value='{"value":1729}'/>
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST(AddMember, AddedToMultiLevelStructSuccessfully)
+{
+  const std::string body{
+      R"(
+    <Sequence>
+        <AddMember inputVar="var1" varName="a" outputVar="var2.val2"/>
+    </Sequence>
+    <Workspace>
+        <Local name="var1"
+               dynamicType="true"
+               type='{"type":"bool"}'
+               value='0'/>
+        <Local name="var2"
+               dynamicType="true"
+               type='{"type": "uint64_struct","attributes": [{"val1": {"type": "uint64"}},{"val2": {"type": "uint64_struct","attributes": [{"val22": {"type": "uint64"}}]}}]}'
+               val1='{"value":1729}'
+               val22='{"value":17}'/>
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST(AddMember, AddedFromAndToMultiLevelStructSuccessfully)
+{
+  const std::string body{
+      R"(
+    <Sequence>
+        <AddMember inputVar="var1.val1" varName="a" outputVar="var2.val2"/>
+    </Sequence>
+    <Workspace>
+        <Local name="var1"
+               dynamicType="true"
+               type='{"type": "uint64_struct","attributes": [{"val1": {"type": "uint64"}},{"val2": {"type": "uint64_struct","attributes": [{"val22": {"type": "uint64"}}]}}]}'
+               val1='{"value":1729}'
+               val22='{"value":17}'/>
+        <Local name="var2"
+               dynamicType="true"
+               type='{"type": "uint64_struct","attributes": [{"val1": {"type": "uint64"}},{"val2": {"type": "uint64_struct","attributes": [{"val22": {"type": "uint64"}}]}}]}'
+               val1='{"value":1729}'
+               val22='{"value":17}'/>
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST(AddMember, AddedJiraExampleSuccessfully)
+{
+  const std::string body{
+      R"(
+    <Sequence>
+        <AddMember inputVar="var1.pars" varName="a" outputVar="var2.system.params"/>
+    </Sequence>
+    <Workspace>
+        <Local name="var1"
+               dynamicType="true"
+               type='{"type": "uint64_struct","attributes": [{"pars": {"type": "uint64"}},{"val2": {"type": "uint64_struct","attributes": [{"val22": {"type": "uint64"}}]}}]}'
+               val1='{"value":1729}'
+               val22='{"value":17}'/>
+        <Local name="var2"
+               dynamicType="true"
+               type='{"type": "uint64_struct","attributes": [{"val1": {"type": "uint64"}},{"system": {"type": "uint64_struct","attributes": [{"params": {"type": "uint64_struct","attributes": [{"val22": {"type": "uint64"}}]}}]}}]}'
+               val1='{"value":1729}'
+               val22='{"value":17}'/>
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST(AddMember, FailIncorrectXmlSequence)
+{
+  const std::string body{
+      R"(
+    <Sequence>
+        <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+    </Sequence>
+    <Workspace>
+        <Local name="var1"
+               dynamicType="true"
+               type='{"type":"uint32"}'
+               value='12345'/>
         <Local name="var2"
                type='{"type":"uint64_struct","attributes":[{"a":{"type":"uint64"}}]}' />
-               a='{"value":1729}' />
+               a='{"value":1729}'
+               dynamicType="true" />
     </Workspace>
 )"};
 
@@ -96,19 +464,22 @@ TEST(AddMember, FailAlreadyExists)
   EXPECT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
-TEST(AddMember, DISABLED_FailTypeLocked)
+TEST(AddMember, FailMissingAttribute)
 {
-    //How to to define a type locked variable?
   const std::string body{
       R"(
     <Sequence>
-        <AddMember inputVar="a" varName="a" outputVar="var2"/>
+        <AddMember inputVar="var" varName="a" outputVar="var2"/>
     </Sequence>
     <Workspace>
-        <Local name="var1" type='{"type":"uint8"}' value='1' />
+        <Local name="var1"
+               dynamicType="true"
+               type='{"type":"uint32"}'
+               value='12345'/>
         <Local name="var2"
                type='{"type":"uint64_struct","attributes":[{"a":{"type":"uint64"}}]}' />
-               a='{"value":1729}' />
+               a='{"value":1729}'
+               dynamicType="true" />
     </Workspace>
 )"};
 
@@ -116,5 +487,109 @@ TEST(AddMember, DISABLED_FailTypeLocked)
   auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
-  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+  EXPECT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST(AddMember, FailMissingVarName)
+{
+  const std::string body{
+      R"(
+    <Sequence>
+        <AddMember inputVar="var" varName="" outputVar="var2"/>
+    </Sequence>
+    <Workspace>
+        <Local name="var1"
+               dynamicType="true"
+               type='{"type":"uint32"}'
+               value='12345'/>
+        <Local name="var2"
+               type='{"type":"uint64_struct","attributes":[{"a":{"type":"uint64"}}]}' />
+               a='{"value":1729}'
+               dynamicType="true" />
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST(AddMember, FailInvalidVarName)
+{
+  const std::string body{
+      R"(
+    <Sequence>
+        <AddMember inputVar="var" varName="invalid.name" outputVar="var2"/>
+    </Sequence>
+    <Workspace>
+        <Local name="var1"
+               dynamicType="true"
+               type='{"type":"uint32"}'
+               value='12345'/>
+        <Local name="var2"
+               type='{"type":"uint64_struct","attributes":[{"a":{"type":"uint64"}}]}' />
+               a='{"value":1729}'
+               dynamicType="true" />
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST(AddMember, FailMemberAlreadyExists)
+{
+  const std::string body{
+      R"(
+    <Sequence>
+        <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+    </Sequence>
+    <Workspace>
+        <Local name="var1"
+               dynamicType="true"
+               type='{"type":"uint32"}'
+               value='12345'/>
+        <Local name="var2"
+               dynamicType="true"
+               type='{"type":"uint64_struct","attributes":[{"a":{"type":"uint64"}}]}' />
+               a='{"value":1729}'/>
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST(AddMember, FailTypeLocked)
+{
+  const std::string body{
+      R"(
+    <Sequence>
+        <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+    </Sequence>
+    <Workspace>
+        <Local name="var1"
+               dynamicType="true"
+               type='{"type":"uint32"}'
+               value='12345'/>
+        <Local name="var2"
+               dynamicType="false"
+               type='{"type":"uint64_struct","attributes":[{"a":{"type":"uint64"}}]}' />
+               a='{"value":1729}'/>
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }

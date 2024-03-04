@@ -42,22 +42,20 @@ TEST(AddMember, Setup)
   EXPECT_TRUE(instr->AddAttribute("varName", "var_name"));
   EXPECT_NO_THROW(instr->Setup(proc));
 }
-// // <AddMember inputVar="var1.pars" varName="a" outputVar="var2.systems.params"/>
+// <AddMember inputVar="var1.pars" varName="a" outputVar="var2.systems.params"/>
 TEST(AddMember, AddedSuccessFully)
 {
   const std::string body{
       R"(
     <Sequence>
-        <AddMember inputVar="a" varName="a" outputVar="var2"/>
+        <AddMember inputVar="var1" varName="a" outputVar="var2"/>
     </Sequence>
     <Workspace>
-        <Local name="a" type='{"type":"uint8"}' value='1' />
-        <Local name="var1"
-               type='{"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}}]}'
-               value='{"value":1729}' />
+        <Local name="var1" type='{"type":"uint64"}' value='1' />
         <Local name="var2"
-               type='{"type":"uint64_struct","attributes":[{"a":{"type":"uint64"}}]}' />
-               a='{"value":1729}' />
+               type='{"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}}]}' />
+               value='{"value":1729}'
+               dynamicType="false"/>
         <Local name="dynamic_var"
                type='{"type":"uint32"}'
                value='0'
@@ -81,7 +79,7 @@ TEST(AddMember, FailAlreadyExists)
   const std::string body{
       R"(
     <Sequence>
-        <AddMember inputVar="a" varName="a" outputVar="var2"/>
+        <AddMember inputVar="var1" varName="a" outputVar="var2"/>
     </Sequence>
     <Workspace>
         <Local name="var1" type='{"type":"uint8"}' value='1' />

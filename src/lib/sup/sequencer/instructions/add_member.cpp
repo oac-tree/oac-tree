@@ -62,18 +62,20 @@ ExecutionStatus AddMember::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   {
     return ExecutionStatus::FAILURE;
   }
-
+  // Get the name we want to assign to the new var
   auto var_name = GetAttributeString(Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME);
   if (var_name.empty())
   {
     return ExecutionStatus::FAILURE;
   }
 
+  // Check if output_var is a struct
   if (!IsStructValue(output_var))
   {
     return ExecutionStatus::FAILURE;
   }
 
+  // Check if output_var already contains a member with the same name
   auto has_member_with_name = [&var_name](const std::string& name)
   { return (0 == name.compare(var_name)); };
 
@@ -83,12 +85,23 @@ ExecutionStatus AddMember::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   {
     return ExecutionStatus::FAILURE;
   }
-    // Add to WS, use this one as reference
-    //   if (!SetValueFromAttributeName(*this, ws, ui, Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME,
-    //                                  input_var))
-    //   {
-    //     return ExecutionStatus::FAILURE;
-    //   }
+
+  // Trying to add a member to a locked struct will throw exception
+  try
+  {
+    output_var.AddMember(var_name, input_var);
+  }
+  catch (const InvalidOperationException& e)
+  {
+    return ExecutionStatus::FAILURE;
+  }
+
+  // Add to WS
+  if (!SetValueFromAttributeName(*this, ws, ui, Constants::OUTPUT_VARIABLE_NAME_ATTRIBUTE_NAME,
+                                 output_var))
+  {
+    return ExecutionStatus::FAILURE;
+  }
   return ExecutionStatus::SUCCESS;
 }
 

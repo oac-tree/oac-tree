@@ -1074,3 +1074,53 @@ Attributes:
      - StringType
      - yes
      - typename of the variables to check
+
+
+AddMember
+^^^^^^^^^^^^^^^
+
+Instruction to add a new member to a workspace variable using the information provided by a different variable.
+
+Attributes:
+
+.. list-table::
+   :widths: 25 25 15 50
+   :header-rows: 1
+
+   * - Attribute name
+     - Attribute type
+     - Mandatory
+     - Description
+   * - inputVar
+     - StringType
+     - yes
+     - Name of the input variable containing the information to be added to the new member
+   * - varName
+     - StringType
+     - yes
+     - Name of the new member
+   * - outputVar
+     - StringType
+     - yes
+     - Name of the output variable that will hold the new member 
+
+**Example**
+
+This example showcases how the AddMember instruction can be used to add member "a" to workspace variable "var2" with the information provided by "var1".
+
+.. code-block:: xml
+
+    <Sequence>
+        <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+    </Sequence>
+    <Workspace>
+        <Local name="var1"
+            dynamicType="true"
+            type='{"type":"uint8"}'
+            value='125'/>
+        <Local name="var2"
+            dynamicType="true"
+            type='{"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}}]}'
+            value='{"value":1729}'/>
+    </Workspace>
+

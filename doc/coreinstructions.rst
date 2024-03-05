@@ -1106,16 +1106,16 @@ Attributes:
 
 **Example**
 
-This example showcases how the AddMember instruction can be used to add member "a" to workspace variable "var2" with the information provided by "var1".
+This example showcases how the AddMember instruction can be used to add member "a" to workspace variable "var2" with the information provided by "var1". The `Equals` instruction can can be used to validate the `AddMember` instruction, since it will check for variable existence and equality.
 
 .. code-block:: xml
 
     <Sequence>
         <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+        <Equals leftVar="var1" rightVar="var2.a"/>
     </Sequence>
     <Workspace>
         <Local name="var1"
-            dynamicType="true"
             type='{"type":"uint8"}'
             value='125'/>
         <Local name="var2"

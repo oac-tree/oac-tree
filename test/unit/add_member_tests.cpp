@@ -53,7 +53,6 @@ TEST(AddMember, AddedUint8Successfully)
     </Sequence>
     <Workspace>
         <Local name="var1"
-               dynamicType="true"
                type='{"type":"uint8"}'
                value='125'/>
         <Local name="var2"
@@ -80,7 +79,6 @@ TEST(AddMember, AddedInt8Successfully)
     </Sequence>
     <Workspace>
         <Local name="var1"
-               dynamicType="true"
                type='{"type":"int8"}'
                value='-100'/>
         <Local name="var2"
@@ -107,7 +105,6 @@ TEST(AddMember, AddedUint16Successfully)
     </Sequence>
     <Workspace>
         <Local name="var1"
-               dynamicType="true"
                type='{"type":"uint16"}'
                value='125'/>
         <Local name="var2"
@@ -134,7 +131,6 @@ TEST(AddMember, AddedInt16Successfully)
     </Sequence>
     <Workspace>
         <Local name="var1"
-               dynamicType="true"
                type='{"type":"int8"}'
                value='-100'/>
         <Local name="var2"
@@ -161,7 +157,6 @@ TEST(AddMember, AddedUint32Successfully)
     </Sequence>
     <Workspace>
         <Local name="var1"
-               dynamicType="true"
                type='{"type":"uint32"}'
                value='12345'/>
         <Local name="var2"
@@ -188,7 +183,6 @@ TEST(AddMember, AddedInt32Successfully)
     </Sequence>
     <Workspace>
         <Local name="var1"
-               dynamicType="true"
                type='{"type":"int32"}'
                value='-1234'/>
         <Local name="var2"
@@ -215,7 +209,6 @@ TEST(AddMember, AddedUint64Successfully)
     </Sequence>
     <Workspace>
         <Local name="var1"
-               dynamicType="true"
                type='{"type":"uint64"}'
                value='12345'/>
         <Local name="var2"
@@ -242,7 +235,6 @@ TEST(AddMember, AddedInt64Successfully)
     </Sequence>
     <Workspace>
         <Local name="var1"
-               dynamicType="true"
                type='{"type":"int64"}'
                value='12345'/>
         <Local name="var2"
@@ -269,7 +261,6 @@ TEST(AddMember, AddedFloat32Successfully)
     </Sequence>
     <Workspace>
         <Local name="var1"
-               dynamicType="true"
                type='{"type":"float32"}'
                value='12.3'/>
         <Local name="var2"
@@ -296,7 +287,6 @@ TEST(AddMember, AddedFloat64Successfully)
     </Sequence>
     <Workspace>
         <Local name="var1"
-               dynamicType="true"
                type='{"type":"float64"}'
                value='12.3'/>
         <Local name="var2"
@@ -323,7 +313,6 @@ TEST(AddMember, AddedChar8Successfully)
     </Sequence>
     <Workspace>
         <Local name="var1"
-               dynamicType="true"
                type='{"type":"char8"}'
                value='12'/>
         <Local name="var2"
@@ -350,13 +339,64 @@ TEST(AddMember, AddedBoolSuccessfully)
     </Sequence>
     <Workspace>
         <Local name="var1"
-               dynamicType="true"
                type='{"type":"bool"}'
                value='0'/>
         <Local name="var2"
                dynamicType="true"
                type='{"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}}]}'
                value='{"value":1729}'/>
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST(AddMember, AddedUint32ToArraySuccessfully)
+{
+  const std::string body{
+      R"(
+    <Sequence>
+        <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+        <Equals leftVar="var1" rightVar="var2.a"/>
+    </Sequence>
+    <Workspace>
+        <Local name="var1"
+               type='{"type":"uint32"}'
+               value='12345'/>
+        <Local name="var2"
+               dynamicType="true"
+               type='{"type":"array","attributes":[{"val1": {"type":"uint32"}}]}' 
+               value='{"val1":1729}'/>
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST(AddMember, AddedStructToArrayOfStructsSuccessfully)
+{
+  const std::string body{
+      R"(
+    <Sequence>
+        <AddMember inputVar="var1" varName="a" outputVar="var2.val1"/>
+        <Equals leftVar="var1" rightVar="var2.val1.a"/>
+    </Sequence>
+    <Workspace>
+        <Local name="var1"
+               type='{"type": "uint64_struct","attributes": [{"pars": {"type": "uint64"}}]}'
+               value='{"pars":12345}'/>
+        <Local name="var2"
+               dynamicType="true"
+               type='{"type":"array","attributes":[{"val1": {"type": "uint64_struct","attributes": [{"val11": {"type": "uint64"}}, {"val12": {"type": "uint64"}}]}}]}'
+               value='{"val1.val11":1729, "val1.val12":1728}'/>
     </Workspace>
 )"};
 
@@ -377,14 +417,12 @@ TEST(AddMember, AddedToMultiLevelStructSuccessfully)
     </Sequence>
     <Workspace>
         <Local name="var1"
-               dynamicType="true"
                type='{"type":"bool"}'
-               value='0'/>
+               value='12345'/>
         <Local name="var2"
                dynamicType="true"
                type='{"type": "uint64_struct","attributes": [{"val1": {"type": "uint64"}},{"val2": {"type": "uint64_struct","attributes": [{"val22": {"type": "uint64"}}]}}]}'
-               val1='{"value":1729}'
-               val22='{"value":17}'/>
+               value='{"val1":1729, "val2.val22":1728}'/>
     </Workspace>
 )"};
 
@@ -400,49 +438,17 @@ TEST(AddMember, AddedFromAndToMultiLevelStructSuccessfully)
   const std::string body{
       R"(
     <Sequence>
-        <AddMember inputVar="var1.val1" varName="a" outputVar="var2.val2"/>
-        <Equals leftVar="var1.val1" rightVar="var2.val2.a"/>
-    </Sequence>
-    <Workspace>
-        <Local name="var1"
-               dynamicType="true"
-               type='{"type": "uint64_struct","attributes": [{"val1": {"type": "uint64"}},{"val2": {"type": "uint64_struct","attributes": [{"val22": {"type": "uint64"}}]}}]}'
-               val1='{"value":1729}'
-               val22='{"value":17}'/>
-        <Local name="var2"
-               dynamicType="true"
-               type='{"type": "uint64_struct","attributes": [{"val1": {"type": "uint64"}},{"val2": {"type": "uint64_struct","attributes": [{"val22": {"type": "uint64"}}]}}]}'
-               val1='{"value":1729}'
-               val22='{"value":17}'/>
-    </Workspace>
-)"};
-
-  sup::UnitTestHelper::EmptyUserInterface ui;
-  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
-
-  ASSERT_TRUE(proc.get() != nullptr);
-  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
-}
-
-TEST(AddMember, AddedJiraExampleSuccessfully)
-{
-  const std::string body{
-      R"(
-    <Sequence>
         <AddMember inputVar="var1.pars" varName="a" outputVar="var2.system.params"/>
         <Equals leftVar="var1.pars" rightVar="var2.system.params.a"/>
     </Sequence>
     <Workspace>
         <Local name="var1"
-               dynamicType="true"
                type='{"type": "uint64_struct","attributes": [{"pars": {"type": "uint64"}},{"val2": {"type": "uint64_struct","attributes": [{"val22": {"type": "uint64"}}]}}]}'
-               val1='{"value":1729}'
-               val22='{"value":17}'/>
+               value='{"pars":12345, "val2.val22":123}'/>
         <Local name="var2"
                dynamicType="true"
-               type='{"type": "uint64_struct","attributes": [{"val1": {"type": "uint64"}},{"system": {"type": "uint64_struct","attributes": [{"params": {"type": "uint64_struct","attributes": [{"val22": {"type": "uint64"}}]}}]}}]}'
-               val1='{"value":1729}'
-               val22='{"value":17}'/>
+               type='{"type": "uint64_struct","attributes": [{"val1": {"type": "uint64"}},{"system": {"type": "uint64_struct","attributes": [{"params": {"type": "uint64_struct","attributes": [{"val22": {"type": "uint64"}}]}}]}}]}' 
+               value='{"val1":1729, "system.params.val22":1728}'/>
     </Workspace>
 )"};
 
@@ -462,12 +468,11 @@ TEST(AddMember, FailIncorrectXmlSequence)
     </Sequence>
     <Workspace>
         <Local name="var1"
-               dynamicType="true"
                type='{"type":"uint32"}'
                value='12345'/>
         <Local name="var2"
                type='{"type":"uint64_struct","attributes":[{"a":{"type":"uint64"}}]}'
-               a='{"value":1729}'
+               value='{"a":12345}'/>'
                dynamicType="true" />
     </Workspace>
 )"};
@@ -479,7 +484,7 @@ TEST(AddMember, FailIncorrectXmlSequence)
   EXPECT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
-TEST(AddMember, FailMissingAttribute)
+TEST(AddMember, FailMissingVariable)
 {
   const std::string body{
       R"(
@@ -488,13 +493,12 @@ TEST(AddMember, FailMissingAttribute)
     </Sequence>
     <Workspace>
         <Local name="var1"
-               dynamicType="true"
                type='{"type":"uint32"}'
                value='12345'/>
         <Local name="var2"
+               dynamicType="true" 
                type='{"type":"uint64_struct","attributes":[{"a":{"type":"uint64"}}]}'
-               a='{"value":1729}'
-               dynamicType="true" />
+               value='{"a":12345}'/>' />
     </Workspace>
 )"};
 
@@ -505,7 +509,7 @@ TEST(AddMember, FailMissingAttribute)
   EXPECT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
-TEST(AddMember, FailMissingVarName)
+TEST(AddMember, FailEmptyVarName)
 {
   const std::string body{
       R"(
@@ -514,13 +518,12 @@ TEST(AddMember, FailMissingVarName)
     </Sequence>
     <Workspace>
         <Local name="var1"
-               dynamicType="true"
                type='{"type":"uint32"}'
                value='12345'/>
         <Local name="var2"
+               dynamicType="true" 
                type='{"type":"uint64_struct","attributes":[{"a":{"type":"uint64"}}]}'
-               a='{"value":1729}'
-               dynamicType="true" />
+               value='{"a":12345}'/>
     </Workspace>
 )"};
 
@@ -540,13 +543,12 @@ TEST(AddMember, FailInvalidVarName)
     </Sequence>
     <Workspace>
         <Local name="var1"
-               dynamicType="true"
                type='{"type":"uint32"}'
                value='12345'/>
         <Local name="var2"
+               dynamicType="true" 
                type='{"type":"uint64_struct","attributes":[{"a":{"type":"uint64"}}]}'
-               a='{"value":1729}'
-               dynamicType="true" />
+               value='{"a":12345}'/>
     </Workspace>
 )"};
 
@@ -566,13 +568,12 @@ TEST(AddMember, FailMemberAlreadyExists)
     </Sequence>
     <Workspace>
         <Local name="var1"
-               dynamicType="true"
                type='{"type":"uint32"}'
                value='12345'/>
         <Local name="var2"
                dynamicType="true"
                type='{"type":"uint64_struct","attributes":[{"a":{"type":"uint64"}}]}'
-               a='{"value":1729}'/>
+               value='{"a":12345}'/>
     </Workspace>
 )"};
 
@@ -592,13 +593,37 @@ TEST(AddMember, FailTypeLocked)
     </Sequence>
     <Workspace>
         <Local name="var1"
-               dynamicType="true"
                type='{"type":"uint32"}'
                value='12345'/>
         <Local name="var2"
                dynamicType="false"
-               type='{"type":"uint64_struct","attributes":[{"a":{"type":"uint64"}}]}'
-               a='{"value":1729}'/>
+               type='{"type":"uint64_struct","attributes":[{"b":{"type":"uint64"}}]}'
+               value='{"b":12345}'/>
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST(AddMember, FailTypeLockedAddToArrayDifferentTypes)
+{
+  const std::string body{
+      R"(
+    <Sequence>
+        <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+    </Sequence>
+    <Workspace>
+        <Local name="var1"
+               type='{"type":"uint32"}'
+               value='12345'/>
+        <Local name="var2"
+               dynamicType="true"
+               type='{"type":"array","attributes":[{"val1": {"type": "uint64_struct","attributes": [{"val11": {"type": "uint64"}}, {"val12": {"type": "uint64"}}]}},{"val2": {"type": "uint64_struct","attributes": [{"val21": {"type": "uint64"}}, {"val22": {"type": "uint64"}}]}}]}'
+               value='{"val1.val11":1729, "val1.val12":1728, "val2.val21":1727, "val2.val22":1726}'/>
     </Workspace>
 )"};
 

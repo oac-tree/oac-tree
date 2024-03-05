@@ -30,6 +30,9 @@
 #include <sup/sequencer/user_interface.h>
 #include <sup/sequencer/workspace.h>
 
+#include <sup/dto/anyvalue_helper.h>
+#include <iostream>
+using namespace std;
 namespace sup
 {
 namespace sequencer
@@ -86,6 +89,8 @@ ExecutionStatus AddMember::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
     return ExecutionStatus::FAILURE;
   }
 
+  std::cout << dto::AnyValueToJSONString(input_var) << std::endl;
+  std::cout << dto::AnyValueToJSONString(output_var) << std::endl;
   // Trying to add a member to a locked struct will throw exception
   try
   {
@@ -95,7 +100,7 @@ ExecutionStatus AddMember::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   {
     return ExecutionStatus::FAILURE;
   }
-
+ std::cout << dto::AnyValueToJSONString(output_var) << std::endl;
   // Add to WS
   if (!SetValueFromAttributeName(*this, ws, ui, Constants::OUTPUT_VARIABLE_NAME_ATTRIBUTE_NAME,
                                  output_var))

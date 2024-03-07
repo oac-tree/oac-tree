@@ -240,14 +240,14 @@ std::pair<std::string, std::string> SplitFieldName(const std::string& fullname)
 {
   auto pos1 = fullname.find('.');
   auto pos2 = fullname.find('[');
-  auto pos = std::min(pos1, pos2);
-
-  auto total_length = fullname.length();
-  if (pos < total_length)
+  auto end_first = std::min(pos1, pos2);
+  if (end_first == std::string::npos)
   {
-    return {fullname.substr(0u, pos), fullname.substr(pos + 1u)};
+    return {fullname, {}};
   }
-  return {fullname, {}};
+  // Do not remove the '[' character from the next string part:
+  auto start_next = pos1 < pos2 ? pos1 + 1 : pos2;
+  return {fullname.substr(0u, end_first), fullname.substr(start_next)};
 }
 
 }  // namespace sequencer

@@ -135,6 +135,7 @@ TEST_F(JobControllerTest, PauseStep)
   EXPECT_TRUE(WaitForState(JobState::kPaused));
   controller.Step();
   EXPECT_TRUE(WaitForState(JobState::kSucceeded));
+  EXPECT_EQ(m_monitor.GetTickCount(), 2u);
 }
 
 TEST_F(JobControllerTest, StepReset)
@@ -147,9 +148,11 @@ TEST_F(JobControllerTest, StepReset)
   controller.Step();
   EXPECT_TRUE(WaitForState(JobState::kStepping));
   EXPECT_TRUE(WaitForState(JobState::kPaused));
+  EXPECT_EQ(m_monitor.GetTickCount(), 1u);
   controller.Step();
   EXPECT_TRUE(WaitForState(JobState::kStepping));
   EXPECT_TRUE(WaitForState(JobState::kSucceeded));
+  EXPECT_EQ(m_monitor.GetTickCount(), 2u);
   controller.Reset();
   EXPECT_TRUE(WaitForState(JobState::kInitial));
   controller.Start();

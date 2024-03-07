@@ -310,7 +310,11 @@ void JobController::ProcessCommandsWhenRunning()
 
 void JobController::StepProcedure()
 {
-  m_runner.SetTickCallback(EmptyTickCallback{});
+  auto tick_callback = [this](const sup::sequencer::Procedure& proc){
+    m_state_monitor.OnProcedureTick(proc);
+    return;
+  };
+  m_runner.SetTickCallback(tick_callback);
   m_runner.ExecuteSingle();
   if (!SwitchStateOnFinished())
   {

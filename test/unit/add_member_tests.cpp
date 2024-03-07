@@ -57,7 +57,7 @@ TEST(AddMember, AddedUint8Successfully)
                value='125'/>
         <Local name="var2"
                dynamicType="true"
-               type='{"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}}]}'
+               type='{"type":"struct","attributes":[{"value":{"type":"uint64"}}]}'
                value='{"value":1729}'/>
     </Workspace>
 )"};
@@ -83,7 +83,7 @@ TEST(AddMember, AddedInt8Successfully)
                value='-100'/>
         <Local name="var2"
                dynamicType="true"
-               type='{"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}}]}'
+               type='{"type":"struct","attributes":[{"value":{"type":"uint64"}}]}'
                value='{"value":1729}'/>
     </Workspace>
 )"};
@@ -109,7 +109,7 @@ TEST(AddMember, AddedUint16Successfully)
                value='125'/>
         <Local name="var2"
                dynamicType="true"
-               type='{"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}}]}'
+               type='{"type":"struct","attributes":[{"value":{"type":"uint64"}}]}'
                value='{"value":1729}'/>
     </Workspace>
 )"};
@@ -135,7 +135,7 @@ TEST(AddMember, AddedInt16Successfully)
                value='-100'/>
         <Local name="var2"
                dynamicType="true"
-               type='{"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}}]}'
+               type='{"type":"struct","attributes":[{"value":{"type":"uint64"}}]}'
                value='{"value":1729}'/>
     </Workspace>
 )"};
@@ -161,7 +161,7 @@ TEST(AddMember, AddedUint32Successfully)
                value='12345'/>
         <Local name="var2"
                dynamicType="true"
-               type='{"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}}]}'
+               type='{"type":"struct","attributes":[{"value":{"type":"uint64"}}]}'
                value='{"value":1729}'/>
     </Workspace>
 )"};
@@ -187,7 +187,7 @@ TEST(AddMember, AddedInt32Successfully)
                value='-1234'/>
         <Local name="var2"
                dynamicType="true"
-               type='{"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}}]}'
+               type='{"type":"struct","attributes":[{"value":{"type":"uint64"}}]}'
                value='{"value":1729}'/>
     </Workspace>
 )"};
@@ -213,7 +213,7 @@ TEST(AddMember, AddedUint64Successfully)
                value='12345'/>
         <Local name="var2"
                dynamicType="true"
-               type='{"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}}]}'
+               type='{"type":"struct","attributes":[{"value":{"type":"uint64"}}]}'
                value='{"value":1729}'/>
     </Workspace>
 )"};
@@ -239,7 +239,7 @@ TEST(AddMember, AddedInt64Successfully)
                value='12345'/>
         <Local name="var2"
                dynamicType="true"
-               type='{"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}}]}'
+               type='{"type":"struct","attributes":[{"value":{"type":"uint64"}}]}'
                value='{"value":1729}'/>
     </Workspace>
 )"};
@@ -265,7 +265,7 @@ TEST(AddMember, AddedFloat32Successfully)
                value='12.3'/>
         <Local name="var2"
                dynamicType="true"
-               type='{"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}}]}'
+               type='{"type":"struct","attributes":[{"value":{"type":"uint64"}}]}'
                value='{"value":1729}'/>
     </Workspace>
 )"};
@@ -291,7 +291,7 @@ TEST(AddMember, AddedFloat64Successfully)
                value='12.3'/>
         <Local name="var2"
                dynamicType="true"
-               type='{"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}}]}'
+               type='{"type":"struct","attributes":[{"value":{"type":"uint64"}}]}'
                value='{"value":1729}'/>
     </Workspace>
 )"};
@@ -317,7 +317,7 @@ TEST(AddMember, AddedChar8Successfully)
                value='12'/>
         <Local name="var2"
                dynamicType="true"
-               type='{"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}}]}'
+               type='{"type":"struct","attributes":[{"value":{"type":"uint64"}}]}'
                value='{"value":1729}'/>
     </Workspace>
 )"};
@@ -343,7 +343,7 @@ TEST(AddMember, AddedBoolSuccessfully)
                value='0'/>
         <Local name="var2"
                dynamicType="true"
-               type='{"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}}]}'
+               type='{"type":"struct","attributes":[{"value":{"type":"uint64"}}]}'
                value='{"value":1729}'/>
     </Workspace>
 )"};
@@ -381,32 +381,6 @@ TEST(AddMember, AddedUint32ToArraySuccessfully)
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
-TEST(AddMember, AddedStructToArrayOfStructsSuccessfully)
-{
-  const std::string body{
-      R"(
-    <Sequence>
-        <AddMember inputVar="var1" varName="a" outputVar="var2.val1"/>
-        <Equals leftVar="var1" rightVar="var2.val1.a"/>
-    </Sequence>
-    <Workspace>
-        <Local name="var1"
-               type='{"type": "uint64_struct","attributes": [{"pars": {"type": "uint64"}}]}'
-               value='{"pars":12345}'/>
-        <Local name="var2"
-               dynamicType="true"
-               type='{"type":"array","attributes":[{"val1": {"type": "uint64_struct","attributes": [{"val11": {"type": "uint64"}}, {"val12": {"type": "uint64"}}]}}]}'
-               value='{"val1.val11":1729, "val1.val12":1728}'/>
-    </Workspace>
-)"};
-
-  sup::UnitTestHelper::EmptyUserInterface ui;
-  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
-
-  ASSERT_TRUE(proc.get() != nullptr);
-  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
-}
-
 TEST(AddMember, AddedToMultiLevelStructSuccessfully)
 {
   const std::string body{
@@ -421,8 +395,8 @@ TEST(AddMember, AddedToMultiLevelStructSuccessfully)
                value='12345'/>
         <Local name="var2"
                dynamicType="true"
-               type='{"type": "uint64_struct","attributes": [{"val1": {"type": "uint64"}},{"val2": {"type": "uint64_struct","attributes": [{"val22": {"type": "uint64"}}]}}]}'
-               value='{"val1":1729, "val2.val22":1728}'/>
+               type='{"type": "struct","attributes": [{"val1": {"type": "uint64"}},{"val2": {"type": "struct","attributes": [{"val22": {"type": "uint64"}}]}}]}'
+               value='{"val2":{"val22":1256},"val1":1729}'/>
     </Workspace>
 )"};
 
@@ -443,12 +417,12 @@ TEST(AddMember, AddedFromAndToMultiLevelStructSuccessfully)
     </Sequence>
     <Workspace>
         <Local name="var1"
-               type='{"type": "uint64_struct","attributes": [{"pars": {"type": "uint64"}},{"val2": {"type": "uint64_struct","attributes": [{"val22": {"type": "uint64"}}]}}]}'
-               value='{"pars":12345, "val2.val22":123}'/>
+               type='{"type": "struct","attributes": [{"pars": {"type": "uint64"}},{"val2": {"type": "struct","attributes": [{"val22": {"type": "uint64"}}]}}]}'
+               value='{"val2":{"val22":1256},"pars":1729}'/>
         <Local name="var2"
                dynamicType="true"
-               type='{"type": "uint64_struct","attributes": [{"val1": {"type": "uint64"}},{"system": {"type": "uint64_struct","attributes": [{"params": {"type": "uint64_struct","attributes": [{"val22": {"type": "uint64"}}]}}]}}]}' 
-               value='{"val1":1729, "system.params.val22":1728}'/>
+               type='{"type": "struct","attributes": [{"val1": {"type": "uint64"}},{"system": {"type": "struct","attributes": [{"params": {"type": "struct","attributes": [{"val22": {"type": "uint64"}}]}}]}}]}' 
+               value='{"system":{"params":{"val22":1256}},"val1":1729}'/>/>
     </Workspace>
 )"};
 
@@ -471,8 +445,8 @@ TEST(AddMember, FailIncorrectXmlSequence)
                type='{"type":"uint32"}'
                value='12345'/>
         <Local name="var2"
-               type='{"type":"uint64_struct","attributes":[{"a":{"type":"uint64"}}]}'
-               value='{"a":12345}'/>'
+               type='{"type":"struct","attributes":[{"b":{"type":"uint64"}}]}'
+               value='{"b":12345}'/>'
                dynamicType="true" />
     </Workspace>
 )"};
@@ -497,7 +471,7 @@ TEST(AddMember, FailMissingVariable)
                value='12345'/>
         <Local name="var2"
                dynamicType="true" 
-               type='{"type":"uint64_struct","attributes":[{"a":{"type":"uint64"}}]}'
+               type='{"type":"struct","attributes":[{"a":{"type":"uint64"}}]}'
                value='{"a":12345}'/>' />
     </Workspace>
 )"};
@@ -522,7 +496,7 @@ TEST(AddMember, FailEmptyVarName)
                value='12345'/>
         <Local name="var2"
                dynamicType="true" 
-               type='{"type":"uint64_struct","attributes":[{"a":{"type":"uint64"}}]}'
+               type='{"type":"struct","attributes":[{"a":{"type":"uint64"}}]}'
                value='{"a":12345}'/>
     </Workspace>
 )"};
@@ -547,7 +521,7 @@ TEST(AddMember, FailInvalidVarName)
                value='12345'/>
         <Local name="var2"
                dynamicType="true" 
-               type='{"type":"uint64_struct","attributes":[{"a":{"type":"uint64"}}]}'
+               type='{"type":"struct","attributes":[{"a":{"type":"uint64"}}]}'
                value='{"a":12345}'/>
     </Workspace>
 )"};
@@ -572,7 +546,7 @@ TEST(AddMember, FailMemberAlreadyExists)
                value='12345'/>
         <Local name="var2"
                dynamicType="true"
-               type='{"type":"uint64_struct","attributes":[{"a":{"type":"uint64"}}]}'
+               type='{"type":"struct","attributes":[{"a":{"type":"uint64"}}]}'
                value='{"a":12345}'/>
     </Workspace>
 )"};
@@ -584,7 +558,7 @@ TEST(AddMember, FailMemberAlreadyExists)
   EXPECT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
-TEST(AddMember, FailTypeLocked)
+TEST(AddMember, FailTypeLockedDynamicTypeExplicitlyDefined)
 {
   const std::string body{
       R"(
@@ -597,7 +571,7 @@ TEST(AddMember, FailTypeLocked)
                value='12345'/>
         <Local name="var2"
                dynamicType="false"
-               type='{"type":"uint64_struct","attributes":[{"b":{"type":"uint64"}}]}'
+               type='{"type":"struct","attributes":[{"b":{"type":"uint64"}}]}'
                value='{"b":12345}'/>
     </Workspace>
 )"};
@@ -609,7 +583,7 @@ TEST(AddMember, FailTypeLocked)
   EXPECT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
-TEST(AddMember, FailTypeLockedAddToArrayDifferentTypes)
+TEST(AddMember, FailTypeLockedDynamicTypeImplicitlyDefined)
 {
   const std::string body{
       R"(
@@ -621,9 +595,33 @@ TEST(AddMember, FailTypeLockedAddToArrayDifferentTypes)
                type='{"type":"uint32"}'
                value='12345'/>
         <Local name="var2"
-               dynamicType="true"
-               type='{"type":"array","attributes":[{"val1": {"type": "uint64_struct","attributes": [{"val11": {"type": "uint64"}}, {"val12": {"type": "uint64"}}]}},{"val2": {"type": "uint64_struct","attributes": [{"val21": {"type": "uint64"}}, {"val22": {"type": "uint64"}}]}}]}'
-               value='{"val1.val11":1729, "val1.val12":1728, "val2.val21":1727, "val2.val22":1726}'/>
+               type='{"type":"struct","attributes":[{"b":{"type":"uint64"}}]}'
+               value='{"b":12345}'/>
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST(AddMember, FailAddToStructInArrayOfStructs)
+{
+  const std::string body{
+      R"(
+    <Sequence>
+        <AddMember inputVar="var1" varName="a" outputVar="var2.[0]"/>
+    </Sequence>
+    <Workspace>
+        <Local name="var1"
+               type='{"type":"uint32"}'
+               value='12345'/>
+        <Local name="var2"
+            dynamicType="true"
+            type='{"type":"array","multiplicity":2,"element":{"type":"struct","attributes":[{"field0":{"type":"uint64"}},{"field1":{"type":"uint64"}}]}}'
+            value='[{"field0":3,"field1":4},{"field0":5,"field1":6}]'/>
     </Workspace>
 )"};
 

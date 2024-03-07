@@ -62,6 +62,7 @@ ExecutionStatus AddMember::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   {
     return ExecutionStatus::FAILURE;
   }
+
   // Get the name we want to assign to the new var
   auto var_name = GetAttributeString(Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME);
   if (var_name.empty())
@@ -95,6 +96,7 @@ ExecutionStatus AddMember::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   {
     return ExecutionStatus::FAILURE;
   }
+  
   // Add to WS
   if (!SetValueFromAttributeName(*this, ws, ui, Constants::OUTPUT_VARIABLE_NAME_ATTRIBUTE_NAME,
                                  output_var))

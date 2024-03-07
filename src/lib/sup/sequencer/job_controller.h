@@ -164,20 +164,6 @@ private:
   bool SwitchStateOnFinished();
 };
 
-/**
- * @brief Class that is used as an empty callback during stepwise execution. This prevents that
- * there could be two consecutive command handling loops. See `JobController::ExecutionLoop` and
- * the callback used during continuous execution.
- */
-class EmptyTickCallback
-{
-public:
-  EmptyTickCallback();
-  ~EmptyTickCallback();
-
-  void operator()(const sup::sequencer::Procedure& proc) const;
-};
-
 }  // namespace sequencer
 
 }  // namespace sup

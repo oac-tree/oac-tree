@@ -340,13 +340,6 @@ bool JobController::SwitchStateOnFinished()
   return false;
 }
 
-EmptyTickCallback::EmptyTickCallback() = default;
-
-EmptyTickCallback::~EmptyTickCallback() = default;
-
-void EmptyTickCallback::operator()(const sup::sequencer::Procedure&) const
-{}
-
 }  // namespace sequencer
 
 }  // namespace sup

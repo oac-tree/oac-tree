@@ -69,11 +69,12 @@ TEST(Copy, ArrayCopy)
 {
   const std::string body{R"(
     <Sequence>
-        <Copy name="copy_test" inputVar="in_var[0]" outputVar="out_var[0]"/>
         <Copy name="copy_test" inputVar="in_var[1]" outputVar="out_var[1]"/>
-        <Equals leftVar="in_var[0]" rightVar="out_var[0]"/>
-        <Equals leftVar="in_var[1]" rightVar="out_var[1]"/>
-        <Equals leftVar="in_var" rightVar="out_var"/>
+        <Equals leftVar="out_var[1]" rightVar="in_var[1]"/>
+        <Equals leftVar="out_var[1]" rightVar="two"/>
+        <Copy name="copy_test" inputVar="in_var[0]" outputVar="out_var[0]"/>
+        <Equals leftVar="out_var[0]" rightVar="in_var[0]"/>
+        <Equals leftVar="out_var" rightVar="in_var"/>
     </Sequence>
     <Workspace>
         <Local name="in_var"

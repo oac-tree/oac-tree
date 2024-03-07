@@ -31,7 +31,9 @@ namespace sequencer
 /**
  * @brief Instruction for adding a new member to a workspace variable
  *
- * @details An AnyValue stored in "inputVar" will be added as member to the field "outputVar" under the name "varName". If the destination field is not a struct, already has a member with that name or if its type is locked, the instruction fails.
+ * @details An AnyValue stored in "inputVar" will be added as member to the field "outputVar" under
+ * the member name "memberName". If the destination field is not a struct, already has a member with
+ * that name or if its type is locked, the instruction fails.
  */
 class AddMember : public Instruction
 {

@@ -139,6 +139,7 @@ void InitInstructionRegistry(InstructionRegistry& registry)
   (void)RegisterInstruction<Repeat>(registry);
 
   // Register leaf instructions:
+  (void)RegisterInstruction<AddMember>(registry);
   (void)RegisterInstruction<Condition>(registry);
   (void)RegisterInstruction<CopyFromProcedureInstruction>(registry);
   (void)RegisterInstruction<CopyToProcedureInstruction>(registry);
@@ -160,7 +161,6 @@ void InitInstructionRegistry(InstructionRegistry& registry)
   (void)RegisterInstruction<Wait>(registry);
   (void)RegisterInstruction<WaitForVariable>(registry);
   (void)RegisterInstruction<WaitForVariables>(registry);
-  (void)RegisterInstruction<AddMember>(registry);
 }
 
 }  // namespace sequencer

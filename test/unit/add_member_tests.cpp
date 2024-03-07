@@ -39,7 +39,7 @@ TEST(AddMember, Setup)
   EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
   EXPECT_TRUE(instr->AddAttribute("outputVar", "output_var"));
   EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
-  EXPECT_TRUE(instr->AddAttribute("varName", "var_name"));
+  EXPECT_TRUE(instr->AddAttribute("memberName", "var_name"));
   EXPECT_NO_THROW(instr->Setup(proc));
 }
 
@@ -48,7 +48,7 @@ TEST(AddMember, AddedUint8Successfully)
   const std::string body{
       R"(
     <Sequence>
-        <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+        <AddMember inputVar="var1" memberName="a" outputVar="var2"/>
         <Equals leftVar="var1" rightVar="var2.a"/>
     </Sequence>
     <Workspace>
@@ -74,7 +74,7 @@ TEST(AddMember, AddedInt8Successfully)
   const std::string body{
       R"(
     <Sequence>
-        <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+        <AddMember inputVar="var1" memberName="a" outputVar="var2"/>
         <Equals leftVar="var1" rightVar="var2.a"/>
     </Sequence>
     <Workspace>
@@ -100,7 +100,7 @@ TEST(AddMember, AddedUint16Successfully)
   const std::string body{
       R"(
     <Sequence>
-        <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+        <AddMember inputVar="var1" memberName="a" outputVar="var2"/>
         <Equals leftVar="var1" rightVar="var2.a"/>
     </Sequence>
     <Workspace>
@@ -126,7 +126,7 @@ TEST(AddMember, AddedInt16Successfully)
   const std::string body{
       R"(
     <Sequence>
-        <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+        <AddMember inputVar="var1" memberName="a" outputVar="var2"/>
         <Equals leftVar="var1" rightVar="var2.a"/>
     </Sequence>
     <Workspace>
@@ -152,7 +152,7 @@ TEST(AddMember, AddedUint32Successfully)
   const std::string body{
       R"(
     <Sequence>
-        <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+        <AddMember inputVar="var1" memberName="a" outputVar="var2"/>
         <Equals leftVar="var1" rightVar="var2.a"/>
     </Sequence>
     <Workspace>
@@ -178,7 +178,7 @@ TEST(AddMember, AddedInt32Successfully)
   const std::string body{
       R"(
     <Sequence>
-        <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+        <AddMember inputVar="var1" memberName="a" outputVar="var2"/>
         <Equals leftVar="var1" rightVar="var2.a"/>
     </Sequence>
     <Workspace>
@@ -204,7 +204,7 @@ TEST(AddMember, AddedUint64Successfully)
   const std::string body{
       R"(
     <Sequence>
-        <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+        <AddMember inputVar="var1" memberName="a" outputVar="var2"/>
         <Equals leftVar="var1" rightVar="var2.a"/>
     </Sequence>
     <Workspace>
@@ -230,7 +230,7 @@ TEST(AddMember, AddedInt64Successfully)
   const std::string body{
       R"(
     <Sequence>
-        <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+        <AddMember inputVar="var1" memberName="a" outputVar="var2"/>
         <Equals leftVar="var1" rightVar="var2.a"/>
     </Sequence>
     <Workspace>
@@ -256,7 +256,7 @@ TEST(AddMember, AddedFloat32Successfully)
   const std::string body{
       R"(
     <Sequence>
-        <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+        <AddMember inputVar="var1" memberName="a" outputVar="var2"/>
         <Equals leftVar="var1" rightVar="var2.a"/>
     </Sequence>
     <Workspace>
@@ -282,7 +282,7 @@ TEST(AddMember, AddedFloat64Successfully)
   const std::string body{
       R"(
     <Sequence>
-        <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+        <AddMember inputVar="var1" memberName="a" outputVar="var2"/>
         <Equals leftVar="var1" rightVar="var2.a"/>
     </Sequence>
     <Workspace>
@@ -308,7 +308,7 @@ TEST(AddMember, AddedChar8Successfully)
   const std::string body{
       R"(
     <Sequence>
-        <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+        <AddMember inputVar="var1" memberName="a" outputVar="var2"/>
         <Equals leftVar="var1" rightVar="var2.a"/>
     </Sequence>
     <Workspace>
@@ -334,7 +334,7 @@ TEST(AddMember, AddedBoolSuccessfully)
   const std::string body{
       R"(
     <Sequence>
-        <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+        <AddMember inputVar="var1" memberName="a" outputVar="var2"/>
         <Equals leftVar="var1" rightVar="var2.a"/>
     </Sequence>
     <Workspace>
@@ -360,7 +360,7 @@ TEST(AddMember, AddedUint32ToArraySuccessfully)
   const std::string body{
       R"(
     <Sequence>
-        <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+        <AddMember inputVar="var1" memberName="a" outputVar="var2"/>
         <Equals leftVar="var1" rightVar="var2.a"/>
     </Sequence>
     <Workspace>
@@ -369,7 +369,7 @@ TEST(AddMember, AddedUint32ToArraySuccessfully)
                value='12345'/>
         <Local name="var2"
                dynamicType="true"
-               type='{"type":"array","attributes":[{"val1": {"type":"uint32"}}]}' 
+               type='{"type":"array","attributes":[{"val1": {"type":"uint32"}}]}'
                value='{"val1":1729}'/>
     </Workspace>
 )"};
@@ -386,7 +386,7 @@ TEST(AddMember, AddedToMultiLevelStructSuccessfully)
   const std::string body{
       R"(
     <Sequence>
-        <AddMember inputVar="var1" varName="a" outputVar="var2.val2"/>
+        <AddMember inputVar="var1" memberName="a" outputVar="var2.val2"/>
         <Equals leftVar="var1" rightVar="var2.val2.a"/>
     </Sequence>
     <Workspace>
@@ -412,7 +412,7 @@ TEST(AddMember, AddedFromAndToMultiLevelStructSuccessfully)
   const std::string body{
       R"(
     <Sequence>
-        <AddMember inputVar="var1.pars" varName="a" outputVar="var2.system.params"/>
+        <AddMember inputVar="var1.pars" memberName="a" outputVar="var2.system.params"/>
         <Equals leftVar="var1.pars" rightVar="var2.system.params.a"/>
     </Sequence>
     <Workspace>
@@ -421,7 +421,7 @@ TEST(AddMember, AddedFromAndToMultiLevelStructSuccessfully)
                value='{"val2":{"val22":1256},"pars":1729}'/>
         <Local name="var2"
                dynamicType="true"
-               type='{"type": "struct","attributes": [{"val1": {"type": "uint64"}},{"system": {"type": "struct","attributes": [{"params": {"type": "struct","attributes": [{"val22": {"type": "uint64"}}]}}]}}]}' 
+               type='{"type": "struct","attributes": [{"val1": {"type": "uint64"}},{"system": {"type": "struct","attributes": [{"params": {"type": "struct","attributes": [{"val22": {"type": "uint64"}}]}}]}}]}'
                value='{"system":{"params":{"val22":1256}},"val1":1729}'/>/>
     </Workspace>
 )"};
@@ -438,7 +438,7 @@ TEST(AddMember, FailIncorrectXmlSequence)
   const std::string body{
       R"(
     <Sequence>
-        <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+        <AddMember inputVar="var1" memberName="a" outputVar="var2"/>
     </Sequence>
     <Workspace>
         <Local name="var1"
@@ -463,14 +463,14 @@ TEST(AddMember, FailMissingVariable)
   const std::string body{
       R"(
     <Sequence>
-        <AddMember inputVar="var" varName="a" outputVar="var2"/>
+        <AddMember inputVar="var" memberName="a" outputVar="var2"/>
     </Sequence>
     <Workspace>
         <Local name="var1"
                type='{"type":"uint32"}'
                value='12345'/>
         <Local name="var2"
-               dynamicType="true" 
+               dynamicType="true"
                type='{"type":"struct","attributes":[{"a":{"type":"uint64"}}]}'
                value='{"a":12345}'/>' />
     </Workspace>
@@ -483,19 +483,19 @@ TEST(AddMember, FailMissingVariable)
   EXPECT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
-TEST(AddMember, FailEmptyVarName)
+TEST(AddMember, FailEmptyMemberName)
 {
   const std::string body{
       R"(
     <Sequence>
-        <AddMember inputVar="var" varName="" outputVar="var2"/>
+        <AddMember inputVar="var" memberName="" outputVar="var2"/>
     </Sequence>
     <Workspace>
         <Local name="var1"
                type='{"type":"uint32"}'
                value='12345'/>
         <Local name="var2"
-               dynamicType="true" 
+               dynamicType="true"
                type='{"type":"struct","attributes":[{"a":{"type":"uint64"}}]}'
                value='{"a":12345}'/>
     </Workspace>
@@ -508,19 +508,19 @@ TEST(AddMember, FailEmptyVarName)
   EXPECT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
-TEST(AddMember, FailInvalidVarName)
+TEST(AddMember, FailInvalidMemberName)
 {
   const std::string body{
       R"(
     <Sequence>
-        <AddMember inputVar="var" varName="invalid.name" outputVar="var2"/>
+        <AddMember inputVar="var" memberName="invalid.name" outputVar="var2"/>
     </Sequence>
     <Workspace>
         <Local name="var1"
                type='{"type":"uint32"}'
                value='12345'/>
         <Local name="var2"
-               dynamicType="true" 
+               dynamicType="true"
                type='{"type":"struct","attributes":[{"a":{"type":"uint64"}}]}'
                value='{"a":12345}'/>
     </Workspace>
@@ -538,7 +538,7 @@ TEST(AddMember, FailMemberAlreadyExists)
   const std::string body{
       R"(
     <Sequence>
-        <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+        <AddMember inputVar="var1" memberName="a" outputVar="var2"/>
     </Sequence>
     <Workspace>
         <Local name="var1"
@@ -563,7 +563,7 @@ TEST(AddMember, FailTypeLockedDynamicTypeExplicitlyDefined)
   const std::string body{
       R"(
     <Sequence>
-        <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+        <AddMember inputVar="var1" memberName="a" outputVar="var2"/>
     </Sequence>
     <Workspace>
         <Local name="var1"
@@ -588,7 +588,7 @@ TEST(AddMember, FailTypeLockedDynamicTypeImplicitlyDefined)
   const std::string body{
       R"(
     <Sequence>
-        <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+        <AddMember inputVar="var1" memberName="a" outputVar="var2"/>
     </Sequence>
     <Workspace>
         <Local name="var1"
@@ -612,7 +612,7 @@ TEST(AddMember, FailAddToStructInArrayOfStructs)
   const std::string body{
       R"(
     <Sequence>
-        <AddMember inputVar="var1" varName="a" outputVar="var2.[0]"/>
+        <AddMember inputVar="var1" memberName="a" outputVar="var2.[0]"/>
     </Sequence>
     <Workspace>
         <Local name="var1"

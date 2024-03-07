@@ -45,7 +45,7 @@ AddMember::AddMember() : Instruction(AddMember::Type)
   AddAttributeDefinition(Constants::OUTPUT_VARIABLE_NAME_ATTRIBUTE_NAME)
       .SetCategory(AttributeCategory::kVariableName)
       .SetMandatory();
-  AddAttributeDefinition(Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME).SetMandatory();
+  AddAttributeDefinition(Constants::MEMBER_NAME_ATTRIBUTE_NAME).SetMandatory();
 }
 
 AddMember::~AddMember() = default;
@@ -64,7 +64,7 @@ ExecutionStatus AddMember::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   }
 
   // Get the name we want to assign to the new var
-  auto var_name = GetAttributeString(Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME);
+  auto var_name = GetAttributeString(Constants::MEMBER_NAME_ATTRIBUTE_NAME);
   if (var_name.empty())
   {
     return ExecutionStatus::FAILURE;
@@ -96,7 +96,7 @@ ExecutionStatus AddMember::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   {
     return ExecutionStatus::FAILURE;
   }
-  
+
   // Add to WS
   if (!SetValueFromAttributeName(*this, ws, ui, Constants::OUTPUT_VARIABLE_NAME_ATTRIBUTE_NAME,
                                  output_var))

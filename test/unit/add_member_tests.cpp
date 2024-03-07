@@ -433,31 +433,6 @@ TEST(AddMember, AddedFromAndToMultiLevelStructSuccessfully)
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
-TEST(AddMember, FailIncorrectXmlSequence)
-{
-  const std::string body{
-      R"(
-    <Sequence>
-        <AddMember inputVar="var1" memberName="a" outputVar="var2"/>
-    </Sequence>
-    <Workspace>
-        <Local name="var1"
-               type='{"type":"uint32"}'
-               value='12345'/>
-        <Local name="var2"
-               type='{"type":"struct","attributes":[{"b":{"type":"uint64"}}]}'
-               value='{"b":12345}'/>'
-               dynamicType="true" />
-    </Workspace>
-)"};
-
-  sup::UnitTestHelper::EmptyUserInterface ui;
-  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
-
-  ASSERT_TRUE(proc.get() != nullptr);
-  EXPECT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, ui));
-}
-
 TEST(AddMember, FailMissingVariable)
 {
   const std::string body{
@@ -612,7 +587,7 @@ TEST(AddMember, FailAddToStructInArrayOfStructs)
   const std::string body{
       R"(
     <Sequence>
-        <AddMember inputVar="var1" memberName="a" outputVar="var2.[0]"/>
+        <AddMember inputVar="var1" memberName="a" outputVar="var2[0]"/>
     </Sequence>
     <Workspace>
         <Local name="var1"

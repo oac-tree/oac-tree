@@ -7,9 +7,11 @@
         <Input outputVar="var1" description="Your name:" />
         <Output fromVar="var1" description="Hello" />
         <Output fromVar="var1" description="@alt_descr" />
+        <Output fromVar="int_array[0]" description="array element:" />
     </Sequence>
     <Workspace>
         <Local name="var1" type='{"type":"string"}' />
         <Local name="alt_descr" type='{"type":"string"}' value='"My variable"' />
+        <Local name="int_array" type='{"type":"int_array","multiplicity":2,"element":{"type":"uint16"}}' />
     </Workspace>
 </Procedure>

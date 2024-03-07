@@ -65,6 +65,32 @@ TEST(Copy, Success)
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
+TEST(Copy, ArrayCopy)
+{
+  const std::string body{R"(
+    <Sequence>
+        <Copy name="copy_test" inputVar="in_var[0]" outputVar="out_var[0]"/>
+        <Copy name="copy_test" inputVar="in_var[1]" outputVar="out_var[1]"/>
+        <Equals leftVar="in_var[0]" rightVar="out_var[0]"/>
+        <Equals leftVar="in_var[1]" rightVar="out_var[1]"/>
+        <Equals leftVar="in_var" rightVar="out_var"/>
+    </Sequence>
+    <Workspace>
+        <Local name="in_var"
+               type='{"type":"sup::test::MyArray/v1.0","multiplicity":2,"element":{"type":"uint16"}}'
+               value='[1,2]'/>
+        <Local name="out_var"
+               type='{"type":"sup::test::MyArray/v1.0","multiplicity":2,"element":{"type":"uint16"}}'
+               value='[0,0]'/>
+        <Local name="two" type='{"type":"uint16"}' value='2'/>
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
 TEST(Copy, MissingInputVariable)
 {
   const std::string body{R"(

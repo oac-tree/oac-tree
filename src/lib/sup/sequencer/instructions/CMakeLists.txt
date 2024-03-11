@@ -1,5 +1,6 @@
 target_sources(sup-sequencer-shared
   PRIVATE
+    add_element.cpp
     add_member.cpp
     async_wrapper.cpp
     choice.cpp

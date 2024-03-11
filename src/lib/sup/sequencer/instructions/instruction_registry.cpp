@@ -21,6 +21,7 @@
 
 #include <sup/sequencer/instruction_registry.h>
 
+#include "add_element.h"
 #include "add_member.h"
 #include "choice.h"
 #include "condition.h"
@@ -139,6 +140,7 @@ void InitInstructionRegistry(InstructionRegistry& registry)
   (void)RegisterInstruction<Repeat>(registry);
 
   // Register leaf instructions:
+  (void)RegisterInstruction<AddElement>(registry);
   (void)RegisterInstruction<AddMember>(registry);
   (void)RegisterInstruction<Condition>(registry);
   (void)RegisterInstruction<CopyFromProcedureInstruction>(registry);

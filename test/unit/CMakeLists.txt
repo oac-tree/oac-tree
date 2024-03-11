@@ -4,6 +4,7 @@ target_compile_features(unit-tests PRIVATE cxx_std_11)
 
 target_sources(unit-tests
   PRIVATE
+    add_element_tests.cpp
     add_member_tests.cpp
     attribute_handler_tests.cpp
     attribute_utils_tests.cpp

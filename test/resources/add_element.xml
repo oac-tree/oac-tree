@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+           name="Trivial procedure for testing purposes"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+    <Sequence>
+        <Output fromVar="var2" description="Before:" />
+        <AddElement inputVar="var1" outputVar="var2"/>
+        <Output fromVar="var2" description="After:" />
+    </Sequence>
+    <Workspace>
+        <Local name="var1"
+               dynamicType="true"
+               type='{"type":"bool"}'
+               value='true'/>
+        <Local name="var2"
+               dynamicType="true"
+               type='{"type":"array","multiplicity":1,"element":{"type":"bool"}}'
+               value='[false]'/>
+    </Workspace>
+</Procedure>

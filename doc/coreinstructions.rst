@@ -480,6 +480,47 @@ Action Instructions
 
 An action instruction represents a discrete operation or step within a larger sequence of instructions. Actions are fundamental building blocks that perform specific tasks or operations to achieve a particular goal. Action instructions are typically used within compound or decorator instructions.
 
+AddElement
+^^^^^^^^^^
+
+Instruction to add an element to a workspace variable using the information provided by a different variable.
+
+Attributes:
+
+.. list-table::
+   :widths: 25 25 15 50
+   :header-rows: 1
+
+   * - inputVar
+     - StringType
+     - yes
+     - Name of the input variable containing the information to be added to the new member
+   * - outputVar
+     - StringType
+     - yes
+     - Name of the output variable that will hold the new member 
+
+**Example**
+
+This example showcases how the AddElement instruction can be used to add variable var1 "a" to workspace array variable "var2".
+
+.. code-block:: xml
+
+    <Sequence>
+        <AddElement inputVar="var1" outputVar="var2"/>
+        <Equals leftVar="var1" rightVar="var2.[1]"/>
+    </Sequence>
+    <Workspace>
+        <Local name="var1"
+               dynamicType="true"
+               type='{"type":"bool"}'
+               value='true'/>
+        <Local name="var2"
+               dynamicType="true"
+               type='{"type":"array","multiplicity":1,"element":{"type":"bool"}}'
+               value='[false]'/>
+    </Workspace>
+
 Condition
 ^^^^^^^^^
 

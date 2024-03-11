@@ -6,7 +6,7 @@
  *
  * Description   : Unit test code
  *
- * Author        : Carlos Miguel Silva (EXT)
+ * Author        : Rui Oliveira (EXT)
  *
  * Copyright (c) : 2010-2024 ITER Organization,
  *                 CS 90 046

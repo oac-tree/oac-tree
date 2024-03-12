@@ -46,7 +46,7 @@ TEST(AddElement, AddedUint8Successfully)
       R"(
     <Sequence>
         <AddElement inputVar="var1" outputVar="var2"/>
-        <Equals leftVar="var1" rightVar="var2.[1]"/>
+        <Equals leftVar="var1" rightVar="var2[1]"/>
     </Sequence>
     <Workspace>
         <Local name="var1"
@@ -73,7 +73,7 @@ TEST(AddElement, AddedInt8Successfully)
       R"(
     <Sequence>
         <AddElement inputVar="var1" outputVar="var2"/>
-        <Equals leftVar="var1" rightVar="var2.[1]"/>
+        <Equals leftVar="var1" rightVar="var2[1]"/>
     </Sequence>
     <Workspace>
         <Local name="var1"

@@ -10,7 +10,6 @@
     </Sequence>
     <Workspace>
         <Local name="var1"
-               dynamicType="true"
                type='{"type":"bool"}'
                value='true'/>
         <Local name="var2"

@@ -22,6 +22,7 @@
 #include "add_member.h"
 
 #include <sup/dto/anyvalue.h>
+#include <sup/dto/anyvalue_exceptions.h>
 #include <sup/dto/anyvalue_operations.h>
 #include <sup/dto/basic_scalar_types.h>
 #include <sup/sequencer/constants.h>
@@ -105,7 +106,7 @@ ExecutionStatus AddMember::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   {
     output_var.AddMember(member_name, input_var);
   }
-  catch (const InvalidOperationException& e)
+  catch (const sup::dto::InvalidOperationException& e)
   {
     const std::string warning = InstructionErrorProlog(*this) + e.what();
     LogWarning(ui, warning);

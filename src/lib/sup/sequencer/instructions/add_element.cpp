@@ -20,6 +20,7 @@
 #include "add_element.h"
 
 #include <sup/dto/anyvalue.h>
+#include <sup/dto/anyvalue_exceptions.h>
 #include <sup/dto/anyvalue_operations.h>
 #include <sup/dto/basic_scalar_types.h>
 #include <sup/sequencer/constants.h>
@@ -71,10 +72,10 @@ ExecutionStatus AddElement::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   // Check member type
   if (output_var.GetType().ElementType() != input_var.GetType())
   {
-    std::string error_message = InstructionErrorProlog(*this)
+    std::string warning_message = InstructionErrorProlog(*this)
                                 + " trying to insert wrong element type: " + input_var.GetTypeName()
                                 + ". Expected: " + output_var.GetType().ElementType().GetTypeName();
-    LogError(ui, error_message);
+    LogWarning(ui, warning_message);
     return ExecutionStatus::FAILURE;
   }
 
@@ -82,8 +83,10 @@ ExecutionStatus AddElement::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   {
     output_var.AddElement(input_var);
   }
-  catch (...)
+  catch (const sup::dto::InvalidOperationException& e)
   {
+    const std::string warning = InstructionErrorProlog(*this) + e.what();
+    LogWarning(ui, warning);
     return ExecutionStatus::FAILURE;
   }
 

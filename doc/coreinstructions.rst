@@ -483,7 +483,7 @@ An action instruction represents a discrete operation or step within a larger se
 AddElement
 ^^^^^^^^^^
 
-Instruction to add an element to a workspace variable using the information provided by a different variable.
+Instruction to add a new array element to a workspace variable using the information provided by a different variable.
 
 Attributes:
 
@@ -494,15 +494,15 @@ Attributes:
    * - inputVar
      - StringType
      - yes
-     - Name of the input variable containing the information to be added to the new member
+     - Name of the input variable or field thereof containing the information to be added as a new element
    * - outputVar
      - StringType
      - yes
-     - Name of the output variable that will hold the new member 
+     - Name of the output variable or field thereof that will receive a new element
 
 **Example**
 
-This example showcases how the AddElement instruction can be used to add variable var1 "a" to workspace array variable "var2".
+This example showcases how the AddElement instruction can be used to add variable var1 "a" to the workspace array variable "var2".
 
 .. code-block:: xml
 
@@ -512,13 +512,60 @@ This example showcases how the AddElement instruction can be used to add variabl
     </Sequence>
     <Workspace>
         <Local name="var1"
-               dynamicType="true"
                type='{"type":"bool"}'
                value='true'/>
         <Local name="var2"
                dynamicType="true"
                type='{"type":"array","multiplicity":1,"element":{"type":"bool"}}'
                value='[false]'/>
+    </Workspace>
+
+AddMember
+^^^^^^^^^
+
+Instruction to add a new member to a workspace variable using the information provided by a different variable.
+
+Attributes:
+
+.. list-table::
+   :widths: 25 25 15 50
+   :header-rows: 1
+
+   * - Attribute name
+     - Attribute type
+     - Mandatory
+     - Description
+   * - inputVar
+     - StringType
+     - yes
+     - Name of the input variable or field thereof containing the information to be added to the new member
+   * - varName
+     - StringType
+     - yes
+     - Name of the new member
+   * - outputVar
+     - StringType
+     - yes
+     - Name of the output variable or field thereof that will hold the new member
+
+**Example**
+
+This example showcases how the AddMember instruction can be used to add member "a" to workspace variable "var2" with the information provided by "var1". The `Equals` instruction can can be used to validate the `AddMember` instruction, since it will check for variable existence and equality.
+
+.. code-block:: xml
+
+    <Sequence>
+        <AddMember inputVar="var1" varName="a" outputVar="var2"/>
+        <Equals leftVar="var1" rightVar="var2.a"/>
+    </Sequence>
+    <Workspace>
+        <Local name="var1"
+            type='{"type":"uint8"}'
+            value='125'/>
+        <Local name="var2"
+            dynamicType="true"
+            type='{"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}}]}'
+            value='{"value":1729}'/>
     </Workspace>
 
 Condition
@@ -1115,53 +1162,3 @@ Attributes:
      - StringType
      - yes
      - typename of the variables to check
-
-
-AddMember
-^^^^^^^^^^^^^^^
-
-Instruction to add a new member to a workspace variable using the information provided by a different variable.
-
-Attributes:
-
-.. list-table::
-   :widths: 25 25 15 50
-   :header-rows: 1
-
-   * - Attribute name
-     - Attribute type
-     - Mandatory
-     - Description
-   * - inputVar
-     - StringType
-     - yes
-     - Name of the input variable containing the information to be added to the new member
-   * - varName
-     - StringType
-     - yes
-     - Name of the new member
-   * - outputVar
-     - StringType
-     - yes
-     - Name of the output variable that will hold the new member 
-
-**Example**
-
-This example showcases how the AddMember instruction can be used to add member "a" to workspace variable "var2" with the information provided by "var1". The `Equals` instruction can can be used to validate the `AddMember` instruction, since it will check for variable existence and equality.
-
-.. code-block:: xml
-
-    <Sequence>
-        <AddMember inputVar="var1" varName="a" outputVar="var2"/>
-        <Equals leftVar="var1" rightVar="var2.a"/>
-    </Sequence>
-    <Workspace>
-        <Local name="var1"
-            type='{"type":"uint8"}'
-            value='125'/>
-        <Local name="var2"
-            dynamicType="true"
-            type='{"type":"uint64_struct","attributes":[{"value":{"type":"uint64"}}]}'
-            value='{"value":1729}'/>
-    </Workspace>
-

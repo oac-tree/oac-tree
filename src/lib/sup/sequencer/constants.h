@@ -109,6 +109,7 @@ const std::string SHOW_COLLAPSED_ATTRIBUTE_NAME = "showCollapsed";
 
 // Instruction attribute names
 const std::string GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME = "varName";
+const std::string INPUT_ATTRIBUTE_NAME = "input";
 const std::string INPUT_VARIABLE_NAME_ATTRIBUTE_NAME = "inputVar";
 const std::string OUTPUT_VARIABLE_NAME_ATTRIBUTE_NAME = "outputVar";
 const std::string FILENAME_ATTRIBUTE_NAME = "file";

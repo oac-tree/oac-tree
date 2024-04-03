@@ -4,6 +4,7 @@ Extending the Sequencer with plugins
 .. contents::
    :local:
 
+Plugins allow users to extend the functionality of the Sequencer by providing new instructions or variables. This documentation provides a step-by-step guide on how to create a plugin and integrate it into the Sequencer.
 Creating a plugin to access another library in sequencer is simple when following a structured aproach: first, implement instruction/variable interface; then register the instruction/variable; and finally deploy the plugin in the plugin folder.
 
 Implementation
@@ -19,7 +20,7 @@ To implement instructions and variables you can take a look at their respective 
 Registration
 ------------
 
-Registering an instruction, just include the regitry instruction header file, and declare a static initialisation flag in the instruction's source file.
+To register an instruction, include the instruction registry header file, and declare a static initialisation flag in the instruction's source file.
 
 .. code-block:: c++
 

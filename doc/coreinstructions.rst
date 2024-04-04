@@ -332,7 +332,7 @@ Attributes:
 
 **Example**
 
-This example will include the procedure in file "test_procedure_1.xml" into the procedure where IncludeProcedure iinstruction is called.
+This example will include the procedure in file "test_procedure_1.xml" into the procedure where IncludeProcedure instruction is called.
 
 test_procedure_1.xml file:
 

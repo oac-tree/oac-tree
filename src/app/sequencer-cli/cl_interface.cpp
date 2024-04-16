@@ -69,13 +69,16 @@ void CLInterface::VariableUpdated(const std::string& name, const sup::dto::AnyVa
 
 bool CLInterface::PutValue(const sup::dto::AnyValue &value, const std::string &description)
 {
-  std::cout << description << " (" << value.GetTypeName() << "): ";
-  std::string json_rep = sup::dto::ValuesToJSONString(value);
-  if (json_rep.empty())
+  if (!description.empty())
+  {
+    std::cout << description << std::endl;
+  }
+  std::string val_str = sup::dto::PrintAnyValue(value);
+  if (val_str.empty())
   {
     return false;
   }
-  std::cout << json_rep << std::endl;
+  std::cout << val_str << std::endl;
   return true;
 }
 

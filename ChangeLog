@@ -1,3 +1,7 @@
+Changes for 3.2.0:
+
+- Improve output of variables in sequencer-cli
+
 Changes for 3.1.0:
 
 - Added asynchronous JobController and JobStateMonitor

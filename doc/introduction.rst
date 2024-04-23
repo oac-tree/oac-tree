@@ -92,7 +92,7 @@ For a complete list of supported instructions, please refer to the instructions'
   :widths: auto
 
   * - Multiplicity
-    - | 1..* (mandatory section).
+    - | 1 (mandatory section).
       | One entry per instruction tree.
   * - Attributes
     - | N/A
@@ -117,11 +117,13 @@ Workspace With Variables Section
   * - Attributes
     - | N/A
   * - Example
-    - | <Local name="zero" type='{"type":"uint32"}' value="0"/>
-      | <PvAccessServer name="test_is_running" channel="FTEST02:RUNNING" 
-      |   type='{"type":"seq::test::Type/v1.0","attributes":[{"value":{"type":"uint32"}}]}' value='{"value":1}'
-      | />
-      | <File name="file" file="/tmp/variable.bck"/>
+    - | <Workspace>
+      |   <Local name="zero" type='{"type":"uint32"}' value="0"/>
+      |   <PvAccessServer name="test_is_running" channel="FTEST02:RUNNING"
+      |     type='{"type":"seq::test::Type/v1.0","attributes":[{"value":{"type":"uint32"}}]}' value='{"value":1}'
+      |   />
+      |   <File name="file" file="/tmp/variable.bck"/>
+      | </Workspace>
 
 Procedure Example
 ------------------

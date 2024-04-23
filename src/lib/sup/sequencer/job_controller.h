@@ -53,7 +53,7 @@ public:
    *
    * @param proc Procedure that needs to be correctly setup.
    * @param ui UserInterface object.
-   * @param cb Callback function object for state changes.
+   * @param state_monitor Object that will monitor state and breakpoint changes.
    */
   explicit JobController(sup::sequencer::Procedure& proc, sup::sequencer::UserInterface& ui,
                          JobStateMonitor& state_monitor);

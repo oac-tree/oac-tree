@@ -74,8 +74,6 @@ public:
 
   /**
    * @brief Setup all variables.
-   *
-   * @param proc Reference to parent procedure.
    */
   void Setup();
 

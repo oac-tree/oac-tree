@@ -5,17 +5,27 @@ Extending the Sequencer with plugins
    :local:
 
 Plugins allow users to extend the functionality of the Sequencer by providing new instructions or variables. This documentation provides a step-by-step guide on how to create a plugin and integrate it into the Sequencer.
-Creating a plugin to access another library in sequencer is simple when following a structured aproach: first, implement instruction/variable interface; then register the instruction/variable; and finally deploy the plugin in the plugin folder.
+Creating a plugin to access another library in the sequencer is simple when following a structured approach: first, implement the instruction/variable interface; then register the instruction/variable; and finally deploy the plugin in the plugin folder.
 
 Implementation
 --------------
 
-Start by creating a new project (E.g. ``sequencer-plugin-examplelib``) with the following the directory structure: ``src > lib > sequencer``.
+Start by creating a new project (E.g. ``sequencer-plugin-examplelib``). This page uses the following directory structure for the source files (but this is not mandatory): ``src > lib > sequencer``.
 Inside the ``sequencer`` folder, you may create additional directories for different parts of the library you wish to create the plugin for.
 
-To implement instructions and variables you can take a look at their respective sections: 
+To implement instructions and variables you can take a look at their respective sections:
 :ref:`Instruction`, :ref:`Variable`.
 
+The absolute mininum that you have to implement are the following virtual functions:
+
+For instructions:
+
+* ``ExecutionStatus Instruction::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)``
+
+For variables:
+
+* ``bool Variable::GetValueImpl(sup::dto::AnyValue& value) const``
+* ``bool Variable::SetValueImpl(const sup::dto::AnyValue& value)``
 
 Registration
 ------------
@@ -43,19 +53,13 @@ In the same way, a variable is registered by including the variable registry hea
 Plugin deployment
 -----------------
 
-To deploy the plugin, execute ``make install`` on your build directory. 
+To deploy the plugin, install the shared library in an appropriate folder. If you want to avoid having to specify the full pathname in the XML procedure later, use a folder that is used by the operating system to look for shared libraries (or add the path to ``LD_LIBRARY_PATH``).
 
 Usage
 -----
 
-To use variables and instructions of any plugin within ``sequencer-cli``, declare the plugin right after declaring the procedure, in said procedure's ``xml`` file.
+To use variables and instructions of any plugin within your procedure, declare the plugin right after declaring the procedure, in said procedure's ``xml`` file.
 
 .. code-block:: xml
 
    <Plugin>libsequencer-example.so</Plugin>
-
-At the time of writing, if you want to use plugin variables and instructions in the GUI, you need to hardcode the plugin into line 153 at ``domain_utils.cpp`` in ``sequencer-gui`` project. And export the path using the following command:
-
-.. code-block:: bash
-
-    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/sequencer/plugins/

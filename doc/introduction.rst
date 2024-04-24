@@ -52,7 +52,7 @@ For a complete list of supported plugins, please refer to the plugins documentat
   :widths: auto
 
   * - Multiplicity
-    - | 0..* (non-mandatory section). 
+    - | 0..* (non-mandatory section).
       | One entry per plugin.
   * - Attributes
     - | N/A
@@ -85,14 +85,14 @@ The type declarations section contains the type definitions used by the variable
 Instruction Trees Section
 --------------------------
 
-The instruction trees section provides the structured representation of the execution flow within a procedure. They depict the tree-like hierarchy of instructions or behaviours that guide the execution. In the XML procedure file, instructions are defined via XML elements using the instruction's names (from the core library or defined in the plugins). 
+The instruction trees section provides the structured representation of the execution flow within a procedure. They depict the tree-like hierarchy of instructions or behaviours that guide the execution. In the XML procedure file, instructions are defined via XML elements using the instruction's names (from the core library or defined in the plugins).
 For a complete list of supported instructions, please refer to the instructions' documentation ``core-instructions/variables``.
 
 .. list-table::
   :widths: auto
 
   * - Multiplicity
-    - | 1 (mandatory section).
+    - | 1..* (mandatory section).
       | One entry per instruction tree.
   * - Attributes
     - | N/A
@@ -112,8 +112,8 @@ Workspace With Variables Section
   :widths: 25 50
 
   * - Multiplicity
-    - | 1..* (mandatory section).
-      | One entry per variable.
+    - | 1 (mandatory section).
+      | One child entry per variable.
   * - Attributes
     - | N/A
   * - Example

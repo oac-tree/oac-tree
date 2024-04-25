@@ -42,7 +42,7 @@ ProcedureLoader::ProcedureLoader(const std::string& filename)
 
 ProcedureLoader::~ProcedureLoader() = default;
 
-std::unique_ptr<Procedure> ProcedureLoader::ParseAndSetup()
+std::unique_ptr<Procedure> ProcedureLoader::Parse()
 {
   m_error_message.clear();
   if (!utils::FileExists(m_filename))
@@ -58,7 +58,6 @@ std::unique_ptr<Procedure> ProcedureLoader::ParseAndSetup()
       m_error_message = "Could not parse procedure file [" + m_filename + "]";
       return {};
     }
-    proc->Setup();
     return proc;
   }
   catch(const std::exception& e)
@@ -66,6 +65,33 @@ std::unique_ptr<Procedure> ProcedureLoader::ParseAndSetup()
     m_error_message = e.what();
   }
   return {};
+}
+
+bool ProcedureLoader::Setup(Procedure& proc)
+{
+  try
+  {
+    proc.Setup();
+    return true;
+  }
+  catch(const std::exception& e)
+  {
+    m_error_message = e.what();
+  }
+  return false;
+}
+
+std::unique_ptr<Procedure> ProcedureLoader::ParseAndSetup()
+{
+  auto proc = Parse();
+  if (!proc) {
+    return {};
+  }
+  if (!Setup(*proc))
+  {
+    return {};
+  }
+  return proc;
 }
 
 std::string ProcedureLoader::GetErrorMessage() const

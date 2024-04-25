@@ -22,6 +22,7 @@
 #ifndef SUP_SEQUENCER_APPLICATON_UTILS_H_
 #define SUP_SEQUENCER_APPLICATON_UTILS_H_
 
+#include <sup/sequencer/job_controller.h>
 #include <sup/sequencer/job_state_monitor.h>
 #include <sup/sequencer/procedure.h>
 
@@ -47,6 +48,10 @@ class ProcedureLoader
 public:
   explicit ProcedureLoader(const std::string& filename);
   ~ProcedureLoader();
+
+  std::unique_ptr<Procedure> Parse();
+
+  bool Setup(Procedure& proc);
 
   std::unique_ptr<Procedure> ParseAndSetup();
 

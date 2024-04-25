@@ -40,7 +40,6 @@ JobController::JobController(Procedure& proc, UserInterface& ui, JobStateMonitor
   , m_loop_future{}
   , m_keep_alive{true}
 {
-  // Procedure MUST already be setup (since it's instruction tree cached should already have been built)
   SetState(JobState::kInitial);
   Launch();
 }
@@ -143,6 +142,7 @@ void JobController::SetState(JobState state)
 void JobController::Launch()
 {
   m_runner.SetProcedure(std::addressof(m_proc));
+  // setup belongs here
   m_loop_future = std::async(std::launch::async, &JobController::ExecutionLoop, this);
 }
 

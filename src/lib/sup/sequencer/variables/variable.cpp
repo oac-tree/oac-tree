@@ -142,7 +142,7 @@ bool Variable::IsAvailable() const
   return IsAvailableImpl();
 }
 
-void Variable::Notify(const sup::dto::AnyValue& value, bool connected)
+void Variable::Notify(const sup::dto::AnyValue& value, bool connected) const
 {
   std::lock_guard<std::mutex> lk(m_notify_mutex);
   if (m_notify_cb)

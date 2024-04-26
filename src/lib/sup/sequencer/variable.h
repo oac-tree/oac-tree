@@ -132,7 +132,7 @@ public:
    * @note Needs to be called whenever the variable is updated. It has to be called without
    * holding the mutex lock.
    */
-  void Notify(const sup::dto::AnyValue& value, bool connected);
+  void Notify(const sup::dto::AnyValue& value, bool connected) const;
 
   /**
    * @brief Set callback for value update notifications

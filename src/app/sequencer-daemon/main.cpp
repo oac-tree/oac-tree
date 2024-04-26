@@ -63,18 +63,23 @@ int main(int argc, char* argv[])
   auto logger = sup::log::CreateDefaultSysLogger("sequencer-daemon");
   logger.SetMaxSeverity(severity);
   DaemonInterface ui(logger);
+  utils::SimpleJobStateMonitor monitor;
 
-  utils::ProcedureLoader loader{filename};
-  std::unique_ptr<Procedure> proc = loader.ParseAndSetup();
+  std::string error_msg;
+  auto proc = utils::SafeParseProcedure(filename, error_msg);
   if (!proc)
   {
-    logger.Error(loader.GetErrorMessage());
+    logger.Error(error_msg);
     return 1;
   }
 
-  utils::SimpleJobStateMonitor monitor;
-  JobController job_controller(*proc, ui, monitor);
-  job_controller.Start();
+  auto job_controller = utils::CreateJobController(*proc, ui, monitor, error_msg);
+  if (!job_controller)
+  {
+    logger.Error(error_msg);
+    return 1;
+  }
+  job_controller->Start();
 
   auto end_state = monitor.WaitForFinished();
   std::string message = "Procedure ended with state: " + ToString(end_state);

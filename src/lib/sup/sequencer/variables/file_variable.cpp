@@ -51,15 +51,12 @@ FileVariable::~FileVariable() = default;
 
 bool FileVariable::GetValueImpl(sup::dto::AnyValue& value) const
 {
-  sup::dto::JSONAnyValueParser parser;
-  auto filename = GetFullPathName(m_workspace_path,
-                                  GetAttributeString(Constants::FILENAME_ATTRIBUTE_NAME));
-  if (!parser.ParseFile(filename))
+  auto parsed_val = ReadValue();
+  if (!parsed_val)
   {
     return false;
   }
-  auto parsed_val = parser.MoveAnyValue();
-  return sup::dto::TryAssign(value, parsed_val);
+  return sup::dto::TryAssign(value, *parsed_val);
 }
 
 bool FileVariable::SetValueImpl(const sup::dto::AnyValue& value)
@@ -86,6 +83,15 @@ bool FileVariable::SetValueImpl(const sup::dto::AnyValue& value)
 void FileVariable::SetupImpl(const Workspace& ws)
 {
   m_workspace_path = GetFileDirectory(ws.GetFilename());
+  auto current_value = ReadValue();
+  if (!current_value)
+  {
+    Notify({}, false);
+  }
+  else
+  {
+    Notify(*current_value, true);
+  }
 }
 
 bool FileVariable::IsAvailableImpl() const
@@ -99,6 +105,21 @@ bool FileVariable::IsAvailableImpl() const
   }
   return true;
 }
+
+std::unique_ptr<sup::dto::AnyValue> FileVariable::ReadValue() const
+{
+  std::unique_ptr<sup::dto::AnyValue> result;
+  sup::dto::JSONAnyValueParser parser;
+  auto filename = GetFullPathName(m_workspace_path,
+                                  GetAttributeString(Constants::FILENAME_ATTRIBUTE_NAME));
+  if (!parser.ParseFile(filename))
+  {
+    return result;
+  }
+  result.reset(new sup::dto::AnyValue(parser.MoveAnyValue()));
+  return result;
+}
+
 }  // namespace sequencer
 
 }  // namespace sup

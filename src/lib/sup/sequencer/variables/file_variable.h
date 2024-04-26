@@ -52,6 +52,13 @@ private:
   bool SetValueImpl(const sup::dto::AnyValue& value) override;
   void SetupImpl(const Workspace& ws) override;
   bool IsAvailableImpl() const override;
+
+  /**
+   * @brief Try to read the value from the file and return empty unique_ptr on failure.
+   *
+   * @return unique_ptr to read value or empty one on failure.
+   */
+  std::unique_ptr<sup::dto::AnyValue> ReadValue() const;
 };
 
 }  // namespace sequencer

@@ -142,6 +142,7 @@ void JobController::SetState(JobState state)
 void JobController::Launch()
 {
   m_runner.SetProcedure(std::addressof(m_proc));
+  m_proc.Setup();
   // setup belongs here
   m_loop_future = std::async(std::launch::async, &JobController::ExecutionLoop, this);
 }

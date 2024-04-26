@@ -39,27 +39,18 @@ namespace utils
 {
 
 /**
- * @brief Helper class to try to load a Procedure from file and call its Setup method.
- * On failure, it will contain the reason for failure as an error message.
- *
+ * @brief Helper function to parse a procedure from file. It catches exceptions and puts the
+ * exception (or other error) message in the output parameter.
  */
-class ProcedureLoader
-{
-public:
-  explicit ProcedureLoader(const std::string& filename);
-  ~ProcedureLoader();
+std::unique_ptr<Procedure> SafeParseProcedure(const std::string& filename, std::string& error_msg);
 
-  std::unique_ptr<Procedure> Parse();
-
-  bool Setup(Procedure& proc);
-
-  std::unique_ptr<Procedure> ParseAndSetup();
-
-  std::string GetErrorMessage() const;
-private:
-  std::string m_filename;
-  std::string m_error_message;
-};
+/**
+ * @brief Helper function to create a JobController. It catches exceptions and puts the exception
+ * message in the output parameter.
+ */
+std::unique_ptr<JobController> CreateJobController(Procedure& proc, UserInterface& ui,
+                                                   JobStateMonitor& state_monitor,
+                                                   std::string& error_msg);
 
 /**
  * @brief Simple implementation of JobStateMonitor that provides member functions that wait for

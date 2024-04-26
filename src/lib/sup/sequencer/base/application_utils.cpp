@@ -35,68 +35,46 @@ namespace sequencer
 namespace utils
 {
 
-ProcedureLoader::ProcedureLoader(const std::string& filename)
-  : m_filename{filename}
-  , m_error_message{}
-{}
-
-ProcedureLoader::~ProcedureLoader() = default;
-
-std::unique_ptr<Procedure> ProcedureLoader::Parse()
+std::unique_ptr<Procedure> SafeParseProcedure(const std::string& filename, std::string& error_msg)
 {
-  m_error_message.clear();
-  if (!utils::FileExists(m_filename))
+  error_msg.clear();
+  if (!utils::FileExists(filename))
   {
-    m_error_message = "Procedure file not found [" + m_filename + "]";
+    error_msg = "Procedure file not found [" + filename + "]";
     return {};
   }
   try
   {
-    auto proc = ParseProcedureFile(m_filename);
+    auto proc = ParseProcedureFile(filename);
     if (!proc)
     {
-      m_error_message = "Could not parse procedure file [" + m_filename + "]";
+      error_msg = "Could not parse procedure file [" + filename + "]";
       return {};
     }
     return proc;
   }
   catch(const std::exception& e)
   {
-    m_error_message = e.what();
+    error_msg = e.what();
   }
   return {};
 }
 
-bool ProcedureLoader::Setup(Procedure& proc)
+std::unique_ptr<JobController> CreateJobController(Procedure& proc, UserInterface& ui,
+                                                   JobStateMonitor& state_monitor,
+                                                   std::string& error_msg)
 {
+  std::unique_ptr<JobController> result;
+  error_msg.clear();
   try
   {
-    proc.Setup();
-    return true;
+    result.reset(new JobController(proc, ui, state_monitor));
   }
   catch(const std::exception& e)
   {
-    m_error_message = e.what();
+    error_msg = e.what();
   }
-  return false;
-}
-
-std::unique_ptr<Procedure> ProcedureLoader::ParseAndSetup()
-{
-  auto proc = Parse();
-  if (!proc) {
-    return {};
-  }
-  if (!Setup(*proc))
-  {
-    return {};
-  }
-  return proc;
-}
-
-std::string ProcedureLoader::GetErrorMessage() const
-{
-  return m_error_message;
+  return result;
 }
 
 SimpleJobStateMonitor::SimpleJobStateMonitor()

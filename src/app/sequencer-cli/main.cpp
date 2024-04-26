@@ -72,12 +72,19 @@ int main(int argc, char* argv[])
 
   sup::log::BasicLogger logger(log_function, "sequencer-cli", severity);
   CLInterface ui(logger);
+  utils::SimpleJobStateMonitor monitor;
 
-  utils::ProcedureLoader loader{filename};
-  std::unique_ptr<Procedure> proc = loader.ParseAndSetup();
+  std::string error_msg;
+  auto proc = utils::SafeParseProcedure(filename, error_msg);
   if (!proc)
   {
-    logger.LogMessage(log::SUP_SEQ_LOG_ERR, loader.GetErrorMessage());
+    logger.LogMessage(log::SUP_SEQ_LOG_ERR, error_msg);
+    return 1;
+  }
+  auto job_controller = utils::CreateJobController(*proc, ui, monitor, error_msg);
+  if (!job_controller)
+  {
+    logger.LogMessage(log::SUP_SEQ_LOG_ERR, error_msg);
     return 1;
   }
 
@@ -86,9 +93,7 @@ int main(int argc, char* argv[])
     std::cout << "Procedure parsing and setup successful: " << filename << std::endl;
     return 0;  // Early exit.
   }
-  utils::SimpleJobStateMonitor monitor;
-  JobController job_controller(*proc, ui, monitor);
-  job_controller.Start();
+  job_controller->Start();
 
   auto end_state = monitor.WaitForFinished();
   std::cout << "Procedure ended with state: " << ToString(end_state) << std::endl;

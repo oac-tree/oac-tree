@@ -51,7 +51,7 @@ public:
   /**
    * @brief Constructor.
    *
-   * @param proc Procedure that needs to be correctly setup.
+   * @param proc Procedure (should not be setup, that will happen during this constructor).
    * @param ui UserInterface object.
    * @param state_monitor Object that will monitor state and breakpoint changes.
    */

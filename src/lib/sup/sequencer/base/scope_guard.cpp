@@ -41,7 +41,9 @@ ScopeGuard::~ScopeGuard()
 
 ScopeGuard::ScopeGuard(ScopeGuard&& other)
   : m_func{other.m_func}
-{}
+{
+  other.m_func = {};
+}
 
 ScopeGuard& ScopeGuard::operator=(ScopeGuard&& other)
 {

@@ -51,6 +51,7 @@ target_sources(unit-tests
     repeat_tests.cpp
     reset_variable_tests.cpp
     runner_tests.cpp
+    scope_guard_tests.cpp
     sequence_parser_tests.cpp
     sequence_workspace_tests.cpp
     unit_test_helper.cpp

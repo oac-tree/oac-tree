@@ -145,7 +145,7 @@ bool Workspace::WaitForVariable(const std::string& name, double timeout_sec, boo
     return false;
   }
   long timeout_ns = std::lround(timeout_sec * 1e9);
-  auto time_end = std::chrono::system_clock::now() + std::chrono::nanoseconds(timeout_ns);
+  auto timeout_duration = std::chrono::nanoseconds(timeout_ns);
   int dummy_listener; // to get a unique address
   std::mutex mx;
   std::unique_lock<std::mutex> lk(mx);
@@ -155,7 +155,7 @@ bool Workspace::WaitForVariable(const std::string& name, double timeout_sec, boo
                     cv.notify_one();
                   };
   RegisterCallback(name, callback, &dummy_listener);
-  cv.wait_until(lk, time_end, [&it, availability]{
+  cv.wait_for(lk, timeout_duration, [&it, availability]{
       return it->second->IsAvailable() == availability;
     });
   return it->second->IsAvailable() == availability;

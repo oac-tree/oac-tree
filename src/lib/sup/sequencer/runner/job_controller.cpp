@@ -142,6 +142,9 @@ void JobController::SetState(JobState state)
 void JobController::Launch()
 {
   m_runner.SetProcedure(std::addressof(m_proc));
+  auto root_instr = m_proc.RootInstruction();
+  m_ui.InitializeInstructionTree(root_instr);
+  m_state_monitor.InitializeInstructionTree(root_instr);
   m_loop_future = std::async(std::launch::async, &JobController::ExecutionLoop, this);
 }
 

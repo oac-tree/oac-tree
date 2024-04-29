@@ -44,6 +44,9 @@ CLInterface::CLInterface(const sup::log::BasicLogger& logger)
 
 CLInterface::~CLInterface() = default;
 
+void CLInterface::InitializeInstructionTree(const Instruction*)
+{}
+
 void CLInterface::UpdateInstructionStatus(const Instruction *instruction)
 {
   std::string info_message = "Instruction (" + instruction->GetType() + ":" +

@@ -63,6 +63,14 @@ public:
   virtual ~UserInterface();
 
   /**
+   * @brief Method called when the instruction tree has just been setup and is now complete, i.e.
+   * contains all the included instruction trees.
+   *
+   * @param root Root instruction of the tree.
+   */
+  virtual void InitializeInstructionTree(const Instruction* root) = 0;
+
+  /**
    * @brief Method called when instruction's execution status changes.
    *
    * @param instruction Instruction that has new execution status.
@@ -163,6 +171,7 @@ public:
   DefaultUserInterface();
   ~DefaultUserInterface();
 
+  void InitializeInstructionTree(const Instruction* root) override;
   void UpdateInstructionStatus(const Instruction* instruction) override;
   void VariableUpdated(const std::string& name, const sup::dto::AnyValue& value,
                        bool connected) override;

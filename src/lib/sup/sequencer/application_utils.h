@@ -65,6 +65,8 @@ public:
   SimpleJobStateMonitor();
   ~SimpleJobStateMonitor();
 
+  void InitializeInstructionTree(const Instruction* root) override;
+
   void OnStateChange(JobState state) noexcept override;
 
   void OnBreakpointChange(const Instruction* instruction, bool breakpoint_set) noexcept override;

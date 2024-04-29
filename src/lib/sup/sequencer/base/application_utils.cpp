@@ -85,6 +85,9 @@ SimpleJobStateMonitor::SimpleJobStateMonitor()
 
 SimpleJobStateMonitor::~SimpleJobStateMonitor() = default;
 
+void SimpleJobStateMonitor::InitializeInstructionTree(const Instruction*)
+{}
+
 void SimpleJobStateMonitor::OnStateChange(JobState state) noexcept
 {
   {

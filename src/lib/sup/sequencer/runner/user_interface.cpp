@@ -47,6 +47,9 @@ DefaultUserInterface::DefaultUserInterface() = default;
 
 DefaultUserInterface::~DefaultUserInterface() = default;
 
+void DefaultUserInterface::InitializeInstructionTree(const Instruction*)
+{}
+
 void DefaultUserInterface::UpdateInstructionStatus(const Instruction*)
 {}
 

@@ -42,6 +42,14 @@ public:
   virtual ~JobStateMonitor();
 
   /**
+   * @brief Method called when the instruction tree has just been setup and is now complete, i.e.
+   * contains all the included instruction trees.
+   *
+   * @param root Root instruction of the tree.
+   */
+  virtual void InitializeInstructionTree(const Instruction* root) = 0;
+
+  /**
    * @brief This member function will be called every time the JobController changes state.
    *
    * @param state New state of the JobController.

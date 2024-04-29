@@ -26,6 +26,7 @@
 #include <sup/sequencer/execution_status.h>
 #include <sup/sequencer/procedure_context.h>
 #include <sup/sequencer/procedure_preamble.h>
+#include <sup/sequencer/scope_guard.h>
 
 #include <functional>
 #include <map>
@@ -319,11 +320,14 @@ public:
    * @brief Add a generic callback for variable updates.
    *
    * @param cb Callback function object.
+   * @param listener Pointer to object that listens to updates.
+   *
    * @return true if adding the callback was successful.
    *
-   * @note Users are responsible for ensuring the callback outlives the underlying workspace.
+   * @note Users are responsible for ensuring the callback outlives the underlying workspace or to
+   * unregister it using ScopeGuard object.
    */
-  bool RegisterGenericCallback(const GenericCallback& cb);
+  bool RegisterGenericCallback(const GenericCallback& cb, void* listener);
 
   void SetParentProcedure(Procedure* parent);
 
@@ -441,6 +445,16 @@ std::string GetProcedurePath(const Procedure& proc);
    * @return Resolved filename.
    */
 std::string ResolveRelativePath(const Procedure& proc, const std::string& filename);
+
+  /**
+   * @brief Get a ScopeGuard object that will unregister callbacks upon destruction.
+   *
+   * @param proc Procedure that will hold the callback object.
+   * @param listener Pointer to object that listens to updates.
+   *
+   * @return ScopeGuard object.
+   */
+ScopeGuard GetCallbackGuard(Procedure& proc, void *listener);
 
 }  // namespace sequencer
 

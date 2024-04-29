@@ -41,6 +41,7 @@ namespace sequencer
 Runner::Runner(UserInterface& ui)
   : m_proc{nullptr}
   , m_ui{ui}
+  , m_cb_guard{}
   , m_tick_cb{}
   , m_breakpoint_manager{new BreakpointManager{}}
   , m_current_breakpoint_instructions{}
@@ -52,11 +53,13 @@ Runner::~Runner() = default;
 void Runner::SetProcedure(Procedure* procedure)
 {
   m_proc = procedure;
-  m_proc->RegisterGenericCallback(
-    [this](const std::string& name, const sup::dto::AnyValue& value, bool connected)
+  auto callback = [this](const std::string& name, const sup::dto::AnyValue& value, bool connected)
     {
       m_ui.VariableUpdated(name, value, connected);
-    });
+    };
+  m_cb_guard = GetCallbackGuard(*m_proc, this);
+  m_proc->RegisterGenericCallback(callback, this);
+  m_proc->Setup();
   m_breakpoint_manager.reset(new BreakpointManager(*m_proc));
 }
 

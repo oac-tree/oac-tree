@@ -288,9 +288,9 @@ const sup::dto::AnyTypeRegistry& Procedure::GetTypeRegistry() const
   return m_workspace->GetTypeRegistry();
 }
 
-bool Procedure::RegisterGenericCallback(const GenericCallback& cb)
+bool Procedure::RegisterGenericCallback(const GenericCallback& cb, void* listener)
 {
-  return m_workspace->RegisterGenericCallback(cb);
+  return m_workspace->RegisterGenericCallback(cb, listener);
 }
 
 void Procedure::SetParentProcedure(Procedure* parent)
@@ -418,6 +418,11 @@ std::string GetProcedurePath(const Procedure& proc)
 std::string ResolveRelativePath(const Procedure& proc, const std::string& filename)
 {
   return GetFullPathName(GetProcedurePath(proc), filename);
+}
+
+ScopeGuard GetCallbackGuard(Procedure& proc, void *listener)
+{
+  return proc.GetWorkspace().GetCallbackGuard(listener);
 }
 
 }  // namespace sequencer

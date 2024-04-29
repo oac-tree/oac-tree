@@ -199,8 +199,7 @@ const sup::dto::AnyTypeRegistry& Workspace::GetTypeRegistry() const
   return *m_type_registry;
 }
 
-ScopeGuard Workspace::GetCallbackGuard(
-    void *listener)
+ScopeGuard Workspace::GetCallbackGuard(void *listener)
 {
   return m_callbacks.GetCallbackGuard(listener);
 }

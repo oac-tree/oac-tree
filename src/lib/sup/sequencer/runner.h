@@ -23,6 +23,7 @@
 #define SUP_SEQUENCER_RUNNER_H_
 
 #include <sup/sequencer/breakpoint.h>
+#include <sup/sequencer/scope_guard.h>
 
 #include <atomic>
 #include <functional>
@@ -58,6 +59,9 @@ public:
   /**
    * @brief Set the procedure.
    * @param procedure Pointer to procedure.
+   *
+   * @note The passed procedure will be setup during this function call, so it is assumed that the
+   * procedure was not previously setup.
    */
   void SetProcedure(Procedure* procedure);
 
@@ -152,6 +156,7 @@ private:
 
   Procedure* m_proc;
   UserInterface& m_ui;
+  ScopeGuard m_cb_guard;
   TickCallback m_tick_cb;
   std::unique_ptr<BreakpointManager> m_breakpoint_manager;
   std::vector<const Instruction*> m_current_breakpoint_instructions;

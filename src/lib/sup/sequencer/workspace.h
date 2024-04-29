@@ -163,8 +163,9 @@ public:
    * @return Guard object.
    *
    * @note Upon destruction, the guard object will unregister its callbacks. Users are responsible
-   * for creating such an object before registering callback as there is no other way to unregister
-   * them.
+   * for creating such an object before registering callbacks as there is no other way to unregister
+   * them. Note also that unregistering the callbacks should only be done when the object the
+   * callbacks refer to (e.g. for member functions) is destroyed before the Workspace.
    */
   ScopeGuard GetCallbackGuard(void* listener);
 

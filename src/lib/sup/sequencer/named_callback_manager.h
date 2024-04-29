@@ -139,8 +139,7 @@ void NamedCallbackManager<Args...>::ExecuteCallbacks(const std::string& name, Ar
 }
 
 template <typename... Args>
-ScopeGuard NamedCallbackManager<Args...>::GetCallbackGuard(
-    void* listener)
+ScopeGuard NamedCallbackManager<Args...>::GetCallbackGuard(void* listener)
 {
   auto unregister = [this, listener](){
     if (listener != nullptr)

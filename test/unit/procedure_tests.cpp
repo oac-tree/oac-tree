@@ -119,9 +119,17 @@ TEST_F(ProcedureTest, DefaultConstructed)
 
 TEST_F(ProcedureTest, SetupFailure)
 {
-  Procedure procedure;
-  EXPECT_TRUE(procedure.AddAttribute(kTickTimeoutAttributeName, "cannot_parse_this"));
-  EXPECT_THROW(procedure.Setup(), ProcedureSetupException);
+  {
+    // Attribute validation fails
+    Procedure procedure;
+    EXPECT_TRUE(procedure.AddAttribute(kTickTimeoutAttributeName, "cannot_parse_this"));
+    EXPECT_THROW(procedure.Setup(), ProcedureSetupException);
+  }
+  {
+    // Absence of root instruction causes failure
+    Procedure procedure;
+    EXPECT_THROW(procedure.Setup(), ProcedureSetupException);
+  }
 }
 
 TEST_F(ProcedureTest, GetWorkspace)

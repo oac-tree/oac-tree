@@ -188,10 +188,12 @@ void Procedure::Setup()
   }
   SetupPreamble();
   m_workspace->Setup();
-  if (RootInstruction() != nullptr)
+  if (RootInstruction() == nullptr)
   {
-    RootInstruction()->Setup(*this);
+    std::string error_message = "Procedure::Setup(): No root instruction";
+    throw ProcedureSetupException(error_message);
   }
+  RootInstruction()->Setup(*this);
 }
 
 void Procedure::ExecuteSingle(UserInterface& ui)

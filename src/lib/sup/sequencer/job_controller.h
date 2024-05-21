@@ -23,9 +23,9 @@
 #define SUP_SEQUENCER_JOB_CONTROLLER_H_
 
 #include <sup/sequencer/job_command_queue.h>
+#include <sup/sequencer/job_interface.h>
 #include <sup/sequencer/job_state_monitor.h>
 #include <sup/sequencer/job_states.h>
-
 #include <sup/sequencer/procedure.h>
 #include <sup/sequencer/runner.h>
 #include <sup/sequencer/user_interface.h>
@@ -38,7 +38,7 @@ namespace sequencer
 {
 
 /**
- * @brief Asynchronous wrapper around sup::sequencer::Runner.
+ * @brief Asynchronous wrapper around Runner.
  *
  * The JobController's responsibility is to asynchronously handle control commands related to a
  * procedure's execution. The main difference with the existing Runner in the Sequencer, which is
@@ -55,8 +55,15 @@ public:
    * @param ui UserInterface object.
    * @param state_monitor Object that will monitor state and breakpoint changes.
    */
-  explicit JobController(sup::sequencer::Procedure& proc, sup::sequencer::UserInterface& ui,
-                         JobStateMonitor& state_monitor);
+  explicit JobController(Procedure& proc, UserInterface& ui, JobStateMonitor& state_monitor);
+
+  /**
+   * @brief Constructor.
+   *
+   * @param proc Procedure (should not be setup, that will happen during this constructor).
+   * @param job_ui JobInterface object that handles both UserInterface and JobStateMonitor.
+   */
+  explicit JobController(Procedure& proc, JobInterface& job_ui);
 
   ~JobController();
 
@@ -101,9 +108,9 @@ public:
   void Halt();
 
 private:
-  sup::sequencer::Procedure& m_proc;
-  sup::sequencer::UserInterface& m_ui;
-  sup::sequencer::Runner m_runner;
+  Procedure& m_proc;
+  UserInterface& m_ui;
+  Runner m_runner;
 
   JobStateMonitor& m_state_monitor;
 

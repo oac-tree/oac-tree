@@ -44,6 +44,10 @@ JobController::JobController(Procedure& proc, UserInterface& ui, JobStateMonitor
   Launch();
 }
 
+JobController::JobController(Procedure& proc, JobInterface& job_ui)
+  : JobController{proc, job_ui, job_ui}
+{}
+
 JobController::~JobController()
 {
   Terminate();
@@ -143,8 +147,6 @@ void JobController::Launch()
 {
   m_runner.SetProcedure(std::addressof(m_proc));
   auto root_instr = m_proc.RootInstruction();
-  m_ui.InitializeInstructionTree(root_instr);
-  m_state_monitor.InitializeInstructionTree(root_instr);
   m_loop_future = std::async(std::launch::async, &JobController::ExecutionLoop, this);
 }
 

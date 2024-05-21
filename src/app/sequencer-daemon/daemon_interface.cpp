@@ -44,9 +44,6 @@ DaemonInterface::DaemonInterface(const sup::log::DefaultLogger& logger)
 
 DaemonInterface::~DaemonInterface() = default;
 
-void DaemonInterface::InitializeInstructionTree(const Instruction*)
-{}
-
 void DaemonInterface::UpdateInstructionStatus(const Instruction *instruction)
 {
   std::string info_message = "Instruction (" + instruction->GetType() + ":" +

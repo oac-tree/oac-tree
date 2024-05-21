@@ -39,7 +39,6 @@ namespace sequencer
 class MockUserInterface : public UserInterface
 {
 public:
-  MOCK_METHOD1(InitializeInstructionTree, void(const Instruction *));
   MOCK_METHOD1(UpdateInstructionStatus, void(const Instruction *));
   MOCK_METHOD3(VariableUpdated,
                void( const std::string &name, const sup::dto::AnyValue &value, bool connected));

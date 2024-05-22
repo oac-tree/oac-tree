@@ -42,8 +42,8 @@ namespace sequencer
  *
  * The JobController's responsibility is to asynchronously handle control commands related to a
  * procedure's execution. The main difference with the existing Runner in the Sequencer, which is
- * encapsulated here, is that starting or resuming execution will spawn a thread to handle the
- * procedure's execution.
+ * encapsulated here, is that all interactions with the procedure's execution are asynchronous and
+ * that it reports also job progress through the JobStateMonitor.
 */
 class JobController
 {

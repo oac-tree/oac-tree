@@ -41,7 +41,8 @@ class Procedure;
 class UserInterface;
 
 /**
- * @brief Class that aggregates a Procedure and a UserInterface.
+ * @brief The Runner class aggregates a Procedure and a UserInterface. It allows to synchronously
+ * execute a procedure and get feedback or user input/output on the UserInterface.
  */
 class Runner
 {

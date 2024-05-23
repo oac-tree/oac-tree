@@ -27,6 +27,7 @@
 #include <sup/sequencer/variables/local_variable.h>
 #include <sup/sequencer/instructions/wait.h>
 
+#include <sup/sequencer/constants.h>
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/instruction_registry.h>
 #include <sup/sequencer/procedure_context.h>
@@ -269,6 +270,36 @@ TEST_F(ProcedureTest, ExternalInclude)
   EXPECT_GT(ext_instructions.size(), 0);
 
   EXPECT_NO_THROW(proc->Setup());
+}
+
+TEST_F(ProcedureTest, GetProcedureName)
+{
+  {
+    // Procedure without name attribute or filename returns empty string
+    Procedure procedure{};
+    EXPECT_EQ(GetProcedureName(procedure), "");
+  }
+  {
+    // Procedure without name attribute returns filename
+    const std::string filename = "proc_file";
+    Procedure procedure{filename};
+    EXPECT_EQ(GetProcedureName(procedure), filename);
+  }
+  {
+    // Procedure with name attribute returns this name
+    const std::string filename = "proc_file";
+    const std::string name = "proc_name";
+    Procedure procedure{filename};
+    EXPECT_TRUE(procedure.AddAttribute(Constants::NAME_ATTRIBUTE_NAME, name));
+    EXPECT_EQ(GetProcedureName(procedure), name);
+  }
+  {
+    // Procedure with name attribute returns this name, even when empty
+    const std::string filename = "proc_file";
+    Procedure procedure{filename};
+    EXPECT_TRUE(procedure.AddAttribute(Constants::NAME_ATTRIBUTE_NAME, ""));
+    EXPECT_EQ(GetProcedureName(procedure), "");
+  }
 }
 
 ProcedureTest::ProcedureTest()

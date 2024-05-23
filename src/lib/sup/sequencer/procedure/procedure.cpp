@@ -337,6 +337,15 @@ int TickTimeoutMs(const Procedure& procedure)
   return DefaultSettings::DEFAULT_SLEEP_TIME_MS;
 }
 
+std::string GetProcedureName(const Procedure& procedure)
+{
+  if (procedure.HasAttribute(Constants::NAME_ATTRIBUTE_NAME))
+  {
+    return procedure.GetAttributeString(Constants::NAME_ATTRIBUTE_NAME);
+  }
+  return procedure.GetFilename();
+}
+
 std::vector<const Instruction*> GetNextInstructions(const Procedure& proc)
 {
   auto tree = proc.GetNextInstructionTree();

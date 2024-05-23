@@ -368,6 +368,14 @@ private:
  */
 int TickTimeoutMs(const Procedure& procedure);
 
+/**
+ * @brief Get the name of the procedure.
+ *
+ * @param procedure Procedure to query.
+ * @return Name attribute of the procedure if present or its possibly empty filename.
+ */
+std::string GetProcedureName(const Procedure& procedure);
+
   /**
    * @brief Get list of instructions that will be executed next.
    *

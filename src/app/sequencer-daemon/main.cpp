@@ -24,7 +24,7 @@
 #include <sup/cli/command_line_parser.h>
 #include <sup/log/default_loggers.h>
 #include <sup/sequencer/application_utils.h>
-#include <sup/sequencer/job_controller.h>
+#include <sup/sequencer/async_runner.h>
 #include <sup/sequencer/job_state_monitor.h>
 #include <sup/sequencer/generic_utils.h>
 #include <sup/sequencer/log_severity.h>
@@ -73,13 +73,13 @@ int main(int argc, char* argv[])
     return 1;
   }
 
-  auto job_controller = utils::CreateJobController(*proc, ui, monitor, error_msg);
-  if (!job_controller)
+  auto async_runner = utils::CreateAsyncRunner(*proc, ui, monitor, error_msg);
+  if (!async_runner)
   {
     logger.Error(error_msg);
     return 1;
   }
-  job_controller->Start();
+  async_runner->Start();
 
   auto end_state = monitor.WaitForFinished();
   std::string message = "Procedure ended with state: " + ToString(end_state);

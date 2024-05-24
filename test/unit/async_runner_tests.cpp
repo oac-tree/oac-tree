@@ -22,7 +22,7 @@
 #include "unit_test_helper.h"
 
 #include <sup/sequencer/application_utils.h>
-#include <sup/sequencer/job_controller.h>
+#include <sup/sequencer/async_runner.h>
 #include <sup/sequencer/job_state_monitor.h>
 #include <sup/sequencer/sequence_parser.h>
 #include <sup/sequencer/user_interface.h>
@@ -85,11 +85,11 @@ private:
   sup::dto::uint32 m_ticks;
 };
 
-class JobControllerTest : public ::testing::Test
+class AsyncRunnerTest : public ::testing::Test
 {
 protected:
-  JobControllerTest() = default;
-  virtual ~JobControllerTest() = default;
+  AsyncRunnerTest() = default;
+  virtual ~AsyncRunnerTest() = default;
 
   bool WaitForState(JobState state, double seconds = 1.0)
   {
@@ -98,109 +98,109 @@ protected:
   TestJobStateMonitor m_monitor;
 };
 
-TEST_F(JobControllerTest, Constructed)
+TEST_F(AsyncRunnerTest, Constructed)
 {
   DefaultUserInterface ui;
   auto proc = ParseProcedureString(
     sup::UnitTestHelper::CreateProcedureString(kTestParallelProcedureBody));
-  JobController controller{*proc, ui, m_monitor};
+  AsyncRunner async_runner{*proc, ui, m_monitor};
   EXPECT_TRUE(WaitForState(JobState::kInitial));
-  controller.Start();
+  async_runner.Start();
   EXPECT_TRUE(WaitForState(JobState::kRunning));
   EXPECT_TRUE(WaitForState(JobState::kSucceeded, 2));
 }
 
-TEST_F(JobControllerTest, Halted)
+TEST_F(AsyncRunnerTest, Halted)
 {
   DefaultUserInterface ui;
   auto proc = ParseProcedureString(
     sup::UnitTestHelper::CreateProcedureString(kTestParallelProcedureBody));
-  JobController controller{*proc, ui, m_monitor};
+  AsyncRunner async_runner{*proc, ui, m_monitor};
   EXPECT_TRUE(WaitForState(JobState::kInitial));
-  controller.Start();
+  async_runner.Start();
   EXPECT_TRUE(WaitForState(JobState::kRunning));
-  controller.Halt();
+  async_runner.Halt();
   EXPECT_TRUE(WaitForState(JobState::kHalted));
 }
 
-TEST_F(JobControllerTest, PauseStep)
+TEST_F(AsyncRunnerTest, PauseStep)
 {
   DefaultUserInterface ui;
   auto proc = ParseProcedureString(
     sup::UnitTestHelper::CreateProcedureString(kTestSequenceProcedureBody));
-  JobController controller{*proc, ui, m_monitor};
+  AsyncRunner async_runner{*proc, ui, m_monitor};
   EXPECT_TRUE(WaitForState(JobState::kInitial));
-  controller.Start();
-  controller.Pause();
+  async_runner.Start();
+  async_runner.Pause();
   EXPECT_TRUE(WaitForState(JobState::kPaused));
-  controller.Step();
+  async_runner.Step();
   EXPECT_TRUE(WaitForState(JobState::kSucceeded));
   EXPECT_EQ(m_monitor.GetTickCount(), 2u);
 }
 
-TEST_F(JobControllerTest, StepReset)
+TEST_F(AsyncRunnerTest, StepReset)
 {
   DefaultUserInterface ui;
   auto proc = ParseProcedureString(
     sup::UnitTestHelper::CreateProcedureString(kTestStepProcedureBody));
-  JobController controller{*proc, ui, m_monitor};
+  AsyncRunner async_runner{*proc, ui, m_monitor};
   EXPECT_TRUE(WaitForState(JobState::kInitial));
-  controller.Step();
+  async_runner.Step();
   EXPECT_TRUE(WaitForState(JobState::kStepping));
   EXPECT_TRUE(WaitForState(JobState::kPaused));
   EXPECT_EQ(m_monitor.GetTickCount(), 1u);
-  controller.Step();
+  async_runner.Step();
   EXPECT_TRUE(WaitForState(JobState::kStepping));
   EXPECT_TRUE(WaitForState(JobState::kSucceeded));
   EXPECT_EQ(m_monitor.GetTickCount(), 2u);
-  controller.Reset();
+  async_runner.Reset();
   EXPECT_TRUE(WaitForState(JobState::kInitial));
-  controller.Start();
+  async_runner.Start();
   EXPECT_TRUE(WaitForState(JobState::kSucceeded));
 }
 
-TEST_F(JobControllerTest, TickCallbacks)
+TEST_F(AsyncRunnerTest, TickCallbacks)
 {
   DefaultUserInterface ui;
   auto proc = ParseProcedureString(
     sup::UnitTestHelper::CreateProcedureString(kTestStepProcedureBody));
-  JobController controller{*proc, ui, m_monitor};
+  AsyncRunner async_runner{*proc, ui, m_monitor};
   EXPECT_TRUE(WaitForState(JobState::kInitial));
   EXPECT_EQ(m_monitor.GetTickCount(), 0u);
-  controller.Start();
+  async_runner.Start();
   EXPECT_TRUE(WaitForState(JobState::kSucceeded));
   EXPECT_EQ(m_monitor.GetTickCount(), 2u);
 }
 
-TEST_F(JobControllerTest, Breakpoints)
+TEST_F(AsyncRunnerTest, Breakpoints)
 {
-  // Setup procedure and controller
+  // Setup procedure and async_runner
   DefaultUserInterface ui;
   auto proc = ParseProcedureString(
     sup::UnitTestHelper::CreateProcedureString(kTestStepProcedureBody));
-  JobController controller{*proc, ui, m_monitor};
+  AsyncRunner async_runner{*proc, ui, m_monitor};
   EXPECT_TRUE(WaitForState(JobState::kInitial));
   auto root_instr = proc->RootInstruction();
   EXPECT_EQ(m_monitor.GetBreakpointUpdateCount(), 0u);
 
   // Add breakpoint to root
-  controller.SetBreakpoint(root_instr);
+  async_runner.SetBreakpoint(root_instr);
   EXPECT_EQ(m_monitor.GetBreakpointUpdateCount(), 1u);
   // Adding breakpoint to non-existing instruction does nothing
-  controller.SetBreakpoint(nullptr);
+  async_runner.SetBreakpoint(nullptr);
   EXPECT_EQ(m_monitor.GetBreakpointUpdateCount(), 1u);
-  controller.Start();
+  async_runner.Start();
   EXPECT_TRUE(WaitForState(JobState::kPaused));
 
   // Remove breakpoint
-  controller.RemoveBreakpoint(root_instr);
+  async_runner.RemoveBreakpoint(root_instr);
   EXPECT_EQ(m_monitor.GetBreakpointUpdateCount(), 2u);
   // Trying to remove non-existent breakpoint does nothing
-  controller.RemoveBreakpoint(root_instr);
-  controller.RemoveBreakpoint(nullptr);
+  async_runner.RemoveBreakpoint(root_instr);
+  async_runner.RemoveBreakpoint(nullptr);
   EXPECT_EQ(m_monitor.GetBreakpointUpdateCount(), 2u);
 
   // Finish procedure
-  controller.Start();
+  async_runner.Start();
   EXPECT_TRUE(WaitForState(JobState::kSucceeded));
 }

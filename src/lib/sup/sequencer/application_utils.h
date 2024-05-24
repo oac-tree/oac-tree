@@ -22,7 +22,7 @@
 #ifndef SUP_SEQUENCER_APPLICATON_UTILS_H_
 #define SUP_SEQUENCER_APPLICATON_UTILS_H_
 
-#include <sup/sequencer/job_controller.h>
+#include <sup/sequencer/async_runner.h>
 #include <sup/sequencer/job_state_monitor.h>
 #include <sup/sequencer/procedure.h>
 
@@ -45,10 +45,10 @@ namespace utils
 std::unique_ptr<Procedure> SafeParseProcedure(const std::string& filename, std::string& error_msg);
 
 /**
- * @brief Helper function to create a JobController. It catches exceptions and puts the exception
+ * @brief Helper function to create a AsyncRunner. It catches exceptions and puts the exception
  * message in the output parameter.
  */
-std::unique_ptr<JobController> CreateJobController(Procedure& proc, UserInterface& ui,
+std::unique_ptr<AsyncRunner> CreateAsyncRunner(Procedure& proc, UserInterface& ui,
                                                    JobStateMonitor& state_monitor,
                                                    std::string& error_msg);
 

@@ -1,6 +1,9 @@
 Changes for 3.2.0:
 
 - Improve output of variables in sequencer-cli
+- Ensure notification of variables to UserInterface
+- Create aggregate JobInterface (UserInterface + JobStateMonitor)
+- Rename: JobController -> AsyncRunner
 
 Changes for 3.1.0:
 

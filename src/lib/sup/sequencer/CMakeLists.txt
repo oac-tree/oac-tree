@@ -28,6 +28,7 @@ set_target_properties(sup-sequencer-shared PROPERTIES EXPORT_NAME sequencer)
 
 install(FILES
   application_utils.h
+  async_runner.h
   attribute_definition.h
   attribute_handler.h
   attribute_utils.h
@@ -46,7 +47,6 @@ install(FILES
   instruction.h
   job_command_queue.h
   job_commands.h
-  job_controller.h
   job_interface.h
   job_state_monitor.h
   job_states.h

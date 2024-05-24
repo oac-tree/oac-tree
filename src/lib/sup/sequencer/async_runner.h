@@ -19,8 +19,8 @@
  * of the distribution package.
  ******************************************************************************/
 
-#ifndef SUP_SEQUENCER_JOB_CONTROLLER_H_
-#define SUP_SEQUENCER_JOB_CONTROLLER_H_
+#ifndef SUP_SEQUENCER_async_runner_H_
+#define SUP_SEQUENCER_async_runner_H_
 
 #include <sup/sequencer/job_command_queue.h>
 #include <sup/sequencer/job_interface.h>
@@ -40,12 +40,12 @@ namespace sequencer
 /**
  * @brief Asynchronous wrapper around Runner.
  *
- * The JobController's responsibility is to asynchronously handle control commands related to a
+ * The AsyncRunner's responsibility is to asynchronously handle control commands related to a
  * procedure's execution. The main difference with the existing Runner in the Sequencer, which is
  * encapsulated here, is that all interactions with the procedure's execution are asynchronous and
  * that it reports also job progress through the JobStateMonitor.
 */
-class JobController
+class AsyncRunner
 {
 public:
   /**
@@ -55,7 +55,7 @@ public:
    * @param ui UserInterface object.
    * @param state_monitor Object that will monitor state and breakpoint changes.
    */
-  explicit JobController(Procedure& proc, UserInterface& ui, JobStateMonitor& state_monitor);
+  explicit AsyncRunner(Procedure& proc, UserInterface& ui, JobStateMonitor& state_monitor);
 
   /**
    * @brief Constructor.
@@ -63,9 +63,9 @@ public:
    * @param proc Procedure (should not be setup, that will happen during this constructor).
    * @param job_ui JobInterface object that handles both UserInterface and JobStateMonitor.
    */
-  explicit JobController(Procedure& proc, JobInterface& job_ui);
+  explicit AsyncRunner(Procedure& proc, JobInterface& job_ui);
 
-  ~JobController();
+  ~AsyncRunner();
 
    /**
    * @brief Set a breakpoint at the given instruction.
@@ -127,10 +127,10 @@ private:
     kExit
   };
 
-  using CommandHandlerFunction = Action (JobController::*)(JobCommand);
+  using CommandHandlerFunction = Action (AsyncRunner::*)(JobCommand);
   CommandHandlerFunction m_command_handler;
   /**
-   * @brief Track the JobController's execution loop.
+   * @brief Track the AsyncRunner's execution loop.
    */
   std::future<void> m_loop_future;
 
@@ -175,4 +175,4 @@ private:
 
 }  // namespace sup
 
-#endif  // SUP_SEQUENCER_JOB_CONTROLLER_H_
+#endif  // SUP_SEQUENCER_async_runner_H_

@@ -34,7 +34,7 @@ namespace sup
 namespace sequencer
 {
 /**
- * @brief Threadsafe fifo queue for commands, used in `JobController`.
+ * @brief Threadsafe fifo queue for commands, used in `AsyncRunner`.
 */
 class JobCommandQueue
 {

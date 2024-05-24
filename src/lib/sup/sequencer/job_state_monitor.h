@@ -32,7 +32,7 @@ class Instruction;
 class Procedure;
 
 /**
- * @brief Pure interface for objects that can receive JobState updates from JobController.
+ * @brief Pure interface for objects that can receive JobState updates from AsyncRunner.
  *
  * @note The member functions are all declared noexcept as implementations should not throw.
  */
@@ -42,9 +42,9 @@ public:
   virtual ~JobStateMonitor();
 
   /**
-   * @brief This member function will be called every time the JobController changes state.
+   * @brief This member function will be called every time the AsyncRunner changes state.
    *
-   * @param state New state of the JobController.
+   * @param state New state of the AsyncRunner.
    */
   virtual void OnStateChange(JobState state) noexcept = 0;
 
@@ -58,7 +58,7 @@ public:
 
   /**
    * @brief This member function will be called in between ticks during continuous execution of
-   * the JobController. During stepwise execution, it will never be called.
+   * the AsyncRunner. During stepwise execution, it will never be called.
    *
    * @note This member function can be overridden to implement queries on the procedure that could
    * possibly interfere with execution. Since it is called between ticks, it is safe to call for

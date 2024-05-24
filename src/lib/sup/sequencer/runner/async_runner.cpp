@@ -19,7 +19,7 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <sup/sequencer/job_controller.h>
+#include <sup/sequencer/async_runner.h>
 
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/log_severity.h>
@@ -30,7 +30,7 @@ namespace sequencer
 {
 using namespace sup::sequencer;
 
-JobController::JobController(Procedure& proc, UserInterface& ui, JobStateMonitor& state_monitor)
+AsyncRunner::AsyncRunner(Procedure& proc, UserInterface& ui, JobStateMonitor& state_monitor)
   : m_proc{proc}
   , m_ui{ui}
   , m_runner{m_ui}
@@ -44,16 +44,16 @@ JobController::JobController(Procedure& proc, UserInterface& ui, JobStateMonitor
   Launch();
 }
 
-JobController::JobController(Procedure& proc, JobInterface& job_ui)
-  : JobController{proc, job_ui, job_ui}
+AsyncRunner::AsyncRunner(Procedure& proc, JobInterface& job_ui)
+  : AsyncRunner{proc, job_ui, job_ui}
 {}
 
-JobController::~JobController()
+AsyncRunner::~AsyncRunner()
 {
   Terminate();
 }
 
-void JobController::SetBreakpoint(const Instruction* instruction)
+void AsyncRunner::SetBreakpoint(const Instruction* instruction)
 {
   try
   {
@@ -68,7 +68,7 @@ void JobController::SetBreakpoint(const Instruction* instruction)
   }
 }
 
-void JobController::RemoveBreakpoint(const Instruction* instruction)
+void AsyncRunner::RemoveBreakpoint(const Instruction* instruction)
 {
   if (m_runner.RemoveBreakpoint(instruction))
   {
@@ -76,27 +76,27 @@ void JobController::RemoveBreakpoint(const Instruction* instruction)
   }
 }
 
-void JobController::Start()
+void AsyncRunner::Start()
 {
   m_command_queue.Push(JobCommand::kStart);
 }
 
-void JobController::Step()
+void AsyncRunner::Step()
 {
   m_command_queue.Push(JobCommand::kStep);
 }
 
-void JobController::Pause()
+void AsyncRunner::Pause()
 {
   m_command_queue.Push(JobCommand::kPause);
 }
 
-void JobController::Reset()
+void AsyncRunner::Reset()
 {
   m_command_queue.Push(JobCommand::kReset);
 }
 
-void JobController::Halt()
+void AsyncRunner::Halt()
 {
   auto halt_func = [this](){
     m_runner.Halt();
@@ -105,7 +105,7 @@ void JobController::Halt()
   m_command_queue.PriorityPush(JobCommand::kHalt, halt_func);
 }
 
-void JobController::Terminate()
+void AsyncRunner::Terminate()
 {
   auto terminate_func = [this](){
     m_runner.Halt();
@@ -116,46 +116,46 @@ void JobController::Terminate()
   m_proc.Reset(m_ui);
 }
 
-void JobController::SetState(JobState state)
+void AsyncRunner::SetState(JobState state)
 {
   m_state_monitor.OnStateChange(state);
   switch (state)
   {
     case JobState::kInitial:
-      m_command_handler = &JobController::HandleInitial;
+      m_command_handler = &AsyncRunner::HandleInitial;
       break;
     case JobState::kPaused:
-      m_command_handler = &JobController::HandlePaused;
+      m_command_handler = &AsyncRunner::HandlePaused;
       break;
     case JobState::kStepping:
       // Nothing to do here. State will switch immediately to paused after step.
       break;
     case JobState::kRunning:
-      m_command_handler = &JobController::HandleRunning;
+      m_command_handler = &AsyncRunner::HandleRunning;
       break;
     case JobState::kSucceeded:
     case JobState::kFailed:
     case JobState::kHalted:
-      m_command_handler = &JobController::HandleFinished;
+      m_command_handler = &AsyncRunner::HandleFinished;
       break;
     default:
       break;
   }
 }
 
-void JobController::Launch()
+void AsyncRunner::Launch()
 {
   m_runner.SetProcedure(std::addressof(m_proc));
   auto root_instr = m_proc.RootInstruction();
-  m_loop_future = std::async(std::launch::async, &JobController::ExecutionLoop, this);
+  m_loop_future = std::async(std::launch::async, &AsyncRunner::ExecutionLoop, this);
 }
 
-JobController::Action JobController::HandleCommand(JobCommand command)
+AsyncRunner::Action AsyncRunner::HandleCommand(JobCommand command)
 {
   return (this->*m_command_handler)(command);
 }
 
-JobController::Action JobController::HandleInitial(JobCommand command)
+AsyncRunner::Action AsyncRunner::HandleInitial(JobCommand command)
 {
   switch (command)
   {
@@ -181,7 +181,7 @@ JobController::Action JobController::HandleInitial(JobCommand command)
   return Action::kContinue;
 }
 
-JobController::Action JobController::HandleRunning(JobCommand command)
+AsyncRunner::Action AsyncRunner::HandleRunning(JobCommand command)
 {
   switch (command)
   {
@@ -206,7 +206,7 @@ JobController::Action JobController::HandleRunning(JobCommand command)
   return Action::kContinue;
 }
 
-JobController::Action JobController::HandlePaused(JobCommand command)
+AsyncRunner::Action AsyncRunner::HandlePaused(JobCommand command)
 {
   switch (command)
   {
@@ -232,7 +232,7 @@ JobController::Action JobController::HandlePaused(JobCommand command)
   return Action::kContinue;
 }
 
-JobController::Action JobController::HandleFinished(JobCommand command)
+AsyncRunner::Action AsyncRunner::HandleFinished(JobCommand command)
 {
   switch (command)
   {
@@ -257,7 +257,7 @@ JobController::Action JobController::HandleFinished(JobCommand command)
   return Action::kContinue;
 }
 
-void JobController::ExecutionLoop()
+void AsyncRunner::ExecutionLoop()
 {
   while (m_keep_alive)
   {
@@ -279,7 +279,7 @@ void JobController::ExecutionLoop()
   }
 }
 
-void JobController::RunProcedure()
+void AsyncRunner::RunProcedure()
 {
   const TimeoutWhenRunning timeout{TickTimeoutMs(m_proc)};
   auto tick_callback = [this, &timeout](const sup::sequencer::Procedure& proc){
@@ -297,7 +297,7 @@ void JobController::RunProcedure()
   }
 }
 
-void JobController::ProcessCommandsWhenRunning()
+void AsyncRunner::ProcessCommandsWhenRunning()
 {
   if (SwitchStateOnFinished())
   {
@@ -312,7 +312,7 @@ void JobController::ProcessCommandsWhenRunning()
   }
 }
 
-void JobController::StepProcedure()
+void AsyncRunner::StepProcedure()
 {
   auto tick_callback = [this](const sup::sequencer::Procedure& proc){
     m_state_monitor.OnProcedureTick(proc);
@@ -326,7 +326,7 @@ void JobController::StepProcedure()
   }
 }
 
-bool JobController::SwitchStateOnFinished()
+bool AsyncRunner::SwitchStateOnFinished()
 {
   auto status = m_proc.GetStatus();
   if (IsFinishedStatus(status))

@@ -60,15 +60,15 @@ std::unique_ptr<Procedure> SafeParseProcedure(const std::string& filename, std::
   return {};
 }
 
-std::unique_ptr<JobController> CreateJobController(Procedure& proc, UserInterface& ui,
+std::unique_ptr<AsyncRunner> CreateAsyncRunner(Procedure& proc, UserInterface& ui,
                                                    JobStateMonitor& state_monitor,
                                                    std::string& error_msg)
 {
-  std::unique_ptr<JobController> result;
+  std::unique_ptr<AsyncRunner> result;
   error_msg.clear();
   try
   {
-    result.reset(new JobController(proc, ui, state_monitor));
+    result.reset(new AsyncRunner(proc, ui, state_monitor));
   }
   catch(const std::exception& e)
   {

@@ -6,6 +6,7 @@ target_sources(unit-tests
   PRIVATE
     add_element_tests.cpp
     add_member_tests.cpp
+    async_runner_tests.cpp
     attribute_handler_tests.cpp
     attribute_utils_tests.cpp
     choice_tests.cpp
@@ -35,7 +36,6 @@ target_sources(unit-tests
     instruction_registry_tests.cpp
     job_command_queue_tests.cpp
     job_command_tests.cpp
-    job_controller_tests.cpp
     listen_tests.cpp
     log_instruction_tests.cpp
     log_severity_tests.cpp

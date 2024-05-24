@@ -1,10 +1,10 @@
 target_sources(sup-sequencer-shared
   PRIVATE
+    async_runner.cpp
     breakpoint.cpp
     breakpoint_manager.cpp
     job_command_queue.cpp
     job_commands.cpp
-    job_controller.cpp
     job_interface.cpp
     job_state_monitor.cpp
     job_states.cpp

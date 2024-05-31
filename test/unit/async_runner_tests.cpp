@@ -55,6 +55,11 @@ const std::string kTestStepProcedureBody{R"(
   <Workspace/>
 )"};
 
+const std::string kLongWaitProcedureBody{R"(
+  <Wait timeout="60"/>
+  <Workspace/>
+)"};
+
 using namespace sup::sequencer;
 using namespace sup::sequencer;
 
@@ -170,6 +175,20 @@ TEST_F(AsyncRunnerTest, TickCallbacks)
   async_runner.Start();
   EXPECT_TRUE(WaitForState(JobState::kSucceeded));
   EXPECT_EQ(m_monitor.GetTickCount(), 2u);
+}
+
+TEST_F(AsyncRunnerTest, HaltLongInstruction)
+{
+  DefaultUserInterface ui;
+  auto proc = ParseProcedureString(
+    sup::UnitTestHelper::CreateProcedureString(kLongWaitProcedureBody));
+  AsyncRunner async_runner{*proc, ui, m_monitor};
+  EXPECT_TRUE(WaitForState(JobState::kInitial));
+  async_runner.Start();
+  EXPECT_TRUE(WaitForState(JobState::kRunning));
+  async_runner.Halt();
+  EXPECT_TRUE(WaitForState(JobState::kFailed));
+  EXPECT_EQ(m_monitor.GetTickCount(), 1u);
 }
 
 TEST_F(AsyncRunnerTest, Breakpoints)

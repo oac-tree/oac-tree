@@ -187,8 +187,9 @@ TEST_F(AsyncRunnerTest, HaltLongInstruction)
   async_runner.Start();
   EXPECT_TRUE(WaitForState(JobState::kRunning));
   async_runner.Halt();
-  EXPECT_TRUE(WaitForState(JobState::kFailed));
-  EXPECT_EQ(m_monitor.GetTickCount(), 1u);
+  // In rare cases, the halt came too fast and the wait instruction will not report failure,
+  // because it didn't even start.
+  EXPECT_TRUE(WaitForState(JobState::kFailed) || WaitForState(JobState::kHalted));
 }
 
 TEST_F(AsyncRunnerTest, Breakpoints)

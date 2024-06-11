@@ -42,7 +42,7 @@ TEST(GreaterThan, Setup)
   EXPECT_NO_THROW(instr->Setup(proc));
 }
 
-TEST(GreaterThan, GreaterThan_success)
+TEST(GreaterThan, Success)
 {
   const std::string body{R"(
     <GreaterThan leftVar="a" rightVar="b"/>
@@ -53,16 +53,49 @@ TEST(GreaterThan, GreaterThan_success)
 )"};
 
   sup::UnitTestHelper::EmptyUserInterface ui;
-  auto proc =
-      ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
-  // Should have expect failure in Setup but the exception does not cause SetupImpl to fail ..
-  EXPECT_TRUE(
-      sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::SUCCESS));
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::SUCCESS));
 }
 
-TEST(GreaterThan, GreaterThan_failure)
+TEST(GreaterThan, MixedSignedness)
+{
+  {
+    // uint8 and int16
+    const std::string body{R"(
+      <GreaterThan leftVar="a" rightVar="b"/>
+      <Workspace>
+          <Local name="a" type='{"type":"uint8"}' value='0' />
+          <Local name="b" type='{"type":"int16"}' value='-1' />
+      </Workspace>
+      )"};
+
+    sup::UnitTestHelper::EmptyUserInterface ui;
+    auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+    ASSERT_TRUE(proc.get() != nullptr);
+    EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::SUCCESS));
+  }
+  {
+    // int32 and uint16
+    const std::string body{R"(
+      <GreaterThan leftVar="a" rightVar="b"/>
+      <Workspace>
+          <Local name="a" type='{"type":"int32"}' value='500' />
+          <Local name="b" type='{"type":"uint16"}' value='300' />
+      </Workspace>
+      )"};
+
+    sup::UnitTestHelper::EmptyUserInterface ui;
+    auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+    ASSERT_TRUE(proc.get() != nullptr);
+    EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::SUCCESS));
+  }
+}
+
+TEST(GreaterThan, Failure)
 {
   const std::string body{R"(
     <GreaterThan leftVar="a" rightVar="b"/>
@@ -73,13 +106,10 @@ TEST(GreaterThan, GreaterThan_failure)
 )"};
 
   sup::UnitTestHelper::EmptyUserInterface ui;
-  auto proc =
-      ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
-  // Should have expect failure in Setup but the exception does not cause SetupImpl to fail ..
-  EXPECT_TRUE(
-      sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
 }
 
 TEST(LessThan, Setup)
@@ -94,7 +124,7 @@ TEST(LessThan, Setup)
   EXPECT_NO_THROW(instr->Setup(proc));
 }
 
-TEST(LessThan, LessThan_success)
+TEST(LessThan, Success)
 {
   const std::string body{R"(
     <LessThan leftVar="a" rightVar="b"/>
@@ -105,16 +135,49 @@ TEST(LessThan, LessThan_success)
 )"};
 
   sup::UnitTestHelper::EmptyUserInterface ui;
-  auto proc =
-      ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
-  // Should have expect failure in Setup but the exception does not cause SetupImpl to fail ..
-  EXPECT_TRUE(
-      sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::SUCCESS));
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::SUCCESS));
 }
 
-TEST(LessThan, LessThan_failure)
+TEST(LessThan, MixedSignedness)
+{
+  {
+    // uint8 and int16
+    const std::string body{R"(
+      <LessThan leftVar="a" rightVar="b"/>
+      <Workspace>
+          <Local name="a" type='{"type":"uint8"}' value='30' />
+          <Local name="b" type='{"type":"int16"}' value='2000' />
+      </Workspace>
+      )"};
+
+    sup::UnitTestHelper::EmptyUserInterface ui;
+    auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+    ASSERT_TRUE(proc.get() != nullptr);
+    EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::SUCCESS));
+  }
+  {
+    // int32 and uint16
+    const std::string body{R"(
+      <LessThan leftVar="a" rightVar="b"/>
+      <Workspace>
+          <Local name="a" type='{"type":"int32"}' value='-70' />
+          <Local name="b" type='{"type":"uint16"}' value='300' />
+      </Workspace>
+      )"};
+
+    sup::UnitTestHelper::EmptyUserInterface ui;
+    auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+    ASSERT_TRUE(proc.get() != nullptr);
+    EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::SUCCESS));
+  }
+}
+
+TEST(LessThan, Failure)
 {
   const std::string body{R"(
     <LessThan leftVar="a" rightVar="b"/>
@@ -125,13 +188,10 @@ TEST(LessThan, LessThan_failure)
 )"};
 
   sup::UnitTestHelper::EmptyUserInterface ui;
-  auto proc =
-      ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
-  // Should have expect failure in Setup but the exception does not cause SetupImpl to fail ..
-  EXPECT_TRUE(
-      sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
 }
 
 

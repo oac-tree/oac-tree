@@ -225,6 +225,44 @@ TEST_F(WorkspaceTest, GetVariables)
   EXPECT_EQ(workspace.GetVariables(), expected);
 }
 
+TEST_F(WorkspaceTest, VariableNamesOrder)
+{
+  Workspace workspace;
+  EXPECT_TRUE(workspace.GetVariables().empty());
+
+  auto v1 = GlobalVariableRegistry().Create("Local");
+  auto v2 = GlobalVariableRegistry().Create("Local");
+  auto v3 = GlobalVariableRegistry().Create("Local");
+
+  std::vector<std::string> expected({"b", "c", "a"});
+
+  // Add variables in non-lexicographical order
+  workspace.AddVariable("b", std::move(v1));
+  workspace.AddVariable("c", std::move(v2));
+  workspace.AddVariable("a", std::move(v3));
+
+  EXPECT_EQ(workspace.VariableNames(), expected);
+}
+
+TEST_F(WorkspaceTest, GetVariablesOrder)
+{
+  Workspace workspace;
+  EXPECT_TRUE(workspace.GetVariables().empty());
+
+  auto v1 = GlobalVariableRegistry().Create("Local");
+  auto v2 = GlobalVariableRegistry().Create("Local");
+  auto v3 = GlobalVariableRegistry().Create("Local");
+
+  std::vector<const Variable *> expected({v1.get(), v2.get(), v3.get()});
+
+  // Add variables in non-lexicographical order
+  workspace.AddVariable("b", std::move(v1));
+  workspace.AddVariable("c", std::move(v2));
+  workspace.AddVariable("a", std::move(v3));
+
+  EXPECT_EQ(workspace.GetVariables(), expected);
+}
+
 TEST_F(WorkspaceTest, GetVariable)
 {
   Workspace workspace;

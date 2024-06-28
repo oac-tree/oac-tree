@@ -214,6 +214,11 @@ private:
   std::map<std::string, std::unique_ptr<Variable>> m_var_map;
 
   /**
+   * @brief List of variable names to allow to retrieve variables in the order they were added.
+   */
+  std::vector<std::string> m_var_names;
+
+  /**
    * @brief Threadsafe list of callback objects.
    */
   NamedCallbackManager<const sup::dto::AnyValue&, bool> m_callbacks;

@@ -39,6 +39,7 @@ namespace sequencer
 Workspace::Workspace(const std::string& filename)
    : m_filename{filename}
    , m_var_map{}
+   , m_var_names{}
    , m_callbacks{}
    , m_type_registry{new sup::dto::AnyTypeRegistry()}
    , m_setup_done{false}
@@ -66,15 +67,13 @@ bool Workspace::AddVariable(const std::string& name, std::unique_ptr<Variable>&&
       VariableUpdated(name, value, connected);
     });
   m_var_map[name] = std::move(var);
+  m_var_names.push_back(name);
   return true;
 }
 
 std::vector<std::string> Workspace::VariableNames() const
 {
-  std::vector<std::string> result;
-  std::transform(m_var_map.begin(), m_var_map.end(), std::back_inserter(result),
-                 [](const decltype(m_var_map)::value_type &pair) { return pair.first; });
-  return result;
+  return m_var_names;
 }
 
 void Workspace::Setup()
@@ -164,8 +163,10 @@ bool Workspace::WaitForVariable(const std::string& name, double timeout_sec, boo
 std::vector<const Variable*> Workspace::GetVariables() const
 {
   std::vector<const Variable*> result;
-  std::transform(std::begin(m_var_map), std::end(m_var_map), std::back_inserter(result),
-                 [](const decltype(m_var_map)::value_type &pair) { return pair.second.get(); });
+  for (const auto& var_name : m_var_names)
+  {
+    result.push_back(GetVariable(var_name));
+  }
   return result;
 }
 

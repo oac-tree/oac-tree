@@ -5,6 +5,7 @@ Changes for 3.2.0:
 - Create aggregate JobInterface (UserInterface + JobStateMonitor)
 - Rename: JobController -> AsyncRunner
 - Implement distinct interfaces for resetting and tearing down a Variable
+- Enable variables to register setup/teardown functions that need to be called only once for a whole class of variables
 
 Changes for 3.1.0:
 

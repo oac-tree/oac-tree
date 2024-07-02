@@ -83,6 +83,36 @@ public:
   void Teardown();
 
   /**
+   * @brief Register a function to be called after all variables in the workspace had their Setup
+   * methods called. This can be used to provide one-time actions for a class of variables.
+   * Registration is ignored if a function with the same identifier was already registered.
+   *
+   * @note Custom variables that require this type of global setup for the whole class of variables,
+   * will probably need to override also ResetImpl(), since the default implementation does a
+   * Teardown followed by Setup, which may cause these global functions to be called multiple times
+   * and in the incorrect order if multiple variables are reset.
+   *
+   * @param identifier Unique identifier for the class of variables.
+   * @param func Function to be called after all Variable::Setup methods are called.
+   */
+  void RegisterSetupFunction(const std::string& identifier, std::function<void()> func) const;
+
+  /**
+   * @brief Register a function to be called before all variables in the workspace have their
+   * Teardown methods called. This can be used to provide one-time actions for a class of variables.
+   * Registration is ignored if a function with the same identifier was already registered.
+   *
+   * @note Custom variables that require this type of global teardown for the whole class of
+   * variables, will probably need to override also ResetImpl(), since the default implementation
+   * does a Teardown followed by Setup, which may cause these global functions to be called multiple
+   * times and in the incorrect order if multiple variables are reset.
+   *
+   * @param identifier Unique identifier for the class of variables.
+   * @param func Function to be called before all Variable::Teardown methods are called.
+   */
+  void RegisterTeardownFunction(const std::string& identifier, std::function<void()> func) const;
+
+  /**
    * @brief Reset specific variable.
    *
    * @param varname Variable name.
@@ -224,6 +254,9 @@ private:
   NamedCallbackManager<const sup::dto::AnyValue&, bool> m_callbacks;
 
   std::unique_ptr<sup::dto::AnyTypeRegistry> m_type_registry;
+
+  mutable std::map<std::string, std::function<void()>> m_global_setup_functions;
+  mutable std::map<std::string, std::function<void()>> m_global_teardown_functions;
 
   /**
    * @brief Flag that indicates setup was already called on this workspace.

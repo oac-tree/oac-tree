@@ -42,10 +42,18 @@ Workspace::Workspace(const std::string& filename)
    , m_var_names{}
    , m_callbacks{}
    , m_type_registry{new sup::dto::AnyTypeRegistry()}
+   , m_global_setup_functions{}
+   , m_global_teardown_functions{}
    , m_setup_done{false}
 {}
 
-Workspace::~Workspace() = default;
+Workspace::~Workspace()
+{
+  for (const auto& teardown_entry : m_global_teardown_functions)
+  {
+    teardown_entry.second();
+  }
+}
 
 std::string Workspace::GetFilename() const
 {
@@ -86,14 +94,45 @@ void Workspace::Setup()
                 [this](const decltype(m_var_map)::value_type &pair) {
                   return pair.second->Setup(*this);
                 });
+  // call registered global setup functions
+  for (const auto& setup_entry : m_global_setup_functions)
+  {
+    setup_entry.second();
+  }
+  m_global_setup_functions.clear();
   m_setup_done = true;
 }
 
 void Workspace::Teardown()
 {
   m_setup_done = false;
+  for (const auto& teardown_entry : m_global_teardown_functions)
+  {
+    teardown_entry.second();
+  }
+  m_global_teardown_functions.clear();
   std::for_each(m_var_map.begin(), m_var_map.end(), [](const decltype(m_var_map)::value_type &pair) {
      return pair.second->Teardown(); });
+}
+
+void Workspace::RegisterSetupFunction(const std::string& identifier,
+                                      std::function<void()> func) const
+{
+  if (m_global_setup_functions.find(identifier) != m_global_setup_functions.end())
+  {
+    return;  // Ignore already registered identifiers
+  }
+  m_global_setup_functions[identifier] = func;
+}
+
+void Workspace::RegisterTeardownFunction(const std::string& identifier,
+                                         std::function<void()> func) const
+{
+  if (m_global_teardown_functions.find(identifier) != m_global_teardown_functions.end())
+  {
+    return;  // Ignore already registered identifiers
+  }
+  m_global_teardown_functions[identifier] = func;
 }
 
 bool Workspace::ResetVariable(const std::string& varname)

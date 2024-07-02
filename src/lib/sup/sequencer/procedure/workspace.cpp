@@ -103,8 +103,7 @@ bool Workspace::ResetVariable(const std::string& varname)
   {
     return false;
   }
-  it->second->Teardown();
-  it->second->Setup(*this);
+  it->second->Reset(*this);
   return true;
 }
 

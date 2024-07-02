@@ -89,6 +89,18 @@ public:
   void Setup(const Workspace& ws);
 
   /**
+   * @brief Resets the variable to the state just after the initial Setup.
+   *
+   * @details By default, this methods calls Teardown and Setup, but custom variables may override
+   * this behavior.
+   *
+   * @param ws Current workspace.
+   *
+   * @throw VariableSetupException when the variable could not be reset properly.
+   */
+  void Reset(const Workspace& ws);
+
+  /**
    * @brief Get value of variable.
    *
    * @param value variable reference to contain the value.
@@ -325,6 +337,17 @@ private:
    * @note Private virtual implementation.
    */
   virtual void SetupImpl(const Workspace& ws);
+
+  /**
+   * @brief Resets the variable to the state just after the initial Setup.
+   *
+   * @param ws Parent workspace.
+   *
+   * @throw VariableSetupException when the variable could not be reset properly.
+   *
+   * @note Private virtual implementation.
+   */
+  virtual void ResetImpl(const Workspace& ws);
 
   /**
    * @brief Tear down the variable.

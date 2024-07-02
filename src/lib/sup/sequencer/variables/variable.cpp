@@ -85,6 +85,11 @@ void Variable::Setup(const Workspace& ws)
   m_setup_successful = true;
 }
 
+void Variable::Reset(const Workspace& ws)
+{
+  return ResetImpl(ws);
+}
+
 bool Variable::GetValue(sup::dto::AnyValue& value, const std::string& fieldname) const
 {
   std::lock_guard<std::mutex> lock(m_access_mutex);
@@ -218,6 +223,12 @@ bool Variable::IsAvailableImpl() const
 
 void Variable::SetupImpl(const Workspace&)
 {}
+
+void Variable::ResetImpl(const Workspace& ws)
+{
+  Teardown();
+  Setup(ws);
+}
 
 void Variable::TeardownImpl()
 {}

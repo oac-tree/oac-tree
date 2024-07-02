@@ -157,9 +157,9 @@ void Variable::SetNotifyCallback(Callback func)
   m_notify_cb = std::move(func);
 }
 
-void Variable::Reset()
+void Variable::Teardown()
 {
-  ResetImpl();
+  TeardownImpl();
   m_attribute_handler.ClearFailedConstraints();
   m_setup_successful = false;
 }
@@ -219,7 +219,7 @@ bool Variable::IsAvailableImpl() const
 void Variable::SetupImpl(const Workspace&)
 {}
 
-void Variable::ResetImpl()
+void Variable::TeardownImpl()
 {}
 
 std::string VariableSetupExceptionProlog(const Variable& variable)

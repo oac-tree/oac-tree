@@ -104,7 +104,7 @@ TEST_F(WorkspaceTest, GetValue)
   EXPECT_NE(std::find(variables.begin(), variables.end(), var1_name), variables.end());
   EXPECT_NE(std::find(variables.begin(), variables.end(), var2_name), variables.end());
   EXPECT_NE(std::find(variables.begin(), variables.end(), var3_name), variables.end());
-  ws.Reset();
+  ws.Teardown();
 
   // Read complete variable
   ws.Setup();

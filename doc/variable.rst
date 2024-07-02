@@ -151,14 +151,14 @@ The `Variable` class supports an attribute system (see :ref:`Attribute System`).
      // deal with error retrieving the attribute's value as an integer...
    }
 
-Resetting a Variable
-^^^^^^^^^^^^^^^^^^^^
+Tearing down a Variable
+^^^^^^^^^^^^^^^^^^^^^^^
 
-The `Reset` method resets the variable to the state it had prior to initialization. This means that attributes are still present, but other internal state data is reset. For example, it can disconnect from external resources or clear values.
+The `Teardown` method resets the variable to the state it had prior to initialization. This means that attributes are still present, but other internal state data is reset. For example, it can disconnect from external resources or clear values.
 
 .. code-block:: c++
 
-   local_var->Reset(); // Reset the numeric variable
+   local_var->Teardown(); // Reset the numeric variable
 
 Attribute System
 ----------------

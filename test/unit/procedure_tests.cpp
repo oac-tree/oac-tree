@@ -318,6 +318,6 @@ ProcedureTest::~ProcedureTest()
 {
   if (loaded_proc)
   {
-    loaded_proc->Reset(mock_ui);
+    loaded_proc->Teardown(mock_ui);
   }
 }

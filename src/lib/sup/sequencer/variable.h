@@ -135,7 +135,7 @@ public:
   void Notify(const sup::dto::AnyValue& value, bool connected) const;
 
   /**
-   * @brief Set callback for value update notifications
+   * @brief Set callback for value update notifications.
    *
    * @param func Callback function object.
    * @return true if successful.
@@ -145,11 +145,11 @@ public:
   void SetNotifyCallback(Callback func);
 
   /**
-   * @brief Reset variable
+   * @brief Tear down the variable.
    * @details This method resets the variable to its initial, i.e. uninitialized, state. For
    * example, network variables will disconnect.
    */
-  void Reset();
+  void Teardown();
 
   /**
    * @brief Indicate presence of attribute with given name.
@@ -327,11 +327,11 @@ private:
   virtual void SetupImpl(const Workspace& ws);
 
   /**
-   * @brief Reset variable.
+   * @brief Tear down the variable.
    *
    * @note Private virtual implementation.
    */
-  virtual void ResetImpl();
+  virtual void TeardownImpl();
 };
 
 /**

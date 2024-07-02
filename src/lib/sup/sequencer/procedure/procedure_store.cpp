@@ -61,7 +61,7 @@ void ProcedureStore::ResetProcedures(UserInterface& ui) const
 {
   for (auto& entry : m_procedure_cache)
   {
-    entry.second->Reset(ui);
+    entry.second->Teardown(ui);
   }
 }
 

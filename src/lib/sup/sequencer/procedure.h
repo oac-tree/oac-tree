@@ -201,14 +201,14 @@ public:
   void Halt();
 
   /**
-   * @brief Reset procedure.
+   * @brief Tear down the procedure.
    *
    * @param ui UserInterface to use for instruction status updates.
    *
    * @details This method request a halt and blocks until all asynchronous instructions are
    * finished.
    */
-  void Reset(UserInterface& ui);
+  void Teardown(UserInterface& ui);
 
   /**
    * @brief Retrieve status of root sequence.

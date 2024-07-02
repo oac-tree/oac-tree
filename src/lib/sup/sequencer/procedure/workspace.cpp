@@ -89,11 +89,11 @@ void Workspace::Setup()
   m_setup_done = true;
 }
 
-void Workspace::Reset()
+void Workspace::Teardown()
 {
   m_setup_done = false;
   std::for_each(m_var_map.begin(), m_var_map.end(), [](const decltype(m_var_map)::value_type &pair) {
-     return pair.second->Reset(); });
+     return pair.second->Teardown(); });
 }
 
 bool Workspace::ResetVariable(const std::string& varname)
@@ -103,7 +103,7 @@ bool Workspace::ResetVariable(const std::string& varname)
   {
     return false;
   }
-  it->second->Reset();
+  it->second->Teardown();
   it->second->Setup(*this);
   return true;
 }

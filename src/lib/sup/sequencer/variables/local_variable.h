@@ -59,7 +59,7 @@ private:
   bool GetValueImpl(sup::dto::AnyValue& value) const override;
   bool SetValueImpl(const sup::dto::AnyValue& value) override;
   void SetupImpl(const Workspace& ws) override;
-  void ResetImpl() override;
+  void TeardownImpl() override;
 };
 
 }  // namespace sequencer

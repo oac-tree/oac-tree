@@ -466,18 +466,18 @@ RunnerTest::~RunnerTest()
 {
   if (async_proc)
   {
-    async_proc->Reset(empty_ui);
+    async_proc->Teardown(empty_ui);
   }
   if (sync_proc)
   {
-    sync_proc->Reset(empty_ui);
+    sync_proc->Teardown(empty_ui);
   }
   if (copy_proc)
   {
-    copy_proc->Reset(empty_ui);
+    copy_proc->Teardown(empty_ui);
   }
   if (async_wait_proc)
   {
-    async_wait_proc->Reset(empty_ui);
+    async_wait_proc->Teardown(empty_ui);
   }
 }

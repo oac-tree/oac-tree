@@ -80,7 +80,7 @@ public:
   /**
    * @brief Teardown all variables.
    */
-  void Reset();
+  void Teardown();
 
   /**
    * @brief Reset specific variable.

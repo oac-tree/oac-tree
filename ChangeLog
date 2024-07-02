@@ -4,6 +4,7 @@ Changes for 3.2.0:
 - Ensure notification of variables to UserInterface
 - Create aggregate JobInterface (UserInterface + JobStateMonitor)
 - Rename: JobController -> AsyncRunner
+- Implement distinct interfaces for resetting and tearing down a Variable
 
 Changes for 3.1.0:
 

@@ -113,7 +113,7 @@ void AsyncRunner::Terminate()
   // The terminate command needs to be handled first.
   m_command_queue.PriorityPush(JobCommand::kTerminate, terminate_func);
   m_loop_future.wait();
-  m_proc.Reset(m_ui);
+  m_proc.Teardown(m_ui);
 }
 
 void AsyncRunner::SetState(JobState state)
@@ -243,7 +243,7 @@ AsyncRunner::Action AsyncRunner::HandleFinished(JobCommand command)
     case JobCommand::kPause:
       break;
     case JobCommand::kReset:
-      m_proc.Reset(m_ui);
+      m_proc.Teardown(m_ui);
       SetState(JobState::kInitial);
       break;
     case JobCommand::kHalt:

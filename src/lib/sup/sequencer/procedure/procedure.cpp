@@ -65,7 +65,7 @@ Procedure::~Procedure()
 {
   // Wait for termination of instructions first:
   DefaultUserInterface ui;
-  Reset(ui);
+  Teardown(ui);
 }
 
 std::string Procedure::GetFilename() const
@@ -214,15 +214,15 @@ void Procedure::Halt()
   RootInstruction()->Halt();
 }
 
-void Procedure::Reset(UserInterface& ui)
+void Procedure::Teardown(UserInterface& ui)
 {
-  m_workspace->Reset();
+  m_workspace->Teardown();
   m_procedure_store->ResetProcedures(ui);
   if (RootInstruction() == nullptr)
   {
     return;
   }
-  RootInstruction()->Reset(ui);
+  RootInstruction()->Reset(ui);  // instructions are reset instead of torn down.
   m_attribute_handler.ClearFailedConstraints();
 }
 

@@ -98,7 +98,7 @@ void LocalVariable::SetupImpl(const Workspace& ws)
   Notify(m_value, true);
 }
 
-void LocalVariable::ResetImpl()
+void LocalVariable::TeardownImpl()
 {
   m_value = sup::dto::AnyValue{};
 }

@@ -80,7 +80,7 @@ bool FileVariable::SetValueImpl(const sup::dto::AnyValue& value)
   return true;
 }
 
-void FileVariable::SetupImpl(const Workspace& ws)
+SetupTeardownActions FileVariable::SetupImpl(const Workspace& ws)
 {
   m_workspace_path = GetFileDirectory(ws.GetFilename());
   auto current_value = ReadValue();
@@ -92,6 +92,7 @@ void FileVariable::SetupImpl(const Workspace& ws)
   {
     Notify(*current_value, true);
   }
+  return {};
 }
 
 bool FileVariable::IsAvailableImpl() const

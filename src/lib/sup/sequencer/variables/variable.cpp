@@ -73,7 +73,7 @@ void Variable::SetName(const std::string &name)
   AddAttribute(Constants::NAME_ATTRIBUTE_NAME, name);
 }
 
-void Variable::Setup(const Workspace& ws)
+SetupTeardownActions Variable::Setup(const Workspace& ws)
 {
   if (!m_attribute_handler.ValidateAttributes())
   {
@@ -81,8 +81,9 @@ void Variable::Setup(const Workspace& ws)
       VariableSetupExceptionMessage(*this, m_attribute_handler.GetFailedConstraints());
     throw VariableSetupException(error_message);
   }
-  SetupImpl(ws);
+  auto actions = SetupImpl(ws);
   m_setup_successful = true;
+  return actions;
 }
 
 void Variable::Reset(const Workspace& ws)
@@ -221,8 +222,10 @@ bool Variable::IsAvailableImpl() const
   return true;
 }
 
-void Variable::SetupImpl(const Workspace&)
-{}
+SetupTeardownActions Variable::SetupImpl(const Workspace&)
+{
+  return {};
+}
 
 void Variable::ResetImpl(const Workspace& ws)
 {

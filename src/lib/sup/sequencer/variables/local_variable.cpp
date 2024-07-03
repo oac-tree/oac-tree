@@ -91,11 +91,12 @@ bool LocalVariable::SetValueImpl(const sup::dto::AnyValue& value)
   return result;
 }
 
-void LocalVariable::SetupImpl(const Workspace& ws)
+SetupTeardownActions LocalVariable::SetupImpl(const Workspace& ws)
 {
   m_value = ParseAnyValueAttributePair(
     *this, Constants::TYPE_ATTRIBUTE_NAME, Constants::VALUE_ATTRIBUTE_NAME, ws.GetTypeRegistry());
   Notify(m_value, true);
+  return {};
 }
 
 void LocalVariable::TeardownImpl()

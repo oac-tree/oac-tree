@@ -58,7 +58,7 @@ private:
    */
   bool GetValueImpl(sup::dto::AnyValue& value) const override;
   bool SetValueImpl(const sup::dto::AnyValue& value) override;
-  void SetupImpl(const Workspace& ws) override;
+  SetupTeardownActions SetupImpl(const Workspace& ws) override;
   void TeardownImpl() override;
 };
 

@@ -23,6 +23,7 @@
 #define SUP_SEQUENCER_VARIABLE_H_
 
 #include <sup/sequencer/attribute_handler.h>
+#include <sup/sequencer/setup_teardown_actions.h>
 
 #include <sup/dto/anyvalue.h>
 
@@ -83,10 +84,12 @@ public:
    * @brief Setup variable method.
    *
    * @param ws Current workspace.
+   * @return Optional setup/teardown actions that need to be called once per class of Variables
+   * (identified by a unique string identifier).
    *
    * @throw VariableSetupException when the variable could not be setup properly.
    */
-  void Setup(const Workspace& ws);
+  SetupTeardownActions Setup(const Workspace& ws);
 
   /**
    * @brief Resets the variable to the state just after the initial Setup.
@@ -331,12 +334,14 @@ private:
    * @brief Setup value of variable.
    *
    * @param ws Parent workspace.
+   * @return Optional setup/teardown actions that need to be called once per class of Variables
+   * (identified by a unique string identifier).
    *
    * @throw VariableSetupException when the variable could not be setup properly.
    *
    * @note Private virtual implementation.
    */
-  virtual void SetupImpl(const Workspace& ws);
+  virtual SetupTeardownActions SetupImpl(const Workspace& ws);
 
   /**
    * @brief Resets the variable to the state just after the initial Setup.

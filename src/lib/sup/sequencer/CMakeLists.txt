@@ -58,6 +58,7 @@ install(FILES
   runner.h
   scope_guard.h
   sequence_parser.h
+  setup_teardown_actions.h
   user_interface.h
   variable_registry.h
   variable.h

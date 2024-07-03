@@ -81,11 +81,12 @@ To obtain an instance of an existing variable type, provided by the core library
 Variable Initialization
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-Before instructions can access, i.e. read or write, the value of a variable, it needs to be properly initialized first. This is done by calling the ``Setup`` method on the variable. Initialization may include connecting to a database, obtaining a file handle, etc. One can pass a pointer to an ``AnyTypeRegistry`` object during setup, which can be used by the variable to obtain predefined types from it.
+Before instructions can access, i.e. read or write, the value of a variable, it needs to be properly initialized first. This is done by calling the ``Setup`` method on the variable. Initialization may include connecting to a database, obtaining a file handle, etc. The ``Setup`` method also receives a reference to a ``Workspace``, allowing it to access its ``AnyTypeRegistry``. The method returns an object of type ``SetupTeardownActions`` that allows the workspace to register actions that need to be executed after all variables have been setup, as well as teardown actions that will be executed before all variables will be torn down. The default constructed ``SetupTeardownActions`` object contains no actions at all. This object also contains an identifier that allows to avoid multiple registrations. For example, if such an action only needs to be called once per variable type, this type can be used as an identifier and the workspace will only register a single instance with that identifier.
 
 .. code-block:: c++
 
-   local_var->Setup(nullptr);
+   Workspace ws;
+   local_var->Setup(ws);
 
 Setting and Getting Variable Values
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

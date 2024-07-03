@@ -29,6 +29,7 @@
 #include <atomic>
 #include <cmath>
 #include <condition_variable>
+#include <set>
 #include <mutex>
 #include <utility>
 
@@ -42,16 +43,15 @@ Workspace::Workspace(const std::string& filename)
    , m_var_names{}
    , m_callbacks{}
    , m_type_registry{new sup::dto::AnyTypeRegistry()}
-   , m_global_setup_functions{}
-   , m_global_teardown_functions{}
+   , m_teardown_actions{}
    , m_setup_done{false}
 {}
 
 Workspace::~Workspace()
 {
-  for (const auto& teardown_entry : m_global_teardown_functions)
+  for (const auto& teardown_action : m_teardown_actions)
   {
-    teardown_entry.second();
+    teardown_action();
   }
 }
 
@@ -90,49 +90,33 @@ void Workspace::Setup()
   {
     return;
   }
-  std::for_each(m_var_map.begin(), m_var_map.end(),
-                [this](const decltype(m_var_map)::value_type &pair) {
-                  return pair.second->Setup(*this);
-                });
+  std::vector<SetupTeardownActions> setup_teardown_actions;
+  auto setup_var = [this, &setup_teardown_actions](const decltype(m_var_map)::value_type &pair) {
+    auto actions = pair.second->Setup(*this);
+    if (!actions.m_identifier.empty()) {
+      setup_teardown_actions.push_back(actions);
+    }
+  };
+  std::for_each(m_var_map.begin(), m_var_map.end(), setup_var);
   // call registered global setup functions
-  for (const auto& setup_entry : m_global_setup_functions)
+  auto setup_actions = ParseSetupTeardownActions(setup_teardown_actions);
+  for (const auto& setup_action : setup_actions)
   {
-    setup_entry.second();
+    setup_action();
   }
-  m_global_setup_functions.clear();
   m_setup_done = true;
 }
 
 void Workspace::Teardown()
 {
   m_setup_done = false;
-  for (const auto& teardown_entry : m_global_teardown_functions)
+  for (const auto& teardown_action : m_teardown_actions)
   {
-    teardown_entry.second();
+    teardown_action();
   }
-  m_global_teardown_functions.clear();
+  m_teardown_actions.clear();
   std::for_each(m_var_map.begin(), m_var_map.end(), [](const decltype(m_var_map)::value_type &pair) {
      return pair.second->Teardown(); });
-}
-
-void Workspace::RegisterSetupFunction(const std::string& identifier,
-                                      std::function<void()> func) const
-{
-  if (m_global_setup_functions.find(identifier) != m_global_setup_functions.end())
-  {
-    return;  // Ignore already registered identifiers
-  }
-  m_global_setup_functions[identifier] = func;
-}
-
-void Workspace::RegisterTeardownFunction(const std::string& identifier,
-                                         std::function<void()> func) const
-{
-  if (m_global_teardown_functions.find(identifier) != m_global_teardown_functions.end())
-  {
-    return;  // Ignore already registered identifiers
-  }
-  m_global_teardown_functions[identifier] = func;
 }
 
 bool Workspace::ResetVariable(const std::string& varname)
@@ -266,6 +250,35 @@ bool Workspace::ContainsVariableName(const std::string& name) const
     return false;
   }
   return true;
+}
+
+std::vector<std::function<void()>> Workspace::ParseSetupTeardownActions(
+    const std::vector<SetupTeardownActions>& actions)
+{
+  m_teardown_actions.clear();
+  std::set<std::string> setup_identifiers;
+  std::set<std::string> teardown_identifiers;
+  std::vector<std::function<void()>> setup_actions;
+  for (const auto& action : actions)
+  {
+    if (action.m_identifier.empty())
+    {
+      continue;
+    }
+    auto setup_iter =
+      std::find(setup_identifiers.begin(), setup_identifiers.end(), action.m_identifier);
+    auto teardown_iter =
+      std::find(teardown_identifiers.begin(), teardown_identifiers.end(), action.m_identifier);
+    if (action.m_setup && setup_iter == setup_identifiers.end())
+    {
+      setup_actions.push_back(action.m_setup);
+    }
+    if (action.m_teardown && teardown_iter == teardown_identifiers.end())
+    {
+      m_teardown_actions.push_back(action.m_teardown);
+    }
+  }
+  return setup_actions;
 }
 
 void Workspace::VariableUpdated(const std::string name, const sup::dto::AnyValue& value,

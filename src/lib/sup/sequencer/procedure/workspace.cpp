@@ -265,6 +265,7 @@ std::vector<std::function<void()>> Workspace::ParseSetupTeardownActions(
     {
       continue;
     }
+
     auto setup_iter =
       std::find(setup_identifiers.begin(), setup_identifiers.end(), action.m_identifier);
     auto teardown_iter =
@@ -272,10 +273,12 @@ std::vector<std::function<void()>> Workspace::ParseSetupTeardownActions(
     if (action.m_setup && setup_iter == setup_identifiers.end())
     {
       setup_actions.push_back(action.m_setup);
+      setup_identifiers.insert(action.m_identifier);
     }
     if (action.m_teardown && teardown_iter == teardown_identifiers.end())
     {
       m_teardown_actions.push_back(action.m_teardown);
+      teardown_identifiers.insert(action.m_identifier);
     }
   }
   return setup_actions;

@@ -401,12 +401,12 @@ TEST_F(WorkspaceTest, SetupTeardownActions)
   workspace.AddVariable("var0", std::move(var0));
   workspace.AddVariable("var1", std::move(var1));
 
-  // Two variables should trigger one setup and one shutdown action
+  // Two variables should trigger one setup and one teardown action
 
-  EXPECT_CALL(setup_action, Call()).Times(1); // <-- FAILING HERE with (2) instead of (1)
+  EXPECT_CALL(setup_action, Call()).Times(1);
   workspace.Setup(); // trigger expectation
 
-  EXPECT_CALL(teardown_action, Call()).Times(1); // <-- FAILING HERE with (2) instead of (1)
+  EXPECT_CALL(teardown_action, Call()).Times(1);
   workspace.Teardown();// trigger expectation
 }
 

@@ -19,14 +19,13 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <sup/sequencer/workspace.h>
-
-#include <sup/sequencer/variables/local_variable.h>
-
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/sequence_parser.h>
 #include <sup/sequencer/variable_registry.h>
+#include <sup/sequencer/variables/local_variable.h>
+#include <sup/sequencer/workspace.h>
 
+#include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
 #include <algorithm>
@@ -43,6 +42,31 @@ protected:
   std::unique_ptr<Variable> var2;
   std::unique_ptr<Variable> var3;
 };
+
+/**
+ * @brief The TestServerVariable class is a test variable to check setup/teardown actions.
+ */
+class TestServerVariable : public Variable
+{
+public:
+  TestServerVariable(const SetupTeardownActions& external_action)
+      : Variable(Type), m_external_action(external_action)
+  {
+  }
+
+  ~TestServerVariable() override {}
+
+  bool GetValueImpl(sup::dto::AnyValue&) const override { return true; }
+  bool SetValueImpl(const sup::dto::AnyValue&) override { return true; }
+
+private:
+  SetupTeardownActions SetupImpl(const Workspace& ws) override { return m_external_action; }
+
+  static const std::string Type;
+  SetupTeardownActions m_external_action;
+};
+
+const std::string TestServerVariable::Type = "TestServerVariable";
 
 const std::string JSON_TYPE_ATTRIBUTE = "type";
 const std::string JSON_VALUE_ATTRIBUTE = "value";
@@ -217,7 +241,7 @@ TEST_F(WorkspaceTest, GetVariables)
   auto v1 = GlobalVariableRegistry().Create("Local");
   auto v2 = GlobalVariableRegistry().Create("Local");
 
-  std::vector<const Variable *> expected({v1.get(), v2.get()});
+  std::vector<const Variable*> expected({v1.get(), v2.get()});
 
   workspace.AddVariable("v1", std::move(v1));
   workspace.AddVariable("v2", std::move(v2));
@@ -253,7 +277,7 @@ TEST_F(WorkspaceTest, GetVariablesOrder)
   auto v2 = GlobalVariableRegistry().Create("Local");
   auto v3 = GlobalVariableRegistry().Create("Local");
 
-  std::vector<const Variable *> expected({v1.get(), v2.get(), v3.get()});
+  std::vector<const Variable*> expected({v1.get(), v2.get(), v3.get()});
 
   // Add variables in non-lexicographical order
   workspace.AddVariable("b", std::move(v1));
@@ -302,12 +326,12 @@ TEST_F(WorkspaceTest, NotifyCallback)
   sup::dto::AnyValue var_value;
   bool var_connected;
   EXPECT_TRUE(ws.RegisterGenericCallback(
-    [&](const std::string& name, const sup::dto::AnyValue& value, bool connected)
-    {
-      var_name = name;
-      var_value = value;
-      var_connected = connected;
-    }));
+      [&](const std::string& name, const sup::dto::AnyValue& value, bool connected)
+      {
+        var_name = name;
+        var_value = value;
+        var_connected = connected;
+      }));
   std::string name = "FromWorkspace";
   auto var = GlobalVariableRegistry().Create("Local");
   EXPECT_TRUE(var->AddAttribute(JSON_TYPE_ATTRIBUTE, R"RAW({"type":"uint16"})RAW"));
@@ -325,15 +349,13 @@ TEST_F(WorkspaceTest, NotifyCallback)
 TEST_F(WorkspaceTest, RegisterType)
 {
   std::string struct_type_name = "structured_type_test_name";
-  sup::dto::AnyType structtype{{
-    {"first", sup::dto::UnsignedInteger16Type},
-    {"second", sup::dto::Float32Type}
-  }, struct_type_name};
+  sup::dto::AnyType structtype{
+      {{"first", sup::dto::UnsignedInteger16Type}, {"second", sup::dto::Float32Type}},
+      struct_type_name};
   EXPECT_TRUE(ws.RegisterType(structtype));
   sup::dto::AnyType array_type(2, sup::dto::StringType, struct_type_name);
   EXPECT_FALSE(ws.RegisterType(array_type));
 }
-
 
 TEST_F(WorkspaceTest, ResetVariable)
 {
@@ -360,6 +382,32 @@ TEST_F(WorkspaceTest, ResetVariable)
 
   // Reset non-existing variable
   EXPECT_FALSE(ws.ResetVariable(var2_name));
+}
+
+TEST_F(WorkspaceTest, SetupTeardownActions)
+{
+  const std::string identifier("server_variable");
+  ::testing::MockFunction<void()> setup_action;
+  ::testing::MockFunction<void()> teardown_action;
+
+  SetupTeardownActions actions{identifier, setup_action.AsStdFunction(),
+                               teardown_action.AsStdFunction()};
+
+  Workspace workspace;
+
+  auto var0 = std::unique_ptr<TestServerVariable>(new TestServerVariable(actions));
+  auto var1 = std::unique_ptr<TestServerVariable>(new TestServerVariable(actions));
+
+  workspace.AddVariable("var0", std::move(var0));
+  workspace.AddVariable("var1", std::move(var1));
+
+  // Two variables should trigger one setup and one shutdown action
+
+  EXPECT_CALL(setup_action, Call()).Times(1); // <-- FAILING HERE with (2) instead of (1)
+  workspace.Setup(); // trigger expectation
+
+  EXPECT_CALL(teardown_action, Call()).Times(1); // <-- FAILING HERE with (2) instead of (1)
+  workspace.Teardown();// trigger expectation
 }
 
 WorkspaceTest::WorkspaceTest()

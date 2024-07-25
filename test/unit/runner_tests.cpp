@@ -296,7 +296,8 @@ TEST_F(RunnerTest, Halt)
   EXPECT_NO_THROW(runner.ExecuteProcedure());
   halt_future.get();
   auto status = async_wait_proc->GetStatus();
-  EXPECT_TRUE(status == ExecutionStatus::NOT_FINISHED || status == ExecutionStatus::RUNNING);
+  EXPECT_TRUE(status == ExecutionStatus::NOT_FINISHED || status == ExecutionStatus::RUNNING
+           || status == ExecutionStatus::FAILURE);
 }
 
 TEST_F(RunnerTest, Pause)

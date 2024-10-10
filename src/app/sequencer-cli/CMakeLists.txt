@@ -1,7 +1,5 @@
 add_executable(sequencer-cli)
 
-target_compile_features(sequencer-cli PRIVATE cxx_std_11)
-
 target_sources(sequencer-cli
   PRIVATE
   cl_interface.cpp

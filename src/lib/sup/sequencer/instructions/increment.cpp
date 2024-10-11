@@ -54,7 +54,7 @@ ExecutionStatus Increment::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   }
   if (!sup::dto::Increment(value))
   {
-    const std::string warning = InstructionErrorProlog(*this) +
+    const std::string warning = InstructionWarningProlog(*this) +
       "could not increment variable reffered to in attribute [" +
       Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME + "]";
     LogWarning(ui, warning);

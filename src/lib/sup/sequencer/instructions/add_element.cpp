@@ -64,7 +64,7 @@ ExecutionStatus AddElement::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   if (!sup::dto::IsArrayValue(output_var))
   {
     std::string warning_message =
-        InstructionErrorProlog(*this) + " only allowed to insert into an array.";
+        InstructionWarningProlog(*this) + " only allowed to insert into an array.";
     LogWarning(ui, warning_message);
     return ExecutionStatus::FAILURE;
   }
@@ -72,7 +72,7 @@ ExecutionStatus AddElement::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   // Check member type
   if (output_var.GetType().ElementType() != input_var.GetType())
   {
-    std::string warning_message = InstructionErrorProlog(*this)
+    std::string warning_message = InstructionWarningProlog(*this)
                                 + " trying to insert wrong element type: " + input_var.GetTypeName()
                                 + ". Expected: " + output_var.GetType().ElementType().GetTypeName();
     LogWarning(ui, warning_message);
@@ -85,7 +85,7 @@ ExecutionStatus AddElement::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   }
   catch (const sup::dto::InvalidOperationException& e)
   {
-    const std::string warning = InstructionErrorProlog(*this) + e.what();
+    const std::string warning = InstructionWarningProlog(*this) + e.what();
     LogWarning(ui, warning);
     return ExecutionStatus::FAILURE;
   }

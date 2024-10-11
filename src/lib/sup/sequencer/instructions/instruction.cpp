@@ -395,7 +395,7 @@ bool SetValueFromAttributeName(const Instruction& instruction, Workspace& ws,
   }
   if (!ws.SetValue(output_field_name, value))
   {
-    std::string warning_message = InstructionErrorProlog(instruction) +
+    std::string warning_message = InstructionWarningProlog(instruction) +
       "could not write output field with name [" + output_field_name + "] to workspace";
     LogWarning(ui, warning_message);
     return false;
@@ -496,7 +496,7 @@ bool GetValueFromVariableName(const Instruction& instruction, const Workspace& w
   sup::dto::AnyValue tmp_val;
   if (!ws.GetValue(var_name, tmp_val))
   {
-    std::string warning_message = InstructionErrorProlog(instruction) +
+    std::string warning_message = InstructionWarningProlog(instruction) +
       "could not read input field with name [" + var_name + "] from workspace";
     LogWarning(ui, warning_message);
     return false;

@@ -78,7 +78,7 @@ ExecutionStatus AddMember::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   if (!IsStructValue(output_var))
   {
     const std::string warning =
-        InstructionErrorProlog(*this) + " adding members to non-struct variables is not allowed."
+        InstructionWarningProlog(*this) + " adding members to non-struct variables is not allowed."
         + "Output var [" + GetAttributeString(Constants::OUTPUT_VARIABLE_NAME_ATTRIBUTE_NAME)
         + "] is not a struct.";
     LogWarning(ui, warning);
@@ -93,7 +93,7 @@ ExecutionStatus AddMember::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 
   if (std::any_of(member_names.begin(), member_names.end(), has_member_with_name))
   {
-    const std::string warning = InstructionErrorProlog(*this) + " variable ["
+    const std::string warning = InstructionWarningProlog(*this) + " variable ["
                                 + GetAttributeString(Constants::OUTPUT_VARIABLE_NAME_ATTRIBUTE_NAME)
                                 + "] already has a member called ["
                                 + GetAttributeString(Constants::MEMBER_NAME_ATTRIBUTE_NAME) + "].";
@@ -108,7 +108,7 @@ ExecutionStatus AddMember::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   }
   catch (const sup::dto::InvalidOperationException& e)
   {
-    const std::string warning = InstructionErrorProlog(*this) + e.what();
+    const std::string warning = InstructionWarningProlog(*this) + e.what();
     LogWarning(ui, warning);
     return ExecutionStatus::FAILURE;
   }

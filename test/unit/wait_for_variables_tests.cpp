@@ -25,6 +25,7 @@
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/execution_status.h>
 #include <sup/sequencer/instruction_registry.h>
+#include <sup/sequencer/log_severity.h>
 #include <sup/sequencer/sequence_parser.h>
 
 using namespace sup::sequencer;
@@ -122,15 +123,44 @@ TEST_F(WaitForVariablesTest, WaitForFileVarsFailure)
     </Sequence>
     <Workspace>
         <Local name="a" type='{"type":"uint8"}' value='0' />
-        <File name="file" file="test_file_variable.json"/>
+        <File name="file" file="does_not_exist.json"/>
     </Workspace>
 )"};
 
-  sup::UnitTestHelper::EmptyUserInterface ui;
+  sup::UnitTestHelper::TestLogUserInterface ui;
   auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+  ASSERT_EQ(ui.m_log_entries.size(), 1);
+  auto log_entry = ui.m_log_entries.front();
+  EXPECT_EQ(log_entry.first, log::SUP_SEQ_LOG_WARNING);
+  EXPECT_EQ(log_entry.second, "file");
+}
+
+TEST_F(WaitForVariablesTest, WaitForMultipleFileVarsFailure)
+{
+  const std::string body{
+      R"(
+    <Sequence>
+        <WaitForVariables timeout="0.1" varType="File"/>
+    </Sequence>
+    <Workspace>
+        <Local name="a" type='{"type":"uint8"}' value='0' />
+        <File name="file1" file="does_not_exist.json"/>
+        <File name="file2" file="does_not_exist.json"/>
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::TestLogUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+  ASSERT_EQ(ui.m_log_entries.size(), 1);
+  auto log_entry = ui.m_log_entries.front();
+  EXPECT_EQ(log_entry.first, log::SUP_SEQ_LOG_WARNING);
+  EXPECT_EQ(log_entry.second, "file1,file2");
 }
 
 WaitForVariablesTest::WaitForVariablesTest()

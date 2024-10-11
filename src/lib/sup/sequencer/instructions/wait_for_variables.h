@@ -53,8 +53,8 @@ private:
   void RegisterCallbacks(Workspace& ws, std::condition_variable& cv,
                          void* listener, const std::vector<std::string>& var_names) const;
 
-  bool CheckCondition(UserInterface& ui, Workspace& ws,
-                      const std::vector<std::string>& var_names) const;
+  std::vector<std::string> UnavailableVars(UserInterface& ui, Workspace& ws,
+                                           const std::vector<std::string>& var_names) const;
 };
 
 }  // namespace sequencer

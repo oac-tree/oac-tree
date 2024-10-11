@@ -31,10 +31,13 @@
 
 #include <sup/dto/anyvalue_helper.h>
 
+#include <numeric>
+
 namespace
 {
 using sup::sequencer::Workspace;
 std::vector<std::string> GetVarNamesOfType(Workspace& ws, const std::string& var_type);
+std::string ConcatenateVarNames(const std::vector<std::string>& var_names);
 }  // unnamed namespace
 
 namespace sup
@@ -71,17 +74,21 @@ ExecutionStatus WaitForVariables::ExecuteSingleImpl(UserInterface& ui, Workspace
   RegisterCallbacks(ws, cv, this, var_names);
 
   // Wait for condition to be satisfied, halt or timeout:
-  bool success = false;
+  std::vector<std::string> unavailable_vars{};
   auto predicate = [&]{
-                        success = CheckCondition(ui, ws, var_names);
-                        return IsHaltRequested() || success;
+                        unavailable_vars = UnavailableVars(ui, ws, var_names);
+                        return IsHaltRequested() || unavailable_vars.empty();
                       };
   std::mutex mx;
   std::unique_lock<std::mutex> lk(mx);
   (void)cv.wait_for(lk, std::chrono::nanoseconds(timeout_ns), predicate);
 
-  return success ? ExecutionStatus::SUCCESS
-                 : ExecutionStatus::FAILURE;
+  if (unavailable_vars.empty())
+  {
+    return ExecutionStatus::SUCCESS;
+  }
+  LogWarning(ui, ConcatenateVarNames(unavailable_vars));
+  return ExecutionStatus::FAILURE;
 }
 
 void WaitForVariables::RegisterCallbacks(
@@ -98,18 +105,19 @@ void WaitForVariables::RegisterCallbacks(
   }
 }
 
-bool WaitForVariables::CheckCondition(UserInterface& ui, Workspace& ws,
-                                      const std::vector<std::string>& var_names) const
+std::vector<std::string> WaitForVariables::UnavailableVars(
+  UserInterface& ui, Workspace& ws, const std::vector<std::string>& var_names) const
 {
+  std::vector<std::string> unavailable_vars{};
   for (const auto& var_name : var_names)
   {
     const auto* var = ws.GetVariable(var_name);
     if (var == nullptr || !var->IsAvailable())
     {
-      return false;
+      unavailable_vars.push_back(var_name);
     }
   }
-  return true;
+  return unavailable_vars;
 }
 
 }  // namespace sequencer
@@ -131,5 +139,14 @@ std::vector<std::string> GetVarNamesOfType(Workspace& ws, const std::string& var
   }
   return result;
 }
+std::string ConcatenateVarNames(const std::vector<std::string>& var_names)
+{
+  auto op = [](const std::string& left, const std::string& right){
+    return left + "," + right;
+  };
+  std::string result = std::accumulate(var_names.begin(), var_names.end(), std::string{}, op);
+  return result.size() > 0 ? result.substr(1) : "";
+}
+
 }  // unnamed namespace
 

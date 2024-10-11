@@ -135,7 +135,8 @@ TEST_F(WaitForVariablesTest, WaitForFileVarsFailure)
   ASSERT_EQ(ui.m_log_entries.size(), 1);
   auto log_entry = ui.m_log_entries.front();
   EXPECT_EQ(log_entry.first, log::SUP_SEQ_LOG_WARNING);
-  EXPECT_EQ(log_entry.second, "file");
+  auto pos = log_entry.second.find("file");
+  EXPECT_NE(pos, std::string::npos);
 }
 
 TEST_F(WaitForVariablesTest, WaitForMultipleFileVarsFailure)
@@ -160,7 +161,10 @@ TEST_F(WaitForVariablesTest, WaitForMultipleFileVarsFailure)
   ASSERT_EQ(ui.m_log_entries.size(), 1);
   auto log_entry = ui.m_log_entries.front();
   EXPECT_EQ(log_entry.first, log::SUP_SEQ_LOG_WARNING);
-  EXPECT_EQ(log_entry.second, "file1,file2");
+  auto pos = log_entry.second.find("file1");
+  EXPECT_NE(pos, std::string::npos);
+  pos = log_entry.second.find("file2");
+  EXPECT_NE(pos, std::string::npos);
 }
 
 WaitForVariablesTest::WaitForVariablesTest()

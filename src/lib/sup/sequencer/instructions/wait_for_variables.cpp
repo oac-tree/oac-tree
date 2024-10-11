@@ -87,7 +87,9 @@ ExecutionStatus WaitForVariables::ExecuteSingleImpl(UserInterface& ui, Workspace
   {
     return ExecutionStatus::SUCCESS;
   }
-  LogWarning(ui, ConcatenateVarNames(unavailable_vars));
+  const std::string warning_message = InstructionWarningProlog(*this)
+    + " encountered unavailable variables: " + ConcatenateVarNames(unavailable_vars);
+  LogWarning(ui, warning_message);
   return ExecutionStatus::FAILURE;
 }
 
@@ -142,10 +144,10 @@ std::vector<std::string> GetVarNamesOfType(Workspace& ws, const std::string& var
 std::string ConcatenateVarNames(const std::vector<std::string>& var_names)
 {
   auto op = [](const std::string& left, const std::string& right){
-    return left + "," + right;
+    return left + ", " + right;
   };
   std::string result = std::accumulate(var_names.begin(), var_names.end(), std::string{}, op);
-  return result.size() > 0 ? result.substr(1) : "";
+  return result.size() > 1 ? result.substr(2) : "";
 }
 
 }  // unnamed namespace

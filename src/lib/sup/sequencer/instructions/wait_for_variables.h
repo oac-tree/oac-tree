@@ -50,10 +50,25 @@ public:
 private:
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 
+  /**
+   * @brief Register variable callbacks for all variables concerned.
+   *
+   * @param ws Workspace to use.
+   * @param cv Condition variable that will be notified.
+   * @param listener Listener pointer to use.
+   * @param var_names List of variable names to be used for callbacks.
+   */
   void RegisterCallbacks(Workspace& ws, std::condition_variable& cv,
                          void* listener, const std::vector<std::string>& var_names) const;
 
-  std::vector<std::string> UnavailableVars(UserInterface& ui, Workspace& ws,
+  /**
+   * @brief Return subset of variable names that are not available.
+   *
+   * @param ws Workspace to use.
+   * @param var_names Variable names to check for availability.
+   * @return List of variable names that are not available.
+   */
+  std::vector<std::string> UnavailableVars(Workspace& ws,
                                            const std::vector<std::string>& var_names) const;
 };
 

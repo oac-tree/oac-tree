@@ -76,7 +76,7 @@ ExecutionStatus WaitForVariables::ExecuteSingleImpl(UserInterface& ui, Workspace
   // Wait for condition to be satisfied, halt or timeout:
   std::vector<std::string> unavailable_vars{};
   auto predicate = [&]{
-                        unavailable_vars = UnavailableVars(ui, ws, var_names);
+                        unavailable_vars = UnavailableVars(ws, var_names);
                         return IsHaltRequested() || unavailable_vars.empty();
                       };
   std::mutex mx;
@@ -108,7 +108,7 @@ void WaitForVariables::RegisterCallbacks(
 }
 
 std::vector<std::string> WaitForVariables::UnavailableVars(
-  UserInterface& ui, Workspace& ws, const std::vector<std::string>& var_names) const
+  Workspace& ws, const std::vector<std::string>& var_names) const
 {
   std::vector<std::string> unavailable_vars{};
   for (const auto& var_name : var_names)

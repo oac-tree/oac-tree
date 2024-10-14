@@ -117,12 +117,22 @@ if(DEFINED ENV{CODAC_ROOT})
     # Prefixes to help cmake find config files for CODAC packages
     set(CODAC_CMAKE_PREFIXES ${CODAC_DIR} ${CODAC_DIR}/common)
 
-    set(_codac_ci_env $ENV{CI})
-    if(_codac_ci_env STREQUAL "true")
-      # Inside CODAC CICD system
-      set(CODAC_CICD TRUE)
+    if ($ENV{CI})
+      string(TOUPPER $ENV{CI} CI_UPPER)
+      if(CI_UPPER STREQUAL "TRUE" OR CI_UPPER STREQUAL "ON")
+        set(CODAC_CICD TRUE)
+      endif()
     else()
       set(CODAC_CICD FALSE)
+    endif()
+
+    if ($ENV{BUILD_DOCS})
+      string(TOUPPER $ENV{BUILD_DOCS} BUILD_DOCS_UPPER)
+      if(BUILD_DOCS_UPPER STREQUAL "TRUE" OR BUILD_DOCS_UPPER STREQUAL "ON")
+        set(CODAC_DOCS TRUE)
+      endif()
+    else()
+      set(CODAC_DOCS FALSE)
     endif()
 
     set(CODAC_FOUND TRUE)

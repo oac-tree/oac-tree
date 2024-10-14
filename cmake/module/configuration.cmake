@@ -49,6 +49,12 @@ if(CODAC_FOUND)
     string(APPEND CODAC_FOUND_MESSAGE " environment")
   endif()
 
+  if(CODAC_DOCS)
+    string(APPEND CODAC_FOUND_MESSAGE " and will build documentation")
+
+    set(COA_BUILD_DOCUMENTATION ON)
+  endif()
+
   find_package_message(
     CODAC_DETAILS
     "${CODAC_FOUND_MESSAGE}: ${CODAC_DIR} (version \"${CODAC_VERSION}\")"

@@ -7,6 +7,7 @@ target_sources(sup-sequencer-shared
     i_job.cpp
     info_constants.cpp
     instruction_info.cpp
+    instruction_map.cpp
     job_command_queue.cpp
     job_commands.cpp
     job_interface.cpp

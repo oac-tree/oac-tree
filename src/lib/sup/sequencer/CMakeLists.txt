@@ -39,6 +39,7 @@ install(FILES
   exceptions.h
   execution_status.h
   generic_utils.h
+  i_job.h
   instruction_registry.h
   instruction_tree.h
   instruction_utils.h

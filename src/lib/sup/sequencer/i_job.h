@@ -37,7 +37,13 @@ class JobInfo;
 class IJob
 {
 public:
+  IJob() = default;
   virtual ~IJob();
+
+  IJob(const IJob&) = delete;
+  IJob& operator=(const IJob&) = delete;
+  IJob(IJob&&) = delete;
+  IJob& operator=(IJob&&) = delete;
 
   /**
    * @brief Get all the static information about the managed job: procedure name, variable types,

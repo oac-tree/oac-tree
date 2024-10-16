@@ -3,11 +3,13 @@ target_sources(sup-sequencer-shared
     async_runner.cpp
     breakpoint.cpp
     breakpoint_manager.cpp
+    i_job.cpp
     job_command_queue.cpp
     job_commands.cpp
     job_interface.cpp
     job_state_monitor.cpp
     job_states.cpp
+    local_job.cpp
     runner.cpp
     user_interface.cpp
 )

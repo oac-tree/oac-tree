@@ -49,6 +49,7 @@ install(FILES
   job_interface.h
   job_state_monitor.h
   job_states.h
+  local_job.h
   log_severity.h
   named_callback_manager.h
   procedure_context.h

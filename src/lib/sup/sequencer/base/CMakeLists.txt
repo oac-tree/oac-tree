@@ -3,7 +3,6 @@ target_sources(sup-sequencer-shared
     application_utils.cpp
     exceptions.cpp
     generic_utils.cpp
-    i_job.cpp
     log_severity.cpp
     scope_guard.cpp
 )

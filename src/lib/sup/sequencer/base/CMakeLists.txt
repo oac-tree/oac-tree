@@ -1,5 +1,6 @@
 target_sources(sup-sequencer-shared
   PRIVATE
+    anyvalue_utils.cpp
     application_utils.cpp
     exceptions.cpp
     generic_utils.cpp

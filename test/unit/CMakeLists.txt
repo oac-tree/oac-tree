@@ -57,6 +57,7 @@ target_sources(unit-tests
     user_confirmation_tests.cpp
     user_interface_tests.cpp
     var_exists_tests.cpp
+    variable_info_tests.cpp
     variable_registry_tests.cpp
     wait_tests.cpp
     wait_for_variable_tests.cpp

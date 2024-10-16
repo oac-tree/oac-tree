@@ -5,6 +5,7 @@ target_sources(sup-sequencer-shared
     breakpoint.cpp
     breakpoint_manager.cpp
     i_job.cpp
+    info_constants.cpp
     job_command_queue.cpp
     job_commands.cpp
     job_interface.cpp
@@ -14,5 +15,6 @@ target_sources(sup-sequencer-shared
     runner.cpp
     user_interface.cpp
     variable_info.cpp
+    variable_utils.cpp
     workspace_info.cpp
 )

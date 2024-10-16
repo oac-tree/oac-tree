@@ -6,9 +6,9 @@
  *
  * Description   : Unit test code
  *
- * Author        : Carlos Miguel Silva (EXT)
+ * Author        : Walter Van Herck (IO)
  *
- * Copyright (c) : 2010-2023 ITER Organization,
+ * Copyright (c) : 2010-2024 ITER Organization,
  *                 CS 90 046
  *                 13067 St. Paul-lez-Durance Cedex
  *                 France
@@ -43,7 +43,7 @@ TEST_F(VariableInfoTest, FromVariable)
 {
   const std::string var_type = "Local";
   const sup::dto::uint32 var_idx = 42u;
-  auto var = sup::sequencer::GlobalVariableRegistry().Create(var_type);
+  auto var = GlobalVariableRegistry().Create(var_type);
 
   // Check VariableInfo from Variable without attributes
   auto var_info = utils::CreateVariableInfo(var.get(), var_idx);
@@ -76,7 +76,7 @@ TEST_F(VariableInfoTest, FromVariable)
 
 TEST_F(VariableInfoTest, FromNullptrVariable)
 {
-  sup::sequencer::Variable* var = nullptr;
+  Variable* var = nullptr;
   EXPECT_THROW(utils::CreateVariableInfo(var, 0), InvalidOperationException);
 }
 

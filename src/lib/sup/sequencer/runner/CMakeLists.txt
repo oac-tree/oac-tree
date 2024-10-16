@@ -1,6 +1,7 @@
 target_sources(sup-sequencer-shared
   PRIVATE
     async_runner.cpp
+    attribute_info.cpp
     breakpoint.cpp
     breakpoint_manager.cpp
     i_job.cpp
@@ -12,4 +13,6 @@ target_sources(sup-sequencer-shared
     local_job.cpp
     runner.cpp
     user_interface.cpp
+    variable_info.cpp
+    workspace_info.cpp
 )

@@ -29,6 +29,7 @@ install(FILES
   async_runner.h
   attribute_definition.h
   attribute_handler.h
+  attribute_info.h
   attribute_utils.h
   breakpoint.h
   compound_instruction.h
@@ -60,8 +61,10 @@ install(FILES
   sequence_parser.h
   setup_teardown_actions.h
   user_interface.h
+  variable_info.h
   variable_registry.h
   variable.h
+  workspace_info.h
   workspace.h
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/sup/sequencer
 )

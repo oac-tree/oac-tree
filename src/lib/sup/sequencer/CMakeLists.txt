@@ -43,6 +43,7 @@ install(FILES
   generic_utils.h
   i_job.h
   info_constants.h
+  instruction_info.h
   instruction_registry.h
   instruction_tree.h
   instruction_utils.h

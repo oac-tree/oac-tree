@@ -38,6 +38,7 @@ class InstructionMap;
 
 namespace utils
 {
+// TODO: remove the instr_map as parameter? This can be created directly from the root instruction.
 /**
  * @brief Create a InstructionInfo representation of an Instruction tree, providing all Instruction
  * types, their attributes and indices.

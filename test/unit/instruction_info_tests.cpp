@@ -32,14 +32,14 @@
 
 using namespace sup::sequencer;
 
-class InstructionInfoUtilsTest : public ::testing::Test
+class InstructionInfoTest : public ::testing::Test
 {
 protected:
-  InstructionInfoUtilsTest() = default;
-  virtual ~InstructionInfoUtilsTest() = default;
+  InstructionInfoTest() = default;
+  virtual ~InstructionInfoTest() = default;
 };
 
-TEST_F(InstructionInfoUtilsTest, InstructionInfoFromInstructionTree)
+TEST_F(InstructionInfoTest, InstructionInfoFromInstructionTree)
 {
   // Construct procedure and extract Workspace
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
@@ -51,6 +51,7 @@ TEST_F(InstructionInfoUtilsTest, InstructionInfoFromInstructionTree)
   // Create InstructionInfo tree
   InstructionMap instr_map{root};
   auto instr_info = utils::CreateInstructionInfoTree(*root, instr_map);
+  EXPECT_NO_THROW(ValidateInstructionInfoTree(*instr_info));
 
   // Check root of the InstructionInfo tree
   EXPECT_EQ(instr_info->GetType(), "Sequence");
@@ -85,13 +86,40 @@ TEST_F(InstructionInfoUtilsTest, InstructionInfoFromInstructionTree)
   // Test copy
   InstructionInfo copy{*instr_info};
   EXPECT_EQ(copy, *instr_info);
+  EXPECT_FALSE(copy != *instr_info);
 
   // Test move
   InstructionInfo moved{std::move(copy)};
   EXPECT_EQ(moved, *instr_info);
+  EXPECT_FALSE(moved != *instr_info);
 }
 
-TEST_F(InstructionInfoUtilsTest, CreateOrderedInstructionInfo)
+TEST_F(InstructionInfoTest, Flatten)
+{
+  // Construct procedure and extract Workspace
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
+  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  ASSERT_NE(proc.get(), nullptr);
+  EXPECT_NO_THROW(proc->Setup());
+  const auto* root = proc->RootInstruction();
+
+  // Create InstructionInfo tree and a flat list of the nodes
+  InstructionMap instr_map{root};
+  auto instr_info = utils::CreateInstructionInfoTree(*root, instr_map);
+  auto flattened_info = Flatten(*instr_info);
+  EXPECT_EQ(flattened_info.size(), 3);
+
+  // Check indices
+  std::set<sup::dto::uint32> indices;
+  for (const auto* node : flattened_info)
+  {
+    indices.insert(node->GetIndex());
+  }
+  std::set<sup::dto::uint32> expected_indices{0, 1, 2};
+  EXPECT_EQ(indices, expected_indices);
+}
+
+TEST_F(InstructionInfoTest, CreateOrderedInstructionInfo)
 {
   InstructionInfo sequence("sequence", 0, {});
   auto child0 = std::unique_ptr<InstructionInfo>(new InstructionInfo("child0", 1, {}));
@@ -110,7 +138,7 @@ TEST_F(InstructionInfoUtilsTest, CreateOrderedInstructionInfo)
   EXPECT_EQ(ordered_info[2], child1_ptr);
 }
 
-TEST_F(InstructionInfoUtilsTest, InstructionInfoToFromAnyValue)
+TEST_F(InstructionInfoTest, InstructionInfoToFromAnyValue)
 {
   // Construct procedure and extract Workspace
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);

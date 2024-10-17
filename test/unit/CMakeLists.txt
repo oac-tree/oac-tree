@@ -36,6 +36,7 @@ target_sources(unit-tests
     instruction_tree_tests.cpp
     job_command_queue_tests.cpp
     job_command_tests.cpp
+    job_info_tests.cpp
     listen_tests.cpp
     log_instruction_tests.cpp
     log_severity_tests.cpp

@@ -24,7 +24,7 @@
 
 #include <sup/dto/anyvalue.h>
 
-#include <map>
+#include <unordered_map>
 
 namespace sup
 {
@@ -41,7 +41,7 @@ class Instruction;
 class InstructionMap
 {
 public:
-  using InstructionIndexMap = std::map<const Instruction*, sup::dto::uint32>;
+  using InstructionIndexMap = std::unordered_map<const Instruction*, sup::dto::uint32>;
   /**
    * @brief Construct a InstructionMap object from the given root instruction.
    *

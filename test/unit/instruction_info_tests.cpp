@@ -121,21 +121,53 @@ TEST_F(InstructionInfoTest, Flatten)
 
 TEST_F(InstructionInfoTest, CreateOrderedInstructionInfo)
 {
-  InstructionInfo sequence("sequence", 0, {});
-  auto child0 = std::unique_ptr<InstructionInfo>(new InstructionInfo("child0", 1, {}));
-  auto child0_ptr = child0.get();
-  auto child1 = std::unique_ptr<InstructionInfo>(new InstructionInfo("child1", 2, {}));
-  auto child1_ptr = child1.get();
+  {
+    // InstructionInfo tree with proper indices
+    InstructionInfo sequence("sequence", 0, {});
+    auto child0 = std::unique_ptr<InstructionInfo>(new InstructionInfo("child0", 1, {}));
+    auto child0_ptr = child0.get();
+    auto child1 = std::unique_ptr<InstructionInfo>(new InstructionInfo("child1", 2, {}));
+    auto child1_ptr = child1.get();
 
-  sequence.AppendChild(std::move(child0));
-  sequence.AppendChild(std::move(child1));
+    EXPECT_EQ(sequence.AppendChild(std::move(child0)), child0_ptr);
+    EXPECT_EQ(sequence.AppendChild(std::move(child1)), child1_ptr);
+    EXPECT_NO_THROW(ValidateInstructionInfoTree(sequence));
 
-  auto ordered_info = utils::CreateOrderedInstructionInfo(sequence);
-  ASSERT_EQ(ordered_info.size(), 3);
+    auto ordered_info = utils::CreateOrderedInstructionInfo(sequence);
+    ASSERT_EQ(ordered_info.size(), 3);
 
-  EXPECT_EQ(ordered_info[0], &sequence);
-  EXPECT_EQ(ordered_info[1], child0_ptr);
-  EXPECT_EQ(ordered_info[2], child1_ptr);
+    EXPECT_EQ(ordered_info[0], &sequence);
+    EXPECT_EQ(ordered_info[1], child0_ptr);
+    EXPECT_EQ(ordered_info[2], child1_ptr);
+  }
+  {
+    // InstructionInfo tree with duplicate indices
+    InstructionInfo sequence("sequence", 0, {});
+    auto child0 = std::unique_ptr<InstructionInfo>(new InstructionInfo("child0", 1, {}));
+    auto child0_ptr = child0.get();
+    auto child1 = std::unique_ptr<InstructionInfo>(new InstructionInfo("child1", 0, {}));
+    auto child1_ptr = child1.get();
+
+    EXPECT_EQ(sequence.AppendChild(std::move(child0)), child0_ptr);
+    EXPECT_EQ(sequence.AppendChild(std::move(child1)), child1_ptr);
+
+    EXPECT_THROW(ValidateInstructionInfoTree(sequence), InvalidOperationException);
+    EXPECT_THROW(utils::CreateOrderedInstructionInfo(sequence), InvalidOperationException);
+  }
+  {
+    // InstructionInfo tree with out-of-bounds indices
+    InstructionInfo sequence("sequence", 0, {});
+    auto child0 = std::unique_ptr<InstructionInfo>(new InstructionInfo("child0", 1, {}));
+    auto child0_ptr = child0.get();
+    auto child1 = std::unique_ptr<InstructionInfo>(new InstructionInfo("child1", 3, {}));
+    auto child1_ptr = child1.get();
+
+    EXPECT_EQ(sequence.AppendChild(std::move(child0)), child0_ptr);
+    EXPECT_EQ(sequence.AppendChild(std::move(child1)), child1_ptr);
+
+    EXPECT_THROW(ValidateInstructionInfoTree(sequence), InvalidOperationException);
+    EXPECT_THROW(utils::CreateOrderedInstructionInfo(sequence), InvalidOperationException);
+  }
 }
 
 TEST_F(InstructionInfoTest, InstructionInfoToFromAnyValue)
@@ -147,12 +179,136 @@ TEST_F(InstructionInfoTest, InstructionInfoToFromAnyValue)
   EXPECT_NO_THROW(proc->Setup());
   const auto* root = proc->RootInstruction();
 
-  // Create InstructionInfo tree
-  InstructionMap instr_map{root};
-  auto instr_info = utils::CreateInstructionInfoTree(*root, instr_map);
+  {
+    // Correct InstructionInfo tree from real Instruction tree
+    InstructionMap instr_map{root};
+    auto instr_info = utils::CreateInstructionInfoTree(*root, instr_map);
 
-  // Create AnyValue, translate back and check they are equal
-  auto instr_av = utils::ToAnyValueTree(*instr_info);
-  auto instr_info_read_back = utils::ToInstructionInfoTree(instr_av);
-  EXPECT_EQ(*instr_info_read_back, *instr_info);
+    // Create AnyValue, translate back and check they are equal
+    auto instr_av = utils::ToAnyValueTree(*instr_info);
+    auto instr_info_read_back = utils::ToInstructionInfoTree(instr_av);
+    EXPECT_EQ(*instr_info_read_back, *instr_info);
+  }
+  {
+    // Create duplicate indices in AnyValue representation
+    InstructionMap instr_map{root};
+    auto instr_info = utils::CreateInstructionInfoTree(*root, instr_map);
+
+    // Create AnyValue, translate back and check they are equal
+    auto instr_av = utils::ToAnyValueTree(*instr_info);
+    auto& child1_av = instr_av[kChildInstructionsField][utils::CreateIndexedInstrChildName(1)];
+    child1_av[kIndexField].ConvertFrom(0);
+    EXPECT_THROW(utils::ToInstructionInfoTree(instr_av), InvalidOperationException);
+  }
+  {
+    // Create out-of-bounds indices in AnyValue representation
+    InstructionMap instr_map{root};
+    auto instr_info = utils::CreateInstructionInfoTree(*root, instr_map);
+
+    // Create AnyValue, translate back and check they are equal
+    auto instr_av = utils::ToAnyValueTree(*instr_info);
+    auto& child1_av = instr_av[kChildInstructionsField][utils::CreateIndexedInstrChildName(1)];
+    child1_av[kIndexField].ConvertFrom(3);
+    EXPECT_THROW(utils::ToInstructionInfoTree(instr_av), InvalidOperationException);
+  }
+// TODO: add tests for invalid AnyValues
+}
+
+TEST_F(InstructionInfoTest, CreateInstructionInfoNode)
+{
+  {
+    // Correct AnyValue for InstructionInfo node
+    sup::dto::AnyValue instr_info_av = {{
+      { kInstructionInfoNodeTypeField, "Instr_type" },
+      { kIndexField, { sup::dto::UnsignedInteger32Type, 42 }},
+      { kAttributesField, {
+        { "attr_1", "attr_1_value" },
+        { "attr_2", "attr_2_value" }
+      }}
+    }, kInstructionInfoNodeType };
+    EXPECT_TRUE(utils::ValidateInstructionInfoAnyValue(instr_info_av));
+    EXPECT_NO_THROW(utils::ToInstructionInfoNode(instr_info_av));
+  }
+  {
+    // Missing instruction type field
+    sup::dto::AnyValue instr_info_av = {{
+      { kIndexField, { sup::dto::UnsignedInteger32Type, 42 }},
+      { kAttributesField, {
+        { "attr_1", "attr_1_value" },
+        { "attr_2", "attr_2_value" }
+      }}
+    }, kInstructionInfoNodeType };
+    EXPECT_FALSE(utils::ValidateInstructionInfoAnyValue(instr_info_av));
+    EXPECT_THROW(utils::ToInstructionInfoNode(instr_info_av), InvalidOperationException);
+  }
+  {
+    // Wrong type for instruction type field
+    sup::dto::AnyValue instr_info_av = {{
+      { kInstructionInfoNodeTypeField, 5 },
+      { kIndexField, { sup::dto::UnsignedInteger32Type, 42 }},
+      { kAttributesField, {
+        { "attr_1", "attr_1_value" },
+        { "attr_2", "attr_2_value" }
+      }}
+    }, kInstructionInfoNodeType };
+    EXPECT_FALSE(utils::ValidateInstructionInfoAnyValue(instr_info_av));
+    EXPECT_THROW(utils::ToInstructionInfoNode(instr_info_av), InvalidOperationException);
+  }
+  {
+    // Missing index field
+    sup::dto::AnyValue instr_info_av = {{
+      { kInstructionInfoNodeTypeField, "Instr_type" },
+      { kAttributesField, {
+        { "attr_1", "attr_1_value" },
+        { "attr_2", "attr_2_value" }
+      }}
+    }, kInstructionInfoNodeType };
+    EXPECT_FALSE(utils::ValidateInstructionInfoAnyValue(instr_info_av));
+    EXPECT_THROW(utils::ToInstructionInfoNode(instr_info_av), InvalidOperationException);
+  }
+  {
+    // Wrong type for index field
+    sup::dto::AnyValue instr_info_av = {{
+      { kInstructionInfoNodeTypeField, "Instr_type" },
+      { kIndexField, { sup::dto::SignedInteger64Type, 42 }},
+      { kAttributesField, {
+        { "attr_1", "attr_1_value" },
+        { "attr_2", "attr_2_value" }
+      }}
+    }, kInstructionInfoNodeType };
+    EXPECT_FALSE(utils::ValidateInstructionInfoAnyValue(instr_info_av));
+    EXPECT_THROW(utils::ToInstructionInfoNode(instr_info_av), InvalidOperationException);
+  }
+  {
+    // Missing attributes field
+    sup::dto::AnyValue instr_info_av = {{
+      { kInstructionInfoNodeTypeField, "Instr_type" },
+      { kIndexField, { sup::dto::UnsignedInteger32Type, 42 }}
+    }, kInstructionInfoNodeType };
+    EXPECT_FALSE(utils::ValidateInstructionInfoAnyValue(instr_info_av));
+    EXPECT_THROW(utils::ToInstructionInfoNode(instr_info_av), InvalidOperationException);
+  }
+  {
+    // Wrong type for attributes field
+    sup::dto::AnyValue instr_info_av = {{
+      { kInstructionInfoNodeTypeField, "Instr_type" },
+      { kIndexField, { sup::dto::UnsignedInteger32Type, 42 }},
+      { kAttributesField, { sup::dto::Float64Type, 3.14 }}
+    }, kInstructionInfoNodeType };
+    EXPECT_FALSE(utils::ValidateInstructionInfoAnyValue(instr_info_av));
+    EXPECT_THROW(utils::ToInstructionInfoNode(instr_info_av), InvalidOperationException);
+  }
+  {
+    // Wrong type for attributes members
+    sup::dto::AnyValue instr_info_av = {{
+      { kInstructionInfoNodeTypeField, "Instr_type" },
+      { kIndexField, { sup::dto::UnsignedInteger32Type, 42 }},
+      { kAttributesField, {
+        { "attr_1", { sup::dto::BooleanType, true } },
+        { "attr_2", "attr_2_value" }
+      }}
+    }, kInstructionInfoNodeType };
+    EXPECT_FALSE(utils::ValidateInstructionInfoAnyValue(instr_info_av));
+    EXPECT_THROW(utils::ToInstructionInfoNode(instr_info_av), InvalidOperationException);
+  }
 }

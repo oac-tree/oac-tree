@@ -48,19 +48,6 @@ const std::string var_name_1 = "var_name_1";
 const std::string var_name_2 = "var_name_2";
 const std::string var_name_3 = "var_name_3";
 
-const std::string kWorkspaceSequenceBody{
-R"RAW(
-  <Sequence>
-    <Copy inputVar="one" outputVar="var1"/>
-    <Copy inputVar="one" outputVar="var2"/>
-  </Sequence>
-  <Workspace>
-    <Local name="one" type='{"type":"uint32"}' value='1'/>
-    <Local name="var1" type='{"type":"uint32"}' value='0'/>
-    <Local name="var2" type='{"type":"uint32"}' value='0'/>
-  </Workspace>
-)RAW"};
-
 TEST_F(WorkspaceInfoTest, AddVariableInfo)
 {
   {

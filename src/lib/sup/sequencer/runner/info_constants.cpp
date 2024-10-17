@@ -38,6 +38,13 @@ const dto::AnyValue kVariableInfoAnyValue = {{
   { kAttributesField, sup::dto::EmptyStruct() }
 }, kVariableInfoType };
 
+const dto::AnyValue kJobInfoAnyValue = {{
+  { kJobPrefixFieldName, "" },
+  { kFullNameFieldName, "" },
+  { kWorkspaceInfoFieldName, sup::dto::AnyValue{} },
+  { kInstructionTreeInfoFieldName, sup::dto::AnyValue{} }
+}, kJobInfoType };
+
 }  // namespace sequencer
 
 }  // namespace sup

@@ -48,6 +48,16 @@ const std::string kVariableInfoTypeField = "type";
 // Basic variable info node AnyValue
 extern const sup::dto::AnyValue kVariableInfoAnyValue;
 
+// Job info node fields:
+const std::string kJobInfoType = "sup::jobInfoType/v1.0";
+const std::string kJobPrefixFieldName = "job_prefix";
+const std::string kFullNameFieldName = "full_name";
+const std::string kWorkspaceInfoFieldName = "ws_info";
+const std::string kInstructionTreeInfoFieldName = "instr_tree_info";
+
+// Basic job info node AnyValue
+extern const sup::dto::AnyValue kJobInfoAnyValue;
+
 }  // namespace sequencer
 
 }  // namespace sup

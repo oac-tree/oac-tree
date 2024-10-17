@@ -52,6 +52,8 @@ install(FILES
   instruction.h
   job_command_queue.h
   job_commands.h
+  job_info_utils.h
+  job_info.h
   job_interface.h
   job_state_monitor.h
   job_states.h

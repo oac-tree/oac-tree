@@ -120,6 +120,75 @@ TEST_F(InstructionMapTest, Construction)
   }
 }
 
+TEST_F(InstructionMapTest, GetReverseMap)
+{
+  using namespace sup::UnitTestHelper;
+  {
+    // Empty root
+    InstructionMap instr_map{nullptr};
+    EXPECT_EQ(instr_map.GetNumberOfInstructions(), 0);
+    const auto& index_map = instr_map.GetInstructionMapping();
+    auto reverse_map = GetReverseMap(index_map);
+    EXPECT_TRUE(reverse_map.empty());
+  }
+  {
+    // Correct indexing (from 0 to N-1, where N is number of instruction pointers in map)
+    auto instr_1 = CreateTestTreeInstruction("instr1");
+    auto instr_2 = CreateTestTreeInstruction("instr2");
+    auto instr_3 = CreateTestTreeInstruction("instr3");
+    InstructionMap::InstructionIndexMap index_map{
+      { instr_1.get(), 0 },
+      { instr_2.get(), 1 },
+      { instr_3.get(), 2 }
+    };
+    auto reverse_map = GetReverseMap(index_map);
+    ASSERT_EQ(reverse_map.size(), 3u);
+    EXPECT_EQ(reverse_map[0], instr_1.get());
+    EXPECT_EQ(reverse_map[1], instr_2.get());
+    EXPECT_EQ(reverse_map[2], instr_3.get());
+  }
+  {
+    // Correct indexing, but adding out-of-order
+    auto instr_1 = CreateTestTreeInstruction("instr1");
+    auto instr_2 = CreateTestTreeInstruction("instr2");
+    auto instr_3 = CreateTestTreeInstruction("instr3");
+    InstructionMap::InstructionIndexMap index_map{
+      { instr_1.get(), 2 },
+      { instr_2.get(), 0 },
+      { instr_3.get(), 1 }
+    };
+    auto reverse_map = GetReverseMap(index_map);
+    ASSERT_EQ(reverse_map.size(), 3u);
+    EXPECT_EQ(reverse_map[0], instr_2.get());
+    EXPECT_EQ(reverse_map[1], instr_3.get());
+    EXPECT_EQ(reverse_map[2], instr_1.get());
+  }
+  {
+    // Indices are not in the correct range [0, N-1]
+    auto instr_1 = CreateTestTreeInstruction("instr1");
+    auto instr_2 = CreateTestTreeInstruction("instr2");
+    auto instr_3 = CreateTestTreeInstruction("instr3");
+    InstructionMap::InstructionIndexMap index_map{
+      { instr_1.get(), 1 },
+      { instr_2.get(), 2 },
+      { instr_3.get(), 3 }
+    };
+    EXPECT_THROW(GetReverseMap(index_map), InvalidOperationException);
+  }
+  {
+    // Duplicate indices in the correct range [0, N-1]
+    auto instr_1 = CreateTestTreeInstruction("instr1");
+    auto instr_2 = CreateTestTreeInstruction("instr2");
+    auto instr_3 = CreateTestTreeInstruction("instr3");
+    InstructionMap::InstructionIndexMap index_map{
+      { instr_1.get(), 1 },
+      { instr_2.get(), 2 },
+      { instr_3.get(), 1 }
+    };
+    EXPECT_THROW(GetReverseMap(index_map), InvalidOperationException);
+  }
+}
+
 InstructionMapTest::InstructionMapTest() = default;
 
 InstructionMapTest::~InstructionMapTest() = default;

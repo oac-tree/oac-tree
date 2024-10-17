@@ -27,11 +27,12 @@ target_sources(unit-tests
     generic_utils_tests.cpp
     include_procedure_tests.cpp
     include_tests.cpp
-    input_tests.cpp
     increment_tests.cpp
+    input_tests.cpp
+    instruction_map_tests.cpp
+    instruction_registry_tests.cpp
     instruction_tests.cpp
     instruction_tree_tests.cpp
-    instruction_registry_tests.cpp
     job_command_queue_tests.cpp
     job_command_tests.cpp
     listen_tests.cpp

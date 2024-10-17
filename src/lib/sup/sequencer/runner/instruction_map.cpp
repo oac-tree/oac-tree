@@ -72,12 +72,6 @@ void InstructionMap::InitializeMap(const Instruction* root)
   for (sup::dto::uint32 idx = 0; idx < instr_list.size(); ++idx)
   {
     const auto* instr = instr_list[idx];
-    if (instr == nullptr)
-    {
-      const std::string error =
-        "InstructionMap::InitializeMap(): nullptr to Instruction encountered";
-      throw InvalidOperationException(error);
-    }
     instruction_map[instr] = idx;
   }
   if (instruction_map.size() != instr_list.size())

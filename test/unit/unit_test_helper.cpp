@@ -51,6 +51,8 @@ unsigned long CounterInstruction::counter = 0u;
 
 static bool _initialise_instruction = RegisterGlobalInstruction<CounterInstruction>();
 
+const std::string TestTreeInstruction::Type = "TestTreeInstruction";
+
 CounterInstruction::CounterInstruction()
   : Instruction(CounterInstruction::Type)
 {
@@ -77,6 +79,24 @@ ExecutionStatus CounterInstruction::ExecuteSingleImpl(UserInterface& ui, Workspa
   }
   counter += increment;
   return ExecutionStatus::SUCCESS;
+}
+
+TestTreeInstruction::TestTreeInstruction()
+  : CompoundInstruction(TestTreeInstruction::Type)
+{}
+
+TestTreeInstruction::~TestTreeInstruction() = default;
+
+ExecutionStatus TestTreeInstruction::ExecuteSingleImpl(UserInterface&, Workspace&)
+{
+  return ExecutionStatus::SUCCESS;
+}
+
+std::unique_ptr<sup::sequencer::Instruction> CreateTestTreeInstruction(const std::string& name)
+{
+  std::unique_ptr<Instruction> result{new TestTreeInstruction{}};
+  result->SetName(name);
+  return result;
 }
 
 MockUI::MockUI()

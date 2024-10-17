@@ -105,7 +105,7 @@ private:
 std::vector<const Instruction*> GetReverseMap(
   const InstructionMap::InstructionIndexMap& instr_map);
 
-}  // namespace auto_server
+}  // namespace sequencer
 
 }  // namespace sup
 

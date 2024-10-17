@@ -22,6 +22,7 @@
 #ifndef SUP_SEQUENCER_UNIT_TEST_HELPER_H_
 #define SUP_SEQUENCER_UNIT_TEST_HELPER_H_
 
+#include <sup/sequencer/compound_instruction.h>
 #include <sup/sequencer/execution_status.h>
 #include <sup/sequencer/instruction.h>
 #include <sup/sequencer/procedure.h>
@@ -53,6 +54,22 @@ private:
   sup::sequencer::ExecutionStatus ExecuteSingleImpl(sup::sequencer::UserInterface& ui,
                                                     sup::sequencer::Workspace& ws) override;
 };
+
+class TestTreeInstruction : public sup::sequencer::CompoundInstruction
+{
+public:
+  TestTreeInstruction();
+  ~TestTreeInstruction() override;
+
+  static const std::string Type;
+
+private:
+  sup::sequencer::ExecutionStatus ExecuteSingleImpl(sup::sequencer::UserInterface& ui,
+                                                    sup::sequencer::Workspace& ws) override;
+};
+
+std::unique_ptr<sup::sequencer::Instruction> CreateTestTreeInstruction(
+  const std::string& name = {});
 
 class MockUI : public sup::sequencer::DefaultUserInterface
 {

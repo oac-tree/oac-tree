@@ -104,13 +104,18 @@ InstructionTree CreateInstructionTree(const Instruction* root, InstructionChildS
   }
   std::deque<InstructionTree*> stack;
   InstructionTree result{root};
-  stack.push_back(&result);
+  stack.push_back(std::addressof(result));
   while (!stack.empty())
   {
     auto tree = stack.back();
     stack.pop_back();
     for (auto instr : selector(tree->GetInstruction()))
     {
+      if (instr == nullptr)
+      {
+        std::string message = "CreateInstructionTree(): called with nullptr child";
+        throw InvalidOperationException(message);
+      }
       stack.push_back(tree->AddChildInstruction(instr));
     }
   }

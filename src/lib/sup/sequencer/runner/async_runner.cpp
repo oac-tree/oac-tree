@@ -282,7 +282,7 @@ void AsyncRunner::ExecutionLoop()
 void AsyncRunner::RunProcedure()
 {
   const TimeoutWhenRunning timeout{TickTimeoutMs(m_proc)};
-  auto tick_callback = [this, &timeout](const sup::sequencer::Procedure& proc){
+  auto tick_callback = [this, &timeout](const Procedure& proc){
     ProcessCommandsWhenRunning();
     timeout(proc);
     m_state_monitor.OnProcedureTick(proc);
@@ -314,7 +314,7 @@ void AsyncRunner::ProcessCommandsWhenRunning()
 
 void AsyncRunner::StepProcedure()
 {
-  auto tick_callback = [this](const sup::sequencer::Procedure& proc){
+  auto tick_callback = [this](const Procedure& proc){
     m_state_monitor.OnProcedureTick(proc);
     return;
   };

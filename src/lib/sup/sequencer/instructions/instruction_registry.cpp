@@ -84,7 +84,7 @@ bool InstructionRegistry::RegisterInstruction(std::string name, InstructionConst
   if (it != m_instruction_map.end())
   {
     std::string error_message =
-      "sup::sequencer::InstructionRegistry::RegisterInstruction(): trying to register instruction "
+      "InstructionRegistry::RegisterInstruction(): trying to register instruction "
       "with name [" + name + "] twice";
     throw InvalidOperationException(error_message);
   }
@@ -98,7 +98,7 @@ std::unique_ptr<Instruction> InstructionRegistry::Create(const std::string& name
   if (entry == m_instruction_map.end())
   {
     std::string error_message =
-      "sup::sequencer::InstructionRegistry::Create(): trying to create unregistered instruction "
+      "InstructionRegistry::Create(): trying to create unregistered instruction "
       "with name [" + name + "]";
     throw InvalidOperationException(error_message);
   }

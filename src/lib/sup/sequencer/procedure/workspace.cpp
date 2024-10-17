@@ -65,7 +65,7 @@ bool Workspace::AddVariable(const std::string& name, std::unique_ptr<Variable>&&
   if (ContainsVariableName(name))
   {
     std::string error_message =
-      "sup::sequencer::Workspace::AddVariable(): trying to add variable with name that already "
+      "Workspace::AddVariable(): trying to add variable with name that already "
       "exists: [" + name + "]";
     throw InvalidOperationException(error_message);
   }

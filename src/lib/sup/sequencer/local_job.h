@@ -49,8 +49,7 @@ public:
    * @param job_info_io IJobInfoIO implementation that will receive all updates and provide user
    * input/output.
    */
-  LocalJob(const std::string& prefix, std::unique_ptr<sup::sequencer::Procedure> proc,
-           IJobInfoIO& job_info_io);
+  LocalJob(const std::string& prefix, std::unique_ptr<Procedure> proc, IJobInfoIO& job_info_io);
   ~LocalJob();
 
   // Delete copy operations
@@ -73,7 +72,7 @@ public:
   void Halt() override;
 
 private:
-  sup::sequencer::AsyncRunner& Runner();
+  AsyncRunner& Runner();
   struct LocalJobImpl;
   std::unique_ptr<LocalJobImpl> m_impl;
 };

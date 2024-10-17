@@ -26,7 +26,7 @@ namespace sup
 namespace sequencer
 {
 
-std::vector<AttributeInfo> ToAttributeInfos(const sup::sequencer::StringAttributeList& attrs)
+std::vector<AttributeInfo> ToAttributeInfos(const StringAttributeList& attrs)
 {
   return attrs;
 }

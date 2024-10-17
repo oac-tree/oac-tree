@@ -89,7 +89,7 @@ bool CLInterface::GetUserValue(sup::dto::AnyValue &value, const std::string &des
   {
     auto json_type = sup::dto::AnyTypeToJSONString(value.GetType());
     std::string error_message =
-      "sup::sequencer::CLInterface::GetUserValue(): only scalar values are supported, "
+      "CLInterface::GetUserValue(): only scalar values are supported, "
       "requested type was [" + json_type + "]";
     m_logger.LogMessage(log::SUP_SEQ_LOG_ERR, error_message);
     return false;
@@ -101,7 +101,7 @@ bool CLInterface::GetUserValue(sup::dto::AnyValue &value, const std::string &des
   {
     auto json_type = sup::dto::AnyTypeToJSONString(value.GetType());
     std::string error_message =
-      "sup::sequencer::CLInterface::GetUserValue(): user provided value [" + input +
+      "CLInterface::GetUserValue(): user provided value [" + input +
       "] could not be parsed to type [" + json_type + "]";
     m_logger.LogMessage(log::SUP_SEQ_LOG_ERR, error_message);
     return false;
@@ -131,7 +131,7 @@ int CLInterface::GetUserChoice(const std::vector<std::string>& options,
   if (istr.fail())
   {
     std::string error_message =
-      "sup::sequencer::CLInterface::GetUserChoice(): user provided value [" + input_str +
+      "CLInterface::GetUserChoice(): user provided value [" + input_str +
       "] could not be parsed to integer";
     m_logger.LogMessage(log::SUP_SEQ_LOG_ERR, error_message);
     return -1;
@@ -141,7 +141,7 @@ int CLInterface::GetUserChoice(const std::vector<std::string>& options,
   if (input < 0 || input >= options.size())
   {
     std::string error_message =
-      "sup::sequencer::CLInterface::GetUserChoice(): user provided value [" +
+      "CLInterface::GetUserChoice(): user provided value [" +
       std::to_string(input) + "] must be in the range [1, " + std::to_string(options.size()) + "]";
     m_logger.LogMessage(log::SUP_SEQ_LOG_ERR, error_message);
     return -1;

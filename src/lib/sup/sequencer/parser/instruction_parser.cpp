@@ -42,14 +42,14 @@ std::unique_ptr<Instruction> ParseInstruction(const sup::xml::TreeData &data)
   auto instr_type = data.GetNodeName();
   if (!GlobalInstructionRegistry().IsRegisteredInstructionName(instr_type))
   {
-    std::string error_message = "sup::sequencer::ParseInstruction(): trying to create unregistered "
+    std::string error_message = "ParseInstruction(): trying to create unregistered "
                                 "instruction with typename [" + instr_type + "]";
     throw ParseException(error_message);
   }
   auto instr = GlobalInstructionRegistry().Create(instr_type);
   if (!instr)
   {
-    std::string error_message = "sup::sequencer::ParseInstruction(): could not create instruction "
+    std::string error_message = "ParseInstruction(): could not create instruction "
                                 "with typename [" + instr_type + "]";
     throw ParseException(error_message);
   }
@@ -70,14 +70,14 @@ static void AddChildInstructions(Instruction *instruction,
     if (!child_instr)
     {
       std::string error_message =
-        "sup::sequencer::AddChildInstructions(): could not create instruction from TreeData "
+        "AddChildInstructions(): could not create instruction from TreeData "
         "of type: <" + child.GetNodeName() + "> and name [" + GetNameAttribute(child) + "]";
       throw ParseException(error_message);
     }
     if (!AppendChildInstruction(*instruction, std::move(child_instr)))
     {
       std::string error_message =
-        "sup::sequencer::AddChildInstructions(): wrong amount of child instructions for leaf "
+        "AddChildInstructions(): wrong amount of child instructions for leaf "
         "instruction of type: [" + instruction->GetType() +
         "] and name [" + instruction->GetName() + "]";
       throw ParseException(error_message);

@@ -50,7 +50,7 @@ TEST(SequenceWorkspace, CopyVariable)
   sup::UnitTestHelper::TemporaryTestFile test_file(
       file_name, sup::UnitTestHelper::CreateProcedureString(body));
 
-  auto proc = sup::sequencer::ParseProcedureFile(file_name);
+  auto proc = ParseProcedureFile(file_name);
   ASSERT_TRUE(proc.get() != nullptr);
   EXPECT_NO_THROW(proc->Setup());
 

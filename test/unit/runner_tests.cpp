@@ -456,10 +456,10 @@ TEST_F(RunnerTest, DisabledBreakpoint)
 RunnerTest::RunnerTest()
     : mock_ui{}
     , empty_ui{}
-    , async_proc{sup::sequencer::ParseProcedureString(AsyncProcedureString)}
-    , sync_proc{sup::sequencer::ParseProcedureString(SyncProcedureString)}
-    , copy_proc{sup::sequencer::ParseProcedureString(CopyVariableProcedureString)}
-    , async_wait_proc{sup::sequencer::ParseProcedureString(AsyncWaitProcedureString)}
+    , async_proc{ParseProcedureString(AsyncProcedureString)}
+    , sync_proc{ParseProcedureString(SyncProcedureString)}
+    , copy_proc{ParseProcedureString(CopyVariableProcedureString)}
+    , async_wait_proc{ParseProcedureString(AsyncWaitProcedureString)}
 {
 }
 

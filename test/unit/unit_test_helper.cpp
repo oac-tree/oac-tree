@@ -92,7 +92,7 @@ ExecutionStatus TestTreeInstruction::ExecuteSingleImpl(UserInterface&, Workspace
   return ExecutionStatus::SUCCESS;
 }
 
-std::unique_ptr<sup::sequencer::Instruction> CreateTestTreeInstruction(const std::string& name)
+std::unique_ptr<Instruction> CreateTestTreeInstruction(const std::string& name)
 {
   std::unique_ptr<Instruction> result{new TestTreeInstruction{}};
   result->SetName(name);

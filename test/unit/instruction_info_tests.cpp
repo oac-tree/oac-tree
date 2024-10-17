@@ -43,7 +43,7 @@ TEST_F(InstructionInfoTest, InstructionInfoFromInstructionTree)
 {
   // Construct procedure and extract Workspace
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
-  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  auto proc = ParseProcedureString(procedure_string);
   ASSERT_NE(proc.get(), nullptr);
   EXPECT_NO_THROW(proc->Setup());
   const auto* root = proc->RootInstruction();
@@ -98,7 +98,7 @@ TEST_F(InstructionInfoTest, Flatten)
 {
   // Construct procedure and extract Workspace
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
-  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  auto proc = ParseProcedureString(procedure_string);
   ASSERT_NE(proc.get(), nullptr);
   EXPECT_NO_THROW(proc->Setup());
   const auto* root = proc->RootInstruction();
@@ -174,7 +174,7 @@ TEST_F(InstructionInfoTest, InstructionInfoToFromAnyValue)
 {
   // Construct procedure and extract Workspace
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
-  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  auto proc = ParseProcedureString(procedure_string);
   ASSERT_NE(proc.get(), nullptr);
   EXPECT_NO_THROW(proc->Setup());
   const auto* root = proc->RootInstruction();
@@ -211,7 +211,6 @@ TEST_F(InstructionInfoTest, InstructionInfoToFromAnyValue)
     child1_av[kIndexField].ConvertFrom(3);
     EXPECT_THROW(utils::ToInstructionInfoTree(instr_av), InvalidOperationException);
   }
-// TODO: add tests for invalid AnyValues
 }
 
 TEST_F(InstructionInfoTest, CreateInstructionInfoNode)

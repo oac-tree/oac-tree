@@ -51,7 +51,7 @@ bool VariableRegistry::RegisterVariable(std::string name, VariableConstructor co
   if (it != m_variable_map.end())
   {
     std::string error_message =
-      "sup::sequencer::VariableRegistry::RegisterVariable(): trying to register variable "
+      "VariableRegistry::RegisterVariable(): trying to register variable "
       "with name [" + name + "] twice";
     throw InvalidOperationException(error_message);
   }
@@ -65,7 +65,7 @@ std::unique_ptr<Variable> VariableRegistry::Create(std::string name)
   if (entry == m_variable_map.end())
   {
     std::string error_message =
-      "sup::sequencer::VariableRegistry::Create(): trying to create unregistered variable "
+      "VariableRegistry::Create(): trying to create unregistered variable "
       "with name [" + name + "]";
     throw InvalidOperationException(error_message);
   }

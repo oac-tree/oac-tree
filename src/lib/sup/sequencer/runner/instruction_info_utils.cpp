@@ -37,7 +37,7 @@ using namespace sup::sequencer;
 
 struct InstrToInstrInfoStackNode
 {
-  const sup::sequencer::Instruction& instruction;
+  const Instruction& instruction;
   InstructionInfo& instr_info;
 };
 
@@ -61,7 +61,7 @@ namespace sequencer
 {
 namespace utils
 {
-std::unique_ptr<InstructionInfo> CreateInstructionInfoTree(const sequencer::Instruction& root,
+std::unique_ptr<InstructionInfo> CreateInstructionInfoTree(const Instruction& root,
                                                            const InstructionMap& instr_map)
 {
   // No explicit validation occurs here, since the InstructionMap ensure valid pointers and indices.
@@ -171,7 +171,7 @@ std::vector<const InstructionInfo*> CreateOrderedInstructionInfo(const Instructi
   return result;
 }
 
-std::unique_ptr<InstructionInfo> CreateInstructionInfoNode(const sequencer::Instruction& instr,
+std::unique_ptr<InstructionInfo> CreateInstructionInfoNode(const Instruction& instr,
                                                            sup::dto::uint32 index)
 {
   auto instr_type = instr.GetType();

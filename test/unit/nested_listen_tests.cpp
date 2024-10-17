@@ -75,10 +75,10 @@ R"RAW(
 
   sup::UnitTestHelper::EmptyUserInterface ui{};
 
-  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  auto proc = ParseProcedureString(procedure_string);
   ASSERT_NE(proc.get(), nullptr);
   EXPECT_TRUE(
-    sup::UnitTestHelper::TryAndExecuteNoReset(proc, ui, sup::sequencer::ExecutionStatus::SUCCESS));
+    sup::UnitTestHelper::TryAndExecuteNoReset(proc, ui, ExecutionStatus::SUCCESS));
 
   // check result variable
   auto& ws = proc->GetWorkspace();
@@ -134,10 +134,10 @@ R"RAW(
 
   sup::UnitTestHelper::EmptyUserInterface ui{};
 
-  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  auto proc = ParseProcedureString(procedure_string);
   ASSERT_NE(proc.get(), nullptr);
   EXPECT_TRUE(
-    sup::UnitTestHelper::TryAndExecuteNoReset(proc, ui, sup::sequencer::ExecutionStatus::SUCCESS));
+    sup::UnitTestHelper::TryAndExecuteNoReset(proc, ui, ExecutionStatus::SUCCESS));
 
   // check result variable
   auto& ws = proc->GetWorkspace();
@@ -200,10 +200,10 @@ R"RAW(
 
   sup::UnitTestHelper::EmptyUserInterface ui{};
 
-  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  auto proc = ParseProcedureString(procedure_string);
   ASSERT_NE(proc.get(), nullptr);
   EXPECT_TRUE(
-    sup::UnitTestHelper::TryAndExecuteNoReset(proc, ui, sup::sequencer::ExecutionStatus::SUCCESS));
+    sup::UnitTestHelper::TryAndExecuteNoReset(proc, ui, ExecutionStatus::SUCCESS));
 
   // check result variable
   auto& ws = proc->GetWorkspace();
@@ -269,10 +269,10 @@ R"RAW(
 
   sup::UnitTestHelper::EmptyUserInterface ui{};
 
-  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  auto proc = ParseProcedureString(procedure_string);
   ASSERT_NE(proc.get(), nullptr);
   EXPECT_TRUE(
-    sup::UnitTestHelper::TryAndExecuteNoReset(proc, ui, sup::sequencer::ExecutionStatus::SUCCESS));
+    sup::UnitTestHelper::TryAndExecuteNoReset(proc, ui, ExecutionStatus::SUCCESS));
 
   // check result variable
   auto& ws = proc->GetWorkspace();

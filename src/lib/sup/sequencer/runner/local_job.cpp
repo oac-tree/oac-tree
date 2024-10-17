@@ -50,17 +50,16 @@ public:
 
 struct LocalJob::LocalJobImpl
 {
-  LocalJobImpl(const std::string& prefix, std::unique_ptr<sup::sequencer::Procedure> proc,
-               IJobInfoIO& job_info_io);
+  LocalJobImpl(const std::string& prefix, std::unique_ptr<Procedure> proc, IJobInfoIO& job_info_io);
   ~LocalJobImpl() = default;
 
-  std::unique_ptr<sup::sequencer::Procedure> m_proc;
+  std::unique_ptr<Procedure> m_proc;
   TestJobInterface m_job_interface;
-  sup::sequencer::AsyncRunner m_runner;
+  AsyncRunner m_runner;
   JobInfo m_job_info;
 };
 
-LocalJob::LocalJob(const std::string& prefix, std::unique_ptr<sup::sequencer::Procedure> proc,
+LocalJob::LocalJob(const std::string& prefix, std::unique_ptr<Procedure> proc,
                    IJobInfoIO& job_info_io)
   : IJob{}
   , m_impl{new LocalJobImpl{prefix, std::move(proc), job_info_io}}
@@ -121,14 +120,13 @@ void LocalJob::Halt()
   Runner().Halt();
 }
 
-sup::sequencer::AsyncRunner& LocalJob::Runner()
+AsyncRunner& LocalJob::Runner()
 {
   return m_impl->m_runner;
 }
 
 LocalJob::LocalJobImpl::LocalJobImpl(
-  const std::string& prefix, std::unique_ptr<sup::sequencer::Procedure> proc,
-  IJobInfoIO& job_info_io)
+  const std::string& prefix, std::unique_ptr<Procedure> proc, IJobInfoIO& job_info_io)
   : m_proc{std::move(proc)}
   , m_job_interface{}
   , m_runner{*m_proc, m_job_interface}

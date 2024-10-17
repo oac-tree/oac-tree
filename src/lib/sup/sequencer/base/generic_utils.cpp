@@ -67,14 +67,14 @@ LibraryHandle LoadLibrary(const std::string& libname)
   if (libname.empty())
   {
     std::string error_message =
-    "sup::sequencer::utils::LoadLibrary(): trying to load library with empty name";
+    "utils::LoadLibrary(): trying to load library with empty name";
     throw InvalidOperationException(error_message);
   }
   LibraryHandle handle = dlopen(libname.c_str(), RTLD_NOW);
   if (handle == nullptr)
   {
     std::string error_message =
-    "sup::sequencer::utils::LoadLibrary(): could not load library with name [" + libname + "]";
+    "utils::LoadLibrary(): could not load library with name [" + libname + "]";
     throw RuntimeException(error_message);
   }
   return handle;

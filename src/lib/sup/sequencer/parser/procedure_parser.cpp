@@ -51,7 +51,7 @@ std::unique_ptr<Procedure> ParseProcedure(const sup::xml::TreeData& data,
   if (data.GetNodeName() != Constants::PROCEDURE_ELEMENT_NAME)
   {
     std::string error_message =
-      "sup::sequencer::ParseProcedure(): root element of type <" + data.GetNodeName() +
+      "ParseProcedure(): root element of type <" + data.GetNodeName() +
       "> instead of: <" + Constants::PROCEDURE_ELEMENT_NAME + ">";
     throw ParseException(error_message);
   }
@@ -95,7 +95,7 @@ void RegisterTypeInformation(Procedure* procedure, const sup::xml::TreeData& chi
       == child.HasAttribute(Constants::REGISTERTYPE_JSON_FILE_ATTRIBUTE))
   {
     std::string error_message =
-        "sup::sequencer::RegisterTypeInformation(): element should contain exactly one attribute "
+        "RegisterTypeInformation(): element should contain exactly one attribute "
         "out of ("
         + Constants::REGISTERTYPE_JSON_TYPE_ATTRIBUTE + ", "
         + Constants::REGISTERTYPE_JSON_FILE_ATTRIBUTE + ")";
@@ -145,7 +145,7 @@ void AddWorkspaceVariables(Procedure* procedure, const sup::xml::TreeData& ws_da
     if (name.empty())
     {
       std::string error_message =
-        "sup::sequencer::AddWorkspaceVariables(): variable with type <" + var_data.GetNodeName() +
+        "AddWorkspaceVariables(): variable with type <" + var_data.GetNodeName() +
         "> has no or an empty name";
       throw ParseException(error_message);
     }
@@ -153,7 +153,7 @@ void AddWorkspaceVariables(Procedure* procedure, const sup::xml::TreeData& ws_da
     if (!procedure->AddVariable(name, std::move(var)))
     {
       std::string error_message =
-        "sup::sequencer::AddWorkspaceVariables(): adding variable with type [" +
+        "AddWorkspaceVariables(): adding variable with type [" +
         var_data.GetNodeName() + "] and name [" + name + "] to procedure failed";
       throw ParseException(error_message);
     }

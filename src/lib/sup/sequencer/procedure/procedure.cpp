@@ -41,7 +41,6 @@
 namespace
 {
 using sup::sequencer::Instruction;
-using sup::sequencer::TypeRegistrationInfo;
 bool HasRootAttributeSet(const Instruction &instruction);
 }  // unnamed namespace
 

@@ -108,7 +108,7 @@ R"RAW(
 )RAW"};
 
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
-  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  auto proc = ParseProcedureString(procedure_string);
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
@@ -124,7 +124,7 @@ R"RAW(
 )RAW"};
 
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
-  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  auto proc = ParseProcedureString(procedure_string);
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
 }
 
@@ -139,7 +139,7 @@ R"RAW(
 )RAW"};
 
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
-  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  auto proc = ParseProcedureString(procedure_string);
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
 }
 

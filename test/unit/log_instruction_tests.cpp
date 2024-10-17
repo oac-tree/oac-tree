@@ -93,7 +93,7 @@ TEST_F(LogInstructionTest, Setup)
 TEST_F(LogInstructionTest, SimpleMessage)
 {
   Procedure proc;
-  auto instruction = sup::sequencer::GlobalInstructionRegistry().Create("Log");
+  auto instruction = GlobalInstructionRegistry().Create("Log");
   ASSERT_TRUE(static_cast<bool>(instruction));
 
   std::string log_message = "Hello test!";
@@ -111,7 +111,7 @@ TEST_F(LogInstructionTest, SimpleMessage)
 
 TEST_F(LogInstructionTest, MessageWithSeverity)
 {
-  auto instruction = sup::sequencer::GlobalInstructionRegistry().Create("Log");
+  auto instruction = GlobalInstructionRegistry().Create("Log");
   ASSERT_TRUE(static_cast<bool>(instruction));
 
   Procedure proc;
@@ -131,7 +131,7 @@ TEST_F(LogInstructionTest, MessageWithSeverity)
 
 TEST_F(LogInstructionTest, MessageWithSeverityError)
 {
-  auto instruction = sup::sequencer::GlobalInstructionRegistry().Create("Log");
+  auto instruction = GlobalInstructionRegistry().Create("Log");
   ASSERT_TRUE(static_cast<bool>(instruction));
 
   Procedure proc;
@@ -152,7 +152,7 @@ TEST_F(LogInstructionTest, MessageWithSeverityError)
 
 TEST_F(LogInstructionTest, VariableDoesNotExist)
 {
-  auto instruction = sup::sequencer::GlobalInstructionRegistry().Create("Log");
+  auto instruction = GlobalInstructionRegistry().Create("Log");
   ASSERT_TRUE(static_cast<bool>(instruction));
 
   Procedure proc;
@@ -171,7 +171,7 @@ TEST_F(LogInstructionTest, VariableDoesNotExist)
 
 TEST_F(LogInstructionTest, VariableCannotBeRead)
 {
-  auto instruction = sup::sequencer::GlobalInstructionRegistry().Create("Log");
+  auto instruction = GlobalInstructionRegistry().Create("Log");
   ASSERT_TRUE(static_cast<bool>(instruction));
 
   Workspace ws;
@@ -196,7 +196,7 @@ TEST_F(LogInstructionTest, VariableCannotBeRead)
 
 TEST_F(LogInstructionTest, VariableSuccess)
 {
-  auto instruction = sup::sequencer::GlobalInstructionRegistry().Create("Log");
+  auto instruction = GlobalInstructionRegistry().Create("Log");
   ASSERT_TRUE(static_cast<bool>(instruction));
 
   Workspace ws;
@@ -251,7 +251,7 @@ R"RAW(
 )RAW"};
 
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
-  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  auto proc = ParseProcedureString(procedure_string);
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
@@ -268,7 +268,7 @@ R"RAW(
 )RAW"};
 
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
-  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  auto proc = ParseProcedureString(procedure_string);
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
 }
 
@@ -284,7 +284,7 @@ R"RAW(
 )RAW"};
 
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
-  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  auto proc = ParseProcedureString(procedure_string);
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
 }
 

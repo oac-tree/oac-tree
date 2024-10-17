@@ -127,13 +127,13 @@ std::pair<sup::dto::AnyValue, std::string> AttributeValidator::TryCreateAnyValue
     return { sup::dto::AnyValue(str_attr.second), "" };
   }
   auto attr_type = attr_def_it->GetType();
-  auto parsed = sup::sequencer::utils::ParseAttributeString(attr_type, str_attr.second);
+  auto parsed = utils::ParseAttributeString(attr_type, str_attr.second);
   if (parsed.first)
   {
     return { parsed.second, "" };
   }
   auto failed_constraint =
-    MakeConstraint<sup::sequencer::FixedType>(str_attr.first, attr_type).GetRepresentation();
+    MakeConstraint<FixedType>(str_attr.first, attr_type).GetRepresentation();
   return { {}, failed_constraint };
 }
 

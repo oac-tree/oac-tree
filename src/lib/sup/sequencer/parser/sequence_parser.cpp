@@ -46,7 +46,7 @@ std::unique_ptr<Procedure> ParseProcedureFile(const std::string& filename)
   if (!data)
   {
     std::string error_message =
-      "sup::sequencer::ParseProcedureFile(): could not parse file [" + filename + "] to TreeData";
+      "ParseProcedureFile(): could not parse file [" + filename + "] to TreeData";
     throw ParseException(error_message);
   }
 
@@ -61,7 +61,7 @@ std::unique_ptr<Procedure> ParseProcedureString(const std::string& xml_str)
   {
     auto xml_head = xml_str.substr(0, 1024);
     std::string error_message =
-      "sup::sequencer::ParseProcedureFile(): could not parse xml string to TreeData:\n" +
+      "ParseProcedureFile(): could not parse xml string to TreeData:\n" +
        xml_head + "\n...";
     throw ParseException(error_message);
   }

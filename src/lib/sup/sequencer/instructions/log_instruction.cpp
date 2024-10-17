@@ -100,18 +100,19 @@ ExecutionStatus LogInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& 
 
 namespace
 {
+using namespace sup::sequencer::log;
 int SeverityFromString(const std::string& level)
 {
   static const std::map<std::string, int> string_severity_map = {
-      {"emergency", sup::sequencer::log::SUP_SEQ_LOG_EMERG},
-      {"alert", sup::sequencer::log::SUP_SEQ_LOG_ALERT},
-      {"critical", sup::sequencer::log::SUP_SEQ_LOG_CRIT},
-      {"error", sup::sequencer::log::SUP_SEQ_LOG_ERR},
-      {"warning", sup::sequencer::log::SUP_SEQ_LOG_WARNING},
-      {"notice", sup::sequencer::log::SUP_SEQ_LOG_NOTICE},
-      {"info", sup::sequencer::log::SUP_SEQ_LOG_INFO},
-      {"debug", sup::sequencer::log::SUP_SEQ_LOG_DEBUG},
-      {"trace", sup::sequencer::log::SUP_SEQ_LOG_TRACE},
+      {"emergency", SUP_SEQ_LOG_EMERG},
+      {"alert", SUP_SEQ_LOG_ALERT},
+      {"critical", SUP_SEQ_LOG_CRIT},
+      {"error", SUP_SEQ_LOG_ERR},
+      {"warning", SUP_SEQ_LOG_WARNING},
+      {"notice", SUP_SEQ_LOG_NOTICE},
+      {"info", SUP_SEQ_LOG_INFO},
+      {"debug", SUP_SEQ_LOG_DEBUG},
+      {"trace", SUP_SEQ_LOG_TRACE},
     };
   auto it = string_severity_map.find(level);
   if (it == string_severity_map.end())

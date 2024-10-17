@@ -101,18 +101,19 @@ void DaemonInterface::Log(int severity, const std::string& message)
 
 namespace
 {
+using namespace sup::sequencer::log;
 const std::map<int, LogMemberFunctionType>& LogMemberFunctionMap()
 {
   static std::map<int, LogMemberFunctionType> mem_func_map = {
-    { sup::sequencer::log::SUP_SEQ_LOG_EMERG, &sup::log::DefaultLogger::Emergency },
-    { sup::sequencer::log::SUP_SEQ_LOG_ALERT, &sup::log::DefaultLogger::Alert },
-    { sup::sequencer::log::SUP_SEQ_LOG_CRIT, &sup::log::DefaultLogger::Critical },
-    { sup::sequencer::log::SUP_SEQ_LOG_ERR, &sup::log::DefaultLogger::Error },
-    { sup::sequencer::log::SUP_SEQ_LOG_WARNING, &sup::log::DefaultLogger::Warning },
-    { sup::sequencer::log::SUP_SEQ_LOG_NOTICE, &sup::log::DefaultLogger::Notice },
-    { sup::sequencer::log::SUP_SEQ_LOG_INFO, &sup::log::DefaultLogger::Info },
-    { sup::sequencer::log::SUP_SEQ_LOG_DEBUG, &sup::log::DefaultLogger::Debug },
-    { sup::sequencer::log::SUP_SEQ_LOG_TRACE, &sup::log::DefaultLogger::Trace }
+    { SUP_SEQ_LOG_EMERG, &sup::log::DefaultLogger::Emergency },
+    { SUP_SEQ_LOG_ALERT, &sup::log::DefaultLogger::Alert },
+    { SUP_SEQ_LOG_CRIT, &sup::log::DefaultLogger::Critical },
+    { SUP_SEQ_LOG_ERR, &sup::log::DefaultLogger::Error },
+    { SUP_SEQ_LOG_WARNING, &sup::log::DefaultLogger::Warning },
+    { SUP_SEQ_LOG_NOTICE, &sup::log::DefaultLogger::Notice },
+    { SUP_SEQ_LOG_INFO, &sup::log::DefaultLogger::Info },
+    { SUP_SEQ_LOG_DEBUG, &sup::log::DefaultLogger::Debug },
+    { SUP_SEQ_LOG_TRACE, &sup::log::DefaultLogger::Trace }
   };
   return mem_func_map;
 }

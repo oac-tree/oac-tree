@@ -34,7 +34,7 @@ std::unique_ptr<Variable> ParseVariable(const sup::xml::TreeData& data)
   if (!GlobalVariableRegistry().IsRegisteredVariableName(var_type))
   {
     std::string error_message =
-      "sup::sequencer::ParseVariable(): trying to create unregistered variable with typename [" +
+      "ParseVariable(): trying to create unregistered variable with typename [" +
       var_type + "]";
     throw ParseException(error_message);
   }
@@ -42,7 +42,7 @@ std::unique_ptr<Variable> ParseVariable(const sup::xml::TreeData& data)
   if (!var)
   {
     std::string error_message =
-      "sup::sequencer::ParseVariable(): could not create variable with typename [" +
+      "ParseVariable(): could not create variable with typename [" +
       var_type + "]";
     throw ParseException(error_message);
   }

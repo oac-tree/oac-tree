@@ -46,6 +46,7 @@ install(FILES
   instruction_info.h
   instruction_map.h
   instruction_registry.h
+  instruction_state.h
   instruction_tree.h
   instruction_utils.h
   instruction.h

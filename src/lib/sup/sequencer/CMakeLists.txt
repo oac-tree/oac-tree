@@ -55,6 +55,7 @@ install(FILES
   job_commands.h
   job_info_utils.h
   job_info.h
+  job_interface_adapter.h
   job_interface.h
   job_map.h
   job_state_monitor.h

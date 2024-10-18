@@ -23,7 +23,7 @@
 
 #include <sup/sequencer/anyvalue_utils.h>
 #include <sup/sequencer/exceptions.h>
-#include <sup/sequencer/info_constants.h>
+#include <sup/sequencer/constants.h>
 #include <sup/sequencer/instruction_info_utils.h>
 #include <sup/sequencer/procedure.h>
 #include <sup/sequencer/variable_utils.h>
@@ -34,6 +34,8 @@ namespace sup
 {
 namespace sequencer
 {
+using namespace Constants;
+
 namespace utils
 {
 JobInfo CreateJobInfo(const std::string& job_prefix, const Procedure& proc,

@@ -22,6 +22,8 @@
 #ifndef SUP_SEQUENCER_CONSTANTS_H_
 #define SUP_SEQUENCER_CONSTANTS_H_
 
+#include <sup/dto/anyvalue.h>
+
 #include <string>
 
 namespace sup
@@ -142,6 +144,42 @@ const std::string TYPE_ATTRIBUTE_NAME = "type";
 const std::string VALUE_ATTRIBUTE_NAME = "value";
 const std::string IS_DYNAMIC_TYPE_ATTRIBUTE_NAME = "dynamicType";
 const std::string PRETTY_JSON_ATTRIBUTE_NAME = "pretty";
+
+// Instruction info node fields
+const std::string kInstructionInfoNodeType = "sup::instructionNodeInfoType/v1.0";
+const std::string kInstructionInfoNodeTypeField = "type";
+const std::string kIndexField = "index";
+const std::string kAttributesField = "attributes";
+const std::string kChildInstructionsField = "children";
+const std::string kChildMemberFieldPrefix = "child_";
+
+// Basic instruction info node AnyValue
+extern const sup::dto::AnyValue kInstructionInfoNodeAnyValue;
+
+// Variable info node fields
+const std::string kVariableInfoType = "sup::variableInfoType/v1.0";
+const std::string kVariableInfoTypeField = "type";
+
+// Basic variable info node AnyValue
+extern const sup::dto::AnyValue kVariableInfoAnyValue;
+
+// Job info node fields:
+const std::string kJobInfoType = "sup::jobInfoType/v1.0";
+const std::string kJobPrefixFieldName = "job_prefix";
+const std::string kFullNameFieldName = "full_name";
+const std::string kWorkspaceInfoFieldName = "ws_info";
+const std::string kInstructionTreeInfoFieldName = "instr_tree_info";
+
+// Basic job info node AnyValue
+extern const sup::dto::AnyValue kJobInfoAnyValue;
+
+// Instruction state fields:
+const std::string kInstructionStateType = "sup::instructionStateType/v1.0";
+const std::string kExecStatusField = "exec_status";
+const std::string kBreakpointField = "breakpoint";
+
+// Basic instruction AnyValue
+extern const sup::dto::AnyValue kInstructionStateAnyValue;
 
 } // namespace Constants
 

@@ -4,8 +4,8 @@ target_sources(sup-sequencer-shared
     attribute_info.cpp
     breakpoint.cpp
     breakpoint_manager.cpp
+    constants.cpp
     i_job.cpp
-    info_constants.cpp
     instruction_info_utils.cpp
     instruction_info.cpp
     instruction_map.cpp

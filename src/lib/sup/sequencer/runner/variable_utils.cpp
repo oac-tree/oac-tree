@@ -23,7 +23,7 @@
 
 #include <sup/sequencer/anyvalue_utils.h>
 #include <sup/sequencer/exceptions.h>
-#include <sup/sequencer/info_constants.h>
+#include <sup/sequencer/constants.h>
 #include <sup/sequencer/variable.h>
 #include <sup/sequencer/workspace.h>
 
@@ -33,6 +33,8 @@ namespace sup
 {
 namespace sequencer
 {
+using namespace Constants;
+
 namespace utils
 {
 WorkspaceInfo CreateWorkspaceInfo(const Workspace& ws)

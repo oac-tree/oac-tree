@@ -22,7 +22,7 @@
 #include "unit_test_helper.h"
 
 #include <sup/sequencer/exceptions.h>
-#include <sup/sequencer/info_constants.h>
+#include <sup/sequencer/constants.h>
 #include <sup/sequencer/sequence_parser.h>
 #include <sup/sequencer/variable.h>
 #include <sup/sequencer/variable_registry.h>
@@ -31,6 +31,7 @@
 #include <gtest/gtest.h>
 
 using namespace sup::sequencer;
+using namespace sup::sequencer::Constants;
 
 class VariableInfoTest : public ::testing::Test
 {

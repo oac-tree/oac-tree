@@ -23,7 +23,7 @@
 
 #include <sup/sequencer/anyvalue_utils.h>
 #include <sup/sequencer/exceptions.h>
-#include <sup/sequencer/info_constants.h>
+#include <sup/sequencer/constants.h>
 #include <sup/sequencer/instruction_map.h>
 
 #include <sup/sequencer/instruction.h>
@@ -59,6 +59,8 @@ namespace sup
 {
 namespace sequencer
 {
+using namespace Constants;
+
 namespace utils
 {
 std::unique_ptr<InstructionInfo> CreateInstructionInfoTree(const Instruction& root,

@@ -21,7 +21,7 @@
 
 #include "unit_test_helper.h"
 
-#include <sup/sequencer/info_constants.h>
+#include <sup/sequencer/constants.h>
 #include <sup/sequencer/instruction_info_utils.h>
 #include <sup/sequencer/instruction_map.h>
 #include <sup/sequencer/sequence_parser.h>
@@ -31,6 +31,7 @@
 #include <set>
 
 using namespace sup::sequencer;
+using namespace sup::sequencer::Constants;
 
 class InstructionInfoTest : public ::testing::Test
 {

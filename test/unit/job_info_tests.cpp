@@ -24,7 +24,7 @@
 #include <sup/sequencer/instruction_map.h>
 #include <sup/sequencer/instruction_info_utils.h>
 #include <sup/sequencer/job_info_utils.h>
-#include <sup/sequencer/info_constants.h>
+#include <sup/sequencer/constants.h>
 #include <sup/sequencer/variable_utils.h>
 
 #include <sup/sequencer/sequence_parser.h>
@@ -32,6 +32,7 @@
 #include <gtest/gtest.h>
 
 using namespace sup::sequencer;
+using namespace sup::sequencer::Constants;
 
 class JobInfoTest : public ::testing::Test
 {

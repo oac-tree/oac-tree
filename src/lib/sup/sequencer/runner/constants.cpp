@@ -19,13 +19,15 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <sup/sequencer/info_constants.h>
+#include <sup/sequencer/constants.h>
+#include <sup/sequencer/execution_status.h>
 
 namespace sup
 {
 namespace sequencer
 {
-
+namespace Constants
+{
 const dto::AnyValue kInstructionInfoNodeAnyValue = {{
   { kInstructionInfoNodeTypeField, "" },
   { kIndexField, { sup::dto::UnsignedInteger32Type, 0 }},
@@ -44,6 +46,13 @@ const dto::AnyValue kJobInfoAnyValue = {{
   { kWorkspaceInfoFieldName, sup::dto::AnyValue{} },
   { kInstructionTreeInfoFieldName, sup::dto::AnyValue{} }
 }, kJobInfoType };
+
+const dto::AnyValue kInstructionStateAnyValue = {{
+  { kExecStatusField, static_cast<dto::uint16>(ExecutionStatus::NOT_STARTED)},
+  { kBreakpointField, false }
+}, kInstructionStateType };
+
+}  // namespace Constants
 
 }  // namespace sequencer
 

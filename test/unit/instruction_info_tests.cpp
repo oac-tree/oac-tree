@@ -178,23 +178,17 @@ TEST_F(InstructionInfoTest, InstructionInfoToFromAnyValue)
   ASSERT_NE(proc.get(), nullptr);
   EXPECT_NO_THROW(proc->Setup());
   const auto* root = proc->RootInstruction();
+  InstructionMap instr_map{root};
+  auto instr_info = utils::CreateInstructionInfoTree(*root, instr_map);
 
   {
     // Correct InstructionInfo tree from real Instruction tree
-    InstructionMap instr_map{root};
-    auto instr_info = utils::CreateInstructionInfoTree(*root, instr_map);
-
-    // Create AnyValue, translate back and check they are equal
     auto instr_av = utils::ToAnyValueTree(*instr_info);
     auto instr_info_read_back = utils::ToInstructionInfoTree(instr_av);
     EXPECT_EQ(*instr_info_read_back, *instr_info);
   }
   {
     // Create duplicate indices in AnyValue representation
-    InstructionMap instr_map{root};
-    auto instr_info = utils::CreateInstructionInfoTree(*root, instr_map);
-
-    // Create AnyValue, translate back and check they are equal
     auto instr_av = utils::ToAnyValueTree(*instr_info);
     auto& child1_av = instr_av[kChildInstructionsField][utils::CreateIndexedInstrChildName(1)];
     child1_av[kIndexField].ConvertFrom(0);
@@ -202,10 +196,6 @@ TEST_F(InstructionInfoTest, InstructionInfoToFromAnyValue)
   }
   {
     // Create out-of-bounds indices in AnyValue representation
-    InstructionMap instr_map{root};
-    auto instr_info = utils::CreateInstructionInfoTree(*root, instr_map);
-
-    // Create AnyValue, translate back and check they are equal
     auto instr_av = utils::ToAnyValueTree(*instr_info);
     auto& child1_av = instr_av[kChildInstructionsField][utils::CreateIndexedInstrChildName(1)];
     child1_av[kIndexField].ConvertFrom(3);

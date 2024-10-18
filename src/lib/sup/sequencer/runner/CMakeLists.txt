@@ -5,6 +5,7 @@ target_sources(sup-sequencer-shared
     breakpoint.cpp
     breakpoint_manager.cpp
     constants.cpp
+    i_job_info_io.cpp
     i_job.cpp
     instruction_info_utils.cpp
     instruction_info.cpp

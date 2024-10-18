@@ -16,6 +16,7 @@ target_sources(sup-sequencer-shared
     job_info_utils.cpp
     job_info.cpp
     job_interface.cpp
+    job_map.cpp
     job_state_monitor.cpp
     job_states.cpp
     local_job.cpp

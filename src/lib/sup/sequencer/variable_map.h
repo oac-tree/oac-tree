@@ -22,7 +22,7 @@
 #ifndef SUP_SEQUENCER_VARIABLE_MAP_H_
 #define SUP_SEQUENCER_VARIABLE_MAP_H_
 
-#include <sup/dto/anyvalue.h>
+#include <sup/dto/basic_scalar_types.h>
 
 #include <string>
 #include <unordered_map>

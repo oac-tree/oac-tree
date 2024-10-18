@@ -42,7 +42,6 @@ bool operator!=(const InstructionState& left, const InstructionState& right)
   return !(left == right);
 }
 
-
 sup::dto::AnyValue ToAnyValue(const InstructionState& state)
 {
   auto result = kInstructionStateAnyValue;

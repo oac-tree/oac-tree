@@ -32,6 +32,7 @@ target_sources(unit-tests
     instruction_info_tests.cpp
     instruction_map_tests.cpp
     instruction_registry_tests.cpp
+    instruction_state_tests.cpp
     instruction_tests.cpp
     instruction_tree_tests.cpp
     job_command_queue_tests.cpp

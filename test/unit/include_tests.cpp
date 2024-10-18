@@ -221,7 +221,7 @@ TEST(Include, Procedure_extern)
 TEST(Include, Procedure_nested)
 {
   // preparing files for recursive inclusion
-  ASSERT_TRUE(utils::CreateDir("instruction_definitions/waits"));
+  ASSERT_TRUE(utils::CreateDir("target/include_tests/waits"));
 
   const std::string single_waits_body{R"(
     <Wait name="OneTenthSecond"/>
@@ -230,7 +230,7 @@ TEST(Include, Procedure_nested)
     <Wait name="ParametrizedWait" timeout="$timeout" />
 )"};
 
-  const std::string single_wait_file_name = "instruction_definitions/waits/single_waits.xml";
+  const std::string single_wait_file_name = "target/include_tests/waits/single_waits.xml";
   sup::UnitTestHelper::TemporaryTestFile single_waits_test_file(
       single_wait_file_name, sup::UnitTestHelper::CreateProcedureString(single_waits_body));
 
@@ -245,16 +245,16 @@ TEST(Include, Procedure_nested)
     </Sequence>
 )"};
 
-  const std::string compound_waits_file_name = "instruction_definitions/compound_waits.xml";
+  const std::string compound_waits_file_name = "target/include_tests/compound_waits.xml";
   sup::UnitTestHelper::TemporaryTestFile compound_waits_test_file(
       compound_waits_file_name, sup::UnitTestHelper::CreateProcedureString(compound_waits_body));
 
   const std::string main_body{R"(
     <Sequence isRoot="True">
         <Include name="First wait" path="FirstSerialWait"
-                 file="instruction_definitions/compound_waits.xml" par1="0.01" />
+                 file="target/include_tests/compound_waits.xml" par1="0.01" />
         <Include name="Second Wait" path="SecondSerialWait"
-                 file="instruction_definitions/compound_waits.xml" par1="0.01" />
+                 file="target/include_tests/compound_waits.xml" par1="0.01" />
     </Sequence>
 )"};
 

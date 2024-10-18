@@ -70,6 +70,7 @@ install(FILES
   setup_teardown_actions.h
   user_interface.h
   variable_info.h
+  variable_map.h
   variable_registry.h
   variable_utils.h
   variable.h

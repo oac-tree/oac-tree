@@ -42,6 +42,7 @@ class InstructionMap
 {
 public:
   using InstructionIndexMap = std::unordered_map<const Instruction*, sup::dto::uint32>;
+
   /**
    * @brief Construct a InstructionMap object from the given root instruction.
    *
@@ -73,7 +74,7 @@ public:
    *
    * @return map of instructions to indices.
    */
-  const InstructionIndexMap& GetInstructionMapping() const;
+  const InstructionIndexMap& GetInstructionIndexMap() const;
 
   /**
    * @brief Return the number of instructions that are mapped.

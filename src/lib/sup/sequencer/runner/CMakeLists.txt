@@ -22,6 +22,7 @@ target_sources(sup-sequencer-shared
     runner.cpp
     user_interface.cpp
     variable_info.cpp
+    variable_map.cpp
     variable_utils.cpp
     workspace_info.cpp
 )

@@ -51,7 +51,7 @@ sup::dto::uint32 InstructionMap::FindInstructionIndex(const Instruction* instr) 
   return iter->second;
 }
 
-const InstructionMap::InstructionIndexMap& InstructionMap::GetInstructionMapping() const
+const InstructionMap::InstructionIndexMap& InstructionMap::GetInstructionIndexMap() const
 {
   return m_instruction_map;
 }

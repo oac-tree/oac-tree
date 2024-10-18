@@ -68,7 +68,7 @@ TEST_F(InstructionMapTest, Construction)
     // Empty root
     InstructionMap instr_map{nullptr};
     EXPECT_EQ(instr_map.GetNumberOfInstructions(), 0);
-    const auto& index_map = instr_map.GetInstructionMapping();
+    const auto& index_map = instr_map.GetInstructionIndexMap();
     EXPECT_TRUE(index_map.empty());
     EXPECT_THROW(instr_map.FindInstructionIndex(nullptr), InvalidOperationException);
   }
@@ -77,7 +77,7 @@ TEST_F(InstructionMapTest, Construction)
     auto root = CreateTestTreeInstruction("root");
     InstructionMap instr_map{root.get()};
     EXPECT_EQ(instr_map.GetNumberOfInstructions(), 1u);
-    const auto& index_map = instr_map.GetInstructionMapping();
+    const auto& index_map = instr_map.GetInstructionIndexMap();
     EXPECT_EQ(index_map.size(), 1u);
     auto idx = instr_map.FindInstructionIndex(root.get());
     EXPECT_EQ(idx, 0);
@@ -105,7 +105,7 @@ TEST_F(InstructionMapTest, Construction)
 
     InstructionMap instr_map{root.get()};
     EXPECT_EQ(instr_map.GetNumberOfInstructions(), 5u);
-    const auto& index_map = instr_map.GetInstructionMapping();
+    const auto& index_map = instr_map.GetInstructionIndexMap();
     EXPECT_EQ(index_map.size(), 5u);
 
     // Test indices range from 0 to 4
@@ -127,7 +127,7 @@ TEST_F(InstructionMapTest, GetReverseMap)
     // Empty root
     InstructionMap instr_map{nullptr};
     EXPECT_EQ(instr_map.GetNumberOfInstructions(), 0);
-    const auto& index_map = instr_map.GetInstructionMapping();
+    const auto& index_map = instr_map.GetInstructionIndexMap();
     auto reverse_map = GetReverseMap(index_map);
     EXPECT_TRUE(reverse_map.empty());
   }

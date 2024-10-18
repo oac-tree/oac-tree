@@ -54,7 +54,7 @@ TEST_F(JobInfoTest, CreateJobInfo)
     // Build job info representation
     auto root = proc->RootInstruction();
     InstructionMap instr_map{root};
-    auto job_info = utils::CreateJobInfo(prefix, *proc, instr_map);
+    auto job_info = utils::CreateJobInfo(*proc, instr_map, prefix);
 
     EXPECT_EQ(job_info.GetPrefix(), prefix);
     EXPECT_EQ(job_info.GetProcedureName(), "Common header");
@@ -139,7 +139,7 @@ TEST_F(JobInfoTest, CreateJobInfo)
     Procedure proc{};
     sup::UnitTestHelper::CounterInstruction fake_root{};
     InstructionMap instr_map{std::addressof(fake_root)};
-    EXPECT_THROW(utils::CreateJobInfo(prefix, proc, instr_map), InvalidOperationException);
+    EXPECT_THROW(utils::CreateJobInfo(proc, instr_map, prefix), InvalidOperationException);
   }
 }
 
@@ -154,7 +154,7 @@ TEST_F(JobInfoTest, JobInfoToFromAnyValue)
 
   // Build job info representation
   InstructionMap instr_map{proc->RootInstruction()};
-  auto job_info = utils::CreateJobInfo(prefix, *proc, instr_map);
+  auto job_info = utils::CreateJobInfo(*proc, instr_map, prefix);
 
   {
     // Correct translation back and forth

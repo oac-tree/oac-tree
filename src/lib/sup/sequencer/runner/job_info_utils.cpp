@@ -38,8 +38,8 @@ using namespace Constants;
 
 namespace utils
 {
-JobInfo CreateJobInfo(const std::string& job_prefix, const Procedure& proc,
-                      const InstructionMap& instr_map)
+JobInfo CreateJobInfo(const Procedure& proc, const InstructionMap& instr_map,
+                      const std::string& job_prefix)
 {
   auto fullname = GetProcedureName(proc);
   auto ws_info = CreateWorkspaceInfo(proc.GetWorkspace());

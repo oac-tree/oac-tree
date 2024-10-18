@@ -44,12 +44,11 @@ public:
   /**
    * @brief Construct locally running job from the given procedure.
    *
-   * @param prefix Identifier for this specific job. Will be encoded in the JobInfo object.
    * @param proc Procedure to be managed by this job.
    * @param job_info_io IJobInfoIO implementation that will receive all updates and provide user
    * input/output.
    */
-  LocalJob(const std::string& prefix, std::unique_ptr<Procedure> proc, IJobInfoIO& job_info_io);
+  LocalJob(std::unique_ptr<Procedure> proc, IJobInfoIO& job_info_io);
   ~LocalJob();
 
   // Delete copy operations

@@ -19,15 +19,15 @@
  * of the distribution package.
  ******************************************************************************/
 
+#include <sup/sequencer/job_info.h>
+#include <sup/sequencer/job_info_utils.h>
 #include <sup/sequencer/local_job.h>
 
 namespace sup
 {
 namespace sequencer
 {
-// TODO: remove these temporary stubs when the real classes are present
-class JobInfo {};
-
+// TODO: remove this temporary stub when the real class is present
 class TestJobInterface : public JobInterface
 {
 public:
@@ -50,19 +50,19 @@ public:
 
 struct LocalJob::LocalJobImpl
 {
-  LocalJobImpl(const std::string& prefix, std::unique_ptr<Procedure> proc, IJobInfoIO& job_info_io);
+  LocalJobImpl(std::unique_ptr<Procedure> proc, IJobInfoIO& job_info_io);
   ~LocalJobImpl() = default;
 
   std::unique_ptr<Procedure> m_proc;
   TestJobInterface m_job_interface;
+
   AsyncRunner m_runner;
-  JobInfo m_job_info;
+  std::unique_ptr<JobInfo> m_job_info;
 };
 
-LocalJob::LocalJob(const std::string& prefix, std::unique_ptr<Procedure> proc,
-                   IJobInfoIO& job_info_io)
+LocalJob::LocalJob(std::unique_ptr<Procedure> proc, IJobInfoIO& job_info_io)
   : IJob{}
-  , m_impl{new LocalJobImpl{prefix, std::move(proc), job_info_io}}
+  , m_impl{new LocalJobImpl{std::move(proc), job_info_io}}
 {}
 
 LocalJob::~LocalJob() = default;
@@ -74,13 +74,14 @@ LocalJob::LocalJob(LocalJob&& other)
 
 LocalJob& LocalJob::operator=(LocalJob&& other)
 {
-  std::swap(m_impl, other.m_impl);
+  LocalJob moved{std::move(other)};
+  std::swap(m_impl, moved.m_impl);
   return *this;
 }
 
 const JobInfo& LocalJob::GetInfo() const
 {
-  return m_impl->m_job_info;
+  return *m_impl->m_job_info;
 }
 
 void LocalJob::SetBreakpoint(sup::dto::uint32 instr_idx)
@@ -125,8 +126,7 @@ AsyncRunner& LocalJob::Runner()
   return m_impl->m_runner;
 }
 
-LocalJob::LocalJobImpl::LocalJobImpl(
-  const std::string& prefix, std::unique_ptr<Procedure> proc, IJobInfoIO& job_info_io)
+LocalJob::LocalJobImpl::LocalJobImpl(std::unique_ptr<Procedure> proc, IJobInfoIO& job_info_io)
   : m_proc{std::move(proc)}
   , m_job_interface{}
   , m_runner{*m_proc, m_job_interface}

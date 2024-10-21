@@ -45,7 +45,6 @@ TEST_F(JobInfoTest, CreateJobInfo)
 {
   {
     // Nominal case
-    const std::string prefix = "JobInfoTest:FromProcedure:";
     const auto procedure_string =
         sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
     auto proc = ParseProcedureString(procedure_string);
@@ -54,9 +53,8 @@ TEST_F(JobInfoTest, CreateJobInfo)
     // Build job info representation
     auto root = proc->RootInstruction();
     InstructionMap instr_map{root};
-    auto job_info = utils::CreateJobInfo(*proc, instr_map, prefix);
+    auto job_info = utils::CreateJobInfo(*proc, instr_map);
 
-    EXPECT_EQ(job_info.GetPrefix(), prefix);
     EXPECT_EQ(job_info.GetProcedureName(), "Common header");
     EXPECT_EQ(job_info.GetNumberOfVariables(), 3);
     EXPECT_EQ(job_info.GetNumberOfInstructions(), 3);
@@ -135,18 +133,16 @@ TEST_F(JobInfoTest, CreateJobInfo)
   }
   {
     // Without root instruction
-    const std::string prefix = "JobInfoTest:FromEmptyProcedure:";
     Procedure proc{};
     sup::UnitTestHelper::CounterInstruction fake_root{};
     InstructionMap instr_map{std::addressof(fake_root)};
-    EXPECT_THROW(utils::CreateJobInfo(proc, instr_map, prefix), InvalidOperationException);
+    EXPECT_THROW(utils::CreateJobInfo(proc, instr_map), InvalidOperationException);
   }
 }
 
 TEST_F(JobInfoTest, JobInfoToFromAnyValue)
 {
   // Construct procedure
-  const std::string prefix = "JobInfoTest:JobInfoToFromAnyValue:";
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
   auto proc = ParseProcedureString(procedure_string);
   ASSERT_NE(proc.get(), nullptr);
@@ -154,19 +150,13 @@ TEST_F(JobInfoTest, JobInfoToFromAnyValue)
 
   // Build job info representation
   InstructionMap instr_map{proc->RootInstruction()};
-  auto job_info = utils::CreateJobInfo(*proc, instr_map, prefix);
+  auto job_info = utils::CreateJobInfo(*proc, instr_map);
 
   {
     // Correct translation back and forth
     auto job_av = utils::ToAnyValue(job_info);
     auto job_info_read_back = utils::ToJobInfo(job_av);
     EXPECT_EQ(job_info_read_back, job_info);
-  }
-  {
-    // Wrong prefix member
-    auto job_av = utils::ToAnyValue(job_info);
-    job_av[kJobPrefixFieldName] = sup::dto::EmptyStruct("Should_be_string");
-    EXPECT_THROW(utils::ToJobInfo(job_av), InvalidOperationException);
   }
   {
     // Wrong full name member
@@ -178,7 +168,6 @@ TEST_F(JobInfoTest, JobInfoToFromAnyValue)
     // Missing workspace member
     auto job_av = utils::ToAnyValue(job_info);
     auto new_job_av = sup::dto::EmptyStruct(kJobInfoType);
-    new_job_av.AddMember(kJobPrefixFieldName, job_av[kJobPrefixFieldName]);
     new_job_av.AddMember(kFullNameFieldName, job_av[kFullNameFieldName]);
     new_job_av.AddMember(kInstructionTreeInfoFieldName, job_av[kInstructionTreeInfoFieldName]);
     EXPECT_THROW(utils::ToJobInfo(new_job_av), InvalidOperationException);
@@ -187,7 +176,6 @@ TEST_F(JobInfoTest, JobInfoToFromAnyValue)
     // Missing instruction tree member
     auto job_av = utils::ToAnyValue(job_info);
     auto new_job_av = sup::dto::EmptyStruct(kJobInfoType);
-    new_job_av.AddMember(kJobPrefixFieldName, job_av[kJobPrefixFieldName]);
     new_job_av.AddMember(kFullNameFieldName, job_av[kFullNameFieldName]);
     new_job_av.AddMember(kWorkspaceInfoFieldName, job_av[kWorkspaceInfoFieldName]);
     EXPECT_THROW(utils::ToJobInfo(new_job_av), InvalidOperationException);

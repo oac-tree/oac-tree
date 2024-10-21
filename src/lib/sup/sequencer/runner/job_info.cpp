@@ -27,10 +27,9 @@ namespace sup
 {
 namespace sequencer
 {
-JobInfo::JobInfo(const std::string& job_prefix, const std::string& full_name,
-                   const WorkspaceInfo& ws_info, std::unique_ptr<InstructionInfo> root_info)
-  : m_job_prefix{job_prefix}
-  , m_full_name{full_name}
+JobInfo::JobInfo(const std::string& full_name, const WorkspaceInfo& ws_info,
+                 std::unique_ptr<InstructionInfo> root_info)
+  : m_full_name{full_name}
   , m_ws{ws_info}
   , m_root{std::move(root_info)}
   , m_ordered_instr{utils::CreateOrderedInstructionInfo(*m_root)}
@@ -39,8 +38,7 @@ JobInfo::JobInfo(const std::string& job_prefix, const std::string& full_name,
 JobInfo::~JobInfo() = default;
 
 JobInfo::JobInfo(const JobInfo& other)
-  : m_job_prefix{other.m_job_prefix}
-  , m_full_name{other.m_full_name}
+  : m_full_name{other.m_full_name}
   , m_ws{other.m_ws}
   , m_root{new InstructionInfo{*other.m_root}}
   , m_ordered_instr{utils::CreateOrderedInstructionInfo(*m_root)}
@@ -55,11 +53,6 @@ JobInfo& JobInfo::operator=(const JobInfo& other)
 }
 
 JobInfo& JobInfo::operator=(JobInfo&&) = default;
-
-std::string JobInfo::GetPrefix() const
-{
-  return m_job_prefix;
-}
 
 std::string JobInfo::GetProcedureName() const
 {
@@ -88,23 +81,9 @@ const InstructionInfo* JobInfo::GetRootInstructionInfo() const
 
 bool operator==(const JobInfo& left, const JobInfo& right)
 {
-  if (left.GetPrefix() != right.GetPrefix())
-  {
-    return false;
-  }
-  if (left.GetProcedureName() != right.GetProcedureName())
-  {
-    return false;
-  }
-  if (left.GetWorkspaceInfo() != right.GetWorkspaceInfo())
-  {
-    return false;
-  }
-  if (*left.GetRootInstructionInfo() != *right.GetRootInstructionInfo())
-  {
-    return false;
-  }
-  return true;
+  return ( (left.GetProcedureName() == right.GetProcedureName())
+        && (left.GetWorkspaceInfo() == right.GetWorkspaceInfo())
+        && (*left.GetRootInstructionInfo() == *right.GetRootInstructionInfo()));
 }
 
 bool operator!=(const JobInfo& left, const JobInfo& right)

@@ -39,8 +39,8 @@ namespace sequencer
 class JobInfo
 {
 public:
-  JobInfo(const std::string& job_prefix, const std::string& full_name,
-          const WorkspaceInfo& ws_info, std::unique_ptr<InstructionInfo> root_info);
+  JobInfo(const std::string& full_name, const WorkspaceInfo& ws_info,
+          std::unique_ptr<InstructionInfo> root_info);
   ~JobInfo();
 
   // Copy/move construction/assignment
@@ -49,7 +49,6 @@ public:
   JobInfo& operator=(const JobInfo& other);
   JobInfo& operator=(JobInfo&& other);
 
-  std::string GetPrefix() const;
   std::string GetProcedureName() const;
   sup::dto::uint32 GetNumberOfVariables() const;
   sup::dto::uint32 GetNumberOfInstructions() const;
@@ -57,7 +56,6 @@ public:
   const InstructionInfo* GetRootInstructionInfo() const;
 
 private:
-  std::string m_job_prefix;
   std::string m_full_name;
   WorkspaceInfo m_ws;
   std::unique_ptr<InstructionInfo> m_root;

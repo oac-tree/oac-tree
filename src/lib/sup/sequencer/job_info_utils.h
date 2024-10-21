@@ -42,14 +42,12 @@ namespace utils
  *
  * @param proc Procedure of the job.
  * @param instr_map Map of instructions to indices.
- * @param job_prefix Prefix used for the job, if needed.
  *
  * @return JobInfo representation.
  * @throw InvalidOperationException when there is an inconsistency between the provide Procedure
  * and InstructionMap.
  */
-JobInfo CreateJobInfo(const Procedure& proc, const InstructionMap& instr_map,
-                      const std::string& job_prefix = "");
+JobInfo CreateJobInfo(const Procedure& proc, const InstructionMap& instr_map);
 
 /**
  * @brief Convert the given AnyValue to a JobInfo object.

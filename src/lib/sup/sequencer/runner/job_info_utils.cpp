@@ -38,8 +38,7 @@ using namespace Constants;
 
 namespace utils
 {
-JobInfo CreateJobInfo(const Procedure& proc, const InstructionMap& instr_map,
-                      const std::string& job_prefix)
+JobInfo CreateJobInfo(const Procedure& proc, const InstructionMap& instr_map)
 {
   auto fullname = GetProcedureName(proc);
   auto ws_info = CreateWorkspaceInfo(proc.GetWorkspace());
@@ -50,7 +49,7 @@ JobInfo CreateJobInfo(const Procedure& proc, const InstructionMap& instr_map,
     throw InvalidOperationException(error);
   }
   auto instr_tree_info = CreateInstructionInfoTree(*root, instr_map);
-  return JobInfo{ job_prefix, fullname, ws_info, std::move(instr_tree_info) };
+  return JobInfo{ fullname, ws_info, std::move(instr_tree_info) };
 }
 
 JobInfo ToJobInfo(const sup::dto::AnyValue& job_info_anyvalue)
@@ -60,17 +59,15 @@ JobInfo ToJobInfo(const sup::dto::AnyValue& job_info_anyvalue)
     const std::string error = "ToJobInfo(): wrong format of job info AnyValue";
     throw InvalidOperationException(error);
   }
-  auto prefix = job_info_anyvalue[kJobPrefixFieldName].As<std::string>();
   auto full_name = job_info_anyvalue[kFullNameFieldName].As<std::string>();
   auto ws_info = ToWorkspaceInfo(job_info_anyvalue[kWorkspaceInfoFieldName]);
   auto instr_info_tree = ToInstructionInfoTree(job_info_anyvalue[kInstructionTreeInfoFieldName]);
-  return JobInfo{ prefix, full_name, ws_info, std::move(instr_info_tree) };
+  return JobInfo{ full_name, ws_info, std::move(instr_info_tree) };
 }
 
 sup::dto::AnyValue ToAnyValue(const JobInfo& job_info)
 {
   auto result = kJobInfoAnyValue;
-  result[kJobPrefixFieldName] = job_info.GetPrefix();
   result[kFullNameFieldName] = job_info.GetProcedureName();
   result[kWorkspaceInfoFieldName] = ToAnyValue(job_info.GetWorkspaceInfo());
   result[kInstructionTreeInfoFieldName] = ToAnyValueTree(*job_info.GetRootInstructionInfo());
@@ -79,10 +76,6 @@ sup::dto::AnyValue ToAnyValue(const JobInfo& job_info)
 
 bool ValidateJobInfoAnyValue(const sup::dto::AnyValue& job_info)
 {
-  if (!ValidateMemberType(job_info, kJobPrefixFieldName, sup::dto::StringType))
-  {
-    return false;
-  }
   if (!ValidateMemberType(job_info, kFullNameFieldName, sup::dto::StringType))
   {
     return false;

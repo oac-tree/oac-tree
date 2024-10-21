@@ -28,7 +28,11 @@
 #include <gtest/gtest.h>
 
 using ::testing::_;
+using ::testing::DoAll;
 using ::testing::Exactly;
+using ::testing::InSequence;
+using ::testing::Return;
+using ::testing::SetArgReferee;
 
 using namespace sup::sequencer;
 
@@ -53,7 +57,6 @@ TEST_F(JobInterfaceAdapterTest, Construction)
   EXPECT_CALL(m_test_job_info_io, Message(_)).Times(Exactly(0));
   EXPECT_CALL(m_test_job_info_io, Log(_, _)).Times(Exactly(0));
 
-  const std::string kTestPrefix = "AutomationJobInterfaceTests:Construction:";
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
   auto proc = sup::sequencer::ParseProcedureString(procedure_string);
   ASSERT_NE(proc.get(), nullptr);
@@ -74,7 +77,6 @@ TEST_F(JobInterfaceAdapterTest, InitializeInstructionTree)
   EXPECT_CALL(m_test_job_info_io, Message(_)).Times(Exactly(0));
   EXPECT_CALL(m_test_job_info_io, Log(_, _)).Times(Exactly(0));
 
-  const std::string kTestPrefix = "AutomationJobInterfaceTests:Construction:";
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
   auto proc = sup::sequencer::ParseProcedureString(procedure_string);
   ASSERT_NE(proc.get(), nullptr);
@@ -91,4 +93,186 @@ TEST_F(JobInterfaceAdapterTest, InitializeInstructionTree)
     EXPECT_EQ(instr_map.FindInstructionIndex(instr), instr_idx);
     ++instr_idx;
   }
+}
+
+TEST_F(JobInterfaceAdapterTest, UpdateInstructionStatus)
+{
+  EXPECT_CALL(m_test_job_info_io, InitNumberOfInstructions(3)).Times(Exactly(1));
+  EXPECT_CALL(m_test_job_info_io, VariableUpdated(_, _, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, JobStateUpdated(_)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, PutValue(_, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, GetUserValue(_, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, GetUserChoice(_, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, Message(_)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, Log(_, _)).Times(Exactly(0));
+  {
+    InSequence seq;
+    InstructionState expected{ false, ExecutionStatus::NOT_STARTED };
+    EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(0, expected)).Times(Exactly(1));
+    EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(1, expected)).Times(Exactly(1));
+    EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(2, expected)).Times(Exactly(1));
+  }
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
+  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  ASSERT_NE(proc.get(), nullptr);
+  JobInterfaceAdapter job_interface_adapter{*proc, m_test_job_info_io};
+  job_interface_adapter.InitializeInstructionTree(proc->RootInstruction());
+  const auto& instr_map = job_interface_adapter.GetInstructionMap();
+  EXPECT_EQ(instr_map.GetNumberOfInstructions(), 3);
+  auto ordered_instr = job_interface_adapter.GetOrderedInstructions();
+  ASSERT_EQ(ordered_instr.size(), 3);
+  job_interface_adapter.UpdateInstructionStatus(ordered_instr[0]);
+  job_interface_adapter.UpdateInstructionStatus(ordered_instr[1]);
+  job_interface_adapter.UpdateInstructionStatus(ordered_instr[2]);
+}
+
+TEST_F(JobInterfaceAdapterTest, VariableUpdated)
+{
+  EXPECT_CALL(m_test_job_info_io, InitNumberOfInstructions(_)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, JobStateUpdated(_)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, PutValue(_, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, GetUserValue(_, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, GetUserChoice(_, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, Message(_)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, Log(_, _)).Times(Exactly(0));
+  sup::dto::AnyValue updated_value{ sup::dto::UnsignedInteger32Type, 42u };
+  {
+    InSequence seq;
+    EXPECT_CALL(m_test_job_info_io, VariableUpdated(0, updated_value, true)).Times(Exactly(1));
+    EXPECT_CALL(m_test_job_info_io, VariableUpdated(1, updated_value, true)).Times(Exactly(1));
+    EXPECT_CALL(m_test_job_info_io, VariableUpdated(2, updated_value, true)).Times(Exactly(1));
+  }
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
+  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  ASSERT_NE(proc.get(), nullptr);
+  JobInterfaceAdapter job_interface_adapter{*proc, m_test_job_info_io};
+  job_interface_adapter.VariableUpdated("one", updated_value, true);
+  job_interface_adapter.VariableUpdated("var1", updated_value, true);
+  job_interface_adapter.VariableUpdated("var2", updated_value, true);
+}
+
+TEST_F(JobInterfaceAdapterTest, OutputValues)
+{
+  const std::string description = "This is an output value";
+  sup::dto::AnyValue output_value{ sup::dto::UnsignedInteger32Type, 42u };
+  const std::string message = "My message";
+  const std::string log_message = "A log message";
+  EXPECT_CALL(m_test_job_info_io, InitNumberOfInstructions(_)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, VariableUpdated(_, _, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, JobStateUpdated(_)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, PutValue(output_value, description)).Times(Exactly(1));
+  EXPECT_CALL(m_test_job_info_io, GetUserValue(_, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, GetUserChoice(_, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, Message(message)).Times(Exactly(1));
+  EXPECT_CALL(m_test_job_info_io, Log(2, log_message)).Times(Exactly(1));
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
+  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  ASSERT_NE(proc.get(), nullptr);
+  JobInterfaceAdapter job_interface_adapter{*proc, m_test_job_info_io};
+  job_interface_adapter.PutValue(output_value, description);
+  job_interface_adapter.Message(message);
+  job_interface_adapter.Log(2, log_message);
+}
+
+TEST_F(JobInterfaceAdapterTest, UserInput)
+{
+  const std::string description = "Provide a user value";
+  sup::dto::AnyValue user_value{ sup::dto::UnsignedInteger32Type, 42u };
+  sup::dto::AnyValue return_value{};
+  const std::vector<std::string> choices{ "vanilla", "strawberry", "chocolate"};
+  sup::dto::AnyValue metadata{ sup::dto::StringType, "Choose your favorite flavour"};
+  int choice = 2;
+  EXPECT_CALL(m_test_job_info_io, InitNumberOfInstructions(_)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, VariableUpdated(_, _, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, JobStateUpdated(_)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, PutValue(_, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, GetUserValue(return_value, description)).Times(Exactly(1))
+    .WillOnce(DoAll(SetArgReferee<0>(user_value), Return(true)));
+  EXPECT_CALL(m_test_job_info_io, GetUserChoice(choices, metadata)).Times(Exactly(1))
+    .WillOnce(Return(choice));
+  EXPECT_CALL(m_test_job_info_io, Message(_)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, Log(_, _)).Times(Exactly(0));
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
+  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  ASSERT_NE(proc.get(), nullptr);
+  JobInterfaceAdapter job_interface_adapter{*proc, m_test_job_info_io};
+  EXPECT_TRUE(job_interface_adapter.GetUserValue(return_value, description));
+  EXPECT_EQ(return_value, user_value);
+  EXPECT_EQ(job_interface_adapter.GetUserChoice(choices, metadata), choice);
+}
+
+TEST_F(JobInterfaceAdapterTest, OnStateChange)
+{
+  JobState job_state = JobState::kSucceeded;
+  EXPECT_CALL(m_test_job_info_io, InitNumberOfInstructions(_)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, VariableUpdated(_, _, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, JobStateUpdated(job_state)).Times(Exactly(1));
+  EXPECT_CALL(m_test_job_info_io, PutValue(_, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, GetUserValue(_, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, GetUserChoice(_, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, Message(_)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, Log(_, _)).Times(Exactly(0));
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
+  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  ASSERT_NE(proc.get(), nullptr);
+  JobInterfaceAdapter job_interface_adapter{*proc, m_test_job_info_io};
+  job_interface_adapter.OnStateChange(job_state);
+}
+
+TEST_F(JobInterfaceAdapterTest, OnBreakpointChange)
+{
+  EXPECT_CALL(m_test_job_info_io, InitNumberOfInstructions(3)).Times(Exactly(1));
+  EXPECT_CALL(m_test_job_info_io, VariableUpdated(_, _, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, JobStateUpdated(_)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, PutValue(_, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, GetUserValue(_, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, GetUserChoice(_, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, Message(_)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, Log(_, _)).Times(Exactly(0));
+  {
+    InSequence seq;
+    InstructionState expected{ true, ExecutionStatus::NOT_STARTED };
+    EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(0, expected)).Times(Exactly(1));
+    EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(2, expected)).Times(Exactly(1));
+  }
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
+  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  ASSERT_NE(proc.get(), nullptr);
+  JobInterfaceAdapter job_interface_adapter{*proc, m_test_job_info_io};
+  job_interface_adapter.InitializeInstructionTree(proc->RootInstruction());
+  const auto& instr_map = job_interface_adapter.GetInstructionMap();
+  EXPECT_EQ(instr_map.GetNumberOfInstructions(), 3);
+  auto ordered_instr = job_interface_adapter.GetOrderedInstructions();
+  ASSERT_EQ(ordered_instr.size(), 3);
+  job_interface_adapter.OnBreakpointChange(ordered_instr[0], true);
+  job_interface_adapter.OnBreakpointChange(ordered_instr[2], true);
+}
+
+TEST_F(JobInterfaceAdapterTest, OnProcedureTick)
+{
+  EXPECT_CALL(m_test_job_info_io, InitNumberOfInstructions(_)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, VariableUpdated(_, _, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, JobStateUpdated(_)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, PutValue(_, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, GetUserValue(_, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, GetUserChoice(_, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, Message(_)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, Log(_, _)).Times(Exactly(0));
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
+  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  ASSERT_NE(proc.get(), nullptr);
+  JobInterfaceAdapter job_interface_adapter{*proc, m_test_job_info_io};
+  job_interface_adapter.OnProcedureTick(*proc);
 }

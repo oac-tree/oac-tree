@@ -24,12 +24,15 @@
 
 #include <sup/sequencer/compound_instruction.h>
 #include <sup/sequencer/execution_status.h>
+#include <sup/sequencer/i_job_info_io.h>
 #include <sup/sequencer/instruction.h>
 #include <sup/sequencer/procedure.h>
 #include <sup/sequencer/user_interface.h>
 #include <sup/sequencer/workspace.h>
 
 #include <sup/dto/anyvalue.h>
+
+#include <gmock/gmock.h>
 
 #include <chrono>
 #include <string>
@@ -129,6 +132,20 @@ public:
   }
 
   std::vector<LogEntry> m_log_entries;
+};
+
+class MockJobInfoIO : public sup::sequencer::IJobInfoIO
+{
+public:
+  MOCK_METHOD(void, InitNumberOfInstructions, (sup::dto::uint32), (override));
+  MOCK_METHOD(void, InstructionStateUpdated, (sup::dto::uint32, sup::sequencer::InstructionState), (override));
+  MOCK_METHOD(void, VariableUpdated, (sup::dto::uint32, const sup::dto::AnyValue&, bool), (override));
+  MOCK_METHOD(void, JobStateUpdated, (sup::sequencer::JobState), (override));
+  MOCK_METHOD(void, PutValue, (const sup::dto::AnyValue&, const std::string&), (override));
+  MOCK_METHOD(bool, GetUserValue, (sup::dto::AnyValue&, const std::string&), (override));
+  MOCK_METHOD(int, GetUserChoice, (const std::vector<std::string>&, const sup::dto::AnyValue&), (override));
+  MOCK_METHOD(void, Message, (const std::string&), (override));
+  MOCK_METHOD(void, Log, (int, const std::string&), (override));
 };
 
 class TemporaryTestFile

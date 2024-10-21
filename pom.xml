@@ -139,9 +139,8 @@
                             <requires codac="true">sup-utils</requires>
                             <requires codac="true" buildOnly="true">sup-dto-devel</requires>
                             <requires codac="true" buildOnly="true">sup-utils-devel</requires>
+                            <requires codac="true" buildOnly="true">gtest-1.12.1-devel</requires>
                             <requires version="current" buildOnly="true">cmake</requires>
-                            <requires version="current" buildOnly="true">gtest-devel</requires>
-                            <requires version="current" buildOnly="true">gmock-devel</requires>
                             <!-- RPM scriptlet -->
                             <scriptlet type="posttrans">
                                 <![CDATA[ ldconfig ]]>

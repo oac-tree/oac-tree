@@ -23,6 +23,7 @@
 
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/instruction_utils.h>
+#include <sup/sequencer/job_info.h>
 #include <sup/sequencer/local_job.h>
 #include <sup/sequencer/sequence_parser.h>
 
@@ -75,7 +76,6 @@ protected:
 
 TEST_F(LocalJobTest, Construction)
 {
-  JobState initial_job_state = JobState::kInitial;
   EXPECT_CALL(m_test_job_info_io, InitNumberOfInstructions(3)).Times(Exactly(1));
   EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(0));
   EXPECT_CALL(m_test_job_info_io, VariableUpdated(_, _, true)).Times(Exactly(3));
@@ -89,15 +89,37 @@ TEST_F(LocalJobTest, Construction)
   auto proc = sup::sequencer::ParseProcedureString(procedure_string);
   ASSERT_NE(proc.get(), nullptr);
   LocalJob job{std::move(proc), m_test_job_info_io};
+  JobState initial_job_state = JobState::kInitial;
   EXPECT_TRUE(m_test_job_info_io.WaitForJobState(initial_job_state, 0.0));
+}
+
+TEST_F(LocalJobTest, GetInfo)
+{
+  EXPECT_CALL(m_test_job_info_io, InitNumberOfInstructions(3)).Times(Exactly(1));
+  EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, VariableUpdated(_, _, true)).Times(Exactly(3));
+  EXPECT_CALL(m_test_job_info_io, PutValue(_, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, GetUserValue(_, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, GetUserChoice(_, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, Message(_)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, Log(_, _)).Times(Exactly(0));
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
+  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  ASSERT_NE(proc.get(), nullptr);
+  LocalJob job{std::move(proc), m_test_job_info_io};
+  auto job_info = job.GetInfo();
+  EXPECT_EQ(job_info.GetProcedureName(), "Common header");
+  EXPECT_EQ(job_info.GetNumberOfVariables(), 3);
+  EXPECT_EQ(job_info.GetNumberOfInstructions(), 3);
 }
 
 TEST_F(LocalJobTest, Start)
 {
-  JobState successful_job_state = JobState::kSucceeded;
   EXPECT_CALL(m_test_job_info_io, InitNumberOfInstructions(3)).Times(Exactly(1));
   // Every instruction does: NOT_STARTED -> NOT_FINISHED -> SUCCESS -> NOT_STARTED:
   EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(9));
+  // All variables get an initial update and two of them are overwritten:
   EXPECT_CALL(m_test_job_info_io, VariableUpdated(_, _, true)).Times(Exactly(5));
   EXPECT_CALL(m_test_job_info_io, PutValue(_, _)).Times(Exactly(0));
   EXPECT_CALL(m_test_job_info_io, GetUserValue(_, _)).Times(Exactly(0));
@@ -110,6 +132,92 @@ TEST_F(LocalJobTest, Start)
   ASSERT_NE(proc.get(), nullptr);
   LocalJob job{std::move(proc), m_test_job_info_io};
   job.Start();
+  JobState successful_job_state = JobState::kSucceeded;
+  EXPECT_TRUE(m_test_job_info_io.WaitForJobState(successful_job_state, 1.0));
+}
+
+TEST_F(LocalJobTest, Step)
+{
+  EXPECT_CALL(m_test_job_info_io, InitNumberOfInstructions(3)).Times(Exactly(1));
+  // Sequence has 2 updates: NOT_STARTED -> NOT_FINISHED -> NOT_STARTED
+  // First Copy has 3 updates: NOT_STARTED -> NOT_FINISHED -> SUCCESS -> NOT_STARTED
+  // Second Copy has no updates
+  EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(5));
+  // All variables get an initial update and one of them is overwritten:
+  EXPECT_CALL(m_test_job_info_io, VariableUpdated(_, _, true)).Times(Exactly(4));
+  EXPECT_CALL(m_test_job_info_io, PutValue(_, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, GetUserValue(_, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, GetUserChoice(_, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, Message(_)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, Log(_, _)).Times(Exactly(0));
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
+  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  ASSERT_NE(proc.get(), nullptr);
+  LocalJob job{std::move(proc), m_test_job_info_io};
+  job.Step();
+  JobState paused_job_state = JobState::kPaused;
+  EXPECT_TRUE(m_test_job_info_io.WaitForJobState(paused_job_state, 1.0));
+  job.Pause();
+  EXPECT_TRUE(m_test_job_info_io.WaitForJobState(paused_job_state, 0.0));
+}
+
+TEST_F(LocalJobTest, HaltReset)
+{
+  EXPECT_CALL(m_test_job_info_io, InitNumberOfInstructions(3)).Times(Exactly(1));
+  // Sequence has 2 updates: NOT_STARTED -> NOT_FINISHED -> NOT_STARTED
+  // First Copy has 3 updates: NOT_STARTED -> NOT_FINISHED -> SUCCESS -> NOT_STARTED
+  // Second Copy has no updates
+  EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(5));
+  // All variables get an initial update and one of them is overwritten:
+  EXPECT_CALL(m_test_job_info_io, VariableUpdated(_, _, true)).Times(Exactly(4));
+  EXPECT_CALL(m_test_job_info_io, PutValue(_, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, GetUserValue(_, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, GetUserChoice(_, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, Message(_)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, Log(_, _)).Times(Exactly(0));
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
+  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  ASSERT_NE(proc.get(), nullptr);
+  LocalJob job{std::move(proc), m_test_job_info_io};
+  job.Step();
+  JobState paused_job_state = JobState::kPaused;
+  EXPECT_TRUE(m_test_job_info_io.WaitForJobState(paused_job_state, 1.0));
+  job.Halt();
+  JobState halted_job_state = JobState::kHalted;
+  EXPECT_TRUE(m_test_job_info_io.WaitForJobState(halted_job_state, 1.0));
+  job.Reset();
+  JobState initial_job_state = JobState::kInitial;
+  EXPECT_TRUE(m_test_job_info_io.WaitForJobState(initial_job_state, 1.0));
+}
+
+TEST_F(LocalJobTest, Breakpoints)
+{
+  EXPECT_CALL(m_test_job_info_io, InitNumberOfInstructions(3)).Times(Exactly(1));
+  // Every instruction does: NOT_STARTED -> NOT_FINISHED -> SUCCESS -> NOT_STARTED
+  // Every breakpoint update also causes this to be called:
+  EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(12));
+  // All variables get an initial update and two of them are overwritten:
+  EXPECT_CALL(m_test_job_info_io, VariableUpdated(_, _, true)).Times(Exactly(5));
+  EXPECT_CALL(m_test_job_info_io, PutValue(_, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, GetUserValue(_, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, GetUserChoice(_, _)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, Message(_)).Times(Exactly(0));
+  EXPECT_CALL(m_test_job_info_io, Log(_, _)).Times(Exactly(0));
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
+  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  ASSERT_NE(proc.get(), nullptr);
+  LocalJob job{std::move(proc), m_test_job_info_io};
+  job.SetBreakpoint(1);
+  job.SetBreakpoint(2);
+  job.Start();
+  JobState paused_job_state = JobState::kPaused;
+  EXPECT_TRUE(m_test_job_info_io.WaitForJobState(paused_job_state, 1.0));
+  job.RemoveBreakpoint(2);
+  job.Start();
+  JobState successful_job_state = JobState::kSucceeded;
   EXPECT_TRUE(m_test_job_info_io.WaitForJobState(successful_job_state, 1.0));
 }
 

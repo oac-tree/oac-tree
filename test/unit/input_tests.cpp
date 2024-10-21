@@ -145,5 +145,3 @@ TEST(Input, VariableDescription)
 
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
-
-// ToDo - Workspace variable not updated

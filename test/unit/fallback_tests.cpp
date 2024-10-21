@@ -29,10 +29,6 @@
 
 using namespace sup::sequencer;
 
-// ToDo - Should implement test-specific instruction class to verify if called multiple times, or
-// called by the ForceSuccess, etc.
-//        Need for this a wait to get a reference to the instruction in the procedure.
-
 TEST(Fallback, Procedure_first)
 {
   const std::string body{R"(

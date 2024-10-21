@@ -38,7 +38,6 @@ class InstructionMap;
 
 namespace utils
 {
-// TODO: remove the instr_map as parameter? This can be created directly from the root instruction.
 /**
  * @brief Create a InstructionInfo representation of an Instruction tree, providing all Instruction
  * types, their attributes and indices.
@@ -49,6 +48,10 @@ namespace utils
  * @return InstructionInfo tree representation.
  * @throw InvalidOperationException when the provided tree does not correspond to the mapped
  * Instructions in the provided map.
+ *
+ * @note The InstructionMap parameter could in principle be removed, but since this tree is
+ * constructed after a JobInterfaceAdapter is created, it is considered cleaner to reuse its map
+ * (see e.g. the constructor of LocalJob).
  */
 std::unique_ptr<InstructionInfo> CreateInstructionInfoTree(const Instruction& root,
                                                            const InstructionMap& instr_map);

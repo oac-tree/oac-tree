@@ -1,3 +1,9 @@
+Changes for 3.3.0:
+
+- WaitForVariables: log unavailable variables after timeout
+- Environment variable BUILD_DOCS=On will cause documentation to be build
+- Provide IJob and LocalJob that use notifications based on instruction/variables indices, rather than pointers/names
+
 Changes for 3.2.0:
 
 - Improve output of variables in sequencer-cli

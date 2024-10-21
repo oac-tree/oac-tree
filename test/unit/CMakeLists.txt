@@ -41,6 +41,7 @@ target_sources(unit-tests
     job_interface_adapter_tests.cpp
     job_map_tests.cpp
     listen_tests.cpp
+    local_job_tests.cpp
     log_instruction_tests.cpp
     log_severity_tests.cpp
     local_variable_tests.cpp

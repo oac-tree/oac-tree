@@ -37,7 +37,7 @@ struct LocalJob::LocalJobImpl
   JobInterfaceAdapter m_job_interface;
 
   AsyncRunner m_runner;
-  JobInfo m_job_info;
+  std::unique_ptr<JobInfo> m_job_info;
   std::vector<const sequencer::Instruction*> m_ordered_instructions;
 };
 
@@ -62,7 +62,7 @@ LocalJob& LocalJob::operator=(LocalJob&& other)
 
 const JobInfo& LocalJob::GetInfo() const
 {
-  return m_impl->m_job_info;
+  return *m_impl->m_job_info;
 }
 
 void LocalJob::SetBreakpoint(sup::dto::uint32 instr_idx)
@@ -119,9 +119,14 @@ LocalJob::LocalJobImpl::LocalJobImpl(std::unique_ptr<Procedure> proc, IJobInfoIO
   : m_proc{std::move(proc)}
   , m_job_interface{*m_proc, job_info_io}
   , m_runner{*m_proc, m_job_interface}
-  , m_job_info{utils::CreateJobInfo(*m_proc, m_job_interface.GetInstructionMap())}
-  , m_ordered_instructions{m_job_interface.GetOrderedInstructions()}
-{}
+  , m_job_info{}
+  , m_ordered_instructions{}
+{
+  m_job_interface.InitializeInstructionTree(m_proc->RootInstruction());
+  m_job_info.reset(
+    new JobInfo{utils::CreateJobInfo(*m_proc, m_job_interface.GetInstructionMap())});
+  m_ordered_instructions = m_job_interface.GetOrderedInstructions();
+}
 
 }  // namespace sequencer
 

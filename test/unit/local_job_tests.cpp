@@ -71,19 +71,14 @@ protected:
   LocalJobTest() = default;
   virtual ~LocalJobTest() = default;
 
-  TestJobInfoIO m_test_job_info_io;
+  using StrictTestJobInfoIO = ::testing::StrictMock<TestJobInfoIO>;
+  StrictTestJobInfoIO m_test_job_info_io;
 };
 
 TEST_F(LocalJobTest, Construction)
 {
   EXPECT_CALL(m_test_job_info_io, InitNumberOfInstructions(3)).Times(Exactly(1));
-  EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(0));
   EXPECT_CALL(m_test_job_info_io, VariableUpdated(_, _, true)).Times(Exactly(3));
-  EXPECT_CALL(m_test_job_info_io, PutValue(_, _)).Times(Exactly(0));
-  EXPECT_CALL(m_test_job_info_io, GetUserValue(_, _)).Times(Exactly(0));
-  EXPECT_CALL(m_test_job_info_io, GetUserChoice(_, _)).Times(Exactly(0));
-  EXPECT_CALL(m_test_job_info_io, Message(_)).Times(Exactly(0));
-  EXPECT_CALL(m_test_job_info_io, Log(_, _)).Times(Exactly(0));
 
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
   auto proc = sup::sequencer::ParseProcedureString(procedure_string);
@@ -96,13 +91,7 @@ TEST_F(LocalJobTest, Construction)
 TEST_F(LocalJobTest, GetInfo)
 {
   EXPECT_CALL(m_test_job_info_io, InitNumberOfInstructions(3)).Times(Exactly(1));
-  EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(0));
   EXPECT_CALL(m_test_job_info_io, VariableUpdated(_, _, true)).Times(Exactly(3));
-  EXPECT_CALL(m_test_job_info_io, PutValue(_, _)).Times(Exactly(0));
-  EXPECT_CALL(m_test_job_info_io, GetUserValue(_, _)).Times(Exactly(0));
-  EXPECT_CALL(m_test_job_info_io, GetUserChoice(_, _)).Times(Exactly(0));
-  EXPECT_CALL(m_test_job_info_io, Message(_)).Times(Exactly(0));
-  EXPECT_CALL(m_test_job_info_io, Log(_, _)).Times(Exactly(0));
 
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
   auto proc = sup::sequencer::ParseProcedureString(procedure_string);
@@ -121,11 +110,6 @@ TEST_F(LocalJobTest, Start)
   EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(9));
   // All variables get an initial update and two of them are overwritten:
   EXPECT_CALL(m_test_job_info_io, VariableUpdated(_, _, true)).Times(Exactly(5));
-  EXPECT_CALL(m_test_job_info_io, PutValue(_, _)).Times(Exactly(0));
-  EXPECT_CALL(m_test_job_info_io, GetUserValue(_, _)).Times(Exactly(0));
-  EXPECT_CALL(m_test_job_info_io, GetUserChoice(_, _)).Times(Exactly(0));
-  EXPECT_CALL(m_test_job_info_io, Message(_)).Times(Exactly(0));
-  EXPECT_CALL(m_test_job_info_io, Log(_, _)).Times(Exactly(0));
 
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
   auto proc = sup::sequencer::ParseProcedureString(procedure_string);
@@ -145,11 +129,6 @@ TEST_F(LocalJobTest, Step)
   EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(5));
   // All variables get an initial update and one of them is overwritten:
   EXPECT_CALL(m_test_job_info_io, VariableUpdated(_, _, true)).Times(Exactly(4));
-  EXPECT_CALL(m_test_job_info_io, PutValue(_, _)).Times(Exactly(0));
-  EXPECT_CALL(m_test_job_info_io, GetUserValue(_, _)).Times(Exactly(0));
-  EXPECT_CALL(m_test_job_info_io, GetUserChoice(_, _)).Times(Exactly(0));
-  EXPECT_CALL(m_test_job_info_io, Message(_)).Times(Exactly(0));
-  EXPECT_CALL(m_test_job_info_io, Log(_, _)).Times(Exactly(0));
 
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
   auto proc = sup::sequencer::ParseProcedureString(procedure_string);
@@ -171,11 +150,6 @@ TEST_F(LocalJobTest, HaltReset)
   EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(5));
   // All variables get an initial update and one of them is overwritten:
   EXPECT_CALL(m_test_job_info_io, VariableUpdated(_, _, true)).Times(Exactly(4));
-  EXPECT_CALL(m_test_job_info_io, PutValue(_, _)).Times(Exactly(0));
-  EXPECT_CALL(m_test_job_info_io, GetUserValue(_, _)).Times(Exactly(0));
-  EXPECT_CALL(m_test_job_info_io, GetUserChoice(_, _)).Times(Exactly(0));
-  EXPECT_CALL(m_test_job_info_io, Message(_)).Times(Exactly(0));
-  EXPECT_CALL(m_test_job_info_io, Log(_, _)).Times(Exactly(0));
 
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
   auto proc = sup::sequencer::ParseProcedureString(procedure_string);
@@ -200,11 +174,6 @@ TEST_F(LocalJobTest, Breakpoints)
   EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(12));
   // All variables get an initial update and two of them are overwritten:
   EXPECT_CALL(m_test_job_info_io, VariableUpdated(_, _, true)).Times(Exactly(5));
-  EXPECT_CALL(m_test_job_info_io, PutValue(_, _)).Times(Exactly(0));
-  EXPECT_CALL(m_test_job_info_io, GetUserValue(_, _)).Times(Exactly(0));
-  EXPECT_CALL(m_test_job_info_io, GetUserChoice(_, _)).Times(Exactly(0));
-  EXPECT_CALL(m_test_job_info_io, Message(_)).Times(Exactly(0));
-  EXPECT_CALL(m_test_job_info_io, Log(_, _)).Times(Exactly(0));
 
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
   auto proc = sup::sequencer::ParseProcedureString(procedure_string);

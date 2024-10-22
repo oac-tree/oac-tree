@@ -190,6 +190,46 @@ TEST_F(LocalJobTest, Breakpoints)
   EXPECT_TRUE(m_test_job_info_io.WaitForJobState(successful_job_state, 1.0));
 }
 
+TEST_F(LocalJobTest, MoveConstructor)
+{
+  EXPECT_CALL(m_test_job_info_io, InitNumberOfInstructions(3)).Times(Exactly(1));
+  // Every instruction does: NOT_STARTED -> NOT_FINISHED -> SUCCESS -> NOT_STARTED:
+  EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(9));
+  // All variables get an initial update and two of them are overwritten:
+  EXPECT_CALL(m_test_job_info_io, VariableUpdated(_, _, true)).Times(Exactly(5));
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
+  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  ASSERT_NE(proc.get(), nullptr);
+  LocalJob job{std::move(proc), m_test_job_info_io};
+  LocalJob moved{std::move(job)};
+  moved.Start();
+  JobState successful_job_state = JobState::kSucceeded;
+  EXPECT_TRUE(m_test_job_info_io.WaitForJobState(successful_job_state, 1.0));
+}
+
+TEST_F(LocalJobTest, MoveAssignment)
+{
+  // This is called for each job:
+  EXPECT_CALL(m_test_job_info_io, InitNumberOfInstructions(3)).Times(Exactly(2));
+  // Every instruction does: NOT_STARTED -> NOT_FINISHED -> SUCCESS -> NOT_STARTED:
+  EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(9));
+  // All variables get an initial update (for each job) and two of them are overwritten:
+  EXPECT_CALL(m_test_job_info_io, VariableUpdated(_, _, true)).Times(Exactly(8));
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
+  auto proc_1 = sup::sequencer::ParseProcedureString(procedure_string);
+  auto proc_2 = sup::sequencer::ParseProcedureString(procedure_string);
+  ASSERT_NE(proc_1.get(), nullptr);
+  ASSERT_NE(proc_2.get(), nullptr);
+  LocalJob job_1{std::move(proc_1), m_test_job_info_io};
+  LocalJob job_2{std::move(proc_2), m_test_job_info_io};
+  job_2 = std::move(job_1);
+  job_2.Start();
+  JobState successful_job_state = JobState::kSucceeded;
+  EXPECT_TRUE(m_test_job_info_io.WaitForJobState(successful_job_state, 1.0));
+}
+
 TestJobInfoIO::TestJobInfoIO()
   : m_job_state{JobState::kInitial}
   , m_mtx{}

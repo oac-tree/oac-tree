@@ -78,7 +78,7 @@ public:
     ++m_breakpoint_updates;
   }
 
-  void OnProcedureTick(const Procedure& proc) noexcept override
+  void OnProcedureTick(const Procedure& proc) override
   {
     ++m_ticks;
   }

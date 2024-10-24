@@ -57,8 +57,8 @@ public:
   virtual void OnBreakpointChange(const Instruction* instruction, bool breakpoint_set) noexcept = 0;
 
   /**
-   * @brief This member function will be called in between ticks during continuous execution of
-   * the AsyncRunner. During stepwise execution, it will never be called.
+   * @brief This member function will be called after each tick during execution of
+   * the AsyncRunner.
    *
    * @note This member function can be overridden to implement queries on the procedure that could
    * possibly interfere with execution. Since it is called between ticks, it is safe to call for
@@ -66,7 +66,7 @@ public:
    *
    * @param proc Procedure being executed.
    */
-  virtual void OnProcedureTick(const Procedure& proc) noexcept = 0;
+  virtual void OnProcedureTick(const Procedure& proc) = 0;
 };
 
 }  // namespace sequencer

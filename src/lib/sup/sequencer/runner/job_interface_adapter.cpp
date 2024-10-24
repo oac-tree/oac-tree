@@ -22,6 +22,7 @@
 #include <sup/sequencer/job_interface_adapter.h>
 
 #include <sup/sequencer/instruction.h>
+#include <sup/sequencer/procedure.h>
 
 namespace sup
 {
@@ -112,10 +113,15 @@ void JobInterfaceAdapter::OnBreakpointChange(const Instruction* instruction,
   m_job_info_io.InstructionStateUpdated(instr_idx, instr_state);
 }
 
-void JobInterfaceAdapter::OnProcedureTick(const Procedure& proc) noexcept
+void JobInterfaceAdapter::OnProcedureTick(const Procedure& proc)
 {
-  // TODO: update next instruction leaves
-  (void)proc;
+  std::vector<sup::dto::uint32> next_instr_indices{};
+  auto next_instructions = GetNextLeaves(proc);
+  for (const auto* instr : next_instructions)
+  {
+    next_instr_indices.push_back(m_job_map.GetInstructionIndex(instr));
+  }
+  m_job_info_io.NextInstructionsUpdated(next_instr_indices);
 }
 
 }  // namespace sequencer

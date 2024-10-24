@@ -102,7 +102,7 @@ void SimpleJobStateMonitor::OnBreakpointChange(const Instruction* instruction,
   (void)breakpoint_set;
 }
 
-void SimpleJobStateMonitor::OnProcedureTick(const Procedure& proc) noexcept
+void SimpleJobStateMonitor::OnProcedureTick(const Procedure& proc)
 {
   // Ignore callbacks between ticks
   (void)proc;

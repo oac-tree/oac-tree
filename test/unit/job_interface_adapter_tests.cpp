@@ -200,9 +200,14 @@ TEST_F(JobInterfaceAdapterTest, OnBreakpointChange)
 
 TEST_F(JobInterfaceAdapterTest, OnProcedureTick)
 {
+  EXPECT_CALL(m_test_job_info_io, InitNumberOfInstructions(3)).Times(Exactly(1));
+  EXPECT_CALL(m_test_job_info_io, NextInstructionsUpdated(_)).Times(Exactly(1));
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
   auto proc = sup::sequencer::ParseProcedureString(procedure_string);
   ASSERT_NE(proc.get(), nullptr);
   JobInterfaceAdapter job_interface_adapter{*proc, m_test_job_info_io};
+  // OnProcedureTick throws when the adapter still has no map for the instructions:
+  EXPECT_THROW(job_interface_adapter.OnProcedureTick(*proc), InvalidOperationException);
+  job_interface_adapter.InitializeInstructionTree(proc->RootInstruction());
   job_interface_adapter.OnProcedureTick(*proc);
 }

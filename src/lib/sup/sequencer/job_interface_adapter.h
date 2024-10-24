@@ -60,7 +60,7 @@ public:
   void OnStateChange(JobState state) noexcept override;
   void OnBreakpointChange(const Instruction* instruction,
                           bool breakpoint_set) noexcept override;
-  void OnProcedureTick(const Procedure& proc) noexcept override;
+  void OnProcedureTick(const Procedure& proc) override;
 
 private:
   JobMap m_job_map;

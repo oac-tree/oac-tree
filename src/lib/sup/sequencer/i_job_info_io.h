@@ -59,6 +59,8 @@ public:
   virtual void Message(const std::string& message) = 0;
 
   virtual void Log(int severity, const std::string& message) = 0;
+
+  virtual void NextInstructionsUpdated(const std::vector<sup::dto::uint32>& instr_indices) = 0;
 };
 
 }  // namespace sequencer

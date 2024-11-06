@@ -49,7 +49,7 @@ bool AsyncUserInput::AddUserInputRequest()
 
 bool AsyncUserInput::UserInputRequestReady() const
 {
-  if (m_future.valid())
+  if (!m_future.valid())
   {
     return false;
   }

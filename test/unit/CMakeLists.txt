@@ -63,6 +63,7 @@ target_sources(unit-tests
     unit_test_helper.cpp
     user_choice_tests.cpp
     user_confirmation_tests.cpp
+    user_input_tests.cpp
     user_interface_tests.cpp
     var_exists_tests.cpp
     variable_info_tests.cpp

@@ -106,6 +106,18 @@ TEST_F(UserInputTest, Exceptions)
   EXPECT_THROW(async_input.GetUserInput(id), InvalidOperationException);
 }
 
+TEST_F(UserInputTest, CancelRequest)
+{
+  TestUserInput user_input{42, 5000};
+  AsyncUserInput async_input{user_input};
+  auto id = async_input.AddUserInputRequest();
+  ASSERT_NE(id, 0);
+  EXPECT_FALSE(async_input.UserInputRequestReady(id));
+  async_input.CancelInputRequest(id);
+  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+  EXPECT_FALSE(async_input.UserInputRequestReady(id));
+}
+
 UserInputTest::UserInputTest() = default;
 
 UserInputTest::~UserInputTest() = default;

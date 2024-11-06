@@ -31,10 +31,41 @@ namespace sup
 namespace sequencer
 {
 
+Token::Token(AsyncUserInput& input_handler, sup::dto::uint64 id)
+  : m_input_handler{input_handler}
+  , m_id{id}
+{}
+
+Token::~Token()
+{
+  m_input_handler.CancelInputRequest(m_id);
+}
+
+sup::dto::uint64 Token::GetId() const
+{
+  return m_id;
+}
+
+bool Token::IsValid() const
+{
+  return m_id != 0;
+}
+
+bool Token::IsReady() const
+{
+  return m_input_handler.UserInputRequestReady(m_id);
+}
+
+int Token::GetValue()
+{
+  return m_input_handler.GetUserInput(m_id);
+}
+
 AsyncUserInput::AsyncUserInput(IUserInput& sync_input)
   : m_sync_input{sync_input}
   , m_requests{}
   , m_last_request_id{0}
+  , m_cancelled{}
 {}
 
 AsyncUserInput::~AsyncUserInput()
@@ -83,6 +114,17 @@ int AsyncUserInput::GetUserInput(sup::dto::uint64 id)
   return response;
 }
 
+void AsyncUserInput::CancelInputRequest(sup::dto::uint64 id)
+{
+  auto request_it = m_requests.find(id);
+  if (request_it == m_requests.end())
+  {
+    return;
+  }
+  m_sync_input.Interrupt(id);
+  m_cancelled.push_back(id);
+}
+
 sup::dto::uint64 AsyncUserInput::GetNewRequestId()
 {
   ++m_last_request_id;
@@ -92,6 +134,33 @@ sup::dto::uint64 AsyncUserInput::GetNewRequestId()
   }
   return m_last_request_id;
 }
+
+void AsyncUserInput::CleanUpUnused()
+{
+  auto it = m_cancelled.begin();
+  while (it != m_cancelled.end())
+  {
+    auto request_it = m_requests.find(*it);
+    if (request_it == m_requests.end())
+    {
+      it = m_cancelled.erase(it);
+    }
+    else
+    {
+      auto result = request_it->second.wait_for(std::chrono::seconds(0));
+      if (result == std::future_status::ready)
+      {
+        m_requests.erase(request_it);
+        it = m_cancelled.erase(it);
+      }
+      else
+      {
+        ++it;
+      }
+    }
+  }
+}
+
 
 }  // namespace sequencer
 

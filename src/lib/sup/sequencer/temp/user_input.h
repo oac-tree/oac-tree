@@ -25,6 +25,7 @@
 #include <sup/dto/basic_scalar_types.h>
 
 #include <future>
+#include <list>
 #include <map>
 
 namespace sup
@@ -37,9 +38,36 @@ class IUserInput
 public:
   virtual ~IUserInput() = default;
 
+  // This is a blocking call to get user input. If another thread calls Interrupt() with the same
+  // id, it should return within a reasonable time with an invalid reponse..
   virtual int GetUserValue(sup::dto::uint64 id) = 0;
 
   virtual void Interrupt(sup::dto::uint64 id) = 0;
+};
+
+class AsyncUserInput;
+
+class Token
+{
+public:
+  Token(AsyncUserInput& input_handler, sup::dto::uint64 id);
+  ~Token();
+
+  Token(const Token&) = delete;
+  Token(Token&&) = delete;
+  Token& operator=(const Token&) = delete;
+  Token& operator=(Token&&) = delete;
+
+  sup::dto::uint64 GetId() const;
+
+  bool IsValid() const;
+  bool IsReady() const;
+
+  int GetValue();
+
+private:
+  AsyncUserInput& m_input_handler;
+  sup::dto::uint64 m_id;
 };
 
 // Handles only a single user input request
@@ -52,16 +80,22 @@ public:
   // return false if a user input request is already being managed
   sup::dto::uint64 AddUserInputRequest();
 
+  // query readiness of a user input request
   bool UserInputRequestReady(sup::dto::uint64 id) const;
 
   // throws if the input was not ready or no request is active
   int GetUserInput(sup::dto::uint64 id);
 
+  // cancel a user input request
+  void CancelInputRequest(sup::dto::uint64 id);
+
 private:
   sup::dto::uint64 GetNewRequestId();
+  void CleanUpUnused();
   IUserInput& m_sync_input;
   std::map<sup::dto::uint64, std::future<int>> m_requests;
   sup::dto::uint64 m_last_request_id;
+  std::list<sup::dto::uint64> m_cancelled;
 };
 
 }  // namespace sequencer

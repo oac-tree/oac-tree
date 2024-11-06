@@ -55,9 +55,13 @@ AsyncUserInput::Token AsyncUserInput::AddUserInputRequest()
   return {*this, id};
 }
 
-bool AsyncUserInput::UserInputRequestReady(sup::dto::uint64 id) const
+bool AsyncUserInput::UserInputRequestReady(const Token& token) const
 {
-  auto request_it = m_requests.find(id);
+  if (!token.IsValid())
+  {
+    return false;
+  }
+  auto request_it = m_requests.find(token.GetId());
   if (request_it == m_requests.end())
   {
     return false;
@@ -66,11 +70,18 @@ bool AsyncUserInput::UserInputRequestReady(sup::dto::uint64 id) const
   return result == std::future_status::ready;
 }
 
-int AsyncUserInput::GetUserInput(sup::dto::uint64 id)
+int AsyncUserInput::GetUserInput(const Token& token)
 {
+  if (!token.IsValid())
+  {
+    // TODO: throw or invalid value
+    return false;
+  }
+  const auto id = token.GetId();
   auto request_it = m_requests.find(id);
   if (request_it == m_requests.end())
   {
+    // TODO: throw or invalid value
     return false;
   }
   auto result = request_it->second.wait_for(std::chrono::seconds(0));
@@ -84,8 +95,13 @@ int AsyncUserInput::GetUserInput(sup::dto::uint64 id)
   return response;
 }
 
-void AsyncUserInput::CancelInputRequest(sup::dto::uint64 id)
+void AsyncUserInput::CancelInputRequest(const Token& token)
 {
+  if (!token.IsValid())
+  {
+    return;
+  }
+  const auto id = token.GetId();
   auto request_it = m_requests.find(id);
   if (request_it == m_requests.end())
   {
@@ -140,7 +156,7 @@ AsyncUserInput::Token::~Token()
 {
   if (IsValid())
   {
-    m_input_handler.CancelInputRequest(m_id);
+    m_input_handler.CancelInputRequest(*this);
   }
 }
 
@@ -163,12 +179,12 @@ bool AsyncUserInput::Token::IsValid() const
 
 bool AsyncUserInput::Token::IsReady() const
 {
-  return m_input_handler.UserInputRequestReady(m_id);
+  return m_input_handler.UserInputRequestReady(*this);
 }
 
 int AsyncUserInput::Token::GetValue()
 {
-  auto result = m_input_handler.GetUserInput(m_id);
+  auto result = m_input_handler.GetUserInput(*this);
   m_id = 0;
   return result;
 }

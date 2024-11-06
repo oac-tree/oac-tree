@@ -58,13 +58,13 @@ public:
 
 private:
   // query readiness of a user input request
-  bool UserInputRequestReady(sup::dto::uint64 id) const;
+  bool UserInputRequestReady(const Token& token) const;
 
   // throws if the input was not ready or no request is active
-  int GetUserInput(sup::dto::uint64 id);
+  int GetUserInput(const Token& token);
 
   // cancel a user input request
-  void CancelInputRequest(sup::dto::uint64 id);
+  void CancelInputRequest(const Token& token);
 
   sup::dto::uint64 GetNewRequestId();
   void CleanUpUnused();

@@ -105,6 +105,7 @@ TEST_F(UserInputTest, Exceptions)
   EXPECT_FALSE(token.IsReady());
   EXPECT_THROW(token.GetValue(), InvalidOperationException);
   EXPECT_TRUE(token.IsValid());
+  EXPECT_FALSE(token.IsReady());
 }
 
 UserInputTest::UserInputTest() = default;

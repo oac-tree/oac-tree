@@ -22,8 +22,10 @@
 #ifndef SUP_SEQUENCER_USER_INPUT_H_
 #define SUP_SEQUENCER_USER_INPUT_H_
 
+#include <sup/dto/basic_scalar_types.h>
 
 #include <future>
+#include <map>
 
 namespace sup
 {
@@ -35,7 +37,9 @@ class IUserInput
 public:
   virtual ~IUserInput() = default;
 
-  virtual int GetUserValue() const = 0;
+  virtual int GetUserValue(sup::dto::uint64 id) = 0;
+
+  virtual void Interrupt(sup::dto::uint64 id) = 0;
 };
 
 // Handles only a single user input request
@@ -46,16 +50,18 @@ public:
   ~AsyncUserInput();
 
   // return false if a user input request is already being managed
-  bool AddUserInputRequest();
+  sup::dto::uint64 AddUserInputRequest();
 
-  bool UserInputRequestReady() const;
+  bool UserInputRequestReady(sup::dto::uint64 id) const;
 
   // throws if the input was not ready or no request is active
-  int GetUserInput();
+  int GetUserInput(sup::dto::uint64 id);
 
 private:
+  sup::dto::uint64 GetNewRequestId();
   IUserInput& m_sync_input;
-  std::future<int> m_future;
+  std::map<sup::dto::uint64, std::future<int>> m_requests;
+  sup::dto::uint64 m_last_request_id;
 };
 
 }  // namespace sequencer

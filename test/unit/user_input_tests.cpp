@@ -86,36 +86,25 @@ TEST_F(UserInputTest, Construction)
 {
   TestUserInput user_input{42, 500};
   AsyncUserInput async_input{user_input};
-  auto id = async_input.AddUserInputRequest();
-  ASSERT_NE(id, 0);
-  EXPECT_FALSE(async_input.UserInputRequestReady(id));
+  auto token = async_input.AddUserInputRequest();
+  ASSERT_TRUE(token.IsValid());
+  EXPECT_FALSE(token.IsReady());
   std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-  EXPECT_TRUE(async_input.UserInputRequestReady(id));
-  EXPECT_EQ(async_input.GetUserInput(id), 42);
-  // After retrieval of user input, the request becomes invalid again:
-  EXPECT_FALSE(async_input.UserInputRequestReady(id));
+  EXPECT_TRUE(token.IsReady());
+  EXPECT_EQ(token.GetValue(), 42);
+  // After retrieval of user input, the request becomes invalid:
+  EXPECT_FALSE(token.IsValid());
 }
 
 TEST_F(UserInputTest, Exceptions)
 {
   TestUserInput user_input{42, 5000};
   AsyncUserInput async_input{user_input};
-  auto id = async_input.AddUserInputRequest();
-  ASSERT_NE(id, 0);
-  EXPECT_FALSE(async_input.UserInputRequestReady(id));
-  EXPECT_THROW(async_input.GetUserInput(id), InvalidOperationException);
-}
-
-TEST_F(UserInputTest, CancelRequest)
-{
-  TestUserInput user_input{42, 5000};
-  AsyncUserInput async_input{user_input};
-  auto id = async_input.AddUserInputRequest();
-  ASSERT_NE(id, 0);
-  EXPECT_FALSE(async_input.UserInputRequestReady(id));
-  async_input.CancelInputRequest(id);
-  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-  EXPECT_FALSE(async_input.UserInputRequestReady(id));
+  auto token = async_input.AddUserInputRequest();
+  ASSERT_TRUE(token.IsValid());
+  EXPECT_FALSE(token.IsReady());
+  EXPECT_THROW(token.GetValue(), InvalidOperationException);
+  EXPECT_TRUE(token.IsValid());
 }
 
 UserInputTest::UserInputTest() = default;

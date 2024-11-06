@@ -45,18 +45,46 @@ public:
   virtual void Interrupt(sup::dto::uint64 id) = 0;
 };
 
-class AsyncUserInput;
+// Handles only a single user input request
+class AsyncUserInput
+{
+public:
+  class Token;
+  explicit AsyncUserInput(IUserInput& sync_input);
+  ~AsyncUserInput();
 
-class Token
+  // return false if a user input request is already being managed
+  Token AddUserInputRequest();
+
+private:
+  // query readiness of a user input request
+  bool UserInputRequestReady(sup::dto::uint64 id) const;
+
+  // throws if the input was not ready or no request is active
+  int GetUserInput(sup::dto::uint64 id);
+
+  // cancel a user input request
+  void CancelInputRequest(sup::dto::uint64 id);
+
+  sup::dto::uint64 GetNewRequestId();
+  void CleanUpUnused();
+  IUserInput& m_sync_input;
+  std::map<sup::dto::uint64, std::future<int>> m_requests;
+  sup::dto::uint64 m_last_request_id;
+  std::list<sup::dto::uint64> m_cancelled;
+};
+
+class AsyncUserInput::Token
 {
 public:
   Token(AsyncUserInput& input_handler, sup::dto::uint64 id);
   ~Token();
 
   Token(const Token&) = delete;
-  Token(Token&&) = delete;
   Token& operator=(const Token&) = delete;
-  Token& operator=(Token&&) = delete;
+
+  Token(Token&& other);
+  Token& operator=(Token&& other) = delete;
 
   sup::dto::uint64 GetId() const;
 
@@ -68,34 +96,6 @@ public:
 private:
   AsyncUserInput& m_input_handler;
   sup::dto::uint64 m_id;
-};
-
-// Handles only a single user input request
-class AsyncUserInput
-{
-public:
-  explicit AsyncUserInput(IUserInput& sync_input);
-  ~AsyncUserInput();
-
-  // return false if a user input request is already being managed
-  sup::dto::uint64 AddUserInputRequest();
-
-  // query readiness of a user input request
-  bool UserInputRequestReady(sup::dto::uint64 id) const;
-
-  // throws if the input was not ready or no request is active
-  int GetUserInput(sup::dto::uint64 id);
-
-  // cancel a user input request
-  void CancelInputRequest(sup::dto::uint64 id);
-
-private:
-  sup::dto::uint64 GetNewRequestId();
-  void CleanUpUnused();
-  IUserInput& m_sync_input;
-  std::map<sup::dto::uint64, std::future<int>> m_requests;
-  sup::dto::uint64 m_last_request_id;
-  std::list<sup::dto::uint64> m_cancelled;
 };
 
 }  // namespace sequencer

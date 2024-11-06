@@ -31,36 +31,6 @@ namespace sup
 namespace sequencer
 {
 
-Token::Token(AsyncUserInput& input_handler, sup::dto::uint64 id)
-  : m_input_handler{input_handler}
-  , m_id{id}
-{}
-
-Token::~Token()
-{
-  m_input_handler.CancelInputRequest(m_id);
-}
-
-sup::dto::uint64 Token::GetId() const
-{
-  return m_id;
-}
-
-bool Token::IsValid() const
-{
-  return m_id != 0;
-}
-
-bool Token::IsReady() const
-{
-  return m_input_handler.UserInputRequestReady(m_id);
-}
-
-int Token::GetValue()
-{
-  return m_input_handler.GetUserInput(m_id);
-}
-
 AsyncUserInput::AsyncUserInput(IUserInput& sync_input)
   : m_sync_input{sync_input}
   , m_requests{}
@@ -76,13 +46,13 @@ AsyncUserInput::~AsyncUserInput()
   }
 }
 
-sup::dto::uint64 AsyncUserInput::AddUserInputRequest()
+AsyncUserInput::Token AsyncUserInput::AddUserInputRequest()
 {
   auto id = GetNewRequestId();
   auto request_future =
     std::async(std::launch::async, &IUserInput::GetUserValue, std::addressof(m_sync_input), id);
   m_requests.emplace(std::make_pair(id, std::move(request_future)));
-  return id;
+  return {*this, id};
 }
 
 bool AsyncUserInput::UserInputRequestReady(sup::dto::uint64 id) const
@@ -161,6 +131,47 @@ void AsyncUserInput::CleanUpUnused()
   }
 }
 
+AsyncUserInput::Token::Token(AsyncUserInput& input_handler, sup::dto::uint64 id)
+  : m_input_handler{input_handler}
+  , m_id{id}
+{}
+
+AsyncUserInput::Token::~Token()
+{
+  if (IsValid())
+  {
+    m_input_handler.CancelInputRequest(m_id);
+  }
+}
+
+AsyncUserInput::Token::Token(Token&& other)
+  : m_input_handler{other.m_input_handler}
+  , m_id{0}
+{
+  std::swap(m_id, other.m_id);
+}
+
+sup::dto::uint64 AsyncUserInput::Token::GetId() const
+{
+  return m_id;
+}
+
+bool AsyncUserInput::Token::IsValid() const
+{
+  return m_id != 0;
+}
+
+bool AsyncUserInput::Token::IsReady() const
+{
+  return m_input_handler.UserInputRequestReady(m_id);
+}
+
+int AsyncUserInput::Token::GetValue()
+{
+  auto result = m_input_handler.GetUserInput(m_id);
+  m_id = 0;
+  return result;
+}
 
 }  // namespace sequencer
 

@@ -5,6 +5,7 @@ target_sources(sup-sequencer-shared
     application_utils.cpp
     exceptions.cpp
     generic_utils.cpp
+    i_user_input_future.cpp
     log_severity.cpp
     scope_guard.cpp
 )

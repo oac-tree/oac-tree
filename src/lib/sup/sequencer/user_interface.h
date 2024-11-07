@@ -24,9 +24,7 @@
 
 #include <sup/dto/anyvalue.h>
 
-#include <mutex>
 #include <string>
-#include <utility>
 #include <vector>
 
 namespace sup
@@ -43,7 +41,7 @@ namespace dialog_type
  */
 enum DialogType
 {
-  kDefault = 0,      // Use default dialog tyep
+  kDefault = 0,      // Use default dialog type
   kSelection,        // Selection box (e.g. combo box)
   kConfirmation,     // Confirmation dialog (typically two buttons only)
   kAlert             // Alert dialog (typically one button only)

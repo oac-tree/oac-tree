@@ -45,6 +45,7 @@ install(FILES
   generic_utils.h
   i_job_info_io.h
   i_job.h
+  i_user_input_future.h
   instruction_info_utils.h
   instruction_info.h
   instruction_map.h

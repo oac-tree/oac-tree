@@ -86,26 +86,39 @@ TEST_F(UserInputTest, Construction)
 {
   TestUserInput user_input{42, 500};
   AsyncUserInput async_input{user_input};
-  auto token = async_input.AddUserInputRequest();
-  ASSERT_TRUE(token.IsValid());
-  EXPECT_FALSE(token.IsReady());
+  auto future = async_input.AddUserInputRequest();
+  EXPECT_TRUE(future.IsValid());
+  EXPECT_FALSE(future.IsReady());
   std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-  EXPECT_TRUE(token.IsReady());
-  EXPECT_EQ(token.GetValue(), 42);
+  EXPECT_TRUE(future.IsReady());
+  EXPECT_EQ(future.GetValue(), 42);
   // After retrieval of user input, the request becomes invalid:
-  EXPECT_FALSE(token.IsValid());
+  EXPECT_FALSE(future.IsValid());
 }
 
 TEST_F(UserInputTest, Exceptions)
 {
   TestUserInput user_input{42, 5000};
   AsyncUserInput async_input{user_input};
-  auto token = async_input.AddUserInputRequest();
-  ASSERT_TRUE(token.IsValid());
-  EXPECT_FALSE(token.IsReady());
-  EXPECT_THROW(token.GetValue(), InvalidOperationException);
-  EXPECT_TRUE(token.IsValid());
-  EXPECT_FALSE(token.IsReady());
+  auto future = async_input.AddUserInputRequest();
+  ASSERT_TRUE(future.IsValid());
+  EXPECT_FALSE(future.IsReady());
+  EXPECT_THROW(future.GetValue(), InvalidOperationException);
+  EXPECT_TRUE(future.IsValid());
+  EXPECT_FALSE(future.IsReady());
+}
+
+TEST_F(UserInputTest, Move)
+{
+  TestUserInput user_input{42, 5000};
+  AsyncUserInput async_input{user_input};
+  auto future = async_input.AddUserInputRequest();
+  EXPECT_TRUE(future.IsValid());
+  EXPECT_FALSE(future.IsReady());
+  AsyncUserInput::Future moved{std::move(future)};
+  EXPECT_FALSE(future.IsValid());
+  EXPECT_FALSE(future.IsReady());
+  EXPECT_TRUE(moved.IsValid());
 }
 
 UserInputTest::UserInputTest() = default;

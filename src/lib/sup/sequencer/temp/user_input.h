@@ -24,9 +24,11 @@
 
 #include <sup/dto/basic_scalar_types.h>
 
+#include <functional>
 #include <future>
 #include <list>
 #include <map>
+#include <mutex>
 
 namespace sup
 {
@@ -49,22 +51,22 @@ public:
 class AsyncUserInput
 {
 public:
-  class Token;
+  class Future;
   explicit AsyncUserInput(IUserInput& sync_input);
   ~AsyncUserInput();
 
-  // return false if a user input request is already being managed
-  Token AddUserInputRequest();
+  // return a future that can be used to check if the result is ready and get it
+  Future AddUserInputRequest();
 
 private:
   // query readiness of a user input request
-  bool UserInputRequestReady(const Token& token) const;
+  bool UserInputRequestReady(const Future& token) const;
 
   // throws if the input was not ready or no request is active
-  int GetUserInput(const Token& token);
+  int GetUserInput(const Future& token);
 
   // cancel a user input request
-  void CancelInputRequest(const Token& token);
+  void CancelInputRequest(const Future& token);
 
   sup::dto::uint64 GetNewRequestId();
   void CleanUpUnused();
@@ -72,19 +74,20 @@ private:
   std::map<sup::dto::uint64, std::future<int>> m_requests;
   sup::dto::uint64 m_last_request_id;
   std::list<sup::dto::uint64> m_cancelled;
+  mutable std::mutex m_mtx;
 };
 
-class AsyncUserInput::Token
+class AsyncUserInput::Future
 {
 public:
-  Token(AsyncUserInput& input_handler, sup::dto::uint64 id);
-  ~Token();
+  Future(AsyncUserInput& input_handler, sup::dto::uint64 id);
+  ~Future();
 
-  Token(const Token&) = delete;
-  Token& operator=(const Token&) = delete;
+  Future(const Future&) = delete;
+  Future& operator=(const Future&) = delete;
 
-  Token(Token&& other);
-  Token& operator=(Token&& other) = delete;
+  Future(Future&& other);
+  Future& operator=(Future&& other);
 
   sup::dto::uint64 GetId() const;
 
@@ -94,7 +97,8 @@ public:
   int GetValue();
 
 private:
-  AsyncUserInput& m_input_handler;
+  void Swap(Future& other);
+  std::reference_wrapper<AsyncUserInput> m_input_handler;
   sup::dto::uint64 m_id;
 };
 

@@ -36,6 +36,7 @@ AsyncUserInput::AsyncUserInput(IUserInput& sync_input)
   , m_requests{}
   , m_last_request_id{0}
   , m_cancelled{}
+  , m_mtx{}
 {}
 
 AsyncUserInput::~AsyncUserInput()
@@ -46,8 +47,10 @@ AsyncUserInput::~AsyncUserInput()
   }
 }
 
-AsyncUserInput::Token AsyncUserInput::AddUserInputRequest()
+AsyncUserInput::Future AsyncUserInput::AddUserInputRequest()
 {
+  std::lock_guard<std::mutex> lk{m_mtx};
+  CleanUpUnused();
   auto id = GetNewRequestId();
   auto request_future =
     std::async(std::launch::async, &IUserInput::GetUserValue, std::addressof(m_sync_input), id);
@@ -55,12 +58,13 @@ AsyncUserInput::Token AsyncUserInput::AddUserInputRequest()
   return {*this, id};
 }
 
-bool AsyncUserInput::UserInputRequestReady(const Token& token) const
+bool AsyncUserInput::UserInputRequestReady(const Future& token) const
 {
   if (!token.IsValid())
   {
     return false;
   }
+  std::lock_guard<std::mutex> lk{m_mtx};
   auto request_it = m_requests.find(token.GetId());
   if (request_it == m_requests.end())
   {
@@ -70,19 +74,22 @@ bool AsyncUserInput::UserInputRequestReady(const Token& token) const
   return result == std::future_status::ready;
 }
 
-int AsyncUserInput::GetUserInput(const Token& token)
+int AsyncUserInput::GetUserInput(const Future& token)
 {
   if (!token.IsValid())
   {
-    // TODO: throw or invalid value
-    return false;
+    const std::string error = "AsyncUserInput::GetUserInput(): called with invalid token";
+    throw InvalidOperationException{error};
   }
   const auto id = token.GetId();
+  std::lock_guard<std::mutex> lk{m_mtx};
+  CleanUpUnused();
   auto request_it = m_requests.find(id);
   if (request_it == m_requests.end())
   {
-    // TODO: throw or invalid value
-    return false;
+    const std::string error =
+      "AsyncUserInput::GetUserInput(): called with unknown token id: " + std::to_string(id);
+    throw InvalidOperationException{error};
   }
   auto result = request_it->second.wait_for(std::chrono::seconds(0));
   if (result != std::future_status::ready)
@@ -95,13 +102,14 @@ int AsyncUserInput::GetUserInput(const Token& token)
   return response;
 }
 
-void AsyncUserInput::CancelInputRequest(const Token& token)
+void AsyncUserInput::CancelInputRequest(const Future& token)
 {
   if (!token.IsValid())
   {
     return;
   }
   const auto id = token.GetId();
+  std::lock_guard<std::mutex> lk{m_mtx};
   auto request_it = m_requests.find(id);
   if (request_it == m_requests.end())
   {
@@ -109,6 +117,7 @@ void AsyncUserInput::CancelInputRequest(const Token& token)
   }
   m_sync_input.Interrupt(id);
   m_cancelled.push_back(id);
+  CleanUpUnused();
 }
 
 sup::dto::uint64 AsyncUserInput::GetNewRequestId()
@@ -147,46 +156,59 @@ void AsyncUserInput::CleanUpUnused()
   }
 }
 
-AsyncUserInput::Token::Token(AsyncUserInput& input_handler, sup::dto::uint64 id)
+AsyncUserInput::Future::Future(AsyncUserInput& input_handler, sup::dto::uint64 id)
   : m_input_handler{input_handler}
   , m_id{id}
 {}
 
-AsyncUserInput::Token::~Token()
+AsyncUserInput::Future::~Future()
 {
   if (IsValid())
   {
-    m_input_handler.CancelInputRequest(*this);
+    m_input_handler.get().CancelInputRequest(*this);
   }
 }
 
-AsyncUserInput::Token::Token(Token&& other)
+AsyncUserInput::Future::Future(Future&& other)
   : m_input_handler{other.m_input_handler}
   , m_id{0}
 {
-  std::swap(m_id, other.m_id);
+  Swap(other);
 }
 
-sup::dto::uint64 AsyncUserInput::Token::GetId() const
+AsyncUserInput::Future& AsyncUserInput::Future::operator=(Future&& other)
+{
+  Future tmp{std::move(other)};
+  Swap(tmp);
+  return *this;
+}
+
+sup::dto::uint64 AsyncUserInput::Future::GetId() const
 {
   return m_id;
 }
 
-bool AsyncUserInput::Token::IsValid() const
+bool AsyncUserInput::Future::IsValid() const
 {
   return m_id != 0;
 }
 
-bool AsyncUserInput::Token::IsReady() const
+bool AsyncUserInput::Future::IsReady() const
 {
-  return m_input_handler.UserInputRequestReady(*this);
+  return m_input_handler.get().UserInputRequestReady(*this);
 }
 
-int AsyncUserInput::Token::GetValue()
+int AsyncUserInput::Future::GetValue()
 {
-  auto result = m_input_handler.GetUserInput(*this);
+  auto result = m_input_handler.get().GetUserInput(*this);
   m_id = 0;
   return result;
+}
+
+void AsyncUserInput::Future::Swap(Future& other)
+{
+  std::swap(this->m_input_handler, other.m_input_handler);
+  std::swap(this->m_id, other.m_id);
 }
 
 }  // namespace sequencer

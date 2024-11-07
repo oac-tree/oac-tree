@@ -1,6 +1,5 @@
 target_sources(sup-sequencer-shared
   PRIVATE
-    anyvalue_input_request.cpp
     anyvalue_utils.cpp
     application_utils.cpp
     exceptions.cpp
@@ -8,4 +7,6 @@ target_sources(sup-sequencer-shared
     i_user_input_future.cpp
     log_severity.cpp
     scope_guard.cpp
+    user_input_reply.cpp
+    user_input_request.cpp
 )

@@ -19,7 +19,7 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <sup/sequencer/anyvalue_input_request.h>
+#include <sup/sequencer/user_input_request.h>
 
 #include <sup/sequencer/anyvalue_utils.h>
 #include <sup/sequencer/constants.h>
@@ -31,7 +31,7 @@ namespace sup
 {
 namespace sequencer
 {
-bool operator==(const AnyValueInputRequest& left, const AnyValueInputRequest& right)
+bool operator==(const UserInputRequest& left, const UserInputRequest& right)
 {
   if (left.m_request_type != right.m_request_type)
   {
@@ -44,21 +44,21 @@ bool operator==(const AnyValueInputRequest& left, const AnyValueInputRequest& ri
   return left.m_input_type == right.m_input_type;
 }
 
-bool operator!=(const AnyValueInputRequest& left, const AnyValueInputRequest& right)
+bool operator!=(const UserInputRequest& left, const UserInputRequest& right)
 {
   return !(left == right);
 }
 
-AnyValueInputRequest CreateUserValueRequest(const sup::dto::AnyValue& value,
-                                            const std::string& description)
+UserInputRequest CreateUserValueRequest(const sup::dto::AnyValue& value,
+                                        const std::string& description)
 {
   sup::dto::AnyValue meta_data = description;
-  AnyValueInputRequest input_request{ InputRequestType::kUserValue, meta_data, value.GetType() };
+  UserInputRequest input_request{ InputRequestType::kUserValue, meta_data, value.GetType() };
   return input_request;
 }
 
-AnyValueInputRequest CreateUserChoiceRequest(const std::vector<std::string>& options,
-                                             const sup::dto::AnyValue& metadata)
+UserInputRequest CreateUserChoiceRequest(const std::vector<std::string>& options,
+                                         const sup::dto::AnyValue& metadata)
 {
   sup::dto::AnyValue options_av{ options.size(), sup::dto::StringType };
   for (std::size_t idx = 0; idx < options.size(); ++idx)
@@ -69,12 +69,12 @@ AnyValueInputRequest CreateUserChoiceRequest(const std::vector<std::string>& opt
     { Constants::kInputRequestOptionsFieldName, options_av },
     { Constants::kInputRequestMetadataFieldName, metadata }
   }};
-  AnyValueInputRequest input_request{ InputRequestType::kUserChoice, meta,
-                                      sup::dto::SignedInteger32Type};
+  UserInputRequest input_request{ InputRequestType::kUserChoice, meta,
+                                  sup::dto::SignedInteger32Type};
   return input_request;
 }
 
-bool ParseUserValueRequest(const AnyValueInputRequest& request, sup::dto::AnyValue& value,
+bool ParseUserValueRequest(const UserInputRequest& request, sup::dto::AnyValue& value,
                            std::string& description)
 {
   if (request.m_request_type != InputRequestType::kUserValue)
@@ -93,7 +93,7 @@ bool ParseUserValueRequest(const AnyValueInputRequest& request, sup::dto::AnyVal
   return true;
 }
 
-bool ParseUserChoiceRequest(const AnyValueInputRequest& request, std::vector<std::string>& options,
+bool ParseUserChoiceRequest(const UserInputRequest& request, std::vector<std::string>& options,
                             sup::dto::AnyValue& metadata)
 {
   if (request.m_request_type != InputRequestType::kUserChoice)
@@ -126,63 +126,6 @@ bool ParseUserChoiceRequest(const AnyValueInputRequest& request, std::vector<std
   }
   options = std::move(options_loc);
   return true;
-}
-
-sup::dto::AnyValue CreateUserValueReply(bool result, const sup::dto::AnyValue& value)
-{
-  sup::dto::AnyValue reply_av = {{
-    { Constants::kInputReplyResultFieldName, result },
-    { Constants::kInputReplyValueFieldName, value }
-  }};
-  return reply_av;
-}
-
-sup::dto::AnyValue CreateUserChoiceReply(bool result, int choice)
-{
-  sup::dto::AnyValue reply_av = {{
-    { Constants::kInputReplyResultFieldName, result },
-    { Constants::kInputReplyValueFieldName, { sup::dto::SignedInteger32Type, choice } }
-  }};
-  return reply_av;
-}
-
-std::pair<bool, sup::dto::AnyValue> ParseUserValueReply(const sup::dto::AnyValue& reply)
-{
-  std::pair<bool, sup::dto::AnyValue> failure{ false, {} };
-  if (!utils::ValidateMemberType(
-        reply, Constants::kInputReplyResultFieldName, sup::dto::BooleanType))
-  {
-    return failure;
-  }
-  if (!reply[Constants::kInputReplyResultFieldName].As<sup::dto::boolean>())
-  {
-    return failure;
-  }
-  if (!reply.HasField(Constants::kInputReplyValueFieldName))
-  {
-    return failure;
-  }
-  return { true, reply[Constants::kInputReplyValueFieldName] };
-}
-
-std::pair<bool, int> ParseUserChoiceReply(const sup::dto::AnyValue& reply)
-{
-  std::pair<bool, int> failure{ false, -1 };
-  if (!utils::ValidateMemberType(
-        reply, Constants::kInputReplyResultFieldName, sup::dto::BooleanType))
-  {
-    return failure;
-  }
-  if (!reply[Constants::kInputReplyResultFieldName].As<sup::dto::boolean>())
-  {
-    return failure;
-  }
-  if (!utils::ValidateMemberType(
-        reply, Constants::kInputReplyValueFieldName, sup::dto::SignedInteger32Type))
-  {
-    return failure;
-  }
-  return { true, reply[Constants::kInputReplyValueFieldName].As<sup::dto::int32>() };
 }
 
 }  // namespace sequencer

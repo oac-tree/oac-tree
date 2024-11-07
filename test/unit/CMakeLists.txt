@@ -4,7 +4,6 @@ target_sources(unit-tests
   PRIVATE
     add_element_tests.cpp
     add_member_tests.cpp
-    anyvalue_input_request_tests.cpp
     anyvalue_utils_tests.cpp
     async_runner_tests.cpp
     attribute_handler_tests.cpp
@@ -64,6 +63,8 @@ target_sources(unit-tests
     unit_test_helper.cpp
     user_choice_tests.cpp
     user_confirmation_tests.cpp
+    user_input_reply_tests.cpp
+    user_input_request_tests.cpp
     user_input_tests.cpp
     user_interface_tests.cpp
     var_exists_tests.cpp

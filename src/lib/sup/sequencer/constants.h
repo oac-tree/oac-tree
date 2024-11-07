@@ -180,10 +180,6 @@ const std::string kBreakpointField = "breakpoint";
 // Basic instruction AnyValue
 extern const sup::dto::AnyValue kInstructionStateAnyValue;
 
-// Field names used in the input reply AnyValue:
-const std::string kInputReplyResultFieldName = "result";
-const std::string kInputReplyValueFieldName = "reply";
-
 // Field names used in the input request AnyValue:
 const std::string kInputRequestOptionsFieldName = "options";
 const std::string kInputRequestMetadataFieldName = "metadata";

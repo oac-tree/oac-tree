@@ -19,8 +19,8 @@
  * of the distribution package.
  ******************************************************************************/
 
-#ifndef SUP_SEQUENCER_ANYVALUE_INPUT_REQUEST_H_
-#define SUP_SEQUENCER_ANYVALUE_INPUT_REQUEST_H_
+#ifndef SUP_SEQUENCER_USER_INPUT_REQUEST_H_
+#define SUP_SEQUENCER_USER_INPUT_REQUEST_H_
 
 #include <sup/dto/anyvalue.h>
 
@@ -45,10 +45,10 @@ enum class InputRequestType : sup::dto::uint32
 };
 
 /**
- * @brief AnyValueInputRequest collects all the required information for the supported user
+ * @brief UserInputRequest collects all the required information for the supported user
  * input requests.
  */
-struct AnyValueInputRequest
+struct UserInputRequest
 {
 public:
   InputRequestType m_request_type;
@@ -56,31 +56,23 @@ public:
   sup::dto::AnyType m_input_type;
 };
 
-bool operator==(const AnyValueInputRequest& left, const AnyValueInputRequest& right);
-bool operator!=(const AnyValueInputRequest& left, const AnyValueInputRequest& right);
+bool operator==(const UserInputRequest& left, const UserInputRequest& right);
+bool operator!=(const UserInputRequest& left, const UserInputRequest& right);
 
-AnyValueInputRequest CreateUserValueRequest(const sup::dto::AnyValue& value,
+UserInputRequest CreateUserValueRequest(const sup::dto::AnyValue& value,
                                             const std::string& description);
 
-AnyValueInputRequest CreateUserChoiceRequest(const std::vector<std::string>& options,
+UserInputRequest CreateUserChoiceRequest(const std::vector<std::string>& options,
                                              const sup::dto::AnyValue& metadata);
 
-bool ParseUserValueRequest(const AnyValueInputRequest& request, sup::dto::AnyValue& value,
+bool ParseUserValueRequest(const UserInputRequest& request, sup::dto::AnyValue& value,
                            std::string& description);
 
-bool ParseUserChoiceRequest(const AnyValueInputRequest& request, std::vector<std::string>& options,
+bool ParseUserChoiceRequest(const UserInputRequest& request, std::vector<std::string>& options,
                             sup::dto::AnyValue& metadata);
-
-sup::dto::AnyValue CreateUserValueReply(bool result, const sup::dto::AnyValue& value);
-
-sup::dto::AnyValue CreateUserChoiceReply(bool result, int choice);
-
-std::pair<bool, sup::dto::AnyValue> ParseUserValueReply(const sup::dto::AnyValue& reply);
-
-std::pair<bool, int> ParseUserChoiceReply(const sup::dto::AnyValue& reply);
 
 }  // namespace sequencer
 
 }  // namespace sup
 
-#endif  // SUP_SEQUENCER_ANYVALUE_INPUT_REQUEST_H_
+#endif  // SUP_SEQUENCER_USER_INPUT_REQUEST_H_

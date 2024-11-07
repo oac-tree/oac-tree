@@ -79,26 +79,6 @@ std::pair<bool, sup::dto::AnyValue> ParseUserValueReply(const sup::dto::AnyValue
 
 std::pair<bool, int> ParseUserChoiceReply(const sup::dto::AnyValue& reply);
 
-/**
- * @brief Pack an AnyValueInputRequest with the given request id into a base64 encoded AnyValue.
- *
- * @param req_id Request id.
- * @param input_request AnyValueInputRequest object to encode.
- *
- * @return Encoded AnyValue.
- */
-sup::dto::AnyValue EncodeInputRequest(sup::dto::uint64 req_id,
-                                      const AnyValueInputRequest& input_request);
-
-/**
- * @brief Decode the packed and encoded AnyValue into an AnyValueInputRequest.
- *
- * @param encoded Encoded AnyValue.
- *
- * @return Tuple of connected state - request id - AnyValueInputRequest.
- */
-std::tuple<bool, sup::dto::uint64, AnyValueInputRequest> DecodeInputRequest(const dto::AnyValue& encoded);
-
 }  // namespace sequencer
 
 }  // namespace sup

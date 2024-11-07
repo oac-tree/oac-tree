@@ -4,6 +4,7 @@ target_sources(unit-tests
   PRIVATE
     add_element_tests.cpp
     add_member_tests.cpp
+    anyvalue_input_request_tests.cpp
     anyvalue_utils_tests.cpp
     async_runner_tests.cpp
     attribute_handler_tests.cpp

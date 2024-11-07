@@ -26,6 +26,7 @@ install(TARGETS sup-sequencer-shared EXPORT sequencer-targets LIBRARY DESTINATIO
 set_target_properties(sup-sequencer-shared PROPERTIES EXPORT_NAME sequencer)
 
 install(FILES
+  anyvalue_input_request.h
   anyvalue_utils.h
   application_utils.h
   async_runner.h

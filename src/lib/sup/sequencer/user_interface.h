@@ -122,6 +122,17 @@ public:
   virtual int GetUserChoice(const std::vector<std::string>& options,
                             const sup::dto::AnyValue& metadata) = 0;
 
+  /**
+   * @brief Asynchronous, i.e. non-blocking, interface to retrieve user input.
+   *
+   * @note Upon destruction of the returned future, the request is cancelled, but it will not join
+   * any threads that were created during creation. This avoids blocking on these objects'
+   * destruction.
+   *
+   * @param request UserInputRequest object, describing what kind of input is expected.
+   *
+   * @return A handle to a future that will cancel the request upon destruction.
+   */
   virtual std::unique_ptr<IUserInputFuture> RequestUserInput(const UserInputRequest& request);
 
   /**
@@ -173,6 +184,7 @@ public:
   bool GetUserValue(sup::dto::AnyValue& value, const std::string& description) override;
   int GetUserChoice(const std::vector<std::string>& options,
                     const sup::dto::AnyValue& metadata) override;
+  std::unique_ptr<IUserInputFuture> RequestUserInput(const UserInputRequest& request) override;
   void Message(const std::string& message) override;
   void Log(int severity, const std::string& message) override;
 };

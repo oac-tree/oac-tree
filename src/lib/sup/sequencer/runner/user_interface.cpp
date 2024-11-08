@@ -74,6 +74,13 @@ int DefaultUserInterface::GetUserChoice(const std::vector<std::string>&, const s
   return -1;
 }
 
+std::unique_ptr<IUserInputFuture> DefaultUserInterface::RequestUserInput(
+  const UserInputRequest& request)
+{
+  (void)request;
+  return std::unique_ptr<IUserInputFuture>{new UnsupportedInputFuture{}};
+}
+
 void DefaultUserInterface::Message(const std::string&)
 {}
 

@@ -21,12 +21,40 @@
 
 #include <sup/sequencer/i_user_input_future.h>
 
+#include <sup/sequencer/exceptions.h>
+
 namespace sup
 {
 namespace sequencer
 {
 
 IUserInputFuture::~IUserInputFuture() = default;
+
+UnsupportedInputFuture::UnsupportedInputFuture() = default;
+
+UnsupportedInputFuture::~UnsupportedInputFuture() = default;
+
+sup::dto::uint64 UnsupportedInputFuture::GetId() const
+{
+  return 0;
+}
+
+bool UnsupportedInputFuture::IsValid() const
+{
+  return false;
+}
+
+bool UnsupportedInputFuture::IsReady() const
+{
+  return false;
+}
+
+sup::sequencer::UserInputReply UnsupportedInputFuture::GetValue()
+{
+  const std::string error =
+    "UnsupportedInputFuture::GetValue(): this user interface does not support user input";
+  throw InvalidOperationException(error);
+}
 
 }  // namespace sequencer
 

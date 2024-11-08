@@ -41,14 +41,15 @@ class MockUserInterface : public UserInterface
 public:
   MOCK_METHOD1(UpdateInstructionStatus, void(const Instruction *));
   MOCK_METHOD3(VariableUpdated,
-               void( const std::string &name, const sup::dto::AnyValue &value, bool connected));
+               void( const std::string& name, const sup::dto::AnyValue& value, bool connected));
   MOCK_METHOD2(PutValue,
-               bool(const sup::dto::AnyValue &value, const std::string &description));
+               bool(const sup::dto::AnyValue& value, const std::string& description));
   MOCK_METHOD2(GetUserValue,
-               bool(sup::dto::AnyValue &value, const std::string &description));
+               bool(sup::dto::AnyValue& value, const std::string& description));
   MOCK_METHOD2(GetUserChoice,
                int(const std::vector<std::string>& options,
                    const sup::dto::AnyValue& metadata));
+  MOCK_METHOD1(RequestUserInput, std::unique_ptr<IUserInputFuture>(const UserInputRequest& request));
   MOCK_METHOD1(Message, void(const std::string& message));
   MOCK_METHOD2(Log, void(int severity, const std::string& message));
 };

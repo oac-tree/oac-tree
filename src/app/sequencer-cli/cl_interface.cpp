@@ -38,8 +38,13 @@ namespace sup
 {
 namespace sequencer
 {
+using namespace std::placeholders;
+
 CLInterface::CLInterface(const sup::log::BasicLogger& logger)
   : m_logger{logger}
+  , m_input_adapter{std::bind(&CLInterface::UserInput, this, _1, _2),
+                    std::bind(&CLInterface::Interrupt, this, _1)}
+  , m_mtx{}
 {}
 
 CLInterface::~CLInterface() = default;
@@ -110,7 +115,7 @@ bool CLInterface::GetUserValue(sup::dto::AnyValue &value, const std::string &des
 }
 
 int CLInterface::GetUserChoice(const std::vector<std::string>& options,
-                                   const sup::dto::AnyValue& metadata)
+                               const sup::dto::AnyValue& metadata)
 {
   std::lock_guard<std::mutex> lk{m_mtx};
   std::string message = GetMainTextFromMetadata(metadata);
@@ -142,12 +147,17 @@ int CLInterface::GetUserChoice(const std::vector<std::string>& options,
   {
     std::string error_message =
       "CLInterface::GetUserChoice(): user provided value [" +
-      std::to_string(input) + "] must be in the range [1, " + std::to_string(options.size()) + "]";
+      std::to_string(input + 1) + "] must be in the range [1, " + std::to_string(options.size()) + "]";
     m_logger.LogMessage(log::SUP_SEQ_LOG_ERR, error_message);
     return -1;
   }
   std::cout << options[input] << " selected" << std::endl;
   return input;
+}
+
+std::unique_ptr<IUserInputFuture> CLInterface::RequestUserInput(const UserInputRequest& request)
+{
+  return m_input_adapter.AddUserInputRequest(request);
 }
 
 void CLInterface::Message(const std::string& message)
@@ -158,6 +168,52 @@ void CLInterface::Message(const std::string& message)
 void CLInterface::Log(int severity, const std::string& message)
 {
   m_logger.LogMessage(severity, message);
+}
+
+UserInputReply CLInterface::UserInput(const UserInputRequest& request, sup::dto::uint64 id)
+{
+  switch (request.m_request_type)
+  {
+  case InputRequestType::kUserValue:
+  {
+    auto failure = CreateUserValueReply(false, {});
+    sup::dto::AnyValue value{};
+    std::string description{};
+    if (!ParseUserValueRequest(request, value, description))
+    {
+      return failure;
+    }
+    if (!GetUserValue(value, description))
+    {
+      return failure;
+    }
+    return CreateUserValueReply(true, value);
+  }
+  case InputRequestType::kUserChoice:
+  {
+    auto failure = CreateUserChoiceReply(false, -1);
+    std::vector<std::string> options{};
+    sup::dto::AnyValue metadata{};
+    if (!ParseUserChoiceRequest(request, options, metadata))
+    {
+      return failure;
+    }
+    auto choice = GetUserChoice(options, metadata);
+    if (choice < 0)
+    {
+      return failure;
+    }
+    return CreateUserChoiceReply(true, choice);
+  }
+  default:
+    break;
+  }
+  return CreateUserValueReply(false, {});
+}
+
+void CLInterface::Interrupt(sup::dto::uint64 id)
+{
+  (void)id;
 }
 
 }  // namespace sequencer

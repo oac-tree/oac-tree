@@ -72,6 +72,25 @@ public:
   virtual UserInputReply GetValue() = 0;
 };
 
+/**
+ * @brief This implementation of IUserInputFuture is used when user input is not supported. It will
+ * always be invalid and not ready. GetValue() will always throw.
+ *
+ */
+class UnsupportedInputFuture : public IUserInputFuture
+{
+public:
+  UnsupportedInputFuture();
+  ~UnsupportedInputFuture();
+
+  sup::dto::uint64 GetId() const override;
+
+  bool IsValid() const override;
+  bool IsReady() const override;
+
+  UserInputReply GetValue() override;
+};
+
 }  // namespace sequencer
 
 }  // namespace sup

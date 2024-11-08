@@ -32,6 +32,7 @@ namespace
 {
 using LogMemberFunctionType = void (sup::log::DefaultLogger::*)(const std::string&) const;
 const std::map<int, LogMemberFunctionType>& LogMemberFunctionMap();
+
 }  // unnamed namespace
 
 namespace sup
@@ -76,6 +77,14 @@ int DaemonInterface::GetUserChoice(const std::vector<std::string>& options,
   std::string error_message = "DaemonInterface::GetUserChoice(): is not implemented";
   m_logger.Error(error_message);
   return -1;
+}
+
+std::unique_ptr<IUserInputFuture> DaemonInterface::RequestUserInput(const UserInputRequest& request)
+{
+  (void)request;
+  std::string error_message = "DaemonInterface::RequestUserInput(): is not implemented";
+  m_logger.Error(error_message);
+  return std::unique_ptr<IUserInputFuture>{new UnsupportedInputFuture{}};
 }
 
 void DaemonInterface::Message(const std::string& message)

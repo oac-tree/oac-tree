@@ -22,6 +22,7 @@
 #ifndef SUP_SEQUENCER_CL_INTERFACE_H_
 #define SUP_SEQUENCER_CL_INTERFACE_H_
 
+#include <sup/sequencer/async_input_adapter.h>
 #include <sup/sequencer/user_interface.h>
 
 #include <sup/log/basic_logger.h>
@@ -48,12 +49,16 @@ public:
   bool PutValue(const sup::dto::AnyValue& value, const std::string& description = {}) override;
   bool GetUserValue(sup::dto::AnyValue& value, const std::string& description = {}) override;
   int GetUserChoice(const std::vector<std::string>& options,
-                        const sup::dto::AnyValue& metadata = {}) override;
+                    const sup::dto::AnyValue& metadata = {}) override;
+  std::unique_ptr<IUserInputFuture> RequestUserInput(const UserInputRequest& request) override;
   void Message(const std::string& message) override;
   void Log(int severity, const std::string& message) override;
 
 private:
+  UserInputReply UserInput(const UserInputRequest& request, sup::dto::uint64 id);
+  void Interrupt(sup::dto::uint64 id);
   const sup::log::BasicLogger m_logger;
+  AsyncInputAdapter m_input_adapter;
   mutable std::mutex m_mtx;
 };
 

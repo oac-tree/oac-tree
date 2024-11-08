@@ -41,6 +41,7 @@ namespace sup
 namespace UnitTestHelper
 {
 using namespace sup::sequencer;
+using namespace std::placeholders;
 
 const std::string ENV_TEST_RESOURCES_PATH_NAME = "TEST_RESOURCES_PATH";
 
@@ -100,7 +101,9 @@ std::unique_ptr<Instruction> CreateTestTreeInstruction(const std::string& name)
 }
 
 MockUI::MockUI()
-  : m_status{false}
+  : m_input_adapter{std::bind(&MockUI::UserInput, this, _1, _2),
+                    std::bind(&MockUI::Interrupt, this, _1)}
+  , m_status{false}
   , m_choice{-1}
   , m_value{}
   , m_options{}
@@ -159,6 +162,57 @@ int MockUI::GetUserChoice(const std::vector<std::string>& options,
   m_options = options;
   m_metadata.reset(new sup::dto::AnyValue{metadata});
   return m_choice;
+}
+
+std::unique_ptr<IUserInputFuture> MockUI::RequestUserInput(const UserInputRequest& request)
+{
+  return m_input_adapter.AddUserInputRequest(request);
+}
+
+UserInputReply MockUI::UserInput(const UserInputRequest& request, sup::dto::uint64 id)
+{
+  switch (request.m_request_type)
+  {
+  case InputRequestType::kUserValue:
+  {
+    auto failure = CreateUserValueReply(false, {});
+    sup::dto::AnyValue value{};
+    std::string description{};
+    if (!ParseUserValueRequest(request, value, description))
+    {
+      return failure;
+    }
+    if (!GetUserValue(value, description))
+    {
+      return failure;
+    }
+    return CreateUserValueReply(true, value);
+  }
+  case InputRequestType::kUserChoice:
+  {
+    auto failure = CreateUserChoiceReply(false, -1);
+    std::vector<std::string> options{};
+    sup::dto::AnyValue metadata{};
+    if (!ParseUserChoiceRequest(request, options, metadata))
+    {
+      return failure;
+    }
+    auto choice = GetUserChoice(options, metadata);
+    if (choice < 0)
+    {
+      return failure;
+    }
+    return CreateUserChoiceReply(true, choice);
+  }
+  default:
+    break;
+  }
+  return CreateUserValueReply(false, {});
+}
+
+void MockUI::Interrupt(sup::dto::uint64 id)
+{
+  (void)id;
 }
 
 TemporaryTestFile::TemporaryTestFile(std::string filename_, std::string contents)

@@ -22,6 +22,7 @@
 #ifndef SUP_SEQUENCER_UNIT_TEST_HELPER_H_
 #define SUP_SEQUENCER_UNIT_TEST_HELPER_H_
 
+#include <sup/sequencer/async_input_adapter.h>
 #include <sup/sequencer/compound_instruction.h>
 #include <sup/sequencer/execution_status.h>
 #include <sup/sequencer/i_job_info_io.h>
@@ -108,8 +109,14 @@ public:
   bool GetUserValue(sup::dto::AnyValue& value, const std::string& description) override;
   int GetUserChoice(const std::vector<std::string>& options,
                     const sup::dto::AnyValue& metadata) override;
+  std::unique_ptr<sup::sequencer::IUserInputFuture> RequestUserInput(
+    const sup::sequencer::UserInputRequest& request) override;
 
 private:
+  sup::sequencer::UserInputReply UserInput(const sup::sequencer::UserInputRequest& request,
+                                           sup::dto::uint64 id);
+  void Interrupt(sup::dto::uint64 id);
+  sup::sequencer::AsyncInputAdapter m_input_adapter;
   bool m_status = false;
   int m_choice = -1;
   sup::dto::AnyValue m_value;

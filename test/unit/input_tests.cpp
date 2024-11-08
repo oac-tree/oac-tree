@@ -30,7 +30,14 @@
 
 using namespace sup::sequencer;
 
-TEST(Input, Setup)
+class InputTest : public ::testing::Test
+{
+protected:
+  InputTest() = default;
+  virtual ~InputTest() = default;
+};
+
+TEST_F(InputTest, Setup)
 {
   Procedure proc;
   auto instr = GlobalInstructionRegistry().Create("Input");
@@ -40,7 +47,7 @@ TEST(Input, Setup)
   EXPECT_NO_THROW(instr->Setup(proc));
 }
 
-TEST(Input, GetUserValueSuccess)
+TEST_F(InputTest, GetUserValueSuccess)
 {
   const std::string body{R"(
     <Sequence>
@@ -66,7 +73,7 @@ TEST(Input, GetUserValueSuccess)
   EXPECT_EQ(var_value.As<sup::dto::uint32>(), 1234u);
 }
 
-TEST(Input, GetUserValueFailure)
+TEST_F(InputTest, GetUserValueFailure)
 {
   const std::string body{R"(
     <Sequence>
@@ -84,7 +91,7 @@ TEST(Input, GetUserValueFailure)
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
 }
 
-TEST(Input, VariableUninitialised)
+TEST_F(InputTest, VariableUninitialised)
 {
   const std::string body{R"(
     <Sequence>
@@ -104,7 +111,7 @@ TEST(Input, VariableUninitialised)
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
 }
 
-TEST(Input, VariableUndefined)
+TEST_F(InputTest, VariableUndefined)
 {
   const std::string body{R"(
     <Sequence>
@@ -124,7 +131,7 @@ TEST(Input, VariableUndefined)
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
 }
 
-TEST(Input, VariableDescription)
+TEST_F(InputTest, VariableDescription)
 {
   const std::string body{R"(
     <Sequence>

@@ -30,6 +30,7 @@
 #include <chrono>
 #include <thread>
 
+using namespace sup::sequencer_test;
 using namespace sup::sequencer;
 
 /**

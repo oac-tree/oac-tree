@@ -28,8 +28,10 @@
 
 namespace sup
 {
-namespace sequencer
+namespace sequencer_test
 {
+
+using namespace sup::sequencer;
 
 AsyncUserInput::AsyncUserInput(IUserInput& sync_input)
   : m_sync_input{sync_input}
@@ -211,6 +213,6 @@ void AsyncUserInput::Future::Swap(Future& other)
   std::swap(this->m_id, other.m_id);
 }
 
-}  // namespace sequencer
+}  // namespace sequencer_test
 
 }  // namespace sup

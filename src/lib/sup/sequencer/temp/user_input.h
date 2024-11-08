@@ -32,7 +32,7 @@
 
 namespace sup
 {
-namespace sequencer
+namespace sequencer_test
 {
 
 class IUserInput
@@ -102,7 +102,7 @@ private:
   sup::dto::uint64 m_id;
 };
 
-}  // namespace sequencer
+}  // namespace sequencer_test
 
 }  // namespace sup
 

@@ -33,12 +33,6 @@ const sup::dto::AnyType USER_CHOICE_METADATA_ANYTYPE =
 
 UserInterface::~UserInterface() = default;
 
-std::unique_ptr<IUserInputFuture> UserInterface::RequestUserInput(const UserInputRequest& request)
-{
-  (void)request;
-  return {};
-}
-
 void LogError(UserInterface& ui, const std::string& message)
 {
   ui.Log(log::SUP_SEQ_LOG_ERR, message);

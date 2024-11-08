@@ -28,9 +28,12 @@ namespace sup
 {
 namespace sequencer
 {
+using namespace std::placeholders;
 
 JobInterfaceAdapter::JobInterfaceAdapter(const Procedure& proc, IJobInfoIO& job_info_io)
-  : m_job_map{proc}
+  : m_input_adapter{std::bind(&JobInterfaceAdapter::UserInput, this, _1, _2),
+                    std::bind(&JobInterfaceAdapter::Interrupt, this, _1)}
+  , m_job_map{proc}
   , m_instr_states{}
   , m_job_info_io{job_info_io}
 {}
@@ -89,6 +92,12 @@ int JobInterfaceAdapter::GetUserChoice(const std::vector<std::string>& options,
   return m_job_info_io.GetUserChoice(options, metadata);
 }
 
+std::unique_ptr<IUserInputFuture> JobInterfaceAdapter::RequestUserInput(
+  const UserInputRequest& request)
+{
+  return m_input_adapter.AddUserInputRequest(request);
+}
+
 void JobInterfaceAdapter::Message(const std::string& message)
 {
   return m_job_info_io.Message(message);
@@ -122,6 +131,53 @@ void JobInterfaceAdapter::OnProcedureTick(const Procedure& proc)
     next_instr_indices.push_back(m_job_map.GetInstructionIndex(instr));
   }
   m_job_info_io.NextInstructionsUpdated(next_instr_indices);
+}
+
+UserInputReply JobInterfaceAdapter::UserInput(const UserInputRequest& request, sup::dto::uint64 id)
+{
+  switch (request.m_request_type)
+  {
+  case InputRequestType::kUserValue:
+  {
+    auto failure = CreateUserValueReply(false, {});
+    sup::dto::AnyValue value{};
+    std::string description{};
+    if (!ParseUserValueRequest(request, value, description))
+    {
+      return failure;
+    }
+    if (!m_job_info_io.GetUserValue(value, description))
+    {
+      return failure;
+    }
+    return CreateUserValueReply(true, value);
+  }
+  case InputRequestType::kUserChoice:
+  {
+    auto failure = CreateUserChoiceReply(false, -1);
+    std::vector<std::string> options{};
+    sup::dto::AnyValue metadata{};
+    if (!ParseUserChoiceRequest(request, options, metadata))
+    {
+      return failure;
+    }
+    auto choice = m_job_info_io.GetUserChoice(options, metadata);
+    if (choice < 0)
+    {
+      return failure;
+    }
+    return CreateUserChoiceReply(true, choice);
+  }
+  default:
+    break;
+  }
+  return CreateUserValueReply(false, {});
+}
+
+void JobInterfaceAdapter::Interrupt(sup::dto::uint64 id)
+{
+  // TODO: forward to IJobInfoIO
+  (void)id;
 }
 
 }  // namespace sequencer

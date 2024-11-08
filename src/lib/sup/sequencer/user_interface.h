@@ -133,7 +133,7 @@ public:
    *
    * @return A handle to a future that will cancel the request upon destruction.
    */
-  virtual std::unique_ptr<IUserInputFuture> RequestUserInput(const UserInputRequest& request);
+  virtual std::unique_ptr<IUserInputFuture> RequestUserInput(const UserInputRequest& request) = 0;
 
   /**
    * @brief Method called to display a message.

@@ -22,6 +22,7 @@
 #ifndef SUP_SEQUENCER_JOB_INTERFACE_ADAPTER_H_
 #define SUP_SEQUENCER_JOB_INTERFACE_ADAPTER_H_
 
+#include <sup/sequencer/async_input_adapter.h>
 #include <sup/sequencer/i_job_info_io.h>
 #include <sup/sequencer/instruction_state.h>
 #include <sup/sequencer/job_interface.h>
@@ -54,6 +55,7 @@ public:
   bool GetUserValue(sup::dto::AnyValue& value, const std::string& description) override;
   int GetUserChoice(const std::vector<std::string>& options,
                     const sup::dto::AnyValue& metadata) override;
+  std::unique_ptr<IUserInputFuture> RequestUserInput(const UserInputRequest& request) override;
   void Message(const std::string& message) override;
   void Log(int severity, const std::string& message) override;
 
@@ -63,6 +65,9 @@ public:
   void OnProcedureTick(const Procedure& proc) override;
 
 private:
+  UserInputReply UserInput(const UserInputRequest& request, sup::dto::uint64 id);
+  void Interrupt(sup::dto::uint64 id);
+  AsyncInputAdapter m_input_adapter;
   JobMap m_job_map;
   std::vector<InstructionState> m_instr_states;
   IJobInfoIO& m_job_info_io;

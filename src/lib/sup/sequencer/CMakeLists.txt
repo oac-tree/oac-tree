@@ -28,6 +28,7 @@ set_target_properties(sup-sequencer-shared PROPERTIES EXPORT_NAME sequencer)
 install(FILES
   anyvalue_utils.h
   application_utils.h
+  async_input_adapter.h
   async_runner.h
   attribute_definition.h
   attribute_handler.h

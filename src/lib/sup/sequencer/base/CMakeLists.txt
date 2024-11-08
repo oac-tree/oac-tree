@@ -2,6 +2,7 @@ target_sources(sup-sequencer-shared
   PRIVATE
     anyvalue_utils.cpp
     application_utils.cpp
+    async_input_adapter.cpp
     exceptions.cpp
     generic_utils.cpp
     i_user_input_future.cpp

@@ -60,10 +60,10 @@ bool operator==(const UserInputRequest& left, const UserInputRequest& right);
 bool operator!=(const UserInputRequest& left, const UserInputRequest& right);
 
 UserInputRequest CreateUserValueRequest(const sup::dto::AnyValue& value,
-                                            const std::string& description);
+                                        const std::string& description);
 
 UserInputRequest CreateUserChoiceRequest(const std::vector<std::string>& options,
-                                             const sup::dto::AnyValue& metadata);
+                                         const sup::dto::AnyValue& metadata);
 
 bool ParseUserValueRequest(const UserInputRequest& request, sup::dto::AnyValue& value,
                            std::string& description);

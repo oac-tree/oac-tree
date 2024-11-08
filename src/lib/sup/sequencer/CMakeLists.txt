@@ -8,7 +8,6 @@ add_subdirectory(parser)
 add_subdirectory(procedure)
 add_subdirectory(runner)
 add_subdirectory(variables)
-add_subdirectory(temp)
 
 set_target_properties(sup-sequencer-shared PROPERTIES
     VERSION ${LIBVERSION}

@@ -66,7 +66,6 @@ target_sources(unit-tests
     user_confirmation_tests.cpp
     user_input_reply_tests.cpp
     user_input_request_tests.cpp
-    user_input_tests.cpp
     user_interface_tests.cpp
     var_exists_tests.cpp
     variable_info_tests.cpp

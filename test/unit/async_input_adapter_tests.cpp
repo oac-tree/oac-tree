@@ -117,11 +117,27 @@ TEST_F(AsyncInputAdapterTest, Exceptions)
   TestUserInput user_input{m_reply, 5000};
   AsyncInputAdapter async_input{ GetInputFunction(user_input), GetInterruptFunction(user_input)};
   auto future = async_input.AddUserInputRequest(m_request);
-  ASSERT_TRUE(future->IsValid());
+  EXPECT_TRUE(future->IsValid());
   EXPECT_FALSE(future->IsReady());
   EXPECT_THROW(future->GetValue(), InvalidOperationException);
   EXPECT_TRUE(future->IsValid());
   EXPECT_FALSE(future->IsReady());
+}
+
+TEST_F(AsyncInputAdapterTest, FutureDestruction)
+{
+  // Verify that the returned future does not join the created thread during destruction
+  TestUserInput user_input{m_reply, 5000};
+  AsyncInputAdapter async_input{ GetInputFunction(user_input), GetInterruptFunction(user_input)};
+  auto start = std::chrono::high_resolution_clock::now();
+  {
+    auto future = async_input.AddUserInputRequest(m_request);
+    EXPECT_TRUE(future->IsValid());
+    EXPECT_FALSE(future->IsReady());
+  }
+  auto end = std::chrono::high_resolution_clock::now();
+  auto duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+  EXPECT_TRUE(duration_ms.count() < 2000);
 }
 
 AsyncInputAdapterTest::AsyncInputAdapterTest()

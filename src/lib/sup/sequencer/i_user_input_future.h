@@ -22,6 +22,8 @@
 #ifndef SUP_SEQUENCER_I_USER_INPUT_FUTURE_H_
 #define SUP_SEQUENCER_I_USER_INPUT_FUTURE_H_
 
+#include <sup/sequencer/user_input_reply.h>
+
 #include <sup/dto/anyvalue.h>
 
 namespace sup
@@ -67,7 +69,7 @@ public:
    *
    * @return Value from the user when it is ready.
    */
-  virtual sup::dto::AnyValue GetValue() = 0;
+  virtual UserInputReply GetValue() = 0;
 };
 
 }  // namespace sequencer

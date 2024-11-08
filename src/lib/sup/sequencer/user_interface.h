@@ -22,6 +22,9 @@
 #ifndef SUP_SEQUENCER_USER_INTERFACE_H_
 #define SUP_SEQUENCER_USER_INTERFACE_H_
 
+#include <sup/sequencer/i_user_input_future.h>
+#include <sup/sequencer/user_input_request.h>
+
 #include <sup/dto/anyvalue.h>
 
 #include <string>
@@ -118,6 +121,8 @@ public:
    */
   virtual int GetUserChoice(const std::vector<std::string>& options,
                             const sup::dto::AnyValue& metadata) = 0;
+
+  virtual std::unique_ptr<IUserInputFuture> RequestUserInput(const UserInputRequest& request);
 
   /**
    * @brief Method called to display a message.

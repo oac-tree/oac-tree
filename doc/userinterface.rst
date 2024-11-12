@@ -47,10 +47,10 @@ When a workspace variable receives a value update, the `VariableUpdated` method 
        // Implement the logic for handling variable updates here
    }
 
-Requesting and Displaying Values
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Displaying Values
+^^^^^^^^^^^^^^^^^
 
-Use the `PutValue` and `GetUserValue` methods to interact with the user for value input and output. Implement these methods to handle such interactions.
+Use the `PutValue` method to interact with the user for value output. Implement this method to handle such interactions.
 
 .. code-block:: c++
 
@@ -59,23 +59,12 @@ Use the `PutValue` and `GetUserValue` methods to interact with the user for valu
        return true; // Return true on successful retrieval of the value
    }
 
-   bool GetUserValue(sup::dto::AnyValue& value, const std::string& description) override {
-       // Implement logic to request the user to input a value
-       return true; // Return true on successful retrieval of the value
-   }
+Requesting User Input
+^^^^^^^^^^^^^^^^^^^^^
 
-Requesting User Choice
-^^^^^^^^^^^^^^^^^^^^^^
+The `RequestUserInput` method is used to request the user to provide input. It returns a future of type `IUserInputFuture` that needs to be checked for readiness before retrieving its value. This allows instructions to properly exit when they are halted, instead of blocking on user input methods.
 
-The `GetUserChoice` method is used to request the user to choose one of the provided options. Implement this method to handle user choice interactions.
-
-.. code-block:: c++
-
-   int GetUserChoice(const std::vector<std::string>& options,
-                             const sup::dto::AnyValue& metadata = {}) override {
-       // Implement logic to present options to the user and retrieve their choice
-       return -1; // Return the index of the chosen option or -1 if not chosen
-   }
+Implementations will typically use a member `AsyncInputWrapper` object to implement this method.
 
 Displaying Messages and Logging
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

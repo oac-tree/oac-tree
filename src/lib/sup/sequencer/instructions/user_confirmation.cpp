@@ -67,8 +67,15 @@ ExecutionStatus UserConfirmation::ExecuteSingleImpl(UserInterface& ui, Workspace
   metadata.AddMember(Constants::USER_CHOICES_DIALOG_TYPE_NAME,
                      {sup::dto::UnsignedInteger32Type, dialog_type::kConfirmation});
   std::vector<std::string> options = { ok_text, cancel_text };
-  int choice = ui.GetUserChoice(options, metadata);
-  return choice == 0 ? ExecutionStatus::SUCCESS : ExecutionStatus::FAILURE;
+  auto input_reply = GetInterruptableUserChoice(ui, *this, options, metadata);
+  if (!input_reply.first)
+  {
+    std::string warning_message = InstructionWarningProlog(*this) +
+      "did not receive valid choice";
+    LogWarning(ui, warning_message);
+    return ExecutionStatus::FAILURE;
+  }
+  return input_reply.second == 0 ? ExecutionStatus::SUCCESS : ExecutionStatus::FAILURE;
 }
 
 }  // namespace sequencer

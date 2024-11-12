@@ -28,6 +28,7 @@
 #include <sup/dto/anyvalue.h>
 
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace sup
@@ -194,6 +195,37 @@ sup::dto::AnyValue CreateUserChoiceMetadata();
 bool IsUserChoiceMetadata(const sup::dto::AnyValue& metadata);
 
 std::string GetMainTextFromMetadata(const sup::dto::AnyValue& metadata);
+
+/**
+ * @brief Get an AnyValue from the user. This function will return when the provided instruction is
+ * halted to avoid blocking on instructions whose input is no longer required.
+ *
+ * @param ui UserInterface object to use for getting user input.
+ * @param instr Instruction to check for halted condition.
+ * @param value Value that indicates the type of value that is requested.
+ * @param description Description that will be provided to the user.
+ * @return A boolean indicating success of the user input and if true, the user's input as an
+ * AnyValue.
+ */
+std::pair<bool, sup::dto::AnyValue> GetInterruptableUserValue(
+  UserInterface& ui, const Instruction& instr, const sup::dto::AnyValue& value,
+  const std::string& description);
+
+/**
+ * @brief Get an integer from the user that indicates a choice. This function will return when
+ * the provided instruction is halted to avoid blocking on instructions whose input is no longer
+ * required.
+ *
+ * @param ui UserInterface object to use for getting user input.
+ * @param instr Instruction to check for halted condition.
+ * @param options List of options the user can choose.
+ * @param metadata Structure that encodes optional metadata.
+ * @return A boolean indicating success of the user input and if true, the user's input as an
+ * integer choice.
+ */
+std::pair<bool, int> GetInterruptableUserChoice(UserInterface& ui, const Instruction& instr,
+                                                const std::vector<std::string>& options,
+                                                const sup::dto::AnyValue& metadata);
 
 }  // namespace sequencer
 

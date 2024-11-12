@@ -28,9 +28,6 @@
 
 #include <sup/dto/anyvalue_helper.h>
 
-#include <chrono>
-#include <thread>
-
 namespace sup
 {
 namespace sequencer
@@ -60,26 +57,8 @@ ExecutionStatus Input::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   {
     return ExecutionStatus::FAILURE;
   }
-  auto input_request = CreateUserValueRequest(value, description);
-  auto future = ui.RequestUserInput(input_request);
-  if (!future->IsValid())
-  {
-    std::string error_message = InstructionErrorProlog(*this) +
-      "could not retrieve a valid future for user input";
-    LogError(ui, error_message);
-    return ExecutionStatus::FAILURE;
-  }
-  while (!IsHaltRequested() && !future->IsReady())
-  {
-    std::this_thread::sleep_for(std::chrono::milliseconds(DefaultSettings::TIMING_ACCURACY_MS));
-  }
-  if (IsHaltRequested())
-  {
-    return ExecutionStatus::FAILURE;
-  }
-  auto reply = future->GetValue();
-  auto parsed = ParseUserValueReply(reply);
-  if (!parsed.first)
+  auto input_reply = GetInterruptableUserValue(ui, *this, value, description);
+  if (!input_reply.first)
   {
     std::string warning_message = InstructionWarningProlog(*this) +
       "did not receive compatible user value for field [" +
@@ -88,7 +67,7 @@ ExecutionStatus Input::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
     return ExecutionStatus::FAILURE;
   }
   if (!SetValueFromAttributeName(*this, ws, ui, Constants::OUTPUT_VARIABLE_NAME_ATTRIBUTE_NAME,
-                                 parsed.second))
+                                 input_reply.second))
   {
     return ExecutionStatus::FAILURE;
   }

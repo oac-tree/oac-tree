@@ -149,9 +149,9 @@ TEST_F(JobInterfaceAdapterTest, UserInput)
   const std::vector<std::string> choices{ "vanilla", "strawberry", "chocolate"};
   sup::dto::AnyValue metadata{ sup::dto::StringType, "Choose your favorite flavour"};
   int choice = 2;
-  EXPECT_CALL(m_test_job_info_io, GetUserValue(return_value, description)).Times(Exactly(1))
-    .WillOnce(DoAll(SetArgReferee<0>(user_value), Return(true)));
-  EXPECT_CALL(m_test_job_info_io, GetUserChoice(choices, metadata)).Times(Exactly(1))
+  EXPECT_CALL(m_test_job_info_io, GetUserValue(_, return_value, description)).Times(Exactly(1))
+    .WillOnce(DoAll(SetArgReferee<1>(user_value), Return(true)));
+  EXPECT_CALL(m_test_job_info_io, GetUserChoice(_, choices, metadata)).Times(Exactly(1))
     .WillOnce(Return(choice));
 
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);

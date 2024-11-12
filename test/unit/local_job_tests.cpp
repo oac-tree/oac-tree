@@ -39,7 +39,6 @@ using ::testing::DoAll;
 using ::testing::Exactly;
 using ::testing::InSequence;
 using ::testing::Return;
-using ::testing::SetArgReferee;
 
 using namespace sup::sequencer;
 
@@ -52,8 +51,9 @@ public:
   MOCK_METHOD(void, InstructionStateUpdated, (sup::dto::uint32, sup::sequencer::InstructionState), (override));
   MOCK_METHOD(void, VariableUpdated, (sup::dto::uint32, const sup::dto::AnyValue&, bool), (override));
   MOCK_METHOD(void, PutValue, (const sup::dto::AnyValue&, const std::string&), (override));
-  MOCK_METHOD(bool, GetUserValue, (sup::dto::AnyValue&, const std::string&), (override));
-  MOCK_METHOD(int, GetUserChoice, (const std::vector<std::string>&, const sup::dto::AnyValue&), (override));
+  MOCK_METHOD(bool, GetUserValue, (sup::dto::uint64, sup::dto::AnyValue&, const std::string&), (override));
+  MOCK_METHOD(int, GetUserChoice, (sup::dto::uint64, const std::vector<std::string>&, const sup::dto::AnyValue&), (override));
+  MOCK_METHOD(void, Interrupt, (sup::dto::uint64), (override));
   MOCK_METHOD(void, Message, (const std::string&), (override));
   MOCK_METHOD(void, Log, (int, const std::string&), (override));
   MOCK_METHOD(void, NextInstructionsUpdated, (const std::vector<sup::dto::uint32>&), (override));

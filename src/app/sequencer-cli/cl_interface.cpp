@@ -145,7 +145,9 @@ UserInputReply CLInterface::UserInput(const UserInputRequest& request, sup::dto:
 
 void CLInterface::Interrupt(sup::dto::uint64 id)
 {
-  (void)id;
+  const std::string warning =
+    "CLInterface::Interrupt(): called for input request with id [" + std::to_string(id) + "]";
+  m_logger.LogMessage(log::SUP_SEQ_LOG_WARNING, warning);
 }
 
 bool CLInterface::GetUserValue(sup::dto::AnyValue &value, const std::string &description)

@@ -135,7 +135,7 @@ UserInputReply JobInterfaceAdapter::UserInput(const UserInputRequest& request, s
     {
       return failure;
     }
-    if (!m_job_info_io.GetUserValue(value, description))
+    if (!m_job_info_io.GetUserValue(id, value, description))
     {
       return failure;
     }
@@ -150,7 +150,7 @@ UserInputReply JobInterfaceAdapter::UserInput(const UserInputRequest& request, s
     {
       return failure;
     }
-    auto choice = m_job_info_io.GetUserChoice(options, metadata);
+    auto choice = m_job_info_io.GetUserChoice(id, options, metadata);
     if (choice < 0)
     {
       return failure;
@@ -165,8 +165,7 @@ UserInputReply JobInterfaceAdapter::UserInput(const UserInputRequest& request, s
 
 void JobInterfaceAdapter::Interrupt(sup::dto::uint64 id)
 {
-  // TODO: forward to IJobInfoIO
-  (void)id;
+  m_job_info_io.Interrupt(id);
 }
 
 }  // namespace sequencer

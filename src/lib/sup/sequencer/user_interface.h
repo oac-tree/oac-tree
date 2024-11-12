@@ -90,40 +90,6 @@ public:
   virtual bool PutValue(const sup::dto::AnyValue& value, const std::string& description) = 0;
 
   /**
-   * @brief Method to request the user to input a value.
-   *
-   * @param value Value to be filled in.
-   * @param description Optional description of the value.
-   * @return true on successful retrieval of a value, false otherwise.
-   */
-  virtual bool GetUserValue(sup::dto::AnyValue& value, const std::string& description) = 0;
-
-  /**
-   * @brief Method to request the user to choose one of the given options.
-   *
-   * @param options List of options the user can choose; each option is a string.
-   * @param metadata Structure that encodes optional metadata that could be used by the
-   *                 UserInterface to properly display the choice.
-   *
-   * @return value of the choice.
-   *
-   * @details The provided metadata has the following structure (which may be extended in the
-   * future):
-   * sup::sequencerUserChoiceMetadata/v1.0
-   *   string text (opt)                  Main text to display
-   *   uint dialog_type (opt)             Enumerator giving the type of dialog: e.g. confirmation
-   *                                      dialog, combobox style dialog, etc.
-   *   bool modal (opt)                   Flag to indicate preference for (non)modal dialog
-   *   string title (opt)                 Title for the dialog
-   *   string informative (opt)           Informative extra text to display
-   *   string details (opt)               Details about the user choice, which could be displayed
-   *                                      on request
-   *   ...                                Future extension appear here
-   */
-  virtual int GetUserChoice(const std::vector<std::string>& options,
-                            const sup::dto::AnyValue& metadata) = 0;
-
-  /**
    * @brief Asynchronous, i.e. non-blocking, interface to retrieve user input.
    *
    * @note Upon destruction of the returned future, the request is cancelled, but it will not join
@@ -182,9 +148,6 @@ public:
   void VariableUpdated(const std::string& name, const sup::dto::AnyValue& value,
                        bool connected) override;
   bool PutValue(const sup::dto::AnyValue& value, const std::string& description) override;
-  bool GetUserValue(sup::dto::AnyValue& value, const std::string& description) override;
-  int GetUserChoice(const std::vector<std::string>& options,
-                    const sup::dto::AnyValue& metadata) override;
   std::unique_ptr<IUserInputFuture> RequestUserInput(const UserInputRequest& request) override;
   void Message(const std::string& message) override;
   void Log(int severity, const std::string& message) override;
@@ -195,6 +158,34 @@ sup::dto::AnyValue CreateUserChoiceMetadata();
 bool IsUserChoiceMetadata(const sup::dto::AnyValue& metadata);
 
 std::string GetMainTextFromMetadata(const sup::dto::AnyValue& metadata);
+
+/**
+ * @brief Get an AnyValue from the user. This function will block until a value is retrieved
+ * from the underlying future and is mainly used for testing.
+ *
+ * @param ui UserInterface object to use for getting user input.
+ * @param value Value that indicates the type of value that is requested.
+ * @param description Description that will be provided to the user.
+ * @return A boolean indicating success of the user input and if true, the user's input as an
+ * AnyValue.
+ */
+std::pair<bool, sup::dto::AnyValue> GetBlockingUserValue(UserInterface& ui,
+                                                         const sup::dto::AnyValue& value,
+                                                         const std::string& description);
+
+/**
+ * @brief Get an integer from the user that indicates a choice. This function will block until a
+ * value is retrieved from the underlying future and is mainly used for testing.
+ *
+ * @param ui UserInterface object to use for getting user input.
+ * @param options List of options the user can choose.
+ * @param metadata Structure that encodes optional metadata.
+ * @return A boolean indicating success of the user input and if true, the user's input as an
+ * integer choice.
+ */
+std::pair<bool, int> GetBlockingUserChoice(UserInterface& ui,
+                                           const std::vector<std::string>& options,
+                                           const sup::dto::AnyValue& metadata);
 
 /**
  * @brief Get an AnyValue from the user. This function will return when the provided instruction is

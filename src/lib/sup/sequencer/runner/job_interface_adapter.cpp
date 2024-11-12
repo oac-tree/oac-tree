@@ -81,17 +81,6 @@ bool JobInterfaceAdapter::PutValue(const sup::dto::AnyValue& value, const std::s
   return true;
 }
 
-bool JobInterfaceAdapter::GetUserValue(sup::dto::AnyValue& value, const std::string& description)
-{
-  return m_job_info_io.GetUserValue(value, description);
-}
-
-int JobInterfaceAdapter::GetUserChoice(const std::vector<std::string>& options,
-                                       const sup::dto::AnyValue& metadata)
-{
-  return m_job_info_io.GetUserChoice(options, metadata);
-}
-
 std::unique_ptr<IUserInputFuture> JobInterfaceAdapter::RequestUserInput(
   const UserInputRequest& request)
 {

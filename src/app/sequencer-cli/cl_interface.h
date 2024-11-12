@@ -46,10 +46,7 @@ public:
   void UpdateInstructionStatus(const Instruction* instruction) override;
   void VariableUpdated(const std::string& name, const sup::dto::AnyValue& value,
                            bool connected) override;
-  bool PutValue(const sup::dto::AnyValue& value, const std::string& description = {}) override;
-  bool GetUserValue(sup::dto::AnyValue& value, const std::string& description = {}) override;
-  int GetUserChoice(const std::vector<std::string>& options,
-                    const sup::dto::AnyValue& metadata = {}) override;
+  bool PutValue(const sup::dto::AnyValue& value, const std::string& description) override;
   std::unique_ptr<IUserInputFuture> RequestUserInput(const UserInputRequest& request) override;
   void Message(const std::string& message) override;
   void Log(int severity, const std::string& message) override;
@@ -57,6 +54,9 @@ public:
 private:
   UserInputReply UserInput(const UserInputRequest& request, sup::dto::uint64 id);
   void Interrupt(sup::dto::uint64 id);
+  bool GetUserValue(sup::dto::AnyValue& value, const std::string& description);
+  int GetUserChoice(const std::vector<std::string>& options,
+                    const sup::dto::AnyValue& metadata);
   const sup::log::BasicLogger m_logger;
   AsyncInputAdapter m_input_adapter;
   mutable std::mutex m_mtx;

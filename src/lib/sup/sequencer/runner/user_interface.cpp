@@ -62,16 +62,6 @@ bool DefaultUserInterface::PutValue(const sup::dto::AnyValue&, const std::string
   return false;
 }
 
-bool DefaultUserInterface::GetUserValue(sup::dto::AnyValue&, const std::string&)
-{
-  return false;
-}
-
-int DefaultUserInterface::GetUserChoice(const std::vector<std::string>&, const sup::dto::AnyValue&)
-{
-  return -1;
-}
-
 std::unique_ptr<IUserInputFuture> DefaultUserInterface::RequestUserInput(
   const UserInputRequest& request)
 {
@@ -144,6 +134,48 @@ std::string GetMainTextFromMetadata(const sup::dto::AnyValue& metadata)
     return metadata[Constants::USER_CHOICES_TEXT_NAME].As<std::string>();
   }
   return {};
+}
+
+std::pair<bool, sup::dto::AnyValue> GetBlockingUserValue(UserInterface& ui,
+                                                         const sup::dto::AnyValue& value,
+                                                         const std::string& description)
+{
+  std::pair<bool, sup::dto::AnyValue> failure{ false, {} };
+  auto input_request = CreateUserValueRequest(value, description);
+  auto future = ui.RequestUserInput(input_request);
+  if (!future->IsValid())
+  {
+    std::string error_message = "Could not retrieve a valid future for user value input";
+    LogError(ui, error_message);
+    return failure;
+  }
+  while (!future->IsReady())
+  {
+    std::this_thread::sleep_for(std::chrono::milliseconds(DefaultSettings::TIMING_ACCURACY_MS));
+  }
+  auto reply = future->GetValue();
+  return ParseUserValueReply(reply);
+}
+
+std::pair<bool, int> GetBlockingUserChoice(UserInterface& ui,
+                                           const std::vector<std::string>& options,
+                                           const sup::dto::AnyValue& metadata)
+{
+  std::pair<bool, int> failure{ false, -1 };
+  auto input_request = CreateUserChoiceRequest(options, metadata);
+  auto future = ui.RequestUserInput(input_request);
+  if (!future->IsValid())
+  {
+    std::string error_message = "Could not retrieve a valid future for user choice input";
+    LogError(ui, error_message);
+    return failure;
+  }
+  while (!future->IsReady())
+  {
+    std::this_thread::sleep_for(std::chrono::milliseconds(DefaultSettings::TIMING_ACCURACY_MS));
+  }
+  auto reply = future->GetValue();
+  return ParseUserChoiceReply(reply);
 }
 
 std::pair<bool, sup::dto::AnyValue> GetInterruptableUserValue(

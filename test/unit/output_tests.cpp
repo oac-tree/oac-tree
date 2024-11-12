@@ -46,8 +46,6 @@ public:
       return true;
     }
 
-    bool GetUserValue(sup::dto::AnyValue&, const std::string&) override { return true; }
-
     sup::dto::AnyValue m_value;
   };
 };

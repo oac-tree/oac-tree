@@ -70,17 +70,17 @@ TEST_F(DaemonInterfaceTest, GetUserValue)
 {
   EXPECT_TRUE(m_log_entries.empty());
   sup::dto::AnyValue val(sup::dto::UnsignedInteger32Type, 1234);
-  EXPECT_EQ(daemon_interface.GetUserValue(val), false);
+  auto reply = GetBlockingUserValue(daemon_interface, val, "");
+  EXPECT_FALSE(reply.first);
   EXPECT_FALSE(m_log_entries.empty());
-  auto result = val.As<sup::dto::uint32>();
-  EXPECT_EQ(result, 1234u);
 }
 
 TEST_F(DaemonInterfaceTest, GetUserChoice)
 {
   EXPECT_TRUE(m_log_entries.empty());
   auto options = std::vector<std::string>({"one", "two"});
-  EXPECT_EQ(daemon_interface.GetUserChoice(options), -1);
+  auto reply = GetBlockingUserChoice(daemon_interface, options, {});
+  EXPECT_FALSE(reply.first);
   EXPECT_FALSE(m_log_entries.empty());
 }
 
@@ -88,7 +88,7 @@ TEST_F(DaemonInterfaceTest, PutValue)
 {
   EXPECT_TRUE(m_log_entries.empty());
   sup::dto::AnyValue val = 23;
-  EXPECT_TRUE(daemon_interface_logging.PutValue(val));
+  EXPECT_TRUE(daemon_interface_logging.PutValue(val, ""));
   ASSERT_FALSE(m_log_entries.empty());
   auto last_message = std::get<2>(m_log_entries.back());
   EXPECT_NE(last_message.find("23"), std::string::npos);

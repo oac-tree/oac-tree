@@ -110,13 +110,23 @@ TEST_F(UserInterfaceTest, GetUserValueDefault)
 {
   sup::dto::AnyValue val;
   std::string description;
-  EXPECT_FALSE(empty_ui.GetUserValue(val, description));
+  auto user_value_request = CreateUserValueRequest(val, description);
+  auto future = empty_ui.RequestUserInput(user_value_request);
+  EXPECT_FALSE(future->IsValid());
+  auto user_value_reply = GetBlockingUserValue(empty_ui, val, description);
+  EXPECT_FALSE(user_value_reply.first);
+  EXPECT_TRUE(sup::dto::IsEmptyValue(user_value_reply.second));
 }
 
 TEST_F(UserInterfaceTest, GetUserChoiceDefault)
 {
   std::vector<std::string> options;
-  EXPECT_EQ(empty_ui.GetUserChoice(options, {}), -1);
+  auto user_choice_request = CreateUserChoiceRequest(options, {});
+  auto future = empty_ui.RequestUserInput(user_choice_request);
+  EXPECT_FALSE(future->IsValid());
+  auto user_choice_reply = GetBlockingUserChoice(empty_ui, options, {});
+  EXPECT_FALSE(user_choice_reply.first);
+  EXPECT_EQ(user_choice_reply.second, -1);
 }
 
 TEST_F(UserInterfaceTest, InstructionExecution)

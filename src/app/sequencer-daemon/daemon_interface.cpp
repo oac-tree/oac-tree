@@ -64,21 +64,6 @@ bool DaemonInterface::PutValue(const sup::dto::AnyValue &value, const std::strin
   return true;
 }
 
-bool DaemonInterface::GetUserValue(sup::dto::AnyValue &, const std::string &)
-{
-  std::string error_message = "DaemonInterface::GetUserValue(): is not implemented";
-  m_logger.Error(error_message);
-  return false;
-}
-
-int DaemonInterface::GetUserChoice(const std::vector<std::string>& options,
-                                       const sup::dto::AnyValue& metadata)
-{
-  std::string error_message = "DaemonInterface::GetUserChoice(): is not implemented";
-  m_logger.Error(error_message);
-  return -1;
-}
-
 std::unique_ptr<IUserInputFuture> DaemonInterface::RequestUserInput(const UserInputRequest& request)
 {
   (void)request;

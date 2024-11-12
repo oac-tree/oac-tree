@@ -78,8 +78,9 @@ TEST_F(CLInterfaceTest, GetUserValue)
   sup::dto::AnyValue val(sup::dto::UnsignedInteger32Type);
   std::istringstream input("567890");
   CinRedirector redirect(input);
-  EXPECT_TRUE(cli.GetUserValue(val));
-  auto result = val.As<sup::dto::uint32>();
+  auto reply = GetBlockingUserValue(cli, val, "");
+  EXPECT_TRUE(reply.first);
+  auto result = reply.second.As<sup::dto::uint32>();
   EXPECT_EQ(result, 567890u);
 }
 
@@ -88,8 +89,9 @@ TEST_F(CLInterfaceTest, GetUserValueBool)
   sup::dto::AnyValue val(sup::dto::BooleanType);
   std::istringstream input("true");
   CinRedirector redirect(input);
-  EXPECT_TRUE(cli.GetUserValue(val));
-  auto result = val.As<sup::dto::boolean>();
+  auto reply = GetBlockingUserValue(cli, val, "");
+  EXPECT_TRUE(reply.first);
+  auto result = reply.second.As<sup::dto::boolean>();
   EXPECT_EQ(result, true);
 }
 
@@ -98,8 +100,9 @@ TEST_F(CLInterfaceTest, GetUserValueString)
   sup::dto::AnyValue val(sup::dto::StringType);
   std::istringstream input("Test string");
   CinRedirector redirect(input);
-  EXPECT_TRUE(cli.GetUserValue(val));
-  auto val_str = val.As<std::string>();
+  auto reply = GetBlockingUserValue(cli, val, "");
+  EXPECT_TRUE(reply.first);
+  auto val_str = reply.second.As<std::string>();
   EXPECT_TRUE(val_str == "Test string");
 }
 
@@ -110,14 +113,16 @@ TEST_F(CLInterfaceTest, GetUserValueParseError)
     sup::dto::AnyValue val(sup::dto::UnsignedInteger32Type);
     std::istringstream input("twenty-four");
     CinRedirector redirect(input);
-    EXPECT_FALSE(cli.GetUserValue(val));
+    auto reply = GetBlockingUserValue(cli, val, "");
+    EXPECT_FALSE(reply.first);
     EXPECT_EQ(m_log_entries.size(), 1);
   }
   {
     sup::dto::AnyValue val(sup::dto::BooleanType);
     std::istringstream input("nottrue");
     CinRedirector redirect(input);
-    EXPECT_FALSE(cli.GetUserValue(val));
+    auto reply = GetBlockingUserValue(cli, val, "");
+    EXPECT_FALSE(reply.first);
     EXPECT_EQ(m_log_entries.size(), 2);
   }
 }
@@ -132,7 +137,8 @@ TEST_F(CLInterfaceTest, GetUserValueUnsupportedType)
   sup::dto::AnyValue val(test_type);
   std::istringstream input("17");
   CinRedirector redirect(input);
-  EXPECT_FALSE(cli.GetUserValue(val));
+  auto reply = GetBlockingUserValue(cli, val, "");
+  EXPECT_FALSE(reply.first);
   EXPECT_EQ(m_log_entries.size(), 1);
 }
 
@@ -141,10 +147,11 @@ TEST_F(CLInterfaceTest, GetUserChoice)
   auto options = std::vector<std::string>({"one", "two"});
   std::istringstream input("2");
   CinRedirector redirect(input);
-  auto choice = cli.GetUserChoice(options);
+  auto reply = GetBlockingUserChoice(cli, options, {});
+  EXPECT_TRUE(reply.first);
   // CLI interface uses one-based indexing, but the options vector has zero-based indexing, so
   // returned integer is one smaller than the string input:
-  EXPECT_EQ(choice, 1);
+  EXPECT_EQ(reply.second, 1);
 }
 
 TEST_F(CLInterfaceTest, GetUserChoiceParseError)
@@ -153,8 +160,9 @@ TEST_F(CLInterfaceTest, GetUserChoiceParseError)
   auto options = std::vector<std::string>({"one", "two"});
   std::istringstream input("one");
   CinRedirector redirect(input);
-  auto choice = cli.GetUserChoice(options);
-  EXPECT_EQ(choice, -1);
+  auto reply = GetBlockingUserChoice(cli, options, {});
+  EXPECT_FALSE(reply.first);
+  EXPECT_EQ(reply.second, -1);
   EXPECT_EQ(m_log_entries.size(), 1);
 }
 
@@ -164,8 +172,9 @@ TEST_F(CLInterfaceTest, GetUserChoiceOutOfBounds)
   auto options = std::vector<std::string>({"one", "two"});
   std::istringstream input("3");
   CinRedirector redirect(input);
-  auto choice = cli.GetUserChoice(options);
-  EXPECT_EQ(choice, -1);
+  auto reply = GetBlockingUserChoice(cli, options, {});
+  EXPECT_FALSE(reply.first);
+  EXPECT_EQ(reply.second, -1);
   EXPECT_EQ(m_log_entries.size(), 1);
 }
 
@@ -174,7 +183,7 @@ TEST_F(CLInterfaceTest, PutValue)
   sup::dto::AnyValue val = 23;
   std::ostringstream oss;
   CoutRedirector redirect(oss);
-  EXPECT_TRUE(cli.PutValue(val));
+  EXPECT_TRUE(cli.PutValue(val, ""));
   EXPECT_NE(oss.str().find("23"), std::string::npos);
 }
 

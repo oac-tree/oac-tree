@@ -87,6 +87,67 @@ bool CLInterface::PutValue(const sup::dto::AnyValue &value, const std::string &d
   return true;
 }
 
+std::unique_ptr<IUserInputFuture> CLInterface::RequestUserInput(const UserInputRequest& request)
+{
+  return m_input_adapter.AddUserInputRequest(request);
+}
+
+void CLInterface::Message(const std::string& message)
+{
+  std::cout << message << std::endl;
+}
+
+void CLInterface::Log(int severity, const std::string& message)
+{
+  m_logger.LogMessage(severity, message);
+}
+
+UserInputReply CLInterface::UserInput(const UserInputRequest& request, sup::dto::uint64 id)
+{
+  switch (request.m_request_type)
+  {
+  case InputRequestType::kUserValue:
+  {
+    auto failure = CreateUserValueReply(false, {});
+    sup::dto::AnyValue value{};
+    std::string description{};
+    if (!ParseUserValueRequest(request, value, description))
+    {
+      return failure;
+    }
+    if (!GetUserValue(value, description))
+    {
+      return failure;
+    }
+    return CreateUserValueReply(true, value);
+  }
+  case InputRequestType::kUserChoice:
+  {
+    auto failure = CreateUserChoiceReply(false, -1);
+    std::vector<std::string> options{};
+    sup::dto::AnyValue metadata{};
+    if (!ParseUserChoiceRequest(request, options, metadata))
+    {
+      return failure;
+    }
+    auto choice = GetUserChoice(options, metadata);
+    if (choice < 0)
+    {
+      return failure;
+    }
+    return CreateUserChoiceReply(true, choice);
+  }
+  default:
+    break;
+  }
+  return CreateUserValueReply(false, {});
+}
+
+void CLInterface::Interrupt(sup::dto::uint64 id)
+{
+  (void)id;
+}
+
 bool CLInterface::GetUserValue(sup::dto::AnyValue &value, const std::string &description)
 {
   std::lock_guard<std::mutex> lk{m_mtx};
@@ -153,67 +214,6 @@ int CLInterface::GetUserChoice(const std::vector<std::string>& options,
   }
   std::cout << options[input] << " selected" << std::endl;
   return input;
-}
-
-std::unique_ptr<IUserInputFuture> CLInterface::RequestUserInput(const UserInputRequest& request)
-{
-  return m_input_adapter.AddUserInputRequest(request);
-}
-
-void CLInterface::Message(const std::string& message)
-{
-  std::cout << message << std::endl;
-}
-
-void CLInterface::Log(int severity, const std::string& message)
-{
-  m_logger.LogMessage(severity, message);
-}
-
-UserInputReply CLInterface::UserInput(const UserInputRequest& request, sup::dto::uint64 id)
-{
-  switch (request.m_request_type)
-  {
-  case InputRequestType::kUserValue:
-  {
-    auto failure = CreateUserValueReply(false, {});
-    sup::dto::AnyValue value{};
-    std::string description{};
-    if (!ParseUserValueRequest(request, value, description))
-    {
-      return failure;
-    }
-    if (!GetUserValue(value, description))
-    {
-      return failure;
-    }
-    return CreateUserValueReply(true, value);
-  }
-  case InputRequestType::kUserChoice:
-  {
-    auto failure = CreateUserChoiceReply(false, -1);
-    std::vector<std::string> options{};
-    sup::dto::AnyValue metadata{};
-    if (!ParseUserChoiceRequest(request, options, metadata))
-    {
-      return failure;
-    }
-    auto choice = GetUserChoice(options, metadata);
-    if (choice < 0)
-    {
-      return failure;
-    }
-    return CreateUserChoiceReply(true, choice);
-  }
-  default:
-    break;
-  }
-  return CreateUserValueReply(false, {});
-}
-
-void CLInterface::Interrupt(sup::dto::uint64 id)
-{
-  (void)id;
 }
 
 }  // namespace sequencer

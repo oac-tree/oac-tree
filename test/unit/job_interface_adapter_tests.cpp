@@ -158,9 +158,12 @@ TEST_F(JobInterfaceAdapterTest, UserInput)
   auto proc = sup::sequencer::ParseProcedureString(procedure_string);
   ASSERT_NE(proc.get(), nullptr);
   JobInterfaceAdapter job_interface_adapter{*proc, m_test_job_info_io};
-  EXPECT_TRUE(job_interface_adapter.GetUserValue(return_value, description));
-  EXPECT_EQ(return_value, user_value);
-  EXPECT_EQ(job_interface_adapter.GetUserChoice(choices, metadata), choice);
+  auto user_value_reply = GetBlockingUserValue(job_interface_adapter, return_value, description);
+  EXPECT_TRUE(user_value_reply.first);
+  EXPECT_EQ(user_value_reply.second, user_value);
+  auto user_choice_reply = GetBlockingUserChoice(job_interface_adapter, choices, metadata);
+  EXPECT_TRUE(user_choice_reply.first);
+  EXPECT_EQ(user_choice_reply.second, choice);
 }
 
 TEST_F(JobInterfaceAdapterTest, OnStateChange)

@@ -103,12 +103,6 @@ public:
   std::vector<std::string> GetOptions() const;
   const sup::dto::AnyValue* GetMetadata() const;
 
-  /**
-   * @brief See sup::sequencer::UserInterface.
-   */
-  bool GetUserValue(sup::dto::AnyValue& value, const std::string& description) override;
-  int GetUserChoice(const std::vector<std::string>& options,
-                    const sup::dto::AnyValue& metadata) override;
   std::unique_ptr<sup::sequencer::IUserInputFuture> RequestUserInput(
     const sup::sequencer::UserInputRequest& request) override;
 
@@ -116,6 +110,9 @@ private:
   sup::sequencer::UserInputReply UserInput(const sup::sequencer::UserInputRequest& request,
                                            sup::dto::uint64 id);
   void Interrupt(sup::dto::uint64 id);
+  bool GetUserValue(sup::dto::AnyValue& value, const std::string& description);
+  int GetUserChoice(const std::vector<std::string>& options,
+                    const sup::dto::AnyValue& metadata);
   sup::sequencer::AsyncInputAdapter m_input_adapter;
   bool m_status = false;
   int m_choice = -1;

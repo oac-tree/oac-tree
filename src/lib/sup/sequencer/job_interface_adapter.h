@@ -52,9 +52,6 @@ public:
   void VariableUpdated(const std::string& name, const sup::dto::AnyValue& value,
                        bool connected) override;
   bool PutValue(const sup::dto::AnyValue& value, const std::string& description) override;
-  bool GetUserValue(sup::dto::AnyValue& value, const std::string& description) override;
-  int GetUserChoice(const std::vector<std::string>& options,
-                    const sup::dto::AnyValue& metadata) override;
   std::unique_ptr<IUserInputFuture> RequestUserInput(const UserInputRequest& request) override;
   void Message(const std::string& message) override;
   void Log(int severity, const std::string& message) override;

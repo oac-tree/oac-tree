@@ -142,28 +142,6 @@ const sup::dto::AnyValue* MockUI::GetMetadata() const
   return m_metadata.get();
 }
 
-bool MockUI::GetUserValue(sup::dto::AnyValue &value, const std::string &description)
-{
-  if (sup::dto::IsEmptyValue(value))
-  {
-    return false;
-  }
-  if (value.GetType() != m_value.GetType())
-  {
-    return false;
-  }
-  value = m_value;
-  return m_status;
-}
-
-int MockUI::GetUserChoice(const std::vector<std::string>& options,
-                              const sup::dto::AnyValue& metadata)
-{
-  m_options = options;
-  m_metadata.reset(new sup::dto::AnyValue{metadata});
-  return m_choice;
-}
-
 std::unique_ptr<IUserInputFuture> MockUI::RequestUserInput(const UserInputRequest& request)
 {
   return m_input_adapter.AddUserInputRequest(request);
@@ -213,6 +191,28 @@ UserInputReply MockUI::UserInput(const UserInputRequest& request, sup::dto::uint
 void MockUI::Interrupt(sup::dto::uint64 id)
 {
   (void)id;
+}
+
+bool MockUI::GetUserValue(sup::dto::AnyValue &value, const std::string &description)
+{
+  if (sup::dto::IsEmptyValue(value))
+  {
+    return false;
+  }
+  if (value.GetType() != m_value.GetType())
+  {
+    return false;
+  }
+  value = m_value;
+  return m_status;
+}
+
+int MockUI::GetUserChoice(const std::vector<std::string>& options,
+                              const sup::dto::AnyValue& metadata)
+{
+  m_options = options;
+  m_metadata.reset(new sup::dto::AnyValue{metadata});
+  return m_choice;
 }
 
 TemporaryTestFile::TemporaryTestFile(std::string filename_, std::string contents)

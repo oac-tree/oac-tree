@@ -239,7 +239,7 @@ bool ParserFunctionT(sup::dto::AnyValue &value, const std::string &str)
 }
 
 /**
- * @todo Extend possible input values: currently only 'true' or 'false'. Possible alternatives
+ * TODO: Extend possible input values: currently only 'true' or 'false'. Possible alternatives
  * are integers (zero is false), case insensitive true/false, yes/no, etc.
  */
 template <>

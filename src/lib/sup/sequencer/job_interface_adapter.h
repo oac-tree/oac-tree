@@ -62,12 +62,10 @@ public:
   void OnProcedureTick(const Procedure& proc) override;
 
 private:
-  UserInputReply UserInput(const UserInputRequest& request, sup::dto::uint64 id);
-  void Interrupt(sup::dto::uint64 id);
-  AsyncInputAdapter m_input_adapter;
   JobMap m_job_map;
   std::vector<InstructionState> m_instr_states;
   IJobInfoIO& m_job_info_io;
+  AsyncInputAdapter m_input_adapter;
 };
 
 }  // namespace sequencer

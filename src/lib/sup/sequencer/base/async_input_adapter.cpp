@@ -80,7 +80,6 @@ UserInputReply AsyncInputAdapter::GetReply(const Future& token)
 {
   if (!token.IsValid())
   {
-    // TODO: check if throwing is the right solution here
     const std::string error = "AsyncInputAdapter::GetReply(): called with invalid token";
     throw InvalidOperationException{error};
   }

@@ -24,6 +24,14 @@
 #include <sup/sequencer/instruction.h>
 #include <sup/sequencer/procedure.h>
 
+namespace
+{
+using namespace sup::sequencer;
+UserInputReply ForwardUserInput(IJobInfoIO& job_info_io, const UserInputRequest& request,
+                                sup::dto::uint64 id);
+void ForwardInterrupt(IJobInfoIO& job_info_io, sup::dto::uint64 id);
+}  // unnamed namespace
+
 namespace sup
 {
 namespace sequencer
@@ -31,11 +39,11 @@ namespace sequencer
 using namespace std::placeholders;
 
 JobInterfaceAdapter::JobInterfaceAdapter(const Procedure& proc, IJobInfoIO& job_info_io)
-  : m_input_adapter{std::bind(&JobInterfaceAdapter::UserInput, this, _1, _2),
-                    std::bind(&JobInterfaceAdapter::Interrupt, this, _1)}
-  , m_job_map{proc}
+  : m_job_map{proc}
   , m_instr_states{}
   , m_job_info_io{job_info_io}
+  , m_input_adapter{std::bind(&ForwardUserInput, std::ref(m_job_info_io), _1, _2),
+                    std::bind(&ForwardInterrupt, std::ref(m_job_info_io), _1)}
 {}
 
 JobInterfaceAdapter::~JobInterfaceAdapter() = default;
@@ -122,7 +130,14 @@ void JobInterfaceAdapter::OnProcedureTick(const Procedure& proc)
   m_job_info_io.NextInstructionsUpdated(next_instr_indices);
 }
 
-UserInputReply JobInterfaceAdapter::UserInput(const UserInputRequest& request, sup::dto::uint64 id)
+}  // namespace sequencer
+
+}  // namespace sup
+
+namespace
+{
+UserInputReply ForwardUserInput(IJobInfoIO& job_info_io, const UserInputRequest& request,
+                                sup::dto::uint64 id)
 {
   switch (request.m_request_type)
   {
@@ -135,7 +150,7 @@ UserInputReply JobInterfaceAdapter::UserInput(const UserInputRequest& request, s
     {
       return failure;
     }
-    if (!m_job_info_io.GetUserValue(id, value, description))
+    if (!job_info_io.GetUserValue(id, value, description))
     {
       return failure;
     }
@@ -150,7 +165,7 @@ UserInputReply JobInterfaceAdapter::UserInput(const UserInputRequest& request, s
     {
       return failure;
     }
-    auto choice = m_job_info_io.GetUserChoice(id, options, metadata);
+    auto choice = job_info_io.GetUserChoice(id, options, metadata);
     if (choice < 0)
     {
       return failure;
@@ -163,11 +178,10 @@ UserInputReply JobInterfaceAdapter::UserInput(const UserInputRequest& request, s
   return CreateUserValueReply(false, {});
 }
 
-void JobInterfaceAdapter::Interrupt(sup::dto::uint64 id)
+void ForwardInterrupt(IJobInfoIO& job_info_io, sup::dto::uint64 id)
 {
-  m_job_info_io.Interrupt(id);
+  job_info_io.Interrupt(id);
 }
 
-}  // namespace sequencer
+}  // unnamed namespace
 
-}  // namespace sup

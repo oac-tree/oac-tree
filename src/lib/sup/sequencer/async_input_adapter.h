@@ -38,7 +38,6 @@ namespace sup
 namespace sequencer
 {
 
-// Handles only a single user input request
 class AsyncInputAdapter
 {
 public:

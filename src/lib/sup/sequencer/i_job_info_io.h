@@ -124,6 +124,9 @@ public:
   /**
    * @brief Interrupt a user input request.
    *
+   * @note Due to multithreading, an interrupt request with a specific id may be triggered before
+   * the corresponding input method was called. Implementations need to take care of this case.
+   *
    * @param id Identification of the user input request to interrupt. Implementations may choose
    * to do nothing in such interrupt requests. In that case, a user interaction will be needed to
    * properly cleanup the underlying user interface, since it will join the threads that are

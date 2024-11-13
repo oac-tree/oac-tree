@@ -143,39 +143,37 @@ UserInputReply ForwardUserInput(IJobInfoIO& job_info_io, const UserInputRequest&
   {
   case InputRequestType::kUserValue:
   {
-    auto failure = CreateUserValueReply(false, {});
     sup::dto::AnyValue value{};
     std::string description{};
     if (!ParseUserValueRequest(request, value, description))
     {
-      return failure;
+      return kInvalidUserInputReply;
     }
     if (!job_info_io.GetUserValue(id, value, description))
     {
-      return failure;
+      return CreateUserValueReply(false, {});
     }
     return CreateUserValueReply(true, value);
   }
   case InputRequestType::kUserChoice:
   {
-    auto failure = CreateUserChoiceReply(false, -1);
     std::vector<std::string> options{};
     sup::dto::AnyValue metadata{};
     if (!ParseUserChoiceRequest(request, options, metadata))
     {
-      return failure;
+      return kInvalidUserInputReply;
     }
     auto choice = job_info_io.GetUserChoice(id, options, metadata);
     if (choice < 0)
     {
-      return failure;
+      return CreateUserChoiceReply(false, -1);
     }
     return CreateUserChoiceReply(true, choice);
   }
   default:
     break;
   }
-  return CreateUserValueReply(false, {});
+  return kInvalidUserInputReply;
 }
 
 void ForwardInterrupt(IJobInfoIO& job_info_io, sup::dto::uint64 id)

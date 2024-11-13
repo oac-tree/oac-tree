@@ -38,7 +38,8 @@ namespace sequencer
  */
 enum class InputRequestType : sup::dto::uint32
 {
-  kUserValue = 0,
+  kInvalid = 0,
+  kUserValue,
   kUserChoice
 };
 

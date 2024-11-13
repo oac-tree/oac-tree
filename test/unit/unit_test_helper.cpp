@@ -153,39 +153,37 @@ UserInputReply MockUI::UserInput(const UserInputRequest& request, sup::dto::uint
   {
   case InputRequestType::kUserValue:
   {
-    auto failure = CreateUserValueReply(false, {});
     sup::dto::AnyValue value{};
     std::string description{};
     if (!ParseUserValueRequest(request, value, description))
     {
-      return failure;
+      return kInvalidUserInputReply;
     }
     if (!GetUserValue(value, description))
     {
-      return failure;
+      return CreateUserValueReply(false, {});
     }
     return CreateUserValueReply(true, value);
   }
   case InputRequestType::kUserChoice:
   {
-    auto failure = CreateUserChoiceReply(false, -1);
     std::vector<std::string> options{};
     sup::dto::AnyValue metadata{};
     if (!ParseUserChoiceRequest(request, options, metadata))
     {
-      return failure;
+      return kInvalidUserInputReply;
     }
     auto choice = GetUserChoice(options, metadata);
     if (choice < 0)
     {
-      return failure;
+      return CreateUserChoiceReply(false, -1);
     }
     return CreateUserChoiceReply(true, choice);
   }
   default:
     break;
   }
-  return CreateUserValueReply(false, {});
+  return kInvalidUserInputReply;
 }
 
 void MockUI::Interrupt(sup::dto::uint64 id)

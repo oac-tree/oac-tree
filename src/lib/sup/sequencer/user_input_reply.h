@@ -45,6 +45,8 @@ public:
   sup::dto::AnyValue m_payload;
 };
 
+const UserInputReply kInvalidUserInputReply{ InputRequestType::kInvalid, false, {} };
+
 bool operator==(const UserInputReply& left, const UserInputReply& right);
 bool operator!=(const UserInputReply& left, const UserInputReply& right);
 

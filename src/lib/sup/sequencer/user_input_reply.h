@@ -26,9 +26,7 @@
 
 #include <sup/dto/anyvalue.h>
 
-#include <string>
 #include <utility>
-#include <vector>
 
 namespace sup
 {
@@ -36,8 +34,8 @@ namespace sequencer
 {
 
 /**
- * @brief UserInputRequest collects all the required information for the supported user
- * input requests.
+ * @brief UserInputReply contains all the required information for the supported user
+ * input replies.
  */
 struct UserInputReply
 {

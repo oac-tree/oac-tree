@@ -55,6 +55,8 @@ public:
   sup::dto::AnyType m_input_type;
 };
 
+const UserInputRequest kInvalidUserInputRequest{ InputRequestType::kInvalid, {}, {} };
+
 bool operator==(const UserInputRequest& left, const UserInputRequest& right);
 bool operator!=(const UserInputRequest& left, const UserInputRequest& right);
 

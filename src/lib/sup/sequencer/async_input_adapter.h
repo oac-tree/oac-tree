@@ -27,11 +27,15 @@
 
 #include <sup/dto/basic_scalar_types.h>
 
+#include <atomic>
+#include <condition_variable>
+#include <deque>
 #include <functional>
 #include <future>
 #include <list>
 #include <map>
 #include <mutex>
+#include <utility>
 
 namespace sup
 {
@@ -51,6 +55,11 @@ public:
   std::unique_ptr<IUserInputFuture> AddUserInputRequest(const UserInputRequest& request);
 
 private:
+  using RequestEntry = std::pair<sup::dto::uint64, UserInputRequest>;
+
+  // Handle all requests in a single thread.
+  void HandleRequestQueue();
+
   // query readiness of a user input request
   bool UserInputRequestReady(const Future& token) const;
 
@@ -64,10 +73,18 @@ private:
   void CleanUpUnused();
   InputFunction m_input_func;
   InterruptFunction m_interrupt_func;
-  std::map<sup::dto::uint64, std::future<UserInputReply>> m_requests;
+  std::deque<RequestEntry> m_request_queue;
+  std::map<sup::dto::uint64, UserInputReply> m_replies;
+  sup::dto::uint64 m_current_id;
   sup::dto::uint64 m_last_request_id;
-  std::list<sup::dto::uint64> m_cancelled;
+  std::future<void> m_handler_future;
   mutable std::mutex m_mtx;
+  std::condition_variable m_cv;
+  std::atomic_bool m_halt;
+
+  // TODO: remove these:
+  std::map<sup::dto::uint64, std::future<UserInputReply>> m_requests;
+  std::list<sup::dto::uint64> m_cancelled;
 };
 
 class AsyncInputAdapter::Future : public IUserInputFuture

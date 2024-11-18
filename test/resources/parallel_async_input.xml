@@ -3,11 +3,14 @@
            name="Procedure for testing parallel asynchronous input"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
-    <ParallelSequence name="Parallel Wait" successThreshold="1">
-        <Input outputVar="number" description="Some number" />
-        <Input outputVar="name" description="Name" />
-        <Wait timeout="10.0"/>
-    </ParallelSequence>
+    <Sequence>
+        <ParallelSequence name="Parallel Wait" successThreshold="1">
+            <Input outputVar="number" description="Some number" />
+            <Input outputVar="name" description="Name" />
+            <Wait timeout="10.0"/>
+        </ParallelSequence>
+        <Wait timeout="3.0"/>
+    </Sequence>
     <Workspace>
         <Local name="number" type='{"type":"int32"}'/>
         <Local name="name" type='{"type":"string"}' />

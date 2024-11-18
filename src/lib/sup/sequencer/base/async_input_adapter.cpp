@@ -34,14 +34,24 @@ namespace sequencer
 AsyncInputAdapter::AsyncInputAdapter(InputFunction input_func, InterruptFunction interrupt_func)
   : m_input_func{std::move(input_func)}
   , m_interrupt_func{std::move(interrupt_func)}
-  , m_requests{}
+  , m_request_queue{}
+  , m_replies{}
+  , m_current_id{0}
   , m_last_request_id{0}
-  , m_cancelled{}
+  , m_handler_future{}
   , m_mtx{}
-{}
+  , m_cv{}
+  , m_halt{false}
+  , m_requests{}
+  , m_cancelled{}
+{
+  m_handler_future = std::async(std::launch::async, &AsyncInputAdapter::HandleRequestQueue, this);
+}
 
 AsyncInputAdapter::~AsyncInputAdapter()
 {
+  m_halt.store(true);
+  m_cv.notify_one();
   for (auto& request : m_requests)
   {
     m_interrupt_func(request.first);
@@ -58,6 +68,34 @@ std::unique_ptr<IUserInputFuture> AsyncInputAdapter::AddUserInputRequest(
   m_requests.emplace(std::make_pair(id, std::move(request_future)));
   std::unique_ptr<IUserInputFuture> future{new Future{*this, id}};
   return future;
+}
+
+void AsyncInputAdapter::HandleRequestQueue()
+{
+  auto pred = [this]() {
+    return m_halt || !m_request_queue.empty();
+  };
+  while (true)
+  {
+    std::unique_lock<std::mutex> lk{m_mtx};
+    m_cv.wait(lk, pred);
+    if (m_halt)
+    {
+      return;
+    }
+    auto req_entry = m_request_queue.front();
+    m_request_queue.pop_front();
+    m_current_id = req_entry.first;
+    lk.unlock();
+    auto reply = m_input_func(req_entry.second, req_entry.first);
+    lk.lock();
+    // If someone has reset the current id, the reply is no longer needed:
+    if (m_current_id == req_entry.first)
+    {
+      m_replies[m_current_id] = reply;
+    }
+    m_current_id = 0;
+  }
 }
 
 bool AsyncInputAdapter::UserInputRequestReady(const Future& token) const

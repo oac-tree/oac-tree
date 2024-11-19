@@ -58,8 +58,6 @@ private:
   // Handle all requests in a single thread.
   void HandleRequestQueue();
 
-  bool IsUsedId(sup::dto::uint64 id) const;
-
   // Create a new input request id
   sup::dto::uint64 GetNewRequestId();
 

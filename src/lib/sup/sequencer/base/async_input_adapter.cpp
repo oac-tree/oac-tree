@@ -103,36 +103,10 @@ void AsyncInputAdapter::HandleRequestQueue()
   }
 }
 
-bool AsyncInputAdapter::IsUsedId(sup::dto::uint64 id) const
-{
-  if (id == m_current_id)
-  {
-    return true;
-  }
-  auto req_pred = [id](const RequestEntry& req){
-    return req.first == id;
-  };
-  auto request_it = std::find_if(m_request_queue.begin(), m_request_queue.end(), req_pred);
-  if (request_it != m_request_queue.end())
-  {
-    return true;
-  }
-  auto reply_it = m_replies.find(id);
-  if (reply_it != m_replies.end())
-  {
-    return true;
-  }
-  return false;
-}
-
 sup::dto::uint64 AsyncInputAdapter::GetNewRequestId()
 {
-  ++m_last_request_id;
-  while (m_last_request_id == 0 || IsUsedId(m_last_request_id))
-  {
-    ++m_last_request_id;
-  }
-  return m_last_request_id;
+  // no checks for wrap-around needed here:
+  return ++m_last_request_id;
 }
 
 bool AsyncInputAdapter::UserInputRequestReady(const Future& token) const

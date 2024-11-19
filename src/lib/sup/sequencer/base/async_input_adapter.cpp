@@ -49,9 +49,15 @@ AsyncInputAdapter::AsyncInputAdapter(InputFunction input_func, InterruptFunction
 
 AsyncInputAdapter::~AsyncInputAdapter()
 {
-  m_halt.store(true);
+  {
+    std::lock_guard<std::mutex> lk{m_mtx};
+    if (m_current_id != 0)
+    {
+      m_interrupt_func(m_current_id);
+    }
+    m_halt = true;
+  }
   m_cv.notify_one();
-  // TODO: interrupt current if needed
 }
 
 std::unique_ptr<IUserInputFuture> AsyncInputAdapter::AddUserInputRequest(
@@ -97,10 +103,36 @@ void AsyncInputAdapter::HandleRequestQueue()
   }
 }
 
+bool AsyncInputAdapter::IsUsedId(sup::dto::uint64 id) const
+{
+  if (id == m_current_id)
+  {
+    return true;
+  }
+  auto req_pred = [id](const RequestEntry& req){
+    return req.first == id;
+  };
+  auto request_it = std::find_if(m_request_queue.begin(), m_request_queue.end(), req_pred);
+  if (request_it != m_request_queue.end())
+  {
+    return true;
+  }
+  auto reply_it = m_replies.find(id);
+  if (reply_it != m_replies.end())
+  {
+    return true;
+  }
+  return false;
+}
+
 sup::dto::uint64 AsyncInputAdapter::GetNewRequestId()
 {
-  // TODO: prevent zero and ids in use
-  return ++m_last_request_id;
+  ++m_last_request_id;
+  while (m_last_request_id == 0 || IsUsedId(m_last_request_id))
+  {
+    ++m_last_request_id;
+  }
+  return m_last_request_id;
 }
 
 bool AsyncInputAdapter::UserInputRequestReady(const Future& token) const

@@ -27,7 +27,6 @@
 
 #include <sup/dto/basic_scalar_types.h>
 
-#include <atomic>
 #include <condition_variable>
 #include <deque>
 #include <functional>
@@ -59,6 +58,8 @@ private:
   // Handle all requests in a single thread.
   void HandleRequestQueue();
 
+  bool IsUsedId(sup::dto::uint64 id) const;
+
   // Create a new input request id
   sup::dto::uint64 GetNewRequestId();
 
@@ -80,7 +81,7 @@ private:
   std::future<void> m_handler_future;
   mutable std::mutex m_mtx;
   std::condition_variable m_cv;
-  std::atomic_bool m_halt;
+  bool m_halt;
 };
 
 class AsyncInputAdapter::Future : public IUserInputFuture

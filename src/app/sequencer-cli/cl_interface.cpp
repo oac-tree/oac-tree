@@ -103,6 +103,7 @@ void CLInterface::Log(int severity, const std::string& message)
 
 UserInputReply CLInterface::UserInput(const UserInputRequest& request, sup::dto::uint64 id)
 {
+  (void)id;
   switch (request.m_request_type)
   {
   case InputRequestType::kUserValue:

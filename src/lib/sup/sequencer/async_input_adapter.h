@@ -64,6 +64,9 @@ private:
   // query readiness of a user input request
   bool UserInputRequestReady(const Future& token) const;
 
+  // wait for readiness with a timeout
+  bool WaitForRequestReady(const Future& token, double seconds);
+
   // throws if the input was not ready or no request is active
   UserInputReply GetReply(const Future& token);
 
@@ -79,6 +82,7 @@ private:
   std::future<void> m_handler_future;
   mutable std::mutex m_mtx;
   std::condition_variable m_cv;
+  std::condition_variable m_reply_cv;
   bool m_halt;
 };
 
@@ -98,6 +102,7 @@ public:
 
   bool IsValid() const override;
   bool IsReady() const override;
+  bool WaitFor(double seconds) const override;
 
   UserInputReply GetValue() override;
 

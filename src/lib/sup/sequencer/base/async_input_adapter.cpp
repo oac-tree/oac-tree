@@ -25,6 +25,7 @@
 
 #include <algorithm>
 #include <chrono>
+#include <cmath>
 #include <utility>
 
 namespace sup
@@ -42,6 +43,7 @@ AsyncInputAdapter::AsyncInputAdapter(InputFunction input_func, InterruptFunction
   , m_handler_future{}
   , m_mtx{}
   , m_cv{}
+  , m_reply_cv{}
   , m_halt{false}
 {
   m_handler_future = std::async(std::launch::async, &AsyncInputAdapter::HandleRequestQueue, this);
@@ -98,6 +100,7 @@ void AsyncInputAdapter::HandleRequestQueue()
     if (m_current_id == req_entry.first)
     {
       m_replies[m_current_id] = reply;
+      m_reply_cv.notify_one();
     }
     m_current_id = 0;
   }
@@ -118,6 +121,21 @@ bool AsyncInputAdapter::UserInputRequestReady(const Future& token) const
   std::lock_guard<std::mutex> lk{m_mtx};
   auto reply_it = m_replies.find(token.GetId());
   return reply_it != m_replies.end();
+}
+
+bool AsyncInputAdapter::WaitForRequestReady(const Future& token, double seconds)
+{
+  if (!token.IsValid())
+  {
+    return false;
+  }
+  auto duration = std::chrono::nanoseconds(std::lround(seconds * 1e9));
+  auto id = token.GetId();
+  auto pred = [this, id]() {
+    return m_replies.find(id) != m_replies.end();
+  };
+  std::unique_lock<std::mutex> lk{m_mtx};
+  return m_reply_cv.wait_for(lk, duration, pred);
 }
 
 UserInputReply AsyncInputAdapter::GetReply(const Future& token)
@@ -201,6 +219,11 @@ bool AsyncInputAdapter::Future::IsValid() const
 bool AsyncInputAdapter::Future::IsReady() const
 {
   return m_input_handler.UserInputRequestReady(*this);
+}
+
+bool AsyncInputAdapter::Future::WaitFor(double seconds) const
+{
+  return m_input_handler.WaitForRequestReady(*this, seconds);
 }
 
 UserInputReply AsyncInputAdapter::Future::GetValue()

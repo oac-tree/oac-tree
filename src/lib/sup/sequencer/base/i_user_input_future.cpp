@@ -49,6 +49,12 @@ bool UnsupportedInputFuture::IsReady() const
   return false;
 }
 
+bool UnsupportedInputFuture::WaitFor(double seconds) const
+{
+  (void)seconds;
+  return false;
+}
+
 sup::sequencer::UserInputReply UnsupportedInputFuture::GetValue()
 {
   const std::string error =

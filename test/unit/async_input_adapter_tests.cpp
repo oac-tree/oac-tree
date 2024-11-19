@@ -109,7 +109,7 @@ TEST_F(AsyncInputAdapterTest, Construction)
   auto future = async_input.AddUserInputRequest(m_request);
   EXPECT_TRUE(future->IsValid());
   EXPECT_FALSE(future->IsReady());
-  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+  EXPECT_TRUE(future->WaitFor(1.0));
   EXPECT_EQ(user_input.GetNumberOfRequests(), 1);
   EXPECT_TRUE(future->IsReady());
   EXPECT_EQ(future->GetValue(), m_reply);
@@ -145,6 +145,17 @@ TEST_F(AsyncInputAdapterTest, FutureDestruction)
   EXPECT_TRUE(duration_ms.count() < 2000);
 }
 
+TEST_F(AsyncInputAdapterTest, WaitForFuture)
+{
+  // Verify that Future.WaitFor returns false if reply is not ready within timeout and true
+  // otherwise.
+  TestUserInput user_input{m_reply, 500};
+  AsyncInputAdapter async_input{ GetInputFunction(user_input), GetInterruptFunction(user_input)};
+  auto future = async_input.AddUserInputRequest(m_request);
+  EXPECT_FALSE(future->WaitFor(0.1));
+  EXPECT_TRUE(future->WaitFor(1.0));
+}
+
 TEST_F(AsyncInputAdapterTest, MultipleRequests)
 {
   // Verify that a request that is cancelled before being handled works as expected (it is
@@ -161,10 +172,13 @@ TEST_F(AsyncInputAdapterTest, MultipleRequests)
     EXPECT_TRUE(future_2->IsValid());
     EXPECT_FALSE(future_2->IsReady());
   }
-  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+  EXPECT_TRUE(future_1->WaitFor(1.0));
   EXPECT_EQ(user_input.GetNumberOfRequests(), 1);
   EXPECT_TRUE(future_1->IsReady());
   EXPECT_EQ(future_1->GetValue(), m_reply);
+  // Future has become invalid:
+  EXPECT_FALSE(future_1->IsValid());
+  EXPECT_FALSE(future_1->WaitFor(0.0));
 }
 
 AsyncInputAdapterTest::AsyncInputAdapterTest()

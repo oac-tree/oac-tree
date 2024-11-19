@@ -65,6 +65,15 @@ public:
   virtual bool IsReady() const = 0;
 
   /**
+   * @brief Wait with a timeout for the future to become ready.
+   *
+   * @param seconds Timeout in seconds.
+   *
+   * @return True when ready within the timeout, false otherwise.
+   */
+   virtual bool WaitFor(double seconds) const = 0;
+
+  /**
    * @brief Get the value of the future if it is ready.
    *
    * @return Value from the user when it is ready.
@@ -87,6 +96,7 @@ public:
 
   bool IsValid() const override;
   bool IsReady() const override;
+  bool WaitFor(double seconds) const override;
 
   UserInputReply GetValue() override;
 };

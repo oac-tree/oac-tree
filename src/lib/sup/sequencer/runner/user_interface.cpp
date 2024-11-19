@@ -25,9 +25,6 @@
 #include <sup/sequencer/instruction.h>
 #include <sup/sequencer/log_severity.h>
 
-#include <chrono>
-#include <thread>
-
 namespace sup
 {
 namespace sequencer
@@ -149,10 +146,8 @@ std::pair<bool, sup::dto::AnyValue> GetBlockingUserValue(UserInterface& ui,
     LogError(ui, error_message);
     return failure;
   }
-  while (!future->IsReady())
-  {
-    std::this_thread::sleep_for(std::chrono::milliseconds(DefaultSettings::TIMING_ACCURACY_MS));
-  }
+  double timeout_s = DefaultSettings::TIMING_ACCURACY_MS / 1000.0;
+  while (!future->WaitFor(timeout_s)) {}
   auto reply = future->GetValue();
   return ParseUserValueReply(reply);
 }
@@ -170,10 +165,8 @@ std::pair<bool, int> GetBlockingUserChoice(UserInterface& ui,
     LogError(ui, error_message);
     return failure;
   }
-  while (!future->IsReady())
-  {
-    std::this_thread::sleep_for(std::chrono::milliseconds(DefaultSettings::TIMING_ACCURACY_MS));
-  }
+  double timeout_s = DefaultSettings::TIMING_ACCURACY_MS / 1000.0;
+  while (!future->WaitFor(timeout_s)) {}
   auto reply = future->GetValue();
   return ParseUserChoiceReply(reply);
 }
@@ -192,10 +185,8 @@ std::pair<bool, sup::dto::AnyValue> GetInterruptableUserValue(
     LogError(ui, error_message);
     return failure;
   }
-  while (!instr.IsHaltRequested() && !future->IsReady())
-  {
-    std::this_thread::sleep_for(std::chrono::milliseconds(DefaultSettings::TIMING_ACCURACY_MS));
-  }
+  double timeout_s = DefaultSettings::TIMING_ACCURACY_MS / 1000.0;
+  while (!instr.IsHaltRequested() && !future->WaitFor(timeout_s)) {}
   if (instr.IsHaltRequested())
   {
     return failure;
@@ -218,10 +209,8 @@ std::pair<bool, int> GetInterruptableUserChoice(UserInterface& ui, const Instruc
     LogError(ui, error_message);
     return failure;
   }
-  while (!instr.IsHaltRequested() && !future->IsReady())
-  {
-    std::this_thread::sleep_for(std::chrono::milliseconds(DefaultSettings::TIMING_ACCURACY_MS));
-  }
+  double timeout_s = DefaultSettings::TIMING_ACCURACY_MS / 1000.0;
+  while (!instr.IsHaltRequested() && !future->WaitFor(timeout_s)) {}
   if (instr.IsHaltRequested())
   {
     return failure;

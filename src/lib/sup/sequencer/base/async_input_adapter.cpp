@@ -23,6 +23,7 @@
 
 #include <sup/sequencer/exceptions.h>
 
+#include <algorithm>
 #include <chrono>
 #include <utility>
 
@@ -42,8 +43,6 @@ AsyncInputAdapter::AsyncInputAdapter(InputFunction input_func, InterruptFunction
   , m_mtx{}
   , m_cv{}
   , m_halt{false}
-  , m_requests{}
-  , m_cancelled{}
 {
   m_handler_future = std::async(std::launch::async, &AsyncInputAdapter::HandleRequestQueue, this);
 }
@@ -52,20 +51,19 @@ AsyncInputAdapter::~AsyncInputAdapter()
 {
   m_halt.store(true);
   m_cv.notify_one();
-  for (auto& request : m_requests)
-  {
-    m_interrupt_func(request.first);
-  }
+  // TODO: interrupt current if needed
 }
 
 std::unique_ptr<IUserInputFuture> AsyncInputAdapter::AddUserInputRequest(
   const UserInputRequest& request)
 {
-  std::lock_guard<std::mutex> lk{m_mtx};
-  CleanUpUnused();
-  auto id = GetNewRequestId();
-  auto request_future = std::async(std::launch::async, m_input_func, request, id);
-  m_requests.emplace(std::make_pair(id, std::move(request_future)));
+  sup::dto::uint64 id{0};
+  {
+    std::lock_guard<std::mutex> lk{m_mtx};
+    id = GetNewRequestId();
+    m_request_queue.push_back({id, request});
+  }
+  m_cv.notify_one();
   std::unique_ptr<IUserInputFuture> future{new Future{*this, id}};
   return future;
 }
@@ -87,6 +85,7 @@ void AsyncInputAdapter::HandleRequestQueue()
     m_request_queue.pop_front();
     m_current_id = req_entry.first;
     lk.unlock();
+    // If another thread sees the current id as not zero, this thread must be here:
     auto reply = m_input_func(req_entry.second, req_entry.first);
     lk.lock();
     // If someone has reset the current id, the reply is no longer needed:
@@ -98,6 +97,12 @@ void AsyncInputAdapter::HandleRequestQueue()
   }
 }
 
+sup::dto::uint64 AsyncInputAdapter::GetNewRequestId()
+{
+  // TODO: prevent zero and ids in use
+  return ++m_last_request_id;
+}
+
 bool AsyncInputAdapter::UserInputRequestReady(const Future& token) const
 {
   if (!token.IsValid())
@@ -105,13 +110,8 @@ bool AsyncInputAdapter::UserInputRequestReady(const Future& token) const
     return false;
   }
   std::lock_guard<std::mutex> lk{m_mtx};
-  auto request_it = m_requests.find(token.GetId());
-  if (request_it == m_requests.end())
-  {
-    return false;
-  }
-  auto result = request_it->second.wait_for(std::chrono::seconds(0));
-  return result == std::future_status::ready;
+  auto reply_it = m_replies.find(token.GetId());
+  return reply_it != m_replies.end();
 }
 
 UserInputReply AsyncInputAdapter::GetReply(const Future& token)
@@ -123,23 +123,17 @@ UserInputReply AsyncInputAdapter::GetReply(const Future& token)
   }
   const auto id = token.GetId();
   std::lock_guard<std::mutex> lk{m_mtx};
-  CleanUpUnused();
-  auto request_it = m_requests.find(id);
-  if (request_it == m_requests.end())
+  auto reply_it = m_replies.find(token.GetId());
+  if (reply_it == m_replies.end())
   {
     const std::string error =
-      "AsyncInputAdapter::GetUserInput(): called with unknown token id: " + std::to_string(id);
+      "AsyncInputAdapter::GetUserInput(): User input with id [" + std::to_string(id) +
+      "] unknown or not ready!";
     throw InvalidOperationException{error};
   }
-  auto result = request_it->second.wait_for(std::chrono::seconds(0));
-  if (result != std::future_status::ready)
-  {
-    const std::string error = "User input with id [" + std::to_string(id) + "] was not ready!";
-    throw InvalidOperationException{error};
-  }
-  auto response = request_it->second.get();
-  m_requests.erase(request_it);
-  return response;
+  auto reply = reply_it->second;
+  m_replies.erase(reply_it);
+  return reply;
 }
 
 void AsyncInputAdapter::CancelInputRequest(const Future& token)
@@ -149,50 +143,29 @@ void AsyncInputAdapter::CancelInputRequest(const Future& token)
     return;
   }
   const auto id = token.GetId();
+  auto req_pred = [id](const RequestEntry& req){
+    return req.first == id;
+  };
   std::lock_guard<std::mutex> lk{m_mtx};
-  auto request_it = m_requests.find(id);
-  if (request_it == m_requests.end())
+  auto request_it = std::find_if(m_request_queue.begin(), m_request_queue.end(), req_pred);
+  if (request_it != m_request_queue.end())
   {
+    // request is still queued, so removal from the queue is all that is needed
+    m_request_queue.erase(request_it);
     return;
   }
-  m_interrupt_func(id);
-  m_cancelled.push_back(id);
-  CleanUpUnused();
-}
-
-sup::dto::uint64 AsyncInputAdapter::GetNewRequestId()
-{
-  ++m_last_request_id;
-  while (m_last_request_id == 0 || m_requests.find(m_last_request_id) != m_requests.end())
+  auto reply_it = m_replies.find(id);
+  if (reply_it != m_replies.end())
   {
-    ++m_last_request_id;
+    // reply is already provided, so just removing it is enough
+    m_replies.erase(reply_it);
+    return;
   }
-  return m_last_request_id;
-}
-
-void AsyncInputAdapter::CleanUpUnused()
-{
-  auto it = m_cancelled.begin();
-  while (it != m_cancelled.end())
+  if (m_current_id == id)
   {
-    auto request_it = m_requests.find(*it);
-    if (request_it == m_requests.end())
-    {
-      it = m_cancelled.erase(it);
-    }
-    else
-    {
-      auto result = request_it->second.wait_for(std::chrono::seconds(0));
-      if (result != std::future_status::timeout)
-      {
-        m_requests.erase(request_it);
-        it = m_cancelled.erase(it);
-      }
-      else
-      {
-        ++it;
-      }
-    }
+    // Here, we need to signal the current request to interrupt and to not publish its result
+    m_interrupt_func(id);
+    m_current_id = 0;
   }
 }
 

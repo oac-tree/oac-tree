@@ -32,7 +32,6 @@
 #include <deque>
 #include <functional>
 #include <future>
-#include <list>
 #include <map>
 #include <mutex>
 #include <utility>
@@ -60,6 +59,9 @@ private:
   // Handle all requests in a single thread.
   void HandleRequestQueue();
 
+  // Create a new input request id
+  sup::dto::uint64 GetNewRequestId();
+
   // query readiness of a user input request
   bool UserInputRequestReady(const Future& token) const;
 
@@ -69,8 +71,6 @@ private:
   // cancel a user input request
   void CancelInputRequest(const Future& token);
 
-  sup::dto::uint64 GetNewRequestId();
-  void CleanUpUnused();
   InputFunction m_input_func;
   InterruptFunction m_interrupt_func;
   std::deque<RequestEntry> m_request_queue;
@@ -81,10 +81,6 @@ private:
   mutable std::mutex m_mtx;
   std::condition_variable m_cv;
   std::atomic_bool m_halt;
-
-  // TODO: remove these:
-  std::map<sup::dto::uint64, std::future<UserInputReply>> m_requests;
-  std::list<sup::dto::uint64> m_cancelled;
 };
 
 class AsyncInputAdapter::Future : public IUserInputFuture

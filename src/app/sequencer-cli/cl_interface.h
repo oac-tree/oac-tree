@@ -59,7 +59,6 @@ private:
                     const sup::dto::AnyValue& metadata);
   const sup::log::BasicLogger m_logger;
   AsyncInputAdapter m_input_adapter;
-  mutable std::mutex m_mtx;
 };
 
 }  // namespace sequencer

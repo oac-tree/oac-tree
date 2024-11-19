@@ -42,7 +42,7 @@ class TestUserInput
 {
 public:
   TestUserInput(UserInputReply reply, unsigned int timeout_ms)
-    : m_reply{reply}, m_timeout_ms{timeout_ms}, m_current_id{0}, m_halt{false} {}
+    : m_reply{reply}, m_timeout_ms{timeout_ms}, m_current_id{0}, m_halt{false}, m_n_requests{0} {}
   virtual ~TestUserInput() = default;
 
   UserInputReply GetUserValue(const UserInputRequest& request, sup::dto::uint64 id) {
@@ -52,6 +52,7 @@ public:
     {
       return failure;
     }
+    ++m_n_requests;
     m_current_id = id;
     m_halt.store(false);
     auto finish = utils::GetNanosecsSinceEpoch() + m_timeout_ms * 1000000;
@@ -71,11 +72,14 @@ public:
     m_halt.store(true);
   }
 
+  int GetNumberOfRequests() const { return m_n_requests; }
+
 private:
   UserInputReply m_reply;
   unsigned int m_timeout_ms;
   sup::dto::uint64 m_current_id;
   std::atomic_bool m_halt;
+  int m_n_requests;
 };
 
 inline AsyncInputAdapter::InputFunction GetInputFunction(TestUserInput& test_input)
@@ -106,6 +110,7 @@ TEST_F(AsyncInputAdapterTest, Construction)
   EXPECT_TRUE(future->IsValid());
   EXPECT_FALSE(future->IsReady());
   std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+  EXPECT_EQ(user_input.GetNumberOfRequests(), 1);
   EXPECT_TRUE(future->IsReady());
   EXPECT_EQ(future->GetValue(), m_reply);
   // After retrieval of user input, the request becomes invalid:
@@ -138,6 +143,28 @@ TEST_F(AsyncInputAdapterTest, FutureDestruction)
   auto end = std::chrono::high_resolution_clock::now();
   auto duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
   EXPECT_TRUE(duration_ms.count() < 2000);
+}
+
+TEST_F(AsyncInputAdapterTest, MultipleRequests)
+{
+  // Verify that a request that is cancelled before being handled works as expected (it is
+  // only removed from the internal queue).
+  TestUserInput user_input{m_reply, 500};
+  AsyncInputAdapter async_input{ GetInputFunction(user_input), GetInterruptFunction(user_input)};
+  auto future_1 = async_input.AddUserInputRequest(m_request);
+  EXPECT_TRUE(future_1->IsValid());
+  EXPECT_FALSE(future_1->IsReady());
+  {
+    // This request will be cancelled before it has a chance of being handled, so number of
+    // requests will be only one.
+    auto future_2 = async_input.AddUserInputRequest(m_request);
+    EXPECT_TRUE(future_2->IsValid());
+    EXPECT_FALSE(future_2->IsReady());
+  }
+  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+  EXPECT_EQ(user_input.GetNumberOfRequests(), 1);
+  EXPECT_TRUE(future_1->IsReady());
+  EXPECT_EQ(future_1->GetValue(), m_reply);
 }
 
 AsyncInputAdapterTest::AsyncInputAdapterTest()

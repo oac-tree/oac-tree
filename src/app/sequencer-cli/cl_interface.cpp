@@ -44,7 +44,6 @@ CLInterface::CLInterface(const sup::log::BasicLogger& logger)
   : m_logger{logger}
   , m_input_adapter{std::bind(&CLInterface::UserInput, this, _1, _2),
                     std::bind(&CLInterface::Interrupt, this, _1)}
-  , m_mtx{}
 {}
 
 CLInterface::~CLInterface() = default;
@@ -150,7 +149,6 @@ void CLInterface::Interrupt(sup::dto::uint64 id)
 
 bool CLInterface::GetUserValue(sup::dto::AnyValue &value, const std::string &description)
 {
-  std::lock_guard<std::mutex> lk{m_mtx};
   if (!sup::dto::IsScalarValue(value))
   {
     auto json_type = sup::dto::AnyTypeToJSONString(value.GetType());
@@ -178,7 +176,6 @@ bool CLInterface::GetUserValue(sup::dto::AnyValue &value, const std::string &des
 int CLInterface::GetUserChoice(const std::vector<std::string>& options,
                                const sup::dto::AnyValue& metadata)
 {
-  std::lock_guard<std::mutex> lk{m_mtx};
   std::string message = GetMainTextFromMetadata(metadata);
   if (message.empty())
   {

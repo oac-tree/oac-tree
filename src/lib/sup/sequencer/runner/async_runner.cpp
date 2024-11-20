@@ -244,6 +244,7 @@ AsyncRunner::Action AsyncRunner::HandleFinished(JobCommand command)
       break;
     case JobCommand::kReset:
       m_proc.Teardown(m_ui);
+      m_proc.Setup();
       SetState(JobState::kInitial);
       break;
     case JobCommand::kHalt:

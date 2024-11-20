@@ -152,8 +152,9 @@ TEST_F(LocalJobTest, HaltReset)
   // First Copy has 3 updates: NOT_STARTED -> NOT_FINISHED -> SUCCESS -> NOT_STARTED
   // Second Copy has no updates
   EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(5));
-  // All variables get an initial update and one of them is overwritten:
-  EXPECT_CALL(m_test_job_info_io, VariableUpdated(_, _, true)).Times(Exactly(4));
+  // All variables get an initial update and one of them is overwritten; upon reset,
+  // they will all again receive updates of their initial values
+  EXPECT_CALL(m_test_job_info_io, VariableUpdated(_, _, true)).Times(Exactly(7));
   EXPECT_CALL(m_test_job_info_io, NextInstructionsUpdated(_)).Times(AtLeast(1));
 
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);

@@ -60,6 +60,18 @@ const std::string kLongWaitProcedureBody{R"(
   <Workspace/>
 )"};
 
+const std::string kVarCopyProcedureBody{R"(
+  <Sequence>
+    <Copy inputVar="one" outputVar="var1"/>
+    <Copy inputVar="one" outputVar="var2"/>
+  </Sequence>
+  <Workspace>
+    <Local name="one" type='{"type":"uint32"}' value='1'/>
+    <Local name="var1" type='{"type":"uint32"}' value='0'/>
+    <Local name="var2" type='{"type":"uint32"}' value='0'/>
+  </Workspace>
+)"};
+
 using namespace sup::sequencer;
 using namespace sup::sequencer;
 
@@ -158,6 +170,21 @@ TEST_F(AsyncRunnerTest, StepReset)
   EXPECT_TRUE(WaitForState(JobState::kStepping));
   EXPECT_TRUE(WaitForState(JobState::kSucceeded));
   EXPECT_EQ(m_monitor.GetTickCount(), 2u);
+  async_runner.Reset();
+  EXPECT_TRUE(WaitForState(JobState::kInitial));
+  async_runner.Start();
+  EXPECT_TRUE(WaitForState(JobState::kSucceeded));
+}
+
+TEST_F(AsyncRunnerTest, ResetWithWorkspace)
+{
+  DefaultUserInterface ui;
+  auto proc = ParseProcedureString(
+    sup::UnitTestHelper::CreateProcedureString(kVarCopyProcedureBody));
+  AsyncRunner async_runner{*proc, ui, m_monitor};
+  EXPECT_TRUE(WaitForState(JobState::kInitial));
+  async_runner.Start();
+  EXPECT_TRUE(WaitForState(JobState::kSucceeded));
   async_runner.Reset();
   EXPECT_TRUE(WaitForState(JobState::kInitial));
   async_runner.Start();

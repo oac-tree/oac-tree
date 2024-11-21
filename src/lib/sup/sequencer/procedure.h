@@ -201,6 +201,15 @@ public:
   void Halt();
 
   /**
+   * @brief Reset the procedure to its initial state after setup.
+   *
+   * @param ui UserInterface to use for instruction status updates.
+   *
+   * @details TODO.
+   */
+  void Reset(UserInterface& ui);
+
+  /**
    * @brief Tear down the procedure.
    *
    * @param ui UserInterface to use for instruction status updates.

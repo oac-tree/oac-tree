@@ -213,10 +213,21 @@ void Procedure::Halt()
   RootInstruction()->Halt();
 }
 
-void Procedure::Teardown(UserInterface& ui)
+void Procedure::Reset(UserInterface& ui)
 {
   m_workspace->Teardown();
   m_procedure_store->ResetProcedures(ui);
+  if (RootInstruction() != nullptr)
+  {
+    RootInstruction()->Reset(ui);
+  }
+  m_workspace->Setup();
+}
+
+void Procedure::Teardown(UserInterface& ui)
+{
+  m_workspace->Teardown();
+  m_procedure_store->TearDownProcedures(ui);
   if (RootInstruction() == nullptr)
   {
     return;

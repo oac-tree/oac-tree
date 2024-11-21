@@ -243,8 +243,7 @@ AsyncRunner::Action AsyncRunner::HandleFinished(JobCommand command)
     case JobCommand::kPause:
       break;
     case JobCommand::kReset:
-      m_proc.Teardown(m_ui);
-      m_proc.Setup();
+      m_proc.Reset(m_ui);
       SetState(JobState::kInitial);
       break;
     case JobCommand::kHalt:

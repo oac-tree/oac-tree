@@ -54,6 +54,11 @@ public:
    */
   void ResetProcedures(UserInterface& ui) const;
 
+  /**
+   * @brief Tear down all owned procedures.
+   */
+  void TearDownProcedures(UserInterface& ui) const;
+
 private:
   Procedure* m_parent;
 

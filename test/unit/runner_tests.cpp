@@ -460,25 +460,6 @@ RunnerTest::RunnerTest()
     , sync_proc{ParseProcedureString(SyncProcedureString)}
     , copy_proc{ParseProcedureString(CopyVariableProcedureString)}
     , async_wait_proc{ParseProcedureString(AsyncWaitProcedureString)}
-{
-}
+{}
 
-RunnerTest::~RunnerTest()
-{
-  if (async_proc)
-  {
-    async_proc->Teardown(empty_ui);
-  }
-  if (sync_proc)
-  {
-    sync_proc->Teardown(empty_ui);
-  }
-  if (copy_proc)
-  {
-    copy_proc->Teardown(empty_ui);
-  }
-  if (async_wait_proc)
-  {
-    async_wait_proc->Teardown(empty_ui);
-  }
-}
+RunnerTest::~RunnerTest() = default;

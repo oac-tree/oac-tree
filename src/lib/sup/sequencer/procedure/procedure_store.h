@@ -52,7 +52,7 @@ public:
   /**
    * @brief Reset all owned procedures.
    */
-  void ResetProcedures(UserInterface& ui) const;
+  void ResetProcedureWorkspaces(UserInterface& ui) const;
 
   /**
    * @brief Tear down all owned procedures.

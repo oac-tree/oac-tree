@@ -216,24 +216,12 @@ void Procedure::Halt()
 void Procedure::Reset(UserInterface& ui)
 {
   m_workspace->Teardown();
-  m_procedure_store->ResetProcedures(ui);
+  m_procedure_store->ResetProcedureWorkspaces(ui);
   if (RootInstruction() != nullptr)
   {
     RootInstruction()->Reset(ui);
   }
   m_workspace->Setup();
-}
-
-void Procedure::Teardown(UserInterface& ui)
-{
-  m_workspace->Teardown();
-  m_procedure_store->TearDownProcedures(ui);
-  if (RootInstruction() == nullptr)
-  {
-    return;
-  }
-  RootInstruction()->Reset(ui);  // instructions are reset instead of torn down.
-  m_attribute_handler.ClearFailedConstraints();
 }
 
 ExecutionStatus Procedure::GetStatus() const
@@ -323,6 +311,18 @@ void Procedure::SetupPreamble()
       throw ProcedureSetupException(error_message);
     }
   }
+}
+
+void Procedure::Teardown(UserInterface& ui)
+{
+  m_workspace->Teardown();
+  m_procedure_store->TearDownProcedures(ui);
+  if (RootInstruction() == nullptr)
+  {
+    return;
+  }
+  RootInstruction()->Reset(ui);  // instructions are reset instead of torn down.
+  m_attribute_handler.ClearFailedConstraints();
 }
 
 const ProcedureStore& Procedure::GetProcedureStore() const

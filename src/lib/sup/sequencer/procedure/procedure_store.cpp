@@ -24,6 +24,7 @@
 #include <sup/sequencer/exceptions.h>
 #include <sup/sequencer/procedure.h>
 #include <sup/sequencer/sequence_parser.h>
+#include <sup/sequencer/workspace.h>
 
 namespace sup
 {
@@ -57,20 +58,19 @@ Procedure& ProcedureStore::LoadProcedure(const std::string& filename) const
   return *m_procedure_cache[filename];
 }
 
-void ProcedureStore::ResetProcedures(UserInterface& ui) const
+void ProcedureStore::ResetProcedureWorkspaces(UserInterface& ui) const
 {
   for (auto& entry : m_procedure_cache)
   {
-    entry.second->Reset(ui);
+    auto& ws = entry.second->GetWorkspace();
+    ws.Teardown();
+    ws.Setup();
   }
 }
 
 void ProcedureStore::TearDownProcedures(UserInterface& ui) const
 {
-  for (auto& entry : m_procedure_cache)
-  {
-    entry.second->Teardown(ui);
-  }
+  m_procedure_cache.clear();
 }
 
 }  // namespace sequencer

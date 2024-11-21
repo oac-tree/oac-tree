@@ -314,10 +314,4 @@ ProcedureTest::ProcedureTest()
   loaded_proc->Setup();
 }
 
-ProcedureTest::~ProcedureTest()
-{
-  if (loaded_proc)
-  {
-    loaded_proc->Teardown(mock_ui);
-  }
-}
+ProcedureTest::~ProcedureTest() = default;

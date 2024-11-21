@@ -205,19 +205,10 @@ public:
    *
    * @param ui UserInterface to use for instruction status updates.
    *
-   * @details TODO.
+   * @details All workspaces are torn down and setup again; instructions receive a reset command.
+   * The procedure can be started afterwards in a fresh state.
    */
   void Reset(UserInterface& ui);
-
-  /**
-   * @brief Tear down the procedure.
-   *
-   * @param ui UserInterface to use for instruction status updates.
-   *
-   * @details This method request a halt and blocks until all asynchronous instructions are
-   * finished.
-   */
-  void Teardown(UserInterface& ui);
 
   /**
    * @brief Retrieve status of root sequence.
@@ -346,6 +337,9 @@ public:
   void SetupPreamble();
 
 private:
+  void Teardown(UserInterface& ui);
+  const ProcedureStore& GetProcedureStore() const;
+
   std::vector<std::unique_ptr<Instruction>> m_instructions;
   std::unique_ptr<Workspace> m_workspace;
 
@@ -364,8 +358,6 @@ private:
 
   // Cache for other procedures loaded from files and to be used by include nodes.
   std::unique_ptr<ProcedureStore> m_procedure_store;
-
-  const ProcedureStore& GetProcedureStore() const;
 };
 
 /**

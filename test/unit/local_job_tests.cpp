@@ -108,8 +108,8 @@ TEST_F(LocalJobTest, GetInfo)
 TEST_F(LocalJobTest, Start)
 {
   EXPECT_CALL(m_test_job_info_io, InitNumberOfInstructions(3)).Times(Exactly(1));
-  // Every instruction does: NOT_STARTED -> NOT_FINISHED -> SUCCESS -> NOT_STARTED:
-  EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(9));
+  // Every instruction does: NOT_STARTED -> NOT_FINISHED -> SUCCESS:
+  EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(6));
   // All variables get an initial update and two of them are overwritten:
   EXPECT_CALL(m_test_job_info_io, VariableUpdated(_, _, true)).Times(Exactly(5));
   EXPECT_CALL(m_test_job_info_io, NextInstructionsUpdated(_)).Times(AtLeast(1));
@@ -126,10 +126,10 @@ TEST_F(LocalJobTest, Start)
 TEST_F(LocalJobTest, Step)
 {
   EXPECT_CALL(m_test_job_info_io, InitNumberOfInstructions(3)).Times(Exactly(1));
-  // Sequence has 2 updates: NOT_STARTED -> NOT_FINISHED -> NOT_STARTED
-  // First Copy has 3 updates: NOT_STARTED -> NOT_FINISHED -> SUCCESS -> NOT_STARTED
+  // Sequence has 2 updates: NOT_STARTED -> NOT_FINISHED
+  // First Copy has 3 updates: NOT_STARTED -> NOT_FINISHED -> SUCCESS
   // Second Copy has no updates
-  EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(5));
+  EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(3));
   // All variables get an initial update and one of them is overwritten:
   EXPECT_CALL(m_test_job_info_io, VariableUpdated(_, _, true)).Times(Exactly(4));
   EXPECT_CALL(m_test_job_info_io, NextInstructionsUpdated(_)).Times(AtLeast(1));
@@ -177,7 +177,7 @@ TEST_F(LocalJobTest, Breakpoints)
   EXPECT_CALL(m_test_job_info_io, InitNumberOfInstructions(3)).Times(Exactly(1));
   // Every instruction does: NOT_STARTED -> NOT_FINISHED -> SUCCESS -> NOT_STARTED
   // Every breakpoint update also causes this to be called:
-  EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(12));
+  EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(9));
   // All variables get an initial update and two of them are overwritten:
   EXPECT_CALL(m_test_job_info_io, VariableUpdated(_, _, true)).Times(Exactly(5));
   EXPECT_CALL(m_test_job_info_io, NextInstructionsUpdated(_)).Times(AtLeast(1));
@@ -201,7 +201,7 @@ TEST_F(LocalJobTest, MoveConstructor)
 {
   EXPECT_CALL(m_test_job_info_io, InitNumberOfInstructions(3)).Times(Exactly(1));
   // Every instruction does: NOT_STARTED -> NOT_FINISHED -> SUCCESS -> NOT_STARTED:
-  EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(9));
+  EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(6));
   // All variables get an initial update and two of them are overwritten:
   EXPECT_CALL(m_test_job_info_io, VariableUpdated(_, _, true)).Times(Exactly(5));
   EXPECT_CALL(m_test_job_info_io, NextInstructionsUpdated(_)).Times(AtLeast(1));
@@ -221,7 +221,7 @@ TEST_F(LocalJobTest, MoveAssignment)
   // This is called for each job:
   EXPECT_CALL(m_test_job_info_io, InitNumberOfInstructions(3)).Times(Exactly(2));
   // Every instruction does: NOT_STARTED -> NOT_FINISHED -> SUCCESS -> NOT_STARTED:
-  EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(9));
+  EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(6));
   // All variables get an initial update (for each job) and two of them are overwritten:
   EXPECT_CALL(m_test_job_info_io, VariableUpdated(_, _, true)).Times(Exactly(8));
   EXPECT_CALL(m_test_job_info_io, NextInstructionsUpdated(_)).Times(AtLeast(1));

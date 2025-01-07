@@ -14,14 +14,7 @@
 # refer to the file ITER-LICENSE.TXT located in the top level directory
 # of the distribution package.
 
-# Set required CMake version
-# This sets the default CMake behaviour through policies allowing compatibility with future versions
-# Justification:
-#   - CMake 3.12 - CMP0074: find_package command now searches prefixes specified by the <PackageName>_ROOT environment variable
-#       CODAC systems contain conflicting environment variables which generate warnings when this policy is not set to NEW
-#   - CMake 3.13 - CMP0076: relative source file paths are interpreted as being relative to the current source directory
-cmake_minimum_required(VERSION 3.13)
-
+cmake_minimum_required(VERSION 3.13...3.31)
 project(sup-sequencer VERSION 3.3.0)
 
 option(COA_COVERAGE "Generate unit test coverage information" OFF)

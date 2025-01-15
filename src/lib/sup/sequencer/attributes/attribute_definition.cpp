@@ -30,14 +30,14 @@ namespace sequencer
 AttributeDefinition::AttributeDefinition(const std::string& name,
                                          const sup::dto::AnyType& value_type)
   : m_name{name}
-  , m_properties{new AttributeProperties(value_type)}
+  , m_properties{std::make_unique<AttributeProperties>(value_type)}
 {}
 
 AttributeDefinition::~AttributeDefinition() = default;
 
 AttributeDefinition::AttributeDefinition(const AttributeDefinition& other)
   : m_name{other.m_name}
-  , m_properties{new AttributeProperties(*other.m_properties)}
+  , m_properties{std::make_unique<AttributeProperties>(*other.m_properties)}
 {}
 
 AttributeDefinition::AttributeDefinition(AttributeDefinition&& other) noexcept = default;

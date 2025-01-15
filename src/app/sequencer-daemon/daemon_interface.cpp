@@ -69,7 +69,7 @@ std::unique_ptr<IUserInputFuture> DaemonInterface::RequestUserInput(const UserIn
   (void)request;
   std::string error_message = "DaemonInterface::RequestUserInput(): is not implemented";
   m_logger.Error(error_message);
-  return std::unique_ptr<IUserInputFuture>{new UnsupportedInputFuture{}};
+  return std::make_unique<UnsupportedInputFuture>();
 }
 
 void DaemonInterface::Message(const std::string& message)

@@ -68,7 +68,7 @@ std::unique_ptr<AsyncRunner> CreateAsyncRunner(Procedure& proc, UserInterface& u
   error_msg.clear();
   try
   {
-    result.reset(new AsyncRunner(proc, ui, state_monitor));
+    result = std::make_unique<AsyncRunner>(proc, ui, state_monitor);
   }
   catch(const std::exception& e)
   {

@@ -395,8 +395,8 @@ TEST_F(WorkspaceTest, SetupTeardownActions)
 
   Workspace workspace;
 
-  auto var0 = std::unique_ptr<TestServerVariable>(new TestServerVariable(actions));
-  auto var1 = std::unique_ptr<TestServerVariable>(new TestServerVariable(actions));
+  auto var0 = std::make_unique<TestServerVariable>(actions);
+  auto var1 = std::make_unique<TestServerVariable>(actions);
 
   workspace.AddVariable("var0", std::move(var0));
   workspace.AddVariable("var1", std::move(var1));

@@ -95,7 +95,7 @@ ExecutionStatus TestTreeInstruction::ExecuteSingleImpl(UserInterface&, Workspace
 
 std::unique_ptr<Instruction> CreateTestTreeInstruction(const std::string& name)
 {
-  std::unique_ptr<Instruction> result{new TestTreeInstruction{}};
+  auto result = std::make_unique<TestTreeInstruction>();
   result->SetName(name);
   return result;
 }
@@ -209,7 +209,7 @@ int MockUI::GetUserChoice(const std::vector<std::string>& options,
                               const sup::dto::AnyValue& metadata)
 {
   m_options = options;
-  m_metadata.reset(new sup::dto::AnyValue{metadata});
+  m_metadata = std::make_unique<sup::dto::AnyValue>(metadata);
   return m_choice;
 }
 

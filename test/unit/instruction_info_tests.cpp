@@ -125,9 +125,9 @@ TEST_F(InstructionInfoTest, CreateOrderedInstructionInfo)
   {
     // InstructionInfo tree with proper indices
     InstructionInfo sequence("sequence", 0, {});
-    auto child0 = std::unique_ptr<InstructionInfo>(new InstructionInfo("child0", 1, {}));
+    auto child0 = std::make_unique<InstructionInfo>("child0", 1, std::vector<AttributeInfo>{});
     auto child0_ptr = child0.get();
-    auto child1 = std::unique_ptr<InstructionInfo>(new InstructionInfo("child1", 2, {}));
+    auto child1 = std::make_unique<InstructionInfo>("child1", 2, std::vector<AttributeInfo>{});
     auto child1_ptr = child1.get();
 
     EXPECT_EQ(sequence.AppendChild(std::move(child0)), child0_ptr);
@@ -144,9 +144,9 @@ TEST_F(InstructionInfoTest, CreateOrderedInstructionInfo)
   {
     // InstructionInfo tree with duplicate indices
     InstructionInfo sequence("sequence", 0, {});
-    auto child0 = std::unique_ptr<InstructionInfo>(new InstructionInfo("child0", 1, {}));
+    auto child0 = std::make_unique<InstructionInfo>("child0", 1, std::vector<AttributeInfo>{});
     auto child0_ptr = child0.get();
-    auto child1 = std::unique_ptr<InstructionInfo>(new InstructionInfo("child1", 0, {}));
+    auto child1 = std::make_unique<InstructionInfo>("child1", 0, std::vector<AttributeInfo>{});
     auto child1_ptr = child1.get();
 
     EXPECT_EQ(sequence.AppendChild(std::move(child0)), child0_ptr);
@@ -158,9 +158,9 @@ TEST_F(InstructionInfoTest, CreateOrderedInstructionInfo)
   {
     // InstructionInfo tree with out-of-bounds indices
     InstructionInfo sequence("sequence", 0, {});
-    auto child0 = std::unique_ptr<InstructionInfo>(new InstructionInfo("child0", 1, {}));
+    auto child0 = std::make_unique<InstructionInfo>("child0", 1, std::vector<AttributeInfo>{});
     auto child0_ptr = child0.get();
-    auto child1 = std::unique_ptr<InstructionInfo>(new InstructionInfo("child1", 3, {}));
+    auto child1 = std::make_unique<InstructionInfo>("child1", 3, std::vector<AttributeInfo>{});
     auto child1_ptr = child1.get();
 
     EXPECT_EQ(sequence.AppendChild(std::move(child0)), child0_ptr);

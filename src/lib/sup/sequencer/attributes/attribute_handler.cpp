@@ -42,7 +42,7 @@ struct AttributeHandler::AttributeHandlerImpl
 };
 
 AttributeHandler::AttributeHandler()
-  : m_impl{new AttributeHandlerImpl{}}
+  : m_impl{std::make_unique<AttributeHandlerImpl>()}
   , m_str_attributes{}
 {}
 

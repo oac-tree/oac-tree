@@ -69,8 +69,8 @@ InstructionInfo::InstructionInfo(const InstructionInfo& other)
     auto children = node.src.Children();
     for (auto child : children)
     {
-      std::unique_ptr<InstructionInfo> child_info{
-        new InstructionInfo{child->GetType(), child->GetIndex(), child->GetAttributes()}};
+      auto child_info = std::make_unique<InstructionInfo>(child->GetType(), child->GetIndex(),
+                                                          child->GetAttributes());
       auto child_info_p = node.dest.AppendChild(std::move(child_info));
       InstrInfoCopyNode child_node{*child, *child_info_p};
       stack.push_back(child_node);

@@ -75,9 +75,9 @@ std::unique_ptr<Variable> VariableRegistry::Create(std::string name)
 std::vector<std::string> VariableRegistry::RegisteredVariableNames() const
 {
   std::vector<std::string> result;
-  for (const auto elem : m_variable_map)
+  for (const auto& [variable_name, _] : m_variable_map)
   {
-    result.push_back(elem.first);
+    result.push_back(variable_name);
   }
   return result;
 }

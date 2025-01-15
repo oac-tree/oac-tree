@@ -148,22 +148,22 @@ TEST_F(JobInterfaceAdapterTest, UserInput)
   sup::dto::AnyValue return_value{};
   const std::vector<std::string> choices{ "vanilla", "strawberry", "chocolate"};
   sup::dto::AnyValue metadata{ sup::dto::StringType, "Choose your favorite flavour"};
-  int choice = 2;
+  int user_choice = 2;
   EXPECT_CALL(m_test_job_info_io, GetUserValue(_, return_value, description)).Times(Exactly(1))
     .WillOnce(DoAll(SetArgReferee<1>(user_value), Return(true)));
   EXPECT_CALL(m_test_job_info_io, GetUserChoice(_, choices, metadata)).Times(Exactly(1))
-    .WillOnce(Return(choice));
+    .WillOnce(Return(user_choice));
 
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
   auto proc = sup::sequencer::ParseProcedureString(procedure_string);
   ASSERT_NE(proc.get(), nullptr);
   JobInterfaceAdapter job_interface_adapter{*proc, m_test_job_info_io};
-  auto user_value_reply = GetBlockingUserValue(job_interface_adapter, return_value, description);
-  EXPECT_TRUE(user_value_reply.first);
-  EXPECT_EQ(user_value_reply.second, user_value);
-  auto user_choice_reply = GetBlockingUserChoice(job_interface_adapter, choices, metadata);
-  EXPECT_TRUE(user_choice_reply.first);
-  EXPECT_EQ(user_choice_reply.second, choice);
+  auto [retrieved, value] = GetBlockingUserValue(job_interface_adapter, return_value, description);
+  EXPECT_TRUE(retrieved);
+  EXPECT_EQ(value, user_value);
+  auto [fetched, choice] = GetBlockingUserChoice(job_interface_adapter, choices, metadata);
+  EXPECT_TRUE(fetched);
+  EXPECT_EQ(choice, user_choice);
 }
 
 TEST_F(JobInterfaceAdapterTest, OnStateChange)

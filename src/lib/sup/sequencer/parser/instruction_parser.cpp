@@ -53,9 +53,9 @@ std::unique_ptr<Instruction> ParseInstruction(const sup::xml::TreeData &data)
                                 "with typename [" + instr_type + "]";
     throw ParseException(error_message);
   }
-  for (auto &attr : data.Attributes())
+  for (auto& [attr_name, attr_value] : data.Attributes())
   {
-    instr->AddAttribute(attr.first, attr.second);
+    instr->AddAttribute(attr_name, attr_value);
   }
   AddChildInstructions(instr.get(), data.Children());
   return instr;

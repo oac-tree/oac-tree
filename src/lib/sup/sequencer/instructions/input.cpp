@@ -57,8 +57,8 @@ ExecutionStatus Input::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   {
     return ExecutionStatus::FAILURE;
   }
-  auto input_reply = GetInterruptableUserValue(ui, *this, value, description);
-  if (!input_reply.first)
+  auto [retrieved, user_value] = GetInterruptableUserValue(ui, *this, value, description);
+  if (!retrieved)
   {
     std::string warning_message = InstructionWarningProlog(*this) +
       "did not receive compatible user value for field [" +
@@ -67,7 +67,7 @@ ExecutionStatus Input::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
     return ExecutionStatus::FAILURE;
   }
   if (!SetValueFromAttributeName(*this, ws, ui, Constants::OUTPUT_VARIABLE_NAME_ATTRIBUTE_NAME,
-                                 input_reply.second))
+                                 user_value))
   {
     return ExecutionStatus::FAILURE;
   }

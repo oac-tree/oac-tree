@@ -193,10 +193,10 @@ bool Variable::AddAttribute(const std::string &name, const std::string &value)
 bool Variable::AddAttributes(const StringAttributeList& str_attributes)
 {
   bool status = true;
-  for (auto &attr : str_attributes)
+  for (auto& [attr_name, attr_value] : str_attributes)
   {
     // Order in AND matters: add all attributes, even if previous adding failed.
-    status = AddAttribute(attr.first, attr.second) && status;
+    status = AddAttribute(attr_name, attr_value) && status;
   }
   return status;
 }

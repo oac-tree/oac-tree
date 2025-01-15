@@ -133,9 +133,9 @@ TEST_F(WaitForVariablesTest, WaitForFileVarsFailure)
   ASSERT_TRUE(proc.get() != nullptr);
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
   ASSERT_EQ(ui.m_log_entries.size(), 1);
-  auto log_entry = ui.m_log_entries.front();
-  EXPECT_EQ(log_entry.first, log::SUP_SEQ_LOG_WARNING);
-  auto pos = log_entry.second.find("file");
+  auto [severity, message] = ui.m_log_entries.front();
+  EXPECT_EQ(severity, log::SUP_SEQ_LOG_WARNING);
+  auto pos = message.find("file");
   EXPECT_NE(pos, std::string::npos);
 }
 
@@ -159,11 +159,11 @@ TEST_F(WaitForVariablesTest, WaitForMultipleFileVarsFailure)
   ASSERT_TRUE(proc.get() != nullptr);
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
   ASSERT_EQ(ui.m_log_entries.size(), 1);
-  auto log_entry = ui.m_log_entries.front();
-  EXPECT_EQ(log_entry.first, log::SUP_SEQ_LOG_WARNING);
-  auto pos = log_entry.second.find("file1");
+  auto [severity, message] = ui.m_log_entries.front();
+  EXPECT_EQ(severity, log::SUP_SEQ_LOG_WARNING);
+  auto pos = message.find("file1");
   EXPECT_NE(pos, std::string::npos);
-  pos = log_entry.second.find("file2");
+  pos = message.find("file2");
   EXPECT_NE(pos, std::string::npos);
 }
 

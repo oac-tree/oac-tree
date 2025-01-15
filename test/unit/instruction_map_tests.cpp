@@ -110,10 +110,10 @@ TEST_F(InstructionMapTest, Construction)
 
     // Test indices range from 0 to 4
     std::vector<sup::dto::uint32> indices;
-    for (const auto& map_entry : index_map)
+    for (const auto& [instruction, idx] : index_map)
     {
-      EXPECT_NE(map_entry.first, nullptr);
-      indices.push_back(map_entry.second);
+      EXPECT_NE(instruction, nullptr);
+      indices.push_back(idx);
     }
     std::vector<sup::dto::uint32> expected{0, 1, 2, 3, 4};
     EXPECT_TRUE(std::is_permutation(indices.begin(), indices.end(), expected.begin()));

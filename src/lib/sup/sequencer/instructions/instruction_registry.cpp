@@ -108,9 +108,9 @@ std::unique_ptr<Instruction> InstructionRegistry::Create(const std::string& name
 std::vector<std::string> InstructionRegistry::RegisteredInstructionNames() const
 {
   std::vector<std::string> result;
-  for (const auto& elem : m_instruction_map)
+  for (const auto& [instruction_name, _] : m_instruction_map)
   {
-    result.push_back(elem.first);
+    result.push_back(instruction_name);
   }
   return result;
 }

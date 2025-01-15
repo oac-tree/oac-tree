@@ -19,6 +19,7 @@
  * of the distribution package.
  ******************************************************************************/
 
+#include "sup/sequencer/constraint.h"
 #include <sup/sequencer/attribute_handler.h>
 #include <sup/sequencer/constants.h>
 #include <sup/sequencer/workspace.h>
@@ -121,12 +122,12 @@ bool AttributeHandler::GetValue(const std::string& attr_name, sup::dto::AnyValue
   {
     return false;
   }
-  auto result = m_impl->attr_validator.TryCreateAnyValue(*it);
-  if (!result.second.empty())
+  auto [anyvalue, constraint] = m_impl->attr_validator.TryCreateAnyValue(*it);
+  if (!constraint.empty())
   {
     return false;
   }
-  if (!sup::dto::TryAssign(value, result.first))
+  if (!sup::dto::TryAssign(value, anyvalue))
   {
     return false;
   }

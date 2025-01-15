@@ -81,15 +81,15 @@ TEST_F(AttributeHandlerTest, SetStringAttribute)
   EXPECT_TRUE(handler.HasStringAttribute(kStrAttrName));
   str_attributes = handler.GetStringAttributes();
   ASSERT_EQ(str_attributes.size(), 1);
-  auto attr = str_attributes[0];
-  EXPECT_EQ(attr.first, kStrAttrName);
-  EXPECT_EQ(attr.second, kBoolAttrValue);
+  auto [attr_name, attr_value] = str_attributes[0];
+  EXPECT_EQ(attr_name, kStrAttrName);
+  EXPECT_EQ(attr_value, kBoolAttrValue);
   EXPECT_NO_THROW(handler.SetStringAttribute(kStrAttrName, kStrAttrValue));
   str_attributes = handler.GetStringAttributes();
   ASSERT_EQ(str_attributes.size(), 1);
-  attr = str_attributes[0];
-  EXPECT_EQ(attr.first, kStrAttrName);
-  EXPECT_EQ(attr.second, kStrAttrValue);
+  auto [attr_name2, attr_value2] = str_attributes[0];
+  EXPECT_EQ(attr_name2, kStrAttrName);
+  EXPECT_EQ(attr_value2, kStrAttrValue);
 }
 
 TEST_F(AttributeHandlerTest, GetValueAs)

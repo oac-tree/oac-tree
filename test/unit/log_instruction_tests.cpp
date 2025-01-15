@@ -104,9 +104,9 @@ TEST_F(LogInstructionTest, SimpleMessage)
   EXPECT_NO_THROW(instruction->ExecuteSingle(ui, proc.GetWorkspace()));
   EXPECT_EQ(instruction->GetStatus(), ExecutionStatus::SUCCESS);
   EXPECT_EQ(NumberOfLogEntries(), 1);
-  auto last_entry = LastLogEntry();
-  EXPECT_EQ(last_entry.first, log::SUP_SEQ_LOG_INFO);
-  EXPECT_EQ(last_entry.second, log_message);
+  auto [severity, message] = LastLogEntry();
+  EXPECT_EQ(severity, log::SUP_SEQ_LOG_INFO);
+  EXPECT_EQ(message, log_message);
 }
 
 TEST_F(LogInstructionTest, MessageWithSeverity)
@@ -124,9 +124,9 @@ TEST_F(LogInstructionTest, MessageWithSeverity)
   EXPECT_NO_THROW(instruction->ExecuteSingle(ui, proc.GetWorkspace()));
   EXPECT_EQ(instruction->GetStatus(), ExecutionStatus::SUCCESS);
   EXPECT_EQ(NumberOfLogEntries(), 1);
-  auto last_entry = LastLogEntry();
-  EXPECT_EQ(last_entry.first, log::SUP_SEQ_LOG_CRIT);
-  EXPECT_EQ(last_entry.second, log_message);
+  auto [severity, message] = LastLogEntry();
+  EXPECT_EQ(severity, log::SUP_SEQ_LOG_CRIT);
+  EXPECT_EQ(message, log_message);
 }
 
 TEST_F(LogInstructionTest, MessageWithSeverityError)
@@ -144,10 +144,10 @@ TEST_F(LogInstructionTest, MessageWithSeverityError)
   EXPECT_NO_THROW(instruction->ExecuteSingle(ui, proc.GetWorkspace()));
   EXPECT_EQ(instruction->GetStatus(), ExecutionStatus::FAILURE);
   EXPECT_EQ(NumberOfLogEntries(), 1);
-  auto last_entry = LastLogEntry();
-  EXPECT_EQ(last_entry.first, log::SUP_SEQ_LOG_ERR);
-  EXPECT_NE(last_entry.second.find("Log"), std::string::npos);
-  EXPECT_NE(last_entry.second.find("superdupercritical"), std::string::npos);
+  auto [severity, message] = LastLogEntry();
+  EXPECT_EQ(severity, log::SUP_SEQ_LOG_ERR);
+  EXPECT_NE(message.find("Log"), std::string::npos);
+  EXPECT_NE(message.find("superdupercritical"), std::string::npos);
 }
 
 TEST_F(LogInstructionTest, VariableDoesNotExist)
@@ -163,10 +163,10 @@ TEST_F(LogInstructionTest, VariableDoesNotExist)
   EXPECT_NO_THROW(instruction->ExecuteSingle(ui, proc.GetWorkspace()));
   EXPECT_EQ(instruction->GetStatus(), ExecutionStatus::FAILURE);
   EXPECT_EQ(NumberOfLogEntries(), 1);
-  auto last_entry = LastLogEntry();
-  EXPECT_EQ(last_entry.first, log::SUP_SEQ_LOG_ERR);
-  EXPECT_NE(last_entry.second.find("Log"), std::string::npos);
-  EXPECT_NE(last_entry.second.find("does_not_exist"), std::string::npos);
+  auto [severity, message] = LastLogEntry();
+  EXPECT_EQ(severity, log::SUP_SEQ_LOG_ERR);
+  EXPECT_NE(message.find("Log"), std::string::npos);
+  EXPECT_NE(message.find("does_not_exist"), std::string::npos);
 }
 
 TEST_F(LogInstructionTest, VariableCannotBeRead)
@@ -188,10 +188,10 @@ TEST_F(LogInstructionTest, VariableCannotBeRead)
   EXPECT_NO_THROW(instruction->ExecuteSingle(ui, ws));
   EXPECT_EQ(instruction->GetStatus(), ExecutionStatus::FAILURE);
   EXPECT_EQ(NumberOfLogEntries(), 1);
-  auto last_entry = LastLogEntry();
-  EXPECT_EQ(last_entry.first, log::SUP_SEQ_LOG_WARNING);
-  EXPECT_NE(last_entry.second.find("Log"), std::string::npos);
-  EXPECT_NE(last_entry.second.find("var"), std::string::npos);
+  auto [severity, message] = LastLogEntry();
+  EXPECT_EQ(severity, log::SUP_SEQ_LOG_WARNING);
+  EXPECT_NE(message.find("Log"), std::string::npos);
+  EXPECT_NE(message.find("var"), std::string::npos);
 }
 
 TEST_F(LogInstructionTest, VariableSuccess)
@@ -215,9 +215,9 @@ TEST_F(LogInstructionTest, VariableSuccess)
   EXPECT_NO_THROW(instruction->ExecuteSingle(ui, ws));
   EXPECT_EQ(instruction->GetStatus(), ExecutionStatus::SUCCESS);
   EXPECT_EQ(NumberOfLogEntries(), 1);
-  auto last_entry = LastLogEntry();
-  EXPECT_EQ(last_entry.first, log::SUP_SEQ_LOG_INFO);
-  EXPECT_NE(last_entry.second.find("true"), std::string::npos);
+  auto [severity, message] = LastLogEntry();
+  EXPECT_EQ(severity, log::SUP_SEQ_LOG_INFO);
+  EXPECT_NE(message.find("true"), std::string::npos);
 }
 
 TEST_F(LogInstructionTest, ParsedProcedure)

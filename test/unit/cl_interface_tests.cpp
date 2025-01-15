@@ -78,9 +78,9 @@ TEST_F(CLInterfaceTest, GetUserValue)
   sup::dto::AnyValue val(sup::dto::UnsignedInteger32Type);
   std::istringstream input("567890");
   CinRedirector redirect(input);
-  auto reply = GetBlockingUserValue(cli, val, "");
-  EXPECT_TRUE(reply.first);
-  auto result = reply.second.As<sup::dto::uint32>();
+  auto [retrieved, value] = GetBlockingUserValue(cli, val, "");
+  EXPECT_TRUE(retrieved);
+  auto result = value.As<sup::dto::uint32>();
   EXPECT_EQ(result, 567890u);
 }
 
@@ -89,9 +89,9 @@ TEST_F(CLInterfaceTest, GetUserValueBool)
   sup::dto::AnyValue val(sup::dto::BooleanType);
   std::istringstream input("true");
   CinRedirector redirect(input);
-  auto reply = GetBlockingUserValue(cli, val, "");
-  EXPECT_TRUE(reply.first);
-  auto result = reply.second.As<sup::dto::boolean>();
+  auto [retrieved, value] = GetBlockingUserValue(cli, val, "");
+  EXPECT_TRUE(retrieved);
+  auto result = value.As<sup::dto::boolean>();
   EXPECT_EQ(result, true);
 }
 
@@ -100,9 +100,9 @@ TEST_F(CLInterfaceTest, GetUserValueString)
   sup::dto::AnyValue val(sup::dto::StringType);
   std::istringstream input("Test string");
   CinRedirector redirect(input);
-  auto reply = GetBlockingUserValue(cli, val, "");
-  EXPECT_TRUE(reply.first);
-  auto val_str = reply.second.As<std::string>();
+  auto [retrieved, value] = GetBlockingUserValue(cli, val, "");
+  EXPECT_TRUE(retrieved);
+  auto val_str = value.As<std::string>();
   EXPECT_TRUE(val_str == "Test string");
 }
 
@@ -113,16 +113,16 @@ TEST_F(CLInterfaceTest, GetUserValueParseError)
     sup::dto::AnyValue val(sup::dto::UnsignedInteger32Type);
     std::istringstream input("twenty-four");
     CinRedirector redirect(input);
-    auto reply = GetBlockingUserValue(cli, val, "");
-    EXPECT_FALSE(reply.first);
+    auto [retrieved, _] = GetBlockingUserValue(cli, val, "");
+    EXPECT_FALSE(retrieved);
     EXPECT_EQ(m_log_entries.size(), 1);
   }
   {
     sup::dto::AnyValue val(sup::dto::BooleanType);
     std::istringstream input("nottrue");
     CinRedirector redirect(input);
-    auto reply = GetBlockingUserValue(cli, val, "");
-    EXPECT_FALSE(reply.first);
+    auto [retrieved, _] = GetBlockingUserValue(cli, val, "");
+    EXPECT_FALSE(retrieved);
     EXPECT_EQ(m_log_entries.size(), 2);
   }
 }
@@ -137,8 +137,8 @@ TEST_F(CLInterfaceTest, GetUserValueUnsupportedType)
   sup::dto::AnyValue val(test_type);
   std::istringstream input("17");
   CinRedirector redirect(input);
-  auto reply = GetBlockingUserValue(cli, val, "");
-  EXPECT_FALSE(reply.first);
+  auto [retrieved, _] = GetBlockingUserValue(cli, val, "");
+  EXPECT_FALSE(retrieved);
   EXPECT_EQ(m_log_entries.size(), 1);
 }
 
@@ -147,11 +147,11 @@ TEST_F(CLInterfaceTest, GetUserChoice)
   auto options = std::vector<std::string>({"one", "two"});
   std::istringstream input("2");
   CinRedirector redirect(input);
-  auto reply = GetBlockingUserChoice(cli, options, {});
-  EXPECT_TRUE(reply.first);
+  auto [retrieved, value] = GetBlockingUserChoice(cli, options, {});
+  EXPECT_TRUE(retrieved);
   // CLI interface uses one-based indexing, but the options vector has zero-based indexing, so
   // returned integer is one smaller than the string input:
-  EXPECT_EQ(reply.second, 1);
+  EXPECT_EQ(value, 1);
 }
 
 TEST_F(CLInterfaceTest, GetUserChoiceParseError)
@@ -160,9 +160,9 @@ TEST_F(CLInterfaceTest, GetUserChoiceParseError)
   auto options = std::vector<std::string>({"one", "two"});
   std::istringstream input("one");
   CinRedirector redirect(input);
-  auto reply = GetBlockingUserChoice(cli, options, {});
-  EXPECT_FALSE(reply.first);
-  EXPECT_EQ(reply.second, -1);
+  auto [retrieved, value] = GetBlockingUserChoice(cli, options, {});
+  EXPECT_FALSE(retrieved);
+  EXPECT_EQ(value, -1);
   EXPECT_EQ(m_log_entries.size(), 1);
 }
 
@@ -172,9 +172,9 @@ TEST_F(CLInterfaceTest, GetUserChoiceOutOfBounds)
   auto options = std::vector<std::string>({"one", "two"});
   std::istringstream input("3");
   CinRedirector redirect(input);
-  auto reply = GetBlockingUserChoice(cli, options, {});
-  EXPECT_FALSE(reply.first);
-  EXPECT_EQ(reply.second, -1);
+  auto [retrieved, value] = GetBlockingUserChoice(cli, options, {});
+  EXPECT_FALSE(retrieved);
+  EXPECT_EQ(value, -1);
   EXPECT_EQ(m_log_entries.size(), 1);
 }
 

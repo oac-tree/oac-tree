@@ -56,15 +56,14 @@ ExecutionStatus UserChoice::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
     metadata.AddMember(Constants::USER_CHOICES_DIALOG_TYPE_NAME,
                        {sup::dto::UnsignedInteger32Type, dialog_type::kSelection});
     auto options = GetChoices();
-    auto input_reply = GetInterruptableUserChoice(ui, *this, options, metadata);
-    if (!input_reply.first)
+    auto [retrieved, choice] = GetInterruptableUserChoice(ui, *this, options, metadata);
+    if (!retrieved)
     {
       std::string warning_message = InstructionWarningProlog(*this) +
         "did not receive valid choice";
       LogWarning(ui, warning_message);
       return ExecutionStatus::FAILURE;
     }
-    int choice = input_reply.second;
     if (choice < 0 || choice >= ChildrenCount())
     {
       std::string warning_message = InstructionWarningProlog(*this) +

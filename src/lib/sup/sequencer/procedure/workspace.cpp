@@ -132,9 +132,7 @@ bool Workspace::ResetVariable(const std::string& varname)
 
 bool Workspace::GetValue(const std::string& name, sup::dto::AnyValue &value) const
 {
-  auto splitname = SplitFieldName(name);
-  auto varname = splitname.first;
-  auto fieldname = splitname.second;
+  auto [varname, fieldname] = SplitFieldName(name);
 
   auto it = m_var_map.find(varname);
   if (it == m_var_map.end())
@@ -146,9 +144,7 @@ bool Workspace::GetValue(const std::string& name, sup::dto::AnyValue &value) con
 
 bool Workspace::SetValue(const std::string& name, const sup::dto::AnyValue &value)
 {
-  auto splitname = SplitFieldName(name);
-  auto varname = splitname.first;
-  auto fieldname = splitname.second;
+  auto [varname, fieldname] = SplitFieldName(name);
 
   auto it = m_var_map.find(varname);
   if (it == m_var_map.end())

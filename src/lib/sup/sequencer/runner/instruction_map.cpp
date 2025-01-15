@@ -88,15 +88,14 @@ std::vector<const Instruction*> GetReverseMap(
 {
   auto size = instr_map.size();
   std::vector<const Instruction*> result(size, nullptr);
-  for (const auto& entry : instr_map)
+  for (const auto& [instruction, idx] : instr_map)
   {
-    auto idx = entry.second;
     if (idx >= result.size())
     {
       const std::string error = "GetReverseMap(): index found that is larger than the map size";
       throw InvalidOperationException(error);
     }
-    result[idx] = entry.first;
+    result[idx] = instruction;
   }
   auto iter = std::find(result.begin(), result.end(), nullptr);
   if (iter != result.end())

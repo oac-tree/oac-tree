@@ -70,8 +70,8 @@ TEST_F(DaemonInterfaceTest, GetUserValue)
 {
   EXPECT_TRUE(m_log_entries.empty());
   sup::dto::AnyValue val(sup::dto::UnsignedInteger32Type, 1234);
-  auto reply = GetBlockingUserValue(daemon_interface, val, "");
-  EXPECT_FALSE(reply.first);
+  auto [retrieved, _] = GetBlockingUserValue(daemon_interface, val, "");
+  EXPECT_FALSE(retrieved);
   EXPECT_FALSE(m_log_entries.empty());
 }
 
@@ -79,8 +79,8 @@ TEST_F(DaemonInterfaceTest, GetUserChoice)
 {
   EXPECT_TRUE(m_log_entries.empty());
   auto options = std::vector<std::string>({"one", "two"});
-  auto reply = GetBlockingUserChoice(daemon_interface, options, {});
-  EXPECT_FALSE(reply.first);
+  auto [retrieved, _] = GetBlockingUserChoice(daemon_interface, options, {});
+  EXPECT_FALSE(retrieved);
   EXPECT_FALSE(m_log_entries.empty());
 }
 

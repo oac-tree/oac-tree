@@ -205,9 +205,9 @@ sup::dto::AnyValue ToAnyValueNode(const InstructionInfo& instr_info)
   auto result = kInstructionInfoNodeAnyValue;
   result[kInstructionInfoNodeTypeField] = instr_info.GetType();
   result[kIndexField] = instr_info.GetIndex();
-  for (const auto& attr : instr_info.GetAttributes())
+  for (const auto& [attr_name, attr_value] : instr_info.GetAttributes())
   {
-    result[kAttributesField].AddMember(attr.first, attr.second);
+    result[kAttributesField].AddMember(attr_name, attr_value);
   }
   return result;
 }

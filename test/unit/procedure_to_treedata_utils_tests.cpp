@@ -265,9 +265,9 @@ TEST_F(ProcedureToTreeDataUtilsTest, ProcedurePreamble)
     EXPECT_EQ(child_data.GetNodeName(), Constants::REGISTERTYPE_ELEMENT_NAME);
     EXPECT_EQ(child_data.GetNumberOfChildren(), 0);
     EXPECT_EQ(child_data.GetNumberOfAttributes(), 1);
-    auto attr_data = child_data.Attributes()[0];
-    EXPECT_EQ(attr_data.first, Constants::REGISTERTYPE_JSON_FILE_ATTRIBUTE);
-    EXPECT_EQ(attr_data.second, kJSONFilename);
+    auto [attr_type, attr_data] = child_data.Attributes()[0];
+    EXPECT_EQ(attr_type, Constants::REGISTERTYPE_JSON_FILE_ATTRIBUTE);
+    EXPECT_EQ(attr_data, kJSONFilename);
   }
   {
     // Check type registration with json type string element
@@ -275,9 +275,9 @@ TEST_F(ProcedureToTreeDataUtilsTest, ProcedurePreamble)
     EXPECT_EQ(child_data.GetNodeName(), Constants::REGISTERTYPE_ELEMENT_NAME);
     EXPECT_EQ(child_data.GetNumberOfChildren(), 0);
     EXPECT_EQ(child_data.GetNumberOfAttributes(), 1);
-    auto attr_data = child_data.Attributes()[0];
-    EXPECT_EQ(attr_data.first, Constants::REGISTERTYPE_JSON_TYPE_ATTRIBUTE);
-    EXPECT_EQ(attr_data.second, kJSONType);
+    auto [attr_type, attr_data] = child_data.Attributes()[0];
+    EXPECT_EQ(attr_type, Constants::REGISTERTYPE_JSON_TYPE_ATTRIBUTE);
+    EXPECT_EQ(attr_data, kJSONType);
   }
   {
     // Check plugin element

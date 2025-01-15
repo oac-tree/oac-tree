@@ -86,16 +86,16 @@ ExecutionStatus Include::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 bool Include::PostInitialiseVariables(const StringAttributeList& source_attributes)
 {
   bool result = true;
-  for (auto& attr : source_attributes)
+  for (auto& [attr_name, attr_value] : source_attributes)
   {
     // Do not propagate standard attributes of this instruction:
-    if (IsDefinedAttributeName(*this, attr.first))
+    if (IsDefinedAttributeName(*this, attr_name))
     {
       continue;
     }
-    if (!HasAttribute(attr.first))
+    if (!HasAttribute(attr_name))
     {
-      result = AddAttribute(attr.first, attr.second) && result;
+      result = AddAttribute(attr_name, attr_value) && result;
     }
   }
   return result;

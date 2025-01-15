@@ -44,9 +44,9 @@ std::unique_ptr<T> make_unique(Args&&... args)
 std::unique_ptr<sup::xml::TreeData> CreateTreeData(const Instruction* instruction)
 {
   auto tree_data = internal::make_unique<sup::xml::TreeData>(instruction->GetType());
-  for (const auto& it : instruction->GetStringAttributes())
+  for (const auto& [attr_name, attr_value] : instruction->GetStringAttributes())
   {
-    tree_data->AddAttribute(it.first, it.second);
+    tree_data->AddAttribute(attr_name, attr_value);
   }
   return tree_data;
 }
@@ -103,9 +103,9 @@ std::unique_ptr<sup::xml::TreeData> ToTreeData(const Procedure& procedure)
 std::unique_ptr<sup::xml::TreeData> ToTreeData(const Variable& variable)
 {
   auto result = internal::make_unique<sup::xml::TreeData>(variable.GetType());
-  for (const auto& it : variable.GetStringAttributes())
+  for (const auto& [attr_name, attr_value] : variable.GetStringAttributes())
   {
-    result->AddAttribute(it.first, it.second);
+    result->AddAttribute(attr_name, attr_value);
   }
   return result;
 }

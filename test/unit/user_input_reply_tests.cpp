@@ -43,10 +43,10 @@ TEST_F(UserInputReplyTest, CreateUserValueReply)
     EXPECT_EQ(user_reply.m_payload, user_value);
 
     // Parse the AnyValue back
-    auto result = ParseUserValueReply(user_reply);
-    EXPECT_EQ(result.first, true);
-    ASSERT_EQ(result.second.GetType(), sup::dto::Character8Type);
-    EXPECT_EQ(result.second.As<sup::dto::char8>(), 'a');
+    auto [parsed, reply] = ParseUserValueReply(user_reply);
+    EXPECT_TRUE(parsed);
+    ASSERT_EQ(reply.GetType(), sup::dto::Character8Type);
+    EXPECT_EQ(reply.As<sup::dto::char8>(), 'a');
   }
   {
     // User value reply that indicates failure
@@ -57,10 +57,10 @@ TEST_F(UserInputReplyTest, CreateUserValueReply)
     EXPECT_EQ(user_reply.m_payload, user_value);
 
     // Parse the AnyValue back
-    auto result = ParseUserValueReply(user_reply);
-    EXPECT_EQ(result.first, false);
+    auto [parsed, reply] = ParseUserValueReply(user_reply);
+    EXPECT_FALSE(parsed);
     // During parsing of a failure reply, the payload is always an empty AnyValue
-    EXPECT_TRUE(sup::dto::IsEmptyValue(result.second));
+    EXPECT_TRUE(sup::dto::IsEmptyValue(reply));
   }
 }
 
@@ -76,9 +76,9 @@ TEST_F(UserInputReplyTest, CreateUserChoiceReply)
     EXPECT_EQ(user_reply.m_payload.As<sup::dto::int32>(), 5);
 
     // Parse the AnyValue back
-    auto result = ParseUserChoiceReply(user_reply);
-    EXPECT_TRUE(result.first);
-    EXPECT_EQ(result.second, 5);
+    auto [parsed, reply] = ParseUserChoiceReply(user_reply);
+    EXPECT_TRUE(parsed);
+    EXPECT_EQ(reply, 5);
   }
   {
     // User choice reply that indicates failure
@@ -90,10 +90,10 @@ TEST_F(UserInputReplyTest, CreateUserChoiceReply)
     EXPECT_EQ(user_reply.m_payload.As<sup::dto::int32>(), 5);
 
     // Parse the AnyValue back
-    auto result = ParseUserChoiceReply(user_reply);
-    EXPECT_FALSE(result.first);
+    auto [parsed, reply] = ParseUserChoiceReply(user_reply);
+    EXPECT_FALSE(parsed);
     // During parsing of a failure reply, the payload is always -1
-    EXPECT_EQ(result.second, -1);
+    EXPECT_EQ(reply, -1);
   }
 }
 
@@ -103,25 +103,25 @@ TEST_F(UserInputReplyTest, ParseUserValueReply)
     // Successful parsing
     sup::dto::AnyValue payload{ sup::dto::StringType, "Hello" };
     UserInputReply user_reply{ InputRequestType::kUserValue, true, payload};
-    auto parsed = ParseUserValueReply(user_reply);
-    EXPECT_TRUE(parsed.first);
-    EXPECT_EQ(parsed.second, payload);
+    auto [parsed, reply] = ParseUserValueReply(user_reply);
+    EXPECT_TRUE(parsed);
+    EXPECT_EQ(reply, payload);
   }
   {
     // Parsing of user reply with wrong type
     sup::dto::AnyValue payload{ sup::dto::StringType, "Hello" };
     UserInputReply user_reply{ InputRequestType::kUserChoice, true, payload};
-    auto parsed = ParseUserValueReply(user_reply);
-    EXPECT_FALSE(parsed.first);
-    EXPECT_TRUE(sup::dto::IsEmptyValue(parsed.second));
+    auto [parsed, reply] = ParseUserValueReply(user_reply);
+    EXPECT_FALSE(parsed);
+    EXPECT_TRUE(sup::dto::IsEmptyValue(reply));
   }
   {
     // Parsing of failed user value input
     sup::dto::AnyValue payload{ sup::dto::StringType, "Hello" };
     UserInputReply user_reply{ InputRequestType::kUserValue, false, payload};
-    auto parsed = ParseUserValueReply(user_reply);
-    EXPECT_FALSE(parsed.first);
-    EXPECT_TRUE(sup::dto::IsEmptyValue(parsed.second));
+    auto [parsed, reply] = ParseUserValueReply(user_reply);
+    EXPECT_FALSE(parsed);
+    EXPECT_TRUE(sup::dto::IsEmptyValue(reply));
   }
 }
 
@@ -132,35 +132,35 @@ TEST_F(UserInputReplyTest, ParseUserChoiceReply)
     int choice = 42;
     sup::dto::AnyValue choice_av{ sup::dto::SignedInteger32Type, choice };
     UserInputReply user_reply{ InputRequestType::kUserChoice, true, choice_av};
-    auto parsed = ParseUserChoiceReply(user_reply);
-    EXPECT_TRUE(parsed.first);
-    EXPECT_EQ(parsed.second, choice);
+    auto [parsed, reply] = ParseUserChoiceReply(user_reply);
+    EXPECT_TRUE(parsed);
+    EXPECT_EQ(reply, choice);
   }
   {
     // Parsing of user choice with wrong type
     int choice = 42;
     sup::dto::AnyValue choice_av{ sup::dto::SignedInteger32Type, choice };
     UserInputReply user_reply{ InputRequestType::kUserValue, true, choice_av};
-    auto parsed = ParseUserChoiceReply(user_reply);
-    EXPECT_FALSE(parsed.first);
-    EXPECT_EQ(parsed.second, -1);
+    auto [parsed, reply] = ParseUserChoiceReply(user_reply);
+    EXPECT_FALSE(parsed);
+    EXPECT_EQ(reply, -1);
   }
   {
     // Parsing of failed user choice input
     int choice = 42;
     sup::dto::AnyValue choice_av{ sup::dto::SignedInteger32Type, choice };
     UserInputReply user_reply{ InputRequestType::kUserChoice, false, choice_av};
-    auto parsed = ParseUserChoiceReply(user_reply);
-    EXPECT_FALSE(parsed.first);
-    EXPECT_EQ(parsed.second, -1);
+    auto [parsed, reply] = ParseUserChoiceReply(user_reply);
+    EXPECT_FALSE(parsed);
+    EXPECT_EQ(reply, -1);
   }
   {
     // Parsing of user choice input with wrong type of payload
     int choice = 42;
     sup::dto::AnyValue choice_av{ sup::dto::UnsignedInteger64Type, choice };
     UserInputReply user_reply{ InputRequestType::kUserChoice, true, choice_av};
-    auto parsed = ParseUserChoiceReply(user_reply);
-    EXPECT_FALSE(parsed.first);
-    EXPECT_EQ(parsed.second, -1);
+    auto [parsed, reply] = ParseUserChoiceReply(user_reply);
+    EXPECT_FALSE(parsed);
+    EXPECT_EQ(reply, -1);
   }
 }

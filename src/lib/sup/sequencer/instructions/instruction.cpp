@@ -171,9 +171,9 @@ bool Instruction::SetAttribute(const std::string& name, const std::string& value
 bool Instruction::AddAttributes(const StringAttributeList& attributes)
 {
   bool result = true;
-  for (const auto &attr : attributes)
+  for (const auto& [attr_name, attr_value] : attributes)
   {
-    result = AddAttribute(attr.first, attr.second) && result;
+    result = AddAttribute(attr_name, attr_value) && result;
   }
   return result;
 }

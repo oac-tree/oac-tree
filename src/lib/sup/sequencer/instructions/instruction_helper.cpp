@@ -23,7 +23,6 @@
 
 #include <sup/sequencer/compound_instruction.h>
 #include <sup/sequencer/decorator_instruction.h>
-#include "include.h"
 
 #include <sup/sequencer/constants.h>
 #include <sup/sequencer/instruction_registry.h>
@@ -54,16 +53,17 @@ const Instruction* FindInstruction(const std::vector<const Instruction*>& instru
                          {
                            return instr->GetName() == names.first;
                          });
+  auto [_, instruction] = names;
   if (it == instructions.end())
   {
     return nullptr;
   }
   auto result = *it;
-  if (names.second.empty())
+  if (instruction.empty())
   {
     return result;
   }
-  return FindInstruction(result->ChildInstructions(), names.second);
+  return FindInstruction(result->ChildInstructions(), instruction);
 }
 
 std::unique_ptr<Instruction> CloneInstruction(const Instruction* instruction)
@@ -105,9 +105,8 @@ bool InitialisePlaceholderAttributes(AttributeHandler& attribute_handler,
                                   const StringAttributeList& source_attributes)
 {
   bool result = true;
-  for (auto& attr : attribute_handler.GetStringAttributes())
+  for (auto& [attr_name, attr_value] : attribute_handler.GetStringAttributes())
   {
-    auto attr_value = attr.second;
     if (AttributeStartsWith(attr_value, DefaultSettings::PLACEHOLDER_ATTRIBUTE_CHAR))
     {
       auto var_name = attr_value.substr(1);
@@ -118,7 +117,7 @@ bool InitialisePlaceholderAttributes(AttributeHandler& attribute_handler,
         continue;
       }
       auto var_value = it->second;
-      attribute_handler.SetStringAttribute(attr.first, var_value);
+      attribute_handler.SetStringAttribute(attr_name, var_value);
     }
   }
   return result;
@@ -145,14 +144,14 @@ namespace
 {
 std::pair<std::string, std::string> StripPath(const std::string &path)
 {
-  std::pair<std::string, std::string> result;
+  auto [prefix, sufix] = std::pair<std::string, std::string>{};
   std::size_t delim_pos = path.find(DefaultSettings::PATH_DELIMITER);
-  result.first = path.substr(0, delim_pos);
+  prefix = path.substr(0, delim_pos);
   if (delim_pos != std::string::npos)
   {
-    result.second = path.substr(delim_pos + 1);
+    sufix = path.substr(delim_pos + 1);
   }
-  return result;
+  return {prefix, sufix};
 }
 
 bool CloneChildInstructions(Instruction& clone, const Instruction* source)

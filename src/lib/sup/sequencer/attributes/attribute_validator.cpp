@@ -88,18 +88,18 @@ std::vector<std::string> AttributeValidator::ValidateAttributes(
   const StringAttributeList& str_attributes) const
 {
   auto failed_constraints = CheckMandatoryConstraints(m_attribute_definitions, str_attributes);
-  for (const auto& str_attr : str_attributes)
+  for (const auto& [attr_name, attr_value] : str_attributes)
   {
-    auto it = FindAttributeDefinition(m_attribute_definitions, str_attr.first);
+    auto it = FindAttributeDefinition(m_attribute_definitions, attr_name);
     if (it != m_attribute_definitions.end() &&
-        AttributeRefersToVariable(*it, str_attr.second))
+        AttributeRefersToVariable(*it, attr_value))
     {
       continue;  // Don't validate attribute values referring to workspace variables
     }
-    auto result = TryCreateAnyValueImpl(str_attr, it);
-    if (!result.second.empty())
+    auto [_, constraint] = TryCreateAnyValueImpl({attr_name, attr_value}, it);
+    if (!constraint.empty())
     {
-      failed_constraints.push_back(result.second);
+      failed_constraints.push_back(constraint);
     }
   }
   for (const auto& constraint : m_custom_constraints)
@@ -122,18 +122,19 @@ std::pair<sup::dto::AnyValue, std::string> AttributeValidator::TryCreateAnyValue
 std::pair<sup::dto::AnyValue, std::string> AttributeValidator::TryCreateAnyValueImpl(
     const StringAttribute& str_attr, AttributeDefinitionIterator attr_def_it) const
 {
+  auto [attr_name, attr_value] = str_attr;
   if (attr_def_it == m_attribute_definitions.end())
   {
-    return { sup::dto::AnyValue(str_attr.second), "" };
+    return { sup::dto::AnyValue(attr_value), "" };
   }
   auto attr_type = attr_def_it->GetType();
-  auto parsed = utils::ParseAttributeString(attr_type, str_attr.second);
-  if (parsed.first)
+  auto [parsed, value] = utils::ParseAttributeString(attr_type, attr_value);
+  if (parsed)
   {
-    return { parsed.second, "" };
+    return { value, "" };
   }
   auto failed_constraint =
-    MakeConstraint<FixedType>(str_attr.first, attr_type).GetRepresentation();
+    MakeConstraint<FixedType>(attr_name, attr_type).GetRepresentation();
   return { {}, failed_constraint };
 }
 

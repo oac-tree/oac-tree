@@ -71,11 +71,10 @@ WorkspaceInfo ToWorkspaceInfo(const sup::dto::AnyValue& ws_info_anyvalue)
 sup::dto::AnyValue ToAnyValue(const WorkspaceInfo& ws_info)
 {
   sup::dto::AnyValue result = sup::dto::EmptyStruct();
-  const auto& var_infos = ws_info.GetVariableInfos();
-  for (const auto& var_info : var_infos)
+  for (const auto& [var_name, var_info] : ws_info.GetVariableInfos())
   {
-    auto var_av = ToAnyValue(var_info.second);
-    result.AddMember(var_info.first, var_av);
+    auto var_av = ToAnyValue(var_info);
+    result.AddMember(var_name, var_av);
   }
   return result;
 }
@@ -143,9 +142,9 @@ sup::dto::AnyValue ToAnyValue(const VariableInfo& var_info)
   auto result = kVariableInfoAnyValue;
   result[kVariableInfoTypeField] = var_info.GetType();
   result[kIndexField] = var_info.GetIndex();
-  for (const auto& attr : var_info.GetAttributes())
+  for (const auto& [attr_name, attr_value] : var_info.GetAttributes())
   {
-    result[kAttributesField].AddMember(attr.first, attr.second);
+    result[kAttributesField].AddMember(attr_name, attr_value);
   }
   return result;
 }

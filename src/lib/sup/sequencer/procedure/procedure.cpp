@@ -251,9 +251,9 @@ bool Procedure::AddAttribute(const std::string &name, const std::string &value)
 bool Procedure::AddAttributes(const StringAttributeList& str_attributes)
 {
   bool result = true;
-  for (auto &attr : str_attributes)
+  for (auto& [attr_name, attr_value] : str_attributes)
   {
-    result = AddAttribute(attr.first, attr.second) && result;
+    result = AddAttribute(attr_name, attr_value) && result;
   }
   return result;
 }
@@ -460,12 +460,12 @@ bool HasRootAttributeSet(const Instruction &instruction)
     return false;
   }
   auto attr_val = instruction.GetAttributeString(Constants::IS_ROOT_ATTRIBUTE_NAME);
-  auto parsed = utils::ParseAttributeString(sup::dto::BooleanType, attr_val);
-  if (!parsed.first)
+  auto [parsed, value] = utils::ParseAttributeString(sup::dto::BooleanType, attr_val);
+  if (!parsed)
   {
     return false;
   }
-  return parsed.second.As<bool>();
+  return value.As<bool>();
 }
 
 }  // unnamed namespace

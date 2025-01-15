@@ -113,9 +113,9 @@ TEST_F(UserInterfaceTest, GetUserValueDefault)
   auto user_value_request = CreateUserValueRequest(val, description);
   auto future = empty_ui.RequestUserInput(user_value_request);
   EXPECT_FALSE(future->IsValid());
-  auto user_value_reply = GetBlockingUserValue(empty_ui, val, description);
-  EXPECT_FALSE(user_value_reply.first);
-  EXPECT_TRUE(sup::dto::IsEmptyValue(user_value_reply.second));
+  auto [retrieved, value] = GetBlockingUserValue(empty_ui, val, description);
+  EXPECT_FALSE(retrieved);
+  EXPECT_TRUE(sup::dto::IsEmptyValue(value));
 }
 
 TEST_F(UserInterfaceTest, GetUserChoiceDefault)
@@ -124,9 +124,9 @@ TEST_F(UserInterfaceTest, GetUserChoiceDefault)
   auto user_choice_request = CreateUserChoiceRequest(options, {});
   auto future = empty_ui.RequestUserInput(user_choice_request);
   EXPECT_FALSE(future->IsValid());
-  auto user_choice_reply = GetBlockingUserChoice(empty_ui, options, {});
-  EXPECT_FALSE(user_choice_reply.first);
-  EXPECT_EQ(user_choice_reply.second, -1);
+  auto [retrieved, value] = GetBlockingUserChoice(empty_ui, options, {});
+  EXPECT_FALSE(retrieved);
+  EXPECT_EQ(value, -1);
 }
 
 TEST_F(UserInterfaceTest, InstructionExecution)

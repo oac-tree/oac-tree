@@ -60,9 +60,9 @@ Procedure& ProcedureStore::LoadProcedure(const std::string& filename) const
 
 void ProcedureStore::ResetProcedureWorkspaces(UserInterface& ui) const
 {
-  for (auto& entry : m_procedure_cache)
+  for (auto& [_, procedure] : m_procedure_cache)
   {
-    auto& ws = entry.second->GetWorkspace();
+    auto& ws = procedure->GetWorkspace();
     ws.Teardown();
     ws.Setup();
   }

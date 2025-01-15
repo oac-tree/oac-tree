@@ -89,15 +89,15 @@ void AsyncInputAdapter::HandleRequestQueue()
     {
       return;
     }
-    auto req_entry = m_request_queue.front();
+    auto [id, request] = m_request_queue.front();
     m_request_queue.pop_front();
-    m_current_id = req_entry.first;
+    m_current_id = id;
     lk.unlock();
     // If another thread sees the current id as not zero, this thread must be here:
-    auto reply = m_input_func(req_entry.second, req_entry.first);
+    auto reply = m_input_func(request, id);
     lk.lock();
     // If someone has reset the current id, the reply is no longer needed:
-    if (m_current_id == req_entry.first)
+    if (m_current_id == id)
     {
       m_replies[m_current_id] = reply;
       m_reply_cv.notify_one();

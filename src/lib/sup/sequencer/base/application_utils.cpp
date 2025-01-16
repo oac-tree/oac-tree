@@ -126,7 +126,7 @@ JobState SimpleJobStateMonitor::WaitForFinished() const
 
 bool SimpleJobStateMonitor::WaitForState(JobState state, double seconds) const
 {
-  auto duration = std::chrono::nanoseconds(std::lround(seconds * 1e9));
+  auto duration = std::chrono::duration<double>(seconds);
   std::unique_lock<std::mutex> lk{m_mtx};
   return m_cv.wait_for(lk, duration, [this, state](){
     return m_state == state;

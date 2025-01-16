@@ -161,8 +161,7 @@ bool Workspace::WaitForVariable(const std::string& name, double timeout_sec, boo
   {
     return false;
   }
-  long timeout_ns = std::lround(timeout_sec * 1e9);
-  auto timeout_duration = std::chrono::nanoseconds(timeout_ns);
+  auto timeout_duration = std::chrono::duration<double>(timeout_sec);
   int dummy_listener; // to get a unique address
   std::mutex mx;
   std::unique_lock<std::mutex> lk(mx);

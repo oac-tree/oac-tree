@@ -129,7 +129,7 @@ bool AsyncInputAdapter::WaitForRequestReady(const Future& token, double seconds)
   {
     return false;
   }
-  auto duration = std::chrono::nanoseconds(std::lround(seconds * 1e9));
+  auto duration = std::chrono::duration<double>(seconds);
   auto id = token.GetId();
   auto pred = [this, id]() {
     return m_replies.find(id) != m_replies.end();

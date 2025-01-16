@@ -144,9 +144,9 @@ namespace
 {
 std::pair<std::string, std::string> StripPath(const std::string &path)
 {
-  auto [prefix, sufix] = std::pair<std::string, std::string>{};
   std::size_t delim_pos = path.find(DefaultSettings::PATH_DELIMITER);
-  prefix = path.substr(0, delim_pos);
+  std::string prefix = path.substr(0, delim_pos);
+  std::string sufix;
   if (delim_pos != std::string::npos)
   {
     sufix = path.substr(delim_pos + 1);

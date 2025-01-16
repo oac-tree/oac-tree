@@ -91,7 +91,7 @@ void Workspace::Setup()
     return;
   }
   std::vector<SetupTeardownActions> setup_teardown_actions;
-  auto setup_var = [this, &setup_teardown_actions](const decltype(m_var_map)::value_type &pair) {
+  auto setup_var = [this, &setup_teardown_actions](const auto &pair) {
     auto actions = pair.second->Setup(*this);
     if (!actions.m_identifier.empty()) {
       setup_teardown_actions.push_back(actions);
@@ -115,7 +115,7 @@ void Workspace::Teardown()
     teardown_action();
   }
   m_teardown_actions.clear();
-  std::for_each(m_var_map.begin(), m_var_map.end(), [](const decltype(m_var_map)::value_type &pair) {
+  std::for_each(m_var_map.begin(), m_var_map.end(), [](const auto &pair) {
      return pair.second->Teardown(); });
 }
 
@@ -167,7 +167,7 @@ bool Workspace::WaitForVariable(const std::string& name, double timeout_sec, boo
   std::unique_lock<std::mutex> lk(mx);
   std::condition_variable cv;
   auto cb_guard = GetCallbackGuard(&dummy_listener);
-  auto callback = [&cv](const sup::dto::AnyValue&, bool){
+  auto callback = [&cv](const auto&, auto){
                     cv.notify_one();
                   };
   RegisterCallback(name, callback, &dummy_listener);

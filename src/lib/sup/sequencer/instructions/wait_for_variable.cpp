@@ -87,7 +87,7 @@ ExecutionStatus WaitForVariable::ExecuteSingleImpl(UserInterface& ui, Workspace&
 void WaitForVariable::RegisterCallback(Workspace& ws, std::condition_variable& cv,
                                        void* listener, const std::string& var_name) const
 {
-  auto callback = [&](const sup::dto::AnyValue&, bool)
+  auto callback = [&cv](const auto&, auto)
                   {
                     cv.notify_one();
                   };

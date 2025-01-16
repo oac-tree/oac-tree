@@ -97,7 +97,7 @@ void WaitForVariables::RegisterCallbacks(
   Workspace& ws, std::condition_variable& cv, void* listener,
   const std::vector<std::string>& var_names) const
 {
-  auto callback = [&](const sup::dto::AnyValue&, bool)
+  auto callback = [&cv](auto&, auto)
                   {
                     cv.notify_one();
                   };

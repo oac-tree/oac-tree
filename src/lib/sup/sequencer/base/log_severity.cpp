@@ -49,7 +49,7 @@ std::string SeverityString(int severity)
 Severity GetSeverityFromString(const std::string& str)
 {
   const auto& sev_map = GetSeverityMap();
-  auto on_element = [str](std::pair<int, std::string> element) { return str == element.second; };
+  auto on_element = [&str](auto &element) { return str == element.second; };
   auto it = find_if(sev_map.begin(), sev_map.end(), on_element);
   return it == sev_map.end() ? NUMBER_OF_LOG_LEVELS : static_cast<Severity>(it->first);
 }

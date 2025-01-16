@@ -100,7 +100,7 @@ std::vector<std::string> BuildVariableNameMap(const WorkspaceInfo& ws_info)
 {
   const auto& var_infos = ws_info.GetVariableInfos();
   std::vector<std::string> result;
-  auto func = [](const std::pair<std::string, VariableInfo>& pair) {
+  auto func = [](const auto& pair) {
     return pair.first;
   };
   (void)std::transform(var_infos.begin(), var_infos.end(), std::back_inserter(result), func);

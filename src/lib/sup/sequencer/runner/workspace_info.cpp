@@ -65,7 +65,7 @@ const std::vector<std::pair<std::string, VariableInfo>>& WorkspaceInfo::GetVaria
 bool WorkspaceInfo::ValidateNewVariableInfo(const std::string& var_name,
                                             const VariableInfo& var_info) const
 {
-  auto pred = [var_name](const std::pair<std::string, VariableInfo>& var) {
+  auto pred = [var_name](const auto& var) {
     return var.first == var_name;
   };
   auto iter = std::find_if(m_vars.begin(), m_vars.end(), pred);

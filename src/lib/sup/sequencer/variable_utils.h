@@ -128,7 +128,7 @@ sup::dto::AnyValue ToAnyValue(const VariableInfo& var_info);
  * @details This function only checks that the AnyValue is a structure and contains the mandatory
  * member fields with the correct type. Any extra fields in the structure are ignored.
  *
- * @param ws_info AnyValue to validate.
+ * @param var_info AnyValue to validate.
  *
  * @return true when the provided AnyValue can be correctly parsed to a VariableInfo object.
  */

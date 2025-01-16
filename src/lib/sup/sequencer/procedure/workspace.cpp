@@ -27,7 +27,6 @@
 
 #include <algorithm>
 #include <atomic>
-#include <cmath>
 #include <condition_variable>
 #include <set>
 #include <mutex>

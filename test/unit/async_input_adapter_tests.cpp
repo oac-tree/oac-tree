@@ -2,7 +2,7 @@
  * $HeadURL: $
  * $Id: $
  *
- * Project       : SUP Sequencer
+ * Project       : SUP oac-tree
  *
  * Description   : Unit test code
  *
@@ -19,10 +19,10 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <sup/sequencer/async_input_adapter.h>
-#include <sup/sequencer/constants.h>
-#include <sup/sequencer/exceptions.h>
-#include <sup/sequencer/generic_utils.h>
+#include <sup/oac-tree/async_input_adapter.h>
+#include <sup/oac-tree/constants.h>
+#include <sup/oac-tree/exceptions.h>
+#include <sup/oac-tree/generic_utils.h>
 
 #include <gtest/gtest.h>
 
@@ -30,7 +30,7 @@
 #include <chrono>
 #include <thread>
 
-using namespace sup::sequencer;
+using namespace sup::oac_tree;
 using namespace std::placeholders;
 
 /**

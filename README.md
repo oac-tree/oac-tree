@@ -50,12 +50,12 @@ cmake --build .
 cmake --install .
 ```
 
-The documentation will then be installed in `<INSTALL_DIR>/share/doc/sup-sequencer/`.
+The documentation will then be installed in `<INSTALL_DIR>/share/doc/sup-oac-tree/`.
 
 ## Running some simple procedures
 
 Some simple procedures can be found in the folder `<SOURCE_DIR>/test/resources`. To execute one of these procedures, e.g. `wait_for_variable.xml`, run the following command in a shell:
 
 ```bash
-<INSTALL_DIR>/bin/sequencer-cli -f <SOURCE_DIR>/test/resources/wait_for_variable.xml
+<INSTALL_DIR>/bin/oac-tree-cli -f <SOURCE_DIR>/test/resources/wait_for_variable.xml
 ```

@@ -2,9 +2,9 @@
  * $HeadURL: $
  * $Id: $
  *
- * Project       : SUP - Sequencer
+ * Project       : SUP - oac-tree
  *
- * Description   : Sequencer for operational procedures
+ * Description   : oac-tree for operational procedures
  *
  * Author        : Walter Van Herck (IO)
  *
@@ -19,14 +19,14 @@
  * of the distribution package.
  ******************************************************************************/
 
-#ifndef SUP_SEQUENCER_STD_REDIRECTORS_H_
-#define SUP_SEQUENCER_STD_REDIRECTORS_H_
+#ifndef SUP_OAC_TREE_STD_REDIRECTORS_H_
+#define SUP_OAC_TREE_STD_REDIRECTORS_H_
 
 #include <iostream>
 
 namespace sup
 {
-namespace sequencer
+namespace oac_tree
 {
 /**
  * @brief Class redirecting std::cin.
@@ -76,8 +76,8 @@ inline CoutRedirector::~CoutRedirector()
   std::cout.rdbuf(cout_buf);
 }
 
-}  // namespace sequencer
+}  // namespace oac_tree
 
 }  // namespace sup
 
-#endif  // SUP_SEQUENCER_STD_REDIRECTORS_H_
+#endif  // SUP_OAC_TREE_STD_REDIRECTORS_H_

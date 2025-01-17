@@ -2,9 +2,9 @@
  $HeadURL: $
  $Id: $
 
- Project       : SUP sequencer module
+ Project       : SUP oac-tree module
 
- Description   : The engine for the Sequencer. Provides execution and (de)serialization of procedures.
+ Description   : The engine for the oac-tree. Provides execution and (de)serialization of procedures.
 
  Authors       : CODAC Operation Applications Team
 
@@ -23,12 +23,12 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.iter.codac.units</groupId>
-    <artifactId>sequencer</artifactId>
+    <artifactId>oac-tree</artifactId>
     <packaging>codac</packaging>
     <!-- See ChangeLog file for details -->
     <version>3.3.0</version>
-    <name>SUP sequencer module</name>
-    <description>The engine for the Sequencer. Provides execution and (de)serialization of procedures.</description>
+    <name>SUP oac-tree module</name>
+    <description>The engine for the oac-tree. Provides execution and (de)serialization of procedures.</description>
     <url>http://www.iter.org/</url>
 
     <!-- Project properties -->
@@ -44,9 +44,9 @@
         <sonar.language>cpp</sonar.language>
         <sonar.sources.cpp>src</sonar.sources.cpp>
         <sonar.tests.cpp>test</sonar.tests.cpp>
-        <sonar.exclusions>src/app/sequencer-cli/main.cpp, src/app/sequencer-daemon/main.cpp</sonar.exclusions>
-        <!-- sequencer configuration -->
-        <pluginpath>lib/sequencer/plugins</pluginpath>
+        <sonar.exclusions>src/app/oac-tree-cli/main.cpp, src/app/oac-tree-daemon/main.cpp</sonar.exclusions>
+        <!-- oac-tree configuration -->
+        <pluginpath>lib/oac-tree/plugins</pluginpath>
     </properties>
 
     <!-- Parent pom.xml -->
@@ -131,8 +131,8 @@
                                 altpath="%{_sysconfdir}/ld.so.conf.d/sup-${project.artifactId}.conf" />
                             <!-- Programs -->
                             <include type="file" source="bin" target="bin">
-                                <include>sequencer-cli</include>
-                                <include>sequencer-daemon</include>
+                                <include>oac-tree-cli</include>
+                                <include>oac-tree-daemon</include>
                             </include>
                             <!-- Package dependencies -->
                             <requires codac="true">sup-dto</requires>
@@ -148,7 +148,7 @@
                         </package>
                         <package name="devel">
                             <!-- CMAKE config -->
-                            <include type="file" source="lib/cmake/sequencer" target="lib/cmake/sequencer">
+                            <include type="file" source="lib/cmake/oac-tree" target="lib/cmake/oac-tree">
                                 <include>*.cmake</include>
                             </include>
                             <!-- Libraries -->
@@ -156,7 +156,7 @@
                                 <include>*.so</include>
                             </include>
                             <!-- Public API headers -->
-                            <include type="file" source="include/sup/sequencer" target="include/sup/sequencer">
+                            <include type="file" source="include/sup/oac-tree" target="include/sup/oac-tree">
                                 <include>*.h</include>
                             </include>
                             <!-- Package dependencies -->

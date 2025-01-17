@@ -2,7 +2,7 @@
  * $HeadURL: $
  * $Id: $
  *
- * Project       : SUP Sequencer
+ * Project       : SUP oac-tree
  *
  * Description   : Unit test code
  *
@@ -19,11 +19,11 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <sup/sequencer/attribute_utils.h>
+#include <sup/oac-tree/attribute_utils.h>
 
 #include <gtest/gtest.h>
 
-using namespace sup::sequencer;
+using namespace sup::oac_tree;
 
 const std::string kEmptyValue = "";
 const std::string kStrAttrValue = "str_value";

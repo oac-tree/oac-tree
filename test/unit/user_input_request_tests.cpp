@@ -2,7 +2,7 @@
  * $HeadURL: $
  * $Id: $
  *
- * Project       : SUP - Sequencer
+ * Project       : SUP - oac-tree
  *
  * Description   : Unit test code
  *
@@ -19,12 +19,12 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <sup/sequencer/user_input_request.h>
-#include <sup/sequencer/constants.h>
+#include <sup/oac-tree/user_input_request.h>
+#include <sup/oac-tree/constants.h>
 
 #include <gtest/gtest.h>
 
-using namespace sup::sequencer;
+using namespace sup::oac_tree;
 
 class UserInputRequestTest : public ::testing::Test
 {

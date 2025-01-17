@@ -2,7 +2,7 @@
  * $HeadURL: $
  * $Id: $
  *
- * Project       : SUP Sequencer
+ * Project       : SUP oac-tree
  *
  * Description   : Unit test code
  *
@@ -21,13 +21,13 @@
 
 #include "unit_test_helper.h"
 
-#include <sup/sequencer/instruction.h>
-#include <sup/sequencer/instruction_registry.h>
-#include <sup/sequencer/sequence_parser.h>
+#include <sup/oac-tree/instruction.h>
+#include <sup/oac-tree/instruction_registry.h>
+#include <sup/oac-tree/sequence_parser.h>
 
 #include <gtest/gtest.h>
 
-using namespace sup::sequencer;
+using namespace sup::oac_tree;
 
 TEST(Fallback, Procedure_first)
 {

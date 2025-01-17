@@ -2,7 +2,7 @@
  * $HeadURL: $
  * $Id: $
  *
- * Project       : SUP Sequencer
+ * Project       : SUP Oac-Tree
  *
  * Description   : Unit test code
  *
@@ -19,26 +19,26 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <sup/sequencer/sequence_parser.h>
+#include <sup/oac-tree/sequence_parser.h>
 
 #include "unit_test_helper.h"
 
-#include <sup/sequencer/instructions/sequence.h>
+#include <sup/oac-tree/instructions/sequence.h>
 
-#include <sup/sequencer/exceptions.h>
-#include <sup/sequencer/instruction_registry.h>
+#include <sup/oac-tree/exceptions.h>
+#include <sup/oac-tree/instruction_registry.h>
 
 #include <sup/dto/anyvalue.h>
 #include <sup/xml/exceptions.h>
 
 #include <gtest/gtest.h>
 
-using namespace sup::sequencer;
+using namespace sup::oac_tree;
 
 class SequencerParserTest : public ::testing::Test
 {
 protected:
-  //! Returns multi-line XML string with Sequencer procedure, where user body
+  //! Returns multi-line XML string with oac-tree procedure, where user body
   //! is wrapped into necessary elements. Procedure tag deliberately doesn't contain any schema.
   std::string CreateProcedureString(const std::string& body)
   {
@@ -90,10 +90,10 @@ TEST_F(SequencerParserTest, IncorrectRoot)
 {
   const std::string body =
       R"RAW(<?xml version="1.0" encoding="UTF-8"?>
-<Sequence xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+<Sequence xmlns="http://codac.iter.org/sup/oac-tree" version="1.0"
           name="Procedure containing the wrong root element type for testing purposes"
           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-          xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+          xs:schemaLocation="http://codac.iter.org/sup/oac-tree oac-tree.xsd">
     <Wait name="Immediate Success"/>
     <Wait name="One" timeout="1.0"/>
 </Sequence>
@@ -111,10 +111,10 @@ TEST_F(SequencerParserTest, XMLSyntaxError)
 {
   static const std::string body =
       R"RAW(<?xml version="1.0" encoding="UTF-8"?>
-<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+<Procedure xmlns="http://codac.iter.org/sup/oac-tree" version="1.0"
            name="Procedure containing a XML syntax error for testing purposes"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+           xs:schemaLocation="http://codac.iter.org/sup/oac-tree oac-tree.xsd">
     <Sequence name="Main Sequence">
         <Wait name="Immediate Success"/>
         <Wait name="One" timeout="1.0"/>

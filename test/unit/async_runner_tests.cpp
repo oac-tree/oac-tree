@@ -2,7 +2,7 @@
  * $HeadURL: $
  * $Id: $
  *
- * Project       : SUP - Sequencer
+ * Project       : SUP - oac-tree
  *
  * Description   : Unit test code
  *
@@ -21,11 +21,11 @@
 
 #include "unit_test_helper.h"
 
-#include <sup/sequencer/application_utils.h>
-#include <sup/sequencer/async_runner.h>
-#include <sup/sequencer/job_state_monitor.h>
-#include <sup/sequencer/sequence_parser.h>
-#include <sup/sequencer/user_interface.h>
+#include <sup/oac-tree/application_utils.h>
+#include <sup/oac-tree/async_runner.h>
+#include <sup/oac-tree/job_state_monitor.h>
+#include <sup/oac-tree/sequence_parser.h>
+#include <sup/oac-tree/user_interface.h>
 
 #include <gtest/gtest.h>
 
@@ -72,8 +72,7 @@ const std::string kVarCopyProcedureBody{R"(
   </Workspace>
 )"};
 
-using namespace sup::sequencer;
-using namespace sup::sequencer;
+using namespace sup::oac_tree;
 
 class TestJobStateMonitor : public utils::SimpleJobStateMonitor
 {

@@ -2,7 +2,7 @@
  * $HeadURL: $
  * $Id: $
  *
- * Project       : SUP Sequencer
+ * Project       : SUP oac-tree
  *
  * Description   : Unit test code
  *
@@ -19,15 +19,15 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <sup/sequencer/instruction_tree.h>
+#include <sup/oac-tree/instruction_tree.h>
 
-#include <sup/sequencer/exceptions.h>
-#include <sup/sequencer/instruction.h>
-#include <sup/sequencer/instruction_registry.h>
+#include <sup/oac-tree/exceptions.h>
+#include <sup/oac-tree/instruction.h>
+#include <sup/oac-tree/instruction_registry.h>
 
 #include <gtest/gtest.h>
 
-using namespace sup::sequencer;
+using namespace sup::oac_tree;
 
 const std::string kSequenceType = "Sequence";
 const std::string kInverterType = "Inverter";

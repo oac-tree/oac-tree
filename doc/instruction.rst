@@ -20,14 +20,14 @@ Decorator instruction
 Action
   These are the leafs of instruction trees and represent a concrete action to be taken. They have no child instructions.
 
-Compound instructions are intended for executing their children with a certain execution logic depending on the implementation (simple sequence, parallel execution, execute until at least one child succeeds, etc). The decorator instruction can be considered as a modifier of the behaviour of the enclosed child (e.g. turn failure into success). Actions, depending on implementation, can perform standard simple operations (wait, print log message, etc) or take care of complex activity (compare variables in sequencer workspace).
+Compound instructions are intended for executing their children with a certain execution logic depending on the implementation (simple sequence, parallel execution, execute until at least one child succeeds, etc). The decorator instruction can be considered as a modifier of the behaviour of the enclosed child (e.g. turn failure into success). Actions, depending on implementation, can perform standard simple operations (wait, print log message, etc) or take care of complex activity (compare variables in oac-tree workspace).
 
 Architecture
 ------------
 
 The ``Instruction`` class is based on the non-virtual interface (NVI) idiom to allow for a simpler API to override by implementers of concrete instructions.
 
-The ``Instruction`` class allows users to define instructions that are specific to the environment where the **Sequencer** will be used. Since it is an abstract base class, concrete instructions are implemented in derived classes.
+The ``Instruction`` class allows users to define instructions that are specific to the environment where the **Oac-Tree** will be used. Since it is an abstract base class, concrete instructions are implemented in derived classes.
 
 Execution Status
 ----------------
@@ -239,5 +239,5 @@ Class definition
 
 Next is presented the definition of the ``Instruction`` class and its main methods.
 
-.. doxygenclass:: sup::sequencer::Instruction
+.. doxygenclass:: sup::oac_tree::Instruction
    :members:

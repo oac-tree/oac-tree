@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+<Procedure xmlns="http://codac.iter.org/sup/oac-tree" version="1.0"
            name="Procedure for testing variable reset"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+           xs:schemaLocation="http://codac.iter.org/sup/oac-tree oac-tree.xsd">
     <Sequence>
         <Copy inputVar="a" outputVar="target"/>
         <ResetVariable varName="target"/>

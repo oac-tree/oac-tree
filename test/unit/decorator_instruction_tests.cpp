@@ -2,7 +2,7 @@
  * $HeadURL: $
  * $Id: $
  *
- * Project       : SUP Sequencer
+ * Project       : SUP Oac-Tree
  *
  * Description   : Unit test code
  *
@@ -19,21 +19,21 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <sup/sequencer/decorator_instruction.h>
+#include <sup/oac-tree/decorator_instruction.h>
 
 #include "unit_test_helper.h"
 
-#include <sup/sequencer/instructions/wait.h>
+#include <sup/oac-tree/instructions/wait.h>
 
-#include <sup/sequencer/instruction.h>
-#include <sup/sequencer/instruction_registry.h>
-#include <sup/sequencer/sequence_parser.h>
+#include <sup/oac-tree/instruction.h>
+#include <sup/oac-tree/instruction_registry.h>
+#include <sup/oac-tree/sequence_parser.h>
 
 #include <gtest/gtest.h>
 
-#include <sup/sequencer/constants.h>
+#include <sup/oac-tree/constants.h>
 
-using namespace sup::sequencer;
+using namespace sup::oac_tree;
 
 class DecoratorInstructionTest : public ::testing::Test
 {
@@ -100,10 +100,10 @@ TEST_F(DecoratorInstructionTest, ForceSuccess_success)
   sup::UnitTestHelper::EmptyUserInterface ui;
   auto proc = ParseProcedureString(
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-      "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
+      "<Procedure xmlns=\"http://codac.iter.org/sup/oac-tree\" version=\"1.0\"\n"
       "           name=\"Trivial procedure for testing purposes\"\n"
       "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-      "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
+      "           xs:schemaLocation=\"http://codac.iter.org/sup/oac-tree oac-tree.xsd\">\n"
       "    <Repeat maxCount=\"10\">\n"
       "        <ForceSuccess name=\"success\">\n"
       "            <Wait name=\"wait\" />\n"
@@ -121,10 +121,10 @@ TEST_F(DecoratorInstructionTest, ForceSuccess_failure)
   sup::UnitTestHelper::EmptyUserInterface ui;
   auto proc = ParseProcedureString(
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-      "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
+      "<Procedure xmlns=\"http://codac.iter.org/sup/oac-tree\" version=\"1.0\"\n"
       "           name=\"Trivial procedure for testing purposes\"\n"
       "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-      "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
+      "           xs:schemaLocation=\"http://codac.iter.org/sup/oac-tree oac-tree.xsd\">\n"
       "    <Repeat maxCount=\"10\">\n"
       "        <ForceSuccess name=\"success\">\n"
       "            <Inverter name=\"failure\">\n"
@@ -144,10 +144,10 @@ TEST_F(DecoratorInstructionTest, Inverter_success)
   sup::UnitTestHelper::EmptyUserInterface ui;
   auto proc = ParseProcedureString(
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-      "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
+      "<Procedure xmlns=\"http://codac.iter.org/sup/oac-tree\" version=\"1.0\"\n"
       "           name=\"Trivial procedure for testing purposes\"\n"
       "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-      "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
+      "           xs:schemaLocation=\"http://codac.iter.org/sup/oac-tree oac-tree.xsd\">\n"
       "    <Repeat maxCount=\"10\">\n"
       "        <Inverter name=\"success\">\n"
       "            <Inverter name=\"failure\">\n"
@@ -167,10 +167,10 @@ TEST_F(DecoratorInstructionTest, Inverter_failure)
   sup::UnitTestHelper::EmptyUserInterface ui;
   auto proc = ParseProcedureString(
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-      "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
+      "<Procedure xmlns=\"http://codac.iter.org/sup/oac-tree\" version=\"1.0\"\n"
       "           name=\"Trivial procedure for testing purposes\"\n"
       "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-      "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
+      "           xs:schemaLocation=\"http://codac.iter.org/sup/oac-tree oac-tree.xsd\">\n"
       "    <Repeat maxCount=\"10\">\n"
       "        <Inverter name=\"failure\">\n"
       "            <Wait name=\"wait\" />\n"
@@ -188,10 +188,10 @@ TEST_F(DecoratorInstructionTest, BaseClass_halt)
   sup::UnitTestHelper::EmptyUserInterface ui;
   auto proc = ParseProcedureString(
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-      "<Procedure xmlns=\"http://codac.iter.org/sup/sequencer\" version=\"1.0\"\n"
+      "<Procedure xmlns=\"http://codac.iter.org/sup/oac-tree\" version=\"1.0\"\n"
       "           name=\"Trivial procedure for testing purposes\"\n"
       "           xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-      "           xs:schemaLocation=\"http://codac.iter.org/sup/sequencer sequencer.xsd\">\n"
+      "           xs:schemaLocation=\"http://codac.iter.org/sup/oac-tree oac-tree.xsd\">\n"
       "    <Repeat maxCount=\"10\">\n"
       "        <ParallelSequence>\n"
       "            <ForceSuccess name=\"success\">\n"

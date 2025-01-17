@@ -2,9 +2,9 @@
  * $HeadURL: $
  * $Id: $
  *
- * Project       : SUP - Sequencer
+ * Project       : SUP - Oac-Tree
  *
- * Description   : Sequencer for operational procedures
+ * Description   : Oac-Tree for operational procedures
  *
  * Author        : Walter Van Herck (IO)
  *
@@ -21,11 +21,11 @@
 
 #include "unit_test_helper.h"
 
-#include <sup/sequencer/generic_utils.h>
-#include <sup/sequencer/instruction.h>
-#include <sup/sequencer/instruction_registry.h>
-#include <sup/sequencer/procedure.h>
-#include <sup/sequencer/user_interface.h>
+#include <sup/oac-tree/generic_utils.h>
+#include <sup/oac-tree/instruction.h>
+#include <sup/oac-tree/instruction_registry.h>
+#include <sup/oac-tree/procedure.h>
+#include <sup/oac-tree/user_interface.h>
 
 #include <sup/dto/anyvalue_helper.h>
 #include <sup/dto/json_value_parser.h>
@@ -40,7 +40,7 @@ namespace sup
 {
 namespace UnitTestHelper
 {
-using namespace sup::sequencer;
+using namespace sup::oac_tree;
 using namespace std::placeholders;
 
 const std::string ENV_TEST_RESOURCES_PATH_NAME = "TEST_RESOURCES_PATH";
@@ -248,10 +248,10 @@ std::string CreateProcedureString(const std::string &body)
 {
   static const std::string header{
       R"RAW(<?xml version="1.0" encoding="UTF-8"?>
-<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+<Procedure xmlns="http://codac.iter.org/sup/oac-tree" version="1.0"
            name="Common header"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">)RAW"};
+           xs:schemaLocation="http://codac.iter.org/sup/oac-tree oac-tree.xsd">)RAW"};
 
   static const std::string footer{R"RAW(</Procedure>)RAW"};
 

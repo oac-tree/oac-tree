@@ -2,7 +2,7 @@
  * $HeadURL: $
  * $Id: $
  *
- * Project       : SUP Sequencer
+ * Project       : SUP oac-tree
  *
  * Description   : Unit test code
  *
@@ -21,11 +21,11 @@
 
 #include "unit_test_helper.h"
 
-#include <sup/sequencer/generic_utils.h>
+#include <sup/oac-tree/generic_utils.h>
 
 #include <gtest/gtest.h>
 
-using namespace sup::sequencer;
+using namespace sup::oac_tree;
 
 const std::string TEST_FILE_NAME = "GenericUtilsTestFile";
 

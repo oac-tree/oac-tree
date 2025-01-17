@@ -1,0 +1,92 @@
+/******************************************************************************
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP - oac-tree
+ *
+ * Description   : oac-tree for operational procedures
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2025 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file ITER-LICENSE.TXT located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
+
+#ifndef SUP_OAC_TREE_LISTEN_H_
+#define SUP_OAC_TREE_LISTEN_H_
+
+#include <sup/oac-tree/decorator_instruction.h>
+
+#include <sup/oac-tree/workspace.h>
+
+#include <condition_variable>
+#include <map>
+#include <memory>
+#include <mutex>
+
+namespace sup
+{
+namespace oac_tree
+{
+/**
+ * @brief Decorator that executes its child instruction each time specific variables are updated.
+ */
+class Listen : public DecoratorInstruction
+{
+public:
+  Listen();
+
+  ~Listen() override;
+
+  static const std::string Type;
+
+private:
+  bool m_force_success;
+  bool m_var_changed;
+  std::mutex m_mtx;
+  std::condition_variable m_cv;
+  std::vector<std::string> m_var_names;
+  std::map<std::string, sup::dto::AnyValue> m_var_cache;
+  ScopeGuard m_cb_guard;
+
+  void SetupImpl(const Procedure& proc) override;
+
+  bool InitHook(UserInterface& ui, Workspace& ws) override;
+
+  /**
+   * @brief Repeatedly execute the child instruction when specific variables are updated.
+   * When forceSuccess is not set, the instruction only ends on the child's FAILURE and returns
+   * FAILURE accordingly.
+   * The instruction also immediately returns SUCCESS in the absence of a child instruction.
+   */
+  ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
+
+  void HaltImpl() override;
+
+  void ResetHook(UserInterface& ui) override;
+
+  void InitVariableCache();
+
+  /**
+   * @brief Calculate this instruction's status from the status of its child instruction.
+   */
+  ExecutionStatus CalculateStatus() const;
+
+  void UpdateCallback(const std::string& name, const sup::dto::AnyValue& val);
+
+  void RegisterCallbacks(Workspace* ws, std::vector<std::string> var_names);
+  void ClearCallbacks();
+};
+
+}  // namespace oac_tree
+
+}  // namespace sup
+
+#endif  // SUP_OAC_TREE_LISTEN_H_

@@ -1,7 +1,7 @@
 Core Variables
 ==============
 
-The :ref:`variable` class is an interface for workspace variables, designed to manage and manipulate various types of variables within a software system. The core sequencer library supports two types of variable: local and file.
+The :ref:`variable` class is an interface for workspace variables, designed to manage and manipulate various types of variables within a software system. The core oac-tree library supports two types of variable: local and file.
 
 Local Variable
 --------------

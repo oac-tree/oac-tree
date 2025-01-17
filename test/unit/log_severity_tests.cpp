@@ -2,7 +2,7 @@
  * $HeadURL: $
  * $Id: $
  *
- * Project       : SUP Sequencer
+ * Project       : SUP oac-tree
  *
  * Description   : Unit test code
  *
@@ -21,9 +21,9 @@
 
 #include <gtest/gtest.h>
 
-#include <sup/sequencer/log_severity.h>
+#include <sup/oac-tree/log_severity.h>
 
-using namespace sup::sequencer;
+using namespace sup::oac_tree;
 
 class LogSeverityTest : public ::testing::Test
 {
@@ -31,8 +31,8 @@ class LogSeverityTest : public ::testing::Test
 
 TEST_F(LogSeverityTest, SeverityString)
 {
-  using sup::sequencer::log::Severity;
-  using sup::sequencer::log::SeverityString;
+  using sup::oac_tree::log::Severity;
+  using sup::oac_tree::log::SeverityString;
 
   EXPECT_EQ(SeverityString(Severity::SUP_SEQ_LOG_EMERG), std::string("EMERGENCY"));
   EXPECT_EQ(SeverityString(Severity::SUP_SEQ_LOG_ALERT), std::string("ALERT"));
@@ -48,8 +48,8 @@ TEST_F(LogSeverityTest, SeverityString)
 
 TEST_F(LogSeverityTest, GetSeverityFromString)
 {
-  using sup::sequencer::log::GetSeverityFromString;
-  using sup::sequencer::log::Severity;
+  using sup::oac_tree::log::GetSeverityFromString;
+  using sup::oac_tree::log::Severity;
 
   EXPECT_EQ(GetSeverityFromString("EMERGENCY"), Severity::SUP_SEQ_LOG_EMERG);
   EXPECT_EQ(GetSeverityFromString("ALERT"), Severity::SUP_SEQ_LOG_ALERT);

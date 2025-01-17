@@ -2,7 +2,7 @@
  * $HeadURL: $
  * $Id: $
  *
- * Project       : SUP Sequencer
+ * Project       : SUP Oac-Tree
  *
  * Description   : Unit test code
  *
@@ -21,26 +21,26 @@
 
 #include "unit_test_helper.h"
 
-#include <sup/sequencer/compound_instruction.h>
+#include <sup/oac-tree/compound_instruction.h>
 
-#include <sup/sequencer/exceptions.h>
-#include <sup/sequencer/instruction.h>
-#include <sup/sequencer/instruction_registry.h>
-#include <sup/sequencer/sequence_parser.h>
-#include <sup/sequencer/workspace.h>
+#include <sup/oac-tree/exceptions.h>
+#include <sup/oac-tree/instruction.h>
+#include <sup/oac-tree/instruction_registry.h>
+#include <sup/oac-tree/sequence_parser.h>
+#include <sup/oac-tree/workspace.h>
 
 #include <gtest/gtest.h>
 
 #include <algorithm>
 
-using namespace sup::sequencer;
+using namespace sup::oac_tree;
 
 const std::string ProcedureSequenceString =
     R"RAW(<?xml version="1.0" encoding="UTF-8"?>
-<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+<Procedure xmlns="http://codac.iter.org/sup/oac-tree" version="1.0"
            name="Trivial procedure for testing purposes"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+           xs:schemaLocation="http://codac.iter.org/sup/oac-tree oac-tree.xsd">
     <Sequence>
         <Wait name="wait"/>
         <Wait name="again"/>
@@ -52,10 +52,10 @@ const std::string ProcedureSequenceString =
 
 const std::string ProcedureParallelString =
     R"RAW(<?xml version="1.0" encoding="UTF-8"?>
-<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+<Procedure xmlns="http://codac.iter.org/sup/oac-tree" version="1.0"
            name="Trivial procedure for testing purposes"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+           xs:schemaLocation="http://codac.iter.org/sup/oac-tree oac-tree.xsd">
     <ParallelSequence name="parallel" successThreshold="1" failureThreshold="2">
         <Wait name="wait"/>
         <Wait name="again" timeout="0.1"/>
@@ -67,10 +67,10 @@ const std::string ProcedureParallelString =
 
 const std::string ProcedureParallelBuiltinString =
     R"RAW(<?xml version="1.0" encoding="UTF-8"?>
-<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+<Procedure xmlns="http://codac.iter.org/sup/oac-tree" version="1.0"
            name="Trivial procedure for testing purposes"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+           xs:schemaLocation="http://codac.iter.org/sup/oac-tree oac-tree.xsd">
     <ParallelSequence name="parallel" successThreshold="1" failureThreshold="3">
         <Wait name="wait" timeout="2.0"/>
         <Copy name="copy" inputVar="input" outputVar="output"/>

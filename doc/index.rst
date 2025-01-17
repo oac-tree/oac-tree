@@ -1,7 +1,7 @@
-Welcome to sequencer's documentation!
+Welcome to oac-tree's documentation!
 =====================================
 
-**sequencer** is a C++ framework for creating and executing automation procedures. It is developed
+**oac-tree** is a C++ framework for creating and executing automation procedures. It is developed
 in the context of the ITER Supervision and Automation System (SUP).
 
 

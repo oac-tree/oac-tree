@@ -92,7 +92,7 @@ The ``IsFinished`` and ``IsRunning`` methods allow you to check the current exec
    bool finished = my_runner.IsFinished();
    bool running = my_runner.IsRunning();
 
-Note that ``IsRunning`` has a very specific meaning in the context of the Sequencer: this member function returns ``true`` only when parts of the executing instruction tree are being run in a separate thread. This function is used to distinguish between instructions waiting to be ticked again and instructions that may require some time to finish before they can proceed. In this way, busy loops can be avoided, i.e. continuously ticking an instruction tree that is being run in a separate thread.
+Note that ``IsRunning`` has a very specific meaning in the context of the oac-tree: this member function returns ``true`` only when parts of the executing instruction tree are being run in a separate thread. This function is used to distinguish between instructions waiting to be ticked again and instructions that may require some time to finish before they can proceed. In this way, busy loops can be avoided, i.e. continuously ticking an instruction tree that is being run in a separate thread.
 
 Additional Notes
 ----------------
@@ -106,10 +106,10 @@ Class definition
 
    Next is presented the definition of the ``Runner`` class and its main methods.
 
-.. doxygenclass:: sup::sequencer::Runner
+.. doxygenclass:: sup::oac_tree::Runner
    :members:   Runner, SetProcedure, SetTickCallback, SetBreakpoint,
                RemoveBreakpoint, GetBreakpoints, ExecuteProcedure,
                ExecuteSingle, Halt, Pause, IsFinished, IsRunning
 
-.. doxygenclass:: sup::sequencer::TimeoutWhenRunning
+.. doxygenclass:: sup::oac_tree::TimeoutWhenRunning
    :members:

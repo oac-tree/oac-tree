@@ -2,7 +2,7 @@
  * $HeadURL: $
  * $Id: $
  *
- * Project       : SUP - Sequencer
+ * Project       : SUP - oac-tree
  *
  * Description   : Unit test code
  *
@@ -21,9 +21,9 @@
 
 #include "unit_test_helper.h"
 
-#include <sup/sequencer/exceptions.h>
-#include <sup/sequencer/job_interface_adapter.h>
-#include <sup/sequencer/sequence_parser.h>
+#include <sup/oac-tree/exceptions.h>
+#include <sup/oac-tree/job_interface_adapter.h>
+#include <sup/oac-tree/sequence_parser.h>
 
 #include <gtest/gtest.h>
 
@@ -34,7 +34,7 @@ using ::testing::InSequence;
 using ::testing::Return;
 using ::testing::SetArgReferee;
 
-using namespace sup::sequencer;
+using namespace sup::oac_tree;
 
 class JobInterfaceAdapterTest : public ::testing::Test
 {
@@ -49,7 +49,7 @@ protected:
 TEST_F(JobInterfaceAdapterTest, Construction)
 {
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
-  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  auto proc = sup::oac_tree::ParseProcedureString(procedure_string);
   ASSERT_NE(proc.get(), nullptr);
   JobInterfaceAdapter job_interface_adapter{*proc, m_test_job_info_io};
   EXPECT_THROW(job_interface_adapter.GetInstructionMap(), InvalidOperationException);
@@ -61,7 +61,7 @@ TEST_F(JobInterfaceAdapterTest, InitializeInstructionTree)
   EXPECT_CALL(m_test_job_info_io, InitNumberOfInstructions(3)).Times(Exactly(1));
 
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
-  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  auto proc = sup::oac_tree::ParseProcedureString(procedure_string);
   ASSERT_NE(proc.get(), nullptr);
   JobInterfaceAdapter job_interface_adapter{*proc, m_test_job_info_io};
   job_interface_adapter.InitializeInstructionTree(proc->RootInstruction());
@@ -90,7 +90,7 @@ TEST_F(JobInterfaceAdapterTest, UpdateInstructionStatus)
   }
 
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
-  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  auto proc = sup::oac_tree::ParseProcedureString(procedure_string);
   ASSERT_NE(proc.get(), nullptr);
   JobInterfaceAdapter job_interface_adapter{*proc, m_test_job_info_io};
   job_interface_adapter.InitializeInstructionTree(proc->RootInstruction());
@@ -114,7 +114,7 @@ TEST_F(JobInterfaceAdapterTest, VariableUpdated)
   }
 
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
-  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  auto proc = sup::oac_tree::ParseProcedureString(procedure_string);
   ASSERT_NE(proc.get(), nullptr);
   JobInterfaceAdapter job_interface_adapter{*proc, m_test_job_info_io};
   job_interface_adapter.VariableUpdated("one", updated_value, true);
@@ -133,7 +133,7 @@ TEST_F(JobInterfaceAdapterTest, OutputValues)
   EXPECT_CALL(m_test_job_info_io, Log(2, log_message)).Times(Exactly(1));
 
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
-  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  auto proc = sup::oac_tree::ParseProcedureString(procedure_string);
   ASSERT_NE(proc.get(), nullptr);
   JobInterfaceAdapter job_interface_adapter{*proc, m_test_job_info_io};
   job_interface_adapter.PutValue(output_value, description);
@@ -155,7 +155,7 @@ TEST_F(JobInterfaceAdapterTest, UserInput)
     .WillOnce(Return(user_choice));
 
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
-  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  auto proc = sup::oac_tree::ParseProcedureString(procedure_string);
   ASSERT_NE(proc.get(), nullptr);
   JobInterfaceAdapter job_interface_adapter{*proc, m_test_job_info_io};
   auto [retrieved, value] = GetBlockingUserValue(job_interface_adapter, return_value, description);
@@ -172,7 +172,7 @@ TEST_F(JobInterfaceAdapterTest, OnStateChange)
   EXPECT_CALL(m_test_job_info_io, JobStateUpdated(job_state)).Times(Exactly(1));
 
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
-  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  auto proc = sup::oac_tree::ParseProcedureString(procedure_string);
   ASSERT_NE(proc.get(), nullptr);
   JobInterfaceAdapter job_interface_adapter{*proc, m_test_job_info_io};
   job_interface_adapter.OnStateChange(job_state);
@@ -189,7 +189,7 @@ TEST_F(JobInterfaceAdapterTest, OnBreakpointChange)
   }
 
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
-  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  auto proc = sup::oac_tree::ParseProcedureString(procedure_string);
   ASSERT_NE(proc.get(), nullptr);
   JobInterfaceAdapter job_interface_adapter{*proc, m_test_job_info_io};
   job_interface_adapter.InitializeInstructionTree(proc->RootInstruction());
@@ -206,7 +206,7 @@ TEST_F(JobInterfaceAdapterTest, OnProcedureTick)
   EXPECT_CALL(m_test_job_info_io, InitNumberOfInstructions(3)).Times(Exactly(1));
   EXPECT_CALL(m_test_job_info_io, NextInstructionsUpdated(_)).Times(Exactly(1));
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
-  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  auto proc = sup::oac_tree::ParseProcedureString(procedure_string);
   ASSERT_NE(proc.get(), nullptr);
   JobInterfaceAdapter job_interface_adapter{*proc, m_test_job_info_io};
   // OnProcedureTick throws when the adapter still has no map for the instructions:

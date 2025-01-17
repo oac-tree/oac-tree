@@ -2,7 +2,7 @@
  * $HeadURL: $
  * $Id: $
  *
- * Project       : SUP Sequencer
+ * Project       : SUP oac-tree
  *
  * Description   : Unit test code
  *
@@ -19,13 +19,13 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <sup/sequencer/attribute_handler.h>
-#include <sup/sequencer/concrete_constraints.h>
-#include <sup/sequencer/exceptions.h>
+#include <sup/oac-tree/attribute_handler.h>
+#include <sup/oac-tree/concrete_constraints.h>
+#include <sup/oac-tree/exceptions.h>
 
 #include <gtest/gtest.h>
 
-using namespace sup::sequencer;
+using namespace sup::oac_tree;
 
 const std::string kStrAttrName = "str_attr_name";
 const std::string kDoubleAttrName = "double_attr_name";

@@ -2,9 +2,9 @@
  * $HeadURL: $
  * $Id: $
  *
- * Project       : SUP - Sequencer
+ * Project       : SUP - oac-tree
  *
- * Description   : Sequencer for operational procedures
+ * Description   : oac-tree for operational procedures
  *
  * Author        : Walter Van Herck (IO)
  *
@@ -19,11 +19,11 @@
  * of the distribution package.
  ******************************************************************************/
 
-#ifndef SUP_SEQUENCER_MOCK_USER_INTERFACE_H_
-#define SUP_SEQUENCER_MOCK_USER_INTERFACE_H_
+#ifndef SUP_OAC_TREE_MOCK_USER_INTERFACE_H_
+#define SUP_OAC_TREE_MOCK_USER_INTERFACE_H_
 
-#include <sup/sequencer/instruction.h>
-#include <sup/sequencer/user_interface.h>
+#include <sup/oac-tree/instruction.h>
+#include <sup/oac-tree/user_interface.h>
 
 #include <gmock/gmock.h>
 
@@ -31,7 +31,7 @@
 
 namespace sup
 {
-namespace sequencer
+namespace oac_tree
 {
 /**
  * @brief Mock UserInterface class for unit testing.
@@ -64,8 +64,8 @@ MATCHER_P(HasSameValue, value, "")
   return arg == value;
 }
 
-}  // namespace sequencer
+}  // namespace oac_tree
 
 }  // namespace sup
 
-#endif  // SUP_SEQUENCER_MOCK_USER_INTERFACE_H_
+#endif  // SUP_OAC_TREE_MOCK_USER_INTERFACE_H_

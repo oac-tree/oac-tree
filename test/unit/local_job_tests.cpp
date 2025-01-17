@@ -2,7 +2,7 @@
  * $HeadURL: $
  * $Id: $
  *
- * Project       : SUP - Sequencer
+ * Project       : SUP - oac-tree
  *
  * Description   : Unit test code
  *
@@ -21,11 +21,11 @@
 
 #include "unit_test_helper.h"
 
-#include <sup/sequencer/exceptions.h>
-#include <sup/sequencer/instruction_utils.h>
-#include <sup/sequencer/job_info.h>
-#include <sup/sequencer/local_job.h>
-#include <sup/sequencer/sequence_parser.h>
+#include <sup/oac-tree/exceptions.h>
+#include <sup/oac-tree/instruction_utils.h>
+#include <sup/oac-tree/job_info.h>
+#include <sup/oac-tree/local_job.h>
+#include <sup/oac-tree/sequence_parser.h>
 
 #include <gtest/gtest.h>
 
@@ -40,15 +40,15 @@ using ::testing::Exactly;
 using ::testing::InSequence;
 using ::testing::Return;
 
-using namespace sup::sequencer;
+using namespace sup::oac_tree;
 
-class TestJobInfoIO : public sup::sequencer::IJobInfoIO
+class TestJobInfoIO : public sup::oac_tree::IJobInfoIO
 {
 public:
   TestJobInfoIO();
   ~TestJobInfoIO() override;
   MOCK_METHOD(void, InitNumberOfInstructions, (sup::dto::uint32), (override));
-  MOCK_METHOD(void, InstructionStateUpdated, (sup::dto::uint32, sup::sequencer::InstructionState), (override));
+  MOCK_METHOD(void, InstructionStateUpdated, (sup::dto::uint32, sup::oac_tree::InstructionState), (override));
   MOCK_METHOD(void, VariableUpdated, (sup::dto::uint32, const sup::dto::AnyValue&, bool), (override));
   MOCK_METHOD(void, PutValue, (const sup::dto::AnyValue&, const std::string&), (override));
   MOCK_METHOD(bool, GetUserValue, (sup::dto::uint64, sup::dto::AnyValue&, const std::string&), (override));
@@ -83,7 +83,7 @@ TEST_F(LocalJobTest, Construction)
   EXPECT_CALL(m_test_job_info_io, VariableUpdated(_, _, true)).Times(Exactly(3));
 
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
-  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  auto proc = sup::oac_tree::ParseProcedureString(procedure_string);
   ASSERT_NE(proc.get(), nullptr);
   LocalJob job{std::move(proc), m_test_job_info_io};
   JobState initial_job_state = JobState::kInitial;
@@ -96,7 +96,7 @@ TEST_F(LocalJobTest, GetInfo)
   EXPECT_CALL(m_test_job_info_io, VariableUpdated(_, _, true)).Times(Exactly(3));
 
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
-  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  auto proc = sup::oac_tree::ParseProcedureString(procedure_string);
   ASSERT_NE(proc.get(), nullptr);
   LocalJob job{std::move(proc), m_test_job_info_io};
   auto job_info = job.GetInfo();
@@ -115,7 +115,7 @@ TEST_F(LocalJobTest, Start)
   EXPECT_CALL(m_test_job_info_io, NextInstructionsUpdated(_)).Times(AtLeast(1));
 
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
-  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  auto proc = sup::oac_tree::ParseProcedureString(procedure_string);
   ASSERT_NE(proc.get(), nullptr);
   LocalJob job{std::move(proc), m_test_job_info_io};
   job.Start();
@@ -135,7 +135,7 @@ TEST_F(LocalJobTest, Step)
   EXPECT_CALL(m_test_job_info_io, NextInstructionsUpdated(_)).Times(AtLeast(1));
 
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
-  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  auto proc = sup::oac_tree::ParseProcedureString(procedure_string);
   ASSERT_NE(proc.get(), nullptr);
   LocalJob job{std::move(proc), m_test_job_info_io};
   job.Step();
@@ -158,7 +158,7 @@ TEST_F(LocalJobTest, HaltReset)
   EXPECT_CALL(m_test_job_info_io, NextInstructionsUpdated(_)).Times(AtLeast(1));
 
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
-  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  auto proc = sup::oac_tree::ParseProcedureString(procedure_string);
   ASSERT_NE(proc.get(), nullptr);
   LocalJob job{std::move(proc), m_test_job_info_io};
   job.Step();
@@ -183,7 +183,7 @@ TEST_F(LocalJobTest, Breakpoints)
   EXPECT_CALL(m_test_job_info_io, NextInstructionsUpdated(_)).Times(AtLeast(1));
 
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
-  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  auto proc = sup::oac_tree::ParseProcedureString(procedure_string);
   ASSERT_NE(proc.get(), nullptr);
   LocalJob job{std::move(proc), m_test_job_info_io};
   job.SetBreakpoint(1);
@@ -207,7 +207,7 @@ TEST_F(LocalJobTest, MoveConstructor)
   EXPECT_CALL(m_test_job_info_io, NextInstructionsUpdated(_)).Times(AtLeast(1));
 
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
-  auto proc = sup::sequencer::ParseProcedureString(procedure_string);
+  auto proc = sup::oac_tree::ParseProcedureString(procedure_string);
   ASSERT_NE(proc.get(), nullptr);
   LocalJob job{std::move(proc), m_test_job_info_io};
   LocalJob moved{std::move(job)};
@@ -227,8 +227,8 @@ TEST_F(LocalJobTest, MoveAssignment)
   EXPECT_CALL(m_test_job_info_io, NextInstructionsUpdated(_)).Times(AtLeast(1));
 
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
-  auto proc_1 = sup::sequencer::ParseProcedureString(procedure_string);
-  auto proc_2 = sup::sequencer::ParseProcedureString(procedure_string);
+  auto proc_1 = sup::oac_tree::ParseProcedureString(procedure_string);
+  auto proc_2 = sup::oac_tree::ParseProcedureString(procedure_string);
   ASSERT_NE(proc_1.get(), nullptr);
   ASSERT_NE(proc_2.get(), nullptr);
   LocalJob job_1{std::move(proc_1), m_test_job_info_io};

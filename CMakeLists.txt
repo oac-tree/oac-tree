@@ -1,6 +1,6 @@
-# Project       : SUP - Sequencer
+# Project       : SUP - OAC-TREE
 #
-# Description   : Sequencer for operational procedures
+# Description   : oac-tree for operational procedures
 #
 # Author        : Walter Van Herck (IO)
 #
@@ -15,7 +15,7 @@
 # of the distribution package.
 
 cmake_minimum_required(VERSION 3.13...3.31)
-project(sup-sequencer VERSION 3.3.0)
+project(sup-oac-tree VERSION 3.3.0)
 
 option(COA_COVERAGE "Generate unit test coverage information" OFF)
 option(COA_PARASOFT_INTEGRATION "Parasoft integration" OFF)

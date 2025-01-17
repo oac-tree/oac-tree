@@ -2,7 +2,7 @@
  * $HeadURL: $
  * $Id: $
  *
- * Project       : SUP Sequencer
+ * Project       : SUP oac-tree
  *
  * Description   : Unit test code
  *
@@ -19,32 +19,32 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "sup/sequencer/execution_status.h"
-#include <sup/sequencer/instructions/log_instruction.h>
-#include <sup/sequencer/log_severity.h>
+#include <sup/oac-tree/execution_status.h>
+#include <sup/oac-tree/instructions/log_instruction.h>
+#include <sup/oac-tree/log_severity.h>
 
 #include "unit_test_helper.h"
 
-#include <sup/sequencer/exceptions.h>
-#include <sup/sequencer/instruction_registry.h>
-#include <sup/sequencer/procedure.h>
-#include <sup/sequencer/sequence_parser.h>
-#include <sup/sequencer/user_interface.h>
-#include <sup/sequencer/variable_registry.h>
-#include <sup/sequencer/workspace.h>
+#include <sup/oac-tree/exceptions.h>
+#include <sup/oac-tree/instruction_registry.h>
+#include <sup/oac-tree/procedure.h>
+#include <sup/oac-tree/sequence_parser.h>
+#include <sup/oac-tree/user_interface.h>
+#include <sup/oac-tree/variable_registry.h>
+#include <sup/oac-tree/workspace.h>
 
 #include <gtest/gtest.h>
 #include <cstddef>
 
-using namespace sup::sequencer;
+using namespace sup::oac_tree;
 
 static const std::string BOOLEANTYPE = R"RAW({"type":"bool"})RAW";
 
 static const std::string LOGVARIABLEPROCEDURE = R"RAW(<?xml version="1.0" encoding="UTF-8"?>
-<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+<Procedure xmlns="http://codac.iter.org/sup/oac-tree" version="1.0"
            name="Trivial procedure for testing purposes"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+           xs:schemaLocation="http://codac.iter.org/sup/oac-tree oac-tree.xsd">
     <Sequence>
         <Copy inputVar="a" outputVar="out"/>
         <Log inputVar="out" severity="critical"/>

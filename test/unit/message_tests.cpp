@@ -2,7 +2,7 @@
  * $HeadURL: $
  * $Id: $
  *
- * Project       : SUP Sequencer
+ * Project       : SUP oac-tree
  *
  * Description   : Unit test code
  *
@@ -19,20 +19,20 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <sup/sequencer/instructions/message.h>
+#include <sup/oac-tree/instructions/message.h>
 
 #include "unit_test_helper.h"
 
-#include <sup/sequencer/exceptions.h>
-#include <sup/sequencer/instruction_registry.h>
-#include <sup/sequencer/procedure.h>
-#include <sup/sequencer/sequence_parser.h>
-#include <sup/sequencer/user_interface.h>
-#include <sup/sequencer/workspace.h>
+#include <sup/oac-tree/exceptions.h>
+#include <sup/oac-tree/instruction_registry.h>
+#include <sup/oac-tree/procedure.h>
+#include <sup/oac-tree/sequence_parser.h>
+#include <sup/oac-tree/user_interface.h>
+#include <sup/oac-tree/workspace.h>
 
 #include <gtest/gtest.h>
 
-using namespace sup::sequencer;
+using namespace sup::oac_tree;
 
 //! Testing Message instruction.
 class MessageTest : public ::testing::Test
@@ -69,7 +69,7 @@ TEST_F(MessageTest, Setup)
 
 TEST_F(MessageTest, Execute)
 {
-  std::string message("Hello Sequencer!");
+  std::string message("Hello oac-tree!");
   Message message_instr{};
   message_instr.AddAttribute("text", message);
   EXPECT_NO_THROW(message_instr.Setup(proc));

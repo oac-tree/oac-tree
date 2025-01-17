@@ -2,7 +2,7 @@
  * $HeadURL: $
  * $Id: $
  *
- * Project       : SUP Sequencer
+ * Project       : SUP oac-tree
  *
  * Description   : Unit test code
  *
@@ -19,13 +19,13 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <sup/sequencer/execution_status.h>
+#include <sup/oac-tree/execution_status.h>
 
 #include <gtest/gtest.h>
 
 #include <set>
 
-using namespace sup::sequencer;
+using namespace sup::oac_tree;
 
 TEST(ExecutionStatus, EnumeratorStrings)
 {

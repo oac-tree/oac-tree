@@ -2,7 +2,7 @@
  * $HeadURL: $
  * $Id: $
  *
- * Project       : SUP Sequencer
+ * Project       : SUP oac-tree
  *
  * Description   : Unit test code
  *
@@ -22,15 +22,15 @@
 #include "mock_user_interface.h"
 #include "unit_test_helper.h"
 
-#include <sup/sequencer/instruction.h>
-#include <sup/sequencer/instruction_registry.h>
-#include <sup/sequencer/workspace.h>
+#include <sup/oac-tree/instruction.h>
+#include <sup/oac-tree/instruction_registry.h>
+#include <sup/oac-tree/workspace.h>
 
 #include <gtest/gtest.h>
 
 #include <algorithm>
 
-using namespace sup::sequencer;
+using namespace sup::oac_tree;
 
 class UserInterfaceTest : public ::testing::Test
 {

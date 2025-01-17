@@ -1,0 +1,30 @@
+target_sources(sup-oac-tree-shared
+  PRIVATE
+    async_runner.cpp
+    attribute_info.cpp
+    breakpoint.cpp
+    breakpoint_manager.cpp
+    constants.cpp
+    i_job_info_io.cpp
+    i_job.cpp
+    instruction_info_utils.cpp
+    instruction_info.cpp
+    instruction_map.cpp
+    instruction_state.cpp
+    job_command_queue.cpp
+    job_commands.cpp
+    job_info_utils.cpp
+    job_info.cpp
+    job_interface_adapter.cpp
+    job_interface.cpp
+    job_map.cpp
+    job_state_monitor.cpp
+    job_states.cpp
+    local_job.cpp
+    runner.cpp
+    user_interface.cpp
+    variable_info.cpp
+    variable_map.cpp
+    variable_utils.cpp
+    workspace_info.cpp
+)

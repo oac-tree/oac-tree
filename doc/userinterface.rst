@@ -95,5 +95,5 @@ Class definition
 
 Next is presented the definition of the ``UserInterface`` class and its main methods.
 
-.. doxygenclass:: sup::sequencer::UserInterface
+.. doxygenclass:: sup::oac_tree::UserInterface
    :members:

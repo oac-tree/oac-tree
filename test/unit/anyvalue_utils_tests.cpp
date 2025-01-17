@@ -2,7 +2,7 @@
  * $HeadURL: $
  * $Id: $
  *
- * Project       : SUP - Sequencer
+ * Project       : SUP - oac-tree
  *
  * Description   : Unit test code
  *
@@ -19,11 +19,11 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <sup/sequencer/anyvalue_utils.h>
+#include <sup/oac-tree/anyvalue_utils.h>
 
 #include <gtest/gtest.h>
 
-using namespace sup::sequencer;
+using namespace sup::oac_tree;
 
 class AnyValueUtilsTest : public ::testing::Test
 {

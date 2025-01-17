@@ -65,9 +65,9 @@ This function will perform the following steps:
 Usage
 -----
 
-Two specialisations of the ``Variable`` class are included in **Sequencer**. They are the `local variable` and the `file variable`. The implementation of `Local Variable` will be used to provide examples.
+Two specialisations of the ``Variable`` class are included in **Oac-Tree**. They are the `local variable` and the `file variable`. The implementation of `Local Variable` will be used to provide examples.
 
-Note that more specialized variables are provided by plugins. For example, an EPICS ChannelAccess client variable is defined by ``sequencer-plugin-epics``.
+Note that more specialized variables are provided by plugins. For example, an EPICS ChannelAccess client variable is defined by ``oac-tree-plugin-epics``.
 
 Creating a Variable
 ^^^^^^^^^^^^^^^^^^^^
@@ -171,5 +171,5 @@ Class definition
 
 Next is presented the definition of the ``Variable`` class and its main methods.
 
-.. doxygenclass:: sup::sequencer::Variable
+.. doxygenclass:: sup::oac_tree::Variable
    :members:

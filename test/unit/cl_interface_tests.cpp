@@ -2,7 +2,7 @@
  * $HeadURL: $
  * $Id: $
  *
- * Project       : SUP Sequencer
+ * Project       : SUP oac-tree
  *
  * Description   : Unit test code
  *
@@ -19,13 +19,13 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <app/sequencer-cli/cl_interface.h>
+#include <app/oac-tree-cli/cl_interface.h>
 
 #include "std_redirectors.h"
 
-#include <sup/sequencer/log_severity.h>
-#include <sup/sequencer/instruction.h>
-#include <sup/sequencer/instruction_registry.h>
+#include <sup/oac-tree/log_severity.h>
+#include <sup/oac-tree/instruction.h>
+#include <sup/oac-tree/instruction_registry.h>
 
 #include <sup/log/basic_logger.h>
 
@@ -37,7 +37,7 @@
 #include <tuple>
 #include <vector>
 
-using namespace sup::sequencer;
+using namespace sup::oac_tree;
 
 class CLInterfaceTest : public ::testing::Test
 {

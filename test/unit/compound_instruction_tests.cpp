@@ -2,7 +2,7 @@
  * $HeadURL: $
  * $Id: $
  *
- * Project       : SUP Sequencer
+ * Project       : SUP oac-tree
  *
  * Description   : Unit test code
  *
@@ -19,14 +19,14 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <sup/sequencer/compound_instruction.h>
-#include <sup/sequencer/instructions/wait.h>
+#include <sup/oac-tree/compound_instruction.h>
+#include <sup/oac-tree/instructions/wait.h>
 
 #include <gtest/gtest.h>
 
-#include <sup/sequencer/constants.h>
+#include <sup/oac-tree/constants.h>
 
-using namespace sup::sequencer;
+using namespace sup::oac_tree;
 
 class CompoundInstructionTest : public ::testing::Test
 {

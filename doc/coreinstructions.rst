@@ -23,8 +23,8 @@ Sequence
 
 The sequence instruction executes its child instructions one by one in the order they are defined until:
 
-* A child instruction returns `FAILURE`: `Sequencer` also returns `FAILURE`;
-* All child instructions returned `SUCCESS`: `Sequencer` returns `SUCCESS`.
+* A child instruction returns `FAILURE`: `Oac-Tree` also returns `FAILURE`;
+* All child instructions returned `SUCCESS`: `Oac-Tree` returns `SUCCESS`.
 
 A sequence represents a number of steps that all have to succeed for a specific goal to be reached.
 
@@ -913,7 +913,7 @@ Attributes:
 Log
 ^^^
 
-Instruction that sends a message and/or variable value to the sequencer log, which is handled by the specific UserInterface used.
+Instruction that sends a message and/or variable value to the oac-tree log, which is handled by the specific UserInterface used.
 
 Attributes:
 

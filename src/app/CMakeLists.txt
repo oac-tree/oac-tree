@@ -1,2 +1,2 @@
-add_subdirectory(sequencer-cli)
-add_subdirectory(sequencer-daemon)
+add_subdirectory(oac-tree-cli)
+add_subdirectory(oac-tree-daemon)

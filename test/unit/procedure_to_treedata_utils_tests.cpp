@@ -2,7 +2,7 @@
  * $HeadURL: $
  * $Id: $
  *
- * Project       : SUP Sequencer
+ * Project       : SUP oac-tree
  *
  * Description   : Unit test code
  *
@@ -19,26 +19,26 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <sup/sequencer/parser/procedure_to_treedata_utils.h>
+#include <sup/oac-tree/parser/procedure_to_treedata_utils.h>
 
-#include <sup/sequencer/variables/file_variable.h>
-#include <sup/sequencer/variables/local_variable.h>
-#include <sup/sequencer/instructions/sequence.h>
-#include <sup/sequencer/instructions/wait.h>
+#include <sup/oac-tree/variables/file_variable.h>
+#include <sup/oac-tree/variables/local_variable.h>
+#include <sup/oac-tree/instructions/sequence.h>
+#include <sup/oac-tree/instructions/wait.h>
 
-#include <sup/sequencer/constants.h>
-#include <sup/sequencer/instruction.h>
-#include <sup/sequencer/instruction_registry.h>
-#include <sup/sequencer/procedure.h>
-#include <sup/sequencer/variable.h>
-#include <sup/sequencer/variable_registry.h>
-#include <sup/sequencer/workspace.h>
+#include <sup/oac-tree/constants.h>
+#include <sup/oac-tree/instruction.h>
+#include <sup/oac-tree/instruction_registry.h>
+#include <sup/oac-tree/procedure.h>
+#include <sup/oac-tree/variable.h>
+#include <sup/oac-tree/variable_registry.h>
+#include <sup/oac-tree/workspace.h>
 
 #include <sup/xml/tree_data.h>
 
 #include <gtest/gtest.h>
 
-using namespace sup::sequencer;
+using namespace sup::oac_tree;
 
 class ProcedureToTreeDataUtilsTest : public ::testing::Test
 {

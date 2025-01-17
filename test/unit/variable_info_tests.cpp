@@ -2,7 +2,7 @@
  * $HeadURL: $
  * $Id: $
  *
- * Project       : SUP Sequencer
+ * Project       : SUP oac-tree
  *
  * Description   : Unit test code
  *
@@ -21,17 +21,17 @@
 
 #include "unit_test_helper.h"
 
-#include <sup/sequencer/exceptions.h>
-#include <sup/sequencer/constants.h>
-#include <sup/sequencer/sequence_parser.h>
-#include <sup/sequencer/variable.h>
-#include <sup/sequencer/variable_registry.h>
-#include <sup/sequencer/variable_utils.h>
+#include <sup/oac-tree/exceptions.h>
+#include <sup/oac-tree/constants.h>
+#include <sup/oac-tree/sequence_parser.h>
+#include <sup/oac-tree/variable.h>
+#include <sup/oac-tree/variable_registry.h>
+#include <sup/oac-tree/variable_utils.h>
 
 #include <gtest/gtest.h>
 
-using namespace sup::sequencer;
-using namespace sup::sequencer::Constants;
+using namespace sup::oac_tree;
+using namespace sup::oac_tree::Constants;
 
 class VariableInfoTest : public ::testing::Test
 {

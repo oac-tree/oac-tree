@@ -3,12 +3,12 @@ Introduction
 ============
 
 
-The sequencer framework leverages a goal-oriented approach to optimize procedure execution by allowing complex, and typically manual, tasks to be automated. The framework decision-making flow is controlled by a hierarchical tree of nodes, allowing the construction of maintainable and extensible procedures.
+The oac-tree framework leverages a goal-oriented approach to optimize procedure execution by allowing complex, and typically manual, tasks to be automated. The framework decision-making flow is controlled by a hierarchical tree of nodes, allowing the construction of maintainable and extensible procedures.
 
 Behavior trees for automation
 ====================================
 
-The sequencer framework aims at allowing for routine and repetitive operational procedures to be executed with reduced human intervention, and therefore improving the overall operational efficiency, and ensuring a deterministic execution over a wide range of scenarios. By allowing laborious, and typically manual, tasks to be performed automatically or semi-automatically, human involvement can be shifted to tasks with a high added value.
+The oac-tree framework aims at allowing for routine and repetitive operational procedures to be executed with reduced human intervention, and therefore improving the overall operational efficiency, and ensuring a deterministic execution over a wide range of scenarios. By allowing laborious, and typically manual, tasks to be performed automatically or semi-automatically, human involvement can be shifted to tasks with a high added value.
 
 Behavioural trees are a formal modelling language used to represent the behaviour of systems and software engineering projects. They provide flexible mathematical models used in various fields for executing tasks. Behavioural trees organize tasks into a finite set, enabling the creation of complex behaviours by modularly combining simpler tasks in a structured and hierarchical manner.
 They are particularly useful for expressing complex requirements in a clear and unambiguous way, by providing a well-defined notation that captures the behaviour described in requirements and natural language. Behavioural tree semantics are grounded in process algebra and operational semantics, providing a basis for simulation, model checking, and failure modes and effects analysis.
@@ -34,18 +34,18 @@ As ticks are propagated through the tree until an action node is reached, status
   - Failure: The node finished with failure status.
 
 
-Structure of Sequencer procedures
+Structure of Oac-Tree procedures
 ====================================
 
-Sequencer procedures encapsulate all the instruction trees that the sequencer can execute. They rely on simple and self-contained blocks of logic that define the execution flow.
-The sequencer framework requires procedures to be defined in a XML format. The XML structure of the procedure depends on the behaviour complexity and on the type of instructions being used.
+Oac-Tree procedures encapsulate all the instruction trees that the oac-tree can execute. They rely on simple and self-contained blocks of logic that define the execution flow.
+The oac-tree framework requires procedures to be defined in a XML format. The XML structure of the procedure depends on the behaviour complexity and on the type of instructions being used.
 
 The main sections of a procedure, their multiplicity, description and attributes, can be seen below.
 
 Plugins Section
 ----------------
 
-The plugins section Contains the name of the dynamic libraries to be loaded at runtime. Plugins allow to extend the existing sequencer functionalities by providing new instructions or variables. In the XML procedure file, plugins are defined using the XML element *<Plugin>*. The plugin element has no attributes.
+The plugins section Contains the name of the dynamic libraries to be loaded at runtime. Plugins allow to extend the existing oac-tree functionalities by providing new instructions or variables. In the XML procedure file, plugins are defined using the XML element *<Plugin>*. The plugin element has no attributes.
 For a complete list of supported plugins, please refer to the plugins documentation ``TBD``.
 
 .. list-table::
@@ -57,8 +57,8 @@ For a complete list of supported plugins, please refer to the plugins documentat
   * - Attributes
     - | N/A
   * - Example
-    - | <Plugin>libsequencer-ca.so</Plugin>
-      | <Plugin>libsequencer-pvxs.so</Plugin>
+    - | <Plugin>liboac-tree-ca.so</Plugin>
+      | <Plugin>liboac-tree-pvxs.so</Plugin>
 
 
 Type Declarations Section
@@ -128,16 +128,16 @@ Workspace With Variables Section
 Procedure Example
 ------------------
 
-The following procedure was extracted from the sequencer test campaign, where it is possible to see that the procedure is defined in a typical XML format, and contains some of sections presented before.
+The following procedure was extracted from the oac-tree test campaign, where it is possible to see that the procedure is defined in a typical XML format, and contains some of sections presented before.
 
 .. code-block:: xml
 
   <?xml version="1.0" encoding="UTF-8"?>
-  <Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
-            name="Sequencer functional test"
+  <Procedure xmlns="http://codac.iter.org/sup/oac-tree" version="1.0"
+            name="Oac-Tree functional test"
             xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
-    <Plugin>libsequencer-ca.so</Plugin>
+            xs:schemaLocation="http://codac.iter.org/sup/oac-tree oac-tree.xsd">
+    <Plugin>liboac-tree-ca.so</Plugin>
     <Repeat isRoot="True" maxCount="-1">
       <Sequence>
         <Wait timeout="0.2"/>

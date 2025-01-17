@@ -1,0 +1,10 @@
+target_sources(sup-oac-tree-shared
+  PRIVATE
+    attribute_definition.cpp
+    attribute_handler.cpp
+    attribute_properties.cpp
+    attribute_validator.cpp
+    attribute_utils.cpp
+    concrete_constraints.cpp
+    constraint.cpp
+)

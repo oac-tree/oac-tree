@@ -2,7 +2,7 @@
  * $HeadURL: $
  * $Id: $
  *
- * Project       : SUP Sequencer
+ * Project       : SUP oac-tree
  *
  * Description   : Unit test code
  *
@@ -19,11 +19,11 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <sup/sequencer/variables/local_variable.h>
+#include <sup/oac-tree/variables/local_variable.h>
 
-#include <sup/sequencer/constants.h>
-#include <sup/sequencer/exceptions.h>
-#include <sup/sequencer/workspace.h>
+#include <sup/oac-tree/constants.h>
+#include <sup/oac-tree/exceptions.h>
+#include <sup/oac-tree/workspace.h>
 
 #include <gtest/gtest.h>
 
@@ -31,7 +31,7 @@
 #include <future>
 #include <sstream>
 
-using namespace sup::sequencer;
+using namespace sup::oac_tree;
 
 class LocalVariableTest : public ::testing::Test
 {

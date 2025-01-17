@@ -1,17 +1,17 @@
-Extending the Sequencer with plugins
+Extending the Oac-Tree with plugins
 ====================================
 
 .. contents::
    :local:
 
-Plugins allow users to extend the functionality of the Sequencer by providing new instructions or variables. This documentation provides a step-by-step guide on how to create a plugin and integrate it into the Sequencer.
-Creating a plugin to access another library in the sequencer is simple when following a structured approach: first, implement the instruction/variable interface; then register the instruction/variable; and finally deploy the plugin in the plugin folder.
+Plugins allow users to extend the functionality of the Oac-Tree by providing new instructions or variables. This documentation provides a step-by-step guide on how to create a plugin and integrate it into the Oac-Tree.
+Creating a plugin to access another library in the oac-tree is simple when following a structured approach: first, implement the instruction/variable interface; then register the instruction/variable; and finally deploy the plugin in the plugin folder.
 
 Implementation
 --------------
 
-Start by creating a new project (E.g. ``sequencer-plugin-examplelib``). This page uses the following directory structure for the source files (but this is not mandatory): ``src > lib > sequencer``.
-Inside the ``sequencer`` folder, you may create additional directories for different parts of the library you wish to create the plugin for.
+Start by creating a new project (E.g. ``oac-tree-plugin-examplelib``). This page uses the following directory structure for the source files (but this is not mandatory): ``src > lib > oac-tree``.
+Inside the ``oac-tree`` folder, you may create additional directories for different parts of the library you wish to create the plugin for.
 
 To implement instructions and variables you can take a look at their respective sections:
 :ref:`Instruction`, :ref:`Variable`.
@@ -34,7 +34,7 @@ To register an instruction, include the instruction registry header file, and de
 
 .. code-block:: c++
 
-   #include <sup/sequencer/instruction_registry.h>
+   #include <sup/oac-tree/instruction_registry.h>
 
 .. code-block:: c++
 
@@ -44,7 +44,7 @@ In the same way, a variable is registered by including the variable registry hea
 
 .. code-block:: c++
 
-   #include <sup/sequencer/variable_registry.h>
+   #include <sup/oac-tree/variable_registry.h>
 
 .. code-block:: c++
 
@@ -62,4 +62,4 @@ To use variables and instructions of any plugin within your procedure, declare t
 
 .. code-block:: xml
 
-   <Plugin>libsequencer-example.so</Plugin>
+   <Plugin>liboac-tree-example.so</Plugin>

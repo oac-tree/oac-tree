@@ -2,7 +2,7 @@
  * $HeadURL: $
  * $Id: $
  *
- * Project       : SUP Sequencer
+ * Project       : SUP Oac-Tree
  *
  * Description   : Unit test code
  *
@@ -19,13 +19,13 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <sup/sequencer/runner.h>
+#include <sup/oac-tree/runner.h>
 
 #include "mock_user_interface.h"
 #include "unit_test_helper.h"
 
-#include <sup/sequencer/instruction_registry.h>
-#include <sup/sequencer/sequence_parser.h>
+#include <sup/oac-tree/instruction_registry.h>
+#include <sup/oac-tree/sequence_parser.h>
 
 #include <gtest/gtest.h>
 
@@ -34,7 +34,7 @@
 #include <future>
 #include <thread>
 
-using namespace sup::sequencer;
+using namespace sup::oac_tree;
 using namespace sup::UnitTestHelper;
 
 class RunnerTest : public ::testing::Test
@@ -53,10 +53,10 @@ protected:
 
 const std::string AsyncProcedureString =
     R"RAW(<?xml version="1.0" encoding="UTF-8"?>
-<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+<Procedure xmlns="http://codac.iter.org/sup/oac-tree" version="1.0"
            name="Asynchronous procedure for testing purposes"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd"
+           xs:schemaLocation="http://codac.iter.org/sup/oac-tree oac-tree.xsd"
            tickTimeout="0.01">
     <Sequence name="Main Sequence">
         <Wait name="Immediate Success"/>
@@ -70,10 +70,10 @@ const std::string AsyncProcedureString =
 
 const std::string SyncProcedureString =
     R"RAW(<?xml version="1.0" encoding="UTF-8"?>
-<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+<Procedure xmlns="http://codac.iter.org/sup/oac-tree" version="1.0"
            name="Synchronous procedure for testing purposes"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+           xs:schemaLocation="http://codac.iter.org/sup/oac-tree oac-tree.xsd">
     <Sequence name="Main Sequence">
         <Wait name="Immediate Success"/>
         <Inverter name="Invert success">
@@ -86,10 +86,10 @@ const std::string SyncProcedureString =
 
 const std::string CopyVariableProcedureString =
     R"RAW(<?xml version="1.0" encoding="UTF-8"?>
-<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+<Procedure xmlns="http://codac.iter.org/sup/oac-tree" version="1.0"
            name="Trivial procedure for testing purposes"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+           xs:schemaLocation="http://codac.iter.org/sup/oac-tree oac-tree.xsd">
     <Sequence>
         <Copy name="Copy workspace variables" inputVar="var1" outputVar="var2" />
     </Sequence>
@@ -105,10 +105,10 @@ const std::string CopyVariableProcedureString =
 
 const std::string AsyncWaitProcedureString =
     R"RAW(<?xml version="1.0" encoding="UTF-8"?>
-<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+<Procedure xmlns="http://codac.iter.org/sup/oac-tree" version="1.0"
            name="Synchronous procedure for testing purposes"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd"
+           xs:schemaLocation="http://codac.iter.org/sup/oac-tree oac-tree.xsd"
            tickTimeout="0.01">
     <ParallelSequence name="Main Sequence">
         <Wait name="Immediate Success" timeout="5.0"/>

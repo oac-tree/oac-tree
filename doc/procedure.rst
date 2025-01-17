@@ -1,7 +1,7 @@
 Procedure
 =========
 
-The ``Procedure`` class represents instruction trees to be executed within the Sequencer and a workspace of globally accessible variables (see :ref:`Variable`). It provides methods to handle variables and instructions, and to manage the execution flow. A procedure can include multiple top-level instructions, where at most one is defined to be the root instruction that will be executed on procedure execution.
+The ``Procedure`` class represents instruction trees to be executed within the oac-tree and a workspace of globally accessible variables (see :ref:`Variable`). It provides methods to handle variables and instructions, and to manage the execution flow. A procedure can include multiple top-level instructions, where at most one is defined to be the root instruction that will be executed on procedure execution.
 
 Architecture
 ------------
@@ -116,5 +116,5 @@ Class definition
 
 Next is presented the definition of the ``Procedure`` class and its main methods.
 
-.. doxygenclass:: sup::sequencer::Procedure
+.. doxygenclass:: sup::oac_tree::Procedure
    :members:

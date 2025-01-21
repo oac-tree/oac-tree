@@ -2,7 +2,7 @@
  * $HeadURL: $
  * $Id: $
  *
- * Project       : SUP Oac-Tree
+ * Project       : SUP oac-tree
  *
  * Description   : Unit test code
  *

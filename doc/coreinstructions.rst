@@ -23,8 +23,8 @@ Sequence
 
 The sequence instruction executes its child instructions one by one in the order they are defined until:
 
-* A child instruction returns `FAILURE`: `Oac-Tree` also returns `FAILURE`;
-* All child instructions returned `SUCCESS`: `Oac-Tree` returns `SUCCESS`.
+* A child instruction returns `FAILURE`: `sequence` also returns `FAILURE`;
+* All child instructions returned `SUCCESS`: `sequence` returns `SUCCESS`.
 
 A sequence represents a number of steps that all have to succeed for a specific goal to be reached.
 

@@ -65,7 +65,7 @@ This function will perform the following steps:
 Usage
 -----
 
-Two specialisations of the ``Variable`` class are included in **Oac-Tree**. They are the `local variable` and the `file variable`. The implementation of `Local Variable` will be used to provide examples.
+Two specialisations of the ``Variable`` class are included in **oac-tree**. They are the `local variable` and the `file variable`. The implementation of `Local Variable` will be used to provide examples.
 
 Note that more specialized variables are provided by plugins. For example, an EPICS ChannelAccess client variable is defined by ``oac-tree-plugin-epics``.
 

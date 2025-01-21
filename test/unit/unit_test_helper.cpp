@@ -2,9 +2,9 @@
  * $HeadURL: $
  * $Id: $
  *
- * Project       : SUP - Oac-Tree
+ * Project       : SUP - oac-tree
  *
- * Description   : Oac-Tree for operational procedures
+ * Description   : oac-tree for operational procedures
  *
  * Author        : Walter Van Herck (IO)
  *

@@ -27,7 +27,7 @@ Architecture
 
 The ``Instruction`` class is based on the non-virtual interface (NVI) idiom to allow for a simpler API to override by implementers of concrete instructions.
 
-The ``Instruction`` class allows users to define instructions that are specific to the environment where the **Oac-Tree** will be used. Since it is an abstract base class, concrete instructions are implemented in derived classes.
+The ``Instruction`` class allows users to define instructions that are specific to the environment where the **oac-tree** will be used. Since it is an abstract base class, concrete instructions are implemented in derived classes.
 
 Execution Status
 ----------------

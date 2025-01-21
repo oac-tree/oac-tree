@@ -1,10 +1,10 @@
-Extending the Oac-Tree with plugins
+Extending the oac-tree with plugins
 ====================================
 
 .. contents::
    :local:
 
-Plugins allow users to extend the functionality of the Oac-Tree by providing new instructions or variables. This documentation provides a step-by-step guide on how to create a plugin and integrate it into the Oac-Tree.
+Plugins allow users to extend the functionality of the oac-tree by providing new instructions or variables. This documentation provides a step-by-step guide on how to create a plugin and integrate it into the oac-tree.
 Creating a plugin to access another library in the oac-tree is simple when following a structured approach: first, implement the instruction/variable interface; then register the instruction/variable; and finally deploy the plugin in the plugin folder.
 
 Implementation

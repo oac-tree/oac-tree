@@ -9,7 +9,7 @@ version = "@PROJECT_VERSION@"
 release = "@PROJECT_VERSION@"
 
 # Set link name generated in the top bar.
-html_title = 'OAC-TREE'
+html_title = 'oac-tree'
 
 try:
     import sphinx_rtd_theme

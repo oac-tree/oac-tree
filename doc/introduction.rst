@@ -34,10 +34,10 @@ As ticks are propagated through the tree until an action node is reached, status
   - Failure: The node finished with failure status.
 
 
-Structure of Oac-Tree procedures
+Structure of oac-tree procedures
 ====================================
 
-Oac-Tree procedures encapsulate all the instruction trees that the oac-tree can execute. They rely on simple and self-contained blocks of logic that define the execution flow.
+oac-tree procedures encapsulate all the instruction trees that the oac-tree can execute. They rely on simple and self-contained blocks of logic that define the execution flow.
 The oac-tree framework requires procedures to be defined in a XML format. The XML structure of the procedure depends on the behaviour complexity and on the type of instructions being used.
 
 The main sections of a procedure, their multiplicity, description and attributes, can be seen below.
@@ -134,7 +134,7 @@ The following procedure was extracted from the oac-tree test campaign, where it 
 
   <?xml version="1.0" encoding="UTF-8"?>
   <Procedure xmlns="http://codac.iter.org/sup/oac-tree" version="1.0"
-            name="Oac-Tree functional test"
+            name="oac-tree functional test"
             xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
             xs:schemaLocation="http://codac.iter.org/sup/oac-tree oac-tree.xsd">
     <Plugin>liboac-tree-ca.so</Plugin>

@@ -1,3 +1,8 @@
+Changes for 4.0.0:
+
+- Project renamed from sequencer to oac-tree
+
+
 Changes for 3.3.0:
 
 - WaitForVariables: log unavailable variables after timeout

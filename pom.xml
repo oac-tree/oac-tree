@@ -26,7 +26,7 @@
     <artifactId>oac-tree</artifactId>
     <packaging>codac</packaging>
     <!-- See ChangeLog file for details -->
-    <version>3.3.0</version>
+    <version>4.0.0</version>
     <name>SUP oac-tree module</name>
     <description>The engine for the oac-tree. Provides execution and (de)serialization of procedures.</description>
     <url>http://www.iter.org/</url>

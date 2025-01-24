@@ -134,6 +134,7 @@
                                 <include>oac-tree-cli</include>
                                 <include>oac-tree-daemon</include>
                             </include>
+                            <include type="directory" path="${pluginpath}" root="CODAC_ROOT" />
                             <!-- Symlinks -->
                             <include type="symlink" link="/bin/sequencer-cli" target="/bin/oac-tree-cli" linkroot="CODAC_ROOT" targetroot="CODAC_ROOT" />
                             <include type="symlink" link="/bin/sequencer-daemon" target="/bin/oac-tree-daemon" linkroot="CODAC_ROOT" targetroot="CODAC_ROOT" />

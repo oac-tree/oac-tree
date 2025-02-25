@@ -12,6 +12,7 @@ target_sources(sup-oac-tree-shared
     decorator_instruction.cpp
     decrement.cpp
     equals.cpp
+    fail.cpp
     fallback.cpp
     for.cpp
     force_success.cpp
@@ -37,6 +38,7 @@ target_sources(sup-oac-tree-shared
     repeat.cpp
     reset_variable.cpp
     sequence.cpp
+    succeed.cpp
     user_choice.cpp
     user_confirmation.cpp
     var_exists.cpp

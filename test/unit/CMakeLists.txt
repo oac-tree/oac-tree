@@ -61,6 +61,7 @@ target_sources(unit-tests
     scope_guard_tests.cpp
     sequence_parser_tests.cpp
     sequence_workspace_tests.cpp
+    succeed_fail_tests.cpp
     unit_test_helper.cpp
     user_choice_tests.cpp
     user_confirmation_tests.cpp

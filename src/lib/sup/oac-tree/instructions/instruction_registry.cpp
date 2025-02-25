@@ -31,6 +31,7 @@
 #include "equals.h"
 #include "var_exists.h"
 #include "decrement.h"
+#include "fail.h"
 #include "fallback.h"
 #include "for.h"
 #include "force_success.h"
@@ -51,6 +52,7 @@
 #include "repeat.h"
 #include "reset_variable.h"
 #include "sequence.h"
+#include "succeed.h"
 #include "user_choice.h"
 #include "user_confirmation.h"
 #include "wait.h"
@@ -148,6 +150,7 @@ void InitInstructionRegistry(InstructionRegistry& registry)
   (void)RegisterInstruction<Copy>(registry);
   (void)RegisterInstruction<Decrement>(registry);
   (void)RegisterInstruction<Equals>(registry);
+  (void)RegisterInstruction<Fail>(registry);
   (void)RegisterInstruction<GreaterThan>(registry);
   (void)RegisterInstruction<GreaterThanOrEqual>(registry);
   (void)RegisterInstruction<Increment>(registry);
@@ -158,6 +161,7 @@ void InitInstructionRegistry(InstructionRegistry& registry)
   (void)RegisterInstruction<Message>(registry);
   (void)RegisterInstruction<Output>(registry);
   (void)RegisterInstruction<ResetVariable>(registry);
+  (void)RegisterInstruction<Succeed>(registry);
   (void)RegisterInstruction<UserConfirmation>(registry);
   (void)RegisterInstruction<VarExistsInstruction>(registry);
   (void)RegisterInstruction<Wait>(registry);

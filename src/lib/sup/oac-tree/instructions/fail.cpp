@@ -40,6 +40,8 @@ Fail::~Fail() = default;
 
 ExecutionStatus Fail::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
+  (void)ui;
+  (void)ws;
   return ExecutionStatus::FAILURE;
 }
 

@@ -40,6 +40,8 @@ Succeed::~Succeed() = default;
 
 ExecutionStatus Succeed::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
+  (void)ui;
+  (void)ws;
   return ExecutionStatus::SUCCESS;
 }
 

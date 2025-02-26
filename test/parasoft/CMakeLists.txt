@@ -9,9 +9,9 @@ include(COASetupParasoft)
 cpptest_add_executable(oac-tree-cpptest
   CPPTEST_PROJECT_LOC ${CMAKE_CURRENT_BINARY_DIR}
   CPPTEST_PROJECT_FOLDERS
-    sup-oac-tree-shared=${CMAKE_SOURCE_DIR}/src/lib/sup/oac-tree
-    oac-tree-daemon=${CMAKE_SOURCE_DIR}/src/app/oac-tree-daemon
-    oac-tree-cli=${CMAKE_SOURCE_DIR}/src/app/oac-tree-cli
+    sup-oac-tree-shared=${CMAKE_CURRENT_SOURCE_DIR}/src/lib/sup/oac-tree
+    oac-tree-daemon=${CMAKE_CURRENT_SOURCE_DIR}/src/app/oac-tree-daemon
+    oac-tree-cli=${CMAKE_CURRENT_SOURCE_DIR}/src/app/oac-tree-cli
   TARGETS sup-oac-tree-shared oac-tree-daemon oac-tree-cli
 )
 

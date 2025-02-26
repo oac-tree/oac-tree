@@ -7,7 +7,7 @@
 include(PackageConfig)
 include(CMakePackageConfigHelpers)
 
-set(BUILD_CONFIGDIR ${CMAKE_BINARY_DIR})
+set(BUILD_CONFIGDIR ${CMAKE_CURRENT_BINARY_DIR})
 set(INSTALL_CONFIGDIR ${CMAKE_INSTALL_LIBDIR}/cmake/oac-tree)
 
 # -----------------------------------------------------------------------------

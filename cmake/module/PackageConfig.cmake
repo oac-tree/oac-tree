@@ -41,7 +41,7 @@
 include(CMakePackageConfigHelpers)
 
 function(write_package_config_file PACKAGE_NAME)
-  # Get any arguments that match the pattern <PACKAGE_NAME>_FIND_OPTIONS 
+  # Get any arguments that match the pattern <PACKAGE_NAME>_FIND_OPTIONS
   # We need this because we don't know which dependencies to consider before parsing the arguments
   list(APPEND PACKAGE_FIND_OPTIONS_ARGS ${ARGN})
   list(FILTER PACKAGE_FIND_OPTIONS_ARGS INCLUDE REGEX "^[A-Za-z0-9_\\-]+_FIND_OPTIONS$")

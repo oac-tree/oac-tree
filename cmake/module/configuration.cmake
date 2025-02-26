@@ -5,6 +5,7 @@
 include(GNUInstallDirs)
 include(CTest)
 include(COASetupCodacEnvironment)
+include(FetchGithubDeps)
 
 # -----------------------------------------------------------------------------
 # C++ version
@@ -27,7 +28,7 @@ set(LIBSOVERSION ${CMAKE_PROJECT_VERSION_MAJOR}.${CMAKE_PROJECT_VERSION_MINOR})
 # Directories
 # -----------------------------------------------------------------------------
 if(NOT DEFINED TEST_OUTPUT_DIRECTORY)
-  set(TEST_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/test_bin)
+  set(TEST_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/test_bin)
 endif()
 
 file(MAKE_DIRECTORY ${TEST_OUTPUT_DIRECTORY})

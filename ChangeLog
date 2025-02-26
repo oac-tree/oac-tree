@@ -1,7 +1,7 @@
 Changes for 4.0.0:
 
 - Project renamed from sequencer to oac-tree
-
+- New instructions: 'Succeed', 'Fail'
 
 Changes for 3.3.0:
 

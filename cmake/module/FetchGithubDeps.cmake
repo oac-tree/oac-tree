@@ -13,7 +13,6 @@ FetchContent_Declare(
   OVERRIDE_FIND_PACKAGE
 )
 
-sup-utils currently has a clash in target name unit-tests (with sup-dto)
 FetchContent_Declare(
   sup-utils
   GIT_REPOSITORY https://github.com/oac-tree/sup-utils.git

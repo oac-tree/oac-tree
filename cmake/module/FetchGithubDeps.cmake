@@ -4,6 +4,8 @@ if(NOT COA_FETCH_DEPS)
   return()
 endif()
 
+message(STATUS "Building dependencies from source")
+
 include(FetchContent)
 
 FetchContent_Declare(
@@ -19,5 +21,3 @@ FetchContent_Declare(
   GIT_TAG a289e1fcd8e33638d505226d6a2ae6ce9321bdfd # v1.6dev
   OVERRIDE_FIND_PACKAGE
 )
-
-message(VERBOSE "Building dependencies from source")

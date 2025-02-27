@@ -1,8 +1,10 @@
-add_executable(oac-tree-unit-tests)
+set(unit-tests oac-tree-unit-tests)
 
-set_target_properties(oac-tree-unit-tests PROPERTIES OUTPUT_NAME "unit-tests")
+add_executable(${unit-tests})
 
-target_sources(oac-tree-unit-tests
+set_target_properties(${unit-tests} PROPERTIES OUTPUT_NAME "unit-tests")
+
+target_sources(${unit-tests}
   PRIVATE
     add_element_tests.cpp
     add_member_tests.cpp
@@ -83,9 +85,9 @@ target_sources(oac-tree-unit-tests
     ../../src/app/oac-tree-daemon/daemon_interface.cpp
 )
 
-target_include_directories(oac-tree-unit-tests PRIVATE ${CMAKE_CURRENT_LIST_DIR}/../../src)
+target_include_directories(${unit-tests} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/../../src)
 
-target_link_libraries(oac-tree-unit-tests
+target_link_libraries(${unit-tests}
   PRIVATE
   sup-oac-tree-shared
   sup-utils::sup-log
@@ -94,11 +96,11 @@ target_link_libraries(oac-tree-unit-tests
 )
 
 if(GTest_VERSION VERSION_LESS_EQUAL "1.8")
-  target_link_libraries(oac-tree-unit-tests PRIVATE gtest gtest_main gmock)
+  target_link_libraries(${unit-tests} PRIVATE gtest gtest_main gmock)
 else()
-  target_link_libraries(oac-tree-unit-tests PRIVATE GTest::gtest GTest::gtest_main GTest::gmock)
+  target_link_libraries(${unit-tests} PRIVATE GTest::gtest GTest::gtest_main GTest::gmock)
 endif()
 
-set_target_properties(oac-tree-unit-tests PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TEST_OUTPUT_DIRECTORY})
+set_target_properties(${unit-tests} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TEST_OUTPUT_DIRECTORY})
 
-gtest_discover_tests(oac-tree-unit-tests)
+gtest_discover_tests(${unit-tests})

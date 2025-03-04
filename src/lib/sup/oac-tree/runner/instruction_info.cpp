@@ -45,8 +45,13 @@ namespace oac_tree
 
 InstructionInfo::InstructionInfo(const std::string& instr_type, sup::dto::uint32 idx,
                                  std::vector<AttributeInfo> attributes)
+  : InstructionInfo(instr_type, Instruction::Category::kAction, idx, attributes)
+{}
+
+InstructionInfo::InstructionInfo(const std::string& instr_type, Instruction::Category category,
+                                 sup::dto::uint32 idx, std::vector<AttributeInfo> attributes)
   : m_instr_type{instr_type}
-  , m_category{Category::kAction}
+  , m_category{category}
   , m_index{idx}
   , m_attributes{std::move(attributes)}
   , m_children{}
@@ -94,7 +99,7 @@ std::string InstructionInfo::GetType() const
   return m_instr_type;
 }
 
-InstructionInfo::Category InstructionInfo::GetCategory() const
+Instruction::Category InstructionInfo::GetCategory() const
 {
   return m_category;
 }

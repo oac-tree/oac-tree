@@ -23,6 +23,7 @@
 #define SUP_OAC_TREE_INSTRUCTION_INFO_H_
 
 #include <sup/oac-tree/attribute_info.h>
+#include <sup/oac-tree/instruction.h>
 
 #include <sup/dto/basic_scalar_types.h>
 
@@ -42,18 +43,10 @@ namespace oac_tree
 class InstructionInfo
 {
 public:
-  /**
-   * Enumeration that indicates if the InstructionInfo encodes a simple action (no child
-   * instructions), a decorator (one child) or a compound instruction (multiple children).
-  */
- enum Category
-  {
-    kAction = 0,
-    kDecorator,
-    kCompound
-  };
   InstructionInfo(const std::string& instr_type, sup::dto::uint32 idx,
                   std::vector<AttributeInfo> attributes);
+  InstructionInfo(const std::string& instr_type, Instruction::Category category,
+                  sup::dto::uint32 idx, std::vector<AttributeInfo> attributes);
   ~InstructionInfo();
 
   // Copy/move construction/assignment
@@ -63,7 +56,7 @@ public:
   InstructionInfo& operator=(InstructionInfo&& other);
 
   std::string GetType() const;
-  Category GetCategory() const;
+  Instruction::Category GetCategory() const;
   sup::dto::uint32 GetIndex() const;
   std::vector<AttributeInfo> GetAttributes() const;
 
@@ -81,7 +74,7 @@ public:
 
 private:
   std::string m_instr_type;
-  Category m_category;
+  Instruction::Category m_category;
   sup::dto::uint32 m_index;
   std::vector<AttributeInfo> m_attributes;
   std::vector<std::unique_ptr<InstructionInfo>> m_children;

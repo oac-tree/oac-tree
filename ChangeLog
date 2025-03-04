@@ -1,3 +1,7 @@
+Changes for 4.1.0:
+
+- Add instruction category (action/decorator/compound) to InstructionInfo
+
 Changes for 4.0.0:
 
 - Project renamed from sequencer to oac-tree

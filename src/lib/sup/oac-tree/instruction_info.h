@@ -43,8 +43,6 @@ namespace oac_tree
 class InstructionInfo
 {
 public:
-  InstructionInfo(const std::string& instr_type, sup::dto::uint32 idx,
-                  std::vector<AttributeInfo> attributes);
   InstructionInfo(const std::string& instr_type, Instruction::Category category,
                   sup::dto::uint32 idx, std::vector<AttributeInfo> attributes);
   ~InstructionInfo();

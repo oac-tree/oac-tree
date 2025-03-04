@@ -43,11 +43,6 @@ namespace sup
 namespace oac_tree
 {
 
-InstructionInfo::InstructionInfo(const std::string& instr_type, sup::dto::uint32 idx,
-                                 std::vector<AttributeInfo> attributes)
-  : InstructionInfo(instr_type, Instruction::Category::kAction, idx, attributes)
-{}
-
 InstructionInfo::InstructionInfo(const std::string& instr_type, Instruction::Category category,
                                  sup::dto::uint32 idx, std::vector<AttributeInfo> attributes)
   : m_instr_type{instr_type}

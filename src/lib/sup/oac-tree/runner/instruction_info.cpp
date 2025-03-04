@@ -61,6 +61,7 @@ InstructionInfo::~InstructionInfo() = default;
 
 InstructionInfo::InstructionInfo(const InstructionInfo& other)
   : m_instr_type{other.m_instr_type}
+  , m_category{other.m_category}
   , m_index{other.m_index}
   , m_attributes{other.m_attributes}
   , m_children{}
@@ -75,8 +76,8 @@ InstructionInfo::InstructionInfo(const InstructionInfo& other)
     auto children = node.src.Children();
     for (auto child : children)
     {
-      auto child_info = std::make_unique<InstructionInfo>(child->GetType(), child->GetIndex(),
-                                                          child->GetAttributes());
+      auto child_info = std::make_unique<InstructionInfo>(
+        child->GetType(), child->GetCategory(), child->GetIndex(), child->GetAttributes());
       auto child_info_p = node.dest.AppendChild(std::move(child_info));
       InstrInfoCopyNode child_node{*child, *child_info_p};
       stack.push_back(child_node);
@@ -197,6 +198,7 @@ void ValidateInstructionInfoTree(const InstructionInfo& instr_info_tree)
 bool operator==(const InstructionInfo& left, const InstructionInfo& right)
 {
   if ( (left.GetType() != right.GetType())
+    || (left.GetCategory() != right.GetCategory())
     || (left.GetIndex() != right.GetIndex())
     || (left.GetAttributes() != right.GetAttributes()))
   {

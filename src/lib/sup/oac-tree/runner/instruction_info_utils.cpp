@@ -177,8 +177,9 @@ std::unique_ptr<InstructionInfo> CreateInstructionInfoNode(const Instruction& in
                                                            sup::dto::uint32 index)
 {
   auto instr_type = instr.GetType();
+  auto instr_cat = instr.GetCategory();
   std::vector<AttributeInfo> attributes = ToAttributeInfos(instr.GetStringAttributes());
-  return std::unique_ptr<InstructionInfo>{new InstructionInfo{instr_type, index, attributes}};
+  return std::make_unique<InstructionInfo>(instr_type, instr_cat, index, attributes);
 }
 
 std::unique_ptr<InstructionInfo> ToInstructionInfoNode(
@@ -190,6 +191,8 @@ std::unique_ptr<InstructionInfo> ToInstructionInfoNode(
     throw InvalidOperationException(error);
   }
   auto instr_type = instr_info_anyvalue[kInstructionInfoNodeTypeField].As<std::string>();
+  auto instr_cat = static_cast<Instruction::Category>(
+    instr_info_anyvalue[kInstructionInfoNodeCategoryField].As<sup::dto::uint32>());
   auto instr_idx = instr_info_anyvalue[kIndexField].As<sup::dto::uint32>();
   auto& attr_av = instr_info_anyvalue[kAttributesField];
   std::vector<AttributeInfo> attributes;
@@ -197,13 +200,15 @@ std::unique_ptr<InstructionInfo> ToInstructionInfoNode(
   {
     attributes.emplace_back(attr_name, attr_av[attr_name].As<std::string>());
   }
-  return std::unique_ptr<InstructionInfo>{new InstructionInfo{instr_type, instr_idx, attributes}};
+  return std::make_unique<InstructionInfo>(instr_type, instr_cat, instr_idx, attributes);
 }
 
 sup::dto::AnyValue ToAnyValueNode(const InstructionInfo& instr_info)
 {
   auto result = kInstructionInfoNodeAnyValue;
   result[kInstructionInfoNodeTypeField] = instr_info.GetType();
+  result[kInstructionInfoNodeCategoryField] =
+    static_cast<sup::dto::uint32>(instr_info.GetCategory());
   result[kIndexField] = instr_info.GetIndex();
   for (const auto& [attr_name, attr_value] : instr_info.GetAttributes())
   {
@@ -220,6 +225,11 @@ std::string CreateIndexedInstrChildName(std::size_t idx)
 bool ValidateInstructionInfoAnyValue(const sup::dto::AnyValue& instr_info)
 {
   if (!ValidateMemberType(instr_info, kInstructionInfoNodeTypeField, sup::dto::StringType))
+  {
+    return false;
+  }
+  if (!ValidateMemberType(instr_info, kInstructionInfoNodeCategoryField,
+                          sup::dto::UnsignedInteger32Type))
   {
     return false;
   }

@@ -55,7 +55,7 @@ public:
    * Enumeration that indicates if the instruction is a simple action (no child instructions),
    * a decorator (one child) or a compound instruction (multiple children).
   */
-  enum Category
+  enum Category : sup::dto::uint32
   {
     kAction = 0,
     kDecorator,

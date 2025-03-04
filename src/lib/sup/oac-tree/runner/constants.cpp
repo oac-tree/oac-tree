@@ -30,6 +30,7 @@ namespace Constants
 {
 const dto::AnyValue kInstructionInfoNodeAnyValue = {{
   { kInstructionInfoNodeTypeField, "" },
+  { kInstructionInfoNodeCategoryField, { sup::dto::UnsignedInteger32Type, 0 }},
   { kIndexField, { sup::dto::UnsignedInteger32Type, 0 }},
   { kAttributesField, sup::dto::EmptyStruct() }
 }, kInstructionInfoNodeType };

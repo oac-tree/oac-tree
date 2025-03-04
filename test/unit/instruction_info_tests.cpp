@@ -56,6 +56,7 @@ TEST_F(InstructionInfoTest, InstructionInfoFromInstructionTree)
 
   // Check root of the InstructionInfo tree
   EXPECT_EQ(instr_info->GetType(), "Sequence");
+  EXPECT_EQ(instr_info->GetCategory(), Instruction::kCompound);
   std::set<sup::dto::uint32> indices;
   indices.insert(instr_info->GetIndex());
   auto attributes = instr_info->GetAttributes();
@@ -67,6 +68,7 @@ TEST_F(InstructionInfoTest, InstructionInfoFromInstructionTree)
     // check first child
     auto child = children[0];
     EXPECT_EQ(child->GetType(), "Copy");
+    EXPECT_EQ(child->GetCategory(), Instruction::kAction);
     indices.insert(child->GetIndex());
     auto child_attrs = child->GetAttributes();
     EXPECT_EQ(child_attrs.size(), 2);
@@ -76,6 +78,7 @@ TEST_F(InstructionInfoTest, InstructionInfoFromInstructionTree)
     // check second child
     auto child = children[1];
     EXPECT_EQ(child->GetType(), "Copy");
+    EXPECT_EQ(child->GetCategory(), Instruction::kAction);
     indices.insert(child->GetIndex());
     auto child_attrs = child->GetAttributes();
     EXPECT_EQ(child_attrs.size(), 2);
@@ -124,10 +127,12 @@ TEST_F(InstructionInfoTest, CreateOrderedInstructionInfo)
 {
   {
     // InstructionInfo tree with proper indices
-    InstructionInfo sequence("sequence", 0, {});
-    auto child0 = std::make_unique<InstructionInfo>("child0", 1, std::vector<AttributeInfo>{});
+    InstructionInfo sequence("sequence", Instruction::kCompound, 0, {});
+    auto child0 = std::make_unique<InstructionInfo>("child0", Instruction::kAction, 1,
+                                                    std::vector<AttributeInfo>{});
     auto child0_ptr = child0.get();
-    auto child1 = std::make_unique<InstructionInfo>("child1", 2, std::vector<AttributeInfo>{});
+    auto child1 = std::make_unique<InstructionInfo>("child1", Instruction::kAction, 2,
+                                                    std::vector<AttributeInfo>{});
     auto child1_ptr = child1.get();
 
     EXPECT_EQ(sequence.AppendChild(std::move(child0)), child0_ptr);
@@ -143,10 +148,12 @@ TEST_F(InstructionInfoTest, CreateOrderedInstructionInfo)
   }
   {
     // InstructionInfo tree with duplicate indices
-    InstructionInfo sequence("sequence", 0, {});
-    auto child0 = std::make_unique<InstructionInfo>("child0", 1, std::vector<AttributeInfo>{});
+    InstructionInfo sequence("sequence", Instruction::kCompound, 0, {});
+    auto child0 = std::make_unique<InstructionInfo>("child0", Instruction::kAction, 1,
+                                                    std::vector<AttributeInfo>{});
     auto child0_ptr = child0.get();
-    auto child1 = std::make_unique<InstructionInfo>("child1", 0, std::vector<AttributeInfo>{});
+    auto child1 = std::make_unique<InstructionInfo>("child1", Instruction::kAction, 0,
+                                                    std::vector<AttributeInfo>{});
     auto child1_ptr = child1.get();
 
     EXPECT_EQ(sequence.AppendChild(std::move(child0)), child0_ptr);
@@ -157,10 +164,12 @@ TEST_F(InstructionInfoTest, CreateOrderedInstructionInfo)
   }
   {
     // InstructionInfo tree with out-of-bounds indices
-    InstructionInfo sequence("sequence", 0, {});
-    auto child0 = std::make_unique<InstructionInfo>("child0", 1, std::vector<AttributeInfo>{});
+    InstructionInfo sequence("sequence", Instruction::kCompound, 0, {});
+    auto child0 = std::make_unique<InstructionInfo>("child0", Instruction::kAction, 1,
+                                                    std::vector<AttributeInfo>{});
     auto child0_ptr = child0.get();
-    auto child1 = std::make_unique<InstructionInfo>("child1", 3, std::vector<AttributeInfo>{});
+    auto child1 = std::make_unique<InstructionInfo>("child1", Instruction::kAction, 3,
+                                                    std::vector<AttributeInfo>{});
     auto child1_ptr = child1.get();
 
     EXPECT_EQ(sequence.AppendChild(std::move(child0)), child0_ptr);
@@ -210,6 +219,7 @@ TEST_F(InstructionInfoTest, CreateInstructionInfoNode)
     // Correct AnyValue for InstructionInfo node
     sup::dto::AnyValue instr_info_av = {{
       { kInstructionInfoNodeTypeField, "Instr_type" },
+      { kInstructionInfoNodeCategoryField, { sup::dto::UnsignedInteger32Type, 0 }},
       { kIndexField, { sup::dto::UnsignedInteger32Type, 42 }},
       { kAttributesField, {
         { "attr_1", "attr_1_value" },
@@ -222,6 +232,7 @@ TEST_F(InstructionInfoTest, CreateInstructionInfoNode)
   {
     // Missing instruction type field
     sup::dto::AnyValue instr_info_av = {{
+      { kInstructionInfoNodeCategoryField, { sup::dto::UnsignedInteger32Type, 0 }},
       { kIndexField, { sup::dto::UnsignedInteger32Type, 42 }},
       { kAttributesField, {
         { "attr_1", "attr_1_value" },
@@ -235,6 +246,34 @@ TEST_F(InstructionInfoTest, CreateInstructionInfoNode)
     // Wrong type for instruction type field
     sup::dto::AnyValue instr_info_av = {{
       { kInstructionInfoNodeTypeField, 5 },
+      { kInstructionInfoNodeCategoryField, { sup::dto::UnsignedInteger32Type, 0 }},
+      { kIndexField, { sup::dto::UnsignedInteger32Type, 42 }},
+      { kAttributesField, {
+        { "attr_1", "attr_1_value" },
+        { "attr_2", "attr_2_value" }
+      }}
+    }, kInstructionInfoNodeType };
+    EXPECT_FALSE(utils::ValidateInstructionInfoAnyValue(instr_info_av));
+    EXPECT_THROW(utils::ToInstructionInfoNode(instr_info_av), InvalidOperationException);
+  }
+  {
+    // Missing instruction category field
+    sup::dto::AnyValue instr_info_av = {{
+      { kInstructionInfoNodeTypeField, "Instr_type" },
+      { kIndexField, { sup::dto::UnsignedInteger32Type, 42 }},
+      { kAttributesField, {
+        { "attr_1", "attr_1_value" },
+        { "attr_2", "attr_2_value" }
+      }}
+    }, kInstructionInfoNodeType };
+    EXPECT_FALSE(utils::ValidateInstructionInfoAnyValue(instr_info_av));
+    EXPECT_THROW(utils::ToInstructionInfoNode(instr_info_av), InvalidOperationException);
+  }
+  {
+    // Wrong type for instruction type field
+    sup::dto::AnyValue instr_info_av = {{
+      { kInstructionInfoNodeTypeField, "Instr_type" },
+      { kInstructionInfoNodeCategoryField, { sup::dto::Float64Type, 3.14 }},
       { kIndexField, { sup::dto::UnsignedInteger32Type, 42 }},
       { kAttributesField, {
         { "attr_1", "attr_1_value" },
@@ -248,6 +287,7 @@ TEST_F(InstructionInfoTest, CreateInstructionInfoNode)
     // Missing index field
     sup::dto::AnyValue instr_info_av = {{
       { kInstructionInfoNodeTypeField, "Instr_type" },
+      { kInstructionInfoNodeCategoryField, { sup::dto::UnsignedInteger32Type, 0 }},
       { kAttributesField, {
         { "attr_1", "attr_1_value" },
         { "attr_2", "attr_2_value" }
@@ -260,6 +300,7 @@ TEST_F(InstructionInfoTest, CreateInstructionInfoNode)
     // Wrong type for index field
     sup::dto::AnyValue instr_info_av = {{
       { kInstructionInfoNodeTypeField, "Instr_type" },
+      { kInstructionInfoNodeCategoryField, { sup::dto::UnsignedInteger32Type, 0 }},
       { kIndexField, { sup::dto::SignedInteger64Type, 42 }},
       { kAttributesField, {
         { "attr_1", "attr_1_value" },
@@ -273,6 +314,7 @@ TEST_F(InstructionInfoTest, CreateInstructionInfoNode)
     // Missing attributes field
     sup::dto::AnyValue instr_info_av = {{
       { kInstructionInfoNodeTypeField, "Instr_type" },
+      { kInstructionInfoNodeCategoryField, { sup::dto::UnsignedInteger32Type, 0 }},
       { kIndexField, { sup::dto::UnsignedInteger32Type, 42 }}
     }, kInstructionInfoNodeType };
     EXPECT_FALSE(utils::ValidateInstructionInfoAnyValue(instr_info_av));
@@ -282,6 +324,7 @@ TEST_F(InstructionInfoTest, CreateInstructionInfoNode)
     // Wrong type for attributes field
     sup::dto::AnyValue instr_info_av = {{
       { kInstructionInfoNodeTypeField, "Instr_type" },
+      { kInstructionInfoNodeCategoryField, { sup::dto::UnsignedInteger32Type, 0 }},
       { kIndexField, { sup::dto::UnsignedInteger32Type, 42 }},
       { kAttributesField, { sup::dto::Float64Type, 3.14 }}
     }, kInstructionInfoNodeType };
@@ -292,6 +335,7 @@ TEST_F(InstructionInfoTest, CreateInstructionInfoNode)
     // Wrong type for attributes members
     sup::dto::AnyValue instr_info_av = {{
       { kInstructionInfoNodeTypeField, "Instr_type" },
+      { kInstructionInfoNodeCategoryField, { sup::dto::UnsignedInteger32Type, 0 }},
       { kIndexField, { sup::dto::UnsignedInteger32Type, 42 }},
       { kAttributesField, {
         { "attr_1", { sup::dto::BooleanType, true } },

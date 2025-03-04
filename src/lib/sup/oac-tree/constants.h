@@ -148,6 +148,7 @@ const std::string PRETTY_JSON_ATTRIBUTE_NAME = "pretty";
 // Instruction info node fields
 const std::string kInstructionInfoNodeType = "sup::instructionNodeInfoType/v1.0";
 const std::string kInstructionInfoNodeTypeField = "type";
+const std::string kInstructionInfoNodeCategoryField = "category";
 const std::string kIndexField = "index";
 const std::string kAttributesField = "attributes";
 const std::string kChildInstructionsField = "children";

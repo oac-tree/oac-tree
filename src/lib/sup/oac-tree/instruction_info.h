@@ -71,6 +71,7 @@ public:
   std::vector<const InstructionInfo*> Children() const;
 
 private:
+  void ValidateAppend() const;
   std::string m_instr_type;
   Instruction::Category m_category;
   sup::dto::uint32 m_index;

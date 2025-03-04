@@ -112,6 +112,7 @@ std::vector<AttributeInfo> InstructionInfo::GetAttributes() const
 
 InstructionInfo* InstructionInfo::AppendChild(std::unique_ptr<InstructionInfo> child)
 {
+  ValidateAppend();
   m_children.push_back(std::move(child));
   return m_children.back().get();
 }
@@ -134,6 +135,29 @@ std::vector<const InstructionInfo*> InstructionInfo::Children() const
   };
   std::transform(m_children.begin(), m_children.end(), std::back_inserter(result), func);
   return result;
+}
+
+void InstructionInfo::ValidateAppend() const
+{
+  bool allowed = false;
+  switch (m_category)
+  {
+  case Instruction::kAction:
+    break;
+  case Instruction::kDecorator:
+    allowed = (m_children.size() == 0);
+    break;
+  case Instruction::kCompound:
+    allowed = true;
+    break;
+  default:
+    break;
+  }
+  if (!allowed)
+  {
+    const std::string error = "ValidateAppend(): max nr of children already reached";
+    throw InvalidOperationException(error);
+  }
 }
 
 std::vector<const InstructionInfo*> Flatten(const InstructionInfo& instr_info_tree)

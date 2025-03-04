@@ -123,6 +123,37 @@ TEST_F(InstructionInfoTest, Flatten)
   EXPECT_EQ(indices, expected_indices);
 }
 
+TEST_F(InstructionInfoTest, AppendChild)
+{
+  {
+    // Append to action node throws
+    InstructionInfo action("action", Instruction::kAction, 0, {});
+    auto child = std::make_unique<InstructionInfo>("child", Instruction::kAction, 1,
+                                                   std::vector<AttributeInfo>{});
+    EXPECT_THROW(action.AppendChild(std::move(child)), InvalidOperationException);
+  }
+  {
+    // Append to decorator node throws when it already has a child
+    InstructionInfo decorator("decorator", Instruction::kDecorator, 0, {});
+    auto child0 = std::make_unique<InstructionInfo>("child0", Instruction::kAction, 1,
+                                                   std::vector<AttributeInfo>{});
+    auto child1 = std::make_unique<InstructionInfo>("child1", Instruction::kAction, 2,
+                                                   std::vector<AttributeInfo>{});
+    EXPECT_NE(decorator.AppendChild(std::move(child0)), nullptr);
+    EXPECT_THROW(decorator.AppendChild(std::move(child1)), InvalidOperationException);
+  }
+  {
+    // Append to compound node never throws
+    InstructionInfo compound("compound", Instruction::kCompound, 0, {});
+    auto child0 = std::make_unique<InstructionInfo>("child0", Instruction::kAction, 1,
+                                                   std::vector<AttributeInfo>{});
+    auto child1 = std::make_unique<InstructionInfo>("child1", Instruction::kAction, 2,
+                                                   std::vector<AttributeInfo>{});
+    EXPECT_NE(compound.AppendChild(std::move(child0)), nullptr);
+    EXPECT_NE(compound.AppendChild(std::move(child1)), nullptr);
+  }
+}
+
 TEST_F(InstructionInfoTest, CreateOrderedInstructionInfo)
 {
   {

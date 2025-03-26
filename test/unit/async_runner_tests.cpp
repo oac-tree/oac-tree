@@ -94,11 +94,11 @@ public:
     ++m_ticks;
   }
 
-  sup::dto::uint32 GetBreakpointUpdateCount() const { return m_breakpoint_updates; }
-  sup::dto::uint32 GetTickCount() const { return m_ticks; }
+  unsigned int GetBreakpointUpdateCount() const { return m_breakpoint_updates; }
+  unsigned int GetTickCount() const { return m_ticks; }
 private:
-  sup::dto::uint32 m_breakpoint_updates;
-  sup::dto::uint32 m_ticks;
+  std::atomic_uint m_breakpoint_updates;
+  std::atomic_uint m_ticks;
 };
 
 class AsyncRunnerTest : public ::testing::Test

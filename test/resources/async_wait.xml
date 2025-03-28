@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/oac-tree" version="1.0"
+           name="Trivial procedure for testing purposes"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/oac-tree oac-tree.xsd">
+    <Sequence>
+        <Message text="Waiting asynchronously..."/>
+        <AsyncWait timeout="3.0"/>
+        <Message text="Success!"/>
+    </Sequence>
+    <Workspace/>
+</Procedure>

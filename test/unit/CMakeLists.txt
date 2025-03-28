@@ -11,6 +11,7 @@ target_sources(${unit-tests}
     anyvalue_utils_tests.cpp
     async_input_adapter_tests.cpp
     async_runner_tests.cpp
+    async_wait_tests.cpp
     attribute_handler_tests.cpp
     attribute_utils_tests.cpp
     choice_tests.cpp

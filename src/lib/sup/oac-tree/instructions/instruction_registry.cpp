@@ -23,6 +23,7 @@
 
 #include "add_element.h"
 #include "add_member.h"
+#include "async_wait.h"
 #include "choice.h"
 #include "condition.h"
 #include "copy_from_procedure.h"
@@ -144,6 +145,7 @@ void InitInstructionRegistry(InstructionRegistry& registry)
   // Register leaf instructions:
   (void)RegisterInstruction<AddElement>(registry);
   (void)RegisterInstruction<AddMember>(registry);
+  (void)RegisterInstruction<AsyncWait>(registry);
   (void)RegisterInstruction<Condition>(registry);
   (void)RegisterInstruction<CopyFromProcedureInstruction>(registry);
   (void)RegisterInstruction<CopyToProcedureInstruction>(registry);

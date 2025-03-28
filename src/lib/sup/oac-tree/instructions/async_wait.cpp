@@ -19,44 +19,48 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "wait.h"
+#include "async_wait.h"
 
 #include <sup/oac-tree/constants.h>
-#include <sup/oac-tree/exceptions.h>
 #include <sup/oac-tree/instruction_utils.h>
 #include <sup/oac-tree/generic_utils.h>
 #include <sup/oac-tree/user_interface.h>
-
-#include <chrono>
-#include <thread>
 
 namespace sup
 {
 namespace oac_tree
 {
-const std::string Wait::Type = "Wait";
+const std::string AsyncWait::Type = "AsyncWait";
 
-Wait::Wait()
-  : Instruction(Wait::Type)
+AsyncWait::AsyncWait()
+  : Instruction(AsyncWait::Type)
+  , m_finish{}
 {
   AddAttributeDefinition(Constants::TIMEOUT_SEC_ATTRIBUTE_NAME, sup::dto::Float64Type)
     .SetCategory(AttributeCategory::kBoth);
 }
 
-Wait::~Wait() = default;
+AsyncWait::~AsyncWait() = default;
 
-ExecutionStatus Wait::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
+bool AsyncWait::InitHook(UserInterface& ui, Workspace& ws)
 {
   sup::dto::int64 timeout_ns;
   if (!instruction_utils::GetVariableTimeoutAttribute(
             *this, ui, ws, Constants::TIMEOUT_SEC_ATTRIBUTE_NAME, timeout_ns))
   {
-    return ExecutionStatus::FAILURE;
+    return false;
   }
-  auto finish = utils::GetNanosecsSinceEpoch() + timeout_ns;
-  while (!IsHaltRequested() && finish > utils::GetNanosecsSinceEpoch())
+  m_finish = utils::GetNanosecsSinceEpoch() + timeout_ns;
+  return true;
+}
+
+ExecutionStatus AsyncWait::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
+{
+  (void)ui;
+  (void)ws;
+  if (!IsHaltRequested() && m_finish > utils::GetNanosecsSinceEpoch())
   {
-    std::this_thread::sleep_for(std::chrono::milliseconds(DefaultSettings::TIMING_ACCURACY_MS));
+    return ExecutionStatus::RUNNING;
   }
   if (IsHaltRequested())
   {

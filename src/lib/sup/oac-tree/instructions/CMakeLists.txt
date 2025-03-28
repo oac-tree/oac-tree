@@ -2,6 +2,7 @@ target_sources(sup-oac-tree-shared
   PRIVATE
     add_element.cpp
     add_member.cpp
+    async_wait.cpp
     async_wrapper.cpp
     choice.cpp
     compound_instruction.cpp

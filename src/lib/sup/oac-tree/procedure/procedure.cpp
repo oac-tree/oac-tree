@@ -348,6 +348,19 @@ int TickTimeoutMs(const Procedure& procedure)
   return DefaultSettings::DEFAULT_SLEEP_TIME_MS;
 }
 
+int TimingAccuracyMs(const Procedure& procedure)
+{
+  if (procedure.HasAttribute(kTimingAccuracyAttributeName))
+  {
+    auto timing_accuracy = procedure.GetAttributeValue<double>(kTimingAccuracyAttributeName);
+    if (timing_accuracy > 0.0001)
+    {
+      return static_cast<int>(timing_accuracy * 1000);
+    }
+  }
+  return DefaultSettings::DEFAULT_TIMING_ACCURACY_MS;
+}
+
 std::string GetProcedureName(const Procedure& procedure)
 {
   if (procedure.HasAttribute(Constants::NAME_ATTRIBUTE_NAME))

@@ -54,6 +54,7 @@ class Variable;
 class Workspace;
 
 const std::string kTickTimeoutAttributeName = "tickTimeout";
+const std::string kTimingAccuracyAttributeName = "timingAccuracy";
 
 /**
  * @brief Procedure contains a tree of instructions
@@ -369,6 +370,15 @@ private:
  * @details Applications are free to ignore this setting. It is only provided as a guideline.
  */
 int TickTimeoutMs(const Procedure& procedure);
+
+/**
+ * @brief Query the desired timing accuracy in ms of the procedure.
+ *
+ * @returns Timing accuracy in ms of the procedure (attribute or default value)
+ *
+ * @details Applications are free to ignore this setting. It is only provided as a guideline.
+ */
+int TimingAccuracyMs(const Procedure& procedure);
 
 /**
  * @brief Get the name of the procedure.

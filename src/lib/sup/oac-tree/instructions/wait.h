@@ -45,7 +45,11 @@ public:
   static const std::string Type;
 
 private:
+  void SetupImpl(const Procedure& proc) override;
+
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
+
+  int m_timing_accuracy;
 };
 
 }  // namespace oac_tree

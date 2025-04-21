@@ -147,7 +147,7 @@ std::pair<bool, sup::dto::AnyValue> GetBlockingUserValue(UserInterface& ui,
     LogError(ui, error_message);
     return failure;
   }
-  double timeout_s = DefaultSettings::TIMING_ACCURACY_MS / 1000.0;
+  double timeout_s = DefaultSettings::DEFAULT_TIMING_ACCURACY_MS / 1000.0;
   while (!future->WaitFor(timeout_s)) {}
   auto reply = future->GetValue();
   return ParseUserValueReply(reply);
@@ -166,7 +166,7 @@ std::pair<bool, int> GetBlockingUserChoice(UserInterface& ui,
     LogError(ui, error_message);
     return failure;
   }
-  double timeout_s = DefaultSettings::TIMING_ACCURACY_MS / 1000.0;
+  double timeout_s = DefaultSettings::DEFAULT_TIMING_ACCURACY_MS / 1000.0;
   while (!future->WaitFor(timeout_s)) {}
   auto reply = future->GetValue();
   return ParseUserChoiceReply(reply);
@@ -186,7 +186,7 @@ std::pair<bool, sup::dto::AnyValue> GetInterruptableUserValue(
     LogError(ui, error_message);
     return failure;
   }
-  double timeout_s = DefaultSettings::TIMING_ACCURACY_MS / 1000.0;
+  double timeout_s = DefaultSettings::DEFAULT_TIMING_ACCURACY_MS / 1000.0;
   while (!instr.IsHaltRequested() && !future->WaitFor(timeout_s)) {}
   if (instr.IsHaltRequested())
   {
@@ -210,7 +210,7 @@ std::pair<bool, int> GetInterruptableUserChoice(UserInterface& ui, const Instruc
     LogError(ui, error_message);
     return failure;
   }
-  double timeout_s = DefaultSettings::TIMING_ACCURACY_MS / 1000.0;
+  double timeout_s = DefaultSettings::DEFAULT_TIMING_ACCURACY_MS / 1000.0;
   while (!instr.IsHaltRequested() && !future->WaitFor(timeout_s)) {}
   if (instr.IsHaltRequested())
   {

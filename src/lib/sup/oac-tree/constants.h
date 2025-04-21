@@ -51,7 +51,7 @@ const int MAX_BLOCKING_TIME_MS = 100;
  * @note This value should not be considered as a strict requirement but rather as
  * a guideline.
  */
-const int TIMING_ACCURACY_MS = 50;
+const int DEFAULT_TIMING_ACCURACY_MS = 50;
 
 /**
  * @brief When used as the first character of an attribute's value, this character

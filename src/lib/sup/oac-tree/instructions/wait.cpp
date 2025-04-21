@@ -22,6 +22,7 @@
 
 #include "wait.h"
 
+#include "sup/oac-tree/procedure.h"
 #include <sup/oac-tree/constants.h>
 #include <sup/oac-tree/exceptions.h>
 #include <sup/oac-tree/instruction_utils.h>
@@ -46,6 +47,11 @@ Wait::Wait()
 
 Wait::~Wait() = default;
 
+void Wait::SetupImpl(const Procedure& proc)
+{
+  m_timing_accuracy = TimingAccuracyMs(proc);
+}
+
 ExecutionStatus Wait::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   sup::dto::int64 timeout_ns;
@@ -57,7 +63,7 @@ ExecutionStatus Wait::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   auto finish = utils::GetNanosecsSinceEpoch() + timeout_ns;
   while (!IsHaltRequested() && finish > utils::GetNanosecsSinceEpoch())
   {
-    std::this_thread::sleep_for(std::chrono::milliseconds(DefaultSettings::TIMING_ACCURACY_MS));
+    std::this_thread::sleep_for(std::chrono::milliseconds(m_timing_accuracy));
   }
   if (IsHaltRequested())
   {

@@ -59,7 +59,7 @@ public:
     auto finish = utils::GetNanosecsSinceEpoch() + m_timeout_ms * 1000000;
     while (!m_halt && finish > utils::GetNanosecsSinceEpoch())
     {
-      std::this_thread::sleep_for(std::chrono::milliseconds(DefaultSettings::TIMING_ACCURACY_MS));
+      std::this_thread::sleep_for(std::chrono::milliseconds(DefaultSettings::DEFAULT_TIMING_ACCURACY_MS));
     }
     m_current_id = 0;
     return m_halt ? failure : m_reply;

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/oac-tree" version="1.0"
+           name="Common header"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/oac-tree oac-tree.xsd"
+           timingAccuracy="0.02">
+    <Sequence name="Wait">
+        <Wait name="One" timeout="0.3" />
+    </Sequence>
+    <Workspace>
+    </Workspace>
+</Procedure>

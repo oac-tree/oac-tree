@@ -59,6 +59,7 @@ Procedure::Procedure(const std::string& filename)
   , m_procedure_store{new ProcedureStore{this}}
 {
   m_attribute_handler.AddAttributeDefinition(kTickTimeoutAttributeName, sup::dto::Float64Type);
+  m_attribute_handler.AddAttributeDefinition(kTimingAccuracyAttributeName, sup::dto::Float64Type);
 }
 
 Procedure::~Procedure()

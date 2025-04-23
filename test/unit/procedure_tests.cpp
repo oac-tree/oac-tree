@@ -303,6 +303,35 @@ TEST_F(ProcedureTest, GetProcedureName)
   }
 }
 
+TEST_F(ProcedureTest, ProcedureTimingConfigurations)
+{
+  // Procedure with name attribute returns this name
+  const std::string filename = "proc_file";
+  const std::string proc_body{
+    R"(<?xml version="1.0" encoding="UTF-8"?>
+    <Procedure xmlns="http://codac.iter.org/sup/oac-tree" version="1.0"
+      name="Common header"
+      xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+      xs:schemaLocation="http://codac.iter.org/sup/oac-tree oac-tree.xsd"
+      timingAccuracy="0.02">
+        <Sequence name="Wait">
+            <Wait name="One" timeout="0.3" />
+        </Sequence>
+        <Workspace>
+        </Workspace>
+    </Procedure>)"};
+  sup::UnitTestHelper::TemporaryTestFile temp_file(
+      filename, proc_body);
+  Procedure procedure{filename};
+  auto proc = ParseProcedureFile(filename);
+  ASSERT_TRUE(static_cast<bool>(proc));
+  EXPECT_NO_THROW(proc->Setup());
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
 ProcedureTest::ProcedureTest()
     : mock_ui{}
     , empty_proc{}

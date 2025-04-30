@@ -34,24 +34,24 @@ namespace oac_tree
 namespace DefaultSettings
 {
 /**
- * @brief Default sleep time (in ms) between ticks.
+ * @brief Default sleep time (in ns) between ticks.
  */
-const int DEFAULT_SLEEP_TIME_MS = 100;
+const sup::dto::int64 DEFAULT_SLEEP_TIME_NS = 100000000; // 100 ms
 
 /**
- * @brief Default value (in ms) for the maximum time an instruction should block.
+ * @brief Default value (in ns) for the maximum time an instruction should block.
  *
  * @note Implementers of instructions are responsible for using this value as a guideline.
  */
-const int MAX_BLOCKING_TIME_MS = 100;
+const sup::dto::int64 MAX_BLOCKING_TIME_NS = 100000000; // 100 ms
 
 /**
- * @brief Desired accuracy (in ms) for instructions containing time related functions.
+ * @brief Desired accuracy (in ns) for instructions containing time related functions.
  *
  * @note This value should not be considered as a strict requirement but rather as
  * a guideline.
  */
-const int DEFAULT_TIMING_ACCURACY_MS = 50;
+const sup::dto::int64 DEFAULT_TIMING_ACCURACY_NS = 50000000; // 50 ms
 
 /**
  * @brief When used as the first character of an attribute's value, this character

@@ -363,22 +363,22 @@ private:
 };
 
 /**
- * @brief Query the desired timeout in ms of the procedure.
+ * @brief Query the desired timeout in ns of the procedure.
  *
- * @returns Timeout in ms of the procedure (attribute or default value)
+ * @returns Timeout in ns of the procedure (attribute or default value)
  *
  * @details Applications are free to ignore this setting. It is only provided as a guideline.
  */
-int TickTimeoutMs(const Procedure& procedure);
+sup::dto::int64 TickTimeoutNs(const Procedure& procedure);
 
 /**
- * @brief Query the desired timing accuracy in ms of the procedure.
+ * @brief Query the desired timing accuracy in ns of the procedure.
  *
- * @returns Timing accuracy in ms of the procedure (attribute or default value)
+ * @returns Timing accuracy in ns of the procedure (attribute or default value)
  *
  * @details Applications are free to ignore this setting. It is only provided as a guideline.
  */
-int TimingAccuracyMs(const Procedure& procedure);
+sup::dto::int64 TimingAccuracyNs(const Procedure& procedure);
 
 /**
  * @brief Get the name of the procedure.

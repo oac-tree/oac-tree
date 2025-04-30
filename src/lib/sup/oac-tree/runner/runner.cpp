@@ -185,17 +185,17 @@ bool Runner::InstructionPresent(const Instruction* instruction) const
   return found_it != instructions.end();
 }
 
-TimeoutWhenRunning::TimeoutWhenRunning(int ms)
-  : m_timeout_ms{ms}
+TimeoutWhenRunning::TimeoutWhenRunning(sup::dto::int64 ns)
+  : m_timeout_ns{ns}
 {}
 
 TimeoutWhenRunning::~TimeoutWhenRunning() = default;
 
 void TimeoutWhenRunning::operator()(const Procedure& proc) const
 {
-  if (proc.GetStatus() == ExecutionStatus::RUNNING && m_timeout_ms > 0)
+  if (proc.GetStatus() == ExecutionStatus::RUNNING && m_timeout_ns > 0)
   {
-    std::this_thread::sleep_for(std::chrono::milliseconds(m_timeout_ms));
+    std::this_thread::sleep_for(std::chrono::nanoseconds(m_timeout_ns));
   }
 }
 

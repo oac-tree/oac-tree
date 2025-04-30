@@ -281,7 +281,7 @@ void AsyncRunner::ExecutionLoop()
 
 void AsyncRunner::RunProcedure()
 {
-  const TimeoutWhenRunning timeout{TickTimeoutMs(m_proc)};
+  const TimeoutWhenRunning timeout{TickTimeoutNs(m_proc)};
   auto tick_callback = [this, &timeout](const Procedure& proc){
     ProcessCommandsWhenRunning();
     timeout(proc);

@@ -49,7 +49,7 @@ Wait::~Wait() = default;
 
 void Wait::SetupImpl(const Procedure& proc)
 {
-  m_timing_accuracy = TimingAccuracyMs(proc);
+  m_timing_accuracy_ns = TimingAccuracyNs(proc);
 }
 
 ExecutionStatus Wait::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
@@ -63,7 +63,7 @@ ExecutionStatus Wait::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   auto finish = utils::GetNanosecsSinceEpoch() + timeout_ns;
   while (!IsHaltRequested() && finish > utils::GetNanosecsSinceEpoch())
   {
-    std::this_thread::sleep_for(std::chrono::milliseconds(m_timing_accuracy));
+    std::this_thread::sleep_for(std::chrono::nanoseconds(m_timing_accuracy_ns));
   }
   if (IsHaltRequested())
   {

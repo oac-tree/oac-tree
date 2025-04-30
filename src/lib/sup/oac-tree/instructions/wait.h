@@ -49,7 +49,7 @@ private:
 
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 
-  int m_timing_accuracy;
+  sup::dto::int64 m_timing_accuracy_ns;
 };
 
 }  // namespace oac_tree

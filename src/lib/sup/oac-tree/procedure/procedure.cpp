@@ -31,6 +31,7 @@
 #include <sup/oac-tree/exceptions.h>
 #include <sup/oac-tree/instruction.h>
 #include <sup/oac-tree/instruction_tree.h>
+#include <sup/oac-tree/instruction_utils.h>
 #include <sup/oac-tree/sequence_parser.h>
 #include <sup/oac-tree/user_interface.h>
 #include <sup/oac-tree/workspace.h>
@@ -336,30 +337,26 @@ const ProcedureStore& Procedure::GetProcedureStore() const
   return *m_procedure_store;
 }
 
-int TickTimeoutMs(const Procedure& procedure)
+sup::dto::int64 TickTimeoutNs(const Procedure& procedure)
 {
+  sup::dto::int64 tick_timeout_ns = DefaultSettings::DEFAULT_SLEEP_TIME_NS;
   if (procedure.HasAttribute(kTickTimeoutAttributeName))
   {
     auto tick_timeout = procedure.GetAttributeValue<double>(kTickTimeoutAttributeName);
-    if (tick_timeout > 0.001)
-    {
-      return static_cast<int>(tick_timeout * 1000);
-    }
+    (void)instruction_utils::ConvertToTimeoutNanoseconds(tick_timeout, tick_timeout_ns);
   }
-  return DefaultSettings::DEFAULT_SLEEP_TIME_MS;
+  return tick_timeout_ns;
 }
 
-int TimingAccuracyMs(const Procedure& procedure)
+sup::dto::int64 TimingAccuracyNs(const Procedure& procedure)
 {
+  sup::dto::int64 timing_accuracy_ns = DefaultSettings::DEFAULT_TIMING_ACCURACY_NS;
   if (procedure.HasAttribute(kTimingAccuracyAttributeName))
   {
     auto timing_accuracy = procedure.GetAttributeValue<double>(kTimingAccuracyAttributeName);
-    if (timing_accuracy > 0.0001)
-    {
-      return static_cast<int>(timing_accuracy * 1000);
-    }
+    (void)instruction_utils::ConvertToTimeoutNanoseconds(timing_accuracy, timing_accuracy_ns);
   }
-  return DefaultSettings::DEFAULT_TIMING_ACCURACY_MS;
+  return timing_accuracy_ns;
 }
 
 std::string GetProcedureName(const Procedure& procedure)

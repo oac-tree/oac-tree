@@ -26,6 +26,8 @@
 #include <sup/oac-tree/breakpoint.h>
 #include <sup/oac-tree/scope_guard.h>
 
+#include <sup/dto/basic_scalar_types.h>
+
 #include <atomic>
 #include <functional>
 #include <memory>
@@ -172,12 +174,12 @@ private:
 class TimeoutWhenRunning
 {
 public:
-  TimeoutWhenRunning(int ms);
+  TimeoutWhenRunning(sup::dto::int64 ns);
   ~TimeoutWhenRunning();
 
   void operator()(const Procedure& proc) const;
 private:
-  int m_timeout_ms;
+  sup::dto::int64 m_timeout_ns;
 };
 
 }  // namespace oac_tree

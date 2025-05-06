@@ -20,21 +20,21 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include "sequence.h"
+#include "reactive_sequence.h"
 
 namespace sup
 {
 namespace oac_tree
 {
-const std::string Sequence::Type = "Sequence";
+const std::string ReactiveSequence::Type = "ReactiveSequence";
 
-Sequence::Sequence()
-  : CompoundInstruction(Sequence::Type)
+ReactiveSequence::ReactiveSequence()
+  : CompoundInstruction(ReactiveSequence::Type)
 {}
 
-Sequence::~Sequence() = default;
+ReactiveSequence::~ReactiveSequence() = default;
 
-ExecutionStatus Sequence::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
+ExecutionStatus ReactiveSequence::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   for (auto instruction : ChildInstructions())
   {
@@ -43,17 +43,18 @@ ExecutionStatus Sequence::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
     {
       continue;
     }
-    // child FAILED is not taken into account here, as the Sequence should not have been ticked then.
+    // child FAILED is not taken into account here, as the ReactiveSequence should not have been
+    // ticked then.
     if (NeedsExecute(child_status))
     {
       instruction->ExecuteSingle(ui, ws);
       break;
     }
   }
-  return CalculateCompoundStatus();
+  return HandleStatuses(ui);
 }
 
-std::vector<const Instruction*> Sequence::NextInstructionsImpl() const
+std::vector<const Instruction*> ReactiveSequence::NextInstructionsImpl() const
 {
   std::vector<const Instruction*> result;
   for (auto instruction : ChildInstructions())
@@ -74,7 +75,7 @@ std::vector<const Instruction*> Sequence::NextInstructionsImpl() const
   return result;
 }
 
-ExecutionStatus Sequence::CalculateCompoundStatus() const
+ExecutionStatus ReactiveSequence::HandleStatuses(UserInterface& ui)
 {
   for (auto instruction : ChildInstructions())
   {
@@ -88,9 +89,24 @@ ExecutionStatus Sequence::CalculateCompoundStatus() const
     {
       return ExecutionStatus::NOT_FINISHED;
     }
+    if (child_status == ExecutionStatus::RUNNING)
+    {
+      ResetOtherChildren(instruction, ui);
+    }
     return child_status;
   }
   return ExecutionStatus::SUCCESS;
+}
+
+void ReactiveSequence::ResetOtherChildren(const Instruction* instr, UserInterface& ui)
+{
+  for (auto other_instruction : ChildInstructions())
+  {
+    if (other_instruction != instr)
+    {
+      other_instruction->Reset(ui);
+    }
+  }
 }
 
 }  // namespace oac_tree

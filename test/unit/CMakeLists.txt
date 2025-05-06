@@ -59,6 +59,7 @@ target_sources(${unit-tests}
     parallel_sequence_tests.cpp
     procedure_tests.cpp
     procedure_to_treedata_utils_tests.cpp
+    reactive_sequence_tests.cpp
     register_type_tests.cpp
     repeat_tests.cpp
     reset_variable_tests.cpp

@@ -18,33 +18,45 @@ Compound Instructions
 ---------------------
 Compound instructions are instructions that have multiple child instructions, and they control the flow of execution among their children based on certain conditions or criteria.
 
-Sequence
-^^^^^^^^
+Choice
+^^^^^^
 
-The sequence instruction executes its child instructions one by one in the order they are defined until:
+The choice instruction will execute instructions based on their index. That index is passed from a workspace variable that can be a scalar (single index) or an array (list of indices). An index can be repeated inside the array, making the correspondent instruction execution be repeated as many times as it appears in the array.
 
-* A child instruction returns `FAILURE`: `sequence` also returns `FAILURE`;
-* All child instructions returned `SUCCESS`: `sequence` returns `SUCCESS`.
+The execution status returned by the choice instruction follows the same logic as for `Sequence`: a single failure immediately leads to failure and success means all selected child instructions returned success.
 
-A sequence represents a number of steps that all have to succeed for a specific goal to be reached.
+Attributes:
 
-`Sequence` has no specific attributes.
+.. list-table::
+   :widths: 25 25 15 50
+   :header-rows: 1
 
-.. _seq_exp:
+   * - Attribute name
+     - Attribute type
+     - Mandatory
+     - Description
+   * - varName
+     - StringType
+     - yes
+     - name of the workspace variable to fetch the index (or array) from
 
 **Example**
 
-In the example, the first child will succeed, so the sequence will try the second child, which also succeeds. When the third child returns failure (inverted success), the sequence will stop and return failure.
+The example below will execute first the second instruction, with index one, then the first and finally, the third child instruction. These all succeed, so the `Choice` will succeed. The last child instruction (inverted wait) will never execute.
 
 .. code-block:: xml
 
-    <Sequence>
-        <Wait name="First" />
-        <Wait name="Second" />
+    <Choice varName="choice">
+        <Wait/>
+        <Wait/>
+        <Wait/>
         <Inverter>
-            <Wait name="Third" />
+            <Wait/>
         </Inverter>
-    </Sequence>
+    </Choice>
+    <Workspace>
+        <Local name="choice" type='{"type":"uint32_arr","multiplicity":3,"element":{"type":"uint32"}}' value="[1,0,2]"/>
+    </Workspace>
 
 Fallback
 ^^^^^^^^
@@ -118,45 +130,72 @@ The parallel sequence will execute all its children concurrently. The first two 
 
 .. _choice_exp:
 
-Choice
-^^^^^^
+ReactiveSequence
+^^^^^^^^^^^^^^^^
 
-The choice instruction will execute instructions based on their index. That index is passed from a workspace variable that can be a scalar (single index) or an array (list of indices). An index can be repeated inside the array, making the correspondent instruction execution be repeated as many times as it appears in the array.
+The reactive sequence instruction executes its child instructions one by one in the order they are defined until:
 
-The execution status returned by the choice instruction follows the same logic as for `Sequence`: a single failure immediately leads to failure and success means all selected child instructions returned success.
+* A child instruction returns `FAILURE`: `reactive sequence` also returns `FAILURE`;
+* A child instruction returns `RUNNING`: all other child instructions are reset and the reactive sequence returns `RUNNING`; on the next execution cycle, this will lead to the re-execution of the child instructions before the `RUNNING` one.
+* All child instructions returned `SUCCESS`: `reactive sequence` returns `SUCCESS`.
 
-Attributes:
+A reactive sequence most often consists of synchronous child nodes that represent preconditions and a single asynchronous child node in the end that only should be executed if all preconditions are met. The reactive sequence interrupts the asynchronous child as soon as one of the preconditions is no longer met.
 
-.. list-table::
-   :widths: 25 25 15 50
-   :header-rows: 1
+`ReactiveSequence` has no specific attributes.
 
-   * - Attribute name
-     - Attribute type
-     - Mandatory
-     - Description
-   * - varName
-     - StringType
-     - yes
-     - name of the workspace variable to fetch the index (or array) from
+.. note::
+
+   When all child instructions of the `reactive sequence` are synchronous, i.e. they never return `RUNNING`, it will behave as a normal `sequence`.
+
+.. _react_seq_exp:
 
 **Example**
 
-The example below will execute first the second instruction, with index one, then the first and finally, the third child instruction. These all succeed, so the `Choice` will succeed. The last child instruction (inverted wait) will never execute.
+In the example, two branches are executed in parallel:
+
+* The first branch contains the reactive sequence which will execute the (asynchronous) wait instruction as long as the variable `break` is zero. From the moment this variable is no longer zero, the wait instruction will be interrupted and the reactive sequence will return `FAILURE`.
+* The second branch will wait for one second and then set the variable `break` to one. This will interrupt the reactive sequence in the other branch.
 
 .. code-block:: xml
 
-    <Choice varName="choice">
-        <Wait/>
-        <Wait/>
-        <Wait/>
+    <ParallelSequence>
+        <ReactiveSequence>
+            <Equals leftVar="break" rightVar="zero"/>
+            <AsyncWait name="AsyncTask" timeout="10.0"/>
+        </ReactiveSequence>
+        <Sequence>
+            <Wait timeout="1.0" />
+            <Copy inputVar="one" outputVar="break"/>
+        </Sequence>
+    </ParallelSequence>
+
+Sequence
+^^^^^^^^
+
+The sequence instruction executes its child instructions one by one in the order they are defined until:
+
+* A child instruction returns `FAILURE`: `sequence` also returns `FAILURE`;
+* All child instructions returned `SUCCESS`: `sequence` returns `SUCCESS`.
+
+A sequence represents a number of steps that all have to succeed for a specific goal to be reached.
+
+`Sequence` has no specific attributes.
+
+.. _seq_exp:
+
+**Example**
+
+In the example, the first child will succeed, so the sequence will try the second child, which also succeeds. When the third child returns failure (inverted success), the sequence will stop and return failure.
+
+.. code-block:: xml
+
+    <Sequence>
+        <Wait name="First" />
+        <Wait name="Second" />
         <Inverter>
-            <Wait/>
+            <Wait name="Third" />
         </Inverter>
-    </Choice>
-    <Workspace>
-        <Local name="choice" type='{"type":"uint32_arr","multiplicity":3,"element":{"type":"uint32"}}' value="[1,0,2]"/>
-    </Workspace>
+    </Sequence>
 
 UserChoice
 ^^^^^^^^^^

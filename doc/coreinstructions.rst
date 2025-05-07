@@ -130,6 +130,65 @@ The parallel sequence will execute all its children concurrently. The first two 
 
 .. _choice_exp:
 
+ReactiveFallback
+^^^^^^^^^^^^^^^^
+
+The reactive fallback instruction executes its child instructions one by one in the order they are defined until:
+
+* A child instruction returns `SUCCESS`: `reactive fallback` also returns `SUCCESS`;
+* A child instruction returns `RUNNING`: all other child instructions are reset and the reactive fallback returns `RUNNING`; on the next execution cycle, this will lead to the re-execution of the child instructions before the `RUNNING` one.
+* All child instructions return `FAILURE`: `reactive fallback` returns `FAILURE`.
+
+A reactive fallback most often consists of a single synchronous child node that represents a postcondition and multiple alternative child nodes that try to achieve this postcondition. The reactive fallback interrupts any asynchronous child as soon as the postcondition is met or one of the previous child nodes takes priority by returning a `RUNNING` status. They are often combined with `reactive sequence` instructions as follows:
+
+.. code-block:: text
+
+    ReactiveFallback
+        ├── <postcondition>
+        ├── ReactiveSequence
+        │   ├── <precondition for task 1>
+        │   └── <task 1>
+        ├── ReactiveSequence
+        │   ├── <precondition for task 2>
+        │   └── <task 2>
+        └── ...
+
+`ReactiveFallback` has no specific attributes.
+
+.. note::
+
+   When all child instructions of the `reactive fallback` are synchronous, i.e. they never return `RUNNING`, it will behave as a normal `fallback`.
+
+.. _react_fb_exp:
+
+**Example**
+
+In the example, two branches are executed in parallel:
+
+* The first branch contains the reactive fallback which will execute a reactive sequence if the variable `break` is one. If not, it will run the asynchronous wait instruction. Since the condition will be checked again at each tick, as soon as the `break` variable becomes one, the long wait instruction (LongTask) is interrupted and a shorter one (ShortTask) is executed.
+* The second branch will wait for one second and then set the variable `break` to one. This will interrupt long task in the other branch.
+
+.. code-block:: xml
+
+    <ParallelSequence>
+        <ReactiveFallback>
+            <ReactiveSequence>
+                <Equals leftVar="break" rightVar="one"/>
+                <AsyncWait name="ShortTask" timeout="1.0"/>
+            </ReactiveSequence>
+            <AsyncWait name="LongTask" timeout="10.0"/>
+        </ReactiveFallback>
+        <Sequence>
+            <Wait timeout="1.0" />
+            <Copy inputVar="one" outputVar="break"/>
+        </Sequence>
+    </ParallelSequence>
+    <Workspace>
+        <Local name="break" type='{"type":"uint32"}' value="0"/>
+        <Local name="zero" type='{"type":"uint32"}' value="0"/>
+        <Local name="one" type='{"type":"uint32"}' value="1"/>
+    </Workspace>
+
 ReactiveSequence
 ^^^^^^^^^^^^^^^^
 
@@ -137,7 +196,7 @@ The reactive sequence instruction executes its child instructions one by one in 
 
 * A child instruction returns `FAILURE`: `reactive sequence` also returns `FAILURE`;
 * A child instruction returns `RUNNING`: all other child instructions are reset and the reactive sequence returns `RUNNING`; on the next execution cycle, this will lead to the re-execution of the child instructions before the `RUNNING` one.
-* All child instructions returned `SUCCESS`: `reactive sequence` returns `SUCCESS`.
+* All child instructions return `SUCCESS`: `reactive sequence` returns `SUCCESS`.
 
 A reactive sequence most often consists of synchronous child nodes that represent preconditions and a single asynchronous child node in the end that only should be executed if all preconditions are met. The reactive sequence interrupts the asynchronous child as soon as one of the preconditions is no longer met.
 
@@ -168,6 +227,11 @@ In the example, two branches are executed in parallel:
             <Copy inputVar="one" outputVar="break"/>
         </Sequence>
     </ParallelSequence>
+    <Workspace>
+        <Local name="break" type='{"type":"uint32"}' value="0"/>
+        <Local name="zero" type='{"type":"uint32"}' value="0"/>
+        <Local name="one" type='{"type":"uint32"}' value="1"/>
+    </Workspace>
 
 Sequence
 ^^^^^^^^

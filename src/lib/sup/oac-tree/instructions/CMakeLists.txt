@@ -36,6 +36,7 @@ target_sources(sup-oac-tree-shared
     message.cpp
     output.cpp
     parallel_sequence.cpp
+    reactive_fallback.cpp
     reactive_sequence.cpp
     repeat.cpp
     reset_variable.cpp

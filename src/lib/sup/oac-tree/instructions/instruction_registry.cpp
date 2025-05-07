@@ -51,6 +51,7 @@
 #include "message.h"
 #include "output.h"
 #include "parallel_sequence.h"
+#include "reactive_fallback.h"
 #include "reactive_sequence.h"
 #include "repeat.h"
 #include "reset_variable.h"
@@ -132,6 +133,7 @@ void InitInstructionRegistry(InstructionRegistry& registry)
   (void)RegisterInstruction<Choice>(registry);
   (void)RegisterInstruction<Fallback>(registry);
   (void)RegisterInstruction<ParallelSequence>(registry);
+  (void)RegisterInstruction<ReactiveFallback>(registry);
   (void)RegisterInstruction<ReactiveSequence>(registry);
   (void)RegisterInstruction<Sequence>(registry);
   (void)RegisterInstruction<UserChoice>(registry);

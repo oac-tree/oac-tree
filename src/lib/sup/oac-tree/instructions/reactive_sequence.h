@@ -51,10 +51,9 @@ private:
   std::vector<const Instruction*> NextInstructionsImpl() const override;
 
   /**
-   * @brief Calculate this instruction's status from the status of its child instructions and
-   * reset all other child instructions if one is RUNNING.
+   * @brief Calculate this instruction's status from the status of its child instructions.
    */
-  ExecutionStatus HandleStatuses(UserInterface& ui);
+  ExecutionStatus CalculateCompoundStatus() const;
 
   /**
    * @brief Reset all other child instructions.

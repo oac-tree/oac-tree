@@ -48,10 +48,16 @@ ExecutionStatus ReactiveSequence::ExecuteSingleImpl(UserInterface& ui, Workspace
     if (NeedsExecute(child_status))
     {
       instruction->ExecuteSingle(ui, ws);
+      if (instruction->GetStatus() == ExecutionStatus::RUNNING)
+      {
+        // Reset all other children and immediately return RUNNING:
+        ResetOtherChildren(instruction, ui);
+        return ExecutionStatus::RUNNING;
+      }
       break;
     }
   }
-  return HandleStatuses(ui);
+  return CalculateCompoundStatus();
 }
 
 std::vector<const Instruction*> ReactiveSequence::NextInstructionsImpl() const
@@ -75,7 +81,7 @@ std::vector<const Instruction*> ReactiveSequence::NextInstructionsImpl() const
   return result;
 }
 
-ExecutionStatus ReactiveSequence::HandleStatuses(UserInterface& ui)
+ExecutionStatus ReactiveSequence::CalculateCompoundStatus() const
 {
   for (auto instruction : ChildInstructions())
   {
@@ -89,11 +95,7 @@ ExecutionStatus ReactiveSequence::HandleStatuses(UserInterface& ui)
     {
       return ExecutionStatus::NOT_FINISHED;
     }
-    if (child_status == ExecutionStatus::RUNNING)
-    {
-      ResetOtherChildren(instruction, ui);
-    }
-    return child_status;
+    return child_status;  // FAILURE or RUNNING
   }
   return ExecutionStatus::SUCCESS;
 }

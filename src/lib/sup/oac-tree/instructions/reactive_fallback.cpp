@@ -48,10 +48,16 @@ ExecutionStatus ReactiveFallback::ExecuteSingleImpl(UserInterface& ui, Workspace
     if (NeedsExecute(child_status))
     {
       instruction->ExecuteSingle(ui, ws);
+      if (instruction->GetStatus() == ExecutionStatus::RUNNING)
+      {
+        // Reset all other children and immediately return RUNNING:
+        ResetOtherChildren(instruction, ui);
+        return ExecutionStatus::RUNNING;
+      }
       break;
     }
   }
-  return HandleStatuses(ui);
+  return CalculateCompoundStatus();
 }
 
 std::vector<const Instruction*> ReactiveFallback::NextInstructionsImpl() const
@@ -75,7 +81,7 @@ std::vector<const Instruction*> ReactiveFallback::NextInstructionsImpl() const
   return result;
 }
 
-ExecutionStatus ReactiveFallback::HandleStatuses(UserInterface& ui)
+ExecutionStatus ReactiveFallback::CalculateCompoundStatus() const
 {
   for (auto instruction : ChildInstructions())
   {
@@ -89,13 +95,9 @@ ExecutionStatus ReactiveFallback::HandleStatuses(UserInterface& ui)
     {
       return ExecutionStatus::NOT_FINISHED;
     }
-    if (child_status == ExecutionStatus::RUNNING)
-    {
-      ResetOtherChildren(instruction, ui);
-    }
-    return child_status;
+    return child_status; // SUCCESS or RUNNING
   }
-  return ExecutionStatus::SUCCESS;
+  return ExecutionStatus::FAILURE;
 }
 
 void ReactiveFallback::ResetOtherChildren(const Instruction* instr, UserInterface& ui)

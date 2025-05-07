@@ -59,7 +59,8 @@ ExecutionStatus AsyncWait::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   (void)ui;
   (void)ws;
-  if (!IsHaltRequested() && m_finish > utils::GetNanosecsSinceEpoch())
+  auto now = utils::GetNanosecsSinceEpoch();
+  if (!IsHaltRequested() && m_finish > now)
   {
     return ExecutionStatus::RUNNING;
   }

@@ -39,6 +39,10 @@ bool Async::InitHook(UserInterface& ui, Workspace& ws)
 {
   (void)ui;
   (void)ws;
+  if (!HasChild())
+  {
+    return false;
+  }
   m_wrapper = std::make_unique<AsyncWrapper>(GetChild());
   return true;
 }

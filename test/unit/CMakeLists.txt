@@ -9,6 +9,7 @@ target_sources(${unit-tests}
     add_element_tests.cpp
     add_member_tests.cpp
     anyvalue_utils_tests.cpp
+    async_decorator_tests.cpp
     async_input_adapter_tests.cpp
     async_runner_tests.cpp
     async_wait_tests.cpp

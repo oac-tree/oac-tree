@@ -47,36 +47,40 @@ Input::Input()
 
 Input::~Input() = default;
 
+bool Input::InitHook(UserInterface& ui, Workspace& ws)
+{
+  sup::dto::AnyValue value;
+  if (!GetAttributeValue(Constants::OUTPUT_VARIABLE_NAME_ATTRIBUTE_NAME, ws, ui, value))
+  {
+    return false;
+  }
+  std::string description;
+  if (!GetAttributeValueAs(Constants::DESCRIPTION_ATTRIBUTE_NAME, ws, ui, description))
+  {
+    return false;
+  }
+  m_future = CreateUserValueFuture(ui, *this, value, description);
+  if (!m_future)
+  {
+    return false;
+  }
+  return true;
+}
+
 ExecutionStatus Input::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  if (IsHaltRequested())
+  if (IsHaltRequested() || !m_future)
   {
     // If the instruction is halted, we need to cancel a possible request.
     m_future.reset();
     return ExecutionStatus::FAILURE;
   }
-  if (m_future)
-  {
-    return PollInputFuture(ui, ws);
-  }
-  // Only when future is not yet valid
-  sup::dto::AnyValue value;
-  if (!GetAttributeValue(Constants::OUTPUT_VARIABLE_NAME_ATTRIBUTE_NAME, ws, ui, value))
-  {
-    return ExecutionStatus::FAILURE;
-  }
-  std::string description;
-  if (!GetAttributeValueAs(Constants::DESCRIPTION_ATTRIBUTE_NAME, ws, ui, description))
-  {
-    return ExecutionStatus::FAILURE;
-  }
-  m_future = CreateUserValueFuture(ui, *this, value, description);
-  if (!m_future)
-  {
-    return ExecutionStatus::FAILURE;
-  }
-  return ExecutionStatus::RUNNING;
-  // When future is valid:
+  return PollInputFuture(ui, ws);
+}
+
+void Input::ResetHook(UserInterface& ui)
+{
+  m_future.reset();
 }
 
 ExecutionStatus Input::PollInputFuture(UserInterface& ui, Workspace& ws)

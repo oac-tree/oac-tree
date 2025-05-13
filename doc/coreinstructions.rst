@@ -166,7 +166,7 @@ A reactive fallback most often consists of a single synchronous child node that 
 In the example, two branches are executed in parallel:
 
 * The first branch contains the reactive fallback which will execute a reactive sequence if the variable `break` is one. If not, it will run the asynchronous wait instruction. Since the condition will be checked again at each tick, as soon as the `break` variable becomes one, the long wait instruction (LongTask) is interrupted and a shorter one (ShortTask) is executed.
-* The second branch will wait for one second and then set the variable `break` to one. This will interrupt long task in the other branch.
+* The second branch will wait for one second and then set the variable `break` to one. This will interrupt the long task in the other branch.
 
 .. code-block:: xml
 
@@ -306,6 +306,39 @@ Decorator Instructions
 ----------------------
 
 Decorator instructions modify or add functionality to a single child instruction, allowing for the addition of behavior to an existing instruction without modifying its core implementation.
+
+Async
+^^^^^
+
+Decorator that makes the execution of the child instruction asynchronous. This means it will return `RUNNING` until the child instruction has finished executing, at which point it will return the status of the child instruction.
+
+`Async` has no specific attributes.
+
+**Example**
+
+In the example, two branches are executed in parallel:
+
+* The first branch contains a reactive fallback which will wait asynchronously for 10 seconds or until the variable `break` is one. As soon as the `break` variable becomes one, the wait instruction is interrupted.
+* The second branch will wait for one second and then set the variable `break` to one. This will interrupt the long wait instruction in the other branch.
+
+.. code-block:: xml
+
+    <ParallelSequence>
+        <ReactiveFallback>
+            <Equals leftVar="break" rightVar="one"/>
+            <Async>
+                <Wait timeout="10.0"/>
+            </Async>
+        </ReactiveFallback>
+        <Sequence>
+            <Wait timeout="1.0" />
+            <Copy inputVar="one" outputVar="break"/>
+        </Sequence>
+    </ParallelSequence>
+    <Workspace>
+        <Local name="break" type='{"type":"uint32"}' value="0"/>
+        <Local name="one" type='{"type":"uint32"}' value="1"/>
+    </Workspace>
 
 For
 ^^^

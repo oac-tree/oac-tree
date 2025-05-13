@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/oac-tree" version="1.0"
+           name="Trivial procedure for testing purposes"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/oac-tree oac-tree.xsd">
+    <ParallelSequence>
+        <Inverter>
+            <ReactiveSequence>
+                <Equals leftVar="break" rightVar="zero"/>
+                <Async>
+                    <Wait timeout="10.0"/>
+                </Async>
+            </ReactiveSequence>
+        </Inverter>
+        <Sequence>
+            <Wait timeout="1.0" />
+            <Copy inputVar="one" outputVar="break"/>
+        </Sequence>
+    </ParallelSequence>
+    <Workspace>
+        <Local name="break" type='{"type":"uint32"}' value="0"/>
+        <Local name="zero" type='{"type":"uint32"}' value="0"/>
+        <Local name="one" type='{"type":"uint32"}' value="1"/>
+    </Workspace>
+</Procedure>

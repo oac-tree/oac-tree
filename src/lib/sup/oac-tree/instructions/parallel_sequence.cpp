@@ -45,7 +45,6 @@ ParallelSequence::ParallelSequence()
 
 ParallelSequence::~ParallelSequence() = default;
 
-
 bool ParallelSequence::InitHook(UserInterface& ui, Workspace& ws)
 {
   InitWrappers();

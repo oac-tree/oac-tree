@@ -24,6 +24,7 @@
 
 #include "add_element.h"
 #include "add_member.h"
+#include "async.h"
 #include "async_wait.h"
 #include "choice.h"
 #include "condition.h"
@@ -139,6 +140,7 @@ void InitInstructionRegistry(InstructionRegistry& registry)
   (void)RegisterInstruction<UserChoice>(registry);
 
   // Register decorator instructions:
+  (void)RegisterInstruction<Async>(registry);
   (void)RegisterInstruction<ForInstruction>(registry);
   (void)RegisterInstruction<ForceSuccess>(registry);
   (void)RegisterInstruction<Include>(registry);

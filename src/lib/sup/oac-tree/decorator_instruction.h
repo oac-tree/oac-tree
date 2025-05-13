@@ -50,6 +50,13 @@ public:
 
 protected:
   /**
+   * @brief Get a pointer to the child instruction.
+   *
+   * @return Child instruction.
+   */
+  Instruction* GetChild();
+
+  /**
    * @brief Call Instruction::Setup(const Procedure & proc) on child instruction
    * and return result.
    */

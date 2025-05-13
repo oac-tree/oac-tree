@@ -32,6 +32,7 @@ namespace oac_tree
 AsyncWrapper::AsyncWrapper(Instruction* instruction)
   : m_instruction{instruction}
   , m_status{ExecutionStatus::NOT_STARTED}
+  , m_child_result{}
 {}
 
 AsyncWrapper::AsyncWrapper(AsyncWrapper&&) = default;

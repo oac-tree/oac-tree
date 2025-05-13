@@ -4,6 +4,7 @@ target_sources(sup-oac-tree-shared
     add_member.cpp
     async_wait.cpp
     async_wrapper.cpp
+    async.cpp
     choice.cpp
     compound_instruction.cpp
     condition.cpp

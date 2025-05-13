@@ -42,6 +42,11 @@ Instruction::Category DecoratorInstruction::GetCategory() const
   return kDecorator;
 }
 
+Instruction* DecoratorInstruction::GetChild()
+{
+  return m_child.get();
+}
+
 void DecoratorInstruction::SetupChild(const Procedure &proc)
 {
   AssertChildPresent();

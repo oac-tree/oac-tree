@@ -54,7 +54,7 @@ ExecutionStatus Async::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   {
     m_wrapper->Tick(ui, ws);
   }
-  return CalculateStatus();
+  return m_wrapper->GetStatus();
 }
 
 void Async::ResetHook(UserInterface& ui)
@@ -69,16 +69,6 @@ void Async::ResetHook(UserInterface& ui)
   m_wrapper.reset();
   // call reset on child instruction
   ResetChild(ui);
-}
-
-ExecutionStatus Async::CalculateStatus() const
-{
-  auto wrapper_status = m_wrapper->GetStatus();
-  if (IsFinishedStatus(wrapper_status))
-  {
-    return wrapper_status;
-  }
-  return ExecutionStatus::RUNNING;
 }
 
 }  // namespace oac_tree

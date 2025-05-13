@@ -310,7 +310,7 @@ Decorator instructions modify or add functionality to a single child instruction
 Async
 ^^^^^
 
-Decorator that makes the execution of the child instruction asynchronous. This means it will return `RUNNING` until the child instruction has finished executing, at which point it will return the status of the child instruction.
+Decorator that makes the execution of the child instruction asynchronous. This means it will return `RUNNING` until the child instruction has finished executing, at which point it will return the status of the child instruction (`SUCCESS`, `FAILURE` or `NOT_FINISHED`).
 
 `Async` has no specific attributes.
 

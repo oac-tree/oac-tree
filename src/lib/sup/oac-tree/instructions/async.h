@@ -53,11 +53,6 @@ private:
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 
   void ResetHook(UserInterface& ui) override;
-
-  /**
-   * @brief Calculate this instruction's status from the status of its child instruction.
-   */
-  ExecutionStatus CalculateStatus() const;
 };
 
 }  // namespace oac_tree

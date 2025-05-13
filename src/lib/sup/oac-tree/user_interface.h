@@ -189,17 +189,15 @@ std::pair<bool, int> GetBlockingUserChoice(UserInterface& ui,
                                            const sup::dto::AnyValue& metadata);
 
 /**
- * @brief Get an AnyValue from the user. This function will return when the provided instruction is
- * halted to avoid blocking on instructions whose input is no longer required.
+ * @brief Create a custom future for retrieving a user input value.
  *
  * @param ui UserInterface object to use for getting user input.
  * @param instr Instruction to check for halted condition.
  * @param value Value that indicates the type of value that is requested.
  * @param description Description that will be provided to the user.
- * @return A boolean indicating success of the user input and if true, the user's input as an
- * AnyValue.
+ * @return Unique pointer to a future object or empty if no future could be obtained.
  */
-std::pair<bool, sup::dto::AnyValue> GetInterruptableUserValue(
+std::unique_ptr<IUserInputFuture> CreateUserValueFuture(
   UserInterface& ui, const Instruction& instr, const sup::dto::AnyValue& value,
   const std::string& description);
 

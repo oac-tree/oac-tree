@@ -25,6 +25,8 @@
 
 #include <sup/oac-tree/instruction.h>
 
+#include <memory>
+
 namespace sup
 {
 namespace oac_tree
@@ -46,7 +48,10 @@ public:
   static const std::string Type;
 
 private:
+  std::unique_ptr<IUserInputFuture> m_future;
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
+
+  ExecutionStatus PollInputFuture(UserInterface& ui, Workspace& ws);
 };
 
 }  // namespace oac_tree

@@ -37,6 +37,7 @@ const std::string Input::Type = "Input";
 
 Input::Input()
   : Instruction(Input::Type)
+  , m_future{}
 {
   AddAttributeDefinition(Constants::OUTPUT_VARIABLE_NAME_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kVariableName).SetMandatory();
@@ -48,6 +49,17 @@ Input::~Input() = default;
 
 ExecutionStatus Input::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
+  if (IsHaltRequested())
+  {
+    // If the instruction is halted, we need to cancel a possible request.
+    m_future.reset();
+    return ExecutionStatus::FAILURE;
+  }
+  if (m_future)
+  {
+    return PollInputFuture(ui, ws);
+  }
+  // Only when future is not yet valid
   sup::dto::AnyValue value;
   if (!GetAttributeValue(Constants::OUTPUT_VARIABLE_NAME_ATTRIBUTE_NAME, ws, ui, value))
   {
@@ -58,21 +70,42 @@ ExecutionStatus Input::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   {
     return ExecutionStatus::FAILURE;
   }
-  auto [retrieved, user_value] = GetInterruptableUserValue(ui, *this, value, description);
-  if (!retrieved)
-  {
-    std::string warning_message = InstructionWarningProlog(*this) +
-      "did not receive compatible user value for field [" +
-      GetAttributeString(Constants::OUTPUT_VARIABLE_NAME_ATTRIBUTE_NAME) + "] in workspace";
-    LogWarning(ui, warning_message);
-    return ExecutionStatus::FAILURE;
-  }
-  if (!SetValueFromAttributeName(*this, ws, ui, Constants::OUTPUT_VARIABLE_NAME_ATTRIBUTE_NAME,
-                                 user_value))
+  m_future = CreateUserValueFuture(ui, *this, value, description);
+  if (!m_future)
   {
     return ExecutionStatus::FAILURE;
   }
-  return ExecutionStatus::SUCCESS;
+  return ExecutionStatus::RUNNING;
+  // When future is valid:
+}
+
+ExecutionStatus Input::PollInputFuture(UserInterface& ui, Workspace& ws)
+{
+  if (!m_future->IsReady())
+  {
+    return ExecutionStatus::RUNNING;
+  }
+  else
+  {
+    auto reply = m_future->GetValue();
+    m_future.reset();  // Immediately cleanup the future to put the instruction in a valid state
+                       // for re-execution
+    auto [success, user_value] = ParseUserValueReply(reply);
+    if (!success)
+    {
+      std::string warning_message =
+          InstructionWarningProlog(*this) + "did not receive compatible user value for field ["
+          + GetAttributeString(Constants::OUTPUT_VARIABLE_NAME_ATTRIBUTE_NAME) + "] in workspace";
+      LogWarning(ui, warning_message);
+      return ExecutionStatus::FAILURE;
+    }
+    if (!SetValueFromAttributeName(*this, ws, ui, Constants::OUTPUT_VARIABLE_NAME_ATTRIBUTE_NAME,
+                                   user_value))
+    {
+      return ExecutionStatus::FAILURE;
+    }
+    return ExecutionStatus::SUCCESS;
+  }
 }
 
 }  // namespace oac_tree

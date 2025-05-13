@@ -172,11 +172,10 @@ std::pair<bool, int> GetBlockingUserChoice(UserInterface& ui,
   return ParseUserChoiceReply(reply);
 }
 
-std::pair<bool, sup::dto::AnyValue> GetInterruptableUserValue(
+std::unique_ptr<IUserInputFuture> CreateUserValueFuture(
   UserInterface& ui, const Instruction& instr, const sup::dto::AnyValue& value,
   const std::string& description)
 {
-  std::pair<bool, sup::dto::AnyValue> failure{ false, {} };
   auto input_request = CreateUserValueRequest(value, description);
   auto future = ui.RequestUserInput(input_request);
   if (!future->IsValid())
@@ -184,16 +183,9 @@ std::pair<bool, sup::dto::AnyValue> GetInterruptableUserValue(
     std::string error_message = InstructionErrorProlog(instr) +
       "could not retrieve a valid future for user input";
     LogError(ui, error_message);
-    return failure;
+    return {};
   }
-  double timeout_s = DefaultSettings::MAX_BLOCKING_TIME_NS / 1e9;
-  while (!instr.IsHaltRequested() && !future->WaitFor(timeout_s)) {}
-  if (instr.IsHaltRequested())
-  {
-    return failure;
-  }
-  auto reply = future->GetValue();
-  return ParseUserValueReply(reply);
+  return future;
 }
 
 std::pair<bool, int> GetInterruptableUserChoice(UserInterface& ui, const Instruction& instr,

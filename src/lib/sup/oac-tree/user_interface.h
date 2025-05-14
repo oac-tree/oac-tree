@@ -202,9 +202,7 @@ std::unique_ptr<IUserInputFuture> CreateUserValueFuture(
   const std::string& description);
 
 /**
- * @brief Get an integer from the user that indicates a choice. This function will return when
- * the provided instruction is halted to avoid blocking on instructions whose input is no longer
- * required.
+ * @brief Create a custom future for retrieving a user choice.
  *
  * @param ui UserInterface object to use for getting user input.
  * @param instr Instruction to check for halted condition.
@@ -213,6 +211,10 @@ std::unique_ptr<IUserInputFuture> CreateUserValueFuture(
  * @return A boolean indicating success of the user input and if true, the user's input as an
  * integer choice.
  */
+std::unique_ptr<IUserInputFuture> CreateUserChoiceFuture(
+  UserInterface& ui, const Instruction& instr, const std::vector<std::string>& options,
+  const sup::dto::AnyValue& metadata);
+
 std::pair<bool, int> GetInterruptableUserChoice(UserInterface& ui, const Instruction& instr,
                                                 const std::vector<std::string>& options,
                                                 const sup::dto::AnyValue& metadata);

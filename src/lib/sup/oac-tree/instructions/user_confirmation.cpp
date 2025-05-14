@@ -36,6 +36,7 @@ const std::string DEFAULT_CANCEL_TEXT = "Cancel";
 
 UserConfirmation::UserConfirmation()
   : Instruction(UserConfirmation::Type)
+  , m_future{}
 {
   AddAttributeDefinition(Constants::DESCRIPTION_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kBoth).SetMandatory();
@@ -46,37 +47,69 @@ UserConfirmation::UserConfirmation()
 
 UserConfirmation::~UserConfirmation() = default;
 
-ExecutionStatus UserConfirmation::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
+bool UserConfirmation::InitHook(UserInterface& ui, Workspace& ws)
 {
   std::string description;
   if (!GetAttributeValueAs(Constants::DESCRIPTION_ATTRIBUTE_NAME, ws, ui, description))
   {
-    return ExecutionStatus::FAILURE;
+    return false;
   }
   std::string ok_text = DEFAULT_OK_TEXT;
   if (!GetAttributeValueAs(Constants::OK_TEXT_ATTRIBUTE_NAME, ws, ui, ok_text))
   {
-    return ExecutionStatus::FAILURE;
+    return false;
   }
   std::string cancel_text = DEFAULT_CANCEL_TEXT;
   if (!GetAttributeValueAs(Constants::CANCEL_TEXT_ATTRIBUTE_NAME, ws, ui, cancel_text))
   {
-    return ExecutionStatus::FAILURE;
+    return false;
   }
   auto metadata = CreateUserChoiceMetadata();
   metadata.AddMember(Constants::USER_CHOICES_TEXT_NAME, description);
   metadata.AddMember(Constants::USER_CHOICES_DIALOG_TYPE_NAME,
                      {sup::dto::UnsignedInteger32Type, dialog_type::kConfirmation});
   std::vector<std::string> options = { ok_text, cancel_text };
-  auto [retrieved, choice] = GetInterruptableUserChoice(ui, *this, options, metadata);
-  if (!retrieved)
+  m_future = CreateUserChoiceFuture(ui, *this, options, metadata);
+  if (!m_future)
   {
-    std::string warning_message = InstructionWarningProlog(*this) +
-      "did not receive valid choice";
-    LogWarning(ui, warning_message);
+    return false;
+  }
+  return true;
+}
+
+ExecutionStatus UserConfirmation::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
+{
+  if (IsHaltRequested() || !m_future)
+  {
     return ExecutionStatus::FAILURE;
   }
-  return choice == 0 ? ExecutionStatus::SUCCESS : ExecutionStatus::FAILURE;
+  return PollInputFuture(ui, ws);
+}
+
+void UserConfirmation::ResetHook(UserInterface& ui)
+{
+  m_future.reset();
+}
+
+ExecutionStatus UserConfirmation::PollInputFuture(UserInterface& ui, Workspace& ws)
+{
+  if (!m_future->IsReady())
+  {
+    return ExecutionStatus::RUNNING;
+  }
+  else
+  {
+    auto reply = m_future->GetValue();
+    auto [success, choice] = ParseUserChoiceReply(reply);
+    if (!success)
+    {
+      std::string warning_message = InstructionWarningProlog(*this) +
+        "did not receive valid choice";
+      LogWarning(ui, warning_message);
+      return ExecutionStatus::FAILURE;
+    }
+    return choice == 0 ? ExecutionStatus::SUCCESS : ExecutionStatus::FAILURE;
+  }
 }
 
 }  // namespace oac_tree

@@ -188,6 +188,22 @@ std::unique_ptr<IUserInputFuture> CreateUserValueFuture(
   return future;
 }
 
+std::unique_ptr<IUserInputFuture> CreateUserChoiceFuture(
+  UserInterface& ui, const Instruction& instr, const std::vector<std::string>& options,
+  const sup::dto::AnyValue& metadata)
+{
+  auto input_request = CreateUserChoiceRequest(options, metadata);
+  auto future = ui.RequestUserInput(input_request);
+  if (!future->IsValid())
+  {
+    std::string error_message = InstructionErrorProlog(instr) +
+      "could not retrieve a valid future for user input";
+    LogError(ui, error_message);
+    return {};
+  }
+  return future;
+}
+
 std::pair<bool, int> GetInterruptableUserChoice(UserInterface& ui, const Instruction& instr,
                                                 const std::vector<std::string>& options,
                                                 const sup::dto::AnyValue& metadata)

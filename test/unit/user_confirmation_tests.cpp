@@ -105,7 +105,10 @@ TEST(UserConfirmation, OptionLabels)
     EXPECT_NO_THROW(instr->Setup(proc));
 
     ui.SetChoice(0);
-    EXPECT_NO_THROW(instr->ExecuteSingle(ui, ws));
+    while (!IsFinishedStatus(instr->GetStatus()))
+    {
+      EXPECT_NO_THROW(instr->ExecuteSingle(ui, ws));
+    }
     EXPECT_EQ(instr->GetStatus(), ExecutionStatus::SUCCESS);
 
     // Check passed default option values
@@ -127,7 +130,10 @@ TEST(UserConfirmation, OptionLabels)
     EXPECT_NO_THROW(instr->Setup(proc));
 
     ui.SetChoice(1);
-    EXPECT_NO_THROW(instr->ExecuteSingle(ui, ws));
+    while (!IsFinishedStatus(instr->GetStatus()))
+    {
+      EXPECT_NO_THROW(instr->ExecuteSingle(ui, ws));
+    }
     EXPECT_EQ(instr->GetStatus(), ExecutionStatus::FAILURE);
 
     // Check passed default option values
@@ -151,7 +157,10 @@ TEST(UserConfirmation, Metadata)
   EXPECT_NO_THROW(instr->Setup(proc));
 
   ui.SetChoice(0);
-  EXPECT_NO_THROW(instr->ExecuteSingle(ui, ws));
+    while (!IsFinishedStatus(instr->GetStatus()))
+    {
+      EXPECT_NO_THROW(instr->ExecuteSingle(ui, ws));
+    }
   EXPECT_EQ(instr->GetStatus(), ExecutionStatus::SUCCESS);
 
   // Check passed metadata

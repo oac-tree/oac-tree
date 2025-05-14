@@ -39,10 +39,7 @@ const std::string Listen::Type = "Listen";
 Listen::Listen()
   : DecoratorInstruction(Listen::Type)
   , m_force_success{false}
-  , m_var_changed{false}
-  , m_var_names{}
   , m_var_cache{}
-  , m_cb_guard{}
 {
   AddAttributeDefinition(Constants::VARIABLE_NAMES_ATTRIBUTE_NAME).SetMandatory();
   AddAttributeDefinition(Constants::FORCE_SUCCESS_ATTRIBUTE_NAME, sup::dto::BooleanType)
@@ -51,18 +48,11 @@ Listen::Listen()
 
 Listen::~Listen() = default;
 
-void Listen::SetupImpl(const Procedure& proc)
-{
-  m_var_changed = true;
-  m_var_names =
-    instruction_utils::VariableNamesFromAttribute(*this, Constants::VARIABLE_NAMES_ATTRIBUTE_NAME);
-  InitVariableCache();
-  return SetupChild(proc);
-}
-
 bool Listen::InitHook(UserInterface& ui, Workspace& ws)
 {
-  m_force_success = false;
+  auto var_names =
+    instruction_utils::VariableNamesFromAttribute(*this, Constants::VARIABLE_NAMES_ATTRIBUTE_NAME);
+  InitVariableCache(var_names);
   if (!GetAttributeValueAs(Constants::FORCE_SUCCESS_ATTRIBUTE_NAME, ws, ui, m_force_success))
   {
     return false;
@@ -72,53 +62,63 @@ bool Listen::InitHook(UserInterface& ui, Workspace& ws)
 
 ExecutionStatus Listen::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  if (!m_cb_guard.IsValid())
+  if (IsHaltRequested())
   {
-    m_var_changed = false;
-    RegisterCallbacks(&ws, m_var_names);
+    return ExecutionStatus::FAILURE;
   }
   auto child_status = GetChildStatus();
+  if (IsExecutingStatus(child_status))
+  {
+    ExecuteChild(ui, ws);
+    return CalculateStatus();
+  }
   if (IsFinishedStatus(child_status))
   {
     ResetChild(ui);
-    std::unique_lock<std::mutex> lk(m_mtx);
-    m_cv.wait(lk, [this]{ return m_var_changed || IsHaltRequested(); });
-    m_var_changed = false;
-    lk.unlock();
-    if (IsHaltRequested())
-    {
-      return ExecutionStatus::FAILURE;
-    }
+  }
+  auto cache_changed = UpdateVariableCache(ws);
+  if (!cache_changed)
+  {
+    return ExecutionStatus::RUNNING;
   }
   ExecuteChild(ui, ws);
-  auto status = CalculateStatus();
-  if (IsFinishedStatus(status))
-  {
-    ClearCallbacks();
-  }
-  return status;
-}
-
-void Listen::HaltImpl()
-{
-  HaltChild();
-  m_cv.notify_one();
-  ClearCallbacks();
+  return CalculateStatus();
 }
 
 void Listen::ResetHook(UserInterface& ui)
 {
+  m_force_success = false;
+  m_var_cache.clear();
   ResetChild(ui);
-  InitVariableCache();
 }
 
-void Listen::InitVariableCache()
+void Listen::InitVariableCache(const std::vector<std::string>& var_names)
 {
   m_var_cache.clear();
-  for (const auto& var_name : m_var_names)
+  for (const auto& var_name : var_names)
   {
     m_var_cache[var_name] = {};
   }
+}
+
+bool Listen::UpdateVariableCache(Workspace& ws)
+{
+  auto cache_changed = false;
+  for (auto& [var_name, var_value] : m_var_cache)
+  {
+    sup::dto::AnyValue new_value;
+    if (!ws.GetValue(var_name, new_value))
+    {
+      continue;
+    }
+    if (var_value == new_value)
+    {
+      continue;
+    }
+    var_value = new_value;
+    cache_changed = true;
+  }
+  return cache_changed;
 }
 
 ExecutionStatus Listen::CalculateStatus() const
@@ -133,39 +133,6 @@ ExecutionStatus Listen::CalculateStatus() const
     return ExecutionStatus::NOT_FINISHED;
   }
   return child_status;
-}
-
-void Listen::UpdateCallback(const std::string& name, const sup::dto::AnyValue& val)
-{
-  std::lock_guard<std::mutex> lk(m_mtx);
-  auto it = m_var_cache.find(name);
-  if (it == m_var_cache.end() || it->second == val)
-  {
-    return;
-  }
-  m_var_changed = true;
-  it->second = val;
-  m_cv.notify_one();
-}
-
-void Listen::RegisterCallbacks(
-    Workspace* ws, std::vector<std::string> var_names)
-{
-  m_cb_guard = ws->GetCallbackGuard(this);
-  for (const auto& var_name : var_names)
-  {
-    ws->RegisterCallback(
-        var_name,
-        [this, var_name](const sup::dto::AnyValue& val, bool)
-        {
-          UpdateCallback(var_name, val);
-        }, this);
-  }
-}
-
-void Listen::ClearCallbacks()
-{
-  m_cb_guard = ScopeGuard{};
 }
 
 }  // namespace oac_tree

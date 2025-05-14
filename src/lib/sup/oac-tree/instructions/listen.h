@@ -50,14 +50,7 @@ public:
 
 private:
   bool m_force_success;
-  bool m_var_changed;
-  std::mutex m_mtx;
-  std::condition_variable m_cv;
-  std::vector<std::string> m_var_names;
   std::map<std::string, sup::dto::AnyValue> m_var_cache;
-  ScopeGuard m_cb_guard;
-
-  void SetupImpl(const Procedure& proc) override;
 
   bool InitHook(UserInterface& ui, Workspace& ws) override;
 
@@ -69,21 +62,16 @@ private:
    */
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 
-  void HaltImpl() override;
-
   void ResetHook(UserInterface& ui) override;
 
-  void InitVariableCache();
+  void InitVariableCache(const std::vector<std::string>& var_names);
+
+  bool UpdateVariableCache(Workspace& ws);
 
   /**
    * @brief Calculate this instruction's status from the status of its child instruction.
    */
   ExecutionStatus CalculateStatus() const;
-
-  void UpdateCallback(const std::string& name, const sup::dto::AnyValue& val);
-
-  void RegisterCallbacks(Workspace* ws, std::vector<std::string> var_names);
-  void ClearCallbacks();
 };
 
 }  // namespace oac_tree

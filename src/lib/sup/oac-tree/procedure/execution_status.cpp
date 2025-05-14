@@ -60,6 +60,11 @@ bool ReadyForExecute(const ExecutionStatus& status)
   return status == ExecutionStatus::NOT_STARTED || status == ExecutionStatus::NOT_FINISHED;
 }
 
+bool IsExecutingStatus(const ExecutionStatus& status)
+{
+  return status == ExecutionStatus::NOT_FINISHED || status == ExecutionStatus::RUNNING;
+}
+
 }  // namespace oac_tree
 
 }  // namespace sup

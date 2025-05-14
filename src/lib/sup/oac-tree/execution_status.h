@@ -70,6 +70,12 @@ bool NeedsExecute(const ExecutionStatus& status);
  */
 bool ReadyForExecute(const ExecutionStatus& status);
 
+/**
+ * @brief Check if the given status indicates the instruction is executing.
+ * @return true if status is NOT_FINISHED or RUNNING.
+*/
+bool IsExecutingStatus(const ExecutionStatus& status);
+
 }  // namespace oac_tree
 
 }  // namespace sup

@@ -1,5 +1,6 @@
 Changes for 4.1.0:
 
+- Make appropriate instructions asynchronous: Input, UserConfirmation, UserChoice, WaitForVariable, WaitForVariables, Listen
 - Implement ReactiveSequence/Fallback and Async decorator instruction
 - Add instruction category (action/decorator/compound) to InstructionInfo
 

@@ -35,6 +35,7 @@ const std::string UserChoice::Type = "UserChoice";
 UserChoice::UserChoice()
   : CompoundInstruction(UserChoice::Type)
   , m_choice{-1}
+  , m_future{}
 {
   AddAttributeDefinition(Constants::DESCRIPTION_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kBoth);
@@ -42,23 +43,41 @@ UserChoice::UserChoice()
 
 UserChoice::~UserChoice() = default;
 
+bool UserChoice::InitHook(UserInterface& ui, Workspace& ws)
+{
+  std::string main_text;
+  if (!GetAttributeValueAs(Constants::DESCRIPTION_ATTRIBUTE_NAME, ws, ui, main_text))
+  {
+    return false;
+  }
+  auto metadata = CreateUserChoiceMetadata();
+  metadata.AddMember(Constants::USER_CHOICES_TEXT_NAME, main_text);
+  metadata.AddMember(Constants::USER_CHOICES_DIALOG_TYPE_NAME,
+                     {sup::dto::UnsignedInteger32Type, dialog_type::kSelection});
+  auto options = GetChoices();
+  m_future = CreateUserChoiceFuture(ui, *this, options, metadata);
+  if (!m_future)
+  {
+    return false;
+  }
+  return true;
+}
+
 ExecutionStatus UserChoice::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  // Negative number for choice member variable indicates choice was not made yet
+  if (IsHaltRequested() || !m_future)
+  {
+    return ExecutionStatus::FAILURE;
+  }
   if (m_choice < 0)
   {
-    std::string main_text;
-    if (!GetAttributeValueAs(Constants::DESCRIPTION_ATTRIBUTE_NAME, ws, ui, main_text))
+    if (!m_future->IsReady())
     {
-      return ExecutionStatus::FAILURE;
+      return ExecutionStatus::RUNNING;
     }
-    auto metadata = CreateUserChoiceMetadata();
-    metadata.AddMember(Constants::USER_CHOICES_TEXT_NAME, main_text);
-    metadata.AddMember(Constants::USER_CHOICES_DIALOG_TYPE_NAME,
-                       {sup::dto::UnsignedInteger32Type, dialog_type::kSelection});
-    auto options = GetChoices();
-    auto [retrieved, choice] = GetInterruptableUserChoice(ui, *this, options, metadata);
-    if (!retrieved)
+    auto reply = m_future->GetValue();
+    auto [success, choice] = ParseUserChoiceReply(reply);
+    if (!success)
     {
       std::string warning_message = InstructionWarningProlog(*this) +
         "did not receive valid choice";
@@ -74,27 +93,17 @@ ExecutionStatus UserChoice::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
       return ExecutionStatus::FAILURE;
     }
     m_choice = choice;
-    // Request second tick so NextInstructions member function can correctly give the chosen
-    // child instruction:
-    return ExecutionStatus::NOT_FINISHED;
+    return ExecutionStatus::NOT_FINISHED;  // TODO: remove this if we no longer need this...
   }
   auto selected = ChildInstructions()[m_choice];
-  auto selected_status = selected->GetStatus();
-  if (NeedsExecute(selected_status))
-  {
-    selected->ExecuteSingle(ui, ws);
-    return selected->GetStatus();
-  }
-  std::string error_message = InstructionErrorProlog(*this) +
-    "child instruction of type [" + selected->GetType() + "] was already finished with status [" +
-    StatusToString(selected_status) + "]";
-  LogError(ui, error_message);
-  return ExecutionStatus::FAILURE;
+  selected->ExecuteSingle(ui, ws);
+  return selected->GetStatus();
 }
 
 void UserChoice::ResetHook(UserInterface& ui)
 {
   m_choice = -1;
+  m_future.reset();
   ResetChildren(ui);
 }
 

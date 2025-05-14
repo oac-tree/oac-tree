@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/oac-tree" version="1.0"
+           name="Procedure for testing user choices"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/oac-tree oac-tree.xsd">
+    <Repeat maxCount="3">
+    <UserChoice description="@descr">
+        <Message text="Hello"/>
+        <Message text="world!"/>
+        <Message text="The finale!"/>
+    </UserChoice>
+    </Repeat>
+    <Workspace>
+        <Local name="descr" type='{"type":"string"}' value='"Select command"' />
+    </Workspace>
+</Procedure>

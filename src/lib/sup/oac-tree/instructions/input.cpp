@@ -87,25 +87,22 @@ ExecutionStatus Input::PollInputFuture(UserInterface& ui, Workspace& ws)
   {
     return ExecutionStatus::RUNNING;
   }
-  else
+  auto reply = m_future->GetValue();
+  auto [success, user_value] = ParseUserValueReply(reply);
+  if (!success)
   {
-    auto reply = m_future->GetValue();
-    auto [success, user_value] = ParseUserValueReply(reply);
-    if (!success)
-    {
-      std::string warning_message =
-          InstructionWarningProlog(*this) + "did not receive compatible user value for field ["
-          + GetAttributeString(Constants::OUTPUT_VARIABLE_NAME_ATTRIBUTE_NAME) + "] in workspace";
-      LogWarning(ui, warning_message);
-      return ExecutionStatus::FAILURE;
-    }
-    if (!SetValueFromAttributeName(*this, ws, ui, Constants::OUTPUT_VARIABLE_NAME_ATTRIBUTE_NAME,
-                                   user_value))
-    {
-      return ExecutionStatus::FAILURE;
-    }
-    return ExecutionStatus::SUCCESS;
+    std::string warning_message =
+        InstructionWarningProlog(*this) + "did not receive compatible user value for field ["
+        + GetAttributeString(Constants::OUTPUT_VARIABLE_NAME_ATTRIBUTE_NAME) + "] in workspace";
+    LogWarning(ui, warning_message);
+    return ExecutionStatus::FAILURE;
   }
+  if (!SetValueFromAttributeName(*this, ws, ui, Constants::OUTPUT_VARIABLE_NAME_ATTRIBUTE_NAME,
+                                 user_value))
+  {
+    return ExecutionStatus::FAILURE;
+  }
+  return ExecutionStatus::SUCCESS;
 }
 
 }  // namespace oac_tree

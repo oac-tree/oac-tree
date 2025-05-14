@@ -97,19 +97,16 @@ ExecutionStatus UserConfirmation::PollInputFuture(UserInterface& ui, Workspace& 
   {
     return ExecutionStatus::RUNNING;
   }
-  else
+  auto reply = m_future->GetValue();
+  auto [success, choice] = ParseUserChoiceReply(reply);
+  if (!success)
   {
-    auto reply = m_future->GetValue();
-    auto [success, choice] = ParseUserChoiceReply(reply);
-    if (!success)
-    {
-      std::string warning_message = InstructionWarningProlog(*this) +
-        "did not receive valid choice";
-      LogWarning(ui, warning_message);
-      return ExecutionStatus::FAILURE;
-    }
-    return choice == 0 ? ExecutionStatus::SUCCESS : ExecutionStatus::FAILURE;
+    std::string warning_message = InstructionWarningProlog(*this) +
+      "did not receive valid choice";
+    LogWarning(ui, warning_message);
+    return ExecutionStatus::FAILURE;
   }
+  return choice == 0 ? ExecutionStatus::SUCCESS : ExecutionStatus::FAILURE;
 }
 
 }  // namespace oac_tree

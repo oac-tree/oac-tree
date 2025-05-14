@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/oac-tree" version="1.0"
+           name="Procedure for testing Repeat instruction with parallel sequence"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/oac-tree oac-tree.xsd">
+    <ParallelSequence>
+        <Listen varNames="monitor">
+            <Sequence>
+                <Copy inputVar="monitor" outputVar="result" />
+                <Output fromVar="monitor" description="Updated monitor" />
+            </Sequence>
+        </Listen>
+        <Repeat maxCount="-1">
+            <Sequence>
+                <Wait timeout="0.1" />
+                <Copy inputVar="update" outputVar="monitor"/>
+                <Increment varName="update"/>
+            </Sequence>
+        </Repeat>
+        <Inverter>
+            <Wait timeout="2000.0" />
+        </Inverter>
+    </ParallelSequence>
+    <Workspace>
+        <Local name="monitor"
+               type='{"type":"uint64"}'
+               value='0' />
+        <Local name="update"
+               type='{"type":"uint64"}'
+               value='1729' />
+        <Local name="result"
+               type='{"type":"uint64"}' />
+    </Workspace>
+</Procedure>

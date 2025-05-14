@@ -49,6 +49,8 @@ const std::string WaitForVariables::Type = "WaitForVariables";
 
 WaitForVariables::WaitForVariables()
   : Instruction(WaitForVariables::Type)
+  , m_finish{}
+  , m_var_names{}
 {
   AddAttributeDefinition(Constants::TIMEOUT_SEC_ATTRIBUTE_NAME, sup::dto::Float64Type)
     .SetCategory(AttributeCategory::kBoth).SetMandatory();
@@ -58,54 +60,46 @@ WaitForVariables::WaitForVariables()
 
 WaitForVariables::~WaitForVariables() = default;
 
-ExecutionStatus WaitForVariables::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
+bool WaitForVariables::InitHook(UserInterface& ui, Workspace& ws)
 {
   sup::dto::int64 timeout_ns;
   if (!instruction_utils::GetVariableTimeoutAttribute(
-                *this, ui, ws, Constants::TIMEOUT_SEC_ATTRIBUTE_NAME, timeout_ns))
+            *this, ui, ws, Constants::TIMEOUT_SEC_ATTRIBUTE_NAME, timeout_ns))
+  {
+    return false;
+  }
+  m_finish = utils::GetNanosecsSinceEpoch() + timeout_ns;
+  const auto var_type = GetAttributeString(Constants::VARIABLE_TYPE_ATTRIBUTE_NAME);
+  m_var_names = GetVarNamesOfType(ws, var_type);
+  return true;
+}
+
+ExecutionStatus WaitForVariables::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
+{
+  if (IsHaltRequested())
   {
     return ExecutionStatus::FAILURE;
   }
-  const auto var_type = GetAttributeString(Constants::VARIABLE_TYPE_ATTRIBUTE_NAME);
-  const auto var_names = GetVarNamesOfType(ws, var_type);
-
-  // Register callbacks:
-  std::condition_variable cv;
-  auto cb_guard = ws.GetCallbackGuard(this);
-  RegisterCallbacks(ws, cv, this, var_names);
-
-  // Wait for condition to be satisfied, halt or timeout:
-  std::vector<std::string> unavailable_vars{};
-  auto predicate = [&]{
-                        unavailable_vars = UnavailableVars(ws, var_names);
-                        return IsHaltRequested() || unavailable_vars.empty();
-                      };
-  std::mutex mx;
-  std::unique_lock<std::mutex> lk(mx);
-  (void)cv.wait_for(lk, std::chrono::nanoseconds(timeout_ns), predicate);
-
-  if (unavailable_vars.empty())
+  m_var_names = UnavailableVars(ws, m_var_names);
+  if (m_var_names.empty())
   {
     return ExecutionStatus::SUCCESS;
   }
+  auto now = utils::GetNanosecsSinceEpoch();
+  if (m_finish > now)
+  {
+    return ExecutionStatus::RUNNING;
+  }
   const std::string warning_message = InstructionWarningProlog(*this)
-    + " encountered unavailable variables: " + ConcatenateVarNames(unavailable_vars);
+    + " encountered unavailable variables: " + ConcatenateVarNames(m_var_names);
   LogWarning(ui, warning_message);
   return ExecutionStatus::FAILURE;
 }
 
-void WaitForVariables::RegisterCallbacks(
-  Workspace& ws, std::condition_variable& cv, void* listener,
-  const std::vector<std::string>& var_names) const
+void WaitForVariables::ResetHook(UserInterface& ui)
 {
-  auto callback = [&cv](const auto&, auto)
-                  {
-                    cv.notify_one();
-                  };
-  for (const auto& var_name : var_names)
-  {
-    ws.RegisterCallback(var_name, callback, listener);
-  }
+  m_finish = 0;
+  m_var_names.clear();
 }
 
 std::vector<std::string> WaitForVariables::UnavailableVars(

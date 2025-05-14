@@ -26,11 +26,8 @@
 #include <sup/oac-tree/workspace.h>
 
 #include <sup/oac-tree/constants.h>
-#include <sup/oac-tree/exceptions.h>
 #include <sup/oac-tree/instruction_utils.h>
 #include <sup/oac-tree/generic_utils.h>
-
-#include <sup/dto/anyvalue_helper.h>
 
 namespace sup
 {
@@ -40,6 +37,7 @@ const std::string WaitForVariable::Type = "WaitForVariable";
 
 WaitForVariable::WaitForVariable()
   : Instruction(WaitForVariable::Type)
+  , m_finish{}
 {
   AddAttributeDefinition(Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kVariableName).SetMandatory();
@@ -51,48 +49,40 @@ WaitForVariable::WaitForVariable()
 
 WaitForVariable::~WaitForVariable() = default;
 
-ExecutionStatus WaitForVariable::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
+bool WaitForVariable::InitHook(UserInterface& ui, Workspace& ws)
 {
   sup::dto::int64 timeout_ns;
   if (!instruction_utils::GetVariableTimeoutAttribute(
-                *this, ui, ws, Constants::TIMEOUT_SEC_ATTRIBUTE_NAME, timeout_ns))
+            *this, ui, ws, Constants::TIMEOUT_SEC_ATTRIBUTE_NAME, timeout_ns))
+  {
+    return false;
+  }
+  m_finish = utils::GetNanosecsSinceEpoch() + timeout_ns;
+  return true;
+}
+
+ExecutionStatus WaitForVariable::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
+{
+  if (IsHaltRequested())
   {
     return ExecutionStatus::FAILURE;
   }
-  std::condition_variable cv;
-
-  // Register callbacks:
-  auto cb_guard = ws.GetCallbackGuard(this);
-  RegisterCallback(ws, cv, this,
-                   GetAttributeString(Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME));
-  if (HasAttribute(Constants::EQUALS_VARIABLE_NAME_ATTRIBUTE_NAME))
+  auto success = CheckCondition(ui, ws);
+  if (success)
   {
-    RegisterCallback(ws, cv, this,
-                     GetAttributeString(Constants::EQUALS_VARIABLE_NAME_ATTRIBUTE_NAME));
+    return ExecutionStatus::SUCCESS;
   }
-
-  // Wait for condition to be satisfied, halt or timeout:
-  bool success = false;
-  auto predicate = [&]{
-                        success = CheckCondition(ui, ws);
-                        return IsHaltRequested() || success;
-                      };
-  std::mutex mx;
-  std::unique_lock<std::mutex> lk(mx);
-  auto result = cv.wait_for(lk, std::chrono::nanoseconds(timeout_ns), predicate);
-
-  return success ? ExecutionStatus::SUCCESS
-                 : ExecutionStatus::FAILURE;
+  auto now = utils::GetNanosecsSinceEpoch();
+  if (m_finish > now)
+  {
+    return ExecutionStatus::RUNNING;
+  }
+  return ExecutionStatus::FAILURE;
 }
 
-void WaitForVariable::RegisterCallback(Workspace& ws, std::condition_variable& cv,
-                                       void* listener, const std::string& var_name) const
+void WaitForVariable::ResetHook(UserInterface& ui)
 {
-  auto callback = [&cv](const auto&, auto)
-                  {
-                    cv.notify_one();
-                  };
-  ws.RegisterCallback(var_name, callback, listener);
+  m_finish = 0;
 }
 
 bool WaitForVariable::SuccessCondition(

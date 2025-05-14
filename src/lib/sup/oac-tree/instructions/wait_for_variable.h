@@ -27,8 +27,6 @@
 
 #include <sup/dto/basic_scalar_types.h>
 
-#include <condition_variable>
-
 namespace sup
 {
 namespace oac_tree
@@ -49,10 +47,13 @@ public:
   static const std::string Type;
 
 private:
+  sup::dto::int64 m_finish;
+
+  bool InitHook(UserInterface& ui, Workspace& ws) override;
+
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 
-  void RegisterCallback(Workspace& ws, std::condition_variable& cv,
-                        void* listener, const std::string& var_name) const;
+  void ResetHook(UserInterface& ui) override;
 
   bool SuccessCondition(bool var_available, const sup::dto::AnyValue& var_value,
                         bool other_available, const sup::dto::AnyValue& other_value) const;

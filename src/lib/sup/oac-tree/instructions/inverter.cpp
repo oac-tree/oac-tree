@@ -47,20 +47,18 @@ ExecutionStatus Inverter::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 ExecutionStatus Inverter::CalculateStatus() const
 {
   auto child_status = GetChildStatus();
-  auto status = child_status;
-
   switch (child_status)
   {
   case ExecutionStatus::FAILURE:
-    status = ExecutionStatus::SUCCESS;
+    child_status = ExecutionStatus::SUCCESS;
     break;
   case ExecutionStatus::SUCCESS:
-    status = ExecutionStatus::FAILURE;
+    child_status = ExecutionStatus::FAILURE;
     break;
   default:
     break;
   }
-  return status;
+  return child_status;
 }
 
 }  // namespace oac_tree

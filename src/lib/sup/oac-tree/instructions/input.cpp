@@ -71,8 +71,6 @@ ExecutionStatus Input::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   if (IsHaltRequested() || !m_future)
   {
-    // If the instruction is halted, we need to cancel a possible request.
-    m_future.reset();
     return ExecutionStatus::FAILURE;
   }
   return PollInputFuture(ui, ws);
@@ -92,8 +90,6 @@ ExecutionStatus Input::PollInputFuture(UserInterface& ui, Workspace& ws)
   else
   {
     auto reply = m_future->GetValue();
-    m_future.reset();  // Immediately cleanup the future to put the instruction in a valid state
-                       // for re-execution
     auto [success, user_value] = ParseUserValueReply(reply);
     if (!success)
     {

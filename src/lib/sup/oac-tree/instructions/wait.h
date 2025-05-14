@@ -47,9 +47,15 @@ public:
 private:
   void SetupImpl(const Procedure& proc) override;
 
+  bool InitHook(UserInterface& ui, Workspace& ws) override;
+
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 
+  void ResetHook(UserInterface& ui) override;
+
+  bool m_blocking;
   sup::dto::int64 m_timing_accuracy_ns;
+  sup::dto::int64 m_finish;
 };
 
 }  // namespace oac_tree

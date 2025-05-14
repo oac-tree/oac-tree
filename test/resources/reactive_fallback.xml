@@ -7,9 +7,9 @@
         <ReactiveFallback>
             <ReactiveSequence>
                 <Equals leftVar="break" rightVar="one"/>
-                <AsyncWait name="Task" timeout="1.0"/>
+                <Wait name="Task" timeout="1.0"/>
             </ReactiveSequence>
-            <AsyncWait name="AlternativeTask" timeout="10.0"/>
+            <Wait name="AlternativeTask" timeout="10.0"/>
         </ReactiveFallback>
         <Sequence>
             <Wait timeout="1.0" />

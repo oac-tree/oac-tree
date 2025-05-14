@@ -42,16 +42,16 @@ const std::string kTestParallelProcedureBody{R"(
 
 const std::string kTestSequenceProcedureBody{R"(
   <Sequence>
-    <Wait timeout="0.2"/>
-    <Wait timeout="0.2"/>
+    <Wait timeout="0.2" blocking="true"/>
+    <Wait timeout="0.2" blocking="true"/>
   </Sequence>
   <Workspace/>
 )"};
 
 const std::string kTestStepProcedureBody{R"(
   <Sequence>
-    <Wait timeout="0.1"/>
-    <Wait timeout="0.1"/>
+    <Wait timeout="0.1" blocking="true"/>
+    <Wait timeout="0.1" blocking="true"/>
   </Sequence>
   <Workspace/>
 )"};

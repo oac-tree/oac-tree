@@ -189,9 +189,9 @@ In the example, two branches are executed in parallel:
         <ReactiveFallback>
             <ReactiveSequence>
                 <Equals leftVar="break" rightVar="one"/>
-                <AsyncWait name="ShortTask" timeout="1.0"/>
+                <Wait name="ShortTask" timeout="1.0"/>
             </ReactiveSequence>
-            <AsyncWait name="LongTask" timeout="10.0"/>
+            <Wait name="LongTask" timeout="10.0"/>
         </ReactiveFallback>
         <Sequence>
             <Wait timeout="1.0" />
@@ -237,7 +237,7 @@ In the example, two branches are executed in parallel:
     <ParallelSequence>
         <ReactiveSequence>
             <Equals leftVar="break" rightVar="zero"/>
-            <AsyncWait name="AsyncTask" timeout="10.0"/>
+            <Wait name="AsyncTask" timeout="10.0"/>
         </ReactiveSequence>
         <Sequence>
             <Wait timeout="1.0" />
@@ -1241,9 +1241,8 @@ Attributes:
 Wait
 ^^^^
 
-Instruction node that returns SUCCESS after a given timeout.
+Instruction node that returns SUCCESS after a given timeout. This instruction is **asynchronous** by default, but can be made synchronous by setting its `blocking` attribute to `true`. In this case, the instruction will block until the timeout is reached or it is halted.
 The `timeout` attribute is optional. When this attribute is not present, the instruction returns SUCCESS immediately.
-
 
 Attributes:
 
@@ -1259,6 +1258,10 @@ Attributes:
      - Float64Type
      - no
      - Maximum time to wait
+   * - blocking
+     - BooleanType
+     - no
+     - Make the instruction blocking, i.e. synchronous
 
 * An example for this instruction is already present in :ref:`ParallelSequence example <par_exp>`.
 

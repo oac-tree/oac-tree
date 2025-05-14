@@ -40,8 +40,13 @@ const std::string Wait::Type = "Wait";
 
 Wait::Wait()
   : Instruction(Wait::Type)
+  , m_blocking{false}
+  , m_timing_accuracy_ns{}
+  , m_finish{}
 {
   AddAttributeDefinition(Constants::TIMEOUT_SEC_ATTRIBUTE_NAME, sup::dto::Float64Type)
+    .SetCategory(AttributeCategory::kBoth);
+  AddAttributeDefinition(Constants::BLOCKING_ATTRIBUTE_NAME, sup::dto::BooleanType)
     .SetCategory(AttributeCategory::kBoth);
 }
 
@@ -52,24 +57,51 @@ void Wait::SetupImpl(const Procedure& proc)
   m_timing_accuracy_ns = TimingAccuracyNs(proc);
 }
 
-ExecutionStatus Wait::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
+bool Wait::InitHook(UserInterface& ui, Workspace& ws)
 {
+  if (!GetAttributeValueAs(Constants::BLOCKING_ATTRIBUTE_NAME, ws, ui, m_blocking))
+  {
+    return false;
+  }
   sup::dto::int64 timeout_ns;
   if (!instruction_utils::GetVariableTimeoutAttribute(
             *this, ui, ws, Constants::TIMEOUT_SEC_ATTRIBUTE_NAME, timeout_ns))
   {
-    return ExecutionStatus::FAILURE;
+    return false;
   }
-  auto finish = utils::GetNanosecsSinceEpoch() + timeout_ns;
-  while (!IsHaltRequested() && finish > utils::GetNanosecsSinceEpoch())
+  m_finish = utils::GetNanosecsSinceEpoch() + timeout_ns;
+  return true;
+}
+
+ExecutionStatus Wait::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
+{
+  (void)ui;
+  (void)ws;
+  if (m_blocking)
   {
-    std::this_thread::sleep_for(std::chrono::nanoseconds(m_timing_accuracy_ns));
+    while (!IsHaltRequested() && m_finish > utils::GetNanosecsSinceEpoch())
+    {
+      std::this_thread::sleep_for(std::chrono::nanoseconds(m_timing_accuracy_ns));
+    }
+  }
+  auto now = utils::GetNanosecsSinceEpoch();
+  if (!IsHaltRequested() && m_finish > now)
+  {
+    return ExecutionStatus::RUNNING;
   }
   if (IsHaltRequested())
   {
     return ExecutionStatus::FAILURE;
   }
   return ExecutionStatus::SUCCESS;
+}
+
+void Wait::ResetHook(UserInterface& ui)
+{
+  (void)ui;
+  m_blocking = false;
+  m_timing_accuracy_ns = 0;
+  m_finish = 0;
 }
 
 }  // namespace oac_tree

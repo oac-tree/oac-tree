@@ -139,6 +139,7 @@ const std::string TIMEOUT_SEC_ATTRIBUTE_NAME = "timeout";
 const std::string EQUALS_VARIABLE_NAME_ATTRIBUTE_NAME = "equalsVar";
 const std::string VARIABLE_TYPE_ATTRIBUTE_NAME = "varType";
 const std::string MEMBER_NAME_ATTRIBUTE_NAME = "memberName";
+const std::string BLOCKING_ATTRIBUTE_NAME = "blocking";
 
 // Variable attribute names
 const std::string TYPE_ATTRIBUTE_NAME = "type";

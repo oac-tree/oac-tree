@@ -46,7 +46,7 @@ const std::string ReactiveSequenceString =
         <Inverter>
             <ReactiveSequence>
                 <Equals leftVar="break" rightVar="zero"/>
-                <AsyncWait name="AsyncTask" timeout="10.0"/>
+                <Wait name="AsyncTask" timeout="10.0"/>
             </ReactiveSequence>
         </Inverter>
         <Sequence>

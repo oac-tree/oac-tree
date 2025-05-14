@@ -46,9 +46,9 @@ const std::string ReactiveFallbackString =
         <ReactiveFallback>
             <ReactiveSequence>
                 <Equals leftVar="break" rightVar="one"/>
-                <AsyncWait name="Task" timeout="0.2"/>
+                <Wait name="Task" timeout="0.2"/>
             </ReactiveSequence>
-            <AsyncWait name="AlternativeTask" timeout="10.0"/>
+            <Wait name="AlternativeTask" timeout="10.0"/>
         </ReactiveFallback>
         <Sequence>
             <Wait timeout="0.2" />

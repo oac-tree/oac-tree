@@ -12,6 +12,19 @@ There are no restrictions beside the number of children on where an instruction 
 
 Next we present the different types of available instructions and some basic examples of how to use them. The examples will contain mainly the body of a procedure in XML and an explanation of how it behaves.
 
+.. _async_instr_section:
+
+Asynchronous Instructions
+-------------------------
+
+Asynchronous instructions are instructions that can return a ``RUNNING`` status, indicating that they are still in progress and have not yet completed their execution. Reactive sequences and fallbacks depend heavily on this concept, as they will reset all other child instructions when one of them returns ``RUNNING`` (see :ref:`ReactiveSequence <react_seq_section>` and :ref:`Reactive Fallback <react_fb_section>`). Conditions, on the other hand, are required to be synchronous, i.e. they immediately return ``SUCCESS``, ``FAILURE`` or ``NOT_FINISHED``, since they should not reset a running asynchronous action that is a sibling of the condition.
+
+In the following sections, we will explicitly mention when an instruction is asynchronous.
+
+.. note::
+
+   If a compound or decorator instruction is not explicitly asynchronous, they can still return a ``RUNNING`` status. This can happen when they forward this status from a child instruction.
+
 .. _compound:
 
 Compound Instructions
@@ -130,6 +143,8 @@ The parallel sequence will execute all its children concurrently. The first two 
 
 .. _choice_exp:
 
+.. _react_fb_section:
+
 ReactiveFallback
 ^^^^^^^^^^^^^^^^
 
@@ -188,6 +203,8 @@ In the example, two branches are executed in parallel:
         <Local name="zero" type='{"type":"uint32"}' value="0"/>
         <Local name="one" type='{"type":"uint32"}' value="1"/>
     </Workspace>
+
+.. _react_seq_section:
 
 ReactiveSequence
 ^^^^^^^^^^^^^^^^
@@ -264,7 +281,7 @@ In the example, the first child will succeed, so the sequence will try the secon
 UserChoice
 ^^^^^^^^^^
 
-This instruction delegates to the UserInterface a selection to be made from one of its child instructions. It will then execute that child and directly return its status.
+This **asynchronous** instruction delegates to the UserInterface a selection to be made from one of its child instructions. It will then execute that child and directly return its status.
 
 Attributes:
 
@@ -509,7 +526,7 @@ Instruction that inverts the execution status of its child, interchanging SUCCES
 Listen
 ^^^^^^
 
-Instruction that executes its child instruction each time specific variables are updated. By default, it will only report a finished status (success or failure) when the child instruction fails.
+**Asynchronous** instruction that executes its child instruction each time specific variables are updated. By default, it will only report a finished status (success or failure) when the child instruction fails.
 
 Attributes:
 
@@ -950,7 +967,7 @@ Attributes:
 Input
 ^^^^^
 
-Instruction node that writes a user defined value (from UserInterface) into a workspace variable.
+**Asynchronous** instruction that writes a user defined value (from UserInterface) into a workspace variable.
 
 Attributes:
 
@@ -1175,7 +1192,7 @@ Attributes:
 UserConfirmation
 ^^^^^^^^^^^^^^^^
 
-Simple instruction representing a user defined confirmation (success) or rejection (failure).
+Simple **asynchronous** instruction representing a user defined confirmation (success) or rejection (failure).
 
 Attributes:
 
@@ -1248,7 +1265,7 @@ Attributes:
 WaitForVariable
 ^^^^^^^^^^^^^^^
 
-Instruction node that waits `timeout` seconds for a variable to be readable and non-empty.
+**Asynchronous** instruction node that waits `timeout` seconds for a variable to be readable and non-empty.
 
 Attributes:
 
@@ -1278,7 +1295,7 @@ Attributes:
 WaitForVariables
 ^^^^^^^^^^^^^^^^
 
-Instruction node that waits `timeout` seconds for all workspace variables of a given type to be available.
+**Asynchronous** instruction node that waits `timeout` seconds for all workspace variables of a given type to be available.
 
 Attributes:
 

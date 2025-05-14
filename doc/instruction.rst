@@ -41,7 +41,7 @@ NOT_FINISHED
   The instruction already received at least one tick, but has not yet finished and is waiting to be ticked again. This state often indicates compound instructions. For example, a `Sequence` instruction that was ticked once, but has multiple child instructions, will report this status, since only its first child was ticked. It expects to be ticked again, so it can propagate those ticks to the other child instructions. In compound instructions, this status takes precedence over the `RUNNING` status to allow for immediate ticking of child instructions that are waiting.
 
 RUNNING
-  The instruction, or one of its descendants (child or descendants of child) is executing in a separate thread. The instruction is not truly waiting to be ticked again, but must be ticked at some point to check if those threads have finished executing. The difference with `NOT_FINISHED` is that it would not be beneficial to continuously tick an instruction with the `RUNNING` status, as this would consume unnecessary resources. Typically, a small timeout is used between ticks of an instruction that return this status.
+  The instruction, or one of its descendants (child or descendants of child) is executing asynchronously (see :ref:`Asynchronous Instructions <async_instr_section>`). Typically, the instruction does not need to be ticked immediately. However, after a short delay it should be ticked to check if there was any progress in its execution. This delay is handled by execution logic and can be configured on a per procedure basis.
 
 SUCCESS
   The instruction's execution finished successfully.

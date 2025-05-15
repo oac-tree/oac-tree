@@ -80,8 +80,8 @@ ExecutionStatus WaitForVariables::ExecuteSingleImpl(UserInterface& ui, Workspace
   {
     return ExecutionStatus::FAILURE;
   }
-  m_var_names = UnavailableVars(ws, m_var_names);
-  if (m_var_names.empty())
+  auto var_names = UnavailableVars(ws, m_var_names);
+  if (var_names.empty())
   {
     return ExecutionStatus::SUCCESS;
   }
@@ -91,7 +91,7 @@ ExecutionStatus WaitForVariables::ExecuteSingleImpl(UserInterface& ui, Workspace
     return ExecutionStatus::RUNNING;
   }
   const std::string warning_message = InstructionWarningProlog(*this)
-    + " encountered unavailable variables: " + ConcatenateVarNames(m_var_names);
+    + " encountered unavailable variables: " + ConcatenateVarNames(var_names);
   LogWarning(ui, warning_message);
   return ExecutionStatus::FAILURE;
 }

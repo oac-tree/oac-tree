@@ -100,7 +100,6 @@ void Wait::ResetHook(UserInterface& ui)
 {
   (void)ui;
   m_blocking = false;
-  m_timing_accuracy_ns = 0;
   m_finish = 0;
 }
 

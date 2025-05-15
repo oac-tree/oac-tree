@@ -57,7 +57,7 @@ UserInputReply CreateUserChoiceReply(bool result, int choice);
 
 std::pair<bool, sup::dto::AnyValue> ParseUserValueReply(const UserInputReply& reply);
 
-std::pair<bool, int> ParseUserChoiceReply(const UserInputReply& reply);
+std::pair<bool, sup::dto::int32> ParseUserChoiceReply(const UserInputReply& reply);
 
 }  // namespace oac_tree
 

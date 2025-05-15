@@ -126,7 +126,7 @@ namespace
 std::vector<std::string> GetVarNamesOfType(Workspace& ws, const std::string& var_type)
 {
   std::vector<std::string> result;
-  for (const auto var_name : ws.VariableNames())
+  for (const auto& var_name : ws.VariableNames())
   {
     const auto var = ws.GetVariable(var_name);
     if (var->GetType() == var_type)

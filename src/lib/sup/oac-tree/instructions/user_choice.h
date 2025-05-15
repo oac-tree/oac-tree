@@ -48,7 +48,7 @@ public:
   static const std::string Type;
 
 private:
-  int m_choice;
+  sup::dto::int32 m_choice;
   std::unique_ptr<IUserInputFuture> m_future;
 
   bool InitHook(UserInterface& ui, Workspace& ws) override;

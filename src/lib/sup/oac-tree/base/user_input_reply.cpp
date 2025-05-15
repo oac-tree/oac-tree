@@ -73,9 +73,9 @@ std::pair<bool, sup::dto::AnyValue> ParseUserValueReply(const UserInputReply& re
   return { true, reply.m_payload };
 }
 
-std::pair<bool, int> ParseUserChoiceReply(const UserInputReply& reply)
+std::pair<bool, sup::dto::int32> ParseUserChoiceReply(const UserInputReply& reply)
 {
-  std::pair<bool, int> failure{ false, -1 };
+  std::pair<bool, sup::dto::int32> failure{ false, -1 };
   if (reply.m_request_type != InputRequestType::kUserChoice || !reply.m_result)
   {
     return failure;

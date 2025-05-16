@@ -103,8 +103,13 @@ ExecutionStatus UserChoice::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 void UserChoice::ResetHook(UserInterface& ui)
 {
   m_choice = -1;
-  m_future.reset();
+  Halt();
   ResetChildren(ui);
+}
+
+void UserChoice::HaltImpl()
+{
+  m_future.reset();
 }
 
 std::vector<const Instruction*> UserChoice::NextInstructionsImpl() const

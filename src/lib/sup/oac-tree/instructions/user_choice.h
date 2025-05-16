@@ -57,6 +57,8 @@ private:
 
   void ResetHook(UserInterface& ui) override;
 
+  void HaltImpl() override;
+
   std::vector<const Instruction*> NextInstructionsImpl() const override;
 
   /**

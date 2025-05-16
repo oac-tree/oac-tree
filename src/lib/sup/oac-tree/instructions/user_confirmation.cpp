@@ -88,6 +88,11 @@ ExecutionStatus UserConfirmation::ExecuteSingleImpl(UserInterface& ui, Workspace
 
 void UserConfirmation::ResetHook(UserInterface& ui)
 {
+  Halt();
+}
+
+void UserConfirmation::HaltImpl()
+{
   m_future.reset();
 }
 

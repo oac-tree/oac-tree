@@ -51,6 +51,8 @@ private:
 
   void ResetHook(UserInterface& ui) override;
 
+  void HaltImpl() override;
+
   ExecutionStatus PollInputFuture(UserInterface& ui, Workspace& ws);
 };
 

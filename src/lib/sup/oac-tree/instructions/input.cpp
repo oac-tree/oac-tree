@@ -78,6 +78,11 @@ ExecutionStatus Input::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 
 void Input::ResetHook(UserInterface& ui)
 {
+  Halt();
+}
+
+void Input::HaltImpl()
+{
   m_future.reset();
 }
 

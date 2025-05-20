@@ -48,6 +48,10 @@ bool ConvertToTimeoutNanoseconds(sup::dto::float64 timeout_sec, sup::dto::int64&
 bool GetVariableTimeoutAttribute(const Instruction& instr, UserInterface& ui, Workspace& ws,
                                  const std::string& attr_name, sup::dto::int64& timeout_ns)
 {
+  if (!instr.HasAttribute(attr_name))
+  {
+    return true;
+  }
   sup::dto::float64 timeout_sec = 0.0;
   if (!instr.GetAttributeValueAs(attr_name, ws, ui, timeout_sec))
   {

@@ -303,12 +303,12 @@ public:
   /**
    * @brief Set breakpoint for this instruction.
    */
-  void SetBreakpoint();
+  void SetBreakpoint() const;
 
   /**
    * @brief Remove breakpoint for this instruction.
    */
-  void RemoveBreakpoint();
+  void RemoveBreakpoint() const;
 
   /**
    * @brief Query if this instruction's breakpoint was hit.
@@ -372,7 +372,7 @@ private:
   /**
    * @brief Breakpoint state of the instruction.
    */
-  Breakpoint::State m_breakpoint_state;
+  mutable Breakpoint::State m_breakpoint_state;
 
   /**
    * @brief Set the Instruction's execution status.

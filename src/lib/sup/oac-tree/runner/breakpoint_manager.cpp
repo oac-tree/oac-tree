@@ -22,6 +22,7 @@
 
 #include "breakpoint_manager.h"
 
+#include <sup/oac-tree/instruction.h>
 #include <sup/oac-tree/instruction_tree.h>
 #include <sup/oac-tree/procedure.h>
 #include <sup/oac-tree/breakpoint.h>
@@ -69,6 +70,7 @@ bool BreakpointManager::SetBreakpoint(const Instruction* instruction)
   if (iter == m_breakpoints.end())
   {
     m_breakpoints.emplace_back(instruction);
+    instruction->SetBreakpoint();
     return true;
   }
   return false;
@@ -86,6 +88,7 @@ bool BreakpointManager::RemoveBreakpoint(const Instruction* instruction)
     return false;
   }
   m_breakpoints.erase(iter);
+  instruction->RemoveBreakpoint();
   return true;
 }
 

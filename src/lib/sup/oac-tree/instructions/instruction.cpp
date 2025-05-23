@@ -233,7 +233,7 @@ bool Instruction::IsHaltRequested() const
   return m_halt_requested.load();
 }
 
-void Instruction::SetBreakpoint()
+void Instruction::SetBreakpoint() const
 {
   if (m_breakpoint_state == Breakpoint::kUnset)
   {
@@ -241,7 +241,7 @@ void Instruction::SetBreakpoint()
   }
 }
 
-void Instruction::RemoveBreakpoint()
+void Instruction::RemoveBreakpoint() const
 {
   m_breakpoint_state = Breakpoint::kUnset;
 }

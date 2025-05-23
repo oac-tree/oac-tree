@@ -105,7 +105,7 @@ std::vector<const Instruction*> BreakpointManager::HandleBreakpoints(
     if (status == Breakpoint::kSet)
     {
       result.push_back(breakpoint.GetInstruction());
-      breakpoint.SetStatus(Breakpoint::kReleased);
+      breakpoint.SetStatus(Breakpoint::kHit);
     }
   }
   return result;
@@ -116,7 +116,7 @@ void BreakpointManager::ResetBreakpoints()
   std::lock_guard<std::mutex> lk{m_mtx};
   for (auto& breakpoint : m_breakpoints)
   {
-    if (breakpoint.GetStatus() == Breakpoint::kReleased)
+    if (breakpoint.GetStatus() == Breakpoint::kHit)
     {
       breakpoint.SetStatus(Breakpoint::kSet);
     }

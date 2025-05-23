@@ -35,8 +35,9 @@ class Breakpoint
 {
 public:
   enum Status {
-    kSet = 0,   // stop execution when breakpoint is hit
-    kReleased,  // continue execution and change status to kSet
+    kIdle =0, // no breakpoint set
+    kSet,     // breakpoint is set; instruction should not execute
+    kHit,     // breakpoint was hit; instruction should execute and reset state to kSet
   };
 
   Breakpoint(const Instruction* instruction);

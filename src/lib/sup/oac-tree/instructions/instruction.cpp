@@ -112,6 +112,10 @@ void Instruction::Setup(const Procedure& proc)
 
 void Instruction::ExecuteSingle(UserInterface& ui, Workspace& ws)
 {
+  // if (CheckBreakpoint())
+  // {
+  //   return;
+  // }
   Preamble(ui, ws);
   m_status_before = GetStatus();
   if (NeedsExecute(m_status_before) && !IsHaltRequested())
@@ -119,6 +123,7 @@ void Instruction::ExecuteSingle(UserInterface& ui, Workspace& ws)
     SetStatus(ExecuteSingleImpl(ui, ws));
   }
   Postamble(ui);
+  // ResetBreakpoint();
 }
 
 void Instruction::Halt()
@@ -319,6 +324,24 @@ void Instruction::Postamble(UserInterface& ui)
   if (GetStatus() != m_status_before)
   {
     ui.UpdateInstructionStatus(this);
+  }
+}
+
+bool Instruction::CheckBreakpoint()
+{
+  if (m_breakpoint_state == Breakpoint::kSet)
+  {
+    m_breakpoint_state = Breakpoint::kHit;
+    return true;
+  }
+  return false;
+}
+
+void Instruction::ResetBreakpoint()
+{
+  if (m_breakpoint_state == Breakpoint::kHit)
+  {
+    m_breakpoint_state = Breakpoint::kSet;
   }
 }
 

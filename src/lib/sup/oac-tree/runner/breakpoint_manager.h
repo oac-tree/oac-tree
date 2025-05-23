@@ -79,6 +79,13 @@ public:
   bool RemoveBreakpoint(const Instruction* instruction);
 
   /**
+   * @brief Check if a breakpoint was hit.
+   *
+   * @return true if a breakpoint was hit.
+   */
+  // bool BreakpointHit() const;
+
+  /**
    * @brief Check if there's a breakpoint set for any of the given instructions. If so, it releases
    * those breakpoints temporarily.
    *

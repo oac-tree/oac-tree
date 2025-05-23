@@ -39,12 +39,12 @@ const Instruction* Breakpoint::GetInstruction() const
   return m_instruction;
 }
 
-Breakpoint::Status Breakpoint::GetStatus() const
+Breakpoint::State Breakpoint::GetStatus() const
 {
   return m_status;
 }
 
-void Breakpoint::SetStatus(const Status& status)
+void Breakpoint::SetStatus(const State& status)
 {
   m_status = status;
 }

@@ -27,6 +27,7 @@
 #include <mutex>
 
 #include <sup/oac-tree/attribute_handler.h>
+#include <sup/oac-tree/breakpoint.h>
 #include <sup/oac-tree/execution_status.h>
 #include <sup/oac-tree/user_interface.h>
 
@@ -299,6 +300,23 @@ public:
    */
   bool IsHaltRequested() const;
 
+  /**
+   * @brief Set breakpoint for this instruction.
+   */
+  void SetBreakpoint();
+
+  /**
+   * @brief Remove breakpoint for this instruction.
+   */
+  void RemoveBreakpoint();
+
+  /**
+   * @brief Query if this instruction's breakpoint was hit.
+   *
+   * @return True if breakpoint state is kHit.
+   */
+  bool BreakpointHit() const;
+
 protected:
   /**
    * @brief Add an attribute definition with the given name and type.
@@ -342,7 +360,7 @@ private:
   /**
    * @brief Attribute handler.
   */
- AttributeHandler m_attribute_handler;
+  AttributeHandler m_attribute_handler;
 
   /**
    * @brief Mutex for thread safe access to the Instruction's execution status.
@@ -350,6 +368,11 @@ private:
    * @note Only locked for Get/SetStatus to prevent deadlock.
    */
   mutable std::mutex m_status_mutex;
+
+  /**
+   * @brief Breakpoint state of the instruction.
+   */
+  Breakpoint::State m_breakpoint_state;
 
   /**
    * @brief Set the Instruction's execution status.

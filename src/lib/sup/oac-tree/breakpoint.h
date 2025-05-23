@@ -34,22 +34,22 @@ class Instruction;
 class Breakpoint
 {
 public:
-  enum Status {
-    kIdle =0, // no breakpoint set
-    kSet,     // breakpoint is set; instruction should not execute
-    kHit,     // breakpoint was hit; instruction should execute and reset state to kSet
+  enum State {
+    kUnset =0, // no breakpoint set
+    kSet,      // breakpoint is set; instruction should not execute
+    kHit,      // breakpoint was hit; instruction should execute and reset state to kSet
   };
 
   Breakpoint(const Instruction* instruction);
   ~Breakpoint();
 
   const Instruction* GetInstruction() const;
-  Status GetStatus() const;
-  void SetStatus(const Status& status);
+  State GetStatus() const;
+  void SetStatus(const State& status);
 
 private:
   const Instruction* m_instruction;
-  Status m_status;
+  State m_status;
 };
 
 }  // namespace oac_tree

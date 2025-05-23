@@ -58,6 +58,7 @@ Instruction::Instruction(const std::string &type)
     , m_halt_requested{false}
     , m_attribute_handler{}
     , m_status_mutex{}
+    , m_breakpoint_state{Breakpoint::kUnset}
 {
   AddAttributeDefinition(Constants::NAME_ATTRIBUTE_NAME, sup::dto::StringType);
   AddAttributeDefinition(Constants::IS_ROOT_ATTRIBUTE_NAME, sup::dto::BooleanType);
@@ -230,6 +231,24 @@ std::unique_ptr<Instruction> Instruction::TakeInstruction(int index)
 bool Instruction::IsHaltRequested() const
 {
   return m_halt_requested.load();
+}
+
+void Instruction::SetBreakpoint()
+{
+  if (m_breakpoint_state == Breakpoint::kUnset)
+  {
+    m_breakpoint_state = Breakpoint::kSet;
+  }
+}
+
+void Instruction::RemoveBreakpoint()
+{
+  m_breakpoint_state = Breakpoint::kUnset;
+}
+
+bool Instruction::BreakpointHit() const
+{
+  return m_breakpoint_state == Breakpoint::kHit;
 }
 
 AttributeDefinition& Instruction::AddAttributeDefinition(const std::string& attr_name,

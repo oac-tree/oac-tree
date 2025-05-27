@@ -329,20 +329,18 @@ void Instruction::Postamble(UserInterface& ui)
 
 bool Instruction::CheckBreakpoint()
 {
-  if (m_breakpoint_state == Breakpoint::kSet)
+  switch (m_breakpoint_state)
   {
+  case Breakpoint::kSet:
     m_breakpoint_state = Breakpoint::kHit;
     return true;
+  case Breakpoint::kHit:
+    m_breakpoint_state = Breakpoint::kSet;
+    break;
+  default:
+    break;
   }
   return false;
-}
-
-void Instruction::ResetBreakpoint()
-{
-  if (m_breakpoint_state == Breakpoint::kHit)
-  {
-    m_breakpoint_state = Breakpoint::kSet;
-  }
 }
 
 void Instruction::SetupImpl(const Procedure&) {}

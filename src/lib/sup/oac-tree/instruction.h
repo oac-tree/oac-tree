@@ -402,16 +402,12 @@ private:
   void Postamble(UserInterface& ui);
 
   /**
-   * @brief Check is a breakpoint is set and if so, set it to kHit and return true.
+   * @brief Check is a breakpoint is set and if so, set it to kHit and return true. Also reset the
+   * breakpoint state to kSet if it was kHit.
    *
    * @return true if a breakpoint was hit.
    */
   bool CheckBreakpoint();
-
-  /**
-   * @brief Reset the breakpoint state if it was hit.
-   */
-  void ResetBreakpoint();
 
   /**
    * @brief Setup implementation.

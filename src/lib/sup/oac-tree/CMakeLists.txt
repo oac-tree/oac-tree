@@ -25,6 +25,7 @@ install(TARGETS sup-oac-tree-shared EXPORT oac-tree-targets LIBRARY DESTINATION 
 set_target_properties(sup-oac-tree-shared PROPERTIES EXPORT_NAME oac-tree)
 
 install(FILES
+  active_instruction_monitor.h
   anyvalue_utils.h
   application_utils.h
   async_input_adapter.h

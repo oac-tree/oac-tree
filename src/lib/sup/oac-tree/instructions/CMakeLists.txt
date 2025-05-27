@@ -1,5 +1,6 @@
 target_sources(sup-oac-tree-shared
   PRIVATE
+    active_instruction_monitor.cpp
     add_element.cpp
     add_member.cpp
     async_wrapper.cpp

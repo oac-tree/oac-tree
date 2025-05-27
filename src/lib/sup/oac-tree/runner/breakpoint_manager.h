@@ -83,7 +83,7 @@ public:
    *
    * @return true if a breakpoint was hit.
    */
-  // bool BreakpointHit() const;
+  bool BreakpointHit() const;
 
   /**
    * @brief Check if there's a breakpoint set for any of the given instructions. If so, it releases

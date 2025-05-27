@@ -45,7 +45,6 @@ Runner::Runner(UserInterface& ui)
   , m_cb_guard{}
   , m_tick_cb{}
   , m_breakpoint_manager{new BreakpointManager{}}
-  , m_current_breakpoint_instructions{}
   , m_halt{false}
 {}
 
@@ -112,11 +111,6 @@ void Runner::ExecuteSingle()
       m_tick_cb(*m_proc);
     }
   }
-}
-
-std::vector<const Instruction*> Runner::GetCurrentBreakpointInstructions() const
-{
-  return m_current_breakpoint_instructions;
 }
 
 bool Runner::BreakpointHit() const

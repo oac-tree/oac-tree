@@ -29,7 +29,6 @@ namespace oac_tree
 
 Breakpoint::Breakpoint(const Instruction* instruction)
   : m_instruction{instruction}
-  , m_status{kSet}
 {}
 
 Breakpoint::~Breakpoint() = default;
@@ -37,16 +36,6 @@ Breakpoint::~Breakpoint() = default;
 const Instruction* Breakpoint::GetInstruction() const
 {
   return m_instruction;
-}
-
-Breakpoint::State Breakpoint::GetStatus() const
-{
-  return m_status;
-}
-
-void Breakpoint::SetStatus(const State& status)
-{
-  m_status = status;
 }
 
 }  // namespace oac_tree

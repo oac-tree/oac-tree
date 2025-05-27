@@ -44,12 +44,9 @@ public:
   ~Breakpoint();
 
   const Instruction* GetInstruction() const;
-  State GetStatus() const;
-  void SetStatus(const State& status);
 
 private:
   const Instruction* m_instruction;
-  State m_status;
 };
 
 }  // namespace oac_tree

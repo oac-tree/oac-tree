@@ -120,16 +120,6 @@ public:
   void ExecuteSingle();
 
   /**
-   * @brief Get a list of instruction pointers for which breakpoints were triggered.
-   *
-   * @return List of instructions whose breakpoints were triggered.
-   *
-   * @note This member function should not be called during execution, but only when it is paused,
-   * before/after a single execution step or after a breakpoint was triggered.
-   */
-  std::vector<const Instruction*> GetCurrentBreakpointInstructions() const;
-
-  /**
    * @brief Check whether a breakpoint was hit.
    *
    * @return True if a breakpoint was hit.
@@ -170,7 +160,6 @@ private:
   ScopeGuard m_cb_guard;
   TickCallback m_tick_cb;
   std::unique_ptr<BreakpointManager> m_breakpoint_manager;
-  std::vector<const Instruction*> m_current_breakpoint_instructions;
   std::atomic_bool m_halt;
 };
 

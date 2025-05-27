@@ -49,7 +49,7 @@ public:
 
   std::vector<const Instruction*> GetOrderedInstructions() const;
 
-  void UpdateInstructionStatus(const Instruction* instruction) override;
+  void UpdateInstructionStatus(const Instruction* instruction, ExecutionStatus status) override;
   void VariableUpdated(const std::string& name, const sup::dto::AnyValue& value,
                        bool connected) override;
   bool PutValue(const sup::dto::AnyValue& value, const std::string& description) override;

@@ -49,10 +49,10 @@ CLInterface::CLInterface(const sup::log::BasicLogger& logger)
 
 CLInterface::~CLInterface() = default;
 
-void CLInterface::UpdateInstructionStatus(const Instruction *instruction)
+void CLInterface::UpdateInstructionStatus(const Instruction *instruction, ExecutionStatus status)
 {
   std::string info_message = "Instruction (" + instruction->GetType() + ":" +
-    instruction->GetName() + ") : " + StatusToString(instruction->GetStatus());
+    instruction->GetName() + ") : " + StatusToString(status);
   m_logger.LogMessage(log::SUP_SEQ_LOG_INFO, info_message);
 }
 

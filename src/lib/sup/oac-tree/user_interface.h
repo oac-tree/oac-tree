@@ -23,6 +23,7 @@
 #ifndef SUP_OAC_TREE_USER_INTERFACE_H_
 #define SUP_OAC_TREE_USER_INTERFACE_H_
 
+#include <sup/oac-tree/execution_status.h>
 #include <sup/oac-tree/i_user_input_future.h>
 #include <sup/oac-tree/user_input_request.h>
 
@@ -69,8 +70,9 @@ public:
    * @brief Method called when instruction's execution status changes.
    *
    * @param instruction Instruction that has new execution status.
+   * @param status New execution status of the instruction.
    */
-  virtual void UpdateInstructionStatus(const Instruction* instruction) = 0;
+  virtual void UpdateInstructionStatus(const Instruction* instruction, ExecutionStatus status) = 0;
 
   /**
    * @brief Method called when a workspace Variable has received a value update.
@@ -145,7 +147,7 @@ public:
   DefaultUserInterface();
   ~DefaultUserInterface();
 
-  void UpdateInstructionStatus(const Instruction* instruction) override;
+  void UpdateInstructionStatus(const Instruction* instruction, ExecutionStatus status) override;
   void VariableUpdated(const std::string& name, const sup::dto::AnyValue& value,
                        bool connected) override;
   bool PutValue(const sup::dto::AnyValue& value, const std::string& description) override;

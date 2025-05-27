@@ -46,10 +46,11 @@ DaemonInterface::DaemonInterface(const sup::log::DefaultLogger& logger)
 
 DaemonInterface::~DaemonInterface() = default;
 
-void DaemonInterface::UpdateInstructionStatus(const Instruction *instruction)
+void DaemonInterface::UpdateInstructionStatus(
+  const Instruction *instruction, ExecutionStatus status)
 {
   std::string info_message = "Instruction (" + instruction->GetType() + ":" +
-    instruction->GetName() + ") : " + StatusToString(instruction->GetStatus());
+    instruction->GetName() + ") : " + StatusToString(status);
   m_logger.Info(info_message);
 }
 

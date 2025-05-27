@@ -54,14 +54,14 @@ protected:
 TEST_F(DaemonInterfaceTest, UpdateInstructionStatus)
 {
   EXPECT_TRUE(m_log_entries.empty());
-  daemon_interface.UpdateInstructionStatus(wait.get());
+  daemon_interface.UpdateInstructionStatus(wait.get(), ExecutionStatus::NOT_STARTED);
   EXPECT_TRUE(m_log_entries.empty());
 }
 
 TEST_F(DaemonInterfaceTest, UpdateInstructionStatusLogged)
 {
   EXPECT_TRUE(m_log_entries.empty());
-  daemon_interface_logging.UpdateInstructionStatus(wait.get());
+  daemon_interface_logging.UpdateInstructionStatus(wait.get(), ExecutionStatus::NOT_STARTED);
   ASSERT_FALSE(m_log_entries.empty());
   auto last_message = std::get<2>(m_log_entries.back());
   EXPECT_NE(last_message.find(StatusToString(ExecutionStatus::NOT_STARTED)), std::string::npos);

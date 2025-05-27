@@ -57,9 +57,9 @@ protected:
 TEST_F(CLInterfaceTest, UpdateInstructionStatus)
 {
   EXPECT_TRUE(m_log_entries.empty());
-  cli.UpdateInstructionStatus(wait.get());
+  cli.UpdateInstructionStatus(wait.get(), ExecutionStatus::NOT_STARTED);
   EXPECT_TRUE(m_log_entries.empty());
-  cli_verbose.UpdateInstructionStatus(wait.get());
+  cli_verbose.UpdateInstructionStatus(wait.get(), ExecutionStatus::RUNNING);
   EXPECT_FALSE(m_log_entries.empty());
 }
 

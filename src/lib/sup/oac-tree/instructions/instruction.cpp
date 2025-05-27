@@ -136,9 +136,10 @@ void Instruction::Reset(UserInterface& ui)
   ResetHook(ui);
   m_status_before = GetStatus();
   SetStatus(ExecutionStatus::NOT_STARTED);
-  if (GetStatus() != m_status_before)
+  auto new_status = GetStatus();
+  if (new_status != m_status_before)
   {
-    ui.UpdateInstructionStatus(this);
+    ui.UpdateInstructionStatus(this, new_status);
   }
   m_attribute_handler.ClearFailedConstraints();
   m_halt_requested.store(false);
@@ -308,20 +309,22 @@ void Instruction::Preamble(UserInterface& ui, Workspace& ws)
     if (!InitHook(ui, ws))
     {
       SetStatus(ExecutionStatus::FAILURE);
+      ui.UpdateInstructionStatus(this, ExecutionStatus::FAILURE);
     }
     else
     {
       SetStatus(ExecutionStatus::NOT_FINISHED);
+      ui.UpdateInstructionStatus(this, ExecutionStatus::NOT_FINISHED);
     }
-    ui.UpdateInstructionStatus(this);
   }
 }
 
 void Instruction::Postamble(UserInterface& ui)
 {
-  if (GetStatus() != m_status_before)
+  auto new_status = GetStatus();
+  if (new_status != m_status_before)
   {
-    ui.UpdateInstructionStatus(this);
+    ui.UpdateInstructionStatus(this, new_status);
   }
 }
 

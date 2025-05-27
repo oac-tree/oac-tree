@@ -53,9 +53,8 @@ using ::testing::Return;
 
 TEST_F(UserInterfaceTest, UpdateInstructionStatusDispatch)
 {
-  EXPECT_CALL(mock_ui,
-              UpdateInstructionStatus(HasExecutionStatus(ExecutionStatus::NOT_STARTED)));
-  mock_ui.UpdateInstructionStatus(wait.get());
+  EXPECT_CALL(mock_ui, UpdateInstructionStatus(_, ExecutionStatus::NOT_STARTED));
+  mock_ui.UpdateInstructionStatus(wait.get(), ExecutionStatus::NOT_STARTED);
 }
 
 TEST_F(UserInterfaceTest, PutValueDispatch)
@@ -132,12 +131,11 @@ TEST_F(UserInterfaceTest, GetUserChoiceDefault)
 
 TEST_F(UserInterfaceTest, InstructionExecution)
 {
-  EXPECT_THAT(wait, HasExecutionStatus(ExecutionStatus::NOT_STARTED));
+  EXPECT_EQ(wait->GetStatus(), ExecutionStatus::NOT_STARTED);
   {
     InSequence seq;
-    EXPECT_CALL(mock_ui,
-                UpdateInstructionStatus(HasExecutionStatus(ExecutionStatus::NOT_FINISHED)));
-    EXPECT_CALL(mock_ui, UpdateInstructionStatus(HasExecutionStatus(ExecutionStatus::SUCCESS)));
+    EXPECT_CALL(mock_ui, UpdateInstructionStatus(_, ExecutionStatus::NOT_FINISHED));
+    EXPECT_CALL(mock_ui, UpdateInstructionStatus(_, ExecutionStatus::SUCCESS));
   }
   wait->ExecuteSingle(mock_ui, empty_ws);
 }

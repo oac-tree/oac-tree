@@ -99,9 +99,9 @@ TEST_F(JobInterfaceAdapterTest, UpdateInstructionStatus)
   EXPECT_EQ(instr_map.GetNumberOfInstructions(), 3);
   auto ordered_instr = job_interface_adapter.GetOrderedInstructions();
   ASSERT_EQ(ordered_instr.size(), 3);
-  job_interface_adapter.UpdateInstructionStatus(ordered_instr[0]);
-  job_interface_adapter.UpdateInstructionStatus(ordered_instr[1]);
-  job_interface_adapter.UpdateInstructionStatus(ordered_instr[2]);
+  job_interface_adapter.UpdateInstructionStatus(ordered_instr[0], ExecutionStatus::NOT_STARTED);
+  job_interface_adapter.UpdateInstructionStatus(ordered_instr[1], ExecutionStatus::NOT_STARTED);
+  job_interface_adapter.UpdateInstructionStatus(ordered_instr[2], ExecutionStatus::NOT_STARTED);
 }
 
 TEST_F(JobInterfaceAdapterTest, VariableUpdated)

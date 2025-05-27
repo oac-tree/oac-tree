@@ -40,7 +40,7 @@ namespace oac_tree
 class MockUserInterface : public UserInterface
 {
 public:
-  MOCK_METHOD1(UpdateInstructionStatus, void(const Instruction *));
+  MOCK_METHOD2(UpdateInstructionStatus, void(const Instruction *, ExecutionStatus));
   MOCK_METHOD3(VariableUpdated,
                void( const std::string& name, const sup::dto::AnyValue& value, bool connected));
   MOCK_METHOD2(PutValue,
@@ -54,11 +54,6 @@ public:
   MOCK_METHOD1(Message, void(const std::string& message));
   MOCK_METHOD2(Log, void(int severity, const std::string& message));
 };
-
-MATCHER_P(HasExecutionStatus, expected, "")
-{
-  return arg->GetStatus() == expected;
-}
 
 MATCHER_P(HasSameValue, value, "")
 {

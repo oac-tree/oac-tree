@@ -68,10 +68,10 @@ std::vector<const Instruction*> JobInterfaceAdapter::GetOrderedInstructions() co
   return m_job_map.GetOrderedInstructions();
 }
 
-void JobInterfaceAdapter::UpdateInstructionStatus(const Instruction* instruction)
+void JobInterfaceAdapter::UpdateInstructionStatus(
+  const Instruction* instruction, ExecutionStatus status)
 {
   auto instr_idx = m_job_map.GetInstructionIndex(instruction);
-  auto status = instruction->GetStatus();
   auto& instr_state = m_instr_states[instr_idx];
   instr_state.m_execution_status = status;
   m_job_info_io.InstructionStateUpdated(instr_idx, instr_state);

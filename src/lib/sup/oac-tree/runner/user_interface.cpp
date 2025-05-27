@@ -49,7 +49,7 @@ DefaultUserInterface::DefaultUserInterface() = default;
 
 DefaultUserInterface::~DefaultUserInterface() = default;
 
-void DefaultUserInterface::UpdateInstructionStatus(const Instruction*)
+void DefaultUserInterface::UpdateInstructionStatus(const Instruction*, ExecutionStatus)
 {}
 
 void DefaultUserInterface::VariableUpdated(const std::string&, const sup::dto::AnyValue&, bool)

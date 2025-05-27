@@ -94,16 +94,11 @@ void Runner::ExecuteProcedure()
   }
   while (!IsFinished() && !m_halt.load())
   {
-    auto next_instructions = GetNextInstructions(*m_proc);
-    if (!next_instructions.empty())
-    {
-      m_current_breakpoint_instructions = m_breakpoint_manager->HandleBreakpoints(next_instructions);
-      if (!m_current_breakpoint_instructions.empty())
-      {
-        return;
-      }
-    }
     ExecuteSingle();
+    if (m_breakpoint_manager->BreakpointHit())
+    {
+      return;
+    }
   }
 }
 
@@ -112,7 +107,6 @@ void Runner::ExecuteSingle()
   if (m_proc)
   {
     m_proc->ExecuteSingle(m_ui);
-    m_breakpoint_manager->ResetBreakpoints();
     if (m_tick_cb)
     {
       m_tick_cb(*m_proc);
@@ -123,6 +117,11 @@ void Runner::ExecuteSingle()
 std::vector<const Instruction*> Runner::GetCurrentBreakpointInstructions() const
 {
   return m_current_breakpoint_instructions;
+}
+
+bool Runner::BreakpointHit() const
+{
+  return m_breakpoint_manager->BreakpointHit();
 }
 
 void Runner::Halt()

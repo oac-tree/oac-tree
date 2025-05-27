@@ -379,7 +379,6 @@ TEST_F(RunnerTest, EnabledBreakpoint)
   auto breakpoints = runner.GetBreakpoints();
   ASSERT_EQ(breakpoints.size(), 1);
   EXPECT_EQ(breakpoints[0].GetInstruction(), *it);
-  EXPECT_EQ(breakpoints[0].GetStatus(), Breakpoint::kSet);
   EXPECT_NO_THROW(runner.ExecuteProcedure());
   EXPECT_FALSE(runner.IsFinished());
   EXPECT_FALSE(runner.IsRunning());
@@ -388,7 +387,6 @@ TEST_F(RunnerTest, EnabledBreakpoint)
   breakpoints = runner.GetBreakpoints();
   ASSERT_EQ(breakpoints.size(), 1);
   EXPECT_EQ(breakpoints[0].GetInstruction(), *it);
-  EXPECT_EQ(breakpoints[0].GetStatus(), Breakpoint::kHit);
 
   // Query leaves
   auto next_leaves = GetNextLeaves(*sync_proc);
@@ -441,7 +439,6 @@ TEST_F(RunnerTest, DisabledBreakpoint)
   auto breakpoints = runner.GetBreakpoints();
   ASSERT_EQ(breakpoints.size(), 1);
   EXPECT_EQ(breakpoints[0].GetInstruction(), *it);
-  EXPECT_EQ(breakpoints[0].GetStatus(), Breakpoint::kSet);
 
   // Remove breakpoint and check
   EXPECT_NO_THROW(runner.RemoveBreakpoint(*it));

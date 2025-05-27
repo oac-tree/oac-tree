@@ -291,7 +291,7 @@ void AsyncRunner::RunProcedure()
   m_runner.SetTickCallback(tick_callback);
   m_runner.ExecuteProcedure();
   // If a breakpoint was hit, set state to paused before handling other commands in the queue:
-  if (m_runner.GetCurrentBreakpointInstructions().size() != 0)
+  if (m_runner.BreakpointHit())
   {
     SetState(JobState::kPaused);
   }

@@ -112,10 +112,10 @@ void Instruction::Setup(const Procedure& proc)
 
 void Instruction::ExecuteSingle(UserInterface& ui, Workspace& ws)
 {
-  // if (CheckBreakpoint())
-  // {
-  //   return;
-  // }
+  if (CheckBreakpoint())
+  {
+    return;
+  }
   Preamble(ui, ws);
   m_status_before = GetStatus();
   if (NeedsExecute(m_status_before) && !IsHaltRequested())
@@ -123,7 +123,6 @@ void Instruction::ExecuteSingle(UserInterface& ui, Workspace& ws)
     SetStatus(ExecuteSingleImpl(ui, ws));
   }
   Postamble(ui);
-  // ResetBreakpoint();
 }
 
 void Instruction::Halt()

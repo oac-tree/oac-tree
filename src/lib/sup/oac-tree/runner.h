@@ -130,6 +130,13 @@ public:
   std::vector<const Instruction*> GetCurrentBreakpointInstructions() const;
 
   /**
+   * @brief Check whether a breakpoint was hit.
+   *
+   * @return True if a breakpoint was hit.
+   */
+  bool BreakpointHit() const;
+
+  /**
    * @brief Halts the procedure execution.
    */
   void Halt();

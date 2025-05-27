@@ -83,7 +83,7 @@ public:
    *
    * @return true if a breakpoint was hit.
    */
-  bool BreakpointHit() const;
+  bool AcknowledgeBreakpoints() const;
 
   /**
    * @brief Get a list of managed breakpoints.

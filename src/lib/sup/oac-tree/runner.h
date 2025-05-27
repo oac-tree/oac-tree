@@ -160,6 +160,7 @@ private:
   ScopeGuard m_cb_guard;
   TickCallback m_tick_cb;
   std::unique_ptr<BreakpointManager> m_breakpoint_manager;
+  std::atomic_bool m_breakpoint_hit;
   std::atomic_bool m_halt;
 };
 

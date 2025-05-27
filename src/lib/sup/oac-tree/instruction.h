@@ -311,11 +311,12 @@ public:
   void RemoveBreakpoint() const;
 
   /**
-   * @brief Query if this instruction's breakpoint was hit.
+   * @brief Query if this instruction's breakpoint was hit. If so, the breakpoint state is set to
+   * kAck.
    *
    * @return True if breakpoint state is kHit.
    */
-  bool BreakpointHit() const;
+  bool AcknowledgeBreakpoint() const;
 
 protected:
   /**
@@ -372,7 +373,7 @@ private:
   /**
    * @brief Breakpoint state of the instruction.
    */
-  mutable Breakpoint::State m_breakpoint_state;
+  mutable std::atomic<Breakpoint::State> m_breakpoint_state;
 
   /**
    * @brief Set the Instruction's execution status.

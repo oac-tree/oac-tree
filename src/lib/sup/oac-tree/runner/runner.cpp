@@ -45,6 +45,7 @@ Runner::Runner(UserInterface& ui)
   , m_cb_guard{}
   , m_tick_cb{}
   , m_breakpoint_manager{new BreakpointManager{}}
+  , m_breakpoint_hit{false}
   , m_halt{false}
 {}
 
@@ -87,6 +88,7 @@ std::vector<Breakpoint> Runner::GetBreakpoints() const
 void Runner::ExecuteProcedure()
 {
   m_halt.store(false);
+  m_breakpoint_hit.store(false);
   if (!m_proc)
   {
     return;
@@ -94,8 +96,9 @@ void Runner::ExecuteProcedure()
   while (!IsFinished() && !m_halt.load())
   {
     ExecuteSingle();
-    if (m_breakpoint_manager->BreakpointHit())
+    if (m_breakpoint_manager->AcknowledgeBreakpoints())
     {
+      m_breakpoint_hit.store(true);
       return;
     }
   }
@@ -115,7 +118,7 @@ void Runner::ExecuteSingle()
 
 bool Runner::BreakpointHit() const
 {
-  return m_breakpoint_manager->BreakpointHit();
+  return m_breakpoint_hit;
 }
 
 void Runner::Halt()

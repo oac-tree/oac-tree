@@ -38,6 +38,7 @@ public:
     kUnset =0, // no breakpoint set
     kSet,      // breakpoint is set; instruction should not execute
     kHit,      // breakpoint was hit; instruction should execute and reset state to kSet
+    kAck,      // hit breakpoint was acknowledged by an execution engine
   };
 
   Breakpoint(const Instruction* instruction);

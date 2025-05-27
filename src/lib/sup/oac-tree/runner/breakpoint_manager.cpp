@@ -92,12 +92,12 @@ bool BreakpointManager::RemoveBreakpoint(const Instruction* instruction)
   return true;
 }
 
-bool BreakpointManager::BreakpointHit() const
+bool BreakpointManager::AcknowledgeBreakpoints() const
 {
   std::lock_guard<std::mutex> lk{m_mtx};
   for (const auto& breakpoint : m_breakpoints)
   {
-    if (breakpoint.GetInstruction()->BreakpointHit())
+    if (breakpoint.GetInstruction()->AcknowledgeBreakpoint())
     {
       return true;
     }

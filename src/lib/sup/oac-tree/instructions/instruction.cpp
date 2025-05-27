@@ -239,20 +239,19 @@ bool Instruction::IsHaltRequested() const
 
 void Instruction::SetBreakpoint() const
 {
-  if (m_breakpoint_state == Breakpoint::kUnset)
-  {
-    m_breakpoint_state = Breakpoint::kSet;
-  }
+  auto expected_state = Breakpoint::kUnset;
+  (void)m_breakpoint_state.compare_exchange_strong(expected_state, Breakpoint::kSet);
 }
 
 void Instruction::RemoveBreakpoint() const
 {
-  m_breakpoint_state = Breakpoint::kUnset;
+  m_breakpoint_state.store(Breakpoint::kUnset);
 }
 
-bool Instruction::BreakpointHit() const
+bool Instruction::AcknowledgeBreakpoint() const
 {
-  return m_breakpoint_state == Breakpoint::kHit;
+  auto expected_state = Breakpoint::kHit;
+  return m_breakpoint_state.compare_exchange_strong(expected_state, Breakpoint::kAck);
 }
 
 AttributeDefinition& Instruction::AddAttributeDefinition(const std::string& attr_name,
@@ -328,17 +327,13 @@ void Instruction::Postamble(UserInterface& ui)
 
 bool Instruction::CheckBreakpoint()
 {
-  switch (m_breakpoint_state)
+  auto expected_state = Breakpoint::kSet;
+  if (m_breakpoint_state.compare_exchange_strong(expected_state, Breakpoint::kHit))
   {
-  case Breakpoint::kSet:
-    m_breakpoint_state = Breakpoint::kHit;
     return true;
-  case Breakpoint::kHit:
-    m_breakpoint_state = Breakpoint::kSet;
-    break;
-  default:
-    break;
   }
+  expected_state = Breakpoint::kAck;
+  (void)m_breakpoint_state.compare_exchange_strong(expected_state, Breakpoint::kSet);
   return false;
 }
 

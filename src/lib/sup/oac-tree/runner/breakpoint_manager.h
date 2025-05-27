@@ -86,21 +86,6 @@ public:
   bool BreakpointHit() const;
 
   /**
-   * @brief Check if there's a breakpoint set for any of the given instructions. If so, it releases
-   * those breakpoints temporarily.
-   *
-   * @param next_instructions List of instructions to check with the set breakpoints.
-   * @return List of instructions where breakpoints were found to be set.
-   */
-  std::vector<const Instruction*> HandleBreakpoints(
-    const std::vector<const Instruction*>& next_instructions);
-
-  /**
-   * @brief Reset all released breakpoints.
-   */
-  void ResetBreakpoints();
-
-  /**
    * @brief Get a list of managed breakpoints.
    *
    * @return List of breakpoints.

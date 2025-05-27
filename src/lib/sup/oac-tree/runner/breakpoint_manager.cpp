@@ -105,40 +105,6 @@ bool BreakpointManager::BreakpointHit() const
   return false;
 }
 
-std::vector<const Instruction*> BreakpointManager::HandleBreakpoints(
-  const std::vector<const Instruction*>& next_instructions)
-{
-  std::vector<const Instruction*> result;
-  std::lock_guard<std::mutex> lk{m_mtx};
-  for (auto& breakpoint : m_breakpoints)
-  {
-    if (std::find(next_instructions.begin(), next_instructions.end(), breakpoint.GetInstruction())
-        == next_instructions.end())
-    {
-      continue;
-    }
-    auto status = breakpoint.GetStatus();
-    if (status == Breakpoint::kSet)
-    {
-      result.push_back(breakpoint.GetInstruction());
-      breakpoint.SetStatus(Breakpoint::kHit);
-    }
-  }
-  return result;
-}
-
-void BreakpointManager::ResetBreakpoints()
-{
-  std::lock_guard<std::mutex> lk{m_mtx};
-  for (auto& breakpoint : m_breakpoints)
-  {
-    if (breakpoint.GetStatus() == Breakpoint::kHit)
-    {
-      breakpoint.SetStatus(Breakpoint::kSet);
-    }
-  }
-}
-
 std::list<Breakpoint> BreakpointManager::GetBreakpoints() const
 {
   std::lock_guard<std::mutex> lk{m_mtx};

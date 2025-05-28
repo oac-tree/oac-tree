@@ -6,6 +6,7 @@ set_target_properties(${unit-tests} PROPERTIES OUTPUT_NAME "unit-tests")
 
 target_sources(${unit-tests}
   PRIVATE
+    active_instruction_monitor_tests.cpp
     add_element_tests.cpp
     add_member_tests.cpp
     anyvalue_utils_tests.cpp

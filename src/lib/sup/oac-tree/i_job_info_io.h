@@ -151,11 +151,9 @@ public:
   virtual void Log(int severity, const std::string& message) = 0;
 
   /**
-   * @brief Notify a change in the set of instructions that will be ticked next.
-   *
-   * @param instr_indices List of instruction indices.
+   * @brief Notify a tick of the procedure.
    */
-  virtual void NextInstructionsUpdated(const std::vector<sup::dto::uint32>& instr_indices) = 0;
+  virtual void ProcedureTicked() = 0;
 };
 
 }  // namespace oac_tree

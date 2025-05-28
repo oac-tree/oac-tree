@@ -122,13 +122,8 @@ void JobInterfaceAdapter::OnBreakpointChange(const Instruction* instruction,
 
 void JobInterfaceAdapter::OnProcedureTick(const Procedure& proc)
 {
-  std::vector<sup::dto::uint32> next_instr_indices{};
-  auto next_instructions = GetNextLeaves(proc);
-  for (const auto* instr : next_instructions)
-  {
-    next_instr_indices.push_back(m_job_map.GetInstructionIndex(instr));
-  }
-  m_job_info_io.NextInstructionsUpdated(next_instr_indices);
+  (void)proc;
+  m_job_info_io.ProcedureTicked();
 }
 
 }  // namespace oac_tree

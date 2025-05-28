@@ -57,7 +57,7 @@ public:
   MOCK_METHOD(void, Interrupt, (sup::dto::uint64), (override));
   MOCK_METHOD(void, Message, (const std::string&), (override));
   MOCK_METHOD(void, Log, (int, const std::string&), (override));
-  MOCK_METHOD(void, NextInstructionsUpdated, (const std::vector<sup::dto::uint32>&), (override));
+  MOCK_METHOD(void, ProcedureTicked, (), (override));
   void JobStateUpdated(JobState state) override;
 
   bool WaitForJobState(JobState state, double timeout_sec);
@@ -113,7 +113,7 @@ TEST_F(LocalJobTest, Start)
   EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(6));
   // All variables get an initial update and two of them are overwritten:
   EXPECT_CALL(m_test_job_info_io, VariableUpdated(_, _, true)).Times(Exactly(5));
-  EXPECT_CALL(m_test_job_info_io, NextInstructionsUpdated(_)).Times(AtLeast(1));
+  EXPECT_CALL(m_test_job_info_io, ProcedureTicked()).Times(Exactly(2));
 
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
   auto proc = sup::oac_tree::ParseProcedureString(procedure_string);
@@ -133,7 +133,7 @@ TEST_F(LocalJobTest, Step)
   EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(3));
   // All variables get an initial update and one of them is overwritten:
   EXPECT_CALL(m_test_job_info_io, VariableUpdated(_, _, true)).Times(Exactly(4));
-  EXPECT_CALL(m_test_job_info_io, NextInstructionsUpdated(_)).Times(AtLeast(1));
+  EXPECT_CALL(m_test_job_info_io, ProcedureTicked()).Times(Exactly(1));
 
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
   auto proc = sup::oac_tree::ParseProcedureString(procedure_string);
@@ -156,7 +156,7 @@ TEST_F(LocalJobTest, HaltReset)
   // All variables get an initial update and one of them is overwritten; upon reset,
   // they will all again receive updates of their initial values
   EXPECT_CALL(m_test_job_info_io, VariableUpdated(_, _, true)).Times(Exactly(7));
-  EXPECT_CALL(m_test_job_info_io, NextInstructionsUpdated(_)).Times(AtLeast(1));
+  EXPECT_CALL(m_test_job_info_io, ProcedureTicked()).Times(Exactly(1));
 
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
   auto proc = sup::oac_tree::ParseProcedureString(procedure_string);
@@ -181,7 +181,7 @@ TEST_F(LocalJobTest, Breakpoints)
   EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(9));
   // All variables get an initial update and two of them are overwritten:
   EXPECT_CALL(m_test_job_info_io, VariableUpdated(_, _, true)).Times(Exactly(5));
-  EXPECT_CALL(m_test_job_info_io, NextInstructionsUpdated(_)).Times(AtLeast(1));
+  EXPECT_CALL(m_test_job_info_io, ProcedureTicked()).Times(Exactly(3));
 
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
   auto proc = sup::oac_tree::ParseProcedureString(procedure_string);
@@ -205,7 +205,7 @@ TEST_F(LocalJobTest, MoveConstructor)
   EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(6));
   // All variables get an initial update and two of them are overwritten:
   EXPECT_CALL(m_test_job_info_io, VariableUpdated(_, _, true)).Times(Exactly(5));
-  EXPECT_CALL(m_test_job_info_io, NextInstructionsUpdated(_)).Times(AtLeast(1));
+  EXPECT_CALL(m_test_job_info_io, ProcedureTicked()).Times(Exactly(2));
 
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
   auto proc = sup::oac_tree::ParseProcedureString(procedure_string);
@@ -225,7 +225,7 @@ TEST_F(LocalJobTest, MoveAssignment)
   EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(6));
   // All variables get an initial update (for each job) and two of them are overwritten:
   EXPECT_CALL(m_test_job_info_io, VariableUpdated(_, _, true)).Times(Exactly(8));
-  EXPECT_CALL(m_test_job_info_io, NextInstructionsUpdated(_)).Times(AtLeast(1));
+  EXPECT_CALL(m_test_job_info_io, ProcedureTicked()).Times(Exactly(2));
 
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
   auto proc_1 = sup::oac_tree::ParseProcedureString(procedure_string);

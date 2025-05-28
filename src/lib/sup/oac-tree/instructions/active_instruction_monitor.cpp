@@ -26,8 +26,9 @@ namespace sup
 {
 namespace oac_tree
 {
-ActiveInstructionMonitor::ActiveInstructionMonitor()
-  : m_active_instructions{}
+ActiveInstructionMonitor::ActiveInstructionMonitor(ActiveInstructionsChanged callback)
+  : m_callback{std::move(callback)}
+  , m_active_instructions{}
 {}
 
 ActiveInstructionMonitor::~ActiveInstructionMonitor() = default;
@@ -37,11 +38,17 @@ void ActiveInstructionMonitor::InstructionStatusUpdated(
 {
   if (IsExecutingStatus(status))
   {
-    (void)AddActiveInstruction(instr_idx);
+    if (AddActiveInstruction(instr_idx))
+    {
+      NotifyCallback();
+    }
   }
   else
   {
-    (void)RemoveActiveInstruction(instr_idx);
+    if (RemoveActiveInstruction(instr_idx))
+    {
+      NotifyCallback();
+    }
   }
 }
 
@@ -54,6 +61,11 @@ bool ActiveInstructionMonitor::AddActiveInstruction(sup::dto::uint32 instr_idx)
 bool ActiveInstructionMonitor::RemoveActiveInstruction(sup::dto::uint32 instr_idx)
 {
   return m_active_instructions.erase(instr_idx) > 0;
+}
+
+void ActiveInstructionMonitor::NotifyCallback() const
+{
+  m_callback(m_active_instructions);
 }
 
 }  // namespace oac_tree

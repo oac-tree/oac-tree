@@ -27,6 +27,7 @@
 
 #include <sup/dto/basic_scalar_types.h>
 
+#include <functional>
 #include <set>
 
 namespace sup
@@ -40,7 +41,9 @@ namespace oac_tree
 class ActiveInstructionMonitor
 {
 public:
-  ActiveInstructionMonitor();
+  using ActiveInstructionsChanged = std::function<void(const std::set<sup::dto::uint32>&)>;
+
+  ActiveInstructionMonitor(ActiveInstructionsChanged callback);
   ~ActiveInstructionMonitor();
 
   /**
@@ -52,10 +55,13 @@ public:
   void InstructionStatusUpdated(sup::dto::uint32 instr_idx, ExecutionStatus status);
 
 private:
+  ActiveInstructionsChanged m_callback;
   std::set<sup::dto::uint32> m_active_instructions; // List of currently active instruction indices
 
   bool AddActiveInstruction(sup::dto::uint32 instr_idx);
   bool RemoveActiveInstruction(sup::dto::uint32 instr_idx);
+
+  void NotifyCallback() const;
 };
 
 }  // namespace oac_tree

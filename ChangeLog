@@ -1,3 +1,9 @@
+Changes for 4.2.0:
+
+- Simplify breakpoint mechanism, allowing removal Instruction::NextInstructions() API
+- Implement ActiveInstructionMonitor
+- API breaking: IJobInfoIO::NextInstructionsUpdated replaced with IJobInfoIO::ProcedureTicked
+
 Changes for 4.1.0:
 
 - Make appropriate instructions asynchronous: Input, UserConfirmation, UserChoice, WaitForVariable, WaitForVariables, Listen

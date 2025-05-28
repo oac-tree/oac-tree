@@ -64,11 +64,6 @@ private:
 InstructionTree CreateFullInstructionTree(const Instruction* root);
 
 /**
- * @brief Create an InstructionTree representing the tree of instructions that will be executed next.
-*/
-InstructionTree CreateNextInstructionTree(const Instruction* root);
-
-/**
  * @brief Retrieve the leaves of an instruction tree.
 */
 std::vector<const Instruction*> GetLeaves(const InstructionTree& tree);

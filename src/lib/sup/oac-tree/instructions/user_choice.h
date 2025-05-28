@@ -59,8 +59,6 @@ private:
 
   void HaltImpl() override;
 
-  std::vector<const Instruction*> NextInstructionsImpl() const override;
-
   /**
    * @brief Construct a list of choices from the available child instructions.
    */

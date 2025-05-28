@@ -83,23 +83,6 @@ void ParallelSequence::ResetHook(UserInterface& ui)
   ResetChildren(ui);
 }
 
-std::vector<const Instruction*> ParallelSequence::NextInstructionsImpl() const
-{
-  if (m_wrappers.empty())
-  {
-    return ChildInstructions();
-  }
-  std::vector<const Instruction*> result;
-  for (auto& wrapper : m_wrappers)
-  {
-    if (ReadyForExecute(wrapper.GetStatus()))
-    {
-      result.push_back(wrapper.GetInstruction());
-    }
-  }
-  return result;
-}
-
 ExecutionStatus ParallelSequence::CalculateCompoundStatus() const
 {
   int n_success = 0;

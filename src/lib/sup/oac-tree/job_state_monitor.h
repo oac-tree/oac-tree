@@ -62,8 +62,7 @@ public:
    * the AsyncRunner.
    *
    * @note This member function can be overridden to implement queries on the procedure that could
-   * possibly interfere with execution. Since it is called between ticks, it is safe to call for
-   * example `GetNextLeaves(const Procedure& proc)`.
+   * possibly interfere with execution.
    *
    * @param proc Procedure being executed.
    */

@@ -116,16 +116,6 @@ ProcedureContext Procedure::GetContext() const
   return ProcedureContext(GetFilename(), GetProcedureStore());
 }
 
-InstructionTree Procedure::GetNextInstructionTree() const
-{
-  auto root = RootInstruction();
-  if (root == nullptr || !ReadyForExecute(root->GetStatus()))
-  {
-    return InstructionTree{nullptr};
-  }
-  return CreateNextInstructionTree(root);
-}
-
 int Procedure::GetInstructionCount() const
 {
   return static_cast<int>(m_instructions.size());
@@ -366,26 +356,6 @@ std::string GetProcedureName(const Procedure& procedure)
     return procedure.GetAttributeString(Constants::NAME_ATTRIBUTE_NAME);
   }
   return procedure.GetFilename();
-}
-
-std::vector<const Instruction*> GetNextInstructions(const Procedure& proc)
-{
-  auto tree = proc.GetNextInstructionTree();
-  if (tree.IsEmpty())
-  {
-    return {};
-  }
-  return FlattenBFS(tree);
-}
-
-std::vector<const Instruction*> GetNextLeaves(const Procedure& proc)
-{
-  auto tree = proc.GetNextInstructionTree();
-  if (tree.IsEmpty())
-  {
-    return {};
-  }
-  return GetLeaves(tree);
 }
 
 sup::dto::AnyType ParseTypeRegistrationInfo(const TypeRegistrationInfo& info,

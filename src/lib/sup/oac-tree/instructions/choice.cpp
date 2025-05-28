@@ -87,26 +87,6 @@ void Choice::ResetHook(UserInterface& ui)
   ResetChildren(ui);
 }
 
-std::vector<const Instruction*> Choice::NextInstructionsImpl() const
-{
-  std::vector<const Instruction*> result;
-  for (auto instruction : m_instruction_list)
-  {
-    auto child_status = instruction->GetStatus();
-    if (child_status == ExecutionStatus::SUCCESS)
-    {
-      continue;
-    }
-    if (ReadyForExecute(child_status))
-    {
-      result.push_back(instruction);
-      return result;
-    }
-    break;
-  }
-  return result;
-}
-
 bool Choice::CreateInstructionList(UserInterface& ui, Workspace& ws)
 {
   sup::dto::AnyValue selector;

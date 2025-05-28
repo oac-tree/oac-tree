@@ -112,21 +112,6 @@ void UserChoice::HaltImpl()
   m_future.reset();
 }
 
-std::vector<const Instruction*> UserChoice::NextInstructionsImpl() const
-{
-  std::vector<const Instruction*> result;
-  if (m_choice < 0 || m_choice >= ChildrenCount())
-  {
-    return result;
-  }
-  auto instruction = ChildInstructions()[m_choice];
-  if (ReadyForExecute(instruction->GetStatus()))
-  {
-    result.push_back(instruction);
-  }
-  return result;
-}
-
 std::vector<std::string> UserChoice::GetChoices() const
 {
   std::vector<std::string> option_names;

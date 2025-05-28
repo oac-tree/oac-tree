@@ -55,8 +55,6 @@ private:
 
   void ResetHook(UserInterface& ui) override;
 
-  std::vector<const Instruction*> NextInstructionsImpl() const override;
-
   /**
    * @brief Calculate this instruction's status from the status of its child instructions.
    */

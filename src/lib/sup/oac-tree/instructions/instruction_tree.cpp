@@ -88,14 +88,6 @@ InstructionTree CreateFullInstructionTree(const Instruction* root)
   return CreateInstructionTree(root, selector);
 }
 
-InstructionTree CreateNextInstructionTree(const Instruction* root)
-{
-  auto selector = [](const Instruction* instruction) {
-    return instruction->NextInstructions();
-  };
-  return CreateInstructionTree(root, selector);
-}
-
 InstructionTree CreateInstructionTree(const Instruction* root, InstructionChildSelector selector)
 {
   if (root == nullptr)

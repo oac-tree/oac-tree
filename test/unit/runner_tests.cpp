@@ -26,6 +26,7 @@
 #include "unit_test_helper.h"
 
 #include <sup/oac-tree/instruction_registry.h>
+#include <sup/oac-tree/instruction_tree.h>
 #include <sup/oac-tree/sequence_parser.h>
 
 #include <gtest/gtest.h>
@@ -317,14 +318,6 @@ TEST_F(RunnerTest, Pause)
   EXPECT_NO_THROW(runner.ExecuteProcedure());
   EXPECT_FALSE(runner.IsFinished());
   EXPECT_FALSE(runner.IsRunning());
-  // Query next instructions list
-  auto next_instructions = GetNextInstructions(*sync_proc);
-  EXPECT_EQ(next_instructions.size(), 3);
-  // Query leaves
-  auto next_leaves = GetNextLeaves(*sync_proc);
-  ASSERT_EQ(next_leaves.size(), 1);
-  auto found_it = std::find(next_instructions.begin(), next_instructions.end(), next_leaves[0]);
-  EXPECT_NE(found_it, next_instructions.end());
 
   // Start again
   EXPECT_NO_THROW(runner.ExecuteProcedure());
@@ -361,14 +354,13 @@ TEST_F(RunnerTest, EnabledBreakpoint)
   // Clear pause callback
   runner.SetTickCallback();
 
-  // Fetch next instructions and set a breakpoint on the Inverter instruction
-  auto next_instructions = GetNextInstructions(*sync_proc);
-  EXPECT_EQ(next_instructions.size(), 3);
+  // Fetch Inverter instruction and set a breakpoint
+  auto instructions = FlattenBFS(CreateFullInstructionTree(sync_proc->RootInstruction()));
   auto predicate = [](const Instruction* instruction) {
     return instruction->GetType() == "Inverter";
   };
-  auto it = std::find_if(next_instructions.begin(), next_instructions.end(), predicate);
-  ASSERT_NE(it, next_instructions.end());
+  auto it = std::find_if(instructions.begin(), instructions.end(), predicate);
+  ASSERT_NE(it, instructions.end());
   EXPECT_NO_THROW(runner.SetBreakpoint(*it));
 
   // Check presence of one breakpoint that is set
@@ -383,14 +375,6 @@ TEST_F(RunnerTest, EnabledBreakpoint)
   breakpoints = runner.GetBreakpoints();
   ASSERT_EQ(breakpoints.size(), 1);
   EXPECT_EQ(breakpoints[0].GetInstruction(), *it);
-
-  // Query leaves
-  auto next_leaves = GetNextLeaves(*sync_proc);
-  ASSERT_EQ(next_leaves.size(), 1);
-  auto found_it = std::find(next_instructions.begin(), next_instructions.end(), next_leaves[0]);
-  EXPECT_NE(found_it, next_instructions.end());
-  // Leave instruction is not the Inverter!
-  EXPECT_NE(next_leaves[0], *it);
 
   // Next execute will pass the breakpoint
   EXPECT_NO_THROW(runner.ExecuteProcedure());
@@ -421,14 +405,13 @@ TEST_F(RunnerTest, DisabledBreakpoint)
   // Clear pause callback
   runner.SetTickCallback();
 
-  // Fetch next instructions and set a breakpoint on the Inverter instruction
-  auto next_instructions = GetNextInstructions(*sync_proc);
-  EXPECT_EQ(next_instructions.size(), 3);
+  // Fetch Inverter instruction and set a breakpoint
+  auto instructions = FlattenBFS(CreateFullInstructionTree(sync_proc->RootInstruction()));
   auto predicate = [](const Instruction* instruction) {
     return instruction->GetType() == "Inverter";
   };
-  auto it = std::find_if(next_instructions.begin(), next_instructions.end(), predicate);
-  ASSERT_NE(it, next_instructions.end());
+  auto it = std::find_if(instructions.begin(), instructions.end(), predicate);
+  ASSERT_NE(it, instructions.end());
   EXPECT_NO_THROW(runner.SetBreakpoint(*it));
 
   // Check presence of one breakpoint that is set

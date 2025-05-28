@@ -218,11 +218,6 @@ std::vector<const Instruction*> Instruction::ChildInstructions() const
   return ChildInstructionsImpl();
 }
 
-std::vector<const Instruction*> Instruction::NextInstructions() const
-{
-  return NextInstructionsImpl();
-}
-
 bool Instruction::InsertInstruction(std::unique_ptr<Instruction>&& child, int index)
 {
   return InsertInstructionImpl(std::move(child), index);
@@ -362,11 +357,6 @@ int Instruction::ChildrenCountImpl() const
 }
 
 std::vector<const Instruction*> Instruction::ChildInstructionsImpl() const
-{
-  return {};
-}
-
-std::vector<const Instruction*> Instruction::NextInstructionsImpl() const
 {
   return {};
 }

@@ -115,14 +115,6 @@ public:
   ProcedureContext GetContext() const;
 
   /**
-   * @brief Get tree instructions that will be executed next.
-   *
-   * @return Tree of instructions.
-   * @details This method should only be called in between execution steps.
-   */
-  InstructionTree GetNextInstructionTree() const;
-
-  /**
    * @brief Get number of top-level instructions.
    *
    * @return Number of instructions
@@ -387,26 +379,6 @@ sup::dto::int64 TimingAccuracyNs(const Procedure& procedure);
  * @return Name attribute of the procedure if present or its possibly empty filename.
  */
 std::string GetProcedureName(const Procedure& procedure);
-
-  /**
-   * @brief Get list of instructions that will be executed next.
-   *
-   * @param proc Procedure to query.
-   *
-   * @return List of instructions.
-   * @details This function should only be called in between execution steps.
-   */
-std::vector<const Instruction*> GetNextInstructions(const Procedure& proc);
-
-  /**
-   * @brief Get list of instruction leaves that will be executed next.
-   *
-   * @param proc Procedure to query.
-   *
-   * @return List of instruction leaves.
-   * @details This function should only be called in between execution steps.
-   */
-std::vector<const Instruction*> GetNextLeaves(const Procedure& proc);
 
   /**
    * @brief Create an AnyType from a TypeRegistrationInfo object.

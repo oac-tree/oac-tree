@@ -123,22 +123,6 @@ TEST_F(InstructionTreeTest, CreateFullInstructionTree)
   EXPECT_EQ(child_instr_inverter[0], inverter_children[0]);
 }
 
-TEST_F(InstructionTreeTest, CreateNextInstructionTree)
-{
-  // Test root node of full instruction tree
-  auto sequence = CreateTestInstructionTree();
-  auto next_tree = CreateNextInstructionTree(sequence.get());
-  EXPECT_EQ(next_tree.GetInstruction(), sequence.get());
-  auto children_seq_1 = next_tree.GetChildren();
-  auto child_instr_seq_1 = next_tree.GetChildInstructions();
-  auto seq_1_children = sequence->ChildInstructions();
-  ASSERT_EQ(children_seq_1.size(), 1);
-  ASSERT_EQ(child_instr_seq_1.size(), 1);
-  ASSERT_EQ(seq_1_children.size(), 3);
-  EXPECT_EQ(children_seq_1[0]->GetInstruction(), seq_1_children[0]);
-  EXPECT_EQ(child_instr_seq_1[0], seq_1_children[0]);
-}
-
 TEST_F(InstructionTreeTest, FlattenlInstructionTree)
 {
   // Test flattening of full instruction tree
@@ -146,11 +130,6 @@ TEST_F(InstructionTreeTest, FlattenlInstructionTree)
   auto full_tree = CreateFullInstructionTree(sequence.get());
   auto full_flattened = FlattenBFS(full_tree);
   ASSERT_EQ(full_flattened.size(), 7);
-
-  // Test flattening of next instruction tree
-  auto next_tree = CreateNextInstructionTree(sequence.get());
-  auto next_flattened = FlattenBFS(next_tree);
-  ASSERT_EQ(next_flattened.size(), 2);
 }
 
 InstructionTreeTest::InstructionTreeTest() = default;

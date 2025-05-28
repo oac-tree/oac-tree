@@ -45,7 +45,6 @@ const std::string Choice::Type = "Choice";
 Choice::Choice()
   : CompoundInstruction(Choice::Type)
   , m_instruction_list{}
-  , m_instruction_list_initialized{false}
 {
   AddAttributeDefinition(Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kVariableName).SetMandatory();
@@ -53,17 +52,13 @@ Choice::Choice()
 
 Choice::~Choice() = default;
 
+bool Choice::InitHook(UserInterface& ui, Workspace& ws)
+{
+  return CreateInstructionList(ui, ws);
+}
+
 ExecutionStatus Choice::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  if (m_instruction_list.empty() && !m_instruction_list_initialized)
-  {
-    m_instruction_list_initialized = true;
-    if (!CreateInstructionList(ui, ws))
-    {
-      return ExecutionStatus::FAILURE;
-    }
-    return ExecutionStatus::NOT_FINISHED;
-  }
   for (auto instruction : m_instruction_list)
   {
     auto child_status = instruction->GetStatus();
@@ -83,7 +78,6 @@ ExecutionStatus Choice::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 void Choice::ResetHook(UserInterface& ui)
 {
   m_instruction_list.clear();
-  m_instruction_list_initialized = false;
   ResetChildren(ui);
 }
 

@@ -51,7 +51,7 @@ public:
 private:
   std::vector<Instruction*> m_instruction_list;
 
-  bool m_instruction_list_initialized;
+  bool InitHook(UserInterface& ui, Workspace& ws) override;
 
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 

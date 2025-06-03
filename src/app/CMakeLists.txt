@@ -1,4 +1,4 @@
-add_library(oac-tree-app-interfaces STATIC)
+add_library(oac-tree-app-interfaces SHARED)
 
 target_include_directories(oac-tree-app-interfaces PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/../lib>

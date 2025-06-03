@@ -85,8 +85,6 @@ target_sources(${unit-tests}
     wait_for_variables_tests.cpp
     workspace_info_tests.cpp
     workspace_tests.cpp
-    ../../src/app/oac-tree-cli/cl_interface.cpp
-    ../../src/app/oac-tree-daemon/daemon_interface.cpp
 )
 
 target_include_directories(${unit-tests} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/../../src)
@@ -94,6 +92,7 @@ target_include_directories(${unit-tests} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/../..
 target_link_libraries(${unit-tests}
   PRIVATE
   sup-oac-tree-shared
+  oac-tree-app-interfaces
   sup-utils::sup-log
   sup-utils::sup-xml
   pthread

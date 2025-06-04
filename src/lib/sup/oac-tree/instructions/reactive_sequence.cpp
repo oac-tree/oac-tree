@@ -57,7 +57,12 @@ ExecutionStatus ReactiveSequence::ExecuteSingleImpl(UserInterface& ui, Workspace
       break;
     }
   }
-  return CalculateCompoundStatus();
+  auto status = CalculateCompoundStatus();
+  if (IsFinishedStatus(status))
+  {
+    Halt();
+  }
+  return status;
 }
 
 ExecutionStatus ReactiveSequence::CalculateCompoundStatus() const

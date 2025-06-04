@@ -326,7 +326,8 @@ void Instruction::Postamble(UserInterface& ui)
 bool Instruction::CheckBreakpoint()
 {
   auto expected_state = Breakpoint::kSet;
-  if (m_breakpoint_state.compare_exchange_strong(expected_state, Breakpoint::kHit))
+  if (m_breakpoint_state.compare_exchange_strong(expected_state, Breakpoint::kHit)
+      || expected_state == Breakpoint::kHit)
   {
     return true;
   }

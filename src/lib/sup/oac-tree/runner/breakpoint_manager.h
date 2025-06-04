@@ -81,9 +81,9 @@ public:
   /**
    * @brief Check if a breakpoint was hit.
    *
-   * @return true if a breakpoint was hit.
+   * @return Pointer to the instruction where a breakpoint was acknowledged or nullptr.
    */
-  bool AcknowledgeBreakpoints() const;
+  const Instruction* AcknowledgeBreakpoints() const;
 
   /**
    * @brief Get a list of managed breakpoints.

@@ -96,7 +96,8 @@ void Runner::ExecuteProcedure()
   while (!IsFinished() && !m_halt.load())
   {
     ExecuteSingle();
-    if (m_breakpoint_manager->AcknowledgeBreakpoints())
+    auto instr_hit = m_breakpoint_manager->AcknowledgeBreakpoints();
+    if (instr_hit != nullptr)
     {
       m_breakpoint_hit.store(true);
       return;

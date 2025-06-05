@@ -119,6 +119,7 @@ TEST_F(WorkspaceTest, GetValue)
   // Add all variables
   sup::dto::AnyValue val2;
   ws.Setup();
+  EXPECT_TRUE(ws.IsSuccessfullySetup());
   EXPECT_FALSE(ws.GetValue(var2_name, val2));
   EXPECT_FALSE(ws.SetValue(var2_name, val2));
   EXPECT_TRUE(ws.AddVariable(var1_name, std::move(var1)));

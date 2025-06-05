@@ -77,6 +77,27 @@ TEST(For, Success)
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
+TEST(For, EmptyArrayName)
+{
+  const std::string body{
+    R"(
+    <Sequence>
+        <For elementVar="i" arrayVar="">
+            <Increment varName="i"/>
+        </For>
+    </Sequence>
+    <Workspace>
+    <Local name="i" type='{"type":"uint32"}' value='0' />
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+}
+
 TEST(For, NotAnArray)
 {
   const std::string body{

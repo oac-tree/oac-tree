@@ -98,7 +98,8 @@ TEST(GreaterThan, MixedSignedness)
 
 TEST(GreaterThan, Failure)
 {
-  const std::string body{R"(
+  {
+    const std::string body{R"(
     <GreaterThan leftVar="a" rightVar="b"/>
     <Workspace>
         <Local name="a" type='{"type":"uint64"}' value='4' />
@@ -106,11 +107,44 @@ TEST(GreaterThan, Failure)
     </Workspace>
 )"};
 
+    sup::UnitTestHelper::EmptyUserInterface ui;
+    auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+    ASSERT_TRUE(proc.get() != nullptr);
+    EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+  }
+  {
+    const std::string body{R"(
+    <GreaterThan leftVar="a" rightVar="b"/>
+    <Workspace>
+        <Local name="a" type='{"type":"uint64"}' value='4' />
+        <Local name="b" type='{"type":"uint64"}' value='4' />
+    </Workspace>
+)"};
+
+    sup::UnitTestHelper::EmptyUserInterface ui;
+    auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+    ASSERT_TRUE(proc.get() != nullptr);
+    EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+  }
+}
+
+TEST(GreaterThanOrEqual, EqualSuccess)
+{
+  const std::string body{R"(
+    <GreaterThanOrEqual leftVar="a" rightVar="b"/>
+    <Workspace>
+        <Local name="a" type='{"type":"uint64"}' value='4' />
+        <Local name="b" type='{"type":"uint64"}' value='4' />
+    </Workspace>
+)"};
+
   sup::UnitTestHelper::EmptyUserInterface ui;
   auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
-  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::SUCCESS));
 }
 
 TEST(LessThan, Setup)
@@ -180,7 +214,8 @@ TEST(LessThan, MixedSignedness)
 
 TEST(LessThan, Failure)
 {
-  const std::string body{R"(
+  {
+    const std::string body{R"(
     <LessThan leftVar="a" rightVar="b"/>
     <Workspace>
         <Local name="a" type='{"type":"uint64"}' value='24' />
@@ -188,14 +223,42 @@ TEST(LessThan, Failure)
     </Workspace>
 )"};
 
+    sup::UnitTestHelper::EmptyUserInterface ui;
+    auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+    ASSERT_TRUE(proc.get() != nullptr);
+    EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+  }
+  {
+    const std::string body{R"(
+    <LessThan leftVar="a" rightVar="b"/>
+    <Workspace>
+        <Local name="a" type='{"type":"uint64"}' value='24' />
+        <Local name="b" type='{"type":"uint64"}' value='24' />
+    </Workspace>
+)"};
+
+    sup::UnitTestHelper::EmptyUserInterface ui;
+    auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+    ASSERT_TRUE(proc.get() != nullptr);
+    EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+  }
+}
+
+TEST(LessThanOrEqual, EqualSuccess)
+{
+  const std::string body{R"(
+    <LessThanOrEqual leftVar="a" rightVar="b"/>
+    <Workspace>
+        <Local name="a" type='{"type":"uint64"}' value='24' />
+        <Local name="b" type='{"type":"uint64"}' value='24' />
+    </Workspace>
+)"};
+
   sup::UnitTestHelper::EmptyUserInterface ui;
   auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
 
   ASSERT_TRUE(proc.get() != nullptr);
-  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::SUCCESS));
 }
-
-
-
-
-

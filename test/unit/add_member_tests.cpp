@@ -464,7 +464,7 @@ TEST(AddMember, FailVariableNonStruct)
   const std::string body{
       R"(
     <Sequence>
-        <AddMember inputVar="var" memberName="a" outputVar="var2"/>
+        <AddMember inputVar="var1" memberName="a" outputVar="var2"/>
     </Sequence>
     <Workspace>
         <Local name="var1"

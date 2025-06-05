@@ -164,7 +164,7 @@ TEST_F(SequencerParserTest, NonExistentPluginError)
   EXPECT_THROW(CreateProcedure(body), RuntimeException);
 }
 
-TEST_F(SequencerParserTest, UnnamedtPluginError)
+TEST_F(SequencerParserTest, UnnamedPluginError)
 {
   const std::string body{R"(
     <Plugin></Plugin>

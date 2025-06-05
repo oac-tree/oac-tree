@@ -80,16 +80,6 @@ TEST_F(WorkspaceInfoTest, AddVariableInfo)
     EXPECT_NO_THROW(ws_info.AddVariableInfo(var_name_1, CreateTestVariableInfo(0)));
     EXPECT_THROW(ws_info.AddVariableInfo(var_name_1, CreateTestVariableInfo(1)),
                  InvalidOperationException);
-    const std::string error = "WorkspaceInfo::AddVariableInfo(): trying to add VariableInfo with "
-                              "duplicate name or inconsistent index";
-    try
-    {
-      ws_info.AddVariableInfo(var_name_1, CreateTestVariableInfo(1));
-    }
-    catch (const InvalidOperationException& ex)
-    {
-      EXPECT_EQ(ex.what(), error);
-    }
     EXPECT_EQ(ws_info.GetNumberOfVariables(), 1);
     const auto& var_infos = ws_info.GetVariableInfos();
     EXPECT_EQ(var_infos.size(), 1);

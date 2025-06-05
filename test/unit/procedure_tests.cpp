@@ -76,6 +76,21 @@ const std::string ProcedureString{R"(
     </Workspace>
 )"};
 
+const std::string AddWorkspaceVariablesFail{R"(
+    <Wait name="Not Used" timeout="1.0"/>
+    <Sequence name="Main Sequence" isRoot="Yes">
+        <Wait name="Immediate Success"/>
+        <Wait name="Wait 10ms" timeout="0.01"/>
+    </Sequence>
+    <Workspace>
+        <Local type='{"type":"vartype1","attributes":[{"value":{"type":"uint64"}}]}'
+               value='{"value":1729}' />
+        <Local name="var2"
+               type='{"type":"vartype2","attributes":[{"value":{"type":"string"}}]}' />
+        <Local name="var3" />
+    </Workspace>
+)"};
+
 using ::testing::_;
 using ::testing::AtLeast;
 using ::testing::InSequence;
@@ -303,6 +318,14 @@ TEST_F(ProcedureTest, GetProcedureName)
   }
 }
 
+TEST_F(ProcedureTest, UnkwownAttributeThrows)
+{
+  // Getting an unknown attribute from procedure throws exception
+  const std::string filename = "proc_file";
+  Procedure procedure{filename};
+  EXPECT_THROW(procedure.GetAttributeValue<std::string>("does not matter"), RuntimeException);
+}
+
 TEST_F(ProcedureTest, ProcedureTimingConfigurations)
 {
   // Procedure with name attribute returns this name
@@ -324,12 +347,20 @@ TEST_F(ProcedureTest, ProcedureTimingConfigurations)
       filename, proc_body);
   Procedure procedure{filename};
   auto proc = ParseProcedureFile(filename);
+  auto proc_context = proc->GetContext();
+  EXPECT_EQ(proc_context.GetFilename(), filename);
   ASSERT_TRUE(static_cast<bool>(proc));
   EXPECT_NO_THROW(proc->Setup());
 
   sup::UnitTestHelper::EmptyUserInterface ui;
   ASSERT_TRUE(proc.get() != nullptr);
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST_F(ProcedureTest, AddWorkspaceUnnamedVariables)
+{
+  auto proc_str = sup::UnitTestHelper::CreateProcedureString(AddWorkspaceVariablesFail);
+  EXPECT_THROW(ParseProcedureString(proc_str), ParseException);
 }
 
 ProcedureTest::ProcedureTest()

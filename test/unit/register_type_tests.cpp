@@ -74,6 +74,22 @@ const std::string FailedRegisterTypeFromFileProcedureString = {R"(
     <RegisterType jsonfile="does_not_exist.json"/>
 )"};
 
+const std::string FailedRegisterTypeFromFileAndTypeProcedureString = {R"(
+    <RegisterType jsontype='{"type":"ranges_uint16","multiplicity":3,"element":{"type":"range_uint16"}}' jsonfile="range_uint16.json"/>
+    <Sequence>
+        <Copy name="Copy range variables" inputVar="var1" outputVar="var2" />
+        <Copy name="Copy ranges variables" inputVar="var3" outputVar="var4" />
+    </Sequence>
+    <Workspace>
+        <Local name="var1" type='{"type":"range_uint16"}'
+               value='{"min":0,"max":10}' />
+        <Local name="var2" type='{"type":"range_uint16"}' />
+        <Local name="var3" type='{"type":"ranges_uint16"}'
+               value='[{"min":0,"max":10},{"min":10,"max":20},{"min":20,"max":40}]' />
+        <Local name="var4" type='{"type":"ranges_uint16"}' />
+    </Workspace>
+)"};
+
 const std::string JSON_FILE_NAME = "range_uint16.json";
 
 const std::string JSONRangeRepresentation =
@@ -140,6 +156,13 @@ TEST(RegisterType, file_success)
   }
 
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST(RegisterType, file_and_type_failed)
+{
+  auto proc_str = sup::UnitTestHelper::CreateProcedureString(
+    FailedRegisterTypeFromFileAndTypeProcedureString);
+  EXPECT_THROW(ParseProcedureString(proc_str), ParseException);
 }
 
 TEST(RegisterType, file_failed)

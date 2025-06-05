@@ -165,22 +165,6 @@ bool Runner::IsRunning() const
   return (status == ExecutionStatus::RUNNING);
 }
 
-bool Runner::InstructionPresent(const Instruction* instruction) const
-{
-  if (!m_proc || !instruction)
-  {
-    return false;
-  }
-  auto root_instr = m_proc->RootInstruction();
-  if (!root_instr)
-  {
-    return false;
-  }
-  auto instructions = FlattenBFS(CreateFullInstructionTree(root_instr));
-  auto found_it = std::find(instructions.begin(), instructions.end(), instruction);
-  return found_it != instructions.end();
-}
-
 TimeoutWhenRunning::TimeoutWhenRunning(sup::dto::int64 ns)
   : m_timeout_ns{ns}
 {}

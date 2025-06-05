@@ -153,8 +153,6 @@ public:
   bool IsRunning() const;
 
 private:
-  bool InstructionPresent(const Instruction* instruction) const;
-
   Procedure* m_proc;
   UserInterface& m_ui;
   ScopeGuard m_cb_guard;

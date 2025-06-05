@@ -36,7 +36,6 @@ namespace oac_tree
 {
 static void AddChildInstructions(Instruction *instruction,
                                  const std::vector<sup::xml::TreeData> &children);
-static std::string GetNameAttribute(const sup::xml::TreeData& data);
 
 std::unique_ptr<Instruction> ParseInstruction(const sup::xml::TreeData &data)
 {
@@ -68,13 +67,6 @@ static void AddChildInstructions(Instruction *instruction,
   for (auto &child : children)
   {
     auto child_instr = ParseInstruction(child);
-    if (!child_instr)
-    {
-      std::string error_message =
-        "AddChildInstructions(): could not create instruction from TreeData "
-        "of type: <" + child.GetNodeName() + "> and name [" + GetNameAttribute(child) + "]";
-      throw ParseException(error_message);
-    }
     if (!AppendChildInstruction(*instruction, std::move(child_instr)))
     {
       std::string error_message =
@@ -84,15 +76,6 @@ static void AddChildInstructions(Instruction *instruction,
       throw ParseException(error_message);
     }
   }
-}
-
-static std::string GetNameAttribute(const sup::xml::TreeData& data)
-{
-  if (!data.HasAttribute(Constants::NAME_ATTRIBUTE_NAME))
-  {
-    return {};
-  }
-  return data.GetAttribute(Constants::NAME_ATTRIBUTE_NAME);
 }
 
 }  // namespace oac_tree

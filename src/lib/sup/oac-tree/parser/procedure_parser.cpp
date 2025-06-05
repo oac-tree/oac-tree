@@ -151,13 +151,7 @@ void AddWorkspaceVariables(Procedure* procedure, const sup::xml::TreeData& ws_da
       throw ParseException(error_message);
     }
     auto var = ParseVariable(var_data);
-    if (!procedure->AddVariable(name, std::move(var)))
-    {
-      std::string error_message =
-        "AddWorkspaceVariables(): adding variable with type [" +
-        var_data.GetNodeName() + "] and name [" + name + "] to procedure failed";
-      throw ParseException(error_message);
-    }
+    procedure->AddVariable(name, std::move(var));
   }
 }
 

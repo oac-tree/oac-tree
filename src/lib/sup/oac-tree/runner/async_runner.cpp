@@ -146,7 +146,6 @@ void AsyncRunner::SetState(JobState state)
 void AsyncRunner::Launch()
 {
   m_runner.SetProcedure(std::addressof(m_proc));
-  auto root_instr = m_proc.RootInstruction();
   m_loop_future = std::async(std::launch::async, &AsyncRunner::ExecutionLoop, this);
 }
 

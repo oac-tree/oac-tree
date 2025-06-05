@@ -56,7 +56,7 @@ ExecutionStatus Decrement::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   if (!sup::dto::Decrement(value))
   {
     const std::string warning = InstructionWarningProlog(*this) +
-      "could not decrement variable reffered to in attribute [" +
+      "could not decrement variable referred to in attribute [" +
       Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME + "]";
     LogWarning(ui, warning);
     return ExecutionStatus::FAILURE;

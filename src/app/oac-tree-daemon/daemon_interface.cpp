@@ -56,7 +56,11 @@ void DaemonInterface::UpdateInstructionStatus(
 
 void DaemonInterface::VariableUpdated(const std::string& name, const sup::dto::AnyValue& value,
                                       bool connected)
-{}
+{
+  (void)name;
+  (void)value;
+  (void)connected;
+}
 
 bool DaemonInterface::PutValue(const sup::dto::AnyValue &value, const std::string &description)
 {

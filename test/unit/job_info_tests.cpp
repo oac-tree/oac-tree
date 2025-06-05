@@ -24,6 +24,7 @@
 
 #include <sup/oac-tree/instruction_map.h>
 #include <sup/oac-tree/instruction_info_utils.h>
+#include <sup/oac-tree/job_info.h>
 #include <sup/oac-tree/job_info_utils.h>
 #include <sup/oac-tree/constants.h>
 #include <sup/oac-tree/variable_utils.h>
@@ -127,6 +128,10 @@ TEST_F(JobInfoTest, CreateJobInfo)
     // Test copy
     JobInfo copy{job_info};
     EXPECT_EQ(copy, job_info);
+
+    JobInfo copy2 = job_info;
+    EXPECT_EQ(copy2, job_info);
+    EXPECT_FALSE(copy2 != copy);
 
     // Test move
     JobInfo moved{std::move(copy)};

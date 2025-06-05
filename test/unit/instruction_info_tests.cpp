@@ -23,6 +23,7 @@
 #include "unit_test_helper.h"
 
 #include <sup/oac-tree/constants.h>
+#include <sup/oac-tree/instruction_info.h>
 #include <sup/oac-tree/instruction_info_utils.h>
 #include <sup/oac-tree/instruction_map.h>
 #include <sup/oac-tree/sequence_parser.h>
@@ -92,6 +93,10 @@ TEST_F(InstructionInfoTest, InstructionInfoFromInstructionTree)
   InstructionInfo copy{*instr_info};
   EXPECT_EQ(copy, *instr_info);
   EXPECT_FALSE(copy != *instr_info);
+
+  InstructionInfo copy2 = *instr_info; // Test assignment
+  EXPECT_EQ(copy2, *instr_info);
+  EXPECT_FALSE(copy2 != *instr_info);
 
   // Test move
   InstructionInfo moved{std::move(copy)};

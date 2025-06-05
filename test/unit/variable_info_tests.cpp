@@ -26,6 +26,7 @@
 #include <sup/oac-tree/constants.h>
 #include <sup/oac-tree/sequence_parser.h>
 #include <sup/oac-tree/variable.h>
+#include <sup/oac-tree/variable_info.h>
 #include <sup/oac-tree/variable_registry.h>
 #include <sup/oac-tree/variable_utils.h>
 
@@ -70,6 +71,9 @@ TEST_F(VariableInfoTest, FromVariable)
   // Check copy
   VariableInfo copy{var_info};
   EXPECT_EQ(copy, var_info);
+
+  VariableInfo copy2 = var_info;
+  EXPECT_FALSE(copy2 != copy);
 
   // Check move
   VariableInfo moved{std::move(copy)};

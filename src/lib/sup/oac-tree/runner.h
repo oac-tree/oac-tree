@@ -153,12 +153,15 @@ public:
   bool IsRunning() const;
 
 private:
+  bool CheckBreakpointHit();
+  void ClearBreakpointInstruction();
+
   Procedure* m_proc;
   UserInterface& m_ui;
   ScopeGuard m_cb_guard;
   TickCallback m_tick_cb;
   std::unique_ptr<BreakpointManager> m_breakpoint_manager;
-  std::atomic_bool m_breakpoint_hit;
+  std::atomic<const Instruction*> m_breakpoint_hit_instr;
   std::atomic_bool m_halt;
 };
 

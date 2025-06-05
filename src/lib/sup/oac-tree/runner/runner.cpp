@@ -45,7 +45,7 @@ Runner::Runner(UserInterface& ui)
   , m_cb_guard{}
   , m_tick_cb{}
   , m_breakpoint_manager{new BreakpointManager{}}
-  , m_breakpoint_hit{false}
+  , m_breakpoint_hit_instr{nullptr}
   , m_halt{false}
 {}
 
@@ -88,7 +88,6 @@ std::vector<Breakpoint> Runner::GetBreakpoints() const
 void Runner::ExecuteProcedure()
 {
   m_halt.store(false);
-  m_breakpoint_hit.store(false);
   if (!m_proc)
   {
     return;
@@ -96,10 +95,8 @@ void Runner::ExecuteProcedure()
   while (!IsFinished() && !m_halt.load())
   {
     ExecuteSingle();
-    auto instr_hit = m_breakpoint_manager->AcknowledgeBreakpoints();
-    if (instr_hit != nullptr)
+    if (CheckBreakpointHit())
     {
-      m_breakpoint_hit.store(true);
       return;
     }
   }
@@ -107,6 +104,7 @@ void Runner::ExecuteProcedure()
 
 void Runner::ExecuteSingle()
 {
+  ClearBreakpointInstruction();
   if (m_proc)
   {
     m_proc->ExecuteSingle(m_ui);
@@ -119,7 +117,7 @@ void Runner::ExecuteSingle()
 
 bool Runner::BreakpointHit() const
 {
-  return m_breakpoint_hit;
+  return m_breakpoint_hit_instr.load() != nullptr;
 }
 
 void Runner::Halt()
@@ -164,6 +162,21 @@ bool Runner::IsRunning() const
 
   auto status = m_proc->GetStatus();
   return (status == ExecutionStatus::RUNNING);
+}
+
+bool Runner::CheckBreakpointHit()
+{
+  m_breakpoint_hit_instr = m_breakpoint_manager->AcknowledgeBreakpoints();
+  if (m_breakpoint_hit_instr != nullptr)
+  {
+    return true;
+  }
+  return false;
+}
+
+void Runner::ClearBreakpointInstruction()
+{
+  m_breakpoint_hit_instr.store(nullptr);
 }
 
 TimeoutWhenRunning::TimeoutWhenRunning(sup::dto::int64 ns)

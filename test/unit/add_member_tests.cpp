@@ -459,6 +459,30 @@ TEST(AddMember, FailMissingVariable)
   EXPECT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
+TEST(AddMember, FailVariableNonStruct)
+{
+  const std::string body{
+      R"(
+    <Sequence>
+        <AddMember inputVar="var" memberName="a" outputVar="var2"/>
+    </Sequence>
+    <Workspace>
+        <Local name="var1"
+               type='{"type":"uint32"}'
+               value='12345'/>
+        <Local name="var2"
+               type='{"type":"uint32"}'
+               value='42'/>' />
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
 TEST(AddMember, FailEmptyMemberName)
 {
   const std::string body{

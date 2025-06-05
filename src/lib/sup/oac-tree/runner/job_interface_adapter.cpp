@@ -86,7 +86,15 @@ void JobInterfaceAdapter::VariableUpdated(const std::string& name, const sup::dt
 
 void JobInterfaceAdapter::BreakpointInstructionUpdated(const Instruction* instruction)
 {
-  (void)instruction;
+  if (instruction == nullptr)
+  {
+    m_job_info_io.BreakpointInstructionUpdated(kInvalidInstructionIndex);
+  }
+  else
+  {
+    auto instr_idx = m_job_map.GetInstructionIndex(instruction);
+    m_job_info_io.BreakpointInstructionUpdated(instr_idx);
+  }
 }
 
 bool JobInterfaceAdapter::PutValue(const sup::dto::AnyValue& value, const std::string& description)

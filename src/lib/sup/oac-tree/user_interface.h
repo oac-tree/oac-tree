@@ -91,7 +91,6 @@ public:
    *
    * @param instruction Pointer to the current breakpoint instruction, or nullptr.
    */
-  // TODO: make pure virtual
   virtual void BreakpointInstructionUpdated(const Instruction* instruction) = 0;
 
   /**

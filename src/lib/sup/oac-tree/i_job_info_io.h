@@ -28,10 +28,14 @@
 
 #include <sup/dto/anyvalue.h>
 
+#include <limits>
+
 namespace sup
 {
 namespace oac_tree
 {
+const sup::dto::uint32 kInvalidInstructionIndex = std::numeric_limits<sup::dto::uint32>::max();
+
 /**
  * @brief Abstract interface for runtime updates and user input/output of a job, represented by
  * a JobInfo.
@@ -57,6 +61,13 @@ public:
    * @param state Updated state of the instruction.
    */
   virtual void InstructionStateUpdated(sup::dto::uint32 instr_idx, InstructionState state) = 0;
+
+  /**
+   * @brief Notify an update of breakpoint instruction.
+   *
+   * @param instr_idx Index of the instruction or kInvalidInstructionIndex.
+   */
+  virtual void BreakpointInstructionUpdated(sup::dto::uint32 instr_idx) = 0;
 
   /**
    * @brief Notify an update of a variable's state.

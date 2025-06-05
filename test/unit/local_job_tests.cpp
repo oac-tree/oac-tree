@@ -51,6 +51,7 @@ public:
   ~TestJobInfoIO() override;
   MOCK_METHOD(void, InitNumberOfInstructions, (sup::dto::uint32), (override));
   MOCK_METHOD(void, InstructionStateUpdated, (sup::dto::uint32, sup::oac_tree::InstructionState), (override));
+  MOCK_METHOD(void, BreakpointInstructionUpdated, (sup::dto::uint32), (override));
   MOCK_METHOD(void, VariableUpdated, (sup::dto::uint32, const sup::dto::AnyValue&, bool), (override));
   MOCK_METHOD(void, PutValue, (const sup::dto::AnyValue&, const std::string&), (override));
   MOCK_METHOD(bool, GetUserValue, (sup::dto::uint64, sup::dto::AnyValue&, const std::string&), (override));
@@ -183,6 +184,13 @@ TEST_F(LocalJobTest, Breakpoints)
   // All variables get an initial update and two of them are overwritten:
   EXPECT_CALL(m_test_job_info_io, VariableUpdated(_, _, true)).Times(Exactly(5));
   EXPECT_CALL(m_test_job_info_io, ProcedureTicked()).Times(Exactly(3));
+  using ::testing::InSequence;
+  {
+    InSequence seq;
+    EXPECT_CALL(m_test_job_info_io, BreakpointInstructionUpdated(1)).Times(Exactly(1));
+    EXPECT_CALL(m_test_job_info_io, BreakpointInstructionUpdated(kInvalidInstructionIndex))
+                .Times(Exactly(1));
+  }
 
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
   auto proc = sup::oac_tree::ParseProcedureString(procedure_string);

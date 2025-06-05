@@ -21,6 +21,7 @@
  ******************************************************************************/
 
 #include <sup/oac-tree/instruction_tree.h>
+#include <sup/oac-tree/procedure_context.h>
 
 #include <sup/oac-tree/exceptions.h>
 #include <sup/oac-tree/instruction.h>
@@ -46,12 +47,17 @@ std::unique_ptr<Instruction> CreateTestInstructionTree();
 
 TEST_F(InstructionTreeTest, BasicMethods)
 {
+  auto instr_0 = reinterpret_cast<Instruction*>(0u);
   auto instr_1 = reinterpret_cast<Instruction*>(1u);
   auto instr_2 = reinterpret_cast<Instruction*>(2u);
   auto instr_3 = reinterpret_cast<Instruction*>(3u);
+  // Test methods on empty tree
+  InstructionTree empty_tree{instr_0};
+  ASSERT_TRUE(empty_tree.IsEmpty());
 
   // Test methods on tree existing of one element
   InstructionTree root_tree{instr_1};
+  ASSERT_FALSE(root_tree.IsEmpty());
   EXPECT_EQ(root_tree.GetInstruction(), instr_1);
   auto root_children = root_tree.GetChildren();
   EXPECT_EQ(root_children.size(), 0);
@@ -83,9 +89,13 @@ TEST_F(InstructionTreeTest, BasicMethods)
 
 TEST_F(InstructionTreeTest, CreateFullInstructionTree)
 {
+  // Test creation of full instruction tree from empty instruction
+  EXPECT_THROW(CreateFullInstructionTree(nullptr), InvalidOperationException);
+
   // Test root node of full instruction tree
   auto sequence = CreateTestInstructionTree();
   auto full_tree = CreateFullInstructionTree(sequence.get());
+  ASSERT_FALSE(full_tree.IsEmpty());
   EXPECT_EQ(full_tree.GetInstruction(), sequence.get());
   auto children_seq_1 = full_tree.GetChildren();
   auto child_instr_seq_1 = full_tree.GetChildInstructions();
@@ -130,6 +140,26 @@ TEST_F(InstructionTreeTest, FlattenlInstructionTree)
   auto full_tree = CreateFullInstructionTree(sequence.get());
   auto full_flattened = FlattenBFS(full_tree);
   ASSERT_EQ(full_flattened.size(), 7);
+}
+
+TEST_F(InstructionTreeTest, GetLeavesInstructionTree)
+{
+  // Test getting leaves of full instruction tree
+  auto sequence = CreateTestInstructionTree();
+  auto full_tree = CreateFullInstructionTree(sequence.get());
+  auto leaves = GetLeaves(full_tree);
+  ASSERT_EQ(leaves.size(), 4);
+}
+
+TEST_F(InstructionTreeTest, CloneInstructionTree)
+{
+  // Clone the full instruction tree and check if the clone is correct
+  auto sequence = CreateTestInstructionTree();
+  auto full_tree = CreateFullInstructionTree(sequence.get());
+  auto copy_tree = CloneInstructionTree(*full_tree.GetInstruction());
+  ASSERT_EQ(full_tree.GetInstruction()->GetCategory(), copy_tree->GetCategory());
+  ASSERT_EQ(full_tree.GetInstruction()->GetName(), copy_tree->GetName());
+  ASSERT_EQ(full_tree.GetInstruction()->GetStringAttributes(), copy_tree->GetStringAttributes());
 }
 
 InstructionTreeTest::InstructionTreeTest() = default;

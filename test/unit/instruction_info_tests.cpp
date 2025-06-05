@@ -115,6 +115,12 @@ TEST_F(InstructionInfoTest, Flatten)
 
   // Create InstructionInfo tree and a flat list of the nodes
   InstructionMap instr_map{root};
+  // Append a null child to test flattening with empty
+  {
+    auto instr_info_with_nullptr = utils::CreateInstructionInfoTree(*root, instr_map);
+    instr_info_with_nullptr->AppendChild(nullptr);
+    EXPECT_THROW(Flatten(*instr_info_with_nullptr), InvalidOperationException);
+  }
   auto instr_info = utils::CreateInstructionInfoTree(*root, instr_map);
   auto flattened_info = Flatten(*instr_info);
   EXPECT_EQ(flattened_info.size(), 3);

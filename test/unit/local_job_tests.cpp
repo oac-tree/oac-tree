@@ -25,6 +25,7 @@
 #include <sup/oac-tree/exceptions.h>
 #include <sup/oac-tree/instruction_utils.h>
 #include <sup/oac-tree/job_info.h>
+#include <sup/oac-tree/job_states.h>
 #include <sup/oac-tree/local_job.h>
 #include <sup/oac-tree/sequence_parser.h>
 
@@ -238,6 +239,31 @@ TEST_F(LocalJobTest, MoveAssignment)
   job_2.Start();
   JobState successful_job_state = JobState::kSucceeded;
   EXPECT_TRUE(m_test_job_info_io.WaitForJobState(successful_job_state, 1.0));
+}
+
+TEST(JobStates, JobStateToString)
+{
+  EXPECT_EQ(ToString(JobState::kInitial), "Initial");
+  EXPECT_EQ(ToString(JobState::kPaused), "Paused");
+  EXPECT_EQ(ToString(JobState::kStepping), "Stepping");
+  EXPECT_EQ(ToString(JobState::kRunning), "Running");
+  EXPECT_EQ(ToString(JobState::kSucceeded), "Success");
+  EXPECT_EQ(ToString(JobState::kFailed), "Failure");
+  EXPECT_EQ(ToString(JobState::kHalted), "Halted");
+  EXPECT_EQ(ToString(static_cast<JobState>(-1)), "Unknown JobState");
+}
+
+TEST(JobStates, FinishedStates) {
+    EXPECT_TRUE(IsFinishedJobState(JobState::kSucceeded));
+    EXPECT_TRUE(IsFinishedJobState(JobState::kFailed));
+    EXPECT_TRUE(IsFinishedJobState(JobState::kHalted));
+}
+
+TEST(JobStates, UnfinishedStates) {
+    EXPECT_FALSE(IsFinishedJobState(JobState::kInitial));
+    EXPECT_FALSE(IsFinishedJobState(JobState::kPaused));
+    EXPECT_FALSE(IsFinishedJobState(JobState::kStepping));
+    EXPECT_FALSE(IsFinishedJobState(JobState::kRunning));
 }
 
 TestJobInfoIO::TestJobInfoIO()

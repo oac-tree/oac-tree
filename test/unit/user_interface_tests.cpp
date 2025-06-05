@@ -25,11 +25,13 @@
 
 #include <sup/oac-tree/instruction.h>
 #include <sup/oac-tree/instruction_registry.h>
+#include <sup/oac-tree/user_interface.h>
 #include <sup/oac-tree/workspace.h>
+#include <sup/oac-tree/constants.h>
 
 #include <gtest/gtest.h>
-
-#include <algorithm>
+#include <sup/dto/anytype.h>
+#include <sup/dto/anyvalue.h>
 
 using namespace sup::oac_tree;
 
@@ -97,6 +99,65 @@ TEST_F(UserInterfaceTest, GetUserChoiceDispatch)
       .WillOnce(Return(0));
   EXPECT_EQ(mock_ui.GetUserChoice(options, metadata), -1);
   EXPECT_EQ(mock_ui.GetUserChoice(options, metadata), 0);
+}
+
+TEST_F(UserInterfaceTest, UserChoiceMetadata)
+{
+  // Valid Metadata
+  {
+    auto valid_metadata = CreateUserChoiceMetadata();
+    valid_metadata.AddMember(Constants::USER_CHOICES_TEXT_NAME, sup::dto::AnyValue{"Sample Text"});
+    valid_metadata.AddMember(
+        Constants::USER_CHOICES_DIALOG_TYPE_NAME,
+        sup::dto::AnyValue{sup::dto::AnyType(sup::dto::UnsignedInteger32Type), 1});
+    valid_metadata.AddMember(Constants::USER_CHOICES_MODAL_NAME, sup::dto::AnyValue{true});
+    valid_metadata.AddMember(Constants::USER_CHOICES_TITLE_NAME,
+                             sup::dto::AnyValue{"Sample Title"});
+    valid_metadata.AddMember(Constants::USER_CHOICES_INFORMATIVE_TEXT_NAME,
+                             sup::dto::AnyValue{"Informative Text"});
+    valid_metadata.AddMember(Constants::USER_CHOICES_DETAILS_NAME, sup::dto::AnyValue{"Details"});
+
+    EXPECT_TRUE(IsUserChoiceMetadata(valid_metadata));
+    EXPECT_EQ(GetMainTextFromMetadata(valid_metadata), "Sample Text");
+  }
+
+  // Non-Struct Metadata
+  {
+    sup::dto::AnyValue non_struct_metadata{"Not a struct"};
+    EXPECT_FALSE(IsUserChoiceMetadata(non_struct_metadata));
+  }
+
+  // Invalid Field Types
+  {
+    auto invalid_metadata = CreateUserChoiceMetadata();
+    {
+      invalid_metadata.AddMember(Constants::USER_CHOICES_TEXT_NAME, sup::dto::AnyValue{123});
+      EXPECT_FALSE(IsUserChoiceMetadata(invalid_metadata));
+    }
+    {
+      invalid_metadata.AddMember(Constants::USER_CHOICES_DIALOG_TYPE_NAME,
+                                 sup::dto::AnyValue{"Invalid Type"});
+      EXPECT_FALSE(IsUserChoiceMetadata(invalid_metadata));
+    }
+    {
+      invalid_metadata.AddMember(Constants::USER_CHOICES_MODAL_NAME, sup::dto::AnyValue{"true"});
+      EXPECT_FALSE(IsUserChoiceMetadata(invalid_metadata));
+    }
+    {
+      invalid_metadata.AddMember(Constants::USER_CHOICES_TITLE_NAME, sup::dto::AnyValue{false});
+      EXPECT_FALSE(IsUserChoiceMetadata(invalid_metadata));
+    }
+    {
+      invalid_metadata.AddMember(Constants::USER_CHOICES_INFORMATIVE_TEXT_NAME,
+                                 sup::dto::AnyValue{42});
+      EXPECT_FALSE(IsUserChoiceMetadata(invalid_metadata));
+    }
+    {
+      invalid_metadata.AddMember(Constants::USER_CHOICES_DETAILS_NAME,
+                                 sup::dto::AnyValue{sup::dto::EmptyType});
+      EXPECT_FALSE(IsUserChoiceMetadata(invalid_metadata));
+    }
+  }
 }
 
 TEST_F(UserInterfaceTest, PutValueDefault)

@@ -34,6 +34,37 @@ protected:
   virtual ~UserInputRequestTest() = default;
 };
 
+TEST_F(UserInputRequestTest, UserInputRequestEquality)
+{
+  sup::dto::AnyType input_type = {{
+    { "a", sup::dto::Float64Type },
+    { "indices", sup::dto::AnyType{5, sup::dto::UnsignedInteger16Type }}
+  }};
+  sup::dto::AnyValue input{input_type};
+  std::string description = "Set configuration";
+  auto request = CreateUserValueRequest(input, description);
+
+  {
+    // Check request equality
+    auto request2 = CreateUserValueRequest(input, description);
+    EXPECT_TRUE(request == request2);
+  }
+  {
+    // Different MetaData
+    std::string description2 = "Set configuration with different description";
+    auto request2 = CreateUserValueRequest(input, description2);
+    EXPECT_FALSE(request == request2);
+  }
+  {
+    // Different InputType
+    std::vector<std::string> options{"start", "stop", "pause", "resume"};
+    sup::dto::AnyValue metadata = {{{"a", "useful information about request"}, {"flag", true}}};
+    auto requestchoice = CreateUserChoiceRequest(options, metadata);
+
+    EXPECT_TRUE(request!=requestchoice);
+  }
+}
+
 TEST_F(UserInputRequestTest, CreateUserValueRequest)
 {
   sup::dto::AnyType input_type = {{

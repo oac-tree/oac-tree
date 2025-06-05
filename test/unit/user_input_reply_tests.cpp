@@ -55,7 +55,7 @@ TEST_F(UserInputReplyTest, CreateUserValueReply)
     auto user_reply = CreateUserValueReply(false, user_value);
     EXPECT_EQ(user_reply.m_request_type, InputRequestType::kUserValue);
     EXPECT_FALSE(user_reply.m_result);
-    EXPECT_EQ(user_reply.m_payload, user_value);
+    EXPECT_FALSE(user_reply.m_payload != user_value);
 
     // Parse the AnyValue back
     auto [parsed, reply] = ParseUserValueReply(user_reply);

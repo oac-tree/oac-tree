@@ -27,14 +27,48 @@
 #include <sup/oac-tree/exceptions.h>
 #include <sup/oac-tree/instruction.h>
 #include <sup/oac-tree/instruction_registry.h>
+#include <sup/oac-tree/job_state_monitor.h>
+#include <sup/oac-tree/procedure.h>
 #include <sup/oac-tree/sequence_parser.h>
 #include <sup/oac-tree/workspace.h>
+#include <sup/oac-tree/async_runner.h>
+#include <sup/oac-tree/application_utils.h>
 
 #include <gtest/gtest.h>
 
-#include <algorithm>
-
 using namespace sup::oac_tree;
+
+class TestJobStateMonitor : public utils::SimpleJobStateMonitor
+{
+public:
+  TestJobStateMonitor()
+    : utils::SimpleJobStateMonitor{}
+    , m_breakpoint_updates{}
+    , m_ticks{}
+  {}
+  ~TestJobStateMonitor() = default;
+
+  void OnBreakpointChange(const Instruction*, bool) noexcept override
+  {
+    ++m_breakpoint_updates;
+  }
+
+  void OnProcedureTick(const Procedure& proc) override
+  {
+    ++m_ticks;
+  }
+
+  unsigned int GetBreakpointUpdateCount() const { return m_breakpoint_updates; }
+  unsigned int GetTickCount() const { return m_ticks; }
+private:
+  std::atomic_uint m_breakpoint_updates;
+  std::atomic_uint m_ticks;
+};
+
+bool WaitForState(JobState state, TestJobStateMonitor& mon, double seconds = 1.0)
+{
+  return mon.WaitForState(state, seconds);
+}
 
 const std::string ReactiveFallbackString =
     R"RAW(<?xml version="1.0" encoding="UTF-8"?>
@@ -83,4 +117,56 @@ TEST(ReactiveFallback, Setup)
 
   Procedure proc;
   EXPECT_NO_THROW(reactive_fb->Setup(proc));
+}
+
+TEST(ReactiveFallback, RequireNextInstruction)
+{
+  auto reactive_fb = GlobalInstructionRegistry().Create("ReactiveFallback");
+  auto child2 = GlobalInstructionRegistry().Create("Fail");
+  EXPECT_TRUE(AppendChildInstruction(*reactive_fb, std::move(child2)));
+  auto child = GlobalInstructionRegistry().Create("Succeed");
+  EXPECT_TRUE(AppendChildInstruction(*reactive_fb, std::move(child)));
+
+  Procedure proc;
+  proc.PushInstruction(std::move(reactive_fb));
+  EXPECT_EQ(proc.GetInstructionCount(), 1);
+
+  sup::UnitTestHelper::MockUI ui;
+  TestJobStateMonitor monitor;
+  AsyncRunner runner(proc, ui, monitor);
+
+  EXPECT_TRUE(WaitForState(JobState::kInitial, monitor));
+  runner.Start();
+  runner.Pause();
+  EXPECT_TRUE(WaitForState(JobState::kPaused, monitor));
+  runner.Step();
+  EXPECT_TRUE(WaitForState(JobState::kSucceeded, monitor, 2));
+}
+
+TEST(ReactiveFallback, TestAppMonitor)
+{
+  auto reactive_fb = GlobalInstructionRegistry().Create("ReactiveFallback");
+  auto child2 = GlobalInstructionRegistry().Create("Fail");
+  EXPECT_TRUE(AppendChildInstruction(*reactive_fb, std::move(child2)));
+  auto child = GlobalInstructionRegistry().Create("Succeed");
+  EXPECT_TRUE(AppendChildInstruction(*reactive_fb, std::move(child)));
+
+  Procedure proc;
+  proc.PushInstruction(std::move(reactive_fb));
+  EXPECT_EQ(proc.GetInstructionCount(), 1);
+
+  sup::UnitTestHelper::MockUI ui;
+  TestJobStateMonitor monitor;
+  AsyncRunner runner(proc, ui, monitor);
+
+  EXPECT_NO_THROW(monitor.OnBreakpointChange(child.get(), false));
+  EXPECT_NO_THROW(monitor.OnProcedureTick(proc));
+
+  EXPECT_TRUE(WaitForState(JobState::kInitial, monitor));
+  runner.Start();
+  runner.Pause();
+  EXPECT_TRUE(WaitForState(JobState::kPaused, monitor));
+  EXPECT_EQ(monitor.GetCurrentState(), JobState::kPaused);
+  runner.Step();
+  EXPECT_TRUE(monitor.WaitForFinished() == JobState::kSucceeded);
 }

@@ -74,6 +74,17 @@ TEST_F(CLInterfaceTest, VariableUpdated)
   EXPECT_FALSE(m_log_entries.empty());
 }
 
+TEST_F(CLInterfaceTest, VariableUpdatedDisconnected)
+{
+  sup::dto::AnyValue val(sup::dto::UnsignedInteger32Type, 1234);
+  std::string name = "TestUpdated";
+  EXPECT_TRUE(m_log_entries.empty());
+  cli_verbose.VariableUpdated(name, val, false);
+  EXPECT_FALSE(m_log_entries.empty());
+  std::string log_message = "Variable (" + name + ") disconnected";
+  EXPECT_EQ(std::get<2>(m_log_entries.front()), log_message);
+}
+
 TEST_F(CLInterfaceTest, GetUserValue)
 {
   sup::dto::AnyValue val(sup::dto::UnsignedInteger32Type);
@@ -188,6 +199,16 @@ TEST_F(CLInterfaceTest, PutValue)
   EXPECT_NE(oss.str().find("23"), std::string::npos);
 }
 
+TEST_F(CLInterfaceTest, PutValueMessage)
+{
+  sup::dto::AnyValue val = 23;
+  std::ostringstream oss;
+  CoutRedirector redirect(oss);
+  auto message = "Test message";
+  EXPECT_TRUE(cli.PutValue(val, message));
+  EXPECT_NE(oss.str().find(message), std::string::npos);
+}
+
 TEST_F(CLInterfaceTest, Message)
 {
   std::string message = "Hello message";
@@ -195,6 +216,15 @@ TEST_F(CLInterfaceTest, Message)
   CoutRedirector redirect(oss);
   EXPECT_NO_THROW(cli.Message(message));
   EXPECT_NE(oss.str().find(message), std::string::npos);
+}
+
+TEST_F(CLInterfaceTest, Log)
+{
+  std::string message = "Log message";
+  auto severity = log::SUP_SEQ_LOG_INFO;
+  EXPECT_NO_THROW(cli_verbose.Log(severity, message));
+  EXPECT_EQ(std::get<0>(m_log_entries.front()), severity);
+  EXPECT_EQ(std::get<2>(m_log_entries.front()), message);
 }
 
 CLInterfaceTest::CLInterfaceTest()

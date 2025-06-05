@@ -105,6 +105,17 @@ TEST_F(DaemonInterfaceTest, Message)
   EXPECT_NE(last_message.find(message), std::string::npos);
 }
 
+TEST_F(DaemonInterfaceTest, UnsupportedInputFuture)
+{
+  UserInputRequest request;
+  auto input_future = daemon_interface.RequestUserInput(request);
+  EXPECT_EQ(input_future->GetId(), 0);
+  EXPECT_FALSE(input_future->IsValid());
+  EXPECT_FALSE(input_future->IsReady());
+  EXPECT_FALSE(input_future->WaitFor(100000));
+  EXPECT_THROW(input_future->GetValue(), InvalidOperationException);
+}
+
 static sup::log::DefaultLogger CreateDefaultTestLogger(
   int severity, std::vector<DaemonInterfaceTest::LogEntry>* log_entries)
 {

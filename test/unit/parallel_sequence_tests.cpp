@@ -66,6 +66,22 @@ const std::string ProcedureParallelString =
 </Procedure>
 )RAW";
 
+const std::string ProcedureParallelFailureThresholdString =
+    R"RAW(<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/oac-tree" version="1.0"
+           name="Trivial procedure for testing purposes"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/oac-tree oac-tree.xsd">
+    <ParallelSequence name="parallel" failureThreshold="2">
+        <Fail/>
+        <Wait name="wait" timeout="0.1"/>
+        <Wait name="again" timeout="0.1"/>
+    </ParallelSequence>
+    <Workspace>
+    </Workspace>
+</Procedure>
+)RAW";
+
 const std::string ProcedureParallelBuiltinString =
     R"RAW(<?xml version="1.0" encoding="UTF-8"?>
 <Procedure xmlns="http://codac.iter.org/sup/oac-tree" version="1.0"
@@ -95,6 +111,13 @@ TEST(ParallelSequence, Procedure_parallel)
 {
   sup::UnitTestHelper::EmptyUserInterface ui;
   auto proc = ParseProcedureString(ProcedureParallelString);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST(ParallelSequence, FailureThreshold)
+{
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(ProcedureParallelFailureThresholdString);
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 

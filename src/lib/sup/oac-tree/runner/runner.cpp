@@ -95,7 +95,7 @@ void Runner::ExecuteProcedure()
   while (!IsFinished() && !m_halt.load())
   {
     ExecuteSingle();
-    if (CheckBreakpointHit())
+    if (UpdateBreakpointInstruction(m_breakpoint_manager->AcknowledgeBreakpoints()))
     {
       return;
     }
@@ -164,19 +164,23 @@ bool Runner::IsRunning() const
   return (status == ExecutionStatus::RUNNING);
 }
 
-bool Runner::CheckBreakpointHit()
-{
-  m_breakpoint_hit_instr = m_breakpoint_manager->AcknowledgeBreakpoints();
-  if (m_breakpoint_hit_instr != nullptr)
-  {
-    return true;
-  }
-  return false;
-}
-
 void Runner::ClearBreakpointInstruction()
 {
-  m_breakpoint_hit_instr.store(nullptr);
+  (void)UpdateBreakpointInstruction(nullptr);
+}
+
+bool Runner::UpdateBreakpointInstruction(const Instruction* instruction)
+{
+  auto current_instr = m_breakpoint_hit_instr.load();
+  do
+  {
+    if (current_instr == instruction)
+    {
+      return current_instr != nullptr;  // No notification if already set.
+    }
+  } while (!m_breakpoint_hit_instr.compare_exchange_weak(current_instr, instruction));
+  m_ui.BreakpointInstructionUpdated(instruction);
+  return instruction != nullptr;
 }
 
 TimeoutWhenRunning::TimeoutWhenRunning(sup::dto::int64 ns)

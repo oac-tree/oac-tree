@@ -153,8 +153,8 @@ public:
   bool IsRunning() const;
 
 private:
-  bool CheckBreakpointHit();
   void ClearBreakpointInstruction();
+  bool UpdateBreakpointInstruction(const Instruction* instruction);
 
   Procedure* m_proc;
   UserInterface& m_ui;

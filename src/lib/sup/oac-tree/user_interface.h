@@ -84,6 +84,17 @@ public:
   virtual void VariableUpdated(const std::string& name, const sup::dto::AnyValue& value, bool connected) = 0;
 
   /**
+   * @brief Method to notify a change in the current breakpoint instruction.
+   *
+   * @details This method will report a nullptr when no running normally, i.e. when not halted at
+   * a breakpoint.
+   *
+   * @param instruction Pointer to the current breakpoint instruction, or nullptr.
+   */
+  // TODO: make pure virtual
+  virtual void BreakpointInstructionUpdated(const Instruction* instruction) {};
+
+  /**
    * @brief Method to put the value.
    *
    * @param value Value to put into UI.

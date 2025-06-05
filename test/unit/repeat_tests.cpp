@@ -72,6 +72,30 @@ TEST(Repeat, Procedure_success)
   EXPECT_EQ(sup::UnitTestHelper::CounterInstruction::GetCount(), 10);
 }
 
+TEST(Repeat, Negative_limit_success)
+{
+  const std::string body{R"(
+  <ForceSuccess isRoot="true">
+    <Repeat maxCount="-99">
+      <Sequence>
+        <LessThan leftVar="counter" rightVar="limit"/>
+        <Increment varName="counter"/>
+      </Sequence>
+    </Repeat>
+  </ForceSuccess>
+  <Workspace>
+    <Local name="counter" type='{"type":"int32"}' value="0"/>
+    <Local name="limit" type='{"type":"int32"}' value="2"/>
+  </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+  ASSERT_TRUE(proc.get() != nullptr);
+
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
 TEST(Repeat, Procedure_failure)
 {
   const std::string body{R"(

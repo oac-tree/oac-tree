@@ -50,6 +50,7 @@ public:
 TEST_F(DecoratorInstructionTest, InsertChild)
 {
   TestClass decorator;
+  EXPECT_EQ(decorator.GetCategory(), Instruction::kDecorator);
   EXPECT_TRUE(IsDefinedAttributeName(decorator, Constants::IS_ROOT_ATTRIBUTE_NAME));
   EXPECT_TRUE(IsDefinedAttributeName(decorator, Constants::NAME_ATTRIBUTE_NAME));
   EXPECT_TRUE(IsDefinedAttributeName(decorator, Constants::SHOW_COLLAPSED_ATTRIBUTE_NAME));

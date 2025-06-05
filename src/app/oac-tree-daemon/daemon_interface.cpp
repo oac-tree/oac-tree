@@ -62,6 +62,11 @@ void DaemonInterface::VariableUpdated(const std::string& name, const sup::dto::A
   (void)connected;
 }
 
+void DaemonInterface::BreakpointInstructionUpdated(const Instruction* instruction)
+{
+  (void)instruction;
+}
+
 bool DaemonInterface::PutValue(const sup::dto::AnyValue &value, const std::string &description)
 {
   std::string json_rep = sup::dto::ValuesToJSONString(value);

@@ -67,38 +67,8 @@ TEST_F(UserInterfaceTest, PutValueDispatch)
       .Times(2)
       .WillOnce(Return(false))
       .WillOnce(Return(true));
-  EXPECT_CALL(mock_ui, GetUserValue(_, _)).Times(0);
-  EXPECT_CALL(mock_ui, GetUserChoice(_, _)).Times(0);
   EXPECT_FALSE(mock_ui.PutValue(val, description));
   EXPECT_TRUE(mock_ui.PutValue(val, description));
-}
-
-TEST_F(UserInterfaceTest, GetUserValueDispatch)
-{
-  sup::dto::AnyValue val;
-  std::string description = "TestGetUserValue";
-  EXPECT_CALL(mock_ui, PutValue(_, _)).Times(0);
-  EXPECT_CALL(mock_ui, GetUserValue(_, description))
-      .Times(2)
-      .WillOnce(Return(false))
-      .WillOnce(Return(true));
-  EXPECT_CALL(mock_ui, GetUserChoice(_, _)).Times(0);
-  EXPECT_FALSE(mock_ui.GetUserValue(val, description));
-  EXPECT_TRUE(mock_ui.GetUserValue(val, description));
-}
-
-TEST_F(UserInterfaceTest, GetUserChoiceDispatch)
-{
-  std::vector<std::string> options = {"yes", "no" };
-  auto metadata = CreateUserChoiceMetadata();
-  EXPECT_CALL(mock_ui, PutValue(_, _)).Times(0);
-  EXPECT_CALL(mock_ui, GetUserValue(_, _)).Times(0);
-  EXPECT_CALL(mock_ui, GetUserChoice(options, metadata))
-      .Times(2)
-      .WillOnce(Return(-1))
-      .WillOnce(Return(0));
-  EXPECT_EQ(mock_ui.GetUserChoice(options, metadata), -1);
-  EXPECT_EQ(mock_ui.GetUserChoice(options, metadata), 0);
 }
 
 TEST_F(UserInterfaceTest, UserChoiceMetadata)

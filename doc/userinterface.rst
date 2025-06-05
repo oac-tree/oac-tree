@@ -47,6 +47,17 @@ When a workspace variable receives a value update, the `VariableUpdated` method 
        // Implement the logic for handling variable updates here
    }
 
+Breakpoint Notifications
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+When a breakpoint is hit, the `BreakpointInstructionUpdated` method is called with the instruction that triggered the breakpoint. The method is also called to clear this status by passing a nullptr. Implement this method to handle breakpoint notifications.
+
+.. code-block:: c++
+
+   void BreakpointInstructionUpdated(const Instruction* instruction) override {
+       // Implement the logic for handling breakpoint notifications here
+   }
+
 Displaying Values
 ^^^^^^^^^^^^^^^^^
 

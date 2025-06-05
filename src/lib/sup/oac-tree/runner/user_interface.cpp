@@ -55,6 +55,9 @@ void DefaultUserInterface::UpdateInstructionStatus(const Instruction*, Execution
 void DefaultUserInterface::VariableUpdated(const std::string&, const sup::dto::AnyValue&, bool)
 {}
 
+void DefaultUserInterface::BreakpointInstructionUpdated(const Instruction*)
+{}
+
 bool DefaultUserInterface::PutValue(const sup::dto::AnyValue&, const std::string&)
 {
   return false;

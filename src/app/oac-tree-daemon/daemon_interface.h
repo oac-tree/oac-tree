@@ -43,6 +43,7 @@ public:
 
   void UpdateInstructionStatus(const Instruction* instruction, ExecutionStatus status) override;
   void VariableUpdated(const std::string& name, const sup::dto::AnyValue& value, bool connected) override;
+  void BreakpointInstructionUpdated(const Instruction* instruction) override;
   bool PutValue(const sup::dto::AnyValue& value, const std::string& description) override;
   std::unique_ptr<IUserInputFuture> RequestUserInput(const UserInputRequest& request) override;
   void Message(const std::string& message) override;

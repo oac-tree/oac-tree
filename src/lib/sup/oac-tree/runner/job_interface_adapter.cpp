@@ -84,6 +84,11 @@ void JobInterfaceAdapter::VariableUpdated(const std::string& name, const sup::dt
   m_job_info_io.VariableUpdated(var_idx, value, connected);
 }
 
+void JobInterfaceAdapter::BreakpointInstructionUpdated(const Instruction* instruction)
+{
+  (void)instruction;
+}
+
 bool JobInterfaceAdapter::PutValue(const sup::dto::AnyValue& value, const std::string& description)
 {
   m_job_info_io.PutValue(value, description);

@@ -72,6 +72,11 @@ void CLInterface::VariableUpdated(const std::string& name, const sup::dto::AnyVa
   m_logger.LogMessage(log::SUP_SEQ_LOG_INFO, info_message);
 }
 
+void CLInterface::BreakpointInstructionUpdated(const Instruction* instruction)
+{
+  (void)instruction;
+}
+
 bool CLInterface::PutValue(const sup::dto::AnyValue &value, const std::string &description)
 {
   if (!description.empty())

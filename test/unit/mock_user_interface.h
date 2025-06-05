@@ -40,19 +40,14 @@ namespace oac_tree
 class MockUserInterface : public UserInterface
 {
 public:
-  MOCK_METHOD2(UpdateInstructionStatus, void(const Instruction *, ExecutionStatus));
-  MOCK_METHOD3(VariableUpdated,
-               void( const std::string& name, const sup::dto::AnyValue& value, bool connected));
-  MOCK_METHOD2(PutValue,
-               bool(const sup::dto::AnyValue& value, const std::string& description));
-  MOCK_METHOD2(GetUserValue,
-               bool(sup::dto::AnyValue& value, const std::string& description));
-  MOCK_METHOD2(GetUserChoice,
-               int(const std::vector<std::string>& options,
-                   const sup::dto::AnyValue& metadata));
-  MOCK_METHOD1(RequestUserInput, std::unique_ptr<IUserInputFuture>(const UserInputRequest& request));
-  MOCK_METHOD1(Message, void(const std::string& message));
-  MOCK_METHOD2(Log, void(int severity, const std::string& message));
+  MOCK_METHOD(void, UpdateInstructionStatus, (const Instruction *, ExecutionStatus), (override));
+  MOCK_METHOD(void, VariableUpdated,
+              (const std::string& name, const sup::dto::AnyValue& value, bool connected), (override));
+  MOCK_METHOD(void, BreakpointInstructionUpdated, (const Instruction* instruction), (override));
+  MOCK_METHOD(bool, PutValue, (const sup::dto::AnyValue& value, const std::string& description), (override));
+  MOCK_METHOD(std::unique_ptr<IUserInputFuture>, RequestUserInput, (const UserInputRequest& request), (override));
+  MOCK_METHOD(void, Message, (const std::string& message), (override));
+  MOCK_METHOD(void, Log, (int severity, const std::string& message), (override));
 };
 
 MATCHER_P(HasSameValue, value, "")

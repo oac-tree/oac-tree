@@ -63,6 +63,28 @@ TEST(ResetVariable, CopyWithReset)
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
+TEST(ResetVariable, CopyWithResetFailure)
+{
+  const std::string body{R"(
+    <Sequence>
+        <Copy inputVar="a" outputVar="target"/>
+        <ResetVariable varName="c"/>
+        <Copy inputVar="b" outputVar="target"/>
+    </Sequence>
+    <Workspace>
+        <Local name="target"/>
+        <Local name="a" type='{"type":"uint8"}' value='1' />
+        <Local name="b" type='{"type":"string"}' value='"some name"' />
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
 TEST(ResetVariable, CopyWithoutReset)
 {
   const std::string body{R"(

@@ -20,12 +20,14 @@
  * of the distribution package.
  ******************************************************************************/
 
+#include "gmock/gmock.h"
 #include <sup/oac-tree/compound_instruction.h>
 #include <sup/oac-tree/instructions/wait.h>
 
 #include <gtest/gtest.h>
 
 #include <sup/oac-tree/constants.h>
+#include <sup/oac-tree/procedure.h>
 
 using namespace sup::oac_tree;
 
@@ -39,6 +41,14 @@ public:
     ExecutionStatus ExecuteSingleImpl(UserInterface&, Workspace&) override { return {}; }
   };
 };
+
+TEST_F(CompoundInstructionTest, NoChildrenFailure)
+{
+  TestClass compound;
+  Procedure empty_proc;
+
+  EXPECT_THROW(compound.Setup(empty_proc), InstructionSetupException);
+}
 
 TEST_F(CompoundInstructionTest, InsertChild)
 {

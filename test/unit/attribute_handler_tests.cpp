@@ -176,6 +176,10 @@ TEST_F(AttributeHandlerTest, NonDefinedAttributes)
   EXPECT_FALSE(sup::dto::IsEmptyValue(bool_val));
   EXPECT_EQ(bool_val.GetType(), sup::dto::StringType);
   EXPECT_EQ(bool_val.As<std::string>(), kBoolAttrValue);
+
+  EXPECT_THROW(GetAttributeValueInfo(handler.GetStringAttributes(),
+                                     handler.GetAttributeDefinitions(), "Unknown"),
+               RuntimeException);
 }
 
 TEST_F(AttributeHandlerTest, ComplexConstraint)

@@ -180,6 +180,7 @@ TEST_F(AsyncInputAdapterTest, MultipleRequests)
   EXPECT_EQ(future_1->GetValue(), m_reply);
   // Future has become invalid:
   EXPECT_FALSE(future_1->IsValid());
+  EXPECT_THROW(future_1->GetValue(), InvalidOperationException);
   EXPECT_FALSE(future_1->WaitFor(0.0));
 }
 

@@ -4,6 +4,8 @@ Changes for 4.2.0:
 - Implement ActiveInstructionMonitor
 - API breaking: IJobInfoIO::NextInstructionsUpdated replaced with IJobInfoIO::ProcedureTicked
 - API breaking: Instruction::NextInstructions(Impl) removed
+- API breaking: UserInterface::BreakpointInstructionUpdated added
+- API breaking: IJobInfoIO::BreakpointInstructionUpdated added
 
 Changes for 4.1.0:
 

@@ -164,6 +164,18 @@ TEST_F(SequencerParserTest, NonExistentPluginError)
   EXPECT_THROW(CreateProcedure(body), RuntimeException);
 }
 
+TEST_F(SequencerParserTest, UnnamedtPluginError)
+{
+  const std::string body{R"(
+    <Plugin></Plugin>
+    <Sequence name="Main Sequence">
+        <Wait name="Immediate success"/>
+        <Wait name="One" timeout="1.0"/>
+    </Sequence>
+)"};
+  EXPECT_THROW(CreateProcedure(body), InvalidOperationException);
+}
+
 TEST_F(SequencerParserTest, InvalidChildError)
 {
   const std::string body{R"(

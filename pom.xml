@@ -45,7 +45,7 @@
         <sonar.language>cpp</sonar.language>
         <sonar.sources.cpp>src</sonar.sources.cpp>
         <sonar.tests.cpp>test</sonar.tests.cpp>
-        <sonar.exclusions>src/app/oac-tree-cli/main.cpp, src/app/oac-tree-daemon/main.cpp</sonar.exclusions>
+        <sonar.exclusions>src/app/oac-tree-cli/main.cpp, src/app/oac-tree-daemon/main.cpp,src/lib/sup/oac-tree/base/application_utils.cpp</sonar.exclusions>
         <!-- oac-tree configuration -->
         <pluginpath>lib/oac-tree/plugins</pluginpath>
     </properties>

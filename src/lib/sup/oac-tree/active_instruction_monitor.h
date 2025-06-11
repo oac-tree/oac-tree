@@ -42,7 +42,10 @@ class ActiveInstructionMonitor
 {
 public:
   using ActiveInstructionsChanged = std::function<void(const std::set<sup::dto::uint32>&)>;
+  using ActiveInstructionFilter =
+    std::function<std::set<sup::dto::uint32>(const std::set<sup::dto::uint32>&)>;
 
+  ActiveInstructionMonitor(ActiveInstructionsChanged callback, ActiveInstructionFilter filter);
   ActiveInstructionMonitor(ActiveInstructionsChanged callback);
   ~ActiveInstructionMonitor();
 
@@ -56,6 +59,7 @@ public:
 
 private:
   ActiveInstructionsChanged m_callback;
+  ActiveInstructionFilter m_filter;
   std::set<sup::dto::uint32> m_active_instructions; // List of currently active instruction indices
 
   bool AddActiveInstruction(sup::dto::uint32 instr_idx);
@@ -63,6 +67,8 @@ private:
 
   void NotifyCallback() const;
 };
+
+std::set<sup::dto::uint32> IdentityFilter(const std::set<sup::dto::uint32>& instr_ids);
 
 }  // namespace oac_tree
 

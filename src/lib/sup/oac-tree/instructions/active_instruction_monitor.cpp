@@ -26,9 +26,15 @@ namespace sup
 {
 namespace oac_tree
 {
-ActiveInstructionMonitor::ActiveInstructionMonitor(ActiveInstructionsChanged callback)
+ActiveInstructionMonitor::ActiveInstructionMonitor(ActiveInstructionsChanged callback,
+                                                   ActiveInstructionFilter filter)
   : m_callback{std::move(callback)}
+  , m_filter{std::move(filter)}
   , m_active_instructions{}
+{}
+
+ActiveInstructionMonitor::ActiveInstructionMonitor(ActiveInstructionsChanged callback)
+  : ActiveInstructionMonitor(std::move(callback), IdentityFilter)
 {}
 
 ActiveInstructionMonitor::~ActiveInstructionMonitor() = default;
@@ -65,7 +71,12 @@ bool ActiveInstructionMonitor::RemoveActiveInstruction(sup::dto::uint32 instr_id
 
 void ActiveInstructionMonitor::NotifyCallback() const
 {
-  m_callback(m_active_instructions);
+  m_callback(m_filter(m_active_instructions));
+}
+
+std::set<sup::dto::uint32> IdentityFilter(const std::set<sup::dto::uint32>& instr_ids)
+{
+  return instr_ids;
 }
 
 }  // namespace oac_tree

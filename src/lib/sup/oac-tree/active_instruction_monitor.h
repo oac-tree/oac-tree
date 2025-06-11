@@ -46,7 +46,7 @@ public:
     std::function<std::set<sup::dto::uint32>(const std::set<sup::dto::uint32>&)>;
 
   ActiveInstructionMonitor(ActiveInstructionsChanged callback, ActiveInstructionFilter filter);
-  ActiveInstructionMonitor(ActiveInstructionsChanged callback);
+  explicit ActiveInstructionMonitor(ActiveInstructionsChanged callback);
   ~ActiveInstructionMonitor();
 
   /**

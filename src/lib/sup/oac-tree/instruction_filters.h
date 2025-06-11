@@ -49,7 +49,7 @@ public:
    * @note The list of parent indices must contain exactly one element equal to kIsRootIndex,
    * should not contain any loops and all indices must be in the expected range.
    */
-  AncestorsActiveFilter(std::vector<sup::dto::uint32> parent_indices);
+  explicit AncestorsActiveFilter(std::vector<sup::dto::uint32> parent_indices);
   ~AncestorsActiveFilter();
 
   std::set<sup::dto::uint32> operator()(const std::set<sup::dto::uint32>& input_set) const;

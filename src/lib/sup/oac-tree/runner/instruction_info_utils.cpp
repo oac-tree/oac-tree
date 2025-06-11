@@ -25,6 +25,7 @@
 #include <sup/oac-tree/anyvalue_utils.h>
 #include <sup/oac-tree/exceptions.h>
 #include <sup/oac-tree/constants.h>
+#include <sup/oac-tree/instruction_filters.h>
 #include <sup/oac-tree/instruction_map.h>
 
 #include <sup/oac-tree/instruction.h>
@@ -88,6 +89,26 @@ std::unique_ptr<InstructionInfo> CreateInstructionInfoTree(const Instruction& ro
     }
   }
   return root_info;
+}
+
+std::vector<sup::dto::uint32> GetParentIndices(const InstructionInfo& instr_tree)
+{
+  auto n_instructions = Flatten(instr_tree).size();
+  std::vector<sup::dto::uint32> parent_indices(n_instructions, 0);
+  std::deque<const InstructionInfo*> stack;
+  stack.push_back(std::addressof(instr_tree));
+  parent_indices[instr_tree.GetIndex()] = kIsRootIndex;  // Root node.
+  while (!stack.empty())
+  {
+    auto node = stack.back();
+    stack.pop_back();
+    for (const auto* child : node->Children())
+    {
+      parent_indices[child->GetIndex()] = node->GetIndex();
+      stack.push_back(child);
+    }
+  }
+  return parent_indices;
 }
 
 std::unique_ptr<InstructionInfo> ToInstructionInfoTree(

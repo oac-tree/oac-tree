@@ -58,6 +58,14 @@ std::unique_ptr<InstructionInfo> CreateInstructionInfoTree(const Instruction& ro
                                                            const InstructionMap& instr_map);
 
 /**
+ * @brief Get a list of parent indices for the given InstructionInfo tree.
+ *
+ * @param instr_tree InstructionInfo tree to get parent indices from.
+ * @return List giving the parent index for each given index.
+ */
+std::vector<sup::dto::uint32> GetParentIndices(const InstructionInfo& instr_tree);
+
+/**
  * @brief Convert the given AnyValue to an InstructionInfo tree.
  *
  * @param instr_info_anyvalue AnyValue representation of an instruction tree.

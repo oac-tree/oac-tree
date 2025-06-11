@@ -23,6 +23,7 @@
 #include "unit_test_helper.h"
 
 #include <sup/oac-tree/constants.h>
+#include <sup/oac-tree/instruction_filters.h>
 #include <sup/oac-tree/instruction_info.h>
 #include <sup/oac-tree/instruction_info_utils.h>
 #include <sup/oac-tree/instruction_map.h>
@@ -102,6 +103,27 @@ TEST_F(InstructionInfoTest, InstructionInfoFromInstructionTree)
   InstructionInfo moved{std::move(copy)};
   EXPECT_EQ(moved, *instr_info);
   EXPECT_FALSE(moved != *instr_info);
+}
+
+TEST_F(InstructionInfoTest, ParentIndicesFromInstructionTree)
+{
+  // Construct procedure and extract Workspace
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(kWorkspaceSequenceBody);
+  auto proc = ParseProcedureString(procedure_string);
+  ASSERT_NE(proc.get(), nullptr);
+  EXPECT_NO_THROW(proc->Setup());
+  const auto* root = proc->RootInstruction();
+
+  // Create InstructionInfo tree
+  InstructionMap instr_map{root};
+  auto instr_info = utils::CreateInstructionInfoTree(*root, instr_map);
+  EXPECT_NO_THROW(ValidateInstructionInfoTree(*instr_info));
+
+  // Get parent indices
+  auto parent_indices = utils::GetParentIndices(*instr_info);
+  std::vector<sup::dto::uint32> expected = {kIsRootIndex, 0, 0};
+  EXPECT_EQ(parent_indices.size(), 3);
+  EXPECT_EQ(parent_indices, expected);
 }
 
 TEST_F(InstructionInfoTest, Flatten)

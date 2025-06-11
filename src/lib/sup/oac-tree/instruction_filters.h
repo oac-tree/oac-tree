@@ -41,6 +41,12 @@ const sup::dto::uint32 kIsRootIndex = std::numeric_limits<sup::dto::uint32>::max
 class AncestorsActiveFilter
 {
 public:
+  AncestorsActiveFilter(std::vector<sup::dto::uint32> parent_indices);
+  ~AncestorsActiveFilter();
+
+  std::set<sup::dto::uint32> operator()(const std::set<sup::dto::uint32>& input_set) const;
+
+private:
   enum class ParentageStatus
   {
     kValidParent = 0,  // Node has a valid parent
@@ -48,12 +54,6 @@ public:
     kNotFound          // Node was not found
   };
 
-  AncestorsActiveFilter(std::vector<sup::dto::uint32> parent_indices);
-  ~AncestorsActiveFilter();
-
-  std::set<sup::dto::uint32> operator()(const std::set<sup::dto::uint32>& input_set) const;
-
-private:
   void ValidateParentIndices() const;
   std::pair<ParentageStatus, sup::dto::uint32> GetParent(const sup::dto::uint32& idx) const;
   std::vector<sup::dto::uint32> m_parent_idx;

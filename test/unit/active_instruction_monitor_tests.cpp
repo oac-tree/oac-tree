@@ -21,6 +21,7 @@
  ******************************************************************************/
 
 #include <sup/oac-tree/active_instruction_monitor.h>
+#include <sup/oac-tree/instruction_filters.h>
 
 #include <gtest/gtest.h>
 
@@ -132,6 +133,41 @@ TEST_F(ActiveInstructionMonitorTest, OnlyNotifyOnUpdatedList)
   EXPECT_TRUE(m_active_instr.find(4) != m_active_instr.end());
   EXPECT_TRUE(m_active_instr.find(5) != m_active_instr.end());
 }
+
+TEST_F(ActiveInstructionMonitorTest, WithActiveAncestorFilter)
+{
+  // This list of parent indices represents the following tree:
+  // 0
+  // ├── 3
+  // │   ├── 2
+  // │   └── 1
+  // └── 4
+  const std::vector<sup::dto::uint32> parent_indices = { kIsRootIndex, 3, 3, 0, 0 };
+  auto filter = AncestorsActiveFilter{parent_indices};
+  ActiveInstructionMonitor monitor{GetCallback(), filter};
+
+  // Activate instruction 1, which has no active ancestors
+  monitor.InstructionStatusUpdated(1, ExecutionStatus::NOT_FINISHED);
+  EXPECT_EQ(m_count, 1);
+  EXPECT_EQ(m_active_instr.size(), 0);
+  // Active its grandparent, which will only activate the root
+  monitor.InstructionStatusUpdated(0, ExecutionStatus::RUNNING);
+  EXPECT_EQ(m_count, 2);
+  EXPECT_EQ(m_active_instr.size(), 1);
+  EXPECT_TRUE(m_active_instr.find(0) != m_active_instr.end());
+  // Active node 3, which will cause node 1 to be reported as active
+  monitor.InstructionStatusUpdated(3, ExecutionStatus::RUNNING);
+  EXPECT_EQ(m_count, 3);
+  EXPECT_EQ(m_active_instr.size(), 3);
+  EXPECT_TRUE(m_active_instr.find(0) != m_active_instr.end());
+  EXPECT_TRUE(m_active_instr.find(1) != m_active_instr.end());
+  EXPECT_TRUE(m_active_instr.find(3) != m_active_instr.end());
+  // Deactivate the root node, which will deactivate all nodes
+  monitor.InstructionStatusUpdated(0, ExecutionStatus::SUCCESS);
+  EXPECT_EQ(m_count, 4);
+  EXPECT_EQ(m_active_instr.size(), 0);
+}
+
 
 ActiveInstructionMonitorTest::ActiveInstructionMonitorTest()
   : m_count{0}

@@ -41,6 +41,14 @@ const sup::dto::uint32 kIsRootIndex = std::numeric_limits<sup::dto::uint32>::max
 class AncestorsActiveFilter
 {
 public:
+  /**
+   * @brief Construct a filter object with the given list of parent indices
+   *
+   * @param parent_indices List of parent inidices for each given index.
+   *
+   * @note The list of parent indices must contain exactly one element equal to kIsRootIndex,
+   * should not contain any loops and all indices must be in the expected range.
+   */
   AncestorsActiveFilter(std::vector<sup::dto::uint32> parent_indices);
   ~AncestorsActiveFilter();
 

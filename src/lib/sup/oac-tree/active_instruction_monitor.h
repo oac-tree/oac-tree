@@ -68,6 +68,12 @@ private:
   void NotifyCallback() const;
 };
 
+/**
+ * @brief Filter that returns the input set unchanged.
+ *
+ * @param instr_ids Set of instruction indices.
+ * @return Copy of the input set.
+ */
 std::set<sup::dto::uint32> IdentityFilter(const std::set<sup::dto::uint32>& instr_ids);
 
 }  // namespace oac_tree

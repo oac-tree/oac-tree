@@ -55,22 +55,22 @@ TEST_F(InstructionFiltersTest, Construction)
   }
   {
     // Parent indices out of range
-    std::vector<sup::dto::uint32> invalid_indices = { kIsRootIndex, 0, 1, 5, 2 };
+    const std::vector<sup::dto::uint32> invalid_indices = { kIsRootIndex, 0, 1, 5, 2 };
     EXPECT_THROW(AncestorsActiveFilter{invalid_indices}, InvalidOperationException);
   }
   {
     // No root node
-    std::vector<sup::dto::uint32> no_root_indices = { 0, 0, 1, 2 };
+    const std::vector<sup::dto::uint32> no_root_indices = { 0, 0, 1, 2 };
     EXPECT_THROW(AncestorsActiveFilter{no_root_indices}, InvalidOperationException);
   }
   {
     // Two root nodes
-    std::vector<sup::dto::uint32> two_root_indices = { kIsRootIndex, kIsRootIndex, 0, 1 };
+    const std::vector<sup::dto::uint32> two_root_indices = { kIsRootIndex, kIsRootIndex, 0, 1 };
     EXPECT_THROW(AncestorsActiveFilter{two_root_indices}, InvalidOperationException);
   }
   {
     // Loop
-    std::vector<sup::dto::uint32> loop_indices = { kIsRootIndex, 3, 1, 2 };
+    const std::vector<sup::dto::uint32> loop_indices = { kIsRootIndex, 3, 1, 2 };
     EXPECT_THROW(AncestorsActiveFilter{loop_indices}, InvalidOperationException);
   }
 }
@@ -80,30 +80,30 @@ TEST_F(InstructionFiltersTest, Filter)
   AncestorsActiveFilter filter{test_parent_indices};
   {
   // Test with an empty set
-  std::set<sup::dto::uint32> empty_set{};
+  const std::set<sup::dto::uint32> empty_set{};
   EXPECT_EQ(filter(empty_set), empty_set);
   }
   {
   // Test with a set containing all nodes
-  std::set<sup::dto::uint32> full_set = { 0, 1, 2, 3, 4 };
+  const std::set<sup::dto::uint32> full_set = { 0, 1, 2, 3, 4 };
   EXPECT_EQ(filter(full_set), full_set);
   }
   {
   // Test with a set containing a node that has a non-active parent (1)
-  std::set<sup::dto::uint32> partial_set = { 0, 1, 4 };
-  std::set<sup::dto::uint32> expected_set = { 0, 4 };
+  const std::set<sup::dto::uint32> partial_set = { 0, 1, 4 };
+  const std::set<sup::dto::uint32> expected_set = { 0, 4 };
   EXPECT_EQ(filter(partial_set), expected_set);
   }
   {
   // Test with a set missing the root node
-  std::set<sup::dto::uint32> partial_set = { 1, 2, 3, 4 };
-  std::set<sup::dto::uint32> empty_set{};
+  const std::set<sup::dto::uint32> partial_set = { 1, 2, 3, 4 };
+  const std::set<sup::dto::uint32> empty_set{};
   EXPECT_EQ(filter(partial_set), empty_set);
   }
   {
   // Test with a set containing an unknown node (8)
-  std::set<sup::dto::uint32> unknown_node_set = { 0, 3, 8 };
-  std::set<sup::dto::uint32> empty_set{};
+  const std::set<sup::dto::uint32> unknown_node_set = { 0, 3, 8 };
+  const std::set<sup::dto::uint32> empty_set{};
   EXPECT_EQ(filter(unknown_node_set), empty_set);
   }
 }

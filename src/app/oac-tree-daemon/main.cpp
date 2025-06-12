@@ -85,6 +85,5 @@ int main(int argc, char* argv[])
   auto end_state = monitor.WaitForFinished();
   std::string message = "Procedure ended with state: " + ToString(end_state);
   logger.Info(message);
-
-  return 0;
+  return end_state == JobState::kSucceeded ? 0 : 1;
 }

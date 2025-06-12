@@ -50,8 +50,8 @@ std::unique_ptr<Procedure> SafeParseProcedure(const std::string& filename, std::
  * message in the output parameter.
  */
 std::unique_ptr<AsyncRunner> CreateAsyncRunner(Procedure& proc, UserInterface& ui,
-                                                   JobStateMonitor& state_monitor,
-                                                   std::string& error_msg);
+                                               JobStateMonitor& state_monitor,
+                                               std::string& error_msg);
 
 /**
  * @brief Simple implementation of JobStateMonitor that provides member functions that wait for

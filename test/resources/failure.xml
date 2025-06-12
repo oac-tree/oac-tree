@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/oac-tree" version="1.0"
+           name="Procedure for testing a failed procedure execution"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/oac-tree oac-tree.xsd"
+           tickTimeout="0.2">
+    <Sequence>
+        <Wait timeout="1.0"/>
+        <Message text="Failure!"/>
+        <Inverter>
+            <Wait/>
+        </Inverter>
+    </Sequence>
+    <Workspace/>
+</Procedure>

@@ -2,6 +2,7 @@ Changes for 4.2.0:
 
 - Simplify breakpoint mechanism, allowing removal Instruction::NextInstructions() API
 - Implement ActiveInstructionMonitor
+- Pass value instead of type in UserInputRequest
 - API breaking: IJobInfoIO::NextInstructionsUpdated replaced with IJobInfoIO::ProcedureTicked
 - API breaking: Instruction::NextInstructions(Impl) removed
 - API breaking: UserInterface::BreakpointInstructionUpdated added

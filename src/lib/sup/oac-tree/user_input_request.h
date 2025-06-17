@@ -53,7 +53,7 @@ struct UserInputRequest
 public:
   InputRequestType m_request_type;
   sup::dto::AnyValue m_meta_data;
-  sup::dto::AnyType m_input_type;
+  sup::dto::AnyValue m_input_value;
 };
 
 const UserInputRequest kInvalidUserInputRequest{ InputRequestType::kInvalid, {}, {} };

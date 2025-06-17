@@ -42,7 +42,7 @@ bool operator==(const UserInputRequest& left, const UserInputRequest& right)
   {
     return false;
   }
-  return left.m_input_type == right.m_input_type;
+  return left.m_input_value == right.m_input_value;
 }
 
 bool operator!=(const UserInputRequest& left, const UserInputRequest& right)
@@ -54,7 +54,7 @@ UserInputRequest CreateUserValueRequest(const sup::dto::AnyValue& value,
                                         const std::string& description)
 {
   sup::dto::AnyValue meta_data = description;
-  UserInputRequest input_request{ InputRequestType::kUserValue, meta_data, value.GetType() };
+  UserInputRequest input_request{ InputRequestType::kUserValue, meta_data, value };
   return input_request;
 }
 
@@ -71,7 +71,7 @@ UserInputRequest CreateUserChoiceRequest(const std::vector<std::string>& options
     { Constants::kInputRequestMetadataFieldName, metadata }
   }};
   UserInputRequest input_request{ InputRequestType::kUserChoice, meta,
-                                  sup::dto::SignedInteger32Type};
+                                  { sup::dto::SignedInteger32Type, 0 }};
   return input_request;
 }
 
@@ -86,7 +86,7 @@ bool ParseUserValueRequest(const UserInputRequest& request, sup::dto::AnyValue& 
   {
     return false;
   }
-  if (!sup::dto::TryAssign(value, sup::dto::AnyValue{request.m_input_type}))
+  if (!sup::dto::TryAssign(value, request.m_input_value))
   {
     return false;
   }

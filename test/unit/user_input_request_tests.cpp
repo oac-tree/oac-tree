@@ -78,7 +78,7 @@ TEST_F(UserInputRequestTest, CreateUserValueRequest)
   // Check request fields
   EXPECT_EQ(request.m_request_type, InputRequestType::kUserValue);
   EXPECT_EQ(request.m_meta_data, sup::dto::AnyValue{description});
-  EXPECT_EQ(request.m_input_type, input_type);
+  EXPECT_EQ(request.m_input_value, input);
 
   // Parse this request
   sup::dto::AnyValue value_parsed{};
@@ -99,7 +99,7 @@ TEST_F(UserInputRequestTest, CreateUserChoiceRequest)
 
   // Check request fields
   EXPECT_EQ(request.m_request_type, InputRequestType::kUserChoice);
-  EXPECT_EQ(request.m_input_type, sup::dto::SignedInteger32Type);
+  EXPECT_EQ(request.m_input_value, sup::dto::AnyValue{sup::dto::SignedInteger32Type});
   ASSERT_TRUE(request.m_meta_data.HasField(Constants::kInputRequestOptionsFieldName));
   ASSERT_TRUE(request.m_meta_data.HasField(Constants::kInputRequestMetadataFieldName));
   EXPECT_EQ(request.m_meta_data[Constants::kInputRequestMetadataFieldName], metadata);
@@ -127,13 +127,12 @@ TEST_F(UserInputRequestTest, ParseUserValueRequest)
     const std::string description = "description";
     InputRequestType request_type = InputRequestType::kUserValue;
     sup::dto::AnyValue metadata{ sup::dto::StringType, description };
-    sup::dto::AnyType input_type = sup::dto::StringType;
-    UserInputRequest request{ request_type, metadata, input_type };
+    sup::dto::AnyValue input_value{ sup::dto::StringType, "input_value" };
+    UserInputRequest request{ request_type, metadata, input_value };
     sup::dto::AnyValue parsed_value{};
     std::string parsed_description{};
     EXPECT_TRUE(ParseUserValueRequest(request, parsed_value, parsed_description));
-    sup::dto::AnyValue expected_value{ sup::dto::StringType };
-    EXPECT_EQ(parsed_value, expected_value);
+    EXPECT_EQ(parsed_value, input_value);
     EXPECT_EQ(parsed_description, description);
   }
   {
@@ -141,8 +140,8 @@ TEST_F(UserInputRequestTest, ParseUserValueRequest)
     const std::string description = "description";
     InputRequestType request_type = InputRequestType::kUserChoice;
     sup::dto::AnyValue metadata{ sup::dto::StringType, description };
-    sup::dto::AnyType input_type = sup::dto::StringType;
-    UserInputRequest request{ request_type, metadata, input_type };
+    sup::dto::AnyValue input_value{ sup::dto::StringType, "input_value" };
+    UserInputRequest request{ request_type, metadata, input_value };
     sup::dto::AnyValue parsed_value{};
     std::string parsed_description{};
     EXPECT_FALSE(ParseUserValueRequest(request, parsed_value, parsed_description));
@@ -153,8 +152,8 @@ TEST_F(UserInputRequestTest, ParseUserValueRequest)
     // Wrong metadata type (must be StringType)
     InputRequestType request_type = InputRequestType::kUserValue;
     sup::dto::AnyValue metadata{ sup::dto::Float64Type, 3.14 };
-    sup::dto::AnyType input_type = sup::dto::StringType;
-    UserInputRequest request{ request_type, metadata, input_type };
+    sup::dto::AnyValue input_value{ sup::dto::StringType, "input_value" };
+    UserInputRequest request{ request_type, metadata, input_value };
     sup::dto::AnyValue parsed_value{};
     std::string parsed_description{};
     EXPECT_FALSE(ParseUserValueRequest(request, parsed_value, parsed_description));
@@ -166,8 +165,8 @@ TEST_F(UserInputRequestTest, ParseUserValueRequest)
     const std::string description = "description";
     InputRequestType request_type = InputRequestType::kUserValue;
     sup::dto::AnyValue metadata{ sup::dto::StringType, description };
-    sup::dto::AnyType input_type = sup::dto::StringType;
-    UserInputRequest request{ request_type, metadata, input_type };
+    sup::dto::AnyValue input_value{ sup::dto::StringType, "input_value" };
+    UserInputRequest request{ request_type, metadata, input_value };
     // Array of 4 uint64 values; one of them will be used to simulate failed assignment
     sup::dto::AnyValue parsed_value{4, sup::dto::UnsignedInteger64Type};
     std::string parsed_description{};
@@ -194,8 +193,8 @@ TEST_F(UserInputRequestTest, ParseUserChoiceRequest)
       { Constants::kInputRequestOptionsFieldName, options_av },
       { Constants::kInputRequestMetadataFieldName, { sup::dto::StringType, metatext }}
     }};
-    sup::dto::AnyType input_type = sup::dto::StringType;
-    UserInputRequest request{ request_type, metadata, input_type };
+    sup::dto::AnyValue input_value{ sup::dto::StringType, "two" };
+    UserInputRequest request{ request_type, metadata, input_value };
     std::vector<std::string> parsed_options{};
     sup::dto::AnyValue parsed_metadata{};
     EXPECT_TRUE(ParseUserChoiceRequest(request, parsed_options, parsed_metadata));
@@ -217,8 +216,8 @@ TEST_F(UserInputRequestTest, ParseUserChoiceRequest)
       { Constants::kInputRequestOptionsFieldName, options_av },
       { Constants::kInputRequestMetadataFieldName, { sup::dto::StringType, metatext }}
     }};
-    sup::dto::AnyType input_type = sup::dto::StringType;
-    UserInputRequest request{ request_type, metadata, input_type };
+    sup::dto::AnyValue input_value{ sup::dto::StringType, "two" };
+    UserInputRequest request{ request_type, metadata, input_value };
     std::vector<std::string> parsed_options{};
     sup::dto::AnyValue parsed_metadata{};
     EXPECT_FALSE(ParseUserChoiceRequest(request, parsed_options, parsed_metadata));
@@ -232,8 +231,8 @@ TEST_F(UserInputRequestTest, ParseUserChoiceRequest)
     sup::dto::AnyValue metadata{{
       { Constants::kInputRequestMetadataFieldName, { sup::dto::StringType, metatext }}
     }};
-    sup::dto::AnyType input_type = sup::dto::StringType;
-    UserInputRequest request{ request_type, metadata, input_type };
+    sup::dto::AnyValue input_value{ sup::dto::StringType, "two" };
+    UserInputRequest request{ request_type, metadata, input_value };
     std::vector<std::string> parsed_options{};
     sup::dto::AnyValue parsed_metadata{};
     EXPECT_FALSE(ParseUserChoiceRequest(request, parsed_options, parsed_metadata));
@@ -249,8 +248,8 @@ TEST_F(UserInputRequestTest, ParseUserChoiceRequest)
       { Constants::kInputRequestOptionsFieldName, options_av },
       { Constants::kInputRequestMetadataFieldName, { sup::dto::StringType, metatext }}
     }};
-    sup::dto::AnyType input_type = sup::dto::StringType;
-    UserInputRequest request{ request_type, metadata, input_type };
+    sup::dto::AnyValue input_value{ sup::dto::StringType, "two" };
+    UserInputRequest request{ request_type, metadata, input_value };
     std::vector<std::string> parsed_options{};
     sup::dto::AnyValue parsed_metadata{};
     EXPECT_FALSE(ParseUserChoiceRequest(request, parsed_options, parsed_metadata));
@@ -266,8 +265,8 @@ TEST_F(UserInputRequestTest, ParseUserChoiceRequest)
       { Constants::kInputRequestOptionsFieldName, options_av },
       { Constants::kInputRequestMetadataFieldName, { sup::dto::StringType, metatext }}
     }};
-    sup::dto::AnyType input_type = sup::dto::StringType;
-    UserInputRequest request{ request_type, metadata, input_type };
+    sup::dto::AnyValue input_value{ sup::dto::StringType, "two" };
+    UserInputRequest request{ request_type, metadata, input_value };
     std::vector<std::string> parsed_options{};
     sup::dto::AnyValue parsed_metadata{};
     EXPECT_FALSE(ParseUserChoiceRequest(request, parsed_options, parsed_metadata));
@@ -288,8 +287,8 @@ TEST_F(UserInputRequestTest, ParseUserChoiceRequest)
       { Constants::kInputRequestOptionsFieldName, options_av },
       { Constants::kInputRequestMetadataFieldName, { sup::dto::StringType, metatext }}
     }};
-    sup::dto::AnyType input_type = sup::dto::StringType;
-    UserInputRequest request{ request_type, metadata, input_type };
+    sup::dto::AnyValue input_value{ sup::dto::StringType, "two" };
+    UserInputRequest request{ request_type, metadata, input_value };
     std::vector<std::string> parsed_options{};
     sup::dto::AnyValue parsed_metadata{4, sup::dto::UnsignedInteger64Type};
     EXPECT_FALSE(ParseUserChoiceRequest(request, parsed_options, parsed_metadata[0]));

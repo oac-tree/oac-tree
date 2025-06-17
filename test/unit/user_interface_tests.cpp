@@ -25,6 +25,7 @@
 
 #include <sup/oac-tree/instruction.h>
 #include <sup/oac-tree/instruction_registry.h>
+#include <sup/oac-tree/job_interface_adapter.h>
 #include <sup/oac-tree/user_interface.h>
 #include <sup/oac-tree/workspace.h>
 #include <sup/oac-tree/constants.h>
@@ -50,8 +51,10 @@ protected:
 const std::string TREE_TYPE = "TestData";
 
 using ::testing::_;
+using ::testing::DoAll;
 using ::testing::InSequence;
 using ::testing::Return;
+using ::testing::SetArgReferee;
 
 TEST_F(UserInterfaceTest, UpdateInstructionStatusDispatch)
 {
@@ -147,6 +150,48 @@ TEST_F(UserInterfaceTest, GetUserValueDefault)
   auto [retrieved, value] = GetBlockingUserValue(empty_ui, val, description);
   EXPECT_FALSE(retrieved);
   EXPECT_TRUE(sup::dto::IsEmptyValue(value));
+}
+
+TEST_F(UserInterfaceTest, CreateUserValueFutureDefaultScalar)
+{
+  sup::UnitTestHelper::MockJobInfoIO mock_job_io;
+  Procedure proc{};
+  JobInterfaceAdapter ui{proc, mock_job_io};
+  auto instr = GlobalInstructionRegistry().Create("Wait");
+
+  // Scalar input with default value
+  sup::dto::AnyValue input{ sup::dto::UnsignedInteger16Type, 0 };
+  std::string description = "Pick a number";
+  sup::dto::AnyValue output{ sup::dto::UnsignedInteger16Type, 88 };
+  EXPECT_CALL(mock_job_io, GetUserValue(_, input, description))
+      .WillOnce(DoAll(SetArgReferee<1>(output), Return(true)));
+  auto future = CreateUserValueFuture(ui, *instr, input, description);
+  EXPECT_TRUE(future->WaitFor(1.0));
+  auto reply = future->GetValue();
+  EXPECT_EQ(reply.m_request_type, InputRequestType::kUserValue);
+  EXPECT_TRUE(reply.m_result);
+  EXPECT_EQ(reply.m_payload, output);
+}
+
+TEST_F(UserInterfaceTest, CreateUserValueFutureNonDefaultScalar)
+{
+  sup::UnitTestHelper::MockJobInfoIO mock_job_io;
+  Procedure proc{};
+  JobInterfaceAdapter ui{proc, mock_job_io};
+  auto instr = GlobalInstructionRegistry().Create("Wait");
+
+  // Scalar input with default value
+  sup::dto::AnyValue input{ sup::dto::UnsignedInteger16Type, 42 };
+  std::string description = "Pick a number";
+  sup::dto::AnyValue output{ sup::dto::UnsignedInteger16Type, 88 };
+  EXPECT_CALL(mock_job_io, GetUserValue(_, input, description))
+      .WillOnce(DoAll(SetArgReferee<1>(output), Return(true)));
+  auto future = CreateUserValueFuture(ui, *instr, input, description);
+  EXPECT_TRUE(future->WaitFor(1.0));
+  auto reply = future->GetValue();
+  EXPECT_EQ(reply.m_request_type, InputRequestType::kUserValue);
+  EXPECT_TRUE(reply.m_result);
+  EXPECT_EQ(reply.m_payload, output);
 }
 
 TEST_F(UserInterfaceTest, GetUserChoiceDefault)

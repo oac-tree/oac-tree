@@ -194,6 +194,60 @@ TEST_F(UserInterfaceTest, CreateUserValueFutureNonDefaultScalar)
   EXPECT_EQ(reply.m_payload, output);
 }
 
+TEST_F(UserInterfaceTest, CreateUserValueFutureDefaultStruct)
+{
+  sup::UnitTestHelper::MockJobInfoIO mock_job_io;
+  Procedure proc{};
+  JobInterfaceAdapter ui{proc, mock_job_io};
+  auto instr = GlobalInstructionRegistry().Create("Wait");
+
+  // Scalar input with default value
+  sup::dto::AnyValue input{{
+    { "flag", { sup::dto::BooleanType, false }},
+    { "value", { sup::dto::Float32Type, 0.0f }}
+  }};
+  std::string description = "Set structure";
+  sup::dto::AnyValue output{{
+    { "flag", { sup::dto::BooleanType, true }},
+    { "value", { sup::dto::Float32Type, 3.14f }}
+  }};
+  EXPECT_CALL(mock_job_io, GetUserValue(_, input, description))
+      .WillOnce(DoAll(SetArgReferee<1>(output), Return(true)));
+  auto future = CreateUserValueFuture(ui, *instr, input, description);
+  EXPECT_TRUE(future->WaitFor(1.0));
+  auto reply = future->GetValue();
+  EXPECT_EQ(reply.m_request_type, InputRequestType::kUserValue);
+  EXPECT_TRUE(reply.m_result);
+  EXPECT_EQ(reply.m_payload, output);
+}
+
+TEST_F(UserInterfaceTest, CreateUserValueFutureNonDefaultStruct)
+{
+  sup::UnitTestHelper::MockJobInfoIO mock_job_io;
+  Procedure proc{};
+  JobInterfaceAdapter ui{proc, mock_job_io};
+  auto instr = GlobalInstructionRegistry().Create("Wait");
+
+  // Scalar input with default value
+  sup::dto::AnyValue input{{
+    { "flag", { sup::dto::BooleanType, true }},
+    { "value", { sup::dto::Float32Type, 12.3f }}
+  }};
+  std::string description = "Set structure";
+  sup::dto::AnyValue output{{
+    { "flag", { sup::dto::BooleanType, false }},
+    { "value", { sup::dto::Float32Type, 3.14f }}
+  }};
+  EXPECT_CALL(mock_job_io, GetUserValue(_, input, description))
+      .WillOnce(DoAll(SetArgReferee<1>(output), Return(true)));
+  auto future = CreateUserValueFuture(ui, *instr, input, description);
+  EXPECT_TRUE(future->WaitFor(1.0));
+  auto reply = future->GetValue();
+  EXPECT_EQ(reply.m_request_type, InputRequestType::kUserValue);
+  EXPECT_TRUE(reply.m_result);
+  EXPECT_EQ(reply.m_payload, output);
+}
+
 TEST_F(UserInterfaceTest, GetUserChoiceDefault)
 {
   std::vector<std::string> options;

@@ -53,6 +53,7 @@ public:
 private:
   bool m_blocking;
   sup::dto::int64 m_finish;
+  bool m_update;
   std::mutex m_mtx;
   std::condition_variable m_cv;
   ScopeGuard m_cb_guard;
@@ -68,6 +69,8 @@ private:
   void RegisterCallbacks(Workspace& ws);
 
   void ClearCallbacks();
+
+  bool CheckUpdate();
 
   ExecutionStatus HandleFinishedStatus(ExecutionStatus status);
 

@@ -244,6 +244,100 @@ R"RAW(
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
+TEST_F(ListenTest, CountChildExecutionAsync)
+{
+  static const std::string procedure_body{
+R"RAW(
+    <Sequence isRoot="True">
+        <ForceSuccess>
+            <Include name="Test Setup of Listen child" path="TestListenCount"/>
+        </ForceSuccess>
+        <LessThanOrEqual leftVar="count" rightVar="max_val"/>
+    </Sequence>
+    <ParallelSequence name="TestListenCount">
+        <Listen varNames="monitor">
+            <Sequence>
+                <LessThan leftVar="monitor" rightVar="max_val" />
+                <Increment varName="count"/>
+            </Sequence>
+        </Listen>
+        <Repeat maxCount="-1">
+            <Sequence>
+                <Wait timeout="0.1" blocking="true" />
+                <Increment varName="monitor"/>
+            </Sequence>
+        </Repeat>
+    </ParallelSequence>
+    <Workspace>
+        <Local name="monitor"
+               type='{"type":"uint64"}'
+               value='0' />
+        <Local name="max_val"
+               type='{"type":"uint64"}'
+               value='5' />
+        <Local name="count"
+               type='{"type":"uint64"}'
+               value='0' />
+    </Workspace>
+)RAW"};
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
+
+  sup::UnitTestHelper::EmptyUserInterface ui{};
+
+  auto proc = ParseProcedureString(procedure_string);
+  ASSERT_NE(proc.get(), nullptr);
+  EXPECT_TRUE(
+    sup::UnitTestHelper::TryAndExecuteNoReset(proc, ui, ExecutionStatus::SUCCESS));
+}
+
+TEST_F(ListenTest, CountChildExecutionBlocking)
+{
+  static const std::string procedure_body{
+R"RAW(
+    <Sequence isRoot="True">
+        <ForceSuccess>
+            <Include name="Test Setup of Listen child" path="TestListenCount"/>
+        </ForceSuccess>
+        <LessThanOrEqual leftVar="count" rightVar="max_val"/>
+    </Sequence>
+    <ParallelSequence name="TestListenCount">
+        <Listen varNames="monitor" blocking="true">
+            <Sequence>
+                <LessThan leftVar="monitor" rightVar="max_val" />
+                <Increment varName="count"/>
+            </Sequence>
+        </Listen>
+        <Repeat maxCount="-1">
+            <Sequence>
+                <Wait timeout="0.1" blocking="true" />
+                <Increment varName="monitor"/>
+            </Sequence>
+        </Repeat>
+    </ParallelSequence>
+    <Workspace>
+        <Local name="monitor"
+               type='{"type":"uint64"}'
+               value='0' />
+        <Local name="max_val"
+               type='{"type":"uint64"}'
+               value='5' />
+        <Local name="count"
+               type='{"type":"uint64"}'
+               value='0' />
+    </Workspace>
+)RAW"};
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
+
+  sup::UnitTestHelper::EmptyUserInterface ui{};
+
+  auto proc = ParseProcedureString(procedure_string);
+  ASSERT_NE(proc.get(), nullptr);
+  EXPECT_TRUE(
+    sup::UnitTestHelper::TryAndExecuteNoReset(proc, ui, ExecutionStatus::SUCCESS));
+}
+
 TEST_F(ListenTest, VariableAttribute)
 {
   sup::UnitTestHelper::EmptyUserInterface ui;

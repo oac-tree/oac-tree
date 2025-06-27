@@ -52,6 +52,10 @@ private:
   bool m_force_success;
   bool m_blocking;
   std::map<std::string, sup::dto::AnyValue> m_var_cache;
+  bool m_var_changed;
+  std::mutex m_mtx;
+  std::condition_variable m_cv;
+  ScopeGuard m_cb_guard;
 
   bool InitHook(UserInterface& ui, Workspace& ws) override;
 
@@ -63,11 +67,17 @@ private:
    */
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 
+  void HaltImpl() override;
+
   void ResetHook(UserInterface& ui) override;
 
   void InitVariableCache(const std::vector<std::string>& var_names);
 
-  bool UpdateVariableCache(Workspace& ws);
+  void UpdateCallback(const std::string& name, const sup::dto::AnyValue& val);
+
+  void RegisterCallbacks(Workspace* ws, std::vector<std::string> var_names);
+
+  void ClearCallbacks();
 
   /**
    * @brief Calculate this instruction's status from the status of its child instruction.

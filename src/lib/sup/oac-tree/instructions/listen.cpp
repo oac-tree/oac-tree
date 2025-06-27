@@ -37,6 +37,10 @@ Listen::Listen()
   , m_force_success{false}
   , m_blocking{false}
   , m_var_cache{}
+  , m_var_changed{false}
+  , m_mtx{}
+  , m_cv{}
+  , m_cb_guard{}
 {
   AddAttributeDefinition(Constants::VARIABLE_NAMES_ATTRIBUTE_NAME).SetMandatory();
   AddAttributeDefinition(Constants::FORCE_SUCCESS_ATTRIBUTE_NAME, sup::dto::BooleanType)
@@ -60,38 +64,56 @@ bool Listen::InitHook(UserInterface& ui, Workspace& ws)
   {
     return false;
   }
+  RegisterCallbacks(std::addressof(ws), var_names);
+  // m_var_changed is not set to true, since the child will always be executed when it is not
+  // in a finished status
   return true;
 }
 
 ExecutionStatus Listen::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
+  auto child_status = GetChildStatus();
+  if (IsFinishedStatus(child_status))
+  {
+    ResetChild(ui);
+    std::unique_lock<std::mutex> lk(m_mtx);
+    if (m_blocking)
+    {
+      m_cv.wait(lk, [this]() { return m_var_changed || IsHaltRequested(); });
+    }
+    else if (!m_var_changed && !IsHaltRequested())
+    {
+      return ExecutionStatus::RUNNING;
+    }
+    m_var_changed = false;
+  }
   if (IsHaltRequested())
   {
     return ExecutionStatus::FAILURE;
   }
-  auto child_status = GetChildStatus();
-  if (IsExecutingStatus(child_status))
-  {
-    ExecuteChild(ui, ws);
-    return CalculateStatus();
-  }
-  if (IsFinishedStatus(child_status))
-  {
-    ResetChild(ui);
-  }
-  auto cache_changed = UpdateVariableCache(ws);
-  if (!cache_changed)
-  {
-    return ExecutionStatus::RUNNING;
-  }
   ExecuteChild(ui, ws);
-  return CalculateStatus();
+  auto status = CalculateStatus();
+  if (IsFinishedStatus(status))
+  {
+    ClearCallbacks();
+  }
+  return status;
+}
+
+void Listen::HaltImpl()
+{
+  HaltChild();
+  m_cv.notify_one();
+  ClearCallbacks();
 }
 
 void Listen::ResetHook(UserInterface& ui)
 {
+  ClearCallbacks();
   m_force_success = false;
+  m_blocking = false;
   m_var_cache.clear();
+  m_var_changed = false;
   ResetChild(ui);
 }
 
@@ -104,24 +126,39 @@ void Listen::InitVariableCache(const std::vector<std::string>& var_names)
   }
 }
 
-bool Listen::UpdateVariableCache(Workspace& ws)
+void Listen::UpdateCallback(const std::string& name, const sup::dto::AnyValue& val)
 {
-  auto cache_changed = false;
-  for (auto& [var_name, var_value] : m_var_cache)
   {
-    sup::dto::AnyValue new_value;
-    if (!ws.GetValue(var_name, new_value))
+    std::lock_guard<std::mutex> lk(m_mtx);
+    auto it = m_var_cache.find(name);
+    if (it == m_var_cache.end() || it->second == val)
     {
-      continue;
+      return;
     }
-    if (var_value == new_value)
-    {
-      continue;
-    }
-    var_value = new_value;
-    cache_changed = true;
+    m_var_changed = true;
+    it->second = val;
   }
-  return cache_changed;
+  m_cv.notify_one();
+}
+
+void Listen::RegisterCallbacks(
+    Workspace* ws, std::vector<std::string> var_names)
+{
+  m_cb_guard = ws->GetCallbackGuard(this);
+  for (const auto& var_name : var_names)
+  {
+    ws->RegisterCallback(
+        var_name,
+        [this, var_name](const sup::dto::AnyValue& val, bool)
+        {
+          UpdateCallback(var_name, val);
+        }, this);
+  }
+}
+
+void Listen::ClearCallbacks()
+{
+  m_cb_guard = ScopeGuard{};
 }
 
 ExecutionStatus Listen::CalculateStatus() const

@@ -50,6 +50,7 @@ public:
 
 private:
   bool m_force_success;
+  bool m_blocking;
   std::map<std::string, sup::dto::AnyValue> m_var_cache;
 
   bool InitHook(UserInterface& ui, Workspace& ws) override;

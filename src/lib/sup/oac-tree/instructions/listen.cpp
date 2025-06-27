@@ -35,10 +35,13 @@ const std::string Listen::Type = "Listen";
 Listen::Listen()
   : DecoratorInstruction(Listen::Type)
   , m_force_success{false}
+  , m_blocking{false}
   , m_var_cache{}
 {
   AddAttributeDefinition(Constants::VARIABLE_NAMES_ATTRIBUTE_NAME).SetMandatory();
   AddAttributeDefinition(Constants::FORCE_SUCCESS_ATTRIBUTE_NAME, sup::dto::BooleanType)
+    .SetCategory(AttributeCategory::kBoth);
+  AddAttributeDefinition(Constants::BLOCKING_ATTRIBUTE_NAME, sup::dto::BooleanType)
     .SetCategory(AttributeCategory::kBoth);
 }
 
@@ -50,6 +53,10 @@ bool Listen::InitHook(UserInterface& ui, Workspace& ws)
     instruction_utils::VariableNamesFromAttribute(*this, Constants::VARIABLE_NAMES_ATTRIBUTE_NAME);
   InitVariableCache(var_names);
   if (!GetAttributeValueAs(Constants::FORCE_SUCCESS_ATTRIBUTE_NAME, ws, ui, m_force_success))
+  {
+    return false;
+  }
+  if (!GetAttributeValueAs(Constants::BLOCKING_ATTRIBUTE_NAME, ws, ui, m_blocking))
   {
     return false;
   }

@@ -528,6 +528,8 @@ Listen
 
 **Asynchronous** instruction that executes its child instruction each time specific variables are updated. By default, it will only report a finished status (success or failure) when the child instruction fails.
 
+If the user wants to listen to a set of variables in a blocking way, a `blocking` attribute can be set to `true`. Although this would be less CPU consuming, it implies that the instruction is no longer asynchronous, which has implications if it is used as a child of a reactive sequence or fallback.
+
 Attributes:
 
 .. list-table::
@@ -546,6 +548,10 @@ Attributes:
      - BooleanType
      - no
      - Always handle child as successful if active (only halt will exit the loop)
+   * - blocking
+     - BooleanType
+     - no
+     - Use a blocking implementation, which is less CPU consuming
 
 .. _listen_exp:
 

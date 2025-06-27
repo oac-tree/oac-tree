@@ -75,7 +75,6 @@ ExecutionStatus Listen::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   auto child_status = GetChildStatus();
   if (IsFinishedStatus(child_status))
   {
-    ResetChild(ui);
     std::unique_lock<std::mutex> lk(m_mtx);
     if (m_blocking)
     {
@@ -86,6 +85,8 @@ ExecutionStatus Listen::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
       return ExecutionStatus::RUNNING;
     }
     m_var_changed = false;
+    lk.unlock();
+    ResetChild(ui);
   }
   if (IsHaltRequested())
   {

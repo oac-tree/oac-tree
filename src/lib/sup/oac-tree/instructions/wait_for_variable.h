@@ -24,8 +24,12 @@
 #define SUP_OAC_TREE_WAIT_FOR_VARIABLE_H_
 
 #include <sup/oac-tree/instruction.h>
+#include <sup/oac-tree/scope_guard.h>
 
 #include <sup/dto/basic_scalar_types.h>
+
+#include <condition_variable>
+#include <mutex>
 
 namespace sup
 {
@@ -47,13 +51,26 @@ public:
   static const std::string Type;
 
 private:
+  bool m_blocking;
   sup::dto::int64 m_finish;
+  sup::dto::AnyValue m_cache;
+  std::mutex m_mtx;
+  std::condition_variable m_cv;
+  ScopeGuard m_cb_guard;
 
   bool InitHook(UserInterface& ui, Workspace& ws) override;
 
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 
+  void HaltImpl() override;
+
   void ResetHook(UserInterface& ui) override;
+
+  void RegisterCallbacks(Workspace& ws);
+
+  void ClearCallbacks();
+
+  ExecutionStatus HandleFinishedStatus(ExecutionStatus status);
 
   bool SuccessCondition(bool var_available, const sup::dto::AnyValue& var_value,
                         bool other_available, const sup::dto::AnyValue& other_value) const;

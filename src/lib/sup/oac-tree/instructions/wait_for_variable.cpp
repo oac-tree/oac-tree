@@ -38,6 +38,10 @@ const std::string WaitForVariable::Type = "WaitForVariable";
 WaitForVariable::WaitForVariable()
   : Instruction(WaitForVariable::Type)
   , m_finish{}
+  , m_cache{}
+  , m_mtx{}
+  , m_cv{}
+  , m_cb_guard{}
 {
   AddAttributeDefinition(Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kVariableName).SetMandatory();
@@ -45,6 +49,8 @@ WaitForVariable::WaitForVariable()
     .SetCategory(AttributeCategory::kBoth).SetMandatory();
   AddAttributeDefinition(Constants::EQUALS_VARIABLE_NAME_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kVariableName);
+  AddAttributeDefinition(Constants::BLOCKING_ATTRIBUTE_NAME, sup::dto::BooleanType)
+    .SetCategory(AttributeCategory::kBoth);
 }
 
 WaitForVariable::~WaitForVariable() = default;
@@ -58,6 +64,11 @@ bool WaitForVariable::InitHook(UserInterface& ui, Workspace& ws)
     return false;
   }
   m_finish = utils::GetNanosecsSinceEpoch() + timeout_ns;
+  if (!GetAttributeValueAs(Constants::BLOCKING_ATTRIBUTE_NAME, ws, ui, m_blocking))
+  {
+    return false;
+  }
+  RegisterCallbacks(ws);
   return true;
 }
 
@@ -65,24 +76,79 @@ ExecutionStatus WaitForVariable::ExecuteSingleImpl(UserInterface& ui, Workspace&
 {
   if (IsHaltRequested())
   {
-    return ExecutionStatus::FAILURE;
+    return HandleFinishedStatus(ExecutionStatus::FAILURE);
   }
   auto success = CheckCondition(ui, ws);
   if (success)
   {
-    return ExecutionStatus::SUCCESS;
+    return HandleFinishedStatus(ExecutionStatus::SUCCESS);
   }
   auto now = utils::GetNanosecsSinceEpoch();
-  if (m_finish > now)
+  if (now > m_finish)
   {
-    return ExecutionStatus::RUNNING;
+    return HandleFinishedStatus(ExecutionStatus::FAILURE);
   }
-  return ExecutionStatus::FAILURE;
+  if (m_blocking)
+  {
+    auto duration_ns = m_finish - now;
+    std::unique_lock<std::mutex> lk{m_mtx};
+    auto pred = [this, &ui, &ws]() {
+      return CheckCondition(ui, ws) || IsHaltRequested();
+    };
+    auto result = m_cv.wait_for(lk, std::chrono::nanoseconds(duration_ns), pred);
+    if (result && !IsHaltRequested())
+    {
+      return HandleFinishedStatus(ExecutionStatus::SUCCESS);
+    }
+    else
+    {
+      return HandleFinishedStatus(ExecutionStatus::FAILURE);
+    }
+  }
+  return ExecutionStatus::RUNNING;
+}
+
+void WaitForVariable::HaltImpl()
+{
+  m_cv.notify_one();
+  ClearCallbacks();
 }
 
 void WaitForVariable::ResetHook(UserInterface& ui)
 {
+  ClearCallbacks();
   m_finish = 0;
+  m_blocking = false;
+}
+
+void WaitForVariable::RegisterCallbacks(Workspace& ws)
+{
+  m_cb_guard = ws.GetCallbackGuard(this);
+  auto callback = [this](const auto&, bool connected)
+                  {
+                    if (connected)
+                    {
+                      m_cv.notify_one();
+                    }
+                  };
+  ws.RegisterCallback(GetAttributeString(Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME),
+                      callback, this);
+  if (HasAttribute(Constants::EQUALS_VARIABLE_NAME_ATTRIBUTE_NAME))
+  {
+    ws.RegisterCallback(GetAttributeString(Constants::EQUALS_VARIABLE_NAME_ATTRIBUTE_NAME),
+                        callback, this);
+  }
+}
+
+void WaitForVariable::ClearCallbacks()
+{
+  m_cb_guard = ScopeGuard{};
+}
+
+ExecutionStatus WaitForVariable::HandleFinishedStatus(ExecutionStatus status)
+{
+  ClearCallbacks();
+  return status;
 }
 
 bool WaitForVariable::SuccessCondition(

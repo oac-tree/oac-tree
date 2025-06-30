@@ -49,13 +49,20 @@ const std::string WaitForVariables::Type = "WaitForVariables";
 
 WaitForVariables::WaitForVariables()
   : Instruction(WaitForVariables::Type)
+  , m_blocking{false}
   , m_finish{}
   , m_var_names{}
+  , m_updated{false}
+  , m_mtx{}
+  , m_cv{}
+  , m_cb_guard{}
 {
   AddAttributeDefinition(Constants::TIMEOUT_SEC_ATTRIBUTE_NAME, sup::dto::Float64Type)
     .SetCategory(AttributeCategory::kBoth).SetMandatory();
   AddAttributeDefinition(Constants::VARIABLE_TYPE_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kBoth).SetMandatory();
+  AddAttributeDefinition(Constants::BLOCKING_ATTRIBUTE_NAME, sup::dto::BooleanType)
+    .SetCategory(AttributeCategory::kBoth);
 }
 
 WaitForVariables::~WaitForVariables() = default;

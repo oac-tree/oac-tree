@@ -37,6 +37,7 @@ const std::string WaitForVariable::Type = "WaitForVariable";
 
 WaitForVariable::WaitForVariable()
   : Instruction(WaitForVariable::Type)
+  , m_blocking{false}
   , m_finish{}
   , m_updated{false}
   , m_mtx{}

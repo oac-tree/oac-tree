@@ -24,6 +24,7 @@
 #define SUP_OAC_TREE_WAIT_FOR_VARIABLES_H_
 
 #include <sup/oac-tree/instruction.h>
+#include <sup/oac-tree/scope_guard.h>
 
 #include <sup/dto/basic_scalar_types.h>
 
@@ -49,8 +50,13 @@ public:
   static const std::string Type;
 
 private:
+  bool m_blocking;
   sup::dto::int64 m_finish;
   std::vector<std::string> m_var_names;
+  std::atomic_bool m_updated;
+  std::mutex m_mtx;
+  std::condition_variable m_cv;
+  ScopeGuard m_cb_guard;
 
   bool InitHook(UserInterface& ui, Workspace& ws) override;
 

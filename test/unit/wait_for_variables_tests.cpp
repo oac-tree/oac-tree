@@ -73,12 +73,53 @@ TEST_F(WaitForVariablesTest, WaitForLocalVarsSuccess)
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
+TEST_F(WaitForVariablesTest, BlockingWaitForLocalVarsSuccess)
+{
+  const std::string body{
+      R"(
+    <Sequence>
+        <WaitForVariables timeout="0.1" varType="Local" blocking="true"/>
+    </Sequence>
+    <Workspace>
+        <Local name="a" type='{"type":"uint8"}' value='0' />
+        <Local name="b" type='{"type":"uint8"}' value='1' />
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
 TEST_F(WaitForVariablesTest, WaitForLocalVarsWithEmpty)
 {
   const std::string body{
       R"(
     <Sequence>
         <WaitForVariables timeout="0.1" varType="Local"/>
+    </Sequence>
+    <Workspace>
+        <Local name="a" type='{"type":"uint8"}' value='0' />
+        <Local name="b" type='{"type":"uint8"}' value='1' />
+        <Local name="c"/>
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST_F(WaitForVariablesTest, BlockingWaitForLocalVarsWithEmpty)
+{
+  const std::string body{
+      R"(
+    <Sequence>
+        <WaitForVariables timeout="0.1" varType="Local" blocking="true"/>
     </Sequence>
     <Workspace>
         <Local name="a" type='{"type":"uint8"}' value='0' />

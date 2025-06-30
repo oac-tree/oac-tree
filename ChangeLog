@@ -1,5 +1,6 @@
 Changes for 4.2.0:
 
+- Provide blocking versions of Listen, WaitForVariable and WaitForVariables
 - Simplify breakpoint mechanism, allowing removal Instruction::NextInstructions() API
 - Implement ActiveInstructionMonitor
 - Pass value instead of type in UserInputRequest

@@ -60,7 +60,7 @@ TEST(WaitForVariable, WaitForVariableEmptyValueFailure)
   EXPECT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
-TEST(WaitForVariable, WaitForSingleVariableSuccess)
+TEST(WaitForVariable, WaitForVariableSuccess)
 {
   const std::string body{
       R"(
@@ -79,12 +79,51 @@ TEST(WaitForVariable, WaitForSingleVariableSuccess)
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
-TEST(WaitForVariable, WaitForVariableValueSuccess)
+TEST(WaitForVariable, BlockingWaitForVariableSuccess)
+{
+  const std::string body{
+      R"(
+    <Sequence>
+        <WaitForVariable timeout="0.1" varName="a" blocking="true"/>
+    </Sequence>
+    <Workspace>
+        <Local name="a" type='{"type":"uint8"}' value='3' />
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST(WaitForVariable, WaitForVariableEqualSuccess)
 {
   const std::string body{
       R"(
     <Sequence>
         <WaitForVariable timeout="0.1" varName="a" equalsVar="b"/>
+    </Sequence>
+    <Workspace>
+        <Local name="a" type='{"type":"uint8"}' value='3' />
+        <Local name="b" type='{"type":"uint8"}' value='3' />
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST(WaitForVariable, BlockingWaitForVariableEqualSuccess)
+{
+  const std::string body{
+      R"(
+    <Sequence>
+        <WaitForVariable timeout="0.1" varName="a" equalsVar="b" blocking="true"/>
     </Sequence>
     <Workspace>
         <Local name="a" type='{"type":"uint8"}' value='3' />
@@ -120,12 +159,55 @@ TEST(WaitForVariable, WaitForVariableParallelSuccess)
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
+TEST(WaitForVariable, BlockingWaitForVariableParallelSuccess)
+{
+  const std::string body{
+      R"(
+    <ParallelSequence name="parallel">
+        <WaitForVariable timeout="0.5" varName="a" equalsVar="b" blocking="true"/>
+        <Increment varName="a"/>
+    </ParallelSequence>
+    <Workspace>
+        <Local name="a" type='{"type":"uint8"}' value='3' />
+        <Local name="b" type='{"type":"uint8"}' value='4' />
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
 TEST(WaitForVariable, WaitForVariableParallelFailure)
 {
   const std::string body{
       R"(
     <ParallelSequence name="parallel">
         <WaitForVariable timeout="0.1" varName="a" equalsVar="b"/>
+        <Increment varName="a"/>
+    </ParallelSequence>
+    <Workspace>
+        <Local name="a" type='{"type":"uint8"}' value='0' />
+        <Local name="b" type='{"type":"uint8"}' value='2' />
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_FALSE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+
+TEST(WaitForVariable, BlockingWaitForVariableParallelFailure)
+{
+  const std::string body{
+      R"(
+    <ParallelSequence name="parallel">
+        <WaitForVariable timeout="0.1" varName="a" equalsVar="b" blocking="true"/>
         <Increment varName="a"/>
     </ParallelSequence>
     <Workspace>

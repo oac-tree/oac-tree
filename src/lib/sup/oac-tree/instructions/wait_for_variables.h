@@ -53,6 +53,7 @@ private:
   bool m_blocking;
   sup::dto::int64 m_finish;
   std::vector<std::string> m_var_names;
+  mutable std::vector<std::string> m_unavailable_vars;
   std::atomic_bool m_updated;
   std::mutex m_mtx;
   std::condition_variable m_cv;
@@ -62,28 +63,21 @@ private:
 
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 
+  void HaltImpl() override;
+
   void ResetHook(UserInterface& ui) override;
 
-  /**
-   * @brief Register variable callbacks for all variables concerned.
-   *
-   * @param ws Workspace to use.
-   * @param cv Condition variable that will be notified.
-   * @param listener Listener pointer to use.
-   * @param var_names List of variable names to be used for callbacks.
-   */
-  void RegisterCallbacks(Workspace& ws, std::condition_variable& cv,
-                         void* listener, const std::vector<std::string>& var_names) const;
+  void RegisterCallbacks(Workspace& ws);
 
-  /**
-   * @brief Return subset of variable names that are not available.
-   *
-   * @param ws Workspace to use.
-   * @param var_names Variable names to check for availability.
-   * @return List of variable names that are not available.
-   */
-  std::vector<std::string> UnavailableVars(Workspace& ws,
-                                           const std::vector<std::string>& var_names) const;
+  void ClearCallbacks();
+
+  bool CheckUpdate();
+
+  ExecutionStatus HandleFinishedStatus(ExecutionStatus status);
+
+  bool CheckCondition(Workspace& ws) const;
+
+  void LogUnavailableVars(UserInterface& ui) const;
 };
 
 }  // namespace oac_tree

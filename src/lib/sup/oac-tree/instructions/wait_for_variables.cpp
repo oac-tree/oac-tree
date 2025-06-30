@@ -52,6 +52,7 @@ WaitForVariables::WaitForVariables()
   , m_blocking{false}
   , m_finish{}
   , m_var_names{}
+  , m_unavailable_vars{}
   , m_updated{false}
   , m_mtx{}
   , m_cv{}
@@ -76,8 +77,12 @@ bool WaitForVariables::InitHook(UserInterface& ui, Workspace& ws)
     return false;
   }
   m_finish = utils::GetNanosecsSinceEpoch() + timeout_ns;
-  const auto var_type = GetAttributeString(Constants::VARIABLE_TYPE_ATTRIBUTE_NAME);
-  m_var_names = GetVarNamesOfType(ws, var_type);
+  if (!GetAttributeValueAs(Constants::BLOCKING_ATTRIBUTE_NAME, ws, ui, m_blocking))
+  {
+    return false;
+  }
+  m_updated.store(true);  // Allow for initial checking of condition
+  RegisterCallbacks(ws);
   return true;
 }
 
@@ -87,41 +92,109 @@ ExecutionStatus WaitForVariables::ExecuteSingleImpl(UserInterface& ui, Workspace
   {
     return ExecutionStatus::FAILURE;
   }
-  auto var_names = UnavailableVars(ws, m_var_names);
-  if (var_names.empty())
+  auto success = CheckUpdate() && CheckCondition(ws);
+  if (success)
   {
-    return ExecutionStatus::SUCCESS;
+    return HandleFinishedStatus(ExecutionStatus::SUCCESS);
   }
   auto now = utils::GetNanosecsSinceEpoch();
-  if (m_finish > now)
+  if (now > m_finish)
   {
-    return ExecutionStatus::RUNNING;
+    LogUnavailableVars(ui);
+    return HandleFinishedStatus(ExecutionStatus::FAILURE);
   }
-  const std::string warning_message = InstructionWarningProlog(*this)
-    + " encountered unavailable variables: " + ConcatenateVarNames(var_names);
-  LogWarning(ui, warning_message);
-  return ExecutionStatus::FAILURE;
+  if (m_blocking)
+  {
+    auto duration_ns = m_finish - now;
+    std::unique_lock<std::mutex> lk{m_mtx};
+    auto pred = [this, &ws]() {
+      return CheckCondition(ws) || IsHaltRequested();
+    };
+    auto result = m_cv.wait_for(lk, std::chrono::nanoseconds(duration_ns), pred);
+    if (result && !IsHaltRequested())
+    {
+      return HandleFinishedStatus(ExecutionStatus::SUCCESS);
+    }
+    else
+    {
+      LogUnavailableVars(ui);
+      return HandleFinishedStatus(ExecutionStatus::FAILURE);
+    }
+  }
+  return ExecutionStatus::RUNNING;
+}
+
+void WaitForVariables::HaltImpl()
+{
+  m_cv.notify_one();
+  ClearCallbacks();
 }
 
 void WaitForVariables::ResetHook(UserInterface& ui)
 {
+  ClearCallbacks();
+  m_blocking = false;
   m_finish = 0;
   m_var_names.clear();
+  m_unavailable_vars.clear();
+  m_updated.store(false);
 }
 
-std::vector<std::string> WaitForVariables::UnavailableVars(
-  Workspace& ws, const std::vector<std::string>& var_names) const
+void WaitForVariables::RegisterCallbacks(Workspace& ws)
 {
-  std::vector<std::string> unavailable_vars{};
-  for (const auto& var_name : var_names)
+  const auto var_type = GetAttributeString(Constants::VARIABLE_TYPE_ATTRIBUTE_NAME);
+  m_var_names = GetVarNamesOfType(ws, var_type);
+  m_cb_guard = ws.GetCallbackGuard(this);
+  auto callback = [this](const auto&, bool connected)
+      {
+        if (connected)
+        {
+          m_updated.store(true);
+          m_cv.notify_one();
+        }
+      };
+  for (const auto& var_name : m_var_names)
+  {
+    ws.RegisterCallback(var_name, callback, this);
+  }
+}
+
+void WaitForVariables::ClearCallbacks()
+{
+  m_cb_guard = ScopeGuard{};
+}
+
+bool WaitForVariables::CheckUpdate()
+{
+  bool expected = true;
+  return m_updated.compare_exchange_strong(expected, false);
+}
+
+ExecutionStatus WaitForVariables::HandleFinishedStatus(ExecutionStatus status)
+{
+  ClearCallbacks();
+  return status;
+}
+
+bool WaitForVariables::CheckCondition(Workspace& ws) const
+{
+  m_unavailable_vars.clear();
+  for (const auto& var_name : m_var_names)
   {
     const auto* var = ws.GetVariable(var_name);
     if (var == nullptr || !var->IsAvailable())
     {
-      unavailable_vars.push_back(var_name);
+      m_unavailable_vars.push_back(var_name);
     }
   }
-  return unavailable_vars;
+  return m_unavailable_vars.empty();
+}
+
+void WaitForVariables::LogUnavailableVars(UserInterface& ui) const
+{
+  const std::string warning_message = InstructionWarningProlog(*this)
+    + " encountered unavailable variables: " + ConcatenateVarNames(m_unavailable_vars);
+  LogWarning(ui, warning_message);
 }
 
 }  // namespace oac_tree

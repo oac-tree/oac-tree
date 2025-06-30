@@ -53,7 +53,7 @@ public:
 private:
   bool m_blocking;
   sup::dto::int64 m_finish;
-  bool m_update;
+  std::atomic_bool m_updated;
   std::mutex m_mtx;
   std::condition_variable m_cv;
   ScopeGuard m_cb_guard;

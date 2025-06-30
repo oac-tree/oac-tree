@@ -38,7 +38,7 @@ const std::string WaitForVariable::Type = "WaitForVariable";
 WaitForVariable::WaitForVariable()
   : Instruction(WaitForVariable::Type)
   , m_finish{}
-  , m_update{false}
+  , m_updated{false}
   , m_mtx{}
   , m_cv{}
   , m_cb_guard{}
@@ -68,7 +68,7 @@ bool WaitForVariable::InitHook(UserInterface& ui, Workspace& ws)
   {
     return false;
   }
-  m_update = true;  // Allow for initial checking of condition
+  m_updated.store(true);  // Allow for initial checking of condition
   RegisterCallbacks(ws);
   return true;
 }
@@ -120,7 +120,7 @@ void WaitForVariable::ResetHook(UserInterface& ui)
   ClearCallbacks();
   m_blocking = false;
   m_finish = 0;
-  m_update = false;
+  m_updated.store(false);
 }
 
 void WaitForVariable::RegisterCallbacks(Workspace& ws)
@@ -130,10 +130,7 @@ void WaitForVariable::RegisterCallbacks(Workspace& ws)
                   {
                     if (connected)
                     {
-                      {
-                        std::lock_guard<std::mutex> lk{m_mtx};
-                        m_update = true;
-                      }
+                      m_updated.store(true);
                       m_cv.notify_one();
                     }
                   };
@@ -153,13 +150,8 @@ void WaitForVariable::ClearCallbacks()
 
 bool WaitForVariable::CheckUpdate()
 {
-  std::lock_guard<std::mutex> lk{m_mtx};
-  if (m_update)
-  {
-    m_update = false;
-    return true;
-  }
-  return false;
+  bool expected = true;
+  return m_updated.compare_exchange_strong(expected, false);
 }
 
 ExecutionStatus WaitForVariable::HandleFinishedStatus(ExecutionStatus status)

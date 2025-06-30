@@ -1298,6 +1298,10 @@ Attributes:
      - StringType
      - no
      - variable to compare. The instruction will wait until the variables are equal or the timout s reached
+   * - blocking
+     - BooleanType
+     - no
+     - Use a blocking implementation, which is less CPU consuming
 
 * An example for this instruction is already present in :ref:`Repeat example <repeat_exp>`.
 
@@ -1324,3 +1328,7 @@ Attributes:
      - StringType
      - yes
      - typename of the variables to check
+   * - blocking
+     - BooleanType
+     - no
+     - Use a blocking implementation, which is less CPU consuming

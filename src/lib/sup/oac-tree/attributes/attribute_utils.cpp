@@ -33,6 +33,7 @@
 namespace
 {
 const std::vector<std::string> kTrueStringList = {"true", "yes", "on"};
+const std::vector<std::string> kFalseStringList = {"false", "no", "off"};
 using AttributeStringParser = std::pair<bool, sup::dto::AnyValue>(*)(const sup::dto::AnyType&,
                                                                      const std::string&);
 const std::map<sup::dto::TypeCode, AttributeStringParser>& GetAttributeStringParserMap();
@@ -43,6 +44,7 @@ std::pair<bool, sup::dto::AnyValue> JSONStringParser(const sup::dto::AnyType& an
 std::pair<bool, sup::dto::AnyValue> StringStringParser(const sup::dto::AnyType& anytype,
                                                        const std::string& repr);
 bool IsTrueStringRepresentation(std::string repr);
+bool IsFalseStringRepresentation(std::string repr);
 using AttributeValueParser = std::string(*)(const sup::dto::AnyValue&);
 const std::map<sup::dto::TypeCode, AttributeValueParser>& GetAttributeValueParserMap();
 std::string BooleanValueParser(const sup::dto::AnyValue& value);
@@ -114,7 +116,11 @@ std::pair<bool, sup::dto::AnyValue> BooleanStringParser(const sup::dto::AnyType&
   {
     return { true, { sup::dto::BooleanType, true }};
   }
-  return { true, { sup::dto::BooleanType, false }};
+  if (IsFalseStringRepresentation(repr))
+  {
+    return { true, { sup::dto::BooleanType, false }};
+  }
+  return { false, {} };
 }
 
 std::pair<bool, sup::dto::AnyValue> JSONStringParser(const sup::dto::AnyType& anytype,
@@ -141,6 +147,14 @@ bool IsTrueStringRepresentation(std::string repr)
                  [](unsigned char c){ return std::tolower(c); });
   auto it = std::find(kTrueStringList.begin(), kTrueStringList.end(), repr);
   return it != kTrueStringList.end();
+}
+
+bool IsFalseStringRepresentation(std::string repr)
+{
+  std::transform(repr.begin(), repr.end(), repr.begin(),
+                 [](unsigned char c){ return std::tolower(c); });
+  auto it = std::find(kFalseStringList.begin(), kFalseStringList.end(), repr);
+  return it != kFalseStringList.end();
 }
 
 const std::map<sup::dto::TypeCode, AttributeValueParser>& GetAttributeValueParserMap()

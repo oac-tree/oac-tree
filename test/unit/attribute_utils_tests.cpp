@@ -29,7 +29,6 @@ using namespace sup::oac_tree;
 const std::string kEmptyValue = "";
 const std::string kStrAttrValue = "str_value";
 const std::string kDoubleAttrValue = "3.14";
-const std::string kBoolAttrValue = "true";
 
 class AttributeUtilsTest : public ::testing::Test
 {
@@ -58,7 +57,23 @@ TEST_F(AttributeUtilsTest, ParseAttributeStringSupported)
   }
   {
     // BooleanType: true
-    auto [parsed, attribute] = utils::ParseAttributeString(sup::dto::BooleanType, kBoolAttrValue);
+    auto [parsed, attribute] = utils::ParseAttributeString(sup::dto::BooleanType, "true");
+    EXPECT_TRUE(parsed);
+    EXPECT_FALSE(sup::dto::IsEmptyValue(attribute));
+    ASSERT_EQ(attribute.GetType(), sup::dto::BooleanType);
+    EXPECT_EQ(attribute.As<bool>(), true);
+  }
+  {
+    // BooleanType: true
+    auto [parsed, attribute] = utils::ParseAttributeString(sup::dto::BooleanType, "Yes");
+    EXPECT_TRUE(parsed);
+    EXPECT_FALSE(sup::dto::IsEmptyValue(attribute));
+    ASSERT_EQ(attribute.GetType(), sup::dto::BooleanType);
+    EXPECT_EQ(attribute.As<bool>(), true);
+  }
+  {
+    // BooleanType: true
+    auto [parsed, attribute] = utils::ParseAttributeString(sup::dto::BooleanType, "ON");
     EXPECT_TRUE(parsed);
     EXPECT_FALSE(sup::dto::IsEmptyValue(attribute));
     ASSERT_EQ(attribute.GetType(), sup::dto::BooleanType);
@@ -66,7 +81,23 @@ TEST_F(AttributeUtilsTest, ParseAttributeStringSupported)
   }
   {
     // BooleanType: false
-    auto [parsed, attribute] = utils::ParseAttributeString(sup::dto::BooleanType, "non_recognized_gives_false");
+    auto [parsed, attribute] = utils::ParseAttributeString(sup::dto::BooleanType, "False");
+    EXPECT_TRUE(parsed);
+    EXPECT_FALSE(sup::dto::IsEmptyValue(attribute));
+    ASSERT_EQ(attribute.GetType(), sup::dto::BooleanType);
+    EXPECT_EQ(attribute.As<bool>(), false);
+  }
+  {
+    // BooleanType: false
+    auto [parsed, attribute] = utils::ParseAttributeString(sup::dto::BooleanType, "NO");
+    EXPECT_TRUE(parsed);
+    EXPECT_FALSE(sup::dto::IsEmptyValue(attribute));
+    ASSERT_EQ(attribute.GetType(), sup::dto::BooleanType);
+    EXPECT_EQ(attribute.As<bool>(), false);
+  }
+  {
+    // BooleanType: false
+    auto [parsed, attribute] = utils::ParseAttributeString(sup::dto::BooleanType, "off");
     EXPECT_TRUE(parsed);
     EXPECT_FALSE(sup::dto::IsEmptyValue(attribute));
     ASSERT_EQ(attribute.GetType(), sup::dto::BooleanType);
@@ -91,6 +122,12 @@ TEST_F(AttributeUtilsTest, ParseAttributeStringFailed)
   {
     // UnsignedInteger32Type
     auto [parsed, attribute] = utils::ParseAttributeString(sup::dto::UnsignedInteger32Type, "-6");
+    EXPECT_FALSE(parsed);
+    EXPECT_TRUE(sup::dto::IsEmptyValue(attribute));
+  }
+  {
+    // BooleanType
+    auto [parsed, attribute] = utils::ParseAttributeString(sup::dto::BooleanType, "maybe");
     EXPECT_FALSE(parsed);
     EXPECT_TRUE(sup::dto::IsEmptyValue(attribute));
   }

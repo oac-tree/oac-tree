@@ -29,6 +29,7 @@ target_sources(${unit-tests}
     decrement_tests.cpp
     equals_tests.cpp
     execution_status_tests.cpp
+    fail_tests.cpp
     fallback_tests.cpp
     file_variable_tests.cpp
     for_tests.cpp

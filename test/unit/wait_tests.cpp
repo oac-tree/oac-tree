@@ -37,11 +37,34 @@ using namespace sup::oac_tree;
 TEST(Wait, Setup)
 {
   Procedure proc;
-  auto instr = GlobalInstructionRegistry().Create("Wait");
-  EXPECT_NO_THROW(instr->Setup(proc));
-
-  EXPECT_TRUE(instr->AddAttribute("timeout", "five"));
-  EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
+  {
+    // No attributes
+    auto instr = GlobalInstructionRegistry().Create("Wait");
+    EXPECT_NO_THROW(instr->Setup(proc));
+  }
+  {
+    // Correct timeout and blocking attribute
+    auto instr = GlobalInstructionRegistry().Create("Wait");
+    EXPECT_NO_THROW(instr->Setup(proc));
+    EXPECT_TRUE(instr->AddAttribute("timeout", "1.0"));
+    EXPECT_TRUE(instr->AddAttribute("blocking", "true"));
+    EXPECT_NO_THROW(instr->Setup(proc));
+  }
+  {
+    // Wrong type of timeout attribute
+    auto instr = GlobalInstructionRegistry().Create("Wait");
+    EXPECT_NO_THROW(instr->Setup(proc));
+    EXPECT_TRUE(instr->AddAttribute("timeout", "five"));
+    EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
+  }
+  // {
+  // TODO: activate when parsing false is more strict:
+  //   // Wrong type of blocking attribute
+  //   auto instr = GlobalInstructionRegistry().Create("Wait");
+  //   EXPECT_NO_THROW(instr->Setup(proc));
+  //   EXPECT_TRUE(instr->AddAttribute("blocking", "maybe"));
+  //   EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
+  // }
 }
 
 TEST(Wait, InitialState)

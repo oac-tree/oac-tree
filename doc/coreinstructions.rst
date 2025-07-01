@@ -893,6 +893,31 @@ Attributes:
 
 * An example for this instruction is already present in :ref:`Listen example <listen_exp>`.
 
+Fail
+^^^^
+
+Instruction node that returns FAILURE after a given timeout. This instruction is **asynchronous** by default, but can be made synchronous by setting its `blocking` attribute to `true`. In this case, the instruction will block until the timeout is reached or it is halted.
+The `timeout` attribute is optional. When this attribute is not present, the instruction returns FAILURE immediately.
+
+Attributes:
+
+.. list-table::
+   :widths: 25 25 15 50
+   :header-rows: 1
+
+   * - Attribute name
+     - Attribute type
+     - Mandatory
+     - Description
+   * - timeout
+     - Float64Type
+     - no
+     - Maximum time to wait
+   * - blocking
+     - BooleanType
+     - no
+     - Make the instruction blocking, i.e. synchronous
+
 GreaterThan
 ^^^^^^^^^^^
 

@@ -57,14 +57,13 @@ TEST(Wait, Setup)
     EXPECT_TRUE(instr->AddAttribute("timeout", "five"));
     EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
   }
-  // {
-  // TODO: activate when parsing false is more strict:
-  //   // Wrong type of blocking attribute
-  //   auto instr = GlobalInstructionRegistry().Create("Wait");
-  //   EXPECT_NO_THROW(instr->Setup(proc));
-  //   EXPECT_TRUE(instr->AddAttribute("blocking", "maybe"));
-  //   EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
-  // }
+  {
+    // Wrong type of blocking attribute
+    auto instr = GlobalInstructionRegistry().Create("Wait");
+    EXPECT_NO_THROW(instr->Setup(proc));
+    EXPECT_TRUE(instr->AddAttribute("blocking", "maybe"));
+    EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
+  }
 }
 
 TEST(Wait, InitialState)

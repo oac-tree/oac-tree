@@ -22,11 +22,10 @@
 
 #include "wait.h"
 
-#include "sup/oac-tree/procedure.h"
 #include <sup/oac-tree/constants.h>
-#include <sup/oac-tree/exceptions.h>
 #include <sup/oac-tree/instruction_utils.h>
 #include <sup/oac-tree/generic_utils.h>
+#include <sup/oac-tree/procedure.h>
 #include <sup/oac-tree/user_interface.h>
 
 #include <chrono>
@@ -84,10 +83,13 @@ ExecutionStatus Wait::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
       std::this_thread::sleep_for(std::chrono::nanoseconds(m_timing_accuracy_ns));
     }
   }
-  auto now = utils::GetNanosecsSinceEpoch();
-  if (!IsHaltRequested() && m_finish > now)
+  else
   {
-    return ExecutionStatus::RUNNING;
+    auto now = utils::GetNanosecsSinceEpoch();
+    if (!IsHaltRequested() && m_finish > now)
+    {
+      return ExecutionStatus::RUNNING;
+    }
   }
   if (IsHaltRequested())
   {

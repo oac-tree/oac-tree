@@ -1,6 +1,10 @@
 Changes for 4.2.0:
 
+- Avoid busy loop in blocking Wait/Fail
+- Enforce stricter parsing of boolean attributes
+- Add timeout to Fail instruction
 - Provide blocking versions of Listen, WaitForVariable and WaitForVariables
+- oac-tree-cli and oac-tree-daemon now reflect procedure success in their exit codes
 - Simplify breakpoint mechanism, allowing removal Instruction::NextInstructions() API
 - Implement ActiveInstructionMonitor
 - Pass value instead of type in UserInputRequest

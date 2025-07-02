@@ -71,9 +71,9 @@ ExecutionStatus Wait::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   (void)ui;
   (void)ws;
+  auto now = utils::GetNanosecsSinceEpoch();
   if (m_blocking)
   {
-    auto now = utils::GetNanosecsSinceEpoch();
     if (now < m_finish)
     {
       std::unique_lock<std::mutex> lk{m_mtx};
@@ -83,7 +83,6 @@ ExecutionStatus Wait::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   }
   else
   {
-    auto now = utils::GetNanosecsSinceEpoch();
     if (!IsHaltRequested() && m_finish > now)
     {
       return ExecutionStatus::RUNNING;

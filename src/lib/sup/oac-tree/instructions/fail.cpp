@@ -29,7 +29,6 @@
 #include <sup/oac-tree/user_interface.h>
 
 #include <chrono>
-#include <thread>
 
 namespace sup
 {
@@ -41,8 +40,9 @@ const std::string Fail::Type = "Fail";
 Fail::Fail()
   : Instruction(Fail::Type)
   , m_blocking{false}
-  , m_timing_accuracy_ns{}
   , m_finish{}
+  , m_mtx{}
+  , m_cv{}
 {
   AddAttributeDefinition(Constants::TIMEOUT_SEC_ATTRIBUTE_NAME, sup::dto::Float64Type)
     .SetCategory(AttributeCategory::kBoth);
@@ -51,11 +51,6 @@ Fail::Fail()
 }
 
 Fail::~Fail() = default;
-
-void Fail::SetupImpl(const Procedure& proc)
-{
-  m_timing_accuracy_ns = TimingAccuracyNs(proc);
-}
 
 bool Fail::InitHook(UserInterface& ui, Workspace& ws)
 {
@@ -77,22 +72,29 @@ ExecutionStatus Fail::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   (void)ui;
   (void)ws;
+  auto now = utils::GetNanosecsSinceEpoch();
   if (m_blocking)
   {
-    while (!IsHaltRequested() && m_finish > utils::GetNanosecsSinceEpoch())
+    if (now < m_finish)
     {
-      std::this_thread::sleep_for(std::chrono::nanoseconds(m_timing_accuracy_ns));
+      std::unique_lock<std::mutex> lk{m_mtx};
+      auto pred = [this]() { return IsHaltRequested(); };
+      (void)m_cv.wait_for(lk, std::chrono::nanoseconds(m_finish - now), pred);
     }
   }
   else
   {
-    auto now = utils::GetNanosecsSinceEpoch();
     if (!IsHaltRequested() && m_finish > now)
     {
       return ExecutionStatus::RUNNING;
     }
   }
   return ExecutionStatus::FAILURE;
+}
+
+void Fail::HaltImpl()
+{
+  m_cv.notify_one();
 }
 
 void Fail::ResetHook(UserInterface& ui)

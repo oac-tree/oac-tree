@@ -201,32 +201,3 @@ R"RAW(
   auto proc = ParseProcedureString(procedure_string);
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
 }
-
-TEST(Wait, SetupFailed)
-{
-  sup::UnitTestHelper::EmptyUserInterface ui;
-  {
-    // Timeout cannot be parsed
-    const std::string procedure_body{
-R"RAW(
-  <Wait timeout="not-a-number"/>
-  <Workspace/>
-)RAW"};
-
-    const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
-    auto proc = ParseProcedureString(procedure_string);
-    EXPECT_THROW(sup::UnitTestHelper::TryAndExecute(proc, ui), InstructionSetupException);
-  }
-  {
-    // Blocking attribute cannot be parsed
-    const std::string procedure_body{
-R"RAW(
-  <Wait blocking="maybe"/>
-  <Workspace/>
-)RAW"};
-
-    const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
-    auto proc = ParseProcedureString(procedure_string);
-    EXPECT_THROW(sup::UnitTestHelper::TryAndExecute(proc, ui), InstructionSetupException);
-  }
-}

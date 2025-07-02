@@ -400,6 +400,11 @@ private:
   bool CheckBreakpoint();
 
   /**
+   * @brief Resets the breakpoint when the instruction is reset.
+   */
+  void ResetBreakpoint();
+
+  /**
    * @brief Setup implementation.
    *
    * @param proc Procedure containing Workspace and instruction declarations.

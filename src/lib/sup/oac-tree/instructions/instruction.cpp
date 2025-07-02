@@ -143,6 +143,7 @@ void Instruction::Reset(UserInterface& ui)
   }
   m_attribute_handler.ClearFailedConstraints();
   m_halt_requested.store(false);
+  ResetBreakpoint();
 }
 
 bool Instruction::HasAttribute(const std::string& name) const
@@ -334,6 +335,15 @@ bool Instruction::CheckBreakpoint()
   expected_state = Breakpoint::kAck;
   (void)m_breakpoint_state.compare_exchange_strong(expected_state, Breakpoint::kSet);
   return false;
+}
+
+void Instruction::ResetBreakpoint()
+{
+  if (m_breakpoint_state.load() == Breakpoint::kUnset)
+  {
+    return;
+  }
+  m_breakpoint_state.store(Breakpoint::kSet);
 }
 
 void Instruction::SetupImpl(const Procedure&) {}

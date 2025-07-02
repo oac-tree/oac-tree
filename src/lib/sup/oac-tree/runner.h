@@ -155,6 +155,7 @@ public:
 private:
   void ClearBreakpointInstruction();
   bool UpdateBreakpointInstruction(const Instruction* instruction);
+  void ExecuteSingleImpl();
 
   Procedure* m_proc;
   UserInterface& m_ui;

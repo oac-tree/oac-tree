@@ -83,12 +83,54 @@ TEST(Wait, Registration)
   EXPECT_TRUE(it != existing_names.end());
 }
 
-TEST(Wait, Procedure_success)
+TEST(Wait, Success)
+{
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  const std::string procedure_body{
+R"RAW(
+  <Wait/>
+  <Workspace/>
+)RAW"};
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
+  auto proc = ParseProcedureString(procedure_string);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST(Wait, BlockingSuccess)
+{
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  const std::string procedure_body{
+R"RAW(
+  <Wait blocking="true"/>
+  <Workspace/>
+)RAW"};
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
+  auto proc = ParseProcedureString(procedure_string);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST(Wait, SuccessWithTimeout)
 {
   sup::UnitTestHelper::EmptyUserInterface ui;
   const std::string procedure_body{
 R"RAW(
   <Wait timeout="0.1"/>
+  <Workspace/>
+)RAW"};
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
+  auto proc = ParseProcedureString(procedure_string);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST(Wait, BlockingSuccessWithTimeout)
+{
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  const std::string procedure_body{
+R"RAW(
+  <Wait timeout="0.1" blocking="true"/>
   <Workspace/>
 )RAW"};
 
@@ -103,6 +145,22 @@ TEST(Wait, VariableTimeout)
   const std::string procedure_body{
 R"RAW(
   <Wait timeout="@mytimeout"/>
+  <Workspace>
+    <Local name="mytimeout" type='{"type":"float64"}' value='0.1'/>
+  </Workspace>
+)RAW"};
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
+  auto proc = ParseProcedureString(procedure_string);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST(Wait, BlockingVariableTimeout)
+{
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  const std::string procedure_body{
+R"RAW(
+  <Wait timeout="@mytimeout" blocking="true"/>
   <Workspace>
     <Local name="mytimeout" type='{"type":"float64"}' value='0.1'/>
   </Workspace>
@@ -144,16 +202,31 @@ R"RAW(
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
 }
 
-TEST(Wait, SetupImpl_throw)
+TEST(Wait, SetupFailed)
 {
   sup::UnitTestHelper::EmptyUserInterface ui;
-  const std::string procedure_body{
+  {
+    // Timeout cannot be parsed
+    const std::string procedure_body{
 R"RAW(
   <Wait timeout="not-a-number"/>
   <Workspace/>
 )RAW"};
 
-  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
-  auto proc = ParseProcedureString(procedure_string);
-  EXPECT_THROW(sup::UnitTestHelper::TryAndExecute(proc, ui), InstructionSetupException);
+    const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
+    auto proc = ParseProcedureString(procedure_string);
+    EXPECT_THROW(sup::UnitTestHelper::TryAndExecute(proc, ui), InstructionSetupException);
+  }
+  {
+    // Blocking attribute cannot be parsed
+    const std::string procedure_body{
+R"RAW(
+  <Wait blocking="maybe"/>
+  <Workspace/>
+)RAW"};
+
+    const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
+    auto proc = ParseProcedureString(procedure_string);
+    EXPECT_THROW(sup::UnitTestHelper::TryAndExecute(proc, ui), InstructionSetupException);
+  }
 }

@@ -51,6 +51,7 @@ protected:
   std::unique_ptr<Procedure> sync_proc;
   std::unique_ptr<Procedure> copy_proc;
   std::unique_ptr<Procedure> async_wait_proc;
+  std::unique_ptr<Procedure> single_succeed_proc;
 };
 
 const std::string AsyncProcedureString =
@@ -117,6 +118,17 @@ const std::string AsyncWaitProcedureString =
         <Wait name="Immediate Success" timeout="10.0"/>
         <Wait name="Immediate Success" timeout="10.0"/>
     </ParallelSequence>
+</Procedure>
+)RAW";
+
+const std::string SingleSucceedProcedureString =
+    R"RAW(<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/oac-tree" version="1.0"
+           name="Synchronous procedure for testing purposes"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/oac-tree oac-tree.xsd"
+           tickTimeout="0.01">
+    <Succeed name="Immediate success"/>
 </Procedure>
 )RAW";
 
@@ -430,6 +442,64 @@ TEST_F(RunnerTest, DisabledBreakpoint)
   EXPECT_FALSE(runner.IsRunning());
 }
 
+TEST_F(RunnerTest, BreakpointExecute)
+{
+  // Test preconditions
+  Runner runner(empty_ui);
+  EXPECT_TRUE(runner.IsFinished());  // empty procedure is finished by default
+  EXPECT_FALSE(runner.IsRunning());
+
+  // Set procedure and test conditions again
+  EXPECT_NO_THROW(single_succeed_proc->Setup());
+  EXPECT_NO_THROW(runner.SetProcedure(single_succeed_proc.get()));
+  EXPECT_EQ(single_succeed_proc->GetStatus(), ExecutionStatus::NOT_STARTED);
+  EXPECT_FALSE(runner.IsFinished());
+  EXPECT_FALSE(runner.IsRunning());
+
+  // Set breakpoint and execute
+  // Fetch instruction and set a breakpoint
+  auto instructions = FlattenBFS(CreateFullInstructionTree(single_succeed_proc->RootInstruction()));
+  ASSERT_EQ(instructions.size(), 1);
+  auto instr = instructions[0];
+  EXPECT_NO_THROW(runner.SetBreakpoint(instr));
+  // First execute will hit breakpoint
+  EXPECT_NO_THROW(runner.ExecuteProcedure());
+  EXPECT_FALSE(runner.IsFinished());
+  EXPECT_FALSE(runner.IsRunning());
+  // Second execute will finish the procedure's execution
+  EXPECT_NO_THROW(runner.ExecuteProcedure());
+  EXPECT_TRUE(runner.IsFinished());
+  EXPECT_FALSE(runner.IsRunning());
+  EXPECT_EQ(single_succeed_proc->GetStatus(), ExecutionStatus::SUCCESS);
+}
+
+TEST_F(RunnerTest, BreakpointStep)
+{
+  // Test preconditions
+  Runner runner(empty_ui);
+  EXPECT_TRUE(runner.IsFinished());  // empty procedure is finished by default
+  EXPECT_FALSE(runner.IsRunning());
+
+  // Set procedure and test conditions again
+  EXPECT_NO_THROW(single_succeed_proc->Setup());
+  EXPECT_NO_THROW(runner.SetProcedure(single_succeed_proc.get()));
+  EXPECT_EQ(single_succeed_proc->GetStatus(), ExecutionStatus::NOT_STARTED);
+  EXPECT_FALSE(runner.IsFinished());
+  EXPECT_FALSE(runner.IsRunning());
+
+  // Set breakpoint and execute
+  // Fetch instruction and set a breakpoint
+  auto instructions = FlattenBFS(CreateFullInstructionTree(single_succeed_proc->RootInstruction()));
+  ASSERT_EQ(instructions.size(), 1);
+  auto instr = instructions[0];
+  EXPECT_NO_THROW(runner.SetBreakpoint(instr));
+  // First step will hit breakpoint, but then finish execution
+  EXPECT_NO_THROW(runner.ExecuteSingle());
+  EXPECT_TRUE(runner.IsFinished());
+  EXPECT_FALSE(runner.IsRunning());
+  EXPECT_EQ(single_succeed_proc->GetStatus(), ExecutionStatus::SUCCESS);
+}
+
 RunnerTest::RunnerTest()
     : mock_ui{}
     , empty_ui{}
@@ -437,6 +507,7 @@ RunnerTest::RunnerTest()
     , sync_proc{ParseProcedureString(SyncProcedureString)}
     , copy_proc{ParseProcedureString(CopyVariableProcedureString)}
     , async_wait_proc{ParseProcedureString(AsyncWaitProcedureString)}
+    , single_succeed_proc{ParseProcedureString(SingleSucceedProcedureString)}
 {}
 
 RunnerTest::~RunnerTest() = default;

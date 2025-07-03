@@ -20,7 +20,10 @@
  * of the distribution package.
  ******************************************************************************/
 
+#include "unit_test_helper.h"
+
 #include <sup/oac-tree/instruction.h>
+#include <sup/oac-tree/workspace.h>
 
 #include <gtest/gtest.h>
 
@@ -35,7 +38,10 @@ public:
   {
   public:
     TestInstruction() : Instruction("TestInstruction") {}
-    ExecutionStatus ExecuteSingleImpl(UserInterface&, Workspace&) override { return {}; }
+    ExecutionStatus ExecuteSingleImpl(UserInterface&, Workspace&) override
+    {
+      return ExecutionStatus::SUCCESS;
+    }
   };
 };
 
@@ -78,4 +84,64 @@ TEST_F(InstructionTest, SetName)
   instruction.SetName(new_name);
   EXPECT_EQ(instruction.GetName(), new_name);
   EXPECT_TRUE(instruction.HasAttribute(name_of_attribute));
+}
+
+TEST_F(InstructionTest, Breakpoints)
+{
+  sup::UnitTestHelper::EmptyUserInterface ui{};
+  Workspace ws{};
+  {
+    // Test mechanism of hitting and acknowledging breakpoints
+    TestInstruction instruction;
+    // Breakpoint is never hit when it was not executed
+    EXPECT_EQ(instruction.GetStatus(), ExecutionStatus::NOT_STARTED);
+    EXPECT_FALSE(instruction.AcknowledgeBreakpoint());
+    instruction.SetBreakpoint();
+    EXPECT_FALSE(instruction.AcknowledgeBreakpoint());
+
+    // Executing the instruction hits the breakpoint
+    EXPECT_EQ(instruction.GetStatus(), ExecutionStatus::NOT_STARTED);
+    instruction.ExecuteSingle(ui, ws);
+    EXPECT_EQ(instruction.GetStatus(), ExecutionStatus::NOT_STARTED);
+    // Acknowledging the breakpoint is only true once
+    EXPECT_TRUE(instruction.AcknowledgeBreakpoint());
+    EXPECT_FALSE(instruction.AcknowledgeBreakpoint());
+
+    // Executing when a breakpoint was acknowledged will execute it properly
+    instruction.ExecuteSingle(ui, ws);
+    EXPECT_EQ(instruction.GetStatus(), ExecutionStatus::SUCCESS);
+  }
+  {
+    // Test mechanism of resetting breakpoints
+    TestInstruction instruction;
+    // Breakpoint is never hit when it was not executed
+    EXPECT_EQ(instruction.GetStatus(), ExecutionStatus::NOT_STARTED);
+    EXPECT_FALSE(instruction.AcknowledgeBreakpoint());
+    instruction.SetBreakpoint();
+    EXPECT_FALSE(instruction.AcknowledgeBreakpoint());
+    instruction.Reset(ui);
+    EXPECT_FALSE(instruction.AcknowledgeBreakpoint());
+
+    // Executing the instruction hits the breakpoint, but reset puts it back to 'set'
+    EXPECT_EQ(instruction.GetStatus(), ExecutionStatus::NOT_STARTED);
+    instruction.ExecuteSingle(ui, ws);
+    EXPECT_EQ(instruction.GetStatus(), ExecutionStatus::NOT_STARTED);
+    instruction.Reset(ui);
+    EXPECT_FALSE(instruction.AcknowledgeBreakpoint());
+    EXPECT_EQ(instruction.GetStatus(), ExecutionStatus::NOT_STARTED);
+
+    // Executing, acknowledging and resetting the breakpoint will result in it being hit again
+    // on the next execution
+    instruction.ExecuteSingle(ui, ws);
+    EXPECT_EQ(instruction.GetStatus(), ExecutionStatus::NOT_STARTED);
+    EXPECT_TRUE(instruction.AcknowledgeBreakpoint());
+    instruction.Reset(ui);
+    EXPECT_FALSE(instruction.AcknowledgeBreakpoint());
+    instruction.ExecuteSingle(ui, ws);
+    EXPECT_EQ(instruction.GetStatus(), ExecutionStatus::NOT_STARTED);
+    EXPECT_TRUE(instruction.AcknowledgeBreakpoint());
+    // Only without the reset will execution be able to proceed
+    instruction.ExecuteSingle(ui, ws);
+    EXPECT_EQ(instruction.GetStatus(), ExecutionStatus::SUCCESS);
+  }
 }

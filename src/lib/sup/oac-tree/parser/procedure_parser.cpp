@@ -44,6 +44,8 @@ void RegisterTypeInformation(Procedure* procedure, const sup::xml::TreeData& chi
 void ParseProcedureChildren(Procedure* procedure, const sup::xml::TreeData& data);
 void AddWorkspaceVariables(Procedure* procedure, const sup::xml::TreeData& ws_data);
 void ParseAndAddInstruction(Procedure* procedure, const sup::xml::TreeData& instr_data);
+std::string HandleRelativePathName(Procedure* procedure, const std::string& path_name);
+bool IsRelativePathName(const std::string& path_name);
 }  // unnamed namespace
 
 std::unique_ptr<Procedure> ParseProcedure(const sup::xml::TreeData& data,
@@ -78,7 +80,7 @@ void ParsePreamble(Procedure* procedure, const sup::xml::TreeData& data)
     if (child.GetNodeName() == Constants::PLUGIN_ELEMENT_NAME)
     {
       auto plugin_name = child.GetContent();
-      LoadPlugin(plugin_name);
+      LoadPlugin(HandleRelativePathName(procedure, plugin_name));
       procedure->GetPreamble().AddPluginPath(plugin_name);
     }
     else if (child.GetNodeName() == Constants::REGISTERTYPE_ELEMENT_NAME)
@@ -159,6 +161,26 @@ void ParseAndAddInstruction(Procedure *procedure, const sup::xml::TreeData &inst
 {
   auto instr = ParseInstruction(instr_data);
   procedure->PushInstruction(std::move(instr));
+}
+
+std::string HandleRelativePathName(Procedure* procedure, const std::string& path_name)
+{
+  if (IsRelativePathName(path_name))
+  {
+    return ResolveRelativePath(*procedure, path_name);
+  }
+  return path_name;
+}
+
+// Using the definition of relative pathnames from the dlopen manpage:
+bool IsRelativePathName(const std::string& path_name)
+{
+  if (path_name.empty() || path_name[0] == '/')
+  {
+    return false;
+  }
+  auto pos = path_name.find('/');
+  return pos != std::string::npos;
 }
 
 }  // unnamed namespace

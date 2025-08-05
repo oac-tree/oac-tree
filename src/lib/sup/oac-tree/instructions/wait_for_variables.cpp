@@ -81,13 +81,17 @@ bool WaitForVariables::InitHook(UserInterface& ui, Workspace& ws)
   {
     return false;
   }
-  m_updated.store(true);  // Allow for initial checking of condition
+  m_updated = true;  // Allow for initial checking of condition
   RegisterCallbacks(ws);
   return true;
 }
 
 ExecutionStatus WaitForVariables::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
+  if (m_blocking)
+  {
+    return ExecuteBlocking(ui, ws);
+  }
   if (IsHaltRequested())
   {
     return ExecutionStatus::FAILURE;
@@ -103,30 +107,15 @@ ExecutionStatus WaitForVariables::ExecuteSingleImpl(UserInterface& ui, Workspace
     LogUnavailableVars(ui);
     return HandleFinishedStatus(ExecutionStatus::FAILURE);
   }
-  if (m_blocking)
-  {
-    auto duration_ns = m_finish - now;
-    std::unique_lock<std::mutex> lk{m_mtx};
-    auto pred = [this, &ws]() {
-      return CheckCondition(ws) || IsHaltRequested();
-    };
-    auto result = m_cv.wait_for(lk, std::chrono::nanoseconds(duration_ns), pred);
-    if (result && !IsHaltRequested())
-    {
-      return HandleFinishedStatus(ExecutionStatus::SUCCESS);
-    }
-    else
-    {
-      LogUnavailableVars(ui);
-      return HandleFinishedStatus(ExecutionStatus::FAILURE);
-    }
-  }
   return ExecutionStatus::RUNNING;
 }
 
 void WaitForVariables::HaltImpl()
 {
-  m_cv.notify_one();
+  {
+    std::lock_guard<std::mutex> lock(m_mtx);  // Avoid lost wakeup
+    m_cv.notify_one();
+  }
   ClearCallbacks();
 }
 
@@ -137,7 +126,36 @@ void WaitForVariables::ResetHook(UserInterface& ui)
   m_finish = 0;
   m_var_names.clear();
   m_unavailable_vars.clear();
-  m_updated.store(false);
+  m_updated = false;
+}
+
+ExecutionStatus WaitForVariables::ExecuteBlocking(UserInterface& ui, Workspace& ws)
+{
+  while (true)
+  {
+    auto now = utils::GetNanosecsSinceEpoch();
+    if (now > m_finish)
+    {
+      return HandleFinishedStatus(ExecutionStatus::FAILURE);
+    }
+    auto duration_ns = m_finish - now;
+    auto pred = [this]() {
+      return m_updated || IsHaltRequested();
+    };
+    std::unique_lock<std::mutex> lk{m_mtx};
+    auto result = m_cv.wait_for(lk, std::chrono::nanoseconds(duration_ns), pred);
+    m_updated = false;
+    lk.unlock();
+    if (!result || IsHaltRequested())
+    {
+      break;
+    }
+    if (CheckCondition(ws))
+    {
+      return HandleFinishedStatus(ExecutionStatus::SUCCESS);
+    }
+  }
+  return ExecutionStatus::FAILURE;
 }
 
 void WaitForVariables::RegisterCallbacks(Workspace& ws)
@@ -149,7 +167,10 @@ void WaitForVariables::RegisterCallbacks(Workspace& ws)
       {
         if (connected)
         {
-          m_updated.store(true);
+          {
+            std::lock_guard<std::mutex> lk(m_mtx);
+            m_updated = true;
+          }
           m_cv.notify_one();
         }
       };
@@ -166,8 +187,13 @@ void WaitForVariables::ClearCallbacks()
 
 bool WaitForVariables::CheckUpdate()
 {
-  bool expected = true;
-  return m_updated.compare_exchange_strong(expected, false);
+  std::lock_guard<std::mutex> lk(m_mtx);
+  if (m_updated)
+  {
+    m_updated = false;
+    return true;
+  }
+  return false;
 }
 
 ExecutionStatus WaitForVariables::HandleFinishedStatus(ExecutionStatus status)

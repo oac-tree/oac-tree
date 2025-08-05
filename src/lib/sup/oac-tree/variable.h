@@ -28,7 +28,6 @@
 
 #include <sup/dto/anyvalue.h>
 
-#include <condition_variable>
 #include <functional>
 #include <mutex>
 
@@ -282,12 +281,6 @@ private:
    * @details This mutex protects only access to the update counter.
    */
   mutable std::mutex m_notify_mutex;
-
-  /**
-   * @brief Used to track updates of the underlying value.
-   * @details This condition variable is notified after an update.
-   */
-  mutable std::condition_variable m_update_cond;
 
   /**
    * @brief Callback function to call when value was updated.

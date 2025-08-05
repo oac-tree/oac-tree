@@ -51,7 +51,6 @@ Variable::Variable(const std::string &type)
   , m_setup_successful{false}
   , m_access_mutex{}
   , m_notify_mutex{}
-  , m_update_cond{}
   , m_notify_cb{}
 {
   AddAttributeDefinition(Constants::NAME_ATTRIBUTE_NAME, sup::dto::StringType);

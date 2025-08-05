@@ -1,6 +1,6 @@
 Changes for 4.3.0:
 
-- ???
+- Avoid lost condition variable wakeups in Listen, WaitForVariable(s), Fail, Wait and Workspace::WaitForVariable
 
 Changes for 4.2.0:
 

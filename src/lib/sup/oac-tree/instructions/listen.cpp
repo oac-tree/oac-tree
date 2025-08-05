@@ -104,7 +104,10 @@ ExecutionStatus Listen::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 void Listen::HaltImpl()
 {
   HaltChild();
-  m_cv.notify_one();
+  {
+    std::lock_guard<std::mutex> lock(m_mtx);  // Avoid lost wakeup
+    m_cv.notify_one();
+  }
   ClearCallbacks();
 }
 

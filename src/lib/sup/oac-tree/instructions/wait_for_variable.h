@@ -53,7 +53,7 @@ public:
 private:
   bool m_blocking;
   sup::dto::int64 m_finish;
-  std::atomic_bool m_updated;
+  bool m_updated;
   std::mutex m_mtx;
   std::condition_variable m_cv;
   ScopeGuard m_cb_guard;
@@ -65,6 +65,8 @@ private:
   void HaltImpl() override;
 
   void ResetHook(UserInterface& ui) override;
+
+  ExecutionStatus ExecuteBlocking(UserInterface& ui, Workspace& ws);
 
   void RegisterCallbacks(Workspace& ws);
 

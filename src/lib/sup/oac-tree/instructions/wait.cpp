@@ -97,6 +97,7 @@ ExecutionStatus Wait::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 
 void Wait::HaltImpl()
 {
+  std::lock_guard<std::mutex> lock(m_mtx);  // Avoid lost wakeup
   m_cv.notify_one();
 }
 

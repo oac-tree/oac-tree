@@ -94,6 +94,7 @@ ExecutionStatus Fail::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 
 void Fail::HaltImpl()
 {
+  std::lock_guard<std::mutex> lock(m_mtx);  // Avoid lost wakeup
   m_cv.notify_one();
 }
 

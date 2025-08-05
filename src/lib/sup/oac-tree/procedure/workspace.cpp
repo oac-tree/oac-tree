@@ -162,19 +162,37 @@ bool Workspace::WaitForVariable(const std::string& name, double timeout_sec, boo
     return false;
   }
   auto timeout_duration = std::chrono::duration<double>(timeout_sec);
+  auto finish = std::chrono::system_clock::now() + timeout_duration;
   int dummy_listener; // to get a unique address
+  bool updated = true;
   std::mutex mx;
-  std::unique_lock<std::mutex> lk(mx);
   std::condition_variable cv;
-  auto cb_guard = GetCallbackGuard(&dummy_listener);
-  auto callback = [&cv](const auto&, auto){
+  auto callback = [&updated, &mx, &cv](const auto&, auto)
+                  {
+                    {
+                      std::lock_guard<std::mutex> lk(mx);
+                      updated = true;
+                    }
                     cv.notify_one();
                   };
+  auto cb_guard = GetCallbackGuard(&dummy_listener);
   RegisterCallback(name, callback, &dummy_listener);
-  cv.wait_for(lk, timeout_duration, [&it, availability]{
-      return it->second->IsAvailable() == availability;
-    });
-  return it->second->IsAvailable() == availability;
+  while (true)
+  {
+    std::unique_lock<std::mutex> lk(mx);
+    auto result = cv.wait_until(lk, finish, [&updated]{ return updated; });
+    updated = false;
+    lk.unlock();
+    if (!result)
+    {
+      break;
+    }
+    if (it->second->IsAvailable() == availability)
+    {
+      return true;
+    }
+  }
+  return false;
 }
 
 std::vector<const Variable*> Workspace::GetVariables() const

@@ -90,10 +90,8 @@ TEST(Condition, Default)
 
 TEST(Condition, DifferentTypes)
 {
-  bool status(true);
-
   std::size_t i = 0u;
-  while ((conditionTable[i][0] != NULL) && status)
+  while ((conditionTable[i][0] != NULL))
   {
     std::unique_ptr<Procedure> proc(new Procedure);
     std::unique_ptr<Condition> myCondNode(new Condition);
@@ -108,8 +106,6 @@ TEST(Condition, DifferentTypes)
     varX->GetValue(resVal);
     proc->AddVariable(conditionTable[i][3], std::move(varX));
 
-    if (status)
-    {
       sup::UnitTestHelper::EmptyUserInterface ui;
       proc->PushInstruction(std::move(myCondNode));
       proc->Setup();
@@ -118,18 +114,14 @@ TEST(Condition, DifferentTypes)
       ::std::string result = conditionTable[i][4];
       if (result == "true")
       {
-        status = (proc->GetStatus() == ExecutionStatus::SUCCESS);
+        EXPECT_EQ(proc->GetStatus(), ExecutionStatus::SUCCESS);
       }
       else
       {
-        status = (proc->GetStatus() == ExecutionStatus::FAILURE);
+        EXPECT_EQ(proc->GetStatus(), ExecutionStatus::FAILURE);
       }
-    }
-
     i++;
   }
-
-  EXPECT_TRUE(status);
 }
 
 TEST(Condition, Setup)

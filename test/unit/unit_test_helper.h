@@ -176,29 +176,24 @@ static inline bool TryAndExecuteNoReset(std::unique_ptr<sup::oac_tree::Procedure
                                         sup::oac_tree::UserInterface& ui,
                                         const sup::oac_tree::ExecutionStatus& expect)
 {
-  bool status = static_cast<bool>(proc);
-
-  proc->Setup();
-
-  if (status)
+  if (!static_cast<bool>(proc))
   {
-    sup::oac_tree::ExecutionStatus exec = sup::oac_tree::ExecutionStatus::FAILURE;
-
-    do
-    {
-      if (exec == sup::oac_tree::ExecutionStatus::RUNNING)
-      {
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-      }
-      proc->ExecuteSingle(ui);
-      exec = proc->GetStatus();
-    } while ((sup::oac_tree::ExecutionStatus::SUCCESS != exec)
-             && (sup::oac_tree::ExecutionStatus::FAILURE != exec));
-
-    status = (expect == exec);
+    return false;
   }
+  proc->Setup();
+  sup::oac_tree::ExecutionStatus exec = sup::oac_tree::ExecutionStatus::FAILURE;
+  do
+  {
+    if (exec == sup::oac_tree::ExecutionStatus::RUNNING)
+    {
+      std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+    proc->ExecuteSingle(ui);
+    exec = proc->GetStatus();
+  } while ((sup::oac_tree::ExecutionStatus::SUCCESS != exec)
+           && (sup::oac_tree::ExecutionStatus::FAILURE != exec));
 
-  return status;
+  return (expect == exec);
 }
 
 static inline bool TryAndExecute(std::unique_ptr<sup::oac_tree::Procedure>& proc,

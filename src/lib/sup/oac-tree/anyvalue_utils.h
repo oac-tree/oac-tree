@@ -46,6 +46,17 @@ namespace utils
 bool ValidateMemberType(const sup::dto::AnyValue& anyvalue, const std::string& mem_name,
                         const sup::dto::AnyType& mem_type);
 
+/**
+ * @brief Validate in a given AnyValue if a structure member has the correct type if it exists.
+ *
+ * @param anyvalue AnyValue to validate.
+ * @param mem_name Expected member name.
+ * @param mem_type Expected member AnyType.
+ * @return true if such a member does not exist or has the right type.
+ */
+bool ValidateMemberTypeIfPresent(const sup::dto::AnyValue& anyvalue, const std::string& mem_name,
+                                 const sup::dto::AnyType& mem_type);
+
 }  // namespace utils
 
 }  // namespace oac_tree

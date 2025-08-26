@@ -43,6 +43,16 @@ bool ValidateMemberType(const sup::dto::AnyValue& anyvalue, const std::string& m
   return true;
 }
 
+bool ValidateMemberTypeIfPresent(const sup::dto::AnyValue& anyvalue, const std::string& mem_name,
+                                 const sup::dto::AnyType& mem_type)
+{
+  if (anyvalue.HasField(mem_name) && anyvalue[mem_name].GetType() != mem_type)
+  {
+    return false;
+  }
+  return true;
+}
+
 }  // namespace utils
 
 }  // namespace oac_tree

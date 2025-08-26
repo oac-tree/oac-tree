@@ -55,6 +55,8 @@ struct InstrInfoToAnyValueStackNode
   sup::dto::AnyValue& anyvalue;
 };
 
+bool ValidateInstructionInfoAnyValueBase(const sup::dto::AnyValue& instr_info);
+
 }  // unnamed namespace
 
 namespace sup
@@ -246,21 +248,7 @@ std::string CreateIndexedInstrChildName(std::size_t idx)
 
 bool ValidateInstructionInfoAnyValue(const sup::dto::AnyValue& instr_info)
 {
-  if (!ValidateMemberType(instr_info, kInstructionInfoNodeTypeField, sup::dto::StringType))
-  {
-    return false;
-  }
-  if (!ValidateMemberType(instr_info, kInstructionInfoNodeCategoryField,
-                          sup::dto::UnsignedInteger32Type))
-  {
-    return false;
-  }
-  if (!ValidateMemberType(instr_info, kIndexField, sup::dto::UnsignedInteger32Type))
-  {
-    return false;
-  }
-  if (!instr_info.HasField(kAttributesField) ||
-      !sup::dto::IsStructValue(instr_info[kAttributesField]))
+  if (!ValidateInstructionInfoAnyValueBase(instr_info))
   {
     return false;
   }
@@ -296,3 +284,32 @@ bool ValidateInstructionInfoAnyValue(const sup::dto::AnyValue& instr_info)
 }  // namespace oac_tree
 
 }  // namespace sup
+
+namespace
+{
+using namespace sup::oac_tree;
+
+bool ValidateInstructionInfoAnyValueBase(const sup::dto::AnyValue& instr_info)
+{
+  if (!utils::ValidateMemberType(instr_info, kInstructionInfoNodeTypeField, sup::dto::StringType))
+  {
+    return false;
+  }
+  if (!utils::ValidateMemberType(instr_info, kInstructionInfoNodeCategoryField,
+                          sup::dto::UnsignedInteger32Type))
+  {
+    return false;
+  }
+  if (!utils::ValidateMemberType(instr_info, kIndexField, sup::dto::UnsignedInteger32Type))
+  {
+    return false;
+  }
+  if (!instr_info.HasField(kAttributesField) ||
+      !sup::dto::IsStructValue(instr_info[kAttributesField]))
+  {
+    return false;
+  }
+  return true;
+}
+
+}  // unnamed namespace

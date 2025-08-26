@@ -22,6 +22,7 @@
 
 #include <sup/oac-tree/user_interface.h>
 
+#include <sup/oac-tree/anyvalue_utils.h>
 #include <sup/oac-tree/constants.h>
 #include <sup/oac-tree/instruction.h>
 #include <sup/oac-tree/log_severity.h>
@@ -88,39 +89,33 @@ bool IsUserChoiceMetadata(const sup::dto::AnyValue& metadata)
   {
     return false;
   }
-  if (metadata.HasField(Constants::USER_CHOICES_TEXT_NAME) &&
-      (metadata[Constants::USER_CHOICES_TEXT_NAME].GetType()
-        != sup::dto::StringType))
+  if (!utils::ValidateMemberTypeIfPresent(metadata, Constants::USER_CHOICES_TEXT_NAME,
+                                          sup::dto::StringType))
   {
     return false;
   }
-  if (metadata.HasField(Constants::USER_CHOICES_DIALOG_TYPE_NAME) &&
-      (metadata[Constants::USER_CHOICES_DIALOG_TYPE_NAME].GetType()
-        != sup::dto::UnsignedInteger32Type))
+  if (!utils::ValidateMemberTypeIfPresent(metadata, Constants::USER_CHOICES_DIALOG_TYPE_NAME,
+                                          sup::dto::UnsignedInteger32Type))
   {
     return false;
   }
-  if (metadata.HasField(Constants::USER_CHOICES_MODAL_NAME) &&
-      (metadata[Constants::USER_CHOICES_MODAL_NAME].GetType()
-        != sup::dto::BooleanType))
+  if (!utils::ValidateMemberTypeIfPresent(metadata, Constants::USER_CHOICES_MODAL_NAME,
+                                          sup::dto::BooleanType))
   {
     return false;
   }
-  if (metadata.HasField(Constants::USER_CHOICES_TITLE_NAME) &&
-      (metadata[Constants::USER_CHOICES_TITLE_NAME].GetType()
-        != sup::dto::StringType))
+  if (!utils::ValidateMemberTypeIfPresent(metadata, Constants::USER_CHOICES_TITLE_NAME,
+                                          sup::dto::StringType))
   {
     return false;
   }
-  if (metadata.HasField(Constants::USER_CHOICES_INFORMATIVE_TEXT_NAME) &&
-      (metadata[Constants::USER_CHOICES_INFORMATIVE_TEXT_NAME].GetType()
-        != sup::dto::StringType))
+  if (!utils::ValidateMemberTypeIfPresent(metadata, Constants::USER_CHOICES_INFORMATIVE_TEXT_NAME,
+                                          sup::dto::StringType))
   {
     return false;
   }
-  if (metadata.HasField(Constants::USER_CHOICES_DETAILS_NAME) &&
-      (metadata[Constants::USER_CHOICES_DETAILS_NAME].GetType()
-        != sup::dto::StringType))
+  if (!utils::ValidateMemberTypeIfPresent(metadata, Constants::USER_CHOICES_DETAILS_NAME,
+                                          sup::dto::StringType))
   {
     return false;
   }

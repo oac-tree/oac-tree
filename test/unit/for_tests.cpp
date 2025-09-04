@@ -174,8 +174,8 @@ TEST(For, TypeMismatch)
         </For>
     </Sequence>
     <Workspace>
-    <Local name="arr" type='{"type":"uint32_arr","element":{"type":"uint32"}}' value="[2,4,6]"/>
-    <Local name="i" type='{"type":"float32"}' value='0' />
+    <Local name="arr" type='{"type":"uint32_arr","element":{"type":"string"}}' value='["one","two","three"]'/>
+    <Local name="i" type='{"type":"uint16"}' value='0' />
     </Workspace>
 )"};
 

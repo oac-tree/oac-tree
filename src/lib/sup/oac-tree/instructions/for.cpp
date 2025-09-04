@@ -78,21 +78,6 @@ ExecutionStatus ForInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& 
   {
     return ExecutionStatus::SUCCESS;
   }
-  dto::AnyValue element_val;
-  if (!GetAttributeValue(Constants::ELEMENT_VARIABLE_NAME_ATTRIBUTE_NAME, ws, ui, element_val))
-  {
-    return ExecutionStatus::FAILURE;
-  }
-  if (element_val.GetType() != m_array.GetType().ElementType())
-  {
-    std::string warning_message =
-      InstructionWarningProlog(*this) + "The element [" +
-      GetAttributeString(Constants::ELEMENT_VARIABLE_NAME_ATTRIBUTE_NAME) + "] and the elements of array [" +
-      GetAttributeString(Constants::ARRAY_VARIABLE_NAME_ATTRIBUTE_NAME) + "] have to be of the same type.";
-    LogWarning(ui, warning_message);
-    return ExecutionStatus::FAILURE;
-  }
-
   if (!SetValueFromAttributeName(*this, ws, ui, Constants::ELEMENT_VARIABLE_NAME_ATTRIBUTE_NAME,
                                  m_array[m_count]))
   {

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/oac-tree" version="1.0"
+           name="Trivial procedure for testing purposes"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/oac-tree oac-tree.xsd">
+    <Sequence>
+        <For elementVar="i" arrayVar="arr">
+            <Increment varName="i"/>
+        </For>
+    </Sequence>
+    <Workspace>
+        <Local name="arr" type='{"type":"uint32_arr","element":{"type":"string"}}' value='["one","two","three"]'/>
+        <Local name="i" type='{"type":"uint16"}' value='0' />
+    </Workspace>
+</Procedure>

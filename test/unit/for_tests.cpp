@@ -77,6 +77,50 @@ TEST(For, Success)
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
+TEST(For, CastElement)
+{
+  const std::string body{
+    R"(
+    <Sequence>
+        <For elementVar="i" arrayVar="arr">
+            <Increment varName="i"/>
+        </For>
+    </Sequence>
+    <Workspace>
+    <Local name="arr" type='{"type":"uint32_arr","element":{"type":"uint16"}}' value="[2,4,6]"/>
+    <Local name="i" type='{"type":"uint32"}' value='0' />
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
+TEST(For, UntypedElementVar)
+{
+  const std::string body{
+    R"(
+    <Sequence>
+        <For elementVar="i" arrayVar="arr">
+            <Increment varName="i"/>
+        </For>
+    </Sequence>
+    <Workspace>
+    <Local name="arr" type='{"type":"uint32_arr","element":{"type":"uint16"}}' value="[2,4,6]"/>
+    <Local name="i"/>
+    </Workspace>
+)"};
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  auto proc = ParseProcedureString(sup::UnitTestHelper::CreateProcedureString(body));
+
+  ASSERT_TRUE(proc.get() != nullptr);
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+}
+
 TEST(For, EmptyArrayName)
 {
   const std::string body{

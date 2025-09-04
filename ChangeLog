@@ -1,6 +1,7 @@
 Changes for 4.3.0:
 
 - Avoid lost condition variable wakeups in Listen, WaitForVariable(s), Fail, Wait and Workspace::WaitForVariable
+- Allow casting to element type in For instruction
 
 Changes for 4.2.0:
 

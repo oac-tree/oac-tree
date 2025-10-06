@@ -38,10 +38,10 @@ UserConfirmation::UserConfirmation()
   : Instruction(UserConfirmation::Type)
   , m_future{}
 {
-  AddAttributeDefinition(Constants::DESCRIPTION_ATTRIBUTE_NAME)
+  (void)AddAttributeDefinition(Constants::DESCRIPTION_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kBoth).SetMandatory();
-  AddAttributeDefinition(Constants::OK_TEXT_ATTRIBUTE_NAME).SetCategory(AttributeCategory::kBoth);
-  AddAttributeDefinition(Constants::CANCEL_TEXT_ATTRIBUTE_NAME)
+  (void)AddAttributeDefinition(Constants::OK_TEXT_ATTRIBUTE_NAME).SetCategory(AttributeCategory::kBoth);
+  (void)AddAttributeDefinition(Constants::CANCEL_TEXT_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kBoth);
 }
 
@@ -65,8 +65,8 @@ bool UserConfirmation::InitHook(UserInterface& ui, Workspace& ws)
     return false;
   }
   auto metadata = CreateUserChoiceMetadata();
-  metadata.AddMember(Constants::USER_CHOICES_TEXT_NAME, description);
-  metadata.AddMember(Constants::USER_CHOICES_DIALOG_TYPE_NAME,
+  (void)metadata.AddMember(Constants::USER_CHOICES_TEXT_NAME, description);
+  (void)metadata.AddMember(Constants::USER_CHOICES_DIALOG_TYPE_NAME,
                      {sup::dto::UnsignedInteger32Type, dialog_type::kConfirmation});
   std::vector<std::string> options = { ok_text, cancel_text };
   m_future = CreateUserChoiceFuture(ui, *this, options, metadata);

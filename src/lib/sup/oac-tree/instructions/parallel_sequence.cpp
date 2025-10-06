@@ -37,9 +37,9 @@ ParallelSequence::ParallelSequence()
   , m_success_th{0}
   , m_failure_th{0}
 {
-  AddAttributeDefinition(Constants::SUCCESS_THRESHOLD_ATTRIBUTE_NAME,
+  (void)AddAttributeDefinition(Constants::SUCCESS_THRESHOLD_ATTRIBUTE_NAME,
                          sup::dto::UnsignedInteger32Type);
-  AddAttributeDefinition(Constants::FAILURE_THRESHOLD_ATTRIBUTE_NAME,
+  (void)AddAttributeDefinition(Constants::FAILURE_THRESHOLD_ATTRIBUTE_NAME,
                          sup::dto::UnsignedInteger32Type);
 }
 
@@ -120,7 +120,7 @@ void ParallelSequence::InitWrappers()
   m_wrappers.clear();
   for (auto child : ChildInstructions())
   {
-    m_wrappers.emplace_back(child);
+    (void)m_wrappers.emplace_back(child);
   }
 }
 

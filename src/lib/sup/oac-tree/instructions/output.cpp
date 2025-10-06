@@ -36,9 +36,9 @@ const std::string Output::Type = "Output";
 Output::Output()
   : Instruction(Output::Type)
 {
-  AddAttributeDefinition(Constants::FROM_VARIABLE_ATTRIBUTE_NAME)
+  (void)AddAttributeDefinition(Constants::FROM_VARIABLE_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kVariableName).SetMandatory();
-  AddAttributeDefinition(Constants::DESCRIPTION_ATTRIBUTE_NAME)
+  (void)AddAttributeDefinition(Constants::DESCRIPTION_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kBoth);
 }
 

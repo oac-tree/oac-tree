@@ -31,7 +31,6 @@
 
 #include <sup/dto/anyvalue_helper.h>
 
-#include <functional>
 #include <map>
 #include <sstream>
 
@@ -49,10 +48,10 @@ const std::string LogInstruction::Type = "Log";
 LogInstruction::LogInstruction()
   : Instruction(Type)
 {
-  AddAttributeDefinition(Constants::MESSAGE_ATTRIBUTE_NAME).SetCategory(AttributeCategory::kBoth);
-  AddAttributeDefinition(Constants::INPUT_VARIABLE_NAME_ATTRIBUTE_NAME)
+  (void)AddAttributeDefinition(Constants::MESSAGE_ATTRIBUTE_NAME).SetCategory(AttributeCategory::kBoth);
+  (void)AddAttributeDefinition(Constants::INPUT_VARIABLE_NAME_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kVariableName);
-  AddAttributeDefinition(Constants::SEVERITY_ATTRIBUTE_NAME).SetCategory(AttributeCategory::kBoth);
+  (void)AddAttributeDefinition(Constants::SEVERITY_ATTRIBUTE_NAME).SetCategory(AttributeCategory::kBoth);
   AddConstraint(
     MakeConstraint<Or>(MakeConstraint<Exists>(Constants::MESSAGE_ATTRIBUTE_NAME),
                        MakeConstraint<Exists>(Constants::INPUT_VARIABLE_NAME_ATTRIBUTE_NAME)));

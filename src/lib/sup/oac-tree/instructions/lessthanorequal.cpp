@@ -32,9 +32,6 @@
 #include <sup/dto/anyvalue_operations.h>
 #include <sup/dto/basic_scalar_types.h>
 
-#include <iostream>
-#include <string>
-
 namespace sup
 {
 namespace oac_tree
@@ -44,9 +41,9 @@ const std::string LessThanOrEqual::Type = "LessThanOrEqual";
 LessThanOrEqual::LessThanOrEqual()
   : Instruction(LessThanOrEqual::Type)
 {
-  AddAttributeDefinition(Constants::LEFT_VARIABLE_NAME_ATTRIBUTE_NAME)
+  (void)AddAttributeDefinition(Constants::LEFT_VARIABLE_NAME_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kVariableName).SetMandatory();
-  AddAttributeDefinition(Constants::RIGHT_VARIABLE_NAME_ATTRIBUTE_NAME)
+  (void)AddAttributeDefinition(Constants::RIGHT_VARIABLE_NAME_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kVariableName).SetMandatory();
 }
 

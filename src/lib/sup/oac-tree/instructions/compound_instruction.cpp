@@ -31,7 +31,7 @@ namespace oac_tree
 CompoundInstruction::CompoundInstruction(const std::string& type)
   : Instruction(type)
 {
-  AddAttributeDefinition(Constants::SHOW_COLLAPSED_ATTRIBUTE_NAME, sup::dto::BooleanType);
+  (void)AddAttributeDefinition(Constants::SHOW_COLLAPSED_ATTRIBUTE_NAME, sup::dto::BooleanType);
 }
 
 CompoundInstruction::~CompoundInstruction() = default;
@@ -102,7 +102,7 @@ bool CompoundInstruction::InsertInstructionImpl(std::unique_ptr<Instruction>&& c
   {
     return false;
   }
-  m_children.emplace(std::next(m_children.begin(), index), std::move(child));
+  (void)m_children.emplace(std::next(m_children.begin(), index), std::move(child));
   return true;
 }
 
@@ -115,7 +115,7 @@ std::unique_ptr<Instruction> CompoundInstruction::TakeInstructionImpl(int index)
   auto it = std::next(m_children.begin(), index);
   std::unique_ptr<Instruction> retval;
   std::swap(retval, *it);
-  m_children.erase(it);
+  (void)m_children.erase(it);
   return std::move(retval);
 }
 

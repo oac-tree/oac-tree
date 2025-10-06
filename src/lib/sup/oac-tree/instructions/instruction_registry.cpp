@@ -94,7 +94,7 @@ bool InstructionRegistry::RegisterInstruction(std::string name, InstructionConst
       "with name [" + name + "] twice";
     throw InvalidOperationException(error_message);
   }
-  m_instruction_map.insert(it, {name, constructor});
+  (void)m_instruction_map.insert(it, {name, constructor});
   return true;
 }
 

@@ -146,7 +146,7 @@ bool CheckAbsenceOfLoops(const std::vector<sup::dto::uint32>& parent_indices)
 
     while (current != kIsRootIndex && !current_path.count(current))
     {
-      current_path.insert(current);
+      (void)current_path.insert(current);
       current = parent_indices[current];
     }
     if (current == kIsRootIndex)

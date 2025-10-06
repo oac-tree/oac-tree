@@ -41,13 +41,13 @@ const std::string AddMember::Type = "AddMember";
 using namespace std;
 AddMember::AddMember() : Instruction(AddMember::Type)
 {
-  AddAttributeDefinition(Constants::INPUT_VARIABLE_NAME_ATTRIBUTE_NAME)
+  (void)AddAttributeDefinition(Constants::INPUT_VARIABLE_NAME_ATTRIBUTE_NAME)
       .SetCategory(AttributeCategory::kVariableName)
       .SetMandatory();
-  AddAttributeDefinition(Constants::OUTPUT_VARIABLE_NAME_ATTRIBUTE_NAME)
+  (void)AddAttributeDefinition(Constants::OUTPUT_VARIABLE_NAME_ATTRIBUTE_NAME)
       .SetCategory(AttributeCategory::kVariableName)
       .SetMandatory();
-  AddAttributeDefinition(Constants::MEMBER_NAME_ATTRIBUTE_NAME).SetMandatory();
+  (void)AddAttributeDefinition(Constants::MEMBER_NAME_ATTRIBUTE_NAME).SetMandatory();
 }
 
 AddMember::~AddMember() = default;
@@ -105,7 +105,7 @@ ExecutionStatus AddMember::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   // Trying to add a member to a locked struct will throw exception
   try
   {
-    output_var.AddMember(member_name, input_var);
+    (void)output_var.AddMember(member_name, input_var);
   }
   catch (const sup::dto::InvalidOperationException& e)
   {

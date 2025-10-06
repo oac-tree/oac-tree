@@ -71,7 +71,7 @@ AttributeDefinition& AttributeValidator::AddAttributeDefinition(
       "existing attribute with name (" + attr_name + ")";
     throw InvalidOperationException(error_message);
   }
-  m_attribute_definitions.emplace_back(attr_name, value_type);
+  (void)m_attribute_definitions.emplace_back(attr_name, value_type);
   return m_attribute_definitions.back();
 }
 
@@ -164,8 +164,8 @@ std::vector<std::string> CheckMandatoryConstraints(
       auto it = sup::oac_tree::FindStringAttribute(str_attributes, attr_def.GetName());
       if (it == str_attributes.end())
       {
-      failed_constraints.emplace_back(
-        MakeConstraint<sup::oac_tree::Exists>(attr_def.GetName()).GetRepresentation());
+        (void)failed_constraints.emplace_back(
+            MakeConstraint<sup::oac_tree::Exists>(attr_def.GetName()).GetRepresentation());
       }
     }
   }

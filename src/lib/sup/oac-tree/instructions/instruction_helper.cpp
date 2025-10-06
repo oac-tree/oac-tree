@@ -83,7 +83,7 @@ std::unique_ptr<Instruction> CloneInstruction(const Instruction* instruction)
   {
     return nullptr;
   }
-  result->AddAttributes(instruction->GetStringAttributes());
+  (void)result->AddAttributes(instruction->GetStringAttributes());
   if (!CloneChildInstructions(*result, instruction))
   {
     return nullptr;

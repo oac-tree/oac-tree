@@ -78,7 +78,7 @@ bool AttributeHandler::AddStringAttribute(const std::string& name, const std::st
   {
     return false;
   }
-  m_str_attributes.emplace_back(name, value);
+  (void)m_str_attributes.emplace_back(name, value);
   return true;
 }
 
@@ -91,7 +91,7 @@ void AttributeHandler::SetStringAttribute(const std::string& name, const std::st
   }
   else
   {
-    m_str_attributes.emplace_back(name, value);
+    (void)m_str_attributes.emplace_back(name, value);
   }
 }
 

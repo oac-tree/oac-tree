@@ -40,7 +40,7 @@ const std::string Decrement::Type = "Decrement";
 Decrement::Decrement()
   : Instruction(Decrement::Type)
 {
-  AddAttributeDefinition(Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME)
+  (void)AddAttributeDefinition(Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kVariableName).SetMandatory();
 }
 

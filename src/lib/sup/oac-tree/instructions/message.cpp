@@ -37,7 +37,7 @@ const std::string Message::Type = "Message";
 Message::Message()
   : Instruction(Message::Type)
 {
-  AddAttributeDefinition(Constants::TEXT_ATTRIBUTE_NAME)
+  (void)AddAttributeDefinition(Constants::TEXT_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kBoth).SetMandatory();
 }
 

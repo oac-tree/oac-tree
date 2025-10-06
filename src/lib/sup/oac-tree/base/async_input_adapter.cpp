@@ -156,7 +156,7 @@ UserInputReply AsyncInputAdapter::GetReply(const Future& token)
     throw InvalidOperationException{error};
   }
   auto reply = reply_it->second;
-  m_replies.erase(reply_it);
+  (void)m_replies.erase(reply_it);
   return reply;
 }
 
@@ -175,14 +175,14 @@ void AsyncInputAdapter::CancelInputRequest(const Future& token)
   if (request_it != m_request_queue.end())
   {
     // request is still queued, so removal from the queue is all that is needed
-    m_request_queue.erase(request_it);
+    (void)m_request_queue.erase(request_it);
     return;
   }
   auto reply_it = m_replies.find(id);
   if (reply_it != m_replies.end())
   {
     // reply is already provided, so just removing it is enough
-    m_replies.erase(reply_it);
+    (void)m_replies.erase(reply_it);
     return;
   }
   if (m_current_id == id)

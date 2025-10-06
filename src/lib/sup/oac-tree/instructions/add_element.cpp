@@ -38,10 +38,10 @@ const std::string AddElement::Type = "AddElement";
 
 AddElement::AddElement() : Instruction(AddElement::Type)
 {
-  AddAttributeDefinition(Constants::INPUT_VARIABLE_NAME_ATTRIBUTE_NAME)
+  (void)AddAttributeDefinition(Constants::INPUT_VARIABLE_NAME_ATTRIBUTE_NAME)
       .SetCategory(AttributeCategory::kVariableName)
       .SetMandatory();
-  AddAttributeDefinition(Constants::OUTPUT_VARIABLE_NAME_ATTRIBUTE_NAME)
+  (void)AddAttributeDefinition(Constants::OUTPUT_VARIABLE_NAME_ATTRIBUTE_NAME)
       .SetCategory(AttributeCategory::kVariableName)
       .SetMandatory();
 }
@@ -82,7 +82,7 @@ ExecutionStatus AddElement::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 
   try
   {
-    output_var.AddElement(input_var);
+    (void)output_var.AddElement(input_var);
   }
   catch (const sup::dto::InvalidOperationException& e)
   {

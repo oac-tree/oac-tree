@@ -29,9 +29,6 @@
 #include <sup/oac-tree/exceptions.h>
 #include <sup/oac-tree/sequence_parser.h>
 
-#include <fstream>
-#include <sstream>
-
 namespace sup
 {
 namespace oac_tree
@@ -64,7 +61,7 @@ std::unique_ptr<Procedure> ParseProcedure(const sup::xml::TreeData& data,
   ParsePreamble(result.get(), data);
 
   // Add attributes
-  result->AddAttributes(data.Attributes());
+  (void)result->AddAttributes(data.Attributes());
 
   // Parse child elements
   ParseProcedureChildren(result.get(), data);

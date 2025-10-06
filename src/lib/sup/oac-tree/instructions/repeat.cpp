@@ -38,7 +38,7 @@ Repeat::Repeat()
   , m_count{0}
   , m_init_ok{false}
 {
-  AddAttributeDefinition(Constants::MAX_COUNT_ATTRIBUTE_NAME, sup::dto::SignedInteger32Type)
+  (void)AddAttributeDefinition(Constants::MAX_COUNT_ATTRIBUTE_NAME, sup::dto::SignedInteger32Type)
     .SetCategory(AttributeCategory::kBoth);
 }
 

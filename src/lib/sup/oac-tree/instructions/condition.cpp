@@ -38,7 +38,7 @@ const std::string Condition::Type = "Condition";
 Condition::Condition()
   : Instruction(Condition::Type)
 {
-  AddAttributeDefinition(Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME)
+  (void)AddAttributeDefinition(Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kVariableName).SetMandatory();
 }
 

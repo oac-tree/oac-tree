@@ -32,7 +32,7 @@ DecoratorInstruction::DecoratorInstruction(const std::string &type)
   : Instruction(type)
   , m_child{}
 {
-  AddAttributeDefinition(Constants::SHOW_COLLAPSED_ATTRIBUTE_NAME, sup::dto::BooleanType);
+  (void)AddAttributeDefinition(Constants::SHOW_COLLAPSED_ATTRIBUTE_NAME, sup::dto::BooleanType);
 }
 
 DecoratorInstruction::~DecoratorInstruction() = default;

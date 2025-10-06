@@ -44,13 +44,13 @@ WaitForVariable::WaitForVariable()
   , m_cv{}
   , m_cb_guard{}
 {
-  AddAttributeDefinition(Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME)
+  (void)AddAttributeDefinition(Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kVariableName).SetMandatory();
-  AddAttributeDefinition(Constants::TIMEOUT_SEC_ATTRIBUTE_NAME, sup::dto::Float64Type)
+  (void)AddAttributeDefinition(Constants::TIMEOUT_SEC_ATTRIBUTE_NAME, sup::dto::Float64Type)
     .SetCategory(AttributeCategory::kBoth).SetMandatory();
-  AddAttributeDefinition(Constants::EQUALS_VARIABLE_NAME_ATTRIBUTE_NAME)
+  (void)AddAttributeDefinition(Constants::EQUALS_VARIABLE_NAME_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kVariableName);
-  AddAttributeDefinition(Constants::BLOCKING_ATTRIBUTE_NAME, sup::dto::BooleanType)
+  (void)AddAttributeDefinition(Constants::BLOCKING_ATTRIBUTE_NAME, sup::dto::BooleanType)
     .SetCategory(AttributeCategory::kBoth);
 }
 
@@ -157,12 +157,12 @@ void WaitForVariable::RegisterCallbacks(Workspace& ws)
                       m_cv.notify_one();
                     }
                   };
-  ws.RegisterCallback(GetAttributeString(Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME),
-                      callback, this);
+  (void)ws.RegisterCallback(GetAttributeString(Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME),
+                            callback, this);
   if (HasAttribute(Constants::EQUALS_VARIABLE_NAME_ATTRIBUTE_NAME))
   {
-    ws.RegisterCallback(GetAttributeString(Constants::EQUALS_VARIABLE_NAME_ATTRIBUTE_NAME),
-                        callback, this);
+    (void)ws.RegisterCallback(GetAttributeString(Constants::EQUALS_VARIABLE_NAME_ATTRIBUTE_NAME),
+                              callback, this);
   }
 }
 

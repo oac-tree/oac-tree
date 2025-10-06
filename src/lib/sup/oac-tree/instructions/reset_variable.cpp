@@ -37,7 +37,7 @@ const std::string ResetVariable::Type = "ResetVariable";
 ResetVariable::ResetVariable()
   : Instruction(ResetVariable::Type)
 {
-  AddAttributeDefinition(Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME)
+  (void)AddAttributeDefinition(Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kVariableName).SetMandatory();
 }
 

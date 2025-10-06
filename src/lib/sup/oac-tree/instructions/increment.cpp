@@ -40,7 +40,7 @@ const std::string Increment::Type = "Increment";
 Increment::Increment()
   : Instruction(Increment::Type)
 {
-  AddAttributeDefinition(Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME)
+  (void)AddAttributeDefinition(Constants::GENERIC_VARIABLE_NAME_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kVariableName).SetMandatory();
 }
 

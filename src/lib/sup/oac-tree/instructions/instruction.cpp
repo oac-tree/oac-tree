@@ -60,8 +60,8 @@ Instruction::Instruction(const std::string &type)
     , m_status_mutex{}
     , m_breakpoint_state{Breakpoint::kUnset}
 {
-  AddAttributeDefinition(Constants::NAME_ATTRIBUTE_NAME, sup::dto::StringType);
-  AddAttributeDefinition(Constants::IS_ROOT_ATTRIBUTE_NAME, sup::dto::BooleanType);
+  (void)AddAttributeDefinition(Constants::NAME_ATTRIBUTE_NAME, sup::dto::StringType);
+  (void)AddAttributeDefinition(Constants::IS_ROOT_ATTRIBUTE_NAME, sup::dto::BooleanType);
 }
 
 Instruction::~Instruction() = default;
@@ -85,11 +85,11 @@ void Instruction::SetName(const std::string &name)
 {
   if (HasAttribute(Constants::NAME_ATTRIBUTE_NAME))
   {
-    SetAttribute(Constants::NAME_ATTRIBUTE_NAME, name);
+    (void)SetAttribute(Constants::NAME_ATTRIBUTE_NAME, name);
   }
   else
   {
-    AddAttribute(Constants::NAME_ATTRIBUTE_NAME, name);
+    (void)AddAttribute(Constants::NAME_ATTRIBUTE_NAME, name);
   }
 }
 

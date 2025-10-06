@@ -41,8 +41,8 @@ IncludeProcedure::IncludeProcedure()
   : DecoratorInstruction(IncludeProcedure::Type)
   , m_workspace{}
 {
-  AddAttributeDefinition(Constants::FILENAME_ATTRIBUTE_NAME).SetMandatory();
-  AddAttributeDefinition(Constants::PATH_ATTRIBUTE_NAME);
+  (void)AddAttributeDefinition(Constants::FILENAME_ATTRIBUTE_NAME).SetMandatory();
+  (void)AddAttributeDefinition(Constants::PATH_ATTRIBUTE_NAME);
 }
 
 IncludeProcedure::~IncludeProcedure() = default;

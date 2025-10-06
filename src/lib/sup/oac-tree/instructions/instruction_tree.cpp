@@ -71,7 +71,7 @@ std::vector<const Instruction*> InstructionTree::GetChildInstructions() const
   auto op = [](InstructionTree* tree) {
     return tree->GetInstruction();
   };
-  std::transform(m_children.begin(), m_children.end(), std::back_inserter(result), op);
+  (void)std::transform(m_children.begin(), m_children.end(), std::back_inserter(result), op);
   return result;
 }
 

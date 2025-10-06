@@ -42,10 +42,10 @@ Listen::Listen()
   , m_cv{}
   , m_cb_guard{}
 {
-  AddAttributeDefinition(Constants::VARIABLE_NAMES_ATTRIBUTE_NAME).SetMandatory();
-  AddAttributeDefinition(Constants::FORCE_SUCCESS_ATTRIBUTE_NAME, sup::dto::BooleanType)
+  (void)AddAttributeDefinition(Constants::VARIABLE_NAMES_ATTRIBUTE_NAME).SetMandatory();
+  (void)AddAttributeDefinition(Constants::FORCE_SUCCESS_ATTRIBUTE_NAME, sup::dto::BooleanType)
     .SetCategory(AttributeCategory::kBoth);
-  AddAttributeDefinition(Constants::BLOCKING_ATTRIBUTE_NAME, sup::dto::BooleanType)
+  (void)AddAttributeDefinition(Constants::BLOCKING_ATTRIBUTE_NAME, sup::dto::BooleanType)
     .SetCategory(AttributeCategory::kBoth);
 }
 
@@ -151,7 +151,7 @@ void Listen::RegisterCallbacks(
   m_cb_guard = ws->GetCallbackGuard(this);
   for (const auto& var_name : var_names)
   {
-    ws->RegisterCallback(
+    (void)ws->RegisterCallback(
         var_name,
         [this, var_name](const sup::dto::AnyValue& val, bool)
         {

@@ -113,12 +113,12 @@ bool NamedCallbackManager<Args...>::UnregisterListener(void* listener)
                                            [listener](GenericCallbackEntry cb_entry)
                                            { return cb_entry.listener == listener; });
   result = new_generic_end_it != generic_cb_entries.end();
-  generic_cb_entries.erase(new_generic_end_it, generic_cb_entries.end());
+  (void)generic_cb_entries.erase(new_generic_end_it, generic_cb_entries.end());
   auto new_end_it =
       std::remove_if(cb_entries.begin(), cb_entries.end(),
                      [listener](CallbackEntry cb_entry) { return cb_entry.listener == listener; });
   result = result || new_end_it != cb_entries.end();
-  cb_entries.erase(new_end_it, cb_entries.end());
+  (void)cb_entries.erase(new_end_it, cb_entries.end());
   return result;
 }
 

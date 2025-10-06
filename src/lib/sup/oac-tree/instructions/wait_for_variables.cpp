@@ -58,11 +58,11 @@ WaitForVariables::WaitForVariables()
   , m_cv{}
   , m_cb_guard{}
 {
-  AddAttributeDefinition(Constants::TIMEOUT_SEC_ATTRIBUTE_NAME, sup::dto::Float64Type)
+  (void)AddAttributeDefinition(Constants::TIMEOUT_SEC_ATTRIBUTE_NAME, sup::dto::Float64Type)
     .SetCategory(AttributeCategory::kBoth).SetMandatory();
-  AddAttributeDefinition(Constants::VARIABLE_TYPE_ATTRIBUTE_NAME)
+  (void)AddAttributeDefinition(Constants::VARIABLE_TYPE_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kBoth).SetMandatory();
-  AddAttributeDefinition(Constants::BLOCKING_ATTRIBUTE_NAME, sup::dto::BooleanType)
+  (void)AddAttributeDefinition(Constants::BLOCKING_ATTRIBUTE_NAME, sup::dto::BooleanType)
     .SetCategory(AttributeCategory::kBoth);
 }
 
@@ -176,7 +176,7 @@ void WaitForVariables::RegisterCallbacks(Workspace& ws)
       };
   for (const auto& var_name : m_var_names)
   {
-    ws.RegisterCallback(var_name, callback, this);
+    (void)ws.RegisterCallback(var_name, callback, this);
   }
 }
 

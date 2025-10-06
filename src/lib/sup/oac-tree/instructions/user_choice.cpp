@@ -37,7 +37,7 @@ UserChoice::UserChoice()
   , m_choice{-1}
   , m_future{}
 {
-  AddAttributeDefinition(Constants::DESCRIPTION_ATTRIBUTE_NAME)
+  (void)AddAttributeDefinition(Constants::DESCRIPTION_ATTRIBUTE_NAME)
     .SetCategory(AttributeCategory::kBoth);
 }
 
@@ -51,9 +51,9 @@ bool UserChoice::InitHook(UserInterface& ui, Workspace& ws)
     return false;
   }
   auto metadata = CreateUserChoiceMetadata();
-  metadata.AddMember(Constants::USER_CHOICES_TEXT_NAME, main_text);
-  metadata.AddMember(Constants::USER_CHOICES_DIALOG_TYPE_NAME,
-                     {sup::dto::UnsignedInteger32Type, dialog_type::kSelection});
+  (void)metadata.AddMember(Constants::USER_CHOICES_TEXT_NAME, main_text);
+  (void)metadata.AddMember(Constants::USER_CHOICES_DIALOG_TYPE_NAME,
+                           {sup::dto::UnsignedInteger32Type, dialog_type::kSelection});
   auto options = GetChoices();
   m_future = CreateUserChoiceFuture(ui, *this, options, metadata);
   if (!m_future)

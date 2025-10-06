@@ -39,7 +39,7 @@ const std::string IncludeProcedure::Type = "IncludeProcedure";
 
 IncludeProcedure::IncludeProcedure()
   : DecoratorInstruction(IncludeProcedure::Type)
-  , m_workspace{}
+  , m_workspace{nullptr}
 {
   (void)AddAttributeDefinition(Constants::FILENAME_ATTRIBUTE_NAME).SetMandatory();
   (void)AddAttributeDefinition(Constants::PATH_ATTRIBUTE_NAME);

@@ -22,8 +22,6 @@
 
 #include "copy_to_procedure.h"
 
-#include "instruction_helper.h"
-
 #include <sup/oac-tree/parser/procedure_parser.h>
 
 #include <sup/oac-tree/constants.h>
@@ -39,7 +37,7 @@ const std::string CopyToProcedureInstruction::Type = "CopyToProcedure";
 
 CopyToProcedureInstruction::CopyToProcedureInstruction()
   : Instruction(CopyToProcedureInstruction::Type)
-  , m_workspace{}
+  , m_workspace{nullptr}
 {
   (void)AddAttributeDefinition(Constants::FILENAME_ATTRIBUTE_NAME).SetMandatory();
   (void)AddAttributeDefinition(Constants::INPUT_VARIABLE_NAME_ATTRIBUTE_NAME)

@@ -77,7 +77,7 @@ private:
 template <typename T, typename... Args>
 Constraint MakeConstraint(Args&&... args)
 {
-  return Constraint{std::unique_ptr<IConstraint>{new T{std::forward<Args>(args)...}}};
+  return Constraint{std::make_unique<T>(std::forward<Args>(args)...)};
 }
 
 }  // namespace oac_tree

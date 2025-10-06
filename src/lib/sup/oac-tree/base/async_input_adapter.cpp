@@ -26,6 +26,7 @@
 
 #include <algorithm>
 #include <chrono>
+#include <memory>
 #include <utility>
 
 namespace sup
@@ -72,7 +73,7 @@ std::unique_ptr<IUserInputFuture> AsyncInputAdapter::AddUserInputRequest(
     m_request_queue.push_back({id, request});
   }
   m_cv.notify_one();
-  std::unique_ptr<IUserInputFuture> future{new Future{*this, id}};
+  auto future = std::make_unique<Future>(*this, id);
   return future;
 }
 

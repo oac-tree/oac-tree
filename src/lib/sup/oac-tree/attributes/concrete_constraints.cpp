@@ -27,6 +27,7 @@
 #include <sup/dto/anytype_helper.h>
 
 #include <algorithm>
+#include <memory>
 
 namespace sup
 {
@@ -41,7 +42,7 @@ Exists::~Exists() = default;
 
 Exists* Exists::Clone() const
 {
-  return new Exists{m_attr_name};
+  return std::make_unique<Exists>(m_attr_name).release();
 }
 
 bool Exists::Validate(const StringAttributeList& attr_map) const
@@ -67,7 +68,7 @@ FixedType::~FixedType() = default;
 
 FixedType* FixedType::Clone() const
 {
-  return new FixedType{m_attr_name, m_attr_type};
+  return std::make_unique<FixedType>(m_attr_name, m_attr_type).release();
 }
 
 bool FixedType::Validate(const StringAttributeList& attr_map) const
@@ -99,7 +100,7 @@ Xor::~Xor() = default;
 
 Xor* Xor::Clone() const
 {
-  return new Xor{Constraint{m_left}, Constraint{m_right}};
+  return std::make_unique<Xor>(Constraint{m_left}, Constraint{m_right}).release();
 }
 
 bool Xor::Validate(const StringAttributeList& attr_map) const
@@ -121,7 +122,7 @@ Or::~Or() = default;
 
 Or* Or::Clone() const
 {
-  return new Or{Constraint{m_left}, Constraint{m_right}};
+  return std::make_unique<Or>(Constraint{m_left}, Constraint{m_right}).release();
 }
 
 bool Or::Validate(const StringAttributeList& attr_map) const
@@ -143,7 +144,7 @@ And::~And() = default;
 
 And* And::Clone() const
 {
-  return new And{Constraint{m_left}, Constraint{m_right}};
+  return std::make_unique<And>(Constraint{m_left}, Constraint{m_right}).release();
 }
 
 bool And::Validate(const StringAttributeList& attr_map) const
@@ -164,7 +165,7 @@ Not::~Not() = default;
 
 Not* Not::Clone() const
 {
-  return new Not{Constraint{m_child}};
+  return std::make_unique<Not>(Constraint{m_child}).release();
 }
 
 bool Not::Validate(const StringAttributeList& attr_map) const

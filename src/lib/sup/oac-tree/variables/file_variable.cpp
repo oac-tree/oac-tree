@@ -44,8 +44,8 @@ FileVariable::FileVariable()
   : Variable(FileVariable::Type)
   , m_workspace_path{}
 {
-  AddAttributeDefinition(Constants::FILENAME_ATTRIBUTE_NAME, sup::dto::StringType).SetMandatory();
-  AddAttributeDefinition(Constants::PRETTY_JSON_ATTRIBUTE_NAME, sup::dto::BooleanType);
+  (void)AddAttributeDefinition(Constants::FILENAME_ATTRIBUTE_NAME, sup::dto::StringType).SetMandatory();
+  (void)AddAttributeDefinition(Constants::PRETTY_JSON_ATTRIBUTE_NAME, sup::dto::BooleanType);
 }
 
 FileVariable::~FileVariable() = default;
@@ -118,7 +118,7 @@ std::unique_ptr<sup::dto::AnyValue> FileVariable::ReadValue() const
   {
     return result;
   }
-  result.reset(new sup::dto::AnyValue(parser.MoveAnyValue()));
+  result.reset(std::make_unique<sup::dto::AnyValue>(parser.MoveAnyValue()).release());
   return result;
 }
 

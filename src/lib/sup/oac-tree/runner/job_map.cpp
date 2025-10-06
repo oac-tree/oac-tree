@@ -20,6 +20,8 @@
  * of the distribution package.
  ******************************************************************************/
 
+#include <memory>
+#include <sup/oac-tree/instruction_map.h>
 #include <sup/oac-tree/job_map.h>
 
 #include <sup/oac-tree/exceptions.h>
@@ -39,7 +41,7 @@ JobMap::~JobMap() = default;
 
 void JobMap::InitializeInstructionTree(const Instruction* root)
 {
-  m_instruction_map.reset(new InstructionMap{root});
+  m_instruction_map.reset(std::make_unique<InstructionMap>(root).release());
 }
 
 sup::dto::uint32 JobMap::GetInstructionIndex(const Instruction* instr) const

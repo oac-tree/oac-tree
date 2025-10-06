@@ -20,6 +20,7 @@
  * of the distribution package.
  ******************************************************************************/
 
+#include <memory>
 #include <sup/oac-tree/job_info.h>
 #include <sup/oac-tree/job_info_utils.h>
 #include <sup/oac-tree/job_interface_adapter.h>
@@ -44,7 +45,7 @@ struct LocalJob::LocalJobImpl
 
 LocalJob::LocalJob(std::unique_ptr<Procedure> proc, IJobInfoIO& job_info_io)
   : IJob{}
-  , m_impl{new LocalJobImpl{std::move(proc), job_info_io}}
+  , m_impl{std::make_unique<LocalJobImpl>(std::move(proc), job_info_io)}
 {}
 
 LocalJob::~LocalJob() = default;
@@ -125,7 +126,8 @@ LocalJob::LocalJobImpl::LocalJobImpl(std::unique_ptr<Procedure> proc, IJobInfoIO
 {
   m_job_interface.InitializeInstructionTree(m_proc->RootInstruction());
   m_job_info.reset(
-    new JobInfo{utils::CreateJobInfo(*m_proc, m_job_interface.GetInstructionMap())});
+      std::make_unique<JobInfo>(utils::CreateJobInfo(*m_proc, m_job_interface.GetInstructionMap()))
+          .release());
   m_ordered_instructions = m_job_interface.GetOrderedInstructions();
 }
 

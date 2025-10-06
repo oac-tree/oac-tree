@@ -60,7 +60,7 @@ void Runner::SetProcedure(Procedure* procedure)
   m_cb_guard = GetCallbackGuard(*m_proc, this);
   m_proc->RegisterGenericCallback(callback, this);
   m_proc->Setup();
-  m_breakpoint_manager.reset(new BreakpointManager(*m_proc));
+  m_breakpoint_manager.reset(std::make_unique<BreakpointManager>(*m_proc).release());
 }
 
 void Runner::SetTickCallback(TickCallback cb)

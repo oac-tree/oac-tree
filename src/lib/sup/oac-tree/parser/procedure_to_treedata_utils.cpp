@@ -30,6 +30,7 @@
 
 #include <sup/xml/tree_data.h>
 
+#include <memory>
 #include <set>
 
 namespace internal
@@ -39,7 +40,7 @@ using namespace sup::oac_tree;
 template <typename T, typename... Args>
 std::unique_ptr<T> make_unique(Args&&... args)
 {
-  return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
+  return std::make_unique<T>(std::forward<Args>(args)...);
 }
 
 std::unique_ptr<sup::xml::TreeData> CreateTreeData(const Instruction* instruction)

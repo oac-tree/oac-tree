@@ -96,7 +96,7 @@ void UserConfirmation::HaltImpl()
   m_future.reset();
 }
 
-ExecutionStatus UserConfirmation::PollInputFuture(UserInterface& ui, Workspace& ws)
+ExecutionStatus UserConfirmation::PollInputFuture(UserInterface& ui, Workspace&)
 {
   if (!m_future->IsReady())
   {

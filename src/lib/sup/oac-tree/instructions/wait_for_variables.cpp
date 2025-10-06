@@ -129,7 +129,7 @@ void WaitForVariables::ResetHook(UserInterface& ui)
   m_updated = false;
 }
 
-ExecutionStatus WaitForVariables::ExecuteBlocking(UserInterface& ui, Workspace& ws)
+ExecutionStatus WaitForVariables::ExecuteBlocking(UserInterface&, Workspace& ws)
 {
   while (true)
   {

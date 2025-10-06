@@ -30,7 +30,6 @@
 #include <sup/oac-tree/procedure.h>
 #include <sup/oac-tree/user_interface.h>
 
-#include <algorithm>
 #include <chrono>
 #include <thread>
 
@@ -46,7 +45,7 @@ Runner::Runner(UserInterface& ui)
   , m_tick_cb{}
   , m_breakpoint_manager{new BreakpointManager{}}
   , m_breakpoint_hit_instr{nullptr}
-  , m_halt{false}
+  , m_halt{std::atomic_bool{false}}
 {}
 
 Runner::~Runner() = default;

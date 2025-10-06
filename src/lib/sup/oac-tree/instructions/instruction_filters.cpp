@@ -76,7 +76,7 @@ std::set<sup::dto::uint32> AncestorsActiveFilter::operator()(
         break;
       }
       // Parent is in the working set, so continue building the lineage.
-      if (working_set.count(parent))
+      if (working_set.count(parent) > 0)
       {
         current = parent;
       }
@@ -137,14 +137,14 @@ bool CheckAbsenceOfLoops(const std::vector<sup::dto::uint32>& parent_indices)
   std::set<sup::dto::uint32> visited;
   for (sup::dto::uint32 idx = 0; idx < parent_indices.size(); ++idx)
   {
-    if (visited.count(idx))
+    if (visited.count(idx) > 0)
     {
       continue;  // Already visited this node.
     }
     std::set<sup::dto::uint32> current_path;
     sup::dto::uint32 current = idx;
 
-    while (current != kIsRootIndex && !current_path.count(current))
+    while ((current != kIsRootIndex) && (current_path.count(current) == 0))
     {
       (void)current_path.insert(current);
       current = parent_indices[current];

@@ -59,7 +59,7 @@ Procedure& ProcedureStore::LoadProcedure(const std::string& filename) const
   return *m_procedure_cache[filename];
 }
 
-void ProcedureStore::ResetProcedureWorkspaces(UserInterface& ui) const
+void ProcedureStore::ResetProcedureWorkspaces(UserInterface&) const
 {
   for (auto& [_, procedure] : m_procedure_cache)
   {
@@ -69,7 +69,7 @@ void ProcedureStore::ResetProcedureWorkspaces(UserInterface& ui) const
   }
 }
 
-void ProcedureStore::TearDownProcedures(UserInterface& ui) const
+void ProcedureStore::TearDownProcedures(UserInterface&) const
 {
   m_procedure_cache.clear();
 }

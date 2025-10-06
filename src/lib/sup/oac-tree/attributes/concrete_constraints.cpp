@@ -104,7 +104,7 @@ Xor* Xor::Clone() const
 
 bool Xor::Validate(const StringAttributeList& attr_map) const
 {
-  return m_left.Validate(attr_map) ^ m_right.Validate(attr_map);
+  return (m_left.Validate(attr_map) ^ m_right.Validate(attr_map));
 }
 
 std::string Xor::GetRepresentation() const
@@ -126,7 +126,7 @@ Or* Or::Clone() const
 
 bool Or::Validate(const StringAttributeList& attr_map) const
 {
-  return m_left.Validate(attr_map) || m_right.Validate(attr_map);
+  return (m_left.Validate(attr_map) || m_right.Validate(attr_map));
 }
 
 std::string Or::GetRepresentation() const
@@ -148,7 +148,7 @@ And* And::Clone() const
 
 bool And::Validate(const StringAttributeList& attr_map) const
 {
-  return m_left.Validate(attr_map) && m_right.Validate(attr_map);
+  return (m_left.Validate(attr_map) && m_right.Validate(attr_map));
 }
 
 std::string And::GetRepresentation() const

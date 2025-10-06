@@ -23,6 +23,8 @@
 #ifndef SUP_OAC_TREE_PROCEDURE_PREAMBLE_H_
 #define SUP_OAC_TREE_PROCEDURE_PREAMBLE_H_
 
+#include <sup/dto/basic_scalar_types.h>
+#include <cstdint>
 #include <string>
 #include <vector>
 
@@ -39,7 +41,7 @@ namespace oac_tree
 class TypeRegistrationInfo
 {
 public:
-  enum RegistrationMode
+  enum RegistrationMode : dto::uint32
   {
     kJSONFile = 0,
     kJSONString

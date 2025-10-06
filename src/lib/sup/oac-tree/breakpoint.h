@@ -23,6 +23,7 @@
 #ifndef SUP_OAC_TREE_BREAKPOINT_H_
 #define SUP_OAC_TREE_BREAKPOINT_H_
 
+#include <sup/dto/basic_scalar_types.h>
 namespace sup
 {
 namespace oac_tree
@@ -34,7 +35,8 @@ class Instruction;
 class Breakpoint
 {
 public:
-  enum State {
+  enum State : dto::uint32
+  {
     kUnset =0, // no breakpoint set
     kSet,      // breakpoint is set; instruction should not execute
     kHit,      // breakpoint was hit; instruction should execute and reset state to kSet

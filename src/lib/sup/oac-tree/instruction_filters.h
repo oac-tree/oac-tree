@@ -23,6 +23,7 @@
 #ifndef SUP_OAC_TREE_INSTRUCTION_FILTERS_H_
 #define SUP_OAC_TREE_INSTRUCTION_FILTERS_H_
 
+#include <sup/dto/basic_scalar_types.h>
 #include <sup/oac-tree/active_instruction_monitor.h>
 
 #include <limits>
@@ -55,7 +56,7 @@ public:
   std::set<sup::dto::uint32> operator()(const std::set<sup::dto::uint32>& input_set) const;
 
 private:
-  enum class ParentageStatus
+  enum class ParentageStatus : dto::uint32
   {
     kValidParent = 0,  // Node has a valid parent
     kNoParent,         // Node is a root node and thus has no parent

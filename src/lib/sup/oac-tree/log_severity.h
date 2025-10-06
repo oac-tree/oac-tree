@@ -23,6 +23,7 @@
 #ifndef SUP_OAC_TREE_LOG_SEVERITY_H_
 #define SUP_OAC_TREE_LOG_SEVERITY_H_
 
+#include <sup/dto/basic_scalar_types.h>
 #include <string>
 
 namespace sup
@@ -53,7 +54,7 @@ namespace log
  * All levels higher than SUP_SEQ_LOG_WARNING are informational only and their use should be
  * restricted to avoid logging noise.
 */
-enum Severity
+enum Severity : dto::uint32
 {
   SUP_SEQ_LOG_EMERG = 0,
   SUP_SEQ_LOG_ALERT,

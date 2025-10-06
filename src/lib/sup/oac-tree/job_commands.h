@@ -23,11 +23,12 @@
 #ifndef SUP_OAC_TREE_JOB_COMMANDS_H_
 #define SUP_OAC_TREE_JOB_COMMANDS_H_
 
+#include <sup/dto/basic_scalar_types.h>
 namespace sup
 {
 namespace oac_tree
 {
-enum class JobCommand
+enum class JobCommand : dto::uint32
 {
   kStart = 0,
   kStep,

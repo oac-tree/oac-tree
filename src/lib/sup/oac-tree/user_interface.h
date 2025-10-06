@@ -28,6 +28,7 @@
 #include <sup/oac-tree/user_input_request.h>
 
 #include <sup/dto/anyvalue.h>
+#include <sup/dto/basic_scalar_types.h>
 
 #include <string>
 #include <utility>
@@ -45,7 +46,7 @@ namespace dialog_type
  * @brief DialogType enumerators provide a hint to a UserInterface implementation on how to
  * represent certain user choices. Implementations are allowed to ignore these hints.
  */
-enum DialogType
+enum DialogType : dto::uint32
 {
   kDefault = 0,      // Use default dialog type
   kSelection,        // Selection box (e.g. combo box)

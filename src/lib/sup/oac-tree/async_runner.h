@@ -23,6 +23,7 @@
 #ifndef SUP_OAC_TREE_async_runner_H_
 #define SUP_OAC_TREE_async_runner_H_
 
+#include <sup/dto/basic_scalar_types.h>
 #include <sup/oac-tree/job_command_queue.h>
 #include <sup/oac-tree/job_interface.h>
 #include <sup/oac-tree/job_state_monitor.h>
@@ -120,7 +121,7 @@ private:
   /**
    * @brief Action to perform after handling a command.
    */
-  enum class Action
+  enum class Action : dto::uint32
   {
     kContinue = 0,
     kStep,

@@ -24,6 +24,7 @@
 #define SUP_OAC_TREE_ATTRIBUTE_DEFINITION_H_
 
 #include <sup/dto/anytype.h>
+#include <sup/dto/basic_scalar_types.h>
 
 #include <memory>
 #include <string>
@@ -42,7 +43,7 @@ class AttributeProperties;
  *
  * @note The default category for an attribute is `kLiteral`.
  */
-enum class AttributeCategory
+enum class AttributeCategory : dto::uint32
 {
   kLiteral = 0,
   kVariableName,

@@ -23,13 +23,14 @@
 #ifndef SUP_OAC_TREE_JOB_STATES_H_
 #define SUP_OAC_TREE_JOB_STATES_H_
 
+#include <sup/dto/basic_scalar_types.h>
 #include <string>
 
 namespace sup
 {
 namespace oac_tree
 {
-enum class JobState
+enum class JobState : dto::uint32
 {
   kInitial = 0,
   kPaused,

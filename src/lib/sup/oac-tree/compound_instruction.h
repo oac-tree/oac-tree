@@ -42,7 +42,7 @@ public:
    *
    * @param type The type of instruction.
    */
-  CompoundInstruction(const std::string& type);
+  explicit CompoundInstruction(const std::string& type);
 
   ~CompoundInstruction() override;
 

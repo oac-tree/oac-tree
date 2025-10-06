@@ -68,7 +68,7 @@ public:
    * @brief Constructor.
    * @param type The type of instruction.
    */
-  Instruction(const std::string &type);
+  explicit Instruction(const std::string &type);
 
   /**
    * @brief Virtual destructor.

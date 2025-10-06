@@ -40,7 +40,7 @@ namespace oac_tree
 class CLInterface : public UserInterface
 {
 public:
-  CLInterface(const sup::log::BasicLogger& logger);
+  explicit CLInterface(const sup::log::BasicLogger& logger);
 
   ~CLInterface() override;
 

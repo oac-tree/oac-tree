@@ -149,7 +149,7 @@ std::string GetStringAttributeValue(const StringAttributeList& str_attributes,
 class StringAttributeNameMatcher
 {
 public:
-  StringAttributeNameMatcher(std::string name) : m_name{std::move(name)} {}
+  explicit StringAttributeNameMatcher(std::string name) : m_name{std::move(name)} {}
   ~StringAttributeNameMatcher() = default;
   bool operator()(const StringAttribute& str_attr) { return str_attr.first == m_name; }
 private:

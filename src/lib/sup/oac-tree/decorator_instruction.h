@@ -42,7 +42,7 @@ public:
    *
    * @param type The type of instruction.
    */
-  DecoratorInstruction(const std::string& type);
+  explicit DecoratorInstruction(const std::string& type);
 
   ~DecoratorInstruction() override;
 

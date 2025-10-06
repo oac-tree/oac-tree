@@ -42,7 +42,7 @@ namespace oac_tree
 class AttributeProperties
 {
 public:
-  AttributeProperties(const sup::dto::AnyType& value_type);
+  explicit AttributeProperties(const sup::dto::AnyType& value_type);
   ~AttributeProperties();
 
   AttributeProperties(const AttributeProperties& other) = default;

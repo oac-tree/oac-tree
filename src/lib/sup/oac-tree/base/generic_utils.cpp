@@ -32,7 +32,6 @@
 #include <cstdlib>
 #include <dlfcn.h>
 #include <fstream>
-#include <stdexcept>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -42,7 +41,7 @@ namespace
 class ReadFileHandle
 {
 public:
-  ReadFileHandle(const std::string& filename);
+  explicit ReadFileHandle(const std::string& filename);
   ~ReadFileHandle();
 
   bool IsValid() const;

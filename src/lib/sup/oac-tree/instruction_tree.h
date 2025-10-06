@@ -38,7 +38,7 @@ class Instruction;
 class InstructionTree
 {
 public:
-  InstructionTree(const Instruction* instruction);
+  explicit InstructionTree(const Instruction* instruction);
 
   ~InstructionTree();
 

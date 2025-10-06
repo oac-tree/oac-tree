@@ -36,7 +36,11 @@ namespace oac_tree
 class MessageException : public std::exception
 {
 public:
-  MessageException(std::string message);
+  explicit MessageException(std::string message);
+  MessageException(const MessageException&) = delete;
+  MessageException(MessageException&&) = delete;
+  MessageException& operator=(const MessageException&) = delete;
+  MessageException& operator=(MessageException&&) = delete;
   const char* what() const noexcept override;
 private:
   std::string m_message;
@@ -49,7 +53,7 @@ private:
 class RuntimeException : public MessageException
 {
 public:
-  RuntimeException(const std::string& message);
+  explicit RuntimeException(const std::string& message);
 };
 
 /**
@@ -58,7 +62,7 @@ public:
 class InvalidOperationException : public MessageException
 {
 public:
-  InvalidOperationException(const std::string& message);
+  explicit InvalidOperationException(const std::string& message);
 };
 
 /**
@@ -67,7 +71,7 @@ public:
 class ParseException : public MessageException
 {
 public:
-  ParseException(const std::string& message);
+  explicit ParseException(const std::string& message);
 };
 
 /**
@@ -76,7 +80,7 @@ public:
 class ProcedureSetupException : public MessageException
 {
 public:
-  ProcedureSetupException(const std::string& message);
+  explicit ProcedureSetupException(const std::string& message);
 };
 
 /**
@@ -85,7 +89,7 @@ public:
 class InstructionSetupException : public MessageException
 {
 public:
-  InstructionSetupException(const std::string& message);
+  explicit InstructionSetupException(const std::string& message);
 };
 
 /**
@@ -94,7 +98,7 @@ public:
 class VariableSetupException : public MessageException
 {
 public:
-  VariableSetupException(const std::string& message);
+  explicit VariableSetupException(const std::string& message);
 };
 
 }  // namespace oac_tree

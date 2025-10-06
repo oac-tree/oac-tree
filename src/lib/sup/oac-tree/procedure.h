@@ -75,7 +75,7 @@ public:
    *
    * @param filename Filename of this procedure or empty if not created from file.
    */
-  Procedure(const std::string& filename = "");
+  explicit Procedure(const std::string& filename = "");
   ~Procedure();
 
   /**

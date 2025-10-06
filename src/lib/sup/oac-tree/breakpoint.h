@@ -41,7 +41,7 @@ public:
     kAck,      // hit breakpoint was acknowledged by an execution engine
   };
 
-  Breakpoint(const Instruction* instruction);
+  explicit Breakpoint(const Instruction* instruction);
   ~Breakpoint();
 
   const Instruction* GetInstruction() const;

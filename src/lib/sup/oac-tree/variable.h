@@ -56,7 +56,7 @@ class Variable
 public:
   using Callback = std::function<void(const sup::dto::AnyValue&, bool)>;
 
-  Variable(const std::string& type);
+  explicit Variable(const std::string& type);
 
   virtual ~Variable();
 

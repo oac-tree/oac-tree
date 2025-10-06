@@ -49,7 +49,7 @@ public:
   using GenericCallback = std::function<void(const std::string&, const sup::dto::AnyValue&, bool)>;
   using VariableCallback = std::function<void(const sup::dto::AnyValue&, bool)>;
 
-  Workspace(const std::string& filename = "");
+  explicit Workspace(const std::string& filename = "");
   ~Workspace();
 
   /**

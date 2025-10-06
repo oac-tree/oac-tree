@@ -53,7 +53,7 @@ public:
    * @brief Constructor.
    * @param instruction The wrapped Instruction.
    */
-  AsyncWrapper(Instruction* instruction);
+  explicit AsyncWrapper(Instruction* instruction);
 
   /**
    * @brief Move constructor.

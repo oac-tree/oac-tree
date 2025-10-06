@@ -42,7 +42,7 @@ class Workspace;
 class ProcedureStore
 {
 public:
-  ProcedureStore(Procedure* parent);
+  explicit ProcedureStore(Procedure* parent);
   ~ProcedureStore();
 
   /**

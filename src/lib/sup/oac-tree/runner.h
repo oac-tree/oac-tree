@@ -56,7 +56,7 @@ public:
    * @brief Constructor.
    * @param ui User interface object.
    */
-  Runner(UserInterface& ui);
+  explicit Runner(UserInterface& ui);
 
   ~Runner();
 
@@ -173,7 +173,7 @@ private:
 class TimeoutWhenRunning
 {
 public:
-  TimeoutWhenRunning(sup::dto::int64 ns);
+  explicit TimeoutWhenRunning(sup::dto::int64 ns);
   ~TimeoutWhenRunning();
 
   void operator()(const Procedure& proc) const;

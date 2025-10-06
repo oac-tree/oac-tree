@@ -37,7 +37,7 @@ namespace oac_tree
 class DaemonInterface : public UserInterface
 {
 public:
-  DaemonInterface(const sup::log::DefaultLogger& logger);
+  explicit DaemonInterface(const sup::log::DefaultLogger& logger);
 
   ~DaemonInterface() override;
 

@@ -58,7 +58,7 @@ class Constraint
 {
 public:
   ~Constraint();
-  Constraint(std::unique_ptr<IConstraint>&& impl);
+  explicit Constraint(std::unique_ptr<IConstraint>&& impl);
 
   // Copy/move
   Constraint(const Constraint& other);

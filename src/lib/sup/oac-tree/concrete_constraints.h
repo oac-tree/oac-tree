@@ -37,7 +37,7 @@ class Exists : public IConstraint
 {
 public:
   explicit Exists(const std::string& attr_name);
-  ~Exists();
+  ~Exists() override;
 
   Exists* Clone() const override;
 
@@ -54,7 +54,7 @@ class FixedType : public IConstraint
 {
 public:
   explicit FixedType(const std::string& attr_name, const sup::dto::AnyType& attr_type);
-  ~FixedType();
+  ~FixedType() override;
 
   FixedType* Clone() const override;
 
@@ -73,7 +73,7 @@ class Xor : public IConstraint
 {
 public:
   explicit Xor(Constraint&& left, Constraint&& right);
-  ~Xor();
+  ~Xor() override;
 
   Xor* Clone() const override;
 
@@ -92,7 +92,7 @@ class Or : public IConstraint
 {
 public:
   explicit Or(Constraint&& left, Constraint&& right);
-  ~Or();
+  ~Or() override;
 
   Or* Clone() const override;
 
@@ -111,7 +111,7 @@ class And : public IConstraint
 {
 public:
   explicit And(Constraint&& left, Constraint&& right);
-  ~And();
+  ~And() override;
 
   And* Clone() const override;
 
@@ -130,7 +130,7 @@ class Not : public IConstraint
 {
 public:
   explicit Not(Constraint&& child);
-  ~Not();
+  ~Not() override;
 
   Not* Clone() const override;
 

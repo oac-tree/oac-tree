@@ -91,7 +91,7 @@ class UnsupportedInputFuture : public IUserInputFuture
 {
 public:
   UnsupportedInputFuture();
-  ~UnsupportedInputFuture();
+  ~UnsupportedInputFuture() override;
 
   sup::dto::uint64 GetId() const override;
 

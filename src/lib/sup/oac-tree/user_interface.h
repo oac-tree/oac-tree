@@ -156,7 +156,7 @@ class DefaultUserInterface : public UserInterface
 {
 public:
   DefaultUserInterface();
-  ~DefaultUserInterface();
+  ~DefaultUserInterface() override;
 
   void UpdateInstructionStatus(const Instruction* instruction, ExecutionStatus status) override;
   void VariableUpdated(const std::string& name, const sup::dto::AnyValue& value,

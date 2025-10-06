@@ -50,7 +50,7 @@ public:
    * input/output.
    */
   LocalJob(std::unique_ptr<Procedure> proc, IJobInfoIO& job_info_io);
-  ~LocalJob();
+  ~LocalJob() override;
 
   // Delete copy operations
   LocalJob(const LocalJob& other) = delete;

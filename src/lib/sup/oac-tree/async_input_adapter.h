@@ -91,7 +91,7 @@ class AsyncInputAdapter::Future : public IUserInputFuture
 {
 public:
   Future(AsyncInputAdapter& input_handler, sup::dto::uint64 id);
-  ~Future();
+  ~Future() override;
 
   // No move/copy ctor/assignment
   Future(const Future&) = delete;

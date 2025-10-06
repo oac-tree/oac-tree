@@ -64,7 +64,7 @@ class SimpleJobStateMonitor : public JobStateMonitor
 {
 public:
   SimpleJobStateMonitor();
-  ~SimpleJobStateMonitor();
+  ~SimpleJobStateMonitor() override;
 
   void OnStateChange(JobState state) noexcept override;
 

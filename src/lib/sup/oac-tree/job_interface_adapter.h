@@ -41,7 +41,7 @@ class JobInterfaceAdapter : public JobInterface
 public:
   JobInterfaceAdapter(const Procedure& proc, IJobInfoIO& job_info_io);
 
-  ~JobInterfaceAdapter();
+  ~JobInterfaceAdapter() override;
 
   void InitializeInstructionTree(const Instruction* root);
 

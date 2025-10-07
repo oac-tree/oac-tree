@@ -119,7 +119,7 @@ void WaitForVariables::HaltImpl()
   ClearCallbacks();
 }
 
-void WaitForVariables::ResetHook(UserInterface& ui)
+void WaitForVariables::ResetHook(UserInterface&)
 {
   ClearCallbacks();
   m_blocking = false;

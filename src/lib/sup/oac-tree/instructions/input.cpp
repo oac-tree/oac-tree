@@ -76,7 +76,7 @@ ExecutionStatus Input::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   return PollInputFuture(ui, ws);
 }
 
-void Input::ResetHook(UserInterface& ui)
+void Input::ResetHook(UserInterface&)
 {
   Halt();
 }

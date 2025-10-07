@@ -86,7 +86,7 @@ ExecutionStatus UserConfirmation::ExecuteSingleImpl(UserInterface& ui, Workspace
   return PollInputFuture(ui, ws);
 }
 
-void UserConfirmation::ResetHook(UserInterface& ui)
+void UserConfirmation::ResetHook(UserInterface&)
 {
   Halt();
 }

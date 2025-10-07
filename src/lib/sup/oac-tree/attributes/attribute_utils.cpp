@@ -27,6 +27,7 @@
 
 #include <algorithm>
 #include <cctype>
+#include <locale>
 #include <map>
 #include <vector>
 
@@ -143,16 +144,18 @@ std::pair<bool, sup::dto::AnyValue> StringStringParser(const sup::dto::AnyType& 
 
 bool IsTrueStringRepresentation(std::string repr)
 {
+  std::locale loc("C");
   (void)std::transform(repr.begin(), repr.end(), repr.begin(),
-                       [](unsigned char c){ return std::tolower(c); });
+                       [&loc](char c){ return std::tolower(c, loc); });
   auto it = std::find(kTrueStringList.begin(), kTrueStringList.end(), repr);
   return it != kTrueStringList.end();
 }
 
 bool IsFalseStringRepresentation(std::string repr)
 {
+  std::locale loc("C");
   (void)std::transform(repr.begin(), repr.end(), repr.begin(),
-                       [](unsigned char c){ return std::tolower(c); });
+                       [&loc](char c){ return std::tolower(c, loc); });
   auto it = std::find(kFalseStringList.begin(), kFalseStringList.end(), repr);
   return it != kFalseStringList.end();
 }

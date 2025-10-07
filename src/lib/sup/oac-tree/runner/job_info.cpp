@@ -45,7 +45,7 @@ JobInfo::JobInfo(const JobInfo& other)
   , m_ordered_instr{utils::CreateOrderedInstructionInfo(*m_root)}
 {}
 
-JobInfo::JobInfo(JobInfo&&) = default;
+JobInfo::JobInfo(JobInfo&&) noexcept = default;
 
 JobInfo& JobInfo::operator=(const JobInfo& other)
 {
@@ -53,7 +53,7 @@ JobInfo& JobInfo::operator=(const JobInfo& other)
   return this->operator=(std::move(copy));
 }
 
-JobInfo& JobInfo::operator=(JobInfo&&) = default;
+JobInfo& JobInfo::operator=(JobInfo&&) noexcept = default;
 
 std::string JobInfo::GetProcedureName() const
 {

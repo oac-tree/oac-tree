@@ -35,7 +35,7 @@ AsyncWrapper::AsyncWrapper(Instruction* instruction)
   , m_child_result{}
 {}
 
-AsyncWrapper::AsyncWrapper(AsyncWrapper&&) = default;
+AsyncWrapper::AsyncWrapper(AsyncWrapper&&) noexcept = default;
 
 AsyncWrapper::~AsyncWrapper() = default;
 

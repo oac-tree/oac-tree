@@ -48,9 +48,9 @@ public:
 
   // Copy/move construction/assignment
   VariableInfo(const VariableInfo& other);
-  VariableInfo(VariableInfo&& other);
+  VariableInfo(VariableInfo&& other) noexcept;
   VariableInfo& operator=(const VariableInfo& other);
-  VariableInfo& operator=(VariableInfo&& other);
+  VariableInfo& operator=(VariableInfo&& other) noexcept;
 
   std::string GetType() const;
   sup::dto::uint32 GetIndex() const;

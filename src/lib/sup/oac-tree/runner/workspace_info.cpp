@@ -38,9 +38,9 @@ WorkspaceInfo::WorkspaceInfo()
 WorkspaceInfo::~WorkspaceInfo() = default;
 
 WorkspaceInfo::WorkspaceInfo(const WorkspaceInfo&) = default;
-WorkspaceInfo::WorkspaceInfo(WorkspaceInfo&&) = default;
+WorkspaceInfo::WorkspaceInfo(WorkspaceInfo&&) noexcept = default;
 WorkspaceInfo& WorkspaceInfo::operator=(const WorkspaceInfo&) = default;
-WorkspaceInfo& WorkspaceInfo::operator=(WorkspaceInfo&&) = default;
+WorkspaceInfo& WorkspaceInfo::operator=(WorkspaceInfo&&) noexcept = default;
 
 void WorkspaceInfo::AddVariableInfo(const std::string& var_name, const VariableInfo& var_info)
 {

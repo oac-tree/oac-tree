@@ -50,9 +50,9 @@ public:
 
   // Copy/move construction/assignment
   InstructionInfo(const InstructionInfo& other);
-  InstructionInfo(InstructionInfo&& other);
+  InstructionInfo(InstructionInfo&& other) noexcept;
   InstructionInfo& operator=(const InstructionInfo& other);
-  InstructionInfo& operator=(InstructionInfo&& other);
+  InstructionInfo& operator=(InstructionInfo&& other) noexcept;
 
   std::string GetType() const;
   Instruction::Category GetCategory() const;

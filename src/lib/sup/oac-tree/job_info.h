@@ -46,9 +46,9 @@ public:
 
   // Copy/move construction/assignment
   JobInfo(const JobInfo& other);
-  JobInfo(JobInfo&& other);
+  JobInfo(JobInfo&& other) noexcept;
   JobInfo& operator=(const JobInfo& other);
-  JobInfo& operator=(JobInfo&& other);
+  JobInfo& operator=(JobInfo&& other) noexcept;
 
   std::string GetProcedureName() const;
   sup::dto::uint32 GetNumberOfVariables() const;

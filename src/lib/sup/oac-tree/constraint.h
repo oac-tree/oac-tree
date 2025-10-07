@@ -62,9 +62,9 @@ public:
 
   // Copy/move
   Constraint(const Constraint& other);
-  Constraint(Constraint&& other);
+  Constraint(Constraint&& other) noexcept;
   Constraint& operator=(const Constraint& other);
-  Constraint& operator=(Constraint&& other);
+  Constraint& operator=(Constraint&& other) noexcept;
 
   bool Validate(const StringAttributeList& attr_map) const;
 

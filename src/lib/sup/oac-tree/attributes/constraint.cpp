@@ -34,7 +34,7 @@ Constraint::Constraint(const Constraint& other)
   : m_impl{other.m_impl->Clone()}
 {}
 
-Constraint::Constraint(Constraint&& other)
+Constraint::Constraint(Constraint&& other) noexcept
   : m_impl{std::move(other.m_impl)}
 {}
 
@@ -45,7 +45,7 @@ Constraint& Constraint::operator=(const Constraint& other)
   return *this;
 }
 
-Constraint& Constraint::operator=(Constraint&& other)
+Constraint& Constraint::operator=(Constraint&& other) noexcept
 {
   std::swap(m_impl, other.m_impl);
   return *this;

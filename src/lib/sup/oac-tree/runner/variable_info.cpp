@@ -37,9 +37,9 @@ VariableInfo::VariableInfo(const std::string& var_type, sup::dto::uint32 idx,
 VariableInfo::~VariableInfo() = default;
 
 VariableInfo::VariableInfo(const VariableInfo&) = default;
-VariableInfo::VariableInfo(VariableInfo&&) = default;
+VariableInfo::VariableInfo(VariableInfo&&) noexcept = default;
 VariableInfo& VariableInfo::operator=(const VariableInfo&) = default;
-VariableInfo& VariableInfo::operator=(VariableInfo&&) = default;
+VariableInfo& VariableInfo::operator=(VariableInfo&&) noexcept = default;
 
 std::string VariableInfo::GetType() const
 {

@@ -81,7 +81,7 @@ InstructionInfo::InstructionInfo(const InstructionInfo& other)
   }
 }
 
-InstructionInfo::InstructionInfo(InstructionInfo&&) = default;
+InstructionInfo::InstructionInfo(InstructionInfo&&) noexcept = default;
 
 InstructionInfo& InstructionInfo::operator=(const InstructionInfo& other)
 {
@@ -89,7 +89,7 @@ InstructionInfo& InstructionInfo::operator=(const InstructionInfo& other)
   return this->operator=(std::move(copy));
 }
 
-InstructionInfo& InstructionInfo::operator=(InstructionInfo&& other) = default;
+InstructionInfo& InstructionInfo::operator=(InstructionInfo&& other) noexcept = default;
 
 std::string InstructionInfo::GetType() const
 {

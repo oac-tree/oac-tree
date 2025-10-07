@@ -60,7 +60,7 @@ public:
    *
    * @note The move constructor is needed for storage in STL containers.
    */
-  AsyncWrapper(AsyncWrapper&& other);
+  AsyncWrapper(AsyncWrapper&& other) noexcept;
 
   ~AsyncWrapper();
 

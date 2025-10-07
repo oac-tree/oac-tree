@@ -40,13 +40,13 @@ ScopeGuard::~ScopeGuard()
   }
 }
 
-ScopeGuard::ScopeGuard(ScopeGuard&& other)
+ScopeGuard::ScopeGuard(ScopeGuard&& other) noexcept
   : m_func{other.m_func}
 {
   other.m_func = {};
 }
 
-ScopeGuard& ScopeGuard::operator=(ScopeGuard&& other)
+ScopeGuard& ScopeGuard::operator=(ScopeGuard&& other) noexcept
 {
   ScopeGuard moved{std::move(other)};
   Swap(moved);

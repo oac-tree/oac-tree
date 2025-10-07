@@ -40,8 +40,8 @@ public:
   explicit ScopeGuard(std::function<void()> func);
   ~ScopeGuard();
 
-  ScopeGuard(ScopeGuard&& other);
-  ScopeGuard& operator=(ScopeGuard&& other);
+  ScopeGuard(ScopeGuard&& other) noexcept;
+  ScopeGuard& operator=(ScopeGuard&& other) noexcept;
 
   ScopeGuard(const ScopeGuard& other) = delete;
   ScopeGuard& operator=(const ScopeGuard& other) = delete;

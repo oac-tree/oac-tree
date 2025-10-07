@@ -41,8 +41,9 @@ std::string StatusToString(const ExecutionStatus& status)
     return "Success";
   case ExecutionStatus::FAILURE:
     return "Failure";
+  default:
+    return "Unknown status";
   }
-  return "Unknown status";
 }
 
 bool IsFinishedStatus(const ExecutionStatus& status)

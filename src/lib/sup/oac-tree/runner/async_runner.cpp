@@ -274,6 +274,8 @@ void AsyncRunner::ExecutionLoop()
         break;
       case Action::kExit:
         return;
+      default:
+        return;
     }
   }
 }

@@ -21,6 +21,7 @@
  ******************************************************************************/
 
 #include "parallel_sequence.h"
+#include <sup/dto/basic_scalar_types.h>
 
 #include <sup/oac-tree/constants.h>
 #include <sup/oac-tree/exceptions.h>
@@ -85,8 +86,8 @@ void ParallelSequence::ResetHook(UserInterface& ui)
 
 ExecutionStatus ParallelSequence::CalculateCompoundStatus() const
 {
-  int n_success = 0;
-  int n_failure = 0;
+  dto::uint32 n_success = 0;
+  dto::uint32 n_failure = 0;
   bool child_not_finished_present = false;
   for (const auto &wrapper : m_wrappers)
   {

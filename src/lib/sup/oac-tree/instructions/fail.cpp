@@ -84,7 +84,7 @@ ExecutionStatus Fail::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   }
   else
   {
-    if (!IsHaltRequested() && m_finish > now)
+    if (!IsHaltRequested() && (m_finish > now))
     {
       return ExecutionStatus::RUNNING;
     }

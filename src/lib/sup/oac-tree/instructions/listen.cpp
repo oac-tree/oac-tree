@@ -84,6 +84,10 @@ ExecutionStatus Listen::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
     {
       return ExecutionStatus::RUNNING;
     }
+    else
+    {
+      // Avoid static analysis warning
+    }
     m_var_changed = false;
     lk.unlock();
     ResetChild(ui);

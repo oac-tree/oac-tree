@@ -84,6 +84,10 @@ void ParsePreamble(Procedure* procedure, const sup::xml::TreeData& data)
     {
       RegisterTypeInformation(procedure, child);
     }
+    else
+    {
+      // Avoid static analysis warning
+    }
   }
 }
 

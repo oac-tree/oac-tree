@@ -148,6 +148,10 @@ bool ParallelSequence::InitThresholds(UserInterface& ui, Workspace& ws)
   {
     m_success_th = N + 1 - m_failure_th;
   }
+  else
+  {
+      // Avoid static analysis warning
+  }
   return true;
 }
 

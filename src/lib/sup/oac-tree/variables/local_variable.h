@@ -40,7 +40,7 @@ class LocalVariable : public Variable
 public:
   LocalVariable();
 
-  ~LocalVariable() override;
+  ~LocalVariable() override = default;
 
   /**
    * @brief Class name for VariableRegistry.

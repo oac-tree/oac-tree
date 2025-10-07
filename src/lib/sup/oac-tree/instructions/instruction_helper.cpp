@@ -139,10 +139,10 @@ bool AttributeStartsWith(const std::string& attr_str, char c)
 
 }  // namespace sup
 
-using namespace sup::oac_tree;
-
 namespace
 {
+using namespace sup::oac_tree;
+
 std::pair<std::string, std::string> StripPath(const std::string &path)
 {
   std::size_t delim_pos = path.find(DefaultSettings::PATH_DELIMITER);

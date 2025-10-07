@@ -20,8 +20,8 @@
  * of the distribution package.
  ******************************************************************************/
 
-#ifndef SUP_OAC_TREE_async_runner_H_
-#define SUP_OAC_TREE_async_runner_H_
+#ifndef SUP_OAC_TREE_ASYNC_RUNNER_H_
+#define SUP_OAC_TREE_ASYNC_RUNNER_H_
 
 #include <sup/dto/basic_scalar_types.h>
 #include <sup/oac-tree/job_command_queue.h>
@@ -177,4 +177,4 @@ private:
 
 }  // namespace sup
 
-#endif  // SUP_OAC_TREE_async_runner_H_
+#endif  // SUP_OAC_TREE_ASYNC_RUNNER_H_

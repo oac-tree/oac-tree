@@ -45,7 +45,7 @@ public:
   static const std::string Type;
 
 private:
-  virtual ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws);
+  virtual ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 };
 
 }  // namespace oac_tree

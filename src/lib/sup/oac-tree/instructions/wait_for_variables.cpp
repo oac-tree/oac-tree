@@ -235,7 +235,7 @@ std::vector<std::string> GetVarNamesOfType(Workspace& ws, const std::string& var
   for (const auto& var_name : ws.VariableNames())
   {
     const auto var = ws.GetVariable(var_name);
-    if (var->GetType() == var_type)
+    if (var != nullptr && var->GetType() == var_type)
     {
       result.push_back(var_name);
     }

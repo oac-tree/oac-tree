@@ -53,8 +53,6 @@ LocalVariable::LocalVariable()
                   MakeConstraint<Not>(MakeConstraint<Exists>(Constants::VALUE_ATTRIBUTE_NAME))));
 }
 
-LocalVariable::~LocalVariable() {}
-
 bool LocalVariable::IsDynamicallyTyped() const
 {
   bool is_dynamic = false;

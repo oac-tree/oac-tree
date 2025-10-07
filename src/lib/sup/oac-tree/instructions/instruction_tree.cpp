@@ -102,7 +102,8 @@ InstructionTree CreateInstructionTree(const Instruction* root, InstructionChildS
   {
     auto tree = stack.back();
     stack.pop_back();
-    for (auto instr : selector(tree->GetInstruction()))
+    const auto instruction = tree->GetInstruction();
+    for (auto instr : selector(instruction))
     {
       if (instr == nullptr)
       {

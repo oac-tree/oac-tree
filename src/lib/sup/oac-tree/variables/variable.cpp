@@ -175,9 +175,9 @@ bool Variable::HasAttribute(const std::string &name) const
   return m_attribute_handler.HasStringAttribute(name);
 }
 
-std::string Variable::GetAttributeString(const std::string &name) const
+std::string Variable::GetAttributeString(const std::string &attr_name) const
 {
-  return GetStringAttributeValue(m_attribute_handler.GetStringAttributes(), name);
+  return GetStringAttributeValue(m_attribute_handler.GetStringAttributes(), attr_name);
 }
 
 const StringAttributeList& Variable::GetStringAttributes() const
@@ -185,9 +185,9 @@ const StringAttributeList& Variable::GetStringAttributes() const
   return m_attribute_handler.GetStringAttributes();
 }
 
-bool Variable::AddAttribute(const std::string &name, const std::string &value)
+bool Variable::AddAttribute(const std::string &attr_name, const std::string &value)
 {
-  return m_attribute_handler.AddStringAttribute(name, value);
+  return m_attribute_handler.AddStringAttribute(attr_name, value);
 }
 
 bool Variable::AddAttributes(const StringAttributeList& str_attributes)

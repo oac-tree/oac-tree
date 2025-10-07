@@ -73,16 +73,21 @@ FixedType* FixedType::Clone() const
 
 bool FixedType::Validate(const StringAttributeList& attr_map) const
 {
+  auto result = false;
   auto it = std::find_if(attr_map.begin(), attr_map.end(),
                          [this](const StringAttribute& str_attr) {
                            return str_attr.first == m_attr_name;
                          });
   if (it == attr_map.end())
   {
-    return false;
+    return result;
   }
   auto val_str = it->second;
-  return utils::ParseAttributeString(m_attr_type, val_str).first;
+  if (utils::ParseAttributeString(m_attr_type, val_str).first != false)
+  {
+    result = true;
+  }
+  return result;
 }
 
 std::string FixedType::GetRepresentation() const

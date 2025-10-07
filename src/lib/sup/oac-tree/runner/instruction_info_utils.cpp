@@ -157,14 +157,14 @@ sup::dto::AnyValue ToAnyValueTree(const InstructionInfo& instr_info)
     {
       continue;
     }
-    node.anyvalue.AddMember(kChildInstructionsField, sup::dto::EmptyStruct());
+    (void)node.anyvalue.AddMember(kChildInstructionsField, sup::dto::EmptyStruct());
     std::size_t child_idx = 0;
     auto& children_av = node.anyvalue[kChildInstructionsField];
     for (const auto* child : children)
     {
       auto child_av = ToAnyValueNode(*child);
       auto child_mem_name = CreateIndexedInstrChildName(child_idx);
-      children_av.AddMember(child_mem_name, child_av);
+      (void)children_av.AddMember(child_mem_name, child_av);
       auto& child_av_ref = children_av[child_mem_name];
       InstrInfoToAnyValueStackNode child_node{ *child, child_av_ref };
       stack.push_back(child_node);
@@ -222,7 +222,7 @@ std::unique_ptr<InstructionInfo> ToInstructionInfoNode(
   std::vector<AttributeInfo> attributes;
   for (const auto& attr_name : attr_av.MemberNames())
   {
-    attributes.emplace_back(attr_name, attr_av[attr_name].As<std::string>());
+    (void)attributes.emplace_back(attr_name, attr_av[attr_name].As<std::string>());
   }
   return std::make_unique<InstructionInfo>(instr_type, instr_cat, instr_idx, attributes);
 }
@@ -236,7 +236,7 @@ sup::dto::AnyValue ToAnyValueNode(const InstructionInfo& instr_info)
   result[kIndexField] = instr_info.GetIndex();
   for (const auto& [attr_name, attr_value] : instr_info.GetAttributes())
   {
-    result[kAttributesField].AddMember(attr_name, attr_value);
+    (void)result[kAttributesField].AddMember(attr_name, attr_value);
   }
   return result;
 }

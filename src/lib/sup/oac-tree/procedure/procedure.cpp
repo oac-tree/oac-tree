@@ -59,8 +59,8 @@ Procedure::Procedure(const std::string& filename)
   , m_parent{nullptr}
   , m_procedure_store{new ProcedureStore{this}}
 {
-  m_attribute_handler.AddAttributeDefinition(kTickTimeoutAttributeName, sup::dto::Float64Type);
-  m_attribute_handler.AddAttributeDefinition(kTimingAccuracyAttributeName, sup::dto::Float64Type);
+  (void)m_attribute_handler.AddAttributeDefinition(kTickTimeoutAttributeName, sup::dto::Float64Type);
+  (void)m_attribute_handler.AddAttributeDefinition(kTimingAccuracyAttributeName, sup::dto::Float64Type);
 }
 
 Procedure::~Procedure()
@@ -129,7 +129,7 @@ void Procedure::PushInstruction(std::unique_ptr<Instruction>&& instruction)
       "sup::oac_tree::Procedure::PushInstruction(): trying to add empty unique_ptr";
     throw InvalidOperationException(error_message);
   }
-  m_instructions.emplace_back(std::move(instruction));
+  (void)m_instructions.emplace_back(std::move(instruction));
 }
 
 bool Procedure::InsertInstruction(std::unique_ptr<Instruction>&& instruction, int index)
@@ -138,7 +138,7 @@ bool Procedure::InsertInstruction(std::unique_ptr<Instruction>&& instruction, in
   {
     return false;
   }
-  m_instructions.emplace(std::next(m_instructions.begin(), index), std::move(instruction));
+  (void)m_instructions.emplace(std::next(m_instructions.begin(), index), std::move(instruction));
   return true;
 }
 
@@ -151,7 +151,7 @@ std::unique_ptr<Instruction> Procedure::TakeInstruction(int index)
   auto it = std::next(m_instructions.begin(), index);
   std::unique_ptr<Instruction> retval;
   std::swap(retval, *it);
-  m_instructions.erase(it);
+  (void)m_instructions.erase(it);
   return std::move(retval);
 }
 

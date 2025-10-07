@@ -124,7 +124,7 @@ std::vector<InstructionInfo*> InstructionInfo::Children()
   auto func = [](const std::unique_ptr<InstructionInfo>& instr) {
     return instr.get();
   };
-  std::transform(m_children.begin(), m_children.end(), std::back_inserter(result), func);
+  (void)std::transform(m_children.begin(), m_children.end(), std::back_inserter(result), func);
   return result;
 }
 
@@ -134,7 +134,7 @@ std::vector<const InstructionInfo*> InstructionInfo::Children() const
   auto func = [](const std::unique_ptr<InstructionInfo>& instr) {
     return instr.get();
   };
-  std::transform(m_children.begin(), m_children.end(), std::back_inserter(result), func);
+  (void)std::transform(m_children.begin(), m_children.end(), std::back_inserter(result), func);
   return result;
 }
 
@@ -178,7 +178,7 @@ std::vector<const InstructionInfo*> Flatten(const InstructionInfo& instr_info_tr
       throw InvalidOperationException(error);
     }
     result.push_back(p_info);
-    info_pointers.insert(p_info);
+    (void)info_pointers.insert(p_info);
 
     for (const auto child : p_info->Children())
     {
@@ -206,7 +206,7 @@ void ValidateInstructionInfoTree(const InstructionInfo& instr_info_tree)
       const std::string error = "ValidateInstructionInfoTree(): index out of range found";
       throw InvalidOperationException(error);
     }
-    indices.insert(info_pointer->GetIndex());
+    (void)indices.insert(info_pointer->GetIndex());
   }
   if (indices.size() != n_nodes)
   {

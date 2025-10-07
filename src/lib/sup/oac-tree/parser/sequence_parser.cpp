@@ -37,7 +37,7 @@ namespace oac_tree
 {
 void LoadPlugin(const std::string& name)
 {
-  utils::LoadLibrary(name);
+  (void)utils::LoadLibrary(name);
 }
 
 std::unique_ptr<Procedure> ParseProcedureFile(const std::string& filename)

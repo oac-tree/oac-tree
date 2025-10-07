@@ -69,7 +69,7 @@ bool BreakpointManager::SetBreakpoint(const Instruction* instruction)
   auto iter = std::find_if(m_breakpoints.begin(), m_breakpoints.end(), predicate);
   if (iter == m_breakpoints.end())
   {
-    m_breakpoints.emplace_back(instruction);
+    (void)m_breakpoints.emplace_back(instruction);
     instruction->SetBreakpoint();
     return true;
   }
@@ -87,7 +87,7 @@ bool BreakpointManager::RemoveBreakpoint(const Instruction* instruction)
   {
     return false;
   }
-  m_breakpoints.erase(iter);
+  (void)m_breakpoints.erase(iter);
   instruction->RemoveBreakpoint();
   return true;
 }

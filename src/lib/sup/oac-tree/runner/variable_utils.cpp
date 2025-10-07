@@ -75,7 +75,7 @@ sup::dto::AnyValue ToAnyValue(const WorkspaceInfo& ws_info)
   for (const auto& [var_name, var_info] : ws_info.GetVariableInfos())
   {
     auto var_av = ToAnyValue(var_info);
-    result.AddMember(var_name, var_av);
+    (void)result.AddMember(var_name, var_av);
   }
   return result;
 }
@@ -133,7 +133,7 @@ VariableInfo ToVariableInfo(const sup::dto::AnyValue& var_info_anyvalue)
   std::vector<AttributeInfo> attributes;
   for (const auto& attr_name : attr_av.MemberNames())
   {
-    attributes.emplace_back(attr_name, attr_av[attr_name].As<std::string>());
+    (void)attributes.emplace_back(attr_name, attr_av[attr_name].As<std::string>());
   }
   return VariableInfo{ var_type, var_idx, attributes };
 }
@@ -145,7 +145,7 @@ sup::dto::AnyValue ToAnyValue(const VariableInfo& var_info)
   result[kIndexField] = var_info.GetIndex();
   for (const auto& [attr_name, attr_value] : var_info.GetAttributes())
   {
-    result[kAttributesField].AddMember(attr_name, attr_value);
+    (void)result[kAttributesField].AddMember(attr_name, attr_value);
   }
   return result;
 }

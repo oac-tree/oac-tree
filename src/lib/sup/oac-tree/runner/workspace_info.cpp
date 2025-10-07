@@ -50,7 +50,7 @@ void WorkspaceInfo::AddVariableInfo(const std::string& var_name, const VariableI
                               "duplicate name or inconsistent index";
     throw InvalidOperationException(error);
   }
-  m_vars.emplace_back(var_name, var_info);
+  (void)m_vars.emplace_back(var_name, var_info);
 }
 
 std::size_t WorkspaceInfo::GetNumberOfVariables() const

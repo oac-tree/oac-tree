@@ -53,7 +53,7 @@ Variable::Variable(const std::string &type)
   , m_notify_mutex{}
   , m_notify_cb{}
 {
-  AddAttributeDefinition(Constants::NAME_ATTRIBUTE_NAME, sup::dto::StringType);
+  (void)AddAttributeDefinition(Constants::NAME_ATTRIBUTE_NAME, sup::dto::StringType);
 }
 
 Variable::~Variable() = default;
@@ -70,7 +70,7 @@ std::string Variable::GetName() const
 
 void Variable::SetName(const std::string &name)
 {
-  AddAttribute(Constants::NAME_ATTRIBUTE_NAME, name);
+  (void)AddAttribute(Constants::NAME_ATTRIBUTE_NAME, name);
 }
 
 SetupTeardownActions Variable::Setup(const Workspace& ws)
@@ -230,7 +230,7 @@ SetupTeardownActions Variable::SetupImpl(const Workspace&)
 void Variable::ResetImpl(const Workspace& ws)
 {
   Teardown();
-  Setup(ws);
+  (void)Setup(ws);
 }
 
 void Variable::TeardownImpl()

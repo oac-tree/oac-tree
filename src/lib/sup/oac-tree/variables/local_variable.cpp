@@ -45,9 +45,9 @@ LocalVariable::LocalVariable()
   : Variable(LocalVariable::Type)
   , m_value{}
 {
-  AddAttributeDefinition(Constants::TYPE_ATTRIBUTE_NAME, sup::dto::StringType);
-  AddAttributeDefinition(Constants::VALUE_ATTRIBUTE_NAME, sup::dto::StringType);
-  AddAttributeDefinition(Constants::IS_DYNAMIC_TYPE_ATTRIBUTE_NAME, sup::dto::BooleanType);
+  (void)AddAttributeDefinition(Constants::TYPE_ATTRIBUTE_NAME, sup::dto::StringType);
+  (void)AddAttributeDefinition(Constants::VALUE_ATTRIBUTE_NAME, sup::dto::StringType);
+  (void)AddAttributeDefinition(Constants::IS_DYNAMIC_TYPE_ATTRIBUTE_NAME, sup::dto::BooleanType);
   AddConstraint(MakeConstraint<Or>(
                   MakeConstraint<Exists>(Constants::TYPE_ATTRIBUTE_NAME),
                   MakeConstraint<Not>(MakeConstraint<Exists>(Constants::VALUE_ATTRIBUTE_NAME))));

@@ -56,7 +56,7 @@ bool VariableRegistry::RegisterVariable(std::string name, VariableConstructor co
       "with name [" + name + "] twice";
     throw InvalidOperationException(error_message);
   }
-  m_variable_map.insert(it, {name, constructor});
+  (void)m_variable_map.insert(it, {name, constructor});
   return true;
 }
 

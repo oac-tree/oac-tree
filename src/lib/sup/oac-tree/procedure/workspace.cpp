@@ -97,7 +97,7 @@ void Workspace::Setup()
       setup_teardown_actions.push_back(actions);
     }
   };
-  std::for_each(m_var_map.begin(), m_var_map.end(), setup_var);
+  (void)std::for_each(m_var_map.begin(), m_var_map.end(), setup_var);
   // call registered global setup functions
   auto setup_actions = ParseSetupTeardownActions(setup_teardown_actions);
   for (const auto& setup_action : setup_actions)
@@ -115,7 +115,7 @@ void Workspace::Teardown()
     teardown_action();
   }
   m_teardown_actions.clear();
-  std::for_each(m_var_map.begin(), m_var_map.end(), [](const auto &pair) {
+  (void)std::for_each(m_var_map.begin(), m_var_map.end(), [](const auto &pair) {
      return pair.second->Teardown(); });
 }
 
@@ -176,7 +176,7 @@ bool Workspace::WaitForVariable(const std::string& name, double timeout_sec, boo
                     cv.notify_one();
                   };
   auto cb_guard = GetCallbackGuard(&dummy_listener);
-  RegisterCallback(name, callback, &dummy_listener);
+  (void)RegisterCallback(name, callback, &dummy_listener);
   while (true)
   {
     std::unique_lock<std::mutex> lk(mx);
@@ -286,12 +286,12 @@ std::vector<std::function<void()>> Workspace::ParseSetupTeardownActions(
     if (action.m_setup && setup_iter == setup_identifiers.end())
     {
       setup_actions.push_back(action.m_setup);
-      setup_identifiers.insert(action.m_identifier);
+      (void)setup_identifiers.insert(action.m_identifier);
     }
     if (action.m_teardown && teardown_iter == teardown_identifiers.end())
     {
       m_teardown_actions.push_back(action.m_teardown);
-      teardown_identifiers.insert(action.m_identifier);
+      (void)teardown_identifiers.insert(action.m_identifier);
     }
   }
   return setup_actions;

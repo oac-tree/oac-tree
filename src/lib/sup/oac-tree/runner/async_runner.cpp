@@ -103,7 +103,7 @@ void AsyncRunner::Halt()
     m_runner.Halt();
   };
   // The halt command needs to be handled first (except when there's a terminate pending).
-  m_command_queue.PriorityPush(JobCommand::kHalt, halt_func);
+  (void)m_command_queue.PriorityPush(JobCommand::kHalt, halt_func);
 }
 
 void AsyncRunner::Terminate()
@@ -112,7 +112,7 @@ void AsyncRunner::Terminate()
     m_runner.Halt();
   };
   // The terminate command needs to be handled first.
-  m_command_queue.PriorityPush(JobCommand::kTerminate, terminate_func);
+  (void)m_command_queue.PriorityPush(JobCommand::kTerminate, terminate_func);
   m_loop_future.wait();
 }
 

@@ -47,7 +47,7 @@ std::unique_ptr<Variable> ParseVariable(const sup::xml::TreeData& data)
       var_type + "]";
     throw ParseException(error_message);
   }
-  var->AddAttributes(data.Attributes());
+  (void)var->AddAttributes(data.Attributes());
   return var;
 }
 

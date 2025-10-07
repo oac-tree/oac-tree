@@ -48,7 +48,7 @@ const double kMaxTimeoutSeconds = 9.2e9; // More than 290 years. This should be 
  *
  * @return True on success, false otherwise.
  */
-bool ConvertToTimeoutNanoseconds(sup::dto::float64 timeout_sec, sup::dto::int64& timeout_ns);
+bool ConvertToTimeoutNanoseconds(sup::dto::float64 timeout_sec, sup::dto::uint64& timeout_ns);
 
 /**
  * @brief Retrieve a timeout in nanoseconds from a variable attribute that encodes a floating point
@@ -63,7 +63,7 @@ bool ConvertToTimeoutNanoseconds(sup::dto::float64 timeout_sec, sup::dto::int64&
  * @return True on success, false otherwise.
  */
 bool GetVariableTimeoutAttribute(const Instruction& instr, UserInterface& ui, Workspace& ws,
-                                 const std::string& attr_name, sup::dto::int64& timeout_ns);
+                                 const std::string& attr_name, sup::dto::uint64& timeout_ns);
 
 /**
  * @brief Get a list of variable names from an instruction attribute.

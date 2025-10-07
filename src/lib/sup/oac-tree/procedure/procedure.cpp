@@ -329,7 +329,7 @@ const ProcedureStore& Procedure::GetProcedureStore() const
 
 sup::dto::int64 TickTimeoutNs(const Procedure& procedure)
 {
-  sup::dto::int64 tick_timeout_ns = DefaultSettings::DEFAULT_SLEEP_TIME_NS;
+  sup::dto::uint64 tick_timeout_ns = DefaultSettings::DEFAULT_SLEEP_TIME_NS;
   if (procedure.HasAttribute(kTickTimeoutAttributeName))
   {
     auto tick_timeout = procedure.GetAttributeValue<double>(kTickTimeoutAttributeName);
@@ -340,7 +340,7 @@ sup::dto::int64 TickTimeoutNs(const Procedure& procedure)
 
 sup::dto::int64 TimingAccuracyNs(const Procedure& procedure)
 {
-  sup::dto::int64 timing_accuracy_ns = DefaultSettings::DEFAULT_TIMING_ACCURACY_NS;
+  sup::dto::uint64 timing_accuracy_ns = DefaultSettings::DEFAULT_TIMING_ACCURACY_NS;
   if (procedure.HasAttribute(kTimingAccuracyAttributeName))
   {
     auto timing_accuracy = procedure.GetAttributeValue<double>(kTimingAccuracyAttributeName);

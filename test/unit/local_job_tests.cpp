@@ -296,7 +296,7 @@ bool TestJobInfoIO::WaitForJobState(JobState state, double timeout_sec)
   auto pred = [this, state]() {
     return m_job_state == state;
   };
-  sup::dto::int64 timeout_ns;
+  sup::dto::uint64 timeout_ns;
   if (!instruction_utils::ConvertToTimeoutNanoseconds(timeout_sec, timeout_ns))
   {
     return false;

@@ -54,7 +54,7 @@ private:
   void ResetHook(UserInterface& ui) override;
 
   bool m_blocking;
-  sup::dto::int64 m_finish;
+  sup::dto::uint64 m_finish;
   std::mutex m_mtx;
   std::condition_variable m_cv;
 };

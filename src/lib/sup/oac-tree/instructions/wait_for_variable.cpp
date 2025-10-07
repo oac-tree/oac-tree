@@ -58,7 +58,7 @@ WaitForVariable::~WaitForVariable() = default;
 
 bool WaitForVariable::InitHook(UserInterface& ui, Workspace& ws)
 {
-  sup::dto::int64 timeout_ns{};
+  sup::dto::uint64 timeout_ns{};
   if (!instruction_utils::GetVariableTimeoutAttribute(
             *this, ui, ws, Constants::TIMEOUT_SEC_ATTRIBUTE_NAME, timeout_ns))
   {

@@ -39,7 +39,7 @@ public:
   class TestInterface : public DefaultUserInterface
   {
   public:
-    TestInterface(unsigned par) : m_value(sup::dto::UnsignedInteger32Type) { m_value = par; }
+    TestInterface(unsigned par) : m_value(par) {}
 
     bool PutValue(const sup::dto::AnyValue& value, const std::string& description) override
     {

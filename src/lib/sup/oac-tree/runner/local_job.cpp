@@ -50,12 +50,12 @@ LocalJob::LocalJob(std::unique_ptr<Procedure> proc, IJobInfoIO& job_info_io)
 
 LocalJob::~LocalJob() = default;
 
-LocalJob::LocalJob(LocalJob&& other)
+LocalJob::LocalJob(LocalJob&& other) noexcept
   : IJob{}
   , m_impl{std::move(other.m_impl)}
 {}
 
-LocalJob& LocalJob::operator=(LocalJob&& other)
+LocalJob& LocalJob::operator=(LocalJob&& other) noexcept
 {
   LocalJob moved{std::move(other)};
   std::swap(m_impl, moved.m_impl);

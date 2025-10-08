@@ -38,7 +38,7 @@ public:
   JobInterface(JobInterface&&) = delete;
   JobInterface& operator=(const JobInterface&) = delete;
   JobInterface& operator=(JobInterface&&) = delete;
-  virtual ~JobInterface() override;
+  virtual ~JobInterface();
 };
 
 }  // namespace oac_tree

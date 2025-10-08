@@ -21,6 +21,7 @@
  ******************************************************************************/
 
 #include "user_choice.h"
+#include <cstddef>
 
 #include <sup/oac-tree/constants.h>
 #include <sup/oac-tree/exceptions.h>
@@ -95,7 +96,7 @@ ExecutionStatus UserChoice::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
     m_choice = choice;
     return ExecutionStatus::NOT_FINISHED;  // TODO: remove this if we no longer need this...
   }
-  auto selected = ChildInstructions()[m_choice];
+  auto selected = ChildInstructions()[static_cast<size_t>(m_choice)];
   selected->ExecuteSingle(ui, ws);
   return selected->GetStatus();
 }

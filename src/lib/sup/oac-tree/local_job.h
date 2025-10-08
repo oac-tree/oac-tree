@@ -57,8 +57,8 @@ public:
   LocalJob& operator=(const LocalJob& other) = delete;
 
   // Support move operations
-  LocalJob(LocalJob&& other);
-  LocalJob& operator=(LocalJob&& other);
+  LocalJob(LocalJob&& other) noexcept;
+  LocalJob& operator=(LocalJob&& other) noexcept;
 
   const JobInfo& GetInfo() const override;
 

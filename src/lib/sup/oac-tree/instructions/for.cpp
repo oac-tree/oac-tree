@@ -31,6 +31,7 @@
 
 #include <sup/dto/anytype.h>
 #include <sup/dto/anyvalue.h>
+#include <cstddef>
 #include <sup/oac-tree/exceptions.h>
 #include <sup/oac-tree/generic_utils.h>
 
@@ -73,7 +74,7 @@ ExecutionStatus ForInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& 
     LogWarning(ui, warning_message);
     return ExecutionStatus::FAILURE;
   }
-  int max_count = m_array.NumberOfElements();
+  size_t max_count = m_array.NumberOfElements();
   if (max_count == 0)
   {
     return ExecutionStatus::SUCCESS;

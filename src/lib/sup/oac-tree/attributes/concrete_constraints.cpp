@@ -23,6 +23,7 @@
 #include <sup/oac-tree/concrete_constraints.h>
 
 #include <sup/oac-tree/attribute_utils.h>
+#include <sup/oac-tree/constraint.h>
 
 #include <sup/dto/anytype_helper.h>
 
@@ -40,9 +41,9 @@ Exists::Exists(const std::string& attr_name)
 
 Exists::~Exists() = default;
 
-Exists* Exists::Clone() const
+std::unique_ptr<IConstraint> Exists::Clone() const
 {
-  return std::make_unique<Exists>(m_attr_name).release();
+  return std::make_unique<Exists>(m_attr_name);
 }
 
 bool Exists::Validate(const StringAttributeList& attr_map) const
@@ -66,9 +67,9 @@ FixedType::FixedType(const std::string& attr_name, const sup::dto::AnyType& attr
 
 FixedType::~FixedType() = default;
 
-FixedType* FixedType::Clone() const
+std::unique_ptr<IConstraint> FixedType::Clone() const
 {
-  return std::make_unique<FixedType>(m_attr_name, m_attr_type).release();
+  return std::make_unique<FixedType>(m_attr_name, m_attr_type);
 }
 
 bool FixedType::Validate(const StringAttributeList& attr_map) const
@@ -103,9 +104,9 @@ Xor::Xor(Constraint&& left, Constraint&& right)
 
 Xor::~Xor() = default;
 
-Xor* Xor::Clone() const
+std::unique_ptr<IConstraint> Xor::Clone() const
 {
-  return std::make_unique<Xor>(Constraint{m_left}, Constraint{m_right}).release();
+  return std::make_unique<Xor>(Constraint{m_left}, Constraint{m_right});
 }
 
 bool Xor::Validate(const StringAttributeList& attr_map) const
@@ -125,9 +126,9 @@ Or::Or(Constraint&& left, Constraint&& right)
 
 Or::~Or() = default;
 
-Or* Or::Clone() const
+std::unique_ptr<IConstraint> Or::Clone() const
 {
-  return std::make_unique<Or>(Constraint{m_left}, Constraint{m_right}).release();
+  return std::make_unique<Or>(Constraint{m_left}, Constraint{m_right});
 }
 
 bool Or::Validate(const StringAttributeList& attr_map) const
@@ -147,9 +148,9 @@ And::And(Constraint&& left, Constraint&& right)
 
 And::~And() = default;
 
-And* And::Clone() const
+std::unique_ptr<IConstraint> And::Clone() const
 {
-  return std::make_unique<And>(Constraint{m_left}, Constraint{m_right}).release();
+  return std::make_unique<And>(Constraint{m_left}, Constraint{m_right});
 }
 
 bool And::Validate(const StringAttributeList& attr_map) const
@@ -168,9 +169,9 @@ Not::Not(Constraint&& child)
 
 Not::~Not() = default;
 
-Not* Not::Clone() const
+std::unique_ptr<IConstraint> Not::Clone() const
 {
-  return std::make_unique<Not>(Constraint{m_child}).release();
+  return std::make_unique<Not>(Constraint{m_child});
 }
 
 bool Not::Validate(const StringAttributeList& attr_map) const

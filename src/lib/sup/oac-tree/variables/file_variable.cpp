@@ -118,7 +118,7 @@ std::unique_ptr<sup::dto::AnyValue> FileVariable::ReadValue() const
   {
     return result;
   }
-  result.reset(std::make_unique<sup::dto::AnyValue>(parser.MoveAnyValue()).release());
+  result = std::make_unique<sup::dto::AnyValue>(parser.MoveAnyValue());
   return result;
 }
 

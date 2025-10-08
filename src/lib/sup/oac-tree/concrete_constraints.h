@@ -23,6 +23,7 @@
 #ifndef SUP_OAC_TREE_CONCRETE_CONSTRAINTS_H_
 #define SUP_OAC_TREE_CONCRETE_CONSTRAINTS_H_
 
+#include <memory>
 #include <sup/oac-tree/constraint.h>
 
 namespace sup
@@ -39,7 +40,7 @@ public:
   explicit Exists(const std::string& attr_name);
   ~Exists() override;
 
-  Exists* Clone() const override;
+  std::unique_ptr<IConstraint> Clone() const override;
 
   bool Validate(const StringAttributeList& attr_map) const override;
   std::string GetRepresentation() const override;
@@ -56,7 +57,7 @@ public:
   explicit FixedType(const std::string& attr_name, const sup::dto::AnyType& attr_type);
   ~FixedType() override;
 
-  FixedType* Clone() const override;
+  std::unique_ptr<IConstraint> Clone() const override;
 
   bool Validate(const StringAttributeList& attr_map) const override;
   std::string GetRepresentation() const override;
@@ -75,7 +76,7 @@ public:
   explicit Xor(Constraint&& left, Constraint&& right);
   ~Xor() override;
 
-  Xor* Clone() const override;
+  std::unique_ptr<IConstraint> Clone() const override;
 
   bool Validate(const StringAttributeList& attr_map) const override;
   std::string GetRepresentation() const override;
@@ -94,7 +95,7 @@ public:
   explicit Or(Constraint&& left, Constraint&& right);
   ~Or() override;
 
-  Or* Clone() const override;
+  std::unique_ptr<IConstraint> Clone() const override;
 
   bool Validate(const StringAttributeList& attr_map) const override;
   std::string GetRepresentation() const override;
@@ -113,7 +114,7 @@ public:
   explicit And(Constraint&& left, Constraint&& right);
   ~And() override;
 
-  And* Clone() const override;
+  std::unique_ptr<IConstraint> Clone() const override;
 
   bool Validate(const StringAttributeList& attr_map) const override;
   std::string GetRepresentation() const override;
@@ -132,7 +133,7 @@ public:
   explicit Not(Constraint&& child);
   ~Not() override;
 
-  Not* Clone() const override;
+  std::unique_ptr<IConstraint> Clone() const override;
 
   bool Validate(const StringAttributeList& attr_map) const override;
   std::string GetRepresentation() const override;

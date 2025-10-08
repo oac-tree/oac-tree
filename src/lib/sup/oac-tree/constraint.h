@@ -44,7 +44,7 @@ class IConstraint
 public:
   virtual ~IConstraint();
 
-  virtual IConstraint* Clone() const = 0;
+  virtual std::unique_ptr<IConstraint> Clone() const = 0;
 
   virtual bool Validate(const StringAttributeList& attr_map) const = 0;
 

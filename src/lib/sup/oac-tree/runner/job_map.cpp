@@ -41,7 +41,7 @@ JobMap::~JobMap() = default;
 
 void JobMap::InitializeInstructionTree(const Instruction* root)
 {
-  m_instruction_map.reset(std::make_unique<InstructionMap>(root).release());
+  m_instruction_map = std::make_unique<InstructionMap>(root);
 }
 
 sup::dto::uint32 JobMap::GetInstructionIndex(const Instruction* instr) const

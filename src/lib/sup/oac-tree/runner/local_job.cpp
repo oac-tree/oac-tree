@@ -125,9 +125,8 @@ LocalJob::LocalJobImpl::LocalJobImpl(std::unique_ptr<Procedure> proc, IJobInfoIO
   , m_ordered_instructions{}
 {
   m_job_interface.InitializeInstructionTree(m_proc->RootInstruction());
-  m_job_info.reset(
-      std::make_unique<JobInfo>(utils::CreateJobInfo(*m_proc, m_job_interface.GetInstructionMap()))
-          .release());
+  m_job_info =
+      std::make_unique<JobInfo>(utils::CreateJobInfo(*m_proc, m_job_interface.GetInstructionMap()));
   m_ordered_instructions = m_job_interface.GetOrderedInstructions();
 }
 

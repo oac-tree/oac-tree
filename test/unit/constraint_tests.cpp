@@ -23,6 +23,7 @@
 #include <sup/oac-tree/concrete_constraints.h>
 
 #include <gtest/gtest.h>
+#include <memory>
 
 using namespace sup::oac_tree;
 
@@ -35,7 +36,7 @@ public:
   TestConstraint(bool pass) : m_pass{pass} {}
   ~TestConstraint() = default;
 
-  TestConstraint* Clone() const override { return new TestConstraint{m_pass}; }
+  std::unique_ptr<IConstraint> Clone() const override { return std::make_unique<TestConstraint>(m_pass); }
 
   bool Validate(const StringAttributeList& attr_map) const override { return m_pass; }
   std::string GetRepresentation() const override

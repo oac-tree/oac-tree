@@ -47,6 +47,10 @@ public:
 
   ActiveInstructionMonitor(ActiveInstructionsChanged callback, ActiveInstructionFilter filter);
   explicit ActiveInstructionMonitor(ActiveInstructionsChanged callback);
+  ActiveInstructionMonitor(const ActiveInstructionMonitor &) = delete;
+  ActiveInstructionMonitor(ActiveInstructionMonitor &&) = delete;
+  ActiveInstructionMonitor &operator=(const ActiveInstructionMonitor &) = delete;
+  ActiveInstructionMonitor &operator=(ActiveInstructionMonitor &&) = delete;
   ~ActiveInstructionMonitor();
 
   /**

@@ -43,6 +43,10 @@ class AttributeValidator
 {
 public:
   AttributeValidator();
+  AttributeValidator(const AttributeValidator&) = delete;
+  AttributeValidator(AttributeValidator&&) = delete;
+  AttributeValidator& operator=(const AttributeValidator&) = delete;
+  AttributeValidator& operator=(AttributeValidator&&) = delete;
   ~AttributeValidator();
 
   AttributeDefinition& AddAttributeDefinition(const std::string& attr_name,

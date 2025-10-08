@@ -64,7 +64,11 @@ enum DialogType : dto::uint32
 class UserInterface
 {
 public:
-
+  UserInterface() = default;
+  UserInterface(const UserInterface&) = delete;
+  UserInterface(UserInterface&&) = delete;
+  UserInterface& operator=(const UserInterface&) = delete;
+  UserInterface& operator=(UserInterface&&) = delete;
   virtual ~UserInterface();
 
   /**

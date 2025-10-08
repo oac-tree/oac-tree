@@ -40,6 +40,10 @@ class InstructionTree
 public:
   explicit InstructionTree(const Instruction* instruction);
 
+  InstructionTree(const InstructionTree&) = default;
+  InstructionTree(InstructionTree&&) = delete;
+  InstructionTree& operator=(const InstructionTree&) = default;
+  InstructionTree& operator=(InstructionTree&&) = delete;
   ~InstructionTree();
 
   bool IsEmpty() const;

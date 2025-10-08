@@ -42,6 +42,11 @@ namespace oac_tree
 class IUserInputFuture
 {
 public:
+  IUserInputFuture() = default;
+  IUserInputFuture(const IUserInputFuture &) = delete;
+  IUserInputFuture(IUserInputFuture &&) = delete;
+  IUserInputFuture &operator=(const IUserInputFuture &) = delete;
+  IUserInputFuture &operator=(IUserInputFuture &&) = delete;
   virtual ~IUserInputFuture();
 
   /**
@@ -91,6 +96,10 @@ class UnsupportedInputFuture : public IUserInputFuture
 {
 public:
   UnsupportedInputFuture();
+  UnsupportedInputFuture(const UnsupportedInputFuture &) = delete;
+  UnsupportedInputFuture(UnsupportedInputFuture &&) = delete;
+  UnsupportedInputFuture &operator=(const UnsupportedInputFuture &) = delete;
+  UnsupportedInputFuture &operator=(UnsupportedInputFuture &&) = delete;
   ~UnsupportedInputFuture() override;
 
   sup::dto::uint64 GetId() const override;

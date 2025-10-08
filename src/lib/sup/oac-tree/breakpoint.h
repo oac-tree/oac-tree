@@ -44,6 +44,10 @@ public:
   };
 
   explicit Breakpoint(const Instruction* instruction);
+  Breakpoint(const Breakpoint&) = default;
+  Breakpoint(Breakpoint&&) = delete;
+  Breakpoint& operator=(const Breakpoint&) = default;
+  Breakpoint& operator=(Breakpoint&&) = delete;
   ~Breakpoint();
 
   const Instruction* GetInstruction() const;

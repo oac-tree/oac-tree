@@ -43,6 +43,10 @@ class ProcedureContext
 {
 public:
   ProcedureContext(const std::string& filename, const ProcedureStore& procedure_store);
+  ProcedureContext(const ProcedureContext&) = delete;
+  ProcedureContext(ProcedureContext&&) = delete;
+  ProcedureContext& operator=(const ProcedureContext&) = delete;
+  ProcedureContext& operator=(ProcedureContext&&) = delete;
   ~ProcedureContext();
 
   /**

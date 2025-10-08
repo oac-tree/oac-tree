@@ -44,6 +44,10 @@ class InstructionMap
 public:
   using InstructionIndexMap = std::unordered_map<const Instruction*, sup::dto::uint32>;
 
+  InstructionMap(const InstructionMap&) = delete;
+  InstructionMap(InstructionMap&&) = delete;
+  InstructionMap& operator=(const InstructionMap&) = delete;
+  InstructionMap& operator=(InstructionMap&&) = delete;
   /**
    * @brief Construct a InstructionMap object from the given root instruction.
    *

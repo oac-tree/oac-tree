@@ -24,6 +24,7 @@
 #define SUP_OAC_TREE_EXCEPTIONS_H_
 
 #include <exception>
+#include <stdexcept>
 #include <string>
 
 namespace sup
@@ -41,6 +42,7 @@ public:
   MessageException(MessageException&&) = delete;
   MessageException& operator=(const MessageException&) = delete;
   MessageException& operator=(MessageException&&) = delete;
+  ~MessageException() override = default;
   const char* what() const noexcept override;
 private:
   std::string m_message;

@@ -43,6 +43,10 @@ class ProcedureStore
 {
 public:
   explicit ProcedureStore(Procedure* parent);
+  ProcedureStore(const ProcedureStore&) = delete;
+  ProcedureStore(ProcedureStore&&) = delete;
+  ProcedureStore& operator=(const ProcedureStore&) = delete;
+  ProcedureStore& operator=(ProcedureStore&&) = delete;
   ~ProcedureStore();
 
   /**

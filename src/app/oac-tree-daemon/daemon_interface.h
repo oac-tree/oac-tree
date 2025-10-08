@@ -39,6 +39,10 @@ class DaemonInterface : public UserInterface
 public:
   explicit DaemonInterface(const sup::log::DefaultLogger& logger);
 
+  DaemonInterface(const DaemonInterface&) = delete;
+  DaemonInterface(DaemonInterface&&) = delete;
+  DaemonInterface& operator=(const DaemonInterface&) = delete;
+  DaemonInterface& operator=(DaemonInterface&&) = delete;
   ~DaemonInterface() override;
 
   void UpdateInstructionStatus(const Instruction* instruction, ExecutionStatus status) override;

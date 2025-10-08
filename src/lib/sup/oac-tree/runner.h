@@ -58,6 +58,10 @@ public:
    */
   explicit Runner(UserInterface& ui);
 
+  Runner(const Runner&) = delete;
+  Runner(Runner&&) = delete;
+  Runner& operator=(const Runner&) = delete;
+  Runner& operator=(Runner&&) = delete;
   ~Runner();
 
   /**

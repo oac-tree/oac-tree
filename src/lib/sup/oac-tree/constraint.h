@@ -42,6 +42,11 @@ const std::string kConstraintEmpty = "Empty constraint (always fails)";
 class IConstraint
 {
 public:
+  IConstraint() = default;
+  IConstraint(const IConstraint&) = delete;
+  IConstraint(IConstraint&&) = delete;
+  IConstraint& operator=(const IConstraint&) = delete;
+  IConstraint& operator=(IConstraint&&) = delete;
   virtual ~IConstraint();
 
   virtual std::unique_ptr<IConstraint> Clone() const = 0;

@@ -43,6 +43,11 @@ const sup::dto::uint32 kInvalidInstructionIndex = std::numeric_limits<sup::dto::
 class IJobInfoIO
 {
 public:
+  IJobInfoIO() = default;
+  IJobInfoIO(const IJobInfoIO&) = delete;
+  IJobInfoIO(IJobInfoIO&&) = delete;
+  IJobInfoIO& operator=(const IJobInfoIO&) = delete;
+  IJobInfoIO& operator=(IJobInfoIO&&) = delete;
   virtual ~IJobInfoIO();
 
   /**

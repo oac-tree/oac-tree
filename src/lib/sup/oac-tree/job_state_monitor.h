@@ -40,6 +40,11 @@ class Procedure;
 class JobStateMonitor
 {
 public:
+  JobStateMonitor() = default;
+  JobStateMonitor(const JobStateMonitor&) = delete;
+  JobStateMonitor(JobStateMonitor&&) = delete;
+  JobStateMonitor& operator=(const JobStateMonitor&) = delete;
+  JobStateMonitor& operator=(JobStateMonitor&&) = delete;
   virtual ~JobStateMonitor();
 
   /**

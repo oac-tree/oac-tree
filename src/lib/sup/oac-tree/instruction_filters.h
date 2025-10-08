@@ -51,6 +51,10 @@ public:
    * should not contain any loops and all indices must be in the expected range.
    */
   explicit AncestorsActiveFilter(std::vector<sup::dto::uint32> parent_indices);
+  AncestorsActiveFilter(const AncestorsActiveFilter&) = default;
+  AncestorsActiveFilter(AncestorsActiveFilter&&) = default;
+  AncestorsActiveFilter& operator=(const AncestorsActiveFilter&) = delete;
+  AncestorsActiveFilter& operator=(AncestorsActiveFilter&&) = delete;
   ~AncestorsActiveFilter();
 
   std::set<sup::dto::uint32> operator()(const std::set<sup::dto::uint32>& input_set) const;

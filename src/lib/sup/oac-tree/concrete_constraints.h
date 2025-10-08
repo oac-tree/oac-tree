@@ -38,6 +38,10 @@ class Exists : public IConstraint
 {
 public:
   explicit Exists(const std::string& attr_name);
+  Exists(const Exists&) = delete;
+  Exists(Exists&&) = delete;
+  Exists& operator=(const Exists&) = delete;
+  Exists& operator=(Exists&&) = delete;
   ~Exists() override;
 
   std::unique_ptr<IConstraint> Clone() const override;
@@ -55,6 +59,10 @@ class FixedType : public IConstraint
 {
 public:
   explicit FixedType(const std::string& attr_name, const sup::dto::AnyType& attr_type);
+  FixedType(const FixedType&) = delete;
+  FixedType(FixedType&&) = delete;
+  FixedType& operator=(const FixedType&) = delete;
+  FixedType& operator=(FixedType&&) = delete;
   ~FixedType() override;
 
   std::unique_ptr<IConstraint> Clone() const override;
@@ -74,6 +82,10 @@ class Xor : public IConstraint
 {
 public:
   explicit Xor(Constraint&& left, Constraint&& right);
+  Xor(const Xor&) = delete;
+  Xor(Xor&&) = delete;
+  Xor& operator=(const Xor&) = delete;
+  Xor& operator=(Xor&&) = delete;
   ~Xor() override;
 
   std::unique_ptr<IConstraint> Clone() const override;
@@ -93,6 +105,10 @@ class Or : public IConstraint
 {
 public:
   explicit Or(Constraint&& left, Constraint&& right);
+  Or(const Or&) = delete;
+  Or(Or&&) = delete;
+  Or& operator=(const Or&) = delete;
+  Or& operator=(Or&&) = delete;
   ~Or() override;
 
   std::unique_ptr<IConstraint> Clone() const override;
@@ -112,6 +128,10 @@ class And : public IConstraint
 {
 public:
   explicit And(Constraint&& left, Constraint&& right);
+  And(const And&) = delete;
+  And(And&&) = delete;
+  And& operator=(const And&) = delete;
+  And& operator=(And&&) = delete;
   ~And() override;
 
   std::unique_ptr<IConstraint> Clone() const override;
@@ -131,6 +151,10 @@ class Not : public IConstraint
 {
 public:
   explicit Not(Constraint&& child);
+  Not(const Not&) = delete;
+  Not(Not&&) = delete;
+  Not& operator=(const Not&) = delete;
+  Not& operator=(Not&&) = delete;
   ~Not() override;
 
   std::unique_ptr<IConstraint> Clone() const override;

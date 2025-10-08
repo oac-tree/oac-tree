@@ -66,6 +66,10 @@ class ProcedurePreamble
 {
 public:
   ProcedurePreamble();
+  ProcedurePreamble(const ProcedurePreamble&) = delete;
+  ProcedurePreamble(ProcedurePreamble&&) = delete;
+  ProcedurePreamble& operator=(const ProcedurePreamble&) = delete;
+  ProcedurePreamble& operator=(ProcedurePreamble&&) = delete;
   ~ProcedurePreamble();
 
   /**

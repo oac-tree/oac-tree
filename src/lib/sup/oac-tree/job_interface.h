@@ -33,7 +33,12 @@ namespace oac_tree
 class JobInterface : public UserInterface, public JobStateMonitor
 {
 public:
-  virtual ~JobInterface();
+  JobInterface() = default;
+  JobInterface(const JobInterface&) = delete;
+  JobInterface(JobInterface&&) = delete;
+  JobInterface& operator=(const JobInterface&) = delete;
+  JobInterface& operator=(JobInterface&&) = delete;
+  virtual ~JobInterface() override;
 };
 
 }  // namespace oac_tree

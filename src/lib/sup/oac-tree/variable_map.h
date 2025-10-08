@@ -45,6 +45,10 @@ class VariableMap
 public:
   using VariableIndexMap = std::unordered_map<std::string, sup::dto::uint32>;
 
+  VariableMap(const VariableMap&) = delete;
+  VariableMap(VariableMap&&) = delete;
+  VariableMap& operator=(const VariableMap&) = delete;
+  VariableMap& operator=(VariableMap&&) = delete;
   /**
    * @brief Construct a VariableMap object from the given Workspace.
    *

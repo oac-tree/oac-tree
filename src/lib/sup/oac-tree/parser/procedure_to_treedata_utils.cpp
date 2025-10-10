@@ -31,21 +31,14 @@
 #include <sup/xml/tree_data.h>
 
 #include <memory>
-#include <set>
 
 namespace internal
 {
 using namespace sup::oac_tree;
 
-template <typename T, typename... Args>
-std::unique_ptr<T> make_unique(Args&&... args)
-{
-  return std::make_unique<T>(std::forward<Args>(args)...);
-}
-
 std::unique_ptr<sup::xml::TreeData> CreateTreeData(const Instruction* instruction)
 {
-  auto tree_data = internal::make_unique<sup::xml::TreeData>(instruction->GetType());
+  auto tree_data = std::make_unique<sup::xml::TreeData>(instruction->GetType());
   for (const auto& [attr_name, attr_value] : instruction->GetStringAttributes())
   {
     tree_data->AddAttribute(attr_name, attr_value);
@@ -68,7 +61,7 @@ void AddPreamble(sup::xml::TreeData& parent, const ProcedurePreamble& preamble)
   for (auto& type_registration : preamble.GetTypeRegistrations())
   {
     auto tree_data =
-        internal::make_unique<sup::xml::TreeData>(Constants::REGISTERTYPE_ELEMENT_NAME);
+        std::make_unique<sup::xml::TreeData>(Constants::REGISTERTYPE_ELEMENT_NAME);
     auto attr_name = type_registration.GetRegistrationMode() == TypeRegistrationInfo::kJSONFile
                          ? Constants::REGISTERTYPE_JSON_FILE_ATTRIBUTE
                          : Constants::REGISTERTYPE_JSON_TYPE_ATTRIBUTE;
@@ -78,7 +71,7 @@ void AddPreamble(sup::xml::TreeData& parent, const ProcedurePreamble& preamble)
   for (auto& plugin_path : preamble.GetPluginPaths())
   {
     auto tree_data =
-        internal::make_unique<sup::xml::TreeData>(Constants::PLUGIN_ELEMENT_NAME);
+        std::make_unique<sup::xml::TreeData>(Constants::PLUGIN_ELEMENT_NAME);
     tree_data->SetContent(plugin_path);
     parent.AddChild(*tree_data);
   }
@@ -92,7 +85,7 @@ namespace oac_tree
 {
 std::unique_ptr<sup::xml::TreeData> ToTreeData(const Procedure& procedure)
 {
-  auto result = internal::make_unique<sup::xml::TreeData>(Constants::PROCEDURE_ELEMENT_NAME);
+  auto result = std::make_unique<sup::xml::TreeData>(Constants::PROCEDURE_ELEMENT_NAME);
   internal::AddPreamble(*result, procedure.GetPreamble());
   for (auto instruction : procedure.GetTopInstructions())
   {
@@ -104,7 +97,7 @@ std::unique_ptr<sup::xml::TreeData> ToTreeData(const Procedure& procedure)
 
 std::unique_ptr<sup::xml::TreeData> ToTreeData(const Variable& variable)
 {
-  auto result = internal::make_unique<sup::xml::TreeData>(variable.GetType());
+  auto result = std::make_unique<sup::xml::TreeData>(variable.GetType());
   for (const auto& [attr_name, attr_value] : variable.GetStringAttributes())
   {
     result->AddAttribute(attr_name, attr_value);
@@ -114,7 +107,7 @@ std::unique_ptr<sup::xml::TreeData> ToTreeData(const Variable& variable)
 
 std::unique_ptr<sup::xml::TreeData> ToTreeData(const Workspace& workspace)
 {
-  auto result = internal::make_unique<sup::xml::TreeData>(Constants::WORKSPACE_ELEMENT_NAME);
+  auto result = std::make_unique<sup::xml::TreeData>(Constants::WORKSPACE_ELEMENT_NAME);
   for (auto variable : workspace.GetVariables())
   {
     result->AddChild(*ToTreeData(*variable));

@@ -41,7 +41,7 @@ bool UnloadLibrary(LibraryHandle handle);
 
 bool CreateDir(const std::string& pathname, unsigned mode = 0755);
 
-const std::string GetEnvironmentVariable(const std::string& varname);
+std::string GetEnvironmentVariable(const std::string& varname);
 
 unsigned long long GetNanosecsSinceEpoch();
 

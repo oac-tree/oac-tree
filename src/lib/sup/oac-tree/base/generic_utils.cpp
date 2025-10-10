@@ -117,7 +117,7 @@ bool CreateDir(const std::string& pathname, unsigned mode)
   return false;
 }
 
-const std::string GetEnvironmentVariable(const std::string& varname)
+std::string GetEnvironmentVariable(const std::string& varname)
 {
   const char* result_c = getenv(varname.c_str());
   return result_c ? std::string(result_c) : std::string{};

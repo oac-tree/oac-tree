@@ -151,7 +151,7 @@ class StringAttributeNameMatcher
 public:
   explicit StringAttributeNameMatcher(std::string name) : m_name{std::move(name)} {}
   ~StringAttributeNameMatcher() = default;
-  bool operator()(const StringAttribute& str_attr) { return str_attr.first == m_name; }
+  bool operator()(const StringAttribute& str_attr) const { return str_attr.first == m_name; }
 private:
   const std::string m_name;
 };

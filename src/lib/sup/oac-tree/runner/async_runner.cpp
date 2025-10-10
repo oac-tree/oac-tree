@@ -258,7 +258,7 @@ AsyncRunner::Action AsyncRunner::HandleFinished(JobCommand command)
 
 void AsyncRunner::ExecutionLoop()
 {
-  while (m_keep_alive)
+  while (m_keep_alive.load())
   {
     auto command = m_command_queue.WaitForNextCommand();
     auto action = HandleCommand(command);

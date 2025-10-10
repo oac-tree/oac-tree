@@ -21,6 +21,7 @@
  ******************************************************************************/
 
 #include "wait.h"
+#include <sup/dto/basic_scalar_types.h>
 
 #include <sup/oac-tree/constants.h>
 #include <sup/oac-tree/instruction_utils.h>
@@ -29,6 +30,7 @@
 #include <sup/oac-tree/user_interface.h>
 
 #include <chrono>
+#include <cstdint>
 
 namespace sup
 {
@@ -63,7 +65,8 @@ bool Wait::InitHook(UserInterface& ui, Workspace& ws)
   {
     return false;
   }
-  m_finish = utils::GetNanosecsSinceEpoch() + timeout_ns;
+  m_finish =
+      static_cast<dto::int64>(utils::GetNanosecsSinceEpoch()) + static_cast<dto::int64>(timeout_ns);
   return true;
 }
 
@@ -71,7 +74,7 @@ ExecutionStatus Wait::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   (void)ui;
   (void)ws;
-  auto now = utils::GetNanosecsSinceEpoch();
+  auto now = static_cast<dto::int64>(utils::GetNanosecsSinceEpoch());
   if (m_blocking)
   {
     if (now < m_finish)

@@ -20,6 +20,7 @@
  * of the distribution package.
  ******************************************************************************/
 
+#include <sup/dto/basic_scalar_types.h>
 #include <sup/oac-tree/instruction_utils.h>
 
 #include <sup/oac-tree/constants.h>
@@ -41,7 +42,7 @@ bool ConvertToTimeoutNanoseconds(sup::dto::float64 timeout_sec, sup::dto::uint64
   {
     return false;
   }
-  timeout_ns = std::lround(timeout_sec * 1e9);
+  timeout_ns = static_cast<dto::uint64>(std::lround(timeout_sec * 1e9));
   return true;
 }
 

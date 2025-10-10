@@ -20,6 +20,7 @@
  * of the distribution package.
  ******************************************************************************/
 
+#include <sup/dto/basic_scalar_types.h>
 #include <sup/oac-tree/exceptions.h>
 #include <sup/oac-tree/variable_map.h>
 #include <sup/oac-tree/workspace.h>
@@ -56,7 +57,7 @@ const VariableMap::VariableIndexMap& VariableMap::GetVariableIndexMap() const
 
 sup::dto::uint32 VariableMap::GetNumberOfVariables() const
 {
-  return m_variable_map.size();
+  return static_cast<dto::uint32>(m_variable_map.size());
 }
 
 void VariableMap::InitializeMap(const Workspace& workspace)

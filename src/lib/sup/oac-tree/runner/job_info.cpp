@@ -20,6 +20,7 @@
  * of the distribution package.
  ******************************************************************************/
 
+#include <sup/dto/basic_scalar_types.h>
 #include <sup/oac-tree/job_info.h>
 
 #include <sup/oac-tree/instruction_info_utils.h>
@@ -62,12 +63,12 @@ std::string JobInfo::GetProcedureName() const
 
 sup::dto::uint32 JobInfo::GetNumberOfVariables() const
 {
-  return m_ws.GetNumberOfVariables();
+  return static_cast<sup::dto::uint32>(m_ws.GetNumberOfVariables());
 }
 
 sup::dto::uint32 JobInfo::GetNumberOfInstructions() const
 {
-  return m_ordered_instr.size();
+  return static_cast<dto::uint32>(m_ordered_instr.size());
 }
 
 const WorkspaceInfo& JobInfo::GetWorkspaceInfo() const

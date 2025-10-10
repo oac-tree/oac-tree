@@ -20,6 +20,7 @@
  * of the distribution package.
  ******************************************************************************/
 
+#include <sup/dto/basic_scalar_types.h>
 #include <sup/oac-tree/instruction_map.h>
 
 #include <sup/oac-tree/exceptions.h>
@@ -59,7 +60,7 @@ const InstructionMap::InstructionIndexMap& InstructionMap::GetInstructionIndexMa
 
 sup::dto::uint32 InstructionMap::GetNumberOfInstructions() const
 {
-  return m_instruction_map.size();
+  return static_cast<dto::uint32>(m_instruction_map.size());
 }
 
 void InstructionMap::InitializeMap(const Instruction* root)

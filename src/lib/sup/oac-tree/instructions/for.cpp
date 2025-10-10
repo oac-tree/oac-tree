@@ -74,13 +74,13 @@ ExecutionStatus ForInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& 
     LogWarning(ui, warning_message);
     return ExecutionStatus::FAILURE;
   }
-  size_t max_count = m_array.NumberOfElements();
+  int max_count = static_cast<int>(m_array.NumberOfElements());
   if (max_count == 0)
   {
     return ExecutionStatus::SUCCESS;
   }
   if (!SetValueFromAttributeName(*this, ws, ui, Constants::ELEMENT_VARIABLE_NAME_ATTRIBUTE_NAME,
-                                 m_array[m_count]))
+                                 m_array[static_cast<size_t>(m_count)]))
   {
     std::string warning_message = InstructionWarningProlog(*this) +
       "Could not write current array value to element variable with name [" +

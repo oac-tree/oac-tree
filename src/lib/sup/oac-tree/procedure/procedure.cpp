@@ -39,6 +39,7 @@
 #include <sup/dto/anyvalue.h>
 #include <sup/dto/anytype_helper.h>
 #include <sup/dto/json_type_parser.h>
+#include <cstddef>
 
 namespace
 {
@@ -134,7 +135,7 @@ void Procedure::PushInstruction(std::unique_ptr<Instruction>&& instruction)
 
 bool Procedure::InsertInstruction(std::unique_ptr<Instruction>&& instruction, int index)
 {
-  if (index < 0 || index > m_instructions.size())
+  if (index < 0 || index > static_cast<int>(m_instructions.size()))
   {
     return false;
   }
@@ -144,7 +145,7 @@ bool Procedure::InsertInstruction(std::unique_ptr<Instruction>&& instruction, in
 
 std::unique_ptr<Instruction> Procedure::TakeInstruction(int index)
 {
-  if (index < 0 || index >= m_instructions.size())
+  if (index < 0 || index >= static_cast<int>(m_instructions.size()))
   {
     return nullptr;
   }
@@ -335,7 +336,7 @@ sup::dto::int64 TickTimeoutNs(const Procedure& procedure)
     auto tick_timeout = procedure.GetAttributeValue<double>(kTickTimeoutAttributeName);
     (void)instruction_utils::ConvertToTimeoutNanoseconds(tick_timeout, tick_timeout_ns);
   }
-  return tick_timeout_ns;
+  return static_cast<sup::dto::int64>(tick_timeout_ns);
 }
 
 sup::dto::int64 TimingAccuracyNs(const Procedure& procedure)
@@ -346,7 +347,7 @@ sup::dto::int64 TimingAccuracyNs(const Procedure& procedure)
     auto timing_accuracy = procedure.GetAttributeValue<double>(kTimingAccuracyAttributeName);
     (void)instruction_utils::ConvertToTimeoutNanoseconds(timing_accuracy, timing_accuracy_ns);
   }
-  return timing_accuracy_ns;
+  return static_cast<sup::dto::int64>(timing_accuracy_ns);
 }
 
 std::string GetProcedureName(const Procedure& procedure)

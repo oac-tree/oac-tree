@@ -76,7 +76,9 @@ bool WaitForVariables::InitHook(UserInterface& ui, Workspace& ws)
   {
     return false;
   }
-  m_finish = utils::GetNanosecsSinceEpoch() + timeout_ns;
+  m_finish =
+    static_cast<dto::int64>(utils::GetNanosecsSinceEpoch()) + static_cast<dto::int64>(timeout_ns);
+
   if (!GetAttributeValueAs(Constants::BLOCKING_ATTRIBUTE_NAME, ws, ui, m_blocking))
   {
     return false;
@@ -101,7 +103,7 @@ ExecutionStatus WaitForVariables::ExecuteSingleImpl(UserInterface& ui, Workspace
   {
     return HandleFinishedStatus(ExecutionStatus::SUCCESS);
   }
-  auto now = utils::GetNanosecsSinceEpoch();
+  auto now = static_cast<dto::int64>(utils::GetNanosecsSinceEpoch());
   if (now > m_finish)
   {
     LogUnavailableVars(ui);
@@ -133,7 +135,7 @@ ExecutionStatus WaitForVariables::ExecuteBlocking(UserInterface&, Workspace& ws)
 {
   while (true)
   {
-    auto now = utils::GetNanosecsSinceEpoch();
+    auto now = static_cast<dto::int64>(utils::GetNanosecsSinceEpoch());
     if (now > m_finish)
     {
       return HandleFinishedStatus(ExecutionStatus::FAILURE);

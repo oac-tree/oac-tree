@@ -96,7 +96,7 @@ ExecutionStatus UserChoice::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
     m_choice = choice;
     return ExecutionStatus::NOT_FINISHED;  // TODO: remove this if we no longer need this...
   }
-  auto selected = ChildInstructions()[static_cast<size_t>(m_choice)];
+  auto selected = ChildInstructions()[static_cast<std::size_t>(m_choice)];
   selected->ExecuteSingle(ui, ws);
   return selected->GetStatus();
 }

@@ -80,7 +80,7 @@ ExecutionStatus ForInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& 
     return ExecutionStatus::SUCCESS;
   }
   if (!SetValueFromAttributeName(*this, ws, ui, Constants::ELEMENT_VARIABLE_NAME_ATTRIBUTE_NAME,
-                                 m_array[static_cast<size_t>(m_count)]))
+                                 m_array[static_cast<std::size_t>(m_count)]))
   {
     std::string warning_message = InstructionWarningProlog(*this) +
       "Could not write current array value to element variable with name [" +

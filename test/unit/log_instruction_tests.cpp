@@ -72,7 +72,7 @@ static const std::string LOGVARIABLEPROCEDURE = R"RAW(<?xml version="1.0" encodi
 class LogInstructionTest : public ::testing::Test
 {
 public:
-  size_t NumberOfLogEntries() const;
+  std::size_t NumberOfLogEntries() const;
   std::pair<int, std::string> LastLogEntry() const;
 
 protected:
@@ -289,7 +289,7 @@ R"RAW(
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
 }
 
-size_t LogInstructionTest::NumberOfLogEntries() const
+std::size_t LogInstructionTest::NumberOfLogEntries() const
 {
   return ui.m_log_entries.size();
 }

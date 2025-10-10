@@ -81,7 +81,7 @@ std::vector<std::string> VariableNamesFromAttribute(const Instruction& instr,
   }
   auto var_names_attr = instr.GetAttributeString(attr_name);
   std::vector<std::string> result;
-  size_t pos = var_names_attr.find_first_not_of(DefaultSettings::VARNAME_DELIMITER);
+  std::size_t pos = var_names_attr.find_first_not_of(DefaultSettings::VARNAME_DELIMITER);
   while (pos != std::string::npos)
   {
     auto next = var_names_attr.find_first_of(DefaultSettings::VARNAME_DELIMITER, pos);

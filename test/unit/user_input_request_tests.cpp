@@ -184,7 +184,7 @@ TEST_F(UserInputRequestTest, ParseUserChoiceRequest)
     InputRequestType request_type = InputRequestType::kUserChoice;
     std::vector<std::string> options{ "one", "two", "three" };
     sup::dto::AnyValue options_av{options.size(), sup::dto::StringType};
-    for (size_t idx = 0; idx < options.size(); ++idx)
+    for (std::size_t idx = 0; idx < options.size(); ++idx)
     {
       options_av[idx] = options[idx];
     }
@@ -207,7 +207,7 @@ TEST_F(UserInputRequestTest, ParseUserChoiceRequest)
     InputRequestType request_type = InputRequestType::kUserValue;
     std::vector<std::string> options{ "one", "two", "three" };
     sup::dto::AnyValue options_av{options.size(), sup::dto::StringType};
-    for (size_t idx = 0; idx < options.size(); ++idx)
+    for (std::size_t idx = 0; idx < options.size(); ++idx)
     {
       options_av[idx] = options[idx];
     }
@@ -278,7 +278,7 @@ TEST_F(UserInputRequestTest, ParseUserChoiceRequest)
     InputRequestType request_type = InputRequestType::kUserChoice;
     std::vector<std::string> options{ "one", "two", "three" };
     sup::dto::AnyValue options_av{options.size(), sup::dto::StringType};
-    for (size_t idx = 0; idx < options.size(); ++idx)
+    for (std::size_t idx = 0; idx < options.size(); ++idx)
     {
       options_av[idx] = options[idx];
     }

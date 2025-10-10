@@ -100,14 +100,14 @@ std::vector<sup::dto::uint32> GetParentIndices(const InstructionInfo& instr_tree
   std::vector<sup::dto::uint32> parent_indices(n_instructions, 0);
   std::deque<const InstructionInfo*> stack;
   stack.push_back(std::addressof(instr_tree));
-  parent_indices[static_cast<size_t>(instr_tree.GetIndex())] = kIsRootIndex;  // Root node.
+  parent_indices[static_cast<std::size_t>(instr_tree.GetIndex())] = kIsRootIndex;  // Root node.
   while (!stack.empty())
   {
     auto node = stack.back();
     stack.pop_back();
     for (const auto* child : node->Children())
     {
-      parent_indices[static_cast<size_t>(child->GetIndex())] = node->GetIndex();
+      parent_indices[static_cast<std::size_t>(child->GetIndex())] = node->GetIndex();
       stack.push_back(child);
     }
   }

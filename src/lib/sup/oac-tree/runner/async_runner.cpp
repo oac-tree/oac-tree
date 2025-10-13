@@ -39,7 +39,7 @@ AsyncRunner::AsyncRunner(Procedure& proc, UserInterface& ui, JobStateMonitor& st
   , m_command_queue{}
   , m_command_handler{}
   , m_loop_future{}
-  , m_keep_alive{std::atomic_bool{true}}
+  , m_keep_alive{true}
 {
   SetState(JobState::kInitial);
   Launch();

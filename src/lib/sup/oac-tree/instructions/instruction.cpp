@@ -55,7 +55,7 @@ Instruction::Instruction(const std::string &type)
     : m_type{type}
     , m_status{ExecutionStatus::NOT_STARTED}
     , m_status_before{ExecutionStatus::NOT_STARTED}
-    , m_halt_requested{std::atomic_bool{false}}
+    , m_halt_requested{false}
     , m_attribute_handler{}
     , m_status_mutex{}
     , m_breakpoint_state{Breakpoint::kUnset}
@@ -228,7 +228,6 @@ std::unique_ptr<Instruction> Instruction::TakeInstruction(int index)
 {
   return TakeInstructionImpl(index);
 }
-
 bool Instruction::IsHaltRequested() const
 {
   return m_halt_requested.load();

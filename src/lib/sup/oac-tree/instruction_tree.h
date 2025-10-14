@@ -41,9 +41,9 @@ public:
   explicit InstructionTree(const Instruction* instruction);
 
   InstructionTree(const InstructionTree&) = default;
-  InstructionTree(InstructionTree&&) = delete;
+  InstructionTree(InstructionTree&&) = default;
   InstructionTree& operator=(const InstructionTree&) = default;
-  InstructionTree& operator=(InstructionTree&&) = delete;
+  InstructionTree& operator=(InstructionTree&&) = default;
   ~InstructionTree();
 
   bool IsEmpty() const;

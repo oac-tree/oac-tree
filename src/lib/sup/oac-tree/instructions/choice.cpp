@@ -143,10 +143,10 @@ namespace
 bool GetIndexListFromVariable(std::vector<std::size_t>& list, const sup::dto::AnyValue& var)
 {
   std::vector<std::size_t> result;
-  std::size_t idx;
+  std::uint64_t idx;
   if (sup::dto::IsArrayValue(var))
   {
-    for (std::size_t i = 0; i < var.NumberOfElements(); ++i)
+    for (auto i = 0UL; i < var.NumberOfElements(); ++i)
     {
       if (!var[i].As(idx))
       {

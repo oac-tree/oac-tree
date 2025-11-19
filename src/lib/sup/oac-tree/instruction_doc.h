@@ -23,6 +23,7 @@
 #ifndef SUP_OAC_TREE_INSTRUCTION_DOC_H_
 #define SUP_OAC_TREE_INSTRUCTION_DOC_H_
 
+#include <map>
 #include <string>
 
 namespace sup
@@ -38,6 +39,7 @@ class InstructionDoc
 {
 public:
   InstructionDoc();
+  explicit InstructionDoc(std::map<std::string, std::string> doc_map);
   ~InstructionDoc();
 
   // Copy/move construction/assignment
@@ -46,11 +48,10 @@ public:
   InstructionDoc& operator=(const InstructionDoc& other) = default;
   InstructionDoc& operator=(InstructionDoc&& other) noexcept = default;
 
-  std::string GetDescription() const;
-  void SetDescription(const std::string& description);
+  std::string GetField(const std::string& field_name) const;
 
 private:
-  std::string m_description;
+  std::map<std::string, std::string> m_doc_map;
 };
 
 }  // namespace oac_tree

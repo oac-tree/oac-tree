@@ -28,19 +28,23 @@ namespace oac_tree
 {
 
 InstructionDoc::InstructionDoc()
-  : m_description{}
+  : InstructionDoc{std::map<std::string, std::string>{}}
+{}
+
+InstructionDoc::InstructionDoc(std::map<std::string, std::string> doc_map)
+  : m_doc_map{std::move(doc_map)}
 {}
 
 InstructionDoc::~InstructionDoc() = default;
 
-std::string InstructionDoc::GetDescription() const
+std::string InstructionDoc::GetField(const std::string& field_name) const
 {
-  return m_description;
-}
-
-void InstructionDoc::SetDescription(const std::string& description)
-{
-  m_description = description;
+  auto iter = m_doc_map.find(field_name);
+  if (iter == m_doc_map.end())
+  {
+    return {};
+  }
+  return iter->second;
 }
 
 }  // namespace oac_tree

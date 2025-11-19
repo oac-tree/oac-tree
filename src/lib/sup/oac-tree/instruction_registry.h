@@ -110,6 +110,7 @@ InstructionRegistry &GlobalInstructionRegistry();
  * @brief Template function for registering instructions to a registry.
  *
  * @param registry Registry where to register the instruction.
+ * @param doc Documentation object for the instruction.
  *
  * @note The registered instruction template parameter T needs to
  * define its typename as a static std::string member 'Type'
@@ -128,10 +129,29 @@ InstructionRegistry &GlobalInstructionRegistry();
    // Define the typename for the instruction
    const std::string MyInstruction::Type = "MyInstruction";
 
+   // Define a documentation object
+   InstructionDoc my_doc{{
+    { Constants::INSTR_DOC_DESCRIPTION, "Description for this instruction"}
+   }};
+
    // Register the instruction
    static bool _MyInstructionRegistered =
-     RegisterInstruction<MyInstruction>(my_instruction_registry);
+     RegisterInstruction<MyInstruction>(my_instruction_registry, my_doc);
    @endcode
+ */
+template <class T>
+bool RegisterInstruction(InstructionRegistry& registry, InstructionDoc doc)
+{
+  auto constructor = []() { return static_cast<Instruction *>(new T()); };
+  return registry.RegisterInstruction(T::Type, constructor, std::move(doc));
+}
+
+/**
+ * @brief Template function for registering instructions to a registry.
+ *
+ * @param registry Registry where to register the instruction.
+ *
+ * @note This is equivalent to calling RegisterInstruction<T>(registry, InstructionDoc{});
  */
 template <class T>
 bool RegisterInstruction(InstructionRegistry& registry)
@@ -142,6 +162,8 @@ bool RegisterInstruction(InstructionRegistry& registry)
 
 /**
  * @brief Template function for registering instructions to the global registry.
+ *
+ * @param doc Documentation object for the instruction.
  *
  * @note The registered instruction template parameter T needs to
  * define its typename as a static std::string member 'Type'
@@ -160,6 +182,17 @@ bool RegisterInstruction(InstructionRegistry& registry)
    // Register the instruction for serialization
    static bool _MyInstructionRegistered = RegisterInstruction<MyInstruction>();
    @endcode
+ */
+template <class T>
+bool RegisterGlobalInstruction(InstructionDoc doc)
+{
+  return RegisterInstruction<T>(GlobalInstructionRegistry(), std::move(doc));
+}
+
+/**
+ * @brief Template function for registering instructions to the global registry.
+ *
+ * @note This is equivalent to calling RegisterGlobalInstruction<T>(InstructionDoc{});
  */
 template <class T>
 bool RegisterGlobalInstruction()

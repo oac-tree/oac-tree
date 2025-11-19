@@ -37,14 +37,20 @@ InstructionDoc::InstructionDoc(std::map<std::string, std::string> doc_map)
 
 InstructionDoc::~InstructionDoc() = default;
 
-std::string InstructionDoc::GetField(const std::string& field_name) const
+std::string InstructionDoc::GetField(const std::string& field_name,
+                                     const std::string& default_val) const
 {
   auto iter = m_doc_map.find(field_name);
   if (iter == m_doc_map.end())
   {
-    return {};
+    return default_val;
   }
   return iter->second;
+}
+
+std::string InstructionDoc::GetField(const std::string& field_name) const
+{
+  return GetField(field_name, {});
 }
 
 }  // namespace oac_tree

@@ -147,6 +147,9 @@ const std::string VALUE_ATTRIBUTE_NAME = "value";
 const std::string IS_DYNAMIC_TYPE_ATTRIBUTE_NAME = "dynamicType";
 const std::string PRETTY_JSON_ATTRIBUTE_NAME = "pretty";
 
+// Instruction doc field names
+const std::string INSTR_DOC_DESCRIPTION = "description";
+
 // Instruction info node fields
 const std::string kInstructionInfoNodeType = "sup::instructionNodeInfoType/v1.0";
 const std::string kInstructionInfoNodeTypeField = "type";

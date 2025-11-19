@@ -48,6 +48,21 @@ public:
   InstructionDoc& operator=(const InstructionDoc& other) = default;
   InstructionDoc& operator=(InstructionDoc&& other) noexcept = default;
 
+  /**
+   * @brief Get the string entry referred to by a specific key.
+   *
+   * @param field_name Key to look for.
+   * @param default_val Default value to return when key is not present.
+   * @return Value registered under the given key or default_val.
+   */
+  std::string GetField(const std::string& field_name, const std::string& default_val) const;
+
+  /**
+   * @brief Get the string entry referred to by a specific key.
+   *
+   * @param field_name Key to look for.
+   * @return Value registered under the given key or empty string.
+   */
   std::string GetField(const std::string& field_name) const;
 
 private:

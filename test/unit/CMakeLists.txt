@@ -38,6 +38,7 @@ target_sources(${unit-tests}
     include_tests.cpp
     increment_tests.cpp
     input_tests.cpp
+    instruction_doc_tests.cpp
     instruction_filters_tests.cpp
     instruction_info_tests.cpp
     instruction_map_tests.cpp

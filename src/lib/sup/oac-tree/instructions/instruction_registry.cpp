@@ -86,35 +86,43 @@ InstructionRegistry& GlobalInstructionRegistry()
 
 bool InstructionRegistry::RegisterInstruction(std::string name, InstructionConstructor constructor)
 {
-  auto it = m_instruction_map.find(name);
-  if (it != m_instruction_map.end())
+  // Create default doc object
+  return RegisterInstruction(std::move(name), constructor, InstructionDoc{});
+}
+
+bool InstructionRegistry::RegisterInstruction(std::string name, InstructionConstructor constructor,
+                                              InstructionDoc doc)
+{
+  (void)doc;
+  auto it = m_instruction_entries.find(name);
+  if (it != m_instruction_entries.end())
   {
     std::string error_message =
       "InstructionRegistry::RegisterInstruction(): trying to register instruction "
       "with name [" + name + "] twice";
     throw InvalidOperationException(error_message);
   }
-  (void)m_instruction_map.insert(it, {name, constructor});
+  (void)m_instruction_entries.emplace(name, InstructionEntry{constructor, std::move(doc)});
   return true;
 }
 
 std::unique_ptr<Instruction> InstructionRegistry::Create(const std::string& name)
 {
-  auto entry = m_instruction_map.find(name);
-  if (entry == m_instruction_map.end())
+  auto entry = m_instruction_entries.find(name);
+  if (entry == m_instruction_entries.end())
   {
     std::string error_message =
       "InstructionRegistry::Create(): trying to create unregistered instruction "
       "with name [" + name + "]";
     throw InvalidOperationException(error_message);
   }
-  return std::unique_ptr<Instruction>(entry->second());
+  return std::unique_ptr<Instruction>(entry->second.ctor());
 }
 
 std::vector<std::string> InstructionRegistry::RegisteredInstructionNames() const
 {
   std::vector<std::string> result;
-  for (const auto& [instruction_name, _] : m_instruction_map)
+  for (const auto& [instruction_name, _] : m_instruction_entries)
   {
     result.push_back(instruction_name);
   }
@@ -123,8 +131,8 @@ std::vector<std::string> InstructionRegistry::RegisteredInstructionNames() const
 
 bool InstructionRegistry::IsRegisteredInstructionName(const std::string& name) const
 {
-  auto it = m_instruction_map.find(name);
-  return it != m_instruction_map.end();
+  auto it = m_instruction_entries.find(name);
+  return it != m_instruction_entries.end();
 }
 
 void InitInstructionRegistry(InstructionRegistry& registry)

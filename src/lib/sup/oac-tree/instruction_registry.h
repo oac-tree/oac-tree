@@ -23,6 +23,8 @@
 #ifndef SUP_OAC_TREE_INSTRUCTION_REGISTRY_H_
 #define SUP_OAC_TREE_INSTRUCTION_REGISTRY_H_
 
+#include <sup/oac-tree/instruction_doc.h>
+
 #include <map>
 #include <memory>
 #include <string>
@@ -47,12 +49,22 @@ public:
   InstructionRegistry() = default;
 
   /**
-   * @brief Register an instruction.
+   * @brief Register an instruction without a documentation object.
    *
    * @param name Name under which the instruction is to be registered.
    * @param constructor Function that instantiates the instruction.
    */
   bool RegisterInstruction(std::string name, InstructionConstructor constructor);
+
+  /**
+   * @brief Register an instruction.
+   *
+   * @param name Name under which the instruction is to be registered.
+   * @param constructor Function that instantiates the instruction.
+   * @param doc Documentation object for the instruction.
+   */
+  bool RegisterInstruction(std::string name, InstructionConstructor constructor,
+                           InstructionDoc doc);
 
   /**
    * @brief Instantiate an instruction with the given name.
@@ -72,11 +84,15 @@ public:
   bool IsRegisteredInstructionName(const std::string& name) const;
 
 private:
+  struct InstructionEntry
+  {
+    InstructionConstructor ctor;
+    InstructionDoc doc;
+  };
   /**
    * @brief Map between instruction typename and its constructor.
    */
-  std::map<std::string, InstructionConstructor> m_instruction_map;
-
+  std::map<std::string, InstructionEntry> m_instruction_entries;
 };
 
 InstructionRegistry &GlobalInstructionRegistry();

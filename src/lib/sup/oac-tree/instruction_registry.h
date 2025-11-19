@@ -70,8 +70,17 @@ public:
    * @brief Instantiate an instruction with the given name.
    *
    * @param name Name under which the instruction was registered.
+   * @throws InvalidOperationException when the instruction was not found.
    */
   std::unique_ptr<Instruction> Create(const std::string& name);
+
+  /**
+   * @brief Get documentation object for the given instruction.
+   *
+   * @param name Name under which the instruction was registered.
+   * @throws InvalidOperationException when the instruction was not found.
+   */
+  InstructionDoc GetDocumentation(const std::string& name);
 
   /**
    * @brief List names of registered instructions.

@@ -119,6 +119,19 @@ std::unique_ptr<Instruction> InstructionRegistry::Create(const std::string& name
   return std::unique_ptr<Instruction>(entry->second.ctor());
 }
 
+InstructionDoc InstructionRegistry::GetDocumentation(const std::string& name)
+{
+  auto entry = m_instruction_entries.find(name);
+  if (entry == m_instruction_entries.end())
+  {
+    std::string error_message =
+      "InstructionRegistry::GetDocumentation(): instruction "
+      "with name [" + name + "] not found";
+    throw InvalidOperationException(error_message);
+  }
+  return entry->second.doc;
+}
+
 std::vector<std::string> InstructionRegistry::RegisteredInstructionNames() const
 {
   std::vector<std::string> result;

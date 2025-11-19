@@ -46,6 +46,7 @@ install(FILES
   i_job_info_io.h
   i_job.h
   i_user_input_future.h
+  instruction_doc.h
   instruction_filters.h
   instruction_info_utils.h
   instruction_info.h

@@ -1,0 +1,60 @@
+/******************************************************************************
+ * $HeadURL: $
+ * $Id: $
+ *
+ * Project       : SUP - oac-tree
+ *
+ * Description   : oac-tree for operational procedures
+ *
+ * Author        : Walter Van Herck (IO)
+ *
+ * Copyright (c) : 2010-2025 ITER Organization,
+ *                 CS 90 046
+ *                 13067 St. Paul-lez-Durance Cedex
+ *                 France
+ * SPDX-License-Identifier: MIT
+ *
+ * This file is part of ITER CODAC software.
+ * For the terms and conditions of redistribution or use of this software
+ * refer to the file LICENSE located in the top level directory
+ * of the distribution package.
+ ******************************************************************************/
+
+#ifndef SUP_OAC_TREE_INSTRUCTION_DOC_H_
+#define SUP_OAC_TREE_INSTRUCTION_DOC_H_
+
+#include <string>
+
+namespace sup
+{
+namespace oac_tree
+{
+/**
+ * @brief The InstructionDoc class represents basic information about an instruction. Instances of
+ * this class are expected to be registered together with instruction factory functions, to allow
+ * user interfaces to display basic documentation about specific instructions.
+ */
+class InstructionDoc
+{
+public:
+  InstructionDoc();
+  ~InstructionDoc();
+
+  // Copy/move construction/assignment
+  InstructionDoc(const InstructionDoc& other) = default;
+  InstructionDoc(InstructionDoc&& other) noexcept = default;
+  InstructionDoc& operator=(const InstructionDoc& other) = default;
+  InstructionDoc& operator=(InstructionDoc&& other) noexcept = default;
+
+  std::string GetDescription() const;
+  void SetDescription(const std::string& description);
+
+private:
+  std::string m_description;
+};
+
+}  // namespace oac_tree
+
+}  // namespace sup
+
+#endif  // SUP_OAC_TREE_INSTRUCTION_DOC_H_

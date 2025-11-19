@@ -22,6 +22,7 @@
 
 #include <sup/oac-tree/instruction_registry.h>
 
+#include "instruction_doc_objects.h"
 #include "add_element.h"
 #include "add_member.h"
 #include "async.h"
@@ -151,7 +152,7 @@ bool InstructionRegistry::IsRegisteredInstructionName(const std::string& name) c
 void InitInstructionRegistry(InstructionRegistry& registry)
 {
   // Register compound instructions:
-  (void)RegisterInstruction<Choice>(registry);
+  (void)RegisterInstruction<Choice>(registry, kChoiceDoc);
   (void)RegisterInstruction<Fallback>(registry);
   (void)RegisterInstruction<ParallelSequence>(registry);
   (void)RegisterInstruction<ReactiveFallback>(registry);

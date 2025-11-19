@@ -53,6 +53,16 @@ std::string InstructionDoc::GetField(const std::string& field_name) const
   return GetField(field_name, {});
 }
 
+std::vector<std::string> InstructionDoc::GetFieldNames() const
+{
+  std::vector<std::string> result{};
+  for (const auto& [name, _] : m_doc_map)
+  {
+    result.push_back(name);
+  }
+  return result;
+}
+
 }  // namespace oac_tree
 
 }  // namespace sup

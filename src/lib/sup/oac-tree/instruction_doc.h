@@ -25,6 +25,7 @@
 
 #include <map>
 #include <string>
+#include <vector>
 
 namespace sup
 {
@@ -64,6 +65,13 @@ public:
    * @return Value registered under the given key or empty string.
    */
   std::string GetField(const std::string& field_name) const;
+
+  /**
+   * @brief Retrieve a list of all the field names.
+   *
+   * @return List of all fieldnames.
+   */
+  std::vector<std::string> GetFieldNames() const;
 
 private:
   std::map<std::string, std::string> m_doc_map;

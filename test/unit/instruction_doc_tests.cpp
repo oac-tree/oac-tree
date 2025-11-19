@@ -52,6 +52,8 @@ TEST_F(InstructionDocTest, DefaultCtor)
   const std::string unknown{"Unknown"};
   EXPECT_EQ(doc.GetField(INSTR_DOC_DESCRIPTION), empty);
   EXPECT_EQ(doc.GetField(INSTR_DOC_DESCRIPTION, unknown), unknown);
+  const auto field_names = doc.GetFieldNames();
+  EXPECT_TRUE(field_names.empty());
 }
 
 TEST_F(InstructionDocTest, MapCtor)
@@ -68,6 +70,9 @@ TEST_F(InstructionDocTest, MapCtor)
   EXPECT_EQ(doc.GetField(INSTR_DOC_DESCRIPTION, unknown), description);
   EXPECT_EQ(doc.GetField(unknown_field_name), empty);
   EXPECT_EQ(doc.GetField(unknown_field_name, unknown), unknown);
+  const auto field_names = doc.GetFieldNames();
+  ASSERT_EQ(field_names.size(), 1);
+  EXPECT_EQ(field_names[0], INSTR_DOC_DESCRIPTION);
 }
 
 TEST_F(InstructionDocTest, LongDescription)
@@ -83,4 +88,7 @@ TEST_F(InstructionDocTest, LongDescription)
   EXPECT_EQ(doc.GetField(INSTR_DOC_DESCRIPTION, unknown), kLongDescription);
   EXPECT_EQ(doc.GetField(unknown_field_name), empty);
   EXPECT_EQ(doc.GetField(unknown_field_name, unknown), unknown);
+  const auto field_names = doc.GetFieldNames();
+  ASSERT_EQ(field_names.size(), 1);
+  EXPECT_EQ(field_names[0], INSTR_DOC_DESCRIPTION);
 }

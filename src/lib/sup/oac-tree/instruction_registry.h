@@ -35,8 +35,6 @@ namespace sup
 {
 namespace oac_tree
 {
-class Instruction;
-
 /**
  * @brief Registry holding a mapping between Instruction names and
  * their constructors.
@@ -98,7 +96,7 @@ private:
     DocumentationEntry doc;
   };
   /**
-   * @brief Map between instruction typename and its constructor.
+   * @brief Map between instruction typename and an entry containing a ctor and documentation.
    */
   std::map<std::string, InstructionEntry> m_instruction_entries;
 };

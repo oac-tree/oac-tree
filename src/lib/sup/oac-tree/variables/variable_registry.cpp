@@ -46,37 +46,51 @@ VariableRegistry& GlobalVariableRegistry()
   return global_variable_registry;
 }
 
-bool VariableRegistry::RegisterVariable(std::string name, VariableConstructor constructor)
+bool VariableRegistry::RegisterVariable(std::string name, VariableConstructor constructor,
+                                        DocumentationEntry doc)
 {
-  auto it = m_variable_map.find(name);
-  if (it != m_variable_map.end())
+  auto it = m_variable_entries.find(name);
+  if (it != m_variable_entries.end())
   {
     std::string error_message =
       "VariableRegistry::RegisterVariable(): trying to register variable "
       "with name [" + name + "] twice";
     throw InvalidOperationException(error_message);
   }
-  (void)m_variable_map.insert(it, {name, constructor});
+  (void)m_variable_entries.emplace(name, VariableEntry{constructor, doc});
   return true;
 }
 
 std::unique_ptr<Variable> VariableRegistry::Create(std::string name)
 {
-  auto entry = m_variable_map.find(name);
-  if (entry == m_variable_map.end())
+  auto entry = m_variable_entries.find(name);
+  if (entry == m_variable_entries.end())
   {
     std::string error_message =
       "VariableRegistry::Create(): trying to create unregistered variable "
       "with name [" + name + "]";
     throw InvalidOperationException(error_message);
   }
-  return std::unique_ptr<Variable>(entry->second());
+  return std::unique_ptr<Variable>(entry->second.ctor());
+}
+
+DocumentationEntry VariableRegistry::GetDocumentation(const std::string& name)
+{
+  auto entry = m_variable_entries.find(name);
+  if (entry == m_variable_entries.end())
+  {
+    std::string error_message =
+      "InstructionRegistry::GetDocumentation(): variable "
+      "with name [" + name + "] not found";
+    throw InvalidOperationException(error_message);
+  }
+  return entry->second.doc;
 }
 
 std::vector<std::string> VariableRegistry::RegisteredVariableNames() const
 {
   std::vector<std::string> result;
-  for (const auto& [variable_name, _] : m_variable_map)
+  for (const auto& [variable_name, _] : m_variable_entries)
   {
     result.push_back(variable_name);
   }
@@ -85,8 +99,8 @@ std::vector<std::string> VariableRegistry::RegisteredVariableNames() const
 
 bool VariableRegistry::IsRegisteredVariableName(const std::string& name) const
 {
-  auto it = m_variable_map.find(name);
-  return it != m_variable_map.end();
+  auto it = m_variable_entries.find(name);
+  return it != m_variable_entries.end();
 }
 
 void InitVariableRegistry(VariableRegistry& registry)

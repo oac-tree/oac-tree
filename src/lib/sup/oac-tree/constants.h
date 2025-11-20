@@ -150,6 +150,9 @@ const std::string PRETTY_JSON_ATTRIBUTE_NAME = "pretty";
 // Instruction doc field names
 const std::string INSTR_DOC_DESCRIPTION = "description";
 
+// Variable doc field names
+const std::string VAR_DOC_DESCRIPTION = "description";
+
 // Instruction info node fields
 const std::string kInstructionInfoNodeType = "sup::instructionNodeInfoType/v1.0";
 const std::string kInstructionInfoNodeTypeField = "type";

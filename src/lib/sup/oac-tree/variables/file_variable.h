@@ -62,6 +62,15 @@ private:
   std::unique_ptr<sup::dto::AnyValue> ReadValue() const;
 };
 
+template <>
+inline DocumentationEntry VariableDocFor<FileVariable>()
+{
+  DocumentationEntry doc{{
+    { Constants::VAR_DOC_DESCRIPTION, "Variable that holds it value in a file" }
+  }};
+  return doc;
+}
+
 }  // namespace oac_tree
 
 }  // namespace sup

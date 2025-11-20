@@ -63,6 +63,15 @@ private:
   void TeardownImpl() override;
 };
 
+template <>
+inline DocumentationEntry VariableDocFor<LocalVariable>()
+{
+  DocumentationEntry doc{{
+    { Constants::VAR_DOC_DESCRIPTION, "Variable that holds it value in memory" }
+  }};
+  return doc;
+}
+
 }  // namespace oac_tree
 
 }  // namespace sup

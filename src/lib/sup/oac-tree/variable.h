@@ -24,6 +24,8 @@
 #define SUP_OAC_TREE_VARIABLE_H_
 
 #include <sup/oac-tree/attribute_handler.h>
+#include <sup/oac-tree/constants.h>
+#include <sup/oac-tree/documentation_entry.h>
 #include <sup/oac-tree/setup_teardown_actions.h>
 
 #include <sup/dto/anyvalue.h>
@@ -355,6 +357,19 @@ private:
    */
   virtual void TeardownImpl();
 };
+
+/**
+ * @brief Template function returning a empty DocumentationEntry. This needs to be specialized for
+ * each variable requiring a custom DocumentationEntry.
+ *
+ * @tparam T Variable type parameter.
+ * @return DocumentationEntry corresponding to the variable type.
+ */
+template <typename T>
+DocumentationEntry VariableDocFor()
+{
+  return DocumentationEntry{};
+}
 
 /**
  * @brief Construct a string prolog for throwing exceptions related to Variable::Setup.

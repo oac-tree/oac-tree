@@ -23,6 +23,9 @@
 #ifndef SUP_OAC_TREE_VARIABLE_REGISTRY_H_
 #define SUP_OAC_TREE_VARIABLE_REGISTRY_H_
 
+#include <sup/oac-tree/documentation_entry.h>
+#include <sup/oac-tree/variable.h>
+
 #include <map>
 #include <memory>
 #include <string>
@@ -32,8 +35,6 @@ namespace sup
 {
 namespace oac_tree
 {
-class Variable;
-
 /**
  * @brief Registry holding a mapping between Variable names and
  * their constructors.
@@ -45,13 +46,21 @@ public:
 
   VariableRegistry() = default;
 
+  // Copy/move construction/assignment
+  VariableRegistry(const VariableRegistry& other) = default;
+  VariableRegistry(VariableRegistry&& other) = delete;
+  VariableRegistry& operator=(const VariableRegistry& other) = default;
+  VariableRegistry& operator=(VariableRegistry&& other) = delete;
+
   /**
    * @brief Register a variable.
    *
    * @param name Name under which the variable is to be registered.
    * @param constructor Function that instantiates the variable.
+   * @param doc Documentation object for the variable.
    */
-  bool RegisterVariable(std::string name, VariableConstructor constructor);
+  bool RegisterVariable(std::string name, VariableConstructor constructor,
+                        DocumentationEntry doc);
 
   /**
    * @brief Instantiate a variable with the given name.
@@ -59,6 +68,14 @@ public:
    * @param name Name under which the variable was registered.
    */
   std::unique_ptr<Variable> Create(std::string name);
+
+  /**
+   * @brief Get documentation object for the given variable.
+   *
+   * @param name Name under which the variable was registered.
+   * @throws InvalidOperationException when the variable was not found.
+   */
+  DocumentationEntry GetDocumentation(const std::string& name);
 
   /**
    * @brief List names of registered variables.
@@ -71,10 +88,15 @@ public:
   bool IsRegisteredVariableName(const std::string& name) const;
 
 private:
+  struct VariableEntry
+  {
+    VariableConstructor ctor;
+    DocumentationEntry doc;
+  };
   /**
-   * @brief Map between Variable typename and its constructor.
+   * @brief Map between Variable typename and an entry containing a ctor and documentation.
    */
-  std::map<std::string, VariableConstructor> m_variable_map;
+  std::map<std::string, VariableEntry> m_variable_entries;
 };
 
 VariableRegistry &GlobalVariableRegistry();
@@ -83,6 +105,7 @@ VariableRegistry &GlobalVariableRegistry();
  * @brief Template function for registering variables to a registry.
  *
  * @param registry Registry where to register the variable.
+ * @param doc Documentation object for the variable.
  *
  * @note The registered variable template parameter T needs to
  * define its typename as a static std::string member 'Type'
@@ -101,20 +124,44 @@ VariableRegistry &GlobalVariableRegistry();
    // Define the typename for the variable
    const std::string MyVariable::Type = "MyVariable";
 
+   // Define a documentation object
+   DocumentationEntry my_doc{{
+    { Constants::VAR_DOC_DESCRIPTION, "Description for this variable"}
+   }};
+
    // Register the variable
    static bool _MyVariableRegistered =
-     RegisterVariable<MyVariable>(my_variable_registry);
+     RegisterVariable<MyVariable>(my_variable_registry, my_doc);
    @endcode
+ */
+template <class T>
+bool RegisterVariable(VariableRegistry& registry, DocumentationEntry doc)
+{
+  auto constructor = []() { return static_cast<Variable *>(new T()); };
+  return registry.RegisterVariable(T::Type, constructor, std::move(doc));
+}
+
+/**
+ * @brief Template function for registering variables to a registry.
+ *
+ * @param registry Registry where to register the variable.
+ *
+ * @note This function will use the template function VariableDocFor<T> to get the documentation
+ * object that will be registered. If that function template is not specialized for the variable
+ * type, this will generate an empty default documentation object.
  */
 template <class T>
 bool RegisterVariable(VariableRegistry& registry)
 {
   auto constructor = []() { return static_cast<Variable *>(new T()); };
-  return registry.RegisterVariable(T::Type, constructor);
+  const auto& doc = VariableDocFor<T>();
+  return registry.RegisterVariable(T::Type, constructor, doc);
 }
 
 /**
  * @brief Template function for registering variables to the global registry.
+ *
+ * @param doc Documentation object for the variable.
  *
  * @note The registered variable template parameter T needs to
  * define its typename as a static std::string member 'Type'
@@ -133,6 +180,19 @@ bool RegisterVariable(VariableRegistry& registry)
    // Register the variable for serialization
    static bool _MyVariableRegistered = RegisterVariable<MyVariable>();
    @endcode
+ */
+template <class T>
+bool RegisterGlobalVariable(DocumentationEntry doc)
+{
+  return RegisterVariable<T>(GlobalVariableRegistry(), std::move(doc));
+}
+
+/**
+ * @brief Template function for registering variables to the global registry.
+ *
+ * @note This function will use the template function VariableDocFor<T> to get the documentation
+ * object that will be registered. If that function template is not specialized for the variable
+ * type, this will generate an empty default documentation object.
  */
 template <class T>
 bool RegisterGlobalVariable()

@@ -22,7 +22,7 @@
 
 
 #include <sup/oac-tree/variable_registry.h>
-
+#include <sup/oac-tree/constants.h>
 #include <sup/oac-tree/variables/file_variable.h>
 #include <sup/oac-tree/variables/local_variable.h>
 
@@ -88,19 +88,38 @@ TEST_F(VariableRegistryTest, RegisterVariable)
 
 TEST_F(VariableRegistryTest, RegisterGlobalVariable)
 {
-  auto &global_reg = GlobalVariableRegistry();
-  auto var_names = global_reg.RegisteredVariableNames();
-  EXPECT_FALSE(global_reg.IsRegisteredVariableName(TestVariable::Type));
+  // copy global registry
+  auto registry = GlobalVariableRegistry();
+  auto var_names = registry.RegisteredVariableNames();
+  EXPECT_FALSE(registry.IsRegisteredVariableName(TestVariable::Type));
   EXPECT_EQ(std::find(var_names.begin(), var_names.end(), TestVariable::Type), var_names.end());
-  EXPECT_THROW(global_reg.Create(TestVariable::Type), InvalidOperationException);
+  EXPECT_THROW(registry.Create(TestVariable::Type), InvalidOperationException);
 
   auto size_before = var_names.size();
-  RegisterGlobalVariable<TestVariable>();
-  var_names = global_reg.RegisteredVariableNames();
+  RegisterVariable<TestVariable>(registry);
+  var_names = registry.RegisteredVariableNames();
   EXPECT_EQ(var_names.size(), size_before + 1);
-  EXPECT_TRUE(global_reg.IsRegisteredVariableName(TestVariable::Type));
+  EXPECT_TRUE(registry.IsRegisteredVariableName(TestVariable::Type));
   EXPECT_NE(std::find(var_names.begin(), var_names.end(), TestVariable::Type), var_names.end());
-  EXPECT_TRUE(static_cast<bool>(global_reg.Create(TestVariable::Type)));
+  EXPECT_TRUE(static_cast<bool>(registry.Create(TestVariable::Type)));
+}
+
+TEST_F(VariableRegistryTest, BaseVariables)
+{
+  const auto registered_names = GlobalVariableRegistry().RegisteredVariableNames();
+  for (const auto& var_name : registered_names)
+  {
+    // can create variable
+    auto inst = GlobalVariableRegistry().Create(var_name);
+    EXPECT_TRUE(static_cast<bool>(inst));
+
+    // Documentation object is as expected
+    const auto doc = GlobalVariableRegistry().GetDocumentation(var_name);
+    const auto doc_fields = doc.GetFieldNames();
+    ASSERT_EQ(doc_fields.size(), 1) << "Incorrect number of doc entries for variable "
+      << var_name;
+    EXPECT_EQ(doc_fields[0], Constants::VAR_DOC_DESCRIPTION);
+  }
 }
 
 VariableRegistryTest::VariableRegistryTest() : empty_reg{} {}

@@ -30,7 +30,7 @@ namespace sup
 namespace oac_tree
 {
 /**
- * @brief Instruction forwarding a text message to the UserInterface implementation.
+ * @brief Instruction that outputs a text message to the user interface.
  */
 class Message : public Instruction
 {

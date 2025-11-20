@@ -27,6 +27,8 @@
 #include <sup/oac-tree/instruction.h>
 #include <sup/oac-tree/sequence_parser.h>
 
+#include <sup/oac-tree/instructions/all_instructions.h>
+
 #include <gtest/gtest.h>
 
 #include <algorithm>
@@ -57,62 +59,67 @@ DocomentationEntry sup::oac_tree::InstructionDocFor<TestInstruction>()
 
 const std::string TestInstruction::Type = "TestInstruction";
 
-TEST(InstructionRegistry, RegisterInstruction)
+TEST(InstructionRegistryTest, RegisterInstruction)
 {
+  // Copy global registry
+  auto registry = GlobalInstructionRegistry();
   // no such name
-  auto registered_names = GlobalInstructionRegistry().RegisteredInstructionNames();
+  auto registered_names = registry.RegisteredInstructionNames();
   auto it = std::find(registered_names.begin(), registered_names.end(), TestInstruction::Type);
   EXPECT_TRUE(it == registered_names.end());
 
   // not possible to create instruction
-  EXPECT_THROW(GlobalInstructionRegistry().Create(TestInstruction::Type),
+  EXPECT_THROW(registry.Create(TestInstruction::Type),
                InvalidOperationException);
 
   // registration
-  EXPECT_TRUE(RegisterGlobalInstruction<TestInstruction>());
+  EXPECT_TRUE(RegisterInstruction<TestInstruction>(registry));
 
   // second registration with the same name is not allowed
-  EXPECT_THROW(RegisterGlobalInstruction<TestInstruction>(), InvalidOperationException);
+  EXPECT_THROW(RegisterInstruction<TestInstruction>(registry), InvalidOperationException);
 
   // there is a name
-  registered_names = GlobalInstructionRegistry().RegisteredInstructionNames();
+  registered_names = registry.RegisteredInstructionNames();
   it = std::find(registered_names.begin(), registered_names.end(), TestInstruction::Type);
   EXPECT_FALSE(it == registered_names.end());
 
   // can create instruction
-  auto inst = GlobalInstructionRegistry().Create(TestInstruction::Type);
+  auto inst = registry.Create(TestInstruction::Type);
   EXPECT_TRUE(static_cast<bool>(inst));
 
   // Documentation object is as expected
-  const auto doc = GlobalInstructionRegistry().GetDocumentation(TestInstruction::Type);
+  const auto doc = registry.GetDocumentation(TestInstruction::Type);
   const auto doc_fields = doc.GetFieldNames();
   ASSERT_EQ(doc_fields.size(), 1);
   EXPECT_EQ(doc_fields[0], Constants::INSTR_DOC_DESCRIPTION);
   EXPECT_EQ(doc.GetField(Constants::INSTR_DOC_DESCRIPTION), "TEST");
 }
 
-TEST(InstructionRegistry, BaseInstruction)
+TEST(InstructionRegistryTest, BaseInstructions)
 {
-  // Check Choice instruction
-  const std::string choice_instr_name = "Choice";
+  const auto registered_names = GlobalInstructionRegistry().RegisteredInstructionNames();
+  const std::vector<std::string> ignore_list{ "Counter" };
+  for (const auto& instr_name : registered_names)
+  {
+    // continue for ignored instructions
+    if (std::find(ignore_list.begin(), ignore_list.end(), instr_name) != ignore_list.end())
+    {
+      continue;
+    }
+    // can create instruction
+    auto inst = GlobalInstructionRegistry().Create(instr_name);
+    EXPECT_TRUE(static_cast<bool>(inst));
 
-  // name is registered
-  auto registered_names = GlobalInstructionRegistry().RegisteredInstructionNames();
-  auto it = std::find(registered_names.begin(), registered_names.end(), choice_instr_name);
-  EXPECT_FALSE(it == registered_names.end());
-
-  // can create instruction
-  auto inst = GlobalInstructionRegistry().Create(choice_instr_name);
-  EXPECT_TRUE(static_cast<bool>(inst));
-
-  // Documentation object is as expected
-  const auto doc = GlobalInstructionRegistry().GetDocumentation(choice_instr_name);
-  const auto doc_fields = doc.GetFieldNames();
-  ASSERT_EQ(doc_fields.size(), 1);
-  EXPECT_EQ(doc_fields[0], Constants::INSTR_DOC_DESCRIPTION);
+    // Documentation object is as expected
+    const auto doc = GlobalInstructionRegistry().GetDocumentation(instr_name);
+    const auto doc_fields = doc.GetFieldNames();
+    ASSERT_EQ(doc_fields.size(), 1) << "Incorrect number of doc entries for instruction "
+      << instr_name;
+    EXPECT_EQ(doc_fields[0], Constants::INSTR_DOC_DESCRIPTION);
+  }
 }
 
-TEST(InstructionRegistry, CreateFailure)
+TEST(InstructionRegistryTest, CreateFailure)
 {
   EXPECT_THROW(GlobalInstructionRegistry().Create("UndefinedInstructionName"),
                InvalidOperationException);

@@ -30,7 +30,7 @@ namespace sup
 namespace oac_tree
 {
 /**
- * @brief Instruction decorator that that applies a child instruction to the elements of an array
+ * @brief Decorator that applies a child instruction to the elements of an array
  *
  * @details Executes the child instruction on the elements of an array, until either: the child
  * fails (FAILURE) or the child instruction is applied to all elements of the provided array

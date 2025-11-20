@@ -30,7 +30,7 @@ namespace sup
 namespace oac_tree
 {
 /**
- * @brief Instruction decorator that repeats its child a fixed number of times while successful.
+ * @brief Decorator that repeats its child a fixed number of times while successful.
  *
  * @details Repeatedly executes the child instruction, until either: the child fails (FAILURE)
  * or maximum number of repetitions is reached (SUCCESS).

@@ -30,7 +30,7 @@ namespace sup
 namespace oac_tree
 {
 /**
- * @brief Instruction copying named variable from/to workspace
+ * @brief Instruction copying between workspace variables.
  *
  * @details Copy variables identified with 'input' and 'output' attributes.
  */

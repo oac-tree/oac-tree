@@ -28,6 +28,7 @@
 
 #include <sup/oac-tree/attribute_handler.h>
 #include <sup/oac-tree/breakpoint.h>
+#include <sup/oac-tree/documentation_entry.h>
 #include <sup/oac-tree/execution_status.h>
 #include <sup/oac-tree/user_interface.h>
 
@@ -494,6 +495,19 @@ private:
    */
   virtual std::unique_ptr<Instruction> TakeInstructionImpl(int index);
 };
+
+/**
+ * @brief Template function returning a empty DocomentationEntry. This needs to be specialized for
+ * each instruction requiring a custom DocomentationEntry.
+ *
+ * @tparam T Instruction type parameter.
+ * @return DocomentationEntry corresponding to the instruction type.
+ */
+template <typename T>
+DocomentationEntry InstructionDocFor()
+{
+  return DocomentationEntry{};
+}
 
 /**
  * @brief Append a child instruction to an instruction if that is supported.

@@ -30,7 +30,7 @@ namespace sup
 namespace oac_tree
 {
 /**
- * @brief Wraps a child instruction and always return SUCCESS when the child has finished
+ * @brief Wraps a child instruction and always returns SUCCESS when the child has finished
  * execution.
  */
 class ForceSuccess : public DecoratorInstruction

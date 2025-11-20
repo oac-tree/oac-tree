@@ -30,7 +30,7 @@ namespace sup
 namespace oac_tree
 {
 /**
- * @brief Instruction checking the if a variable is smaller then the other
+ * @brief Instruction checking if a variable is smaller than an other one.
  *
  * @details Check if variable identified with 'lhs' attribute is smaller than one with 'rhs'
  * attribute.

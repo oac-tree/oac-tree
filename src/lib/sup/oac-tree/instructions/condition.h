@@ -30,7 +30,7 @@ namespace sup
 namespace oac_tree
 {
 /**
- * @brief Checks a boolean workspace variable.
+ * @brief Checks a workspace variable for being true.
  *
  * @details Returns SUCCESS if the variable is true and FAILURE otherwise. If the variable
  * is not boolean, it will check if the value is different than 0

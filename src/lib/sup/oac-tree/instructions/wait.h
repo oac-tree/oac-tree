@@ -33,7 +33,7 @@ namespace sup
 namespace oac_tree
 {
 /**
- * @brief Instruction node that returns SUCCESS after a given timeout.
+ * @brief Instruction that returns SUCCESS after a given timeout.
  *
  * @details The 'timeout' attribute is optional. When this attribute is not present,
  * the instruction returns SUCCESS immediately.

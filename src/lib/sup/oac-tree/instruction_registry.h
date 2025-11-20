@@ -24,6 +24,7 @@
 #define SUP_OAC_TREE_INSTRUCTION_REGISTRY_H_
 
 #include <sup/oac-tree/documentation_entry.h>
+#include <sup/oac-tree/instruction.h>
 
 #include <map>
 #include <memory>
@@ -47,6 +48,12 @@ public:
   using InstructionConstructor = Instruction *(*)();
 
   InstructionRegistry() = default;
+
+  // Copy/move construction/assignment
+  InstructionRegistry(const InstructionRegistry& other) = default;
+  InstructionRegistry(InstructionRegistry&& other) = delete;
+  InstructionRegistry& operator=(const InstructionRegistry& other) = default;
+  InstructionRegistry& operator=(InstructionRegistry&& other) = delete;
 
   /**
    * @brief Register an instruction.
@@ -97,19 +104,6 @@ private:
 };
 
 InstructionRegistry &GlobalInstructionRegistry();
-
-/**
- * @brief Template function returning a empty DocomentationEntry. This needs to be specialized for
- * each instruction requiring a custom DocomentationEntry.
- *
- * @tparam T Instruction type parameter.
- * @return DocomentationEntry corresponding to the instruction type.
- */
-template <typename T>
-DocomentationEntry InstructionDocFor()
-{
-  return DocomentationEntry{};
-}
 
 /**
  * @brief Template function for registering instructions to a registry.

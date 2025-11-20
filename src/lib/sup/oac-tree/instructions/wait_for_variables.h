@@ -35,7 +35,7 @@ namespace sup
 namespace oac_tree
 {
 /**
- * @brief Instruction node that waits 'timeout' seconds for all variables of a certain type to be
+ * @brief Instruction that waits 'timeout' seconds for all variables of a certain type to be
  * available, i.e. as defined by Variable::IsAvailable().
  *
  * @details The 'timeout' attribute is mandatory.

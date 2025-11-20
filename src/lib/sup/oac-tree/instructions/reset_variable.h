@@ -30,7 +30,7 @@ namespace sup
 namespace oac_tree
 {
 /**
- * @brief Instruction to reset a variable to its initial state.
+ * @brief Instruction that resets a variable to its initial state.
  */
 class ResetVariable : public Instruction
 {

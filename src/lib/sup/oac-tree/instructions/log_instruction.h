@@ -31,7 +31,7 @@ namespace oac_tree
 {
 
 /**
- * @brief Outputs a message to the sequencer log.
+ * @brief Outputs a message to the log.
  */
 class LogInstruction : public Instruction
 {

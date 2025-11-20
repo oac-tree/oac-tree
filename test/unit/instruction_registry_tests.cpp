@@ -91,6 +91,27 @@ TEST(InstructionRegistry, RegisterInstruction)
   EXPECT_EQ(doc.GetField(Constants::INSTR_DOC_DESCRIPTION), "TEST");
 }
 
+TEST(InstructionRegistry, BaseInstruction)
+{
+  // Check Choice instruction
+  const std::string choice_instr_name = "Choice";
+
+  // name is registered
+  auto registered_names = GlobalInstructionRegistry().RegisteredInstructionNames();
+  auto it = std::find(registered_names.begin(), registered_names.end(), choice_instr_name);
+  EXPECT_FALSE(it == registered_names.end());
+
+  // can create instruction
+  auto inst = GlobalInstructionRegistry().Create(choice_instr_name);
+  EXPECT_TRUE(static_cast<bool>(inst));
+
+  // Documentation object is as expected
+  const auto doc = GlobalInstructionRegistry().GetDocumentation(choice_instr_name);
+  const auto doc_fields = doc.GetFieldNames();
+  ASSERT_EQ(doc_fields.size(), 1);
+  EXPECT_EQ(doc_fields[0], Constants::INSTR_DOC_DESCRIPTION);
+}
+
 TEST(InstructionRegistry, CreateFailure)
 {
   EXPECT_THROW(GlobalInstructionRegistry().Create("UndefinedInstructionName"),

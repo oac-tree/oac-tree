@@ -22,6 +22,7 @@
 
 #include <sup/oac-tree/instruction_registry.h>
 
+#include <sup/oac-tree/constants.h>
 #include <sup/oac-tree/exceptions.h>
 #include <sup/oac-tree/instruction.h>
 #include <sup/oac-tree/sequence_parser.h>
@@ -44,6 +45,15 @@ private:
     return ExecutionStatus::SUCCESS;
   }
 };
+
+template <>
+InstructionDoc sup::oac_tree::InstructionDocFor<TestInstruction>()
+{
+  InstructionDoc doc{{
+    { Constants::INSTR_DOC_DESCRIPTION, "TEST" }
+  }};
+  return doc;
+}
 
 const std::string TestInstruction::Type = "TestInstruction";
 
@@ -72,6 +82,13 @@ TEST(InstructionRegistry, RegisterInstruction)
   // can create instruction
   auto inst = GlobalInstructionRegistry().Create(TestInstruction::Type);
   EXPECT_TRUE(static_cast<bool>(inst));
+
+  // Documentation object is as expected
+  const auto doc = GlobalInstructionRegistry().GetDocumentation(TestInstruction::Type);
+  const auto doc_fields = doc.GetFieldNames();
+  ASSERT_EQ(doc_fields.size(), 1);
+  EXPECT_EQ(doc_fields[0], Constants::INSTR_DOC_DESCRIPTION);
+  EXPECT_EQ(doc.GetField(Constants::INSTR_DOC_DESCRIPTION), "TEST");
 }
 
 TEST(InstructionRegistry, CreateFailure)

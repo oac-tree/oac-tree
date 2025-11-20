@@ -49,14 +49,6 @@ public:
   InstructionRegistry() = default;
 
   /**
-   * @brief Register an instruction without a documentation object.
-   *
-   * @param name Name under which the instruction is to be registered.
-   * @param constructor Function that instantiates the instruction.
-   */
-  bool RegisterInstruction(std::string name, InstructionConstructor constructor);
-
-  /**
    * @brief Register an instruction.
    *
    * @param name Name under which the instruction is to be registered.
@@ -107,6 +99,19 @@ private:
 InstructionRegistry &GlobalInstructionRegistry();
 
 /**
+ * @brief Template function returning a empty InstructionDoc. This needs to be specialized for
+ * each instruction requiring a custom InstructionDoc.
+ *
+ * @tparam T Instruction type parameter.
+ * @return InstructionDoc corresponding to the instruction type.
+ */
+template <typename T>
+InstructionDoc InstructionDocFor()
+{
+  return InstructionDoc{};
+}
+
+/**
  * @brief Template function for registering instructions to a registry.
  *
  * @param registry Registry where to register the instruction.
@@ -151,13 +156,16 @@ bool RegisterInstruction(InstructionRegistry& registry, InstructionDoc doc)
  *
  * @param registry Registry where to register the instruction.
  *
- * @note This is equivalent to calling RegisterInstruction<T>(registry, InstructionDoc{});
+ * @note This function will use the template function InstructionDocFor<T> to get the documentation
+ * object that will be registered. If that function template is not specialized for the instruction
+ * type, this will generate an empty default documentation object.
  */
 template <class T>
 bool RegisterInstruction(InstructionRegistry& registry)
 {
   auto constructor = []() { return static_cast<Instruction *>(new T()); };
-  return registry.RegisterInstruction(T::Type, constructor);
+  const auto& doc = InstructionDocFor<T>();
+  return registry.RegisterInstruction(T::Type, constructor, doc);
 }
 
 /**
@@ -192,7 +200,9 @@ bool RegisterGlobalInstruction(InstructionDoc doc)
 /**
  * @brief Template function for registering instructions to the global registry.
  *
- * @note This is equivalent to calling RegisterGlobalInstruction<T>(InstructionDoc{});
+ * @note This function will use the template function InstructionDocFor<T> to get the documentation
+ * object that will be registered. If that function template is not specialized for the instruction
+ * type, this will generate an empty default documentation object.
  */
 template <class T>
 bool RegisterGlobalInstruction()

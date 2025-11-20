@@ -85,12 +85,6 @@ InstructionRegistry& GlobalInstructionRegistry()
   return global_instruction_registry;
 }
 
-bool InstructionRegistry::RegisterInstruction(std::string name, InstructionConstructor constructor)
-{
-  // Create default doc object
-  return RegisterInstruction(std::move(name), constructor, InstructionDoc{});
-}
-
 bool InstructionRegistry::RegisterInstruction(std::string name, InstructionConstructor constructor,
                                               InstructionDoc doc)
 {
@@ -152,7 +146,7 @@ bool InstructionRegistry::IsRegisteredInstructionName(const std::string& name) c
 void InitInstructionRegistry(InstructionRegistry& registry)
 {
   // Register compound instructions:
-  (void)RegisterInstruction<Choice>(registry, kChoiceDoc);
+  (void)RegisterInstruction<Choice>(registry);
   (void)RegisterInstruction<Fallback>(registry);
   (void)RegisterInstruction<ParallelSequence>(registry);
   (void)RegisterInstruction<ReactiveFallback>(registry);

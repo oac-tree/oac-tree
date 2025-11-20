@@ -31,9 +31,16 @@ namespace sup
 namespace oac_tree
 {
 
-const InstructionDoc kChoiceDoc{{
-  { Constants::INSTR_DOC_DESCRIPTION, "Executes a subset of children depending on a variable value" }
-}};
+class Choice;
+
+template <>
+InstructionDoc InstructionDocFor<Choice>()
+{
+  InstructionDoc doc{{
+    { Constants::INSTR_DOC_DESCRIPTION, "Executes a subset of children depending on a variable value" }
+  }};
+  return doc;
+}
 
 }  // namespace oac_tree
 

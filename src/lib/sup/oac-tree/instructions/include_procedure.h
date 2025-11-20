@@ -54,6 +54,15 @@ private:
   Workspace* m_workspace;
 };
 
+template <>
+inline DocumentationEntry InstructionDocFor<IncludeProcedure>()
+{
+  DocumentationEntry doc{{
+    { Constants::INSTR_DOC_DESCRIPTION, "Decorator instruction that includes an external procedure (workspace and instruction tree)" }
+  }};
+  return doc;
+}
+
 }  // namespace oac_tree
 
 }  // namespace sup

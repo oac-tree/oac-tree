@@ -62,6 +62,15 @@ private:
   std::condition_variable m_cv;
 };
 
+template <>
+inline DocumentationEntry InstructionDocFor<Wait>()
+{
+  DocumentationEntry doc{{
+    { Constants::INSTR_DOC_DESCRIPTION, "Instruction that returns SUCCESS after a given timeout" }
+  }};
+  return doc;
+}
+
 }  // namespace oac_tree
 
 }  // namespace sup

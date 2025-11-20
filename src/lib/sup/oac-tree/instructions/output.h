@@ -45,6 +45,15 @@ private:
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 };
 
+template <>
+inline DocumentationEntry InstructionDocFor<Output>()
+{
+  DocumentationEntry doc{{
+    { Constants::INSTR_DOC_DESCRIPTION, "Instruction node that outputs a workspace value to the user interface" }
+  }};
+  return doc;
+}
+
 }  // namespace oac_tree
 
 }  // namespace sup

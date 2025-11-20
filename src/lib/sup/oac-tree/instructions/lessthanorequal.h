@@ -48,6 +48,15 @@ private:
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 };
 
+template <>
+inline DocumentationEntry InstructionDocFor<LessThanOrEqual>()
+{
+  DocumentationEntry doc{{
+    { Constants::INSTR_DOC_DESCRIPTION, "Instruction checking the if a variable is smaller than or equal to another one" }
+  }};
+  return doc;
+}
+
 }  // namespace oac_tree
 
 }  // namespace sup

@@ -60,6 +60,15 @@ private:
   sup::dto::AnyValue m_array;
 };
 
+template <>
+inline DocumentationEntry InstructionDocFor<ForInstruction>()
+{
+  DocumentationEntry doc{{
+    { Constants::INSTR_DOC_DESCRIPTION, "Decorator that applies a child instruction to the elements of an array" }
+  }};
+  return doc;
+}
+
 }  // namespace oac_tree
 
 }  // namespace sup

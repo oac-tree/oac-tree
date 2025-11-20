@@ -28,6 +28,7 @@
 
 #include <sup/oac-tree/attribute_handler.h>
 #include <sup/oac-tree/breakpoint.h>
+#include <sup/oac-tree/constants.h>
 #include <sup/oac-tree/documentation_entry.h>
 #include <sup/oac-tree/execution_status.h>
 #include <sup/oac-tree/user_interface.h>
@@ -497,16 +498,16 @@ private:
 };
 
 /**
- * @brief Template function returning a empty DocomentationEntry. This needs to be specialized for
- * each instruction requiring a custom DocomentationEntry.
+ * @brief Template function returning a empty DocumentationEntry. This needs to be specialized for
+ * each instruction requiring a custom DocumentationEntry.
  *
  * @tparam T Instruction type parameter.
- * @return DocomentationEntry corresponding to the instruction type.
+ * @return DocumentationEntry corresponding to the instruction type.
  */
 template <typename T>
-DocomentationEntry InstructionDocFor()
+DocumentationEntry InstructionDocFor()
 {
-  return DocomentationEntry{};
+  return DocumentationEntry{};
 }
 
 /**

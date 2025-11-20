@@ -54,6 +54,15 @@ private:
   Workspace* m_workspace;
 };
 
+template <>
+inline DocumentationEntry InstructionDocFor<CopyFromProcedureInstruction>()
+{
+  DocumentationEntry doc{{
+    { Constants::INSTR_DOC_DESCRIPTION, "Instruction that copies a variable from the workspace of an external procedure into the current workspace" }
+  }};
+  return doc;
+}
+
 }  // namespace oac_tree
 
 }  // namespace sup

@@ -65,6 +65,15 @@ private:
   ExecutionStatus CalculateCompoundStatus() const;
 };
 
+template <>
+inline DocumentationEntry InstructionDocFor<Choice>()
+{
+  DocumentationEntry doc{{
+    { Constants::INSTR_DOC_DESCRIPTION, "Executes a subset of children depending on a variable value" }
+  }};
+  return doc;
+}
+
 }  // namespace oac_tree
 
 }  // namespace sup

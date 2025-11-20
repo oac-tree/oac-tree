@@ -74,6 +74,15 @@ private:
   sup::dto::uint32 m_failure_th;
 };
 
+template <>
+inline DocumentationEntry InstructionDocFor<ParallelSequence>()
+{
+  DocumentationEntry doc{{
+    { Constants::INSTR_DOC_DESCRIPTION, "Compound instruction representing a parallel sequence" }
+  }};
+  return doc;
+}
+
 }  // namespace oac_tree
 
 }  // namespace sup

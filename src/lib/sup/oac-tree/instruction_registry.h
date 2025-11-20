@@ -63,7 +63,7 @@ public:
    * @param doc Documentation object for the instruction.
    */
   bool RegisterInstruction(std::string name, InstructionConstructor constructor,
-                           DocomentationEntry doc);
+                           DocumentationEntry doc);
 
   /**
    * @brief Instantiate an instruction with the given name.
@@ -79,7 +79,7 @@ public:
    * @param name Name under which the instruction was registered.
    * @throws InvalidOperationException when the instruction was not found.
    */
-  DocomentationEntry GetDocumentation(const std::string& name);
+  DocumentationEntry GetDocumentation(const std::string& name);
 
   /**
    * @brief List names of registered instructions.
@@ -95,7 +95,7 @@ private:
   struct InstructionEntry
   {
     InstructionConstructor ctor;
-    DocomentationEntry doc;
+    DocumentationEntry doc;
   };
   /**
    * @brief Map between instruction typename and its constructor.
@@ -129,7 +129,7 @@ InstructionRegistry &GlobalInstructionRegistry();
    const std::string MyInstruction::Type = "MyInstruction";
 
    // Define a documentation object
-   DocomentationEntry my_doc{{
+   DocumentationEntry my_doc{{
     { Constants::INSTR_DOC_DESCRIPTION, "Description for this instruction"}
    }};
 
@@ -139,7 +139,7 @@ InstructionRegistry &GlobalInstructionRegistry();
    @endcode
  */
 template <class T>
-bool RegisterInstruction(InstructionRegistry& registry, DocomentationEntry doc)
+bool RegisterInstruction(InstructionRegistry& registry, DocumentationEntry doc)
 {
   auto constructor = []() { return static_cast<Instruction *>(new T()); };
   return registry.RegisterInstruction(T::Type, constructor, std::move(doc));
@@ -186,7 +186,7 @@ bool RegisterInstruction(InstructionRegistry& registry)
    @endcode
  */
 template <class T>
-bool RegisterGlobalInstruction(DocomentationEntry doc)
+bool RegisterGlobalInstruction(DocumentationEntry doc)
 {
   return RegisterInstruction<T>(GlobalInstructionRegistry(), std::move(doc));
 }

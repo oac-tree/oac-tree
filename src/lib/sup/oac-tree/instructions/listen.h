@@ -85,6 +85,15 @@ private:
   ExecutionStatus CalculateStatus() const;
 };
 
+template <>
+inline DocumentationEntry InstructionDocFor<Listen>()
+{
+  DocumentationEntry doc{{
+    { Constants::INSTR_DOC_DESCRIPTION, "Decorator that executes its child instruction each time specific variables are updated" }
+  }};
+  return doc;
+}
+
 }  // namespace oac_tree
 
 }  // namespace sup

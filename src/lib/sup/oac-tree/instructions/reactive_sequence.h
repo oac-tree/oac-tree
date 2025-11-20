@@ -62,6 +62,15 @@ private:
   void ResetOtherChildren(const Instruction* instr, UserInterface& ui);
 };
 
+template <>
+inline DocumentationEntry InstructionDocFor<ReactiveSequence>()
+{
+  DocumentationEntry doc{{
+    { Constants::INSTR_DOC_DESCRIPTION, "Compound instruction representing a reactive sequence" }
+  }};
+  return doc;
+}
+
 }  // namespace oac_tree
 
 }  // namespace sup

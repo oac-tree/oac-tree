@@ -56,6 +56,15 @@ private:
   ExecutionStatus PollInputFuture(UserInterface& ui, Workspace& ws);
 };
 
+template <>
+inline DocumentationEntry InstructionDocFor<UserConfirmation>()
+{
+  DocumentationEntry doc{{
+    { Constants::INSTR_DOC_DESCRIPTION, "Instruction representing a user defined confirmation (SUCCESS) or rejection (FAILURE)" }
+  }};
+  return doc;
+}
+
 }  // namespace oac_tree
 
 }  // namespace sup

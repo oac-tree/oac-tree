@@ -51,6 +51,15 @@ private:
   ExecutionStatus CalculateStatus() const;
 };
 
+template <>
+inline DocumentationEntry InstructionDocFor<Inverter>()
+{
+  DocumentationEntry doc{{
+    { Constants::INSTR_DOC_DESCRIPTION, "Decorator that inverts the execution status of its child, interchanging SUCCESS and FAILURE" }
+  }};
+  return doc;
+}
+
 }  // namespace oac_tree
 
 }  // namespace sup

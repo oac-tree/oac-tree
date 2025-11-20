@@ -82,6 +82,15 @@ private:
   bool CheckCondition(UserInterface& ui, Workspace& ws) const;
 };
 
+template <>
+inline DocumentationEntry InstructionDocFor<WaitForVariable>()
+{
+  DocumentationEntry doc{{
+    { Constants::INSTR_DOC_DESCRIPTION, "Instruction that waits 'timeout' seconds for a variable to be readable and non-empty" }
+  }};
+  return doc;
+}
+
 }  // namespace oac_tree
 
 }  // namespace sup

@@ -62,6 +62,15 @@ private:
   void ResetOtherChildren(const Instruction* instr, UserInterface& ui);
 };
 
+template <>
+inline DocumentationEntry InstructionDocFor<ReactiveFallback>()
+{
+  DocumentationEntry doc{{
+    { Constants::INSTR_DOC_DESCRIPTION, "Compound instruction representing a reactive fallback" }
+  }};
+  return doc;
+}
+
 }  // namespace oac_tree
 
 }  // namespace sup

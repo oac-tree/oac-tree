@@ -61,6 +61,15 @@ private:
   ExecutionStatus PollInputFuture(UserInterface& ui, Workspace& ws);
 };
 
+template <>
+inline DocumentationEntry InstructionDocFor<Input>()
+{
+  DocumentationEntry doc{{
+    { Constants::INSTR_DOC_DESCRIPTION, "Instruction that writes a user defined value into a workspace variable" }
+  }};
+  return doc;
+}
+
 }  // namespace oac_tree
 
 }  // namespace sup

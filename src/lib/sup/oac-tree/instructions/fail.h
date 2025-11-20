@@ -59,6 +59,15 @@ private:
   std::condition_variable m_cv;
 };
 
+template <>
+inline DocumentationEntry InstructionDocFor<Fail>()
+{
+  DocumentationEntry doc{{
+    { Constants::INSTR_DOC_DESCRIPTION, "Instruction that returns FAILURE" }
+  }};
+  return doc;
+}
+
 }  // namespace oac_tree
 
 }  // namespace sup

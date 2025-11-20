@@ -82,6 +82,15 @@ private:
   void LogUnavailableVars(UserInterface& ui) const;
 };
 
+template <>
+inline DocumentationEntry InstructionDocFor<WaitForVariables>()
+{
+  DocumentationEntry doc{{
+    { Constants::INSTR_DOC_DESCRIPTION, "Instruction node that waits 'timeout' seconds for all variables of a certain type to be available" }
+  }};
+  return doc;
+}
+
 }  // namespace oac_tree
 
 }  // namespace sup

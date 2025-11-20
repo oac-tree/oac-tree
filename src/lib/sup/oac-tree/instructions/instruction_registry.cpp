@@ -22,7 +22,7 @@
 
 #include <sup/oac-tree/instruction_registry.h>
 
-#include "instruction_doc_objects.h"
+#include "all_instructions.h"
 
 #include <sup/oac-tree/exceptions.h>
 
@@ -45,7 +45,7 @@ InstructionRegistry& GlobalInstructionRegistry()
 }
 
 bool InstructionRegistry::RegisterInstruction(std::string name, InstructionConstructor constructor,
-                                              DocomentationEntry doc)
+                                              DocumentationEntry doc)
 {
   (void)doc;
   auto it = m_instruction_entries.find(name);
@@ -73,7 +73,7 @@ std::unique_ptr<Instruction> InstructionRegistry::Create(const std::string& name
   return std::unique_ptr<Instruction>(entry->second.ctor());
 }
 
-DocomentationEntry InstructionRegistry::GetDocumentation(const std::string& name)
+DocumentationEntry InstructionRegistry::GetDocumentation(const std::string& name)
 {
   auto entry = m_instruction_entries.find(name);
   if (entry == m_instruction_entries.end())

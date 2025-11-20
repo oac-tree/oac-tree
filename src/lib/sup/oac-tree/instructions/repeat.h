@@ -60,6 +60,15 @@ private:
   bool m_init_ok;
 };
 
+template <>
+inline DocumentationEntry InstructionDocFor<Repeat>()
+{
+  DocumentationEntry doc{{
+    { Constants::INSTR_DOC_DESCRIPTION, "Decorator that repeats its child a fixed number of times while successful" }
+  }};
+  return doc;
+}
+
 }  // namespace oac_tree
 
 }  // namespace sup

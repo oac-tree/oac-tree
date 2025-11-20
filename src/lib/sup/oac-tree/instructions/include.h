@@ -52,6 +52,15 @@ private:
   bool PostInitialiseVariables(const StringAttributeList& source_attributes) override;
 };
 
+template <>
+inline DocumentationEntry InstructionDocFor<Include>()
+{
+  DocumentationEntry doc{{
+    { Constants::INSTR_DOC_DESCRIPTION, "Decorator that includes an instruction tree by reference" }
+  }};
+  return doc;
+}
+
 }  // namespace oac_tree
 
 }  // namespace sup

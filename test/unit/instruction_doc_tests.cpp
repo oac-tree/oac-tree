@@ -46,8 +46,8 @@ protected:
 
 TEST_F(InstructionDocTest, DefaultCtor)
 {
-  // Default constructed DocomentationEntry does not contain any fields
-  DocomentationEntry doc{};
+  // Default constructed DocumentationEntry does not contain any fields
+  DocumentationEntry doc{};
   const std::string empty{};
   const std::string unknown{"Unknown"};
   EXPECT_EQ(doc.GetField(INSTR_DOC_DESCRIPTION), empty);
@@ -58,9 +58,9 @@ TEST_F(InstructionDocTest, DefaultCtor)
 
 TEST_F(InstructionDocTest, MapCtor)
 {
-  // DocomentationEntry constructed from map
+  // DocumentationEntry constructed from map
   const std::string description{"This instruction is well-documented!"};
-  DocomentationEntry doc{{
+  DocumentationEntry doc{{
     { INSTR_DOC_DESCRIPTION, description }
   }};
   const std::string empty{};
@@ -77,8 +77,8 @@ TEST_F(InstructionDocTest, MapCtor)
 
 TEST_F(InstructionDocTest, LongDescription)
 {
-  // DocomentationEntry constructed from map with multiline description
-  DocomentationEntry doc{{
+  // DocumentationEntry constructed from map with multiline description
+  DocumentationEntry doc{{
     { INSTR_DOC_DESCRIPTION, kLongDescription }
   }};
   const std::string empty{};

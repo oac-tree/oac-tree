@@ -53,6 +53,15 @@ private:
   ExecutionStatus CalculateCompoundStatus() const;
 };
 
+template <>
+inline DocumentationEntry InstructionDocFor<Sequence>()
+{
+  DocumentationEntry doc{{
+    { Constants::INSTR_DOC_DESCRIPTION, "Compound instruction representing a sequence" }
+  }};
+  return doc;
+}
+
 }  // namespace oac_tree
 
 }  // namespace sup

@@ -32,22 +32,22 @@ namespace sup
 namespace oac_tree
 {
 /**
- * @brief The DocomentationEntry class represents basic information about an instruction. Instances of
+ * @brief The DocumentationEntry class represents basic information about an instruction. Instances of
  * this class are expected to be registered together with instruction factory functions, to allow
  * user interfaces to display basic documentation about specific instructions.
  */
-class DocomentationEntry
+class DocumentationEntry
 {
 public:
-  DocomentationEntry();
-  explicit DocomentationEntry(std::map<std::string, std::string> doc_map);
-  ~DocomentationEntry();
+  DocumentationEntry();
+  explicit DocumentationEntry(std::map<std::string, std::string> doc_map);
+  ~DocumentationEntry();
 
   // Copy/move construction/assignment
-  DocomentationEntry(const DocomentationEntry& other) = default;
-  DocomentationEntry(DocomentationEntry&& other) noexcept = default;
-  DocomentationEntry& operator=(const DocomentationEntry& other) = default;
-  DocomentationEntry& operator=(DocomentationEntry&& other) noexcept = default;
+  DocumentationEntry(const DocumentationEntry& other) = default;
+  DocumentationEntry(DocumentationEntry&& other) noexcept = default;
+  DocumentationEntry& operator=(const DocumentationEntry& other) = default;
+  DocumentationEntry& operator=(DocumentationEntry&& other) noexcept = default;
 
   /**
    * @brief Get the string entry referred to by a specific key.

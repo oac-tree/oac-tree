@@ -53,6 +53,15 @@ private:
   ExecutionStatus CalculateCompoundStatus() const;
 };
 
+template <>
+inline DocumentationEntry InstructionDocFor<Fallback>()
+{
+  DocumentationEntry doc{{
+    { Constants::INSTR_DOC_DESCRIPTION, "Compound instruction representing a list of alternative actions" }
+  }};
+  return doc;
+}
+
 }  // namespace oac_tree
 
 }  // namespace sup

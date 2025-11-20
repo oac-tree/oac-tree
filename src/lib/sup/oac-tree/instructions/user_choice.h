@@ -65,6 +65,15 @@ private:
   std::vector<std::string> GetChoices() const;
 };
 
+template <>
+inline DocumentationEntry InstructionDocFor<UserChoice>()
+{
+  DocumentationEntry doc{{
+    { Constants::INSTR_DOC_DESCRIPTION, "Compound instruction representing a choice of instructions" }
+  }};
+  return doc;
+}
+
 }  // namespace oac_tree
 
 }  // namespace sup

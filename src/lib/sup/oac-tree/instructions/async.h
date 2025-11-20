@@ -55,6 +55,15 @@ private:
   void ResetHook(UserInterface& ui) override;
 };
 
+template <>
+inline DocumentationEntry InstructionDocFor<Async>()
+{
+  DocumentationEntry doc{{
+    { Constants::INSTR_DOC_DESCRIPTION, "Decorator that makes the execution of its child asynchronous" }
+  }};
+  return doc;
+}
+
 }  // namespace oac_tree
 
 }  // namespace sup

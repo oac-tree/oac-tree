@@ -37,14 +37,14 @@ R"RAW(This instruction does all kinds of things:
   * or maybe even something else
 )RAW";
 
-class InstructionDocTest : public ::testing::Test
+class DocumentationEntryTest : public ::testing::Test
 {
 protected:
-  InstructionDocTest() = default;
-  virtual ~InstructionDocTest() = default;
+  DocumentationEntryTest() = default;
+  virtual ~DocumentationEntryTest() = default;
 };
 
-TEST_F(InstructionDocTest, DefaultCtor)
+TEST_F(DocumentationEntryTest, DefaultCtor)
 {
   // Default constructed DocumentationEntry does not contain any fields
   DocumentationEntry doc{};
@@ -56,7 +56,7 @@ TEST_F(InstructionDocTest, DefaultCtor)
   EXPECT_TRUE(field_names.empty());
 }
 
-TEST_F(InstructionDocTest, MapCtor)
+TEST_F(DocumentationEntryTest, MapCtor)
 {
   // DocumentationEntry constructed from map
   const std::string description{"This instruction is well-documented!"};
@@ -75,7 +75,7 @@ TEST_F(InstructionDocTest, MapCtor)
   EXPECT_EQ(field_names[0], INSTR_DOC_DESCRIPTION);
 }
 
-TEST_F(InstructionDocTest, LongDescription)
+TEST_F(DocumentationEntryTest, LongDescription)
 {
   // DocumentationEntry constructed from map with multiline description
   DocumentationEntry doc{{

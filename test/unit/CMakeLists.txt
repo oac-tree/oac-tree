@@ -27,6 +27,7 @@ target_sources(${unit-tests}
     daemon_interface_tests.cpp
     decorator_instruction_tests.cpp
     decrement_tests.cpp
+    documentation_entry_tests.cpp
     equals_tests.cpp
     execution_status_tests.cpp
     fail_tests.cpp
@@ -38,7 +39,6 @@ target_sources(${unit-tests}
     include_tests.cpp
     increment_tests.cpp
     input_tests.cpp
-    instruction_doc_tests.cpp
     instruction_filters_tests.cpp
     instruction_info_tests.cpp
     instruction_map_tests.cpp

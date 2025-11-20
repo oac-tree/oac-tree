@@ -56,6 +56,15 @@ public:
   static const std::string Type;
 };
 
+template <>
+DocumentationEntry sup::oac_tree::VariableDocFor<TestVariable>()
+{
+  DocumentationEntry doc{{
+    { Constants::VAR_DOC_DESCRIPTION, "TEST" }
+  }};
+  return doc;
+}
+
 const std::string TestVariable::Type = "TestVariable";
 
 TEST_F(VariableRegistryTest, DefaultConstructed)
@@ -73,7 +82,7 @@ TEST_F(VariableRegistryTest, GlobalRegistry)
   EXPECT_TRUE(static_cast<bool>(global_reg.Create(FileVariable::Type)));
 }
 
-TEST_F(VariableRegistryTest, RegisterVariable)
+TEST_F(VariableRegistryTest, EmptyRegistry)
 {
   auto var_names = empty_reg.RegisteredVariableNames();
   EXPECT_EQ(var_names.size(), 0);
@@ -86,7 +95,7 @@ TEST_F(VariableRegistryTest, RegisterVariable)
   EXPECT_TRUE(static_cast<bool>(empty_reg.Create(FileVariable::Type)));
 }
 
-TEST_F(VariableRegistryTest, RegisterGlobalVariable)
+TEST_F(VariableRegistryTest, RegisterTestVariable)
 {
   // copy global registry
   auto registry = GlobalVariableRegistry();
@@ -102,6 +111,13 @@ TEST_F(VariableRegistryTest, RegisterGlobalVariable)
   EXPECT_TRUE(registry.IsRegisteredVariableName(TestVariable::Type));
   EXPECT_NE(std::find(var_names.begin(), var_names.end(), TestVariable::Type), var_names.end());
   EXPECT_TRUE(static_cast<bool>(registry.Create(TestVariable::Type)));
+
+  // Documentation object is as expected
+  const auto doc = registry.GetDocumentation(TestVariable::Type);
+  const auto doc_fields = doc.GetFieldNames();
+  ASSERT_EQ(doc_fields.size(), 1);
+  EXPECT_EQ(doc_fields[0], Constants::VAR_DOC_DESCRIPTION);
+  EXPECT_EQ(doc.GetField(Constants::VAR_DOC_DESCRIPTION), "TEST");
 }
 
 TEST_F(VariableRegistryTest, BaseVariables)

@@ -3,6 +3,7 @@ target_sources(sup-oac-tree-shared
     anyvalue_utils.cpp
     application_utils.cpp
     async_input_adapter.cpp
+    documentation_entry.cpp
     exceptions.cpp
     generic_utils.cpp
     i_user_input_future.cpp

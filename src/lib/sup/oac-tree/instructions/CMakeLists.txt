@@ -13,7 +13,6 @@ target_sources(sup-oac-tree-shared
     copy.cpp
     decorator_instruction.cpp
     decrement.cpp
-    documentation_entry.cpp
     equals.cpp
     fail.cpp
     fallback.cpp

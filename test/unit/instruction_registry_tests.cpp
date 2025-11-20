@@ -47,9 +47,9 @@ private:
 };
 
 template <>
-InstructionDoc sup::oac_tree::InstructionDocFor<TestInstruction>()
+DocomentationEntry sup::oac_tree::InstructionDocFor<TestInstruction>()
 {
-  InstructionDoc doc{{
+  DocomentationEntry doc{{
     { Constants::INSTR_DOC_DESCRIPTION, "TEST" }
   }};
   return doc;

@@ -20,24 +20,24 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <sup/oac-tree/instruction_doc.h>
+#include <sup/oac-tree/documentation_entry.h>
 
 namespace sup
 {
 namespace oac_tree
 {
 
-InstructionDoc::InstructionDoc()
-  : InstructionDoc{std::map<std::string, std::string>{}}
+DocomentationEntry::DocomentationEntry()
+  : DocomentationEntry{std::map<std::string, std::string>{}}
 {}
 
-InstructionDoc::InstructionDoc(std::map<std::string, std::string> doc_map)
+DocomentationEntry::DocomentationEntry(std::map<std::string, std::string> doc_map)
   : m_doc_map{std::move(doc_map)}
 {}
 
-InstructionDoc::~InstructionDoc() = default;
+DocomentationEntry::~DocomentationEntry() = default;
 
-std::string InstructionDoc::GetField(const std::string& field_name,
+std::string DocomentationEntry::GetField(const std::string& field_name,
                                      const std::string& default_val) const
 {
   auto iter = m_doc_map.find(field_name);
@@ -48,12 +48,12 @@ std::string InstructionDoc::GetField(const std::string& field_name,
   return iter->second;
 }
 
-std::string InstructionDoc::GetField(const std::string& field_name) const
+std::string DocomentationEntry::GetField(const std::string& field_name) const
 {
   return GetField(field_name, {});
 }
 
-std::vector<std::string> InstructionDoc::GetFieldNames() const
+std::vector<std::string> DocomentationEntry::GetFieldNames() const
 {
   std::vector<std::string> result{};
   for (const auto& [name, _] : m_doc_map)

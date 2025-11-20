@@ -20,8 +20,8 @@
  * of the distribution package.
  ******************************************************************************/
 
-#ifndef SUP_OAC_TREE_INSTRUCTION_DOC_H_
-#define SUP_OAC_TREE_INSTRUCTION_DOC_H_
+#ifndef SUP_OAC_TREE_DOCUMENTATION_ENTRY_H_
+#define SUP_OAC_TREE_DOCUMENTATION_ENTRY_H_
 
 #include <map>
 #include <string>
@@ -32,22 +32,22 @@ namespace sup
 namespace oac_tree
 {
 /**
- * @brief The InstructionDoc class represents basic information about an instruction. Instances of
+ * @brief The DocomentationEntry class represents basic information about an instruction. Instances of
  * this class are expected to be registered together with instruction factory functions, to allow
  * user interfaces to display basic documentation about specific instructions.
  */
-class InstructionDoc
+class DocomentationEntry
 {
 public:
-  InstructionDoc();
-  explicit InstructionDoc(std::map<std::string, std::string> doc_map);
-  ~InstructionDoc();
+  DocomentationEntry();
+  explicit DocomentationEntry(std::map<std::string, std::string> doc_map);
+  ~DocomentationEntry();
 
   // Copy/move construction/assignment
-  InstructionDoc(const InstructionDoc& other) = default;
-  InstructionDoc(InstructionDoc&& other) noexcept = default;
-  InstructionDoc& operator=(const InstructionDoc& other) = default;
-  InstructionDoc& operator=(InstructionDoc&& other) noexcept = default;
+  DocomentationEntry(const DocomentationEntry& other) = default;
+  DocomentationEntry(DocomentationEntry&& other) noexcept = default;
+  DocomentationEntry& operator=(const DocomentationEntry& other) = default;
+  DocomentationEntry& operator=(DocomentationEntry&& other) noexcept = default;
 
   /**
    * @brief Get the string entry referred to by a specific key.
@@ -81,4 +81,4 @@ private:
 
 }  // namespace sup
 
-#endif  // SUP_OAC_TREE_INSTRUCTION_DOC_H_
+#endif  // SUP_OAC_TREE_DOCUMENTATION_ENTRY_H_

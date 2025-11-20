@@ -13,6 +13,7 @@ target_sources(sup-oac-tree-shared
     copy.cpp
     decorator_instruction.cpp
     decrement.cpp
+    documentation_entry.cpp
     equals.cpp
     fail.cpp
     fallback.cpp
@@ -24,7 +25,6 @@ target_sources(sup-oac-tree-shared
     include_procedure.cpp
     increment.cpp
     input.cpp
-    instruction_doc.cpp
     instruction_filters.cpp
     instruction_helper.cpp
     instruction_registry.cpp

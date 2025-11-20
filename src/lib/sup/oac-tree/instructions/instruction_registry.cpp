@@ -86,7 +86,7 @@ InstructionRegistry& GlobalInstructionRegistry()
 }
 
 bool InstructionRegistry::RegisterInstruction(std::string name, InstructionConstructor constructor,
-                                              InstructionDoc doc)
+                                              DocomentationEntry doc)
 {
   (void)doc;
   auto it = m_instruction_entries.find(name);
@@ -114,7 +114,7 @@ std::unique_ptr<Instruction> InstructionRegistry::Create(const std::string& name
   return std::unique_ptr<Instruction>(entry->second.ctor());
 }
 
-InstructionDoc InstructionRegistry::GetDocumentation(const std::string& name)
+DocomentationEntry InstructionRegistry::GetDocumentation(const std::string& name)
 {
   auto entry = m_instruction_entries.find(name);
   if (entry == m_instruction_entries.end())

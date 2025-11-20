@@ -23,7 +23,7 @@
 #ifndef SUP_OAC_TREE_INSTRUCTION_REGISTRY_H_
 #define SUP_OAC_TREE_INSTRUCTION_REGISTRY_H_
 
-#include <sup/oac-tree/instruction_doc.h>
+#include <sup/oac-tree/documentation_entry.h>
 
 #include <map>
 #include <memory>
@@ -56,7 +56,7 @@ public:
    * @param doc Documentation object for the instruction.
    */
   bool RegisterInstruction(std::string name, InstructionConstructor constructor,
-                           InstructionDoc doc);
+                           DocomentationEntry doc);
 
   /**
    * @brief Instantiate an instruction with the given name.
@@ -72,7 +72,7 @@ public:
    * @param name Name under which the instruction was registered.
    * @throws InvalidOperationException when the instruction was not found.
    */
-  InstructionDoc GetDocumentation(const std::string& name);
+  DocomentationEntry GetDocumentation(const std::string& name);
 
   /**
    * @brief List names of registered instructions.
@@ -88,7 +88,7 @@ private:
   struct InstructionEntry
   {
     InstructionConstructor ctor;
-    InstructionDoc doc;
+    DocomentationEntry doc;
   };
   /**
    * @brief Map between instruction typename and its constructor.
@@ -99,16 +99,16 @@ private:
 InstructionRegistry &GlobalInstructionRegistry();
 
 /**
- * @brief Template function returning a empty InstructionDoc. This needs to be specialized for
- * each instruction requiring a custom InstructionDoc.
+ * @brief Template function returning a empty DocomentationEntry. This needs to be specialized for
+ * each instruction requiring a custom DocomentationEntry.
  *
  * @tparam T Instruction type parameter.
- * @return InstructionDoc corresponding to the instruction type.
+ * @return DocomentationEntry corresponding to the instruction type.
  */
 template <typename T>
-InstructionDoc InstructionDocFor()
+DocomentationEntry InstructionDocFor()
 {
-  return InstructionDoc{};
+  return DocomentationEntry{};
 }
 
 /**
@@ -135,7 +135,7 @@ InstructionDoc InstructionDocFor()
    const std::string MyInstruction::Type = "MyInstruction";
 
    // Define a documentation object
-   InstructionDoc my_doc{{
+   DocomentationEntry my_doc{{
     { Constants::INSTR_DOC_DESCRIPTION, "Description for this instruction"}
    }};
 
@@ -145,7 +145,7 @@ InstructionDoc InstructionDocFor()
    @endcode
  */
 template <class T>
-bool RegisterInstruction(InstructionRegistry& registry, InstructionDoc doc)
+bool RegisterInstruction(InstructionRegistry& registry, DocomentationEntry doc)
 {
   auto constructor = []() { return static_cast<Instruction *>(new T()); };
   return registry.RegisterInstruction(T::Type, constructor, std::move(doc));
@@ -192,7 +192,7 @@ bool RegisterInstruction(InstructionRegistry& registry)
    @endcode
  */
 template <class T>
-bool RegisterGlobalInstruction(InstructionDoc doc)
+bool RegisterGlobalInstruction(DocomentationEntry doc)
 {
   return RegisterInstruction<T>(GlobalInstructionRegistry(), std::move(doc));
 }

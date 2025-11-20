@@ -24,7 +24,7 @@
 #define SUP_OAC_TREE_INSTRUCTION_DOC_OBJECTS_H_
 
 #include <sup/oac-tree/constants.h>
-#include <sup/oac-tree/instruction_doc.h>
+#include <sup/oac-tree/documentation_entry.h>
 
 namespace sup
 {
@@ -34,9 +34,9 @@ namespace oac_tree
 class Choice;
 
 template <>
-InstructionDoc InstructionDocFor<Choice>()
+DocomentationEntry InstructionDocFor<Choice>()
 {
-  InstructionDoc doc{{
+  DocomentationEntry doc{{
     { Constants::INSTR_DOC_DESCRIPTION, "Executes a subset of children depending on a variable value" }
   }};
   return doc;

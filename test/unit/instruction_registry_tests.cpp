@@ -170,4 +170,11 @@ TEST(InstructionRegistryTest, SetAllEmptyDocFields)
   doc = registry.GetDocumentation(TestInstruction::Type);
   EXPECT_EQ(doc.GetField(Constants::INSTR_DOC_DESCRIPTION), "TEST");
   EXPECT_EQ(doc.GetField(field_name), field_val);
+  // Calling SetAllEmptyDocFields with another value but same field will have no effect, since
+  // the field values are already non-empty
+  const std::string field_val2{"YetAnotherFieldValue"};
+  SetAllEmptyDocFields(registry, field_name, field_val2);
+  doc = registry.GetDocumentation(TestInstruction::Type);
+  EXPECT_EQ(doc.GetField(Constants::INSTR_DOC_DESCRIPTION), "TEST");
+  EXPECT_EQ(doc.GetField(field_name), field_val);
 }

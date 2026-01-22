@@ -67,6 +67,14 @@ public:
   std::string GetField(const std::string& field_name) const;
 
   /**
+   * @brief Set a specific field of the documentation entry.
+   *
+   * @param field_name Name of the field to set.
+   * @param field_val Value of the field to set.
+   */
+  void SetField(const std::string& field_name, const std::string& field_val);
+
+  /**
    * @brief Retrieve a list of all the field names.
    *
    * @return List of all fieldnames.

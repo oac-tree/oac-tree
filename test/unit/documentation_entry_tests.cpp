@@ -92,3 +92,24 @@ TEST_F(DocumentationEntryTest, LongDescription)
   ASSERT_EQ(field_names.size(), 1);
   EXPECT_EQ(field_names[0], INSTR_DOC_DESCRIPTION);
 }
+
+TEST_F(DocumentationEntryTest, SetField)
+{
+  // DocumentationEntry constructed from map
+  const std::string description{"This instruction is well-documented!"};
+  DocumentationEntry doc{{
+    { INSTR_DOC_DESCRIPTION, description }
+  }};
+  auto field_names = doc.GetFieldNames();
+  ASSERT_EQ(field_names.size(), 1);
+  const std::string empty{};
+  const std::string field_name{"NewField"};
+  const std::string field_value{"NewFieldValue"};
+  EXPECT_EQ(doc.GetField(INSTR_DOC_DESCRIPTION), description);
+  EXPECT_EQ(doc.GetField(field_name), empty);
+  // Set field
+  doc.SetField(field_name, field_value);
+  EXPECT_EQ(doc.GetField(field_name), field_value);
+  field_names = doc.GetFieldNames();
+  ASSERT_EQ(field_names.size(), 2);
+}

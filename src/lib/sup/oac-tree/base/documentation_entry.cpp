@@ -38,7 +38,7 @@ DocumentationEntry::DocumentationEntry(std::map<std::string, std::string> doc_ma
 DocumentationEntry::~DocumentationEntry() = default;
 
 std::string DocumentationEntry::GetField(const std::string& field_name,
-                                     const std::string& default_val) const
+                                         const std::string& default_val) const
 {
   auto iter = m_doc_map.find(field_name);
   if (iter == m_doc_map.end())
@@ -51,6 +51,11 @@ std::string DocumentationEntry::GetField(const std::string& field_name,
 std::string DocumentationEntry::GetField(const std::string& field_name) const
 {
   return GetField(field_name, {});
+}
+
+void DocumentationEntry::SetField(const std::string& field_name, const std::string& field_val)
+{
+  m_doc_map[field_name] = field_val;
 }
 
 std::vector<std::string> DocumentationEntry::GetFieldNames() const

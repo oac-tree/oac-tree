@@ -1,3 +1,7 @@
+Changes for 4.5.0:
+
+- Provide info on plugin provider for instructions/variables
+
 Changes for 4.4.0:
 
 - Add documentaion entries to Variable and Instruction registries

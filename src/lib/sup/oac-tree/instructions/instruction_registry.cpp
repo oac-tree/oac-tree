@@ -110,6 +110,19 @@ std::vector<std::string> InstructionRegistry::RegisteredInstructionNames() const
   return result;
 }
 
+void SetAllEmptyDocFields(InstructionRegistry& registry, const std::string& field_name,
+                          const std::string& field_val)
+{
+  const auto instr_names = registry.RegisteredInstructionNames();
+  for (const auto& instr_name : instr_names)
+  {
+    if (registry.GetDocumentation(instr_name).GetField(field_name).empty())
+    {
+      registry.SetDocumentationField(instr_name, field_name, field_val);
+    }
+  }
+}
+
 bool InstructionRegistry::IsRegisteredInstructionName(const std::string& name) const
 {
   auto it = m_instruction_entries.find(name);

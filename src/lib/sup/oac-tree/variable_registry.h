@@ -110,6 +110,17 @@ private:
   std::map<std::string, VariableEntry> m_variable_entries;
 };
 
+/**
+ * @brief Set a documentation field of all variables in a registry to a specific value if
+ * their current value is empty (or does not exist).
+ *
+ * @param registry Registry whose variable documentations to set.
+ * @param field_name Field name of the documentation to set.
+ * @param field_val Field value of the documentation to set.
+ */
+void SetAllEmptyDocFields(VariableRegistry& registry, const std::string& field_name,
+                          const std::string& field_val);
+
 VariableRegistry &GlobalVariableRegistry();
 
 /**

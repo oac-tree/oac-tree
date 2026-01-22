@@ -112,6 +112,17 @@ private:
   std::map<std::string, InstructionEntry> m_instruction_entries;
 };
 
+/**
+ * @brief Set a documentation field of all instructions in a registry to a specific value if
+ * their current value is empty (or does not exist).
+ *
+ * @param registry Registry whose instruction documentations to set.
+ * @param field_name Field name of the documentation to set.
+ * @param field_val Field value of the documentation to set.
+ */
+void SetAllEmptyDocFields(InstructionRegistry& registry, const std::string& field_name,
+                          const std::string& field_val);
+
 InstructionRegistry &GlobalInstructionRegistry();
 
 /**

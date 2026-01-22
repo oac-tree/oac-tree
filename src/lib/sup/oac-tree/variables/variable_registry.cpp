@@ -111,6 +111,19 @@ std::vector<std::string> VariableRegistry::RegisteredVariableNames() const
   return result;
 }
 
+void SetAllEmptyDocFields(VariableRegistry& registry, const std::string& field_name,
+                          const std::string& field_val)
+{
+  const auto var_names = registry.RegisteredVariableNames();
+  for (const auto& instr_name : var_names)
+  {
+    if (registry.GetDocumentation(instr_name).GetField(field_name).empty())
+    {
+      registry.SetDocumentationField(instr_name, field_name, field_val);
+    }
+  }
+}
+
 bool VariableRegistry::IsRegisteredVariableName(const std::string& name) const
 {
   auto it = m_variable_entries.find(name);

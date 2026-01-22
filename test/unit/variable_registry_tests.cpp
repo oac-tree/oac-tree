@@ -160,6 +160,28 @@ TEST_F(VariableRegistryTest, VariableDocs)
   EXPECT_EQ(doc.GetField(field_name), field_val);
 }
 
+TEST_F(VariableRegistryTest, SetAllEmptyDocFields)
+{
+  VariableRegistry registry{};
+  // GetDocumentation throws for unknown instruction
+  EXPECT_THROW(registry.GetDocumentation(TestVariable::Type), InvalidOperationException);
+  // Register test instruction and check documentation
+  EXPECT_TRUE(RegisterVariable<TestVariable>(registry));
+  auto doc = registry.GetDocumentation(TestVariable::Type);
+  EXPECT_EQ(doc.GetField(Constants::VAR_DOC_DESCRIPTION), "TEST");
+  // New field name does not exist yet
+  const std::string field_name{"NewFieldName"};
+  const std::string empty{};
+  EXPECT_EQ(doc.GetField(field_name), empty);
+
+  // Set new field in documentation
+  const std::string field_val{"NewFieldValue"};
+  SetAllEmptyDocFields(registry, field_name, field_val);
+  doc = registry.GetDocumentation(TestVariable::Type);
+  EXPECT_EQ(doc.GetField(Constants::VAR_DOC_DESCRIPTION), "TEST");
+  EXPECT_EQ(doc.GetField(field_name), field_val);
+}
+
 VariableRegistryTest::VariableRegistryTest() : empty_reg{} {}
 
 VariableRegistryTest::~VariableRegistryTest() = default;

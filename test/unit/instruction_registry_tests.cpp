@@ -90,8 +90,7 @@ TEST(InstructionRegistryTest, RegisterInstruction)
   // Documentation object is as expected
   const auto doc = registry.GetDocumentation(TestInstruction::Type);
   const auto doc_fields = doc.GetFieldNames();
-  ASSERT_EQ(doc_fields.size(), 1);
-  EXPECT_EQ(doc_fields[0], Constants::INSTR_DOC_DESCRIPTION);
+  ASSERT_GE(doc_fields.size(), 1);
   EXPECT_EQ(doc.GetField(Constants::INSTR_DOC_DESCRIPTION), "TEST");
 }
 
@@ -113,9 +112,13 @@ TEST(InstructionRegistryTest, BaseInstructions)
     // Documentation object is as expected
     const auto doc = GlobalInstructionRegistry().GetDocumentation(instr_name);
     const auto doc_fields = doc.GetFieldNames();
-    ASSERT_EQ(doc_fields.size(), 1) << "Incorrect number of doc entries for instruction "
+    ASSERT_GE(doc_fields.size(), 2) << "Incorrect number of doc entries for instruction "
       << instr_name;
-    EXPECT_EQ(doc_fields[0], Constants::INSTR_DOC_DESCRIPTION);
+    EXPECT_NE(std::find(doc_fields.begin(), doc_fields.end(), Constants::INSTR_DOC_DESCRIPTION),
+              doc_fields.end());
+    EXPECT_NE(std::find(doc_fields.begin(), doc_fields.end(), Constants::INSTR_DOC_PLUGIN_NAME),
+              doc_fields.end());
+    EXPECT_EQ(doc.GetField(Constants::INSTR_DOC_PLUGIN_NAME), Constants::DOC_CORE_LIBRARY_NAME);
   }
 }
 

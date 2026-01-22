@@ -176,6 +176,10 @@ void InitInstructionRegistry(InstructionRegistry& registry)
   (void)RegisterInstruction<Wait>(registry);
   (void)RegisterInstruction<WaitForVariable>(registry);
   (void)RegisterInstruction<WaitForVariables>(registry);
+
+  // Set plugin name of these instructions to 'CORE'
+  SetAllEmptyDocFields(registry, Constants::INSTR_DOC_PLUGIN_NAME,
+                       Constants::DOC_CORE_LIBRARY_NAME);
 }
 
 }  // namespace oac_tree

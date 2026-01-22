@@ -116,7 +116,8 @@ TEST_F(VariableRegistryTest, RegisterTestVariable)
   const auto doc = registry.GetDocumentation(TestVariable::Type);
   const auto doc_fields = doc.GetFieldNames();
   ASSERT_GE(doc_fields.size(), 1);
-  EXPECT_EQ(doc_fields[0], Constants::VAR_DOC_DESCRIPTION);
+  EXPECT_NE(std::find(doc_fields.begin(), doc_fields.end(), Constants::VAR_DOC_DESCRIPTION),
+            doc_fields.end());
   EXPECT_EQ(doc.GetField(Constants::VAR_DOC_DESCRIPTION), "TEST");
 }
 
@@ -132,9 +133,13 @@ TEST_F(VariableRegistryTest, BaseVariables)
     // Documentation object is as expected
     const auto doc = GlobalVariableRegistry().GetDocumentation(var_name);
     const auto doc_fields = doc.GetFieldNames();
-    ASSERT_GE(doc_fields.size(), 1) << "Incorrect number of doc entries for variable "
+    ASSERT_GE(doc_fields.size(), 2) << "Incorrect number of doc entries for variable "
       << var_name;
-    EXPECT_EQ(doc_fields[0], Constants::VAR_DOC_DESCRIPTION);
+    EXPECT_NE(std::find(doc_fields.begin(), doc_fields.end(), Constants::VAR_DOC_DESCRIPTION),
+              doc_fields.end());
+    EXPECT_NE(std::find(doc_fields.begin(), doc_fields.end(), Constants::VAR_DOC_PLUGIN_NAME),
+              doc_fields.end());
+    EXPECT_EQ(doc.GetField(Constants::VAR_DOC_PLUGIN_NAME), Constants::DOC_CORE_LIBRARY_NAME);
   }
 }
 

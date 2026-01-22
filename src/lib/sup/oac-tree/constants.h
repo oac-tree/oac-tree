@@ -155,6 +155,9 @@ const std::string INSTR_DOC_PLUGIN_NAME = "plugin";
 const std::string VAR_DOC_DESCRIPTION = "description";
 const std::string VAR_DOC_PLUGIN_NAME = "plugin";
 
+// Name to use for core library instructions/variables
+const std::string DOC_CORE_LIBRARY_NAME = "CORE";
+
 // Instruction info node fields
 const std::string kInstructionInfoNodeType = "sup::instructionNodeInfoType/v1.0";
 const std::string kInstructionInfoNodeTypeField = "type";

@@ -134,6 +134,10 @@ void InitVariableRegistry(VariableRegistry& registry)
 {
   (void)RegisterVariable<LocalVariable>(registry);
   (void)RegisterVariable<FileVariable>(registry);
+
+  // Set plugin name of these variables to 'CORE'
+  SetAllEmptyDocFields(registry, Constants::VAR_DOC_PLUGIN_NAME,
+                       Constants::DOC_CORE_LIBRARY_NAME);
 }
 
 }  // namespace oac_tree

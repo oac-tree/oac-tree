@@ -25,8 +25,11 @@
 #include "procedure_parser.h"
 #include "procedure_to_treedata_utils.h"
 
+#include <sup/oac-tree/constants.h>
 #include <sup/oac-tree/exceptions.h>
 #include <sup/oac-tree/generic_utils.h>
+#include <sup/oac-tree/instruction_registry.h>
+#include <sup/oac-tree/variable_registry.h>
 
 #include <sup/xml/tree_data_parser.h>
 #include <sup/xml/tree_data_serialize.h>
@@ -38,6 +41,8 @@ namespace oac_tree
 void LoadPlugin(const std::string& name)
 {
   (void)utils::LoadLibrary(name);
+  SetAllEmptyDocFields(GlobalInstructionRegistry(), Constants::INSTR_DOC_PLUGIN_NAME, name);
+  SetAllEmptyDocFields(GlobalVariableRegistry(), Constants::VAR_DOC_PLUGIN_NAME, name);
 }
 
 std::unique_ptr<Procedure> ParseProcedureFile(const std::string& filename)

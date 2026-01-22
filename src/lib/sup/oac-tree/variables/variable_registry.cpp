@@ -87,6 +87,20 @@ DocumentationEntry VariableRegistry::GetDocumentation(const std::string& name)
   return entry->second.doc;
 }
 
+void VariableRegistry::SetDocumentationField(
+  const std::string& name, const std::string& field_name, const std::string& field_val)
+{
+  auto entry = m_variable_entries.find(name);
+  if (entry == m_variable_entries.end())
+  {
+    std::string error_message =
+      "VariableRegistry::SetDocumentationField(): variable "
+      "with name [" + name + "] not found";
+    throw InvalidOperationException(error_message);
+  }
+  entry->second.doc.SetField(field_name, field_val);
+}
+
 std::vector<std::string> VariableRegistry::RegisteredVariableNames() const
 {
   std::vector<std::string> result;

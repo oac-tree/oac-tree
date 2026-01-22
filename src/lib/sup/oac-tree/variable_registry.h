@@ -78,6 +78,17 @@ public:
   DocumentationEntry GetDocumentation(const std::string& name);
 
   /**
+   * @brief Set documentation object field for the given variable.
+   *
+   * @param name Name under which the variable was registered.
+   * @param field_name Name of the field to set.
+   * @param field_val Value of the field to set.
+   * @throws InvalidOperationException when the variable was not found.
+   */
+  void SetDocumentationField(const std::string& name, const std::string& field_name,
+                             const std::string& field_val);
+
+  /**
    * @brief List names of registered variables.
    */
   std::vector<std::string> RegisteredVariableNames() const;

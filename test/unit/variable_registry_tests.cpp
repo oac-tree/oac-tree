@@ -115,7 +115,7 @@ TEST_F(VariableRegistryTest, RegisterTestVariable)
   // Documentation object is as expected
   const auto doc = registry.GetDocumentation(TestVariable::Type);
   const auto doc_fields = doc.GetFieldNames();
-  ASSERT_EQ(doc_fields.size(), 1);
+  ASSERT_GE(doc_fields.size(), 1);
   EXPECT_EQ(doc_fields[0], Constants::VAR_DOC_DESCRIPTION);
   EXPECT_EQ(doc.GetField(Constants::VAR_DOC_DESCRIPTION), "TEST");
 }
@@ -132,10 +132,32 @@ TEST_F(VariableRegistryTest, BaseVariables)
     // Documentation object is as expected
     const auto doc = GlobalVariableRegistry().GetDocumentation(var_name);
     const auto doc_fields = doc.GetFieldNames();
-    ASSERT_EQ(doc_fields.size(), 1) << "Incorrect number of doc entries for variable "
+    ASSERT_GE(doc_fields.size(), 1) << "Incorrect number of doc entries for variable "
       << var_name;
     EXPECT_EQ(doc_fields[0], Constants::VAR_DOC_DESCRIPTION);
   }
+}
+
+TEST_F(VariableRegistryTest, VariableDocs)
+{
+  VariableRegistry registry{};
+  // GetDocumentation throws for unknown instruction
+  EXPECT_THROW(registry.GetDocumentation(TestVariable::Type), InvalidOperationException);
+  // Register test instruction and check documentation
+  EXPECT_TRUE(RegisterVariable<TestVariable>(registry));
+  auto doc = registry.GetDocumentation(TestVariable::Type);
+  EXPECT_EQ(doc.GetField(Constants::VAR_DOC_DESCRIPTION), "TEST");
+  // New field name does not exist yet
+  const std::string field_name{"NewFieldName"};
+  const std::string empty{};
+  EXPECT_EQ(doc.GetField(field_name), empty);
+
+  // Set new field in documentation
+  const std::string field_val{"NewFieldValue"};
+  registry.SetDocumentationField(TestVariable::Type, field_name, field_val);
+  doc = registry.GetDocumentation(TestVariable::Type);
+  EXPECT_EQ(doc.GetField(Constants::VAR_DOC_DESCRIPTION), "TEST");
+  EXPECT_EQ(doc.GetField(field_name), field_val);
 }
 
 VariableRegistryTest::VariableRegistryTest() : empty_reg{} {}

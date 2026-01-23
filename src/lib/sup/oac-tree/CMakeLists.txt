@@ -19,7 +19,7 @@ target_include_directories(sup-oac-tree-shared PUBLIC
   $<INSTALL_INTERFACE:include>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/../..>)
 
-target_link_libraries(sup-oac-tree-shared PUBLIC sup-dto::sup-dto PRIVATE sup-utils::sup-xml)
+target_link_libraries(sup-oac-tree-shared PUBLIC sup-dto::sup-dto PRIVATE sup-utils::sup-xml sup-utils::sup-platform)
 
 install(TARGETS sup-oac-tree-shared EXPORT oac-tree-targets LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 set_target_properties(sup-oac-tree-shared PROPERTIES EXPORT_NAME oac-tree)

@@ -27,10 +27,10 @@
 #include <sup/dto/anytype.h>
 #include <sup/dto/anyvalue.h>
 #include <sup/dto/json_value_parser.h>
+#include <sup/platform/load_library.h>
 
 #include <chrono>
 #include <cstdlib>
-#include <dlfcn.h>
 #include <fstream>
 
 #include <sys/types.h>
@@ -70,7 +70,7 @@ LibraryHandle LoadLibrary(const std::string& libname)
     "utils::LoadLibrary(): trying to load library with empty name";
     throw InvalidOperationException(error_message);
   }
-  LibraryHandle handle = dlopen(libname.c_str(), RTLD_NOW);
+  LibraryHandle handle = sup::platform::LoadLibrary(libname);
   if (handle == nullptr)
   {
     std::string error_message =
@@ -82,7 +82,7 @@ LibraryHandle LoadLibrary(const std::string& libname)
 
 bool UnloadLibrary(LibraryHandle handle)
 {
-  return dlclose(handle) == 0;
+  return sup::platform::UnloadLibrary(handle);
 }
 
 // Adpted from https://stackoverflow.com/a/11366985

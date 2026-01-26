@@ -74,7 +74,7 @@ std::unique_ptr<Variable> VariableRegistry::Create(std::string name)
   return std::unique_ptr<Variable>(entry->second.ctor());
 }
 
-DocumentationEntry VariableRegistry::GetDocumentation(const std::string& name)
+DocumentationEntry VariableRegistry::GetDocumentation(const std::string& name) const
 {
   auto entry = m_variable_entries.find(name);
   if (entry == m_variable_entries.end())
@@ -115,13 +115,60 @@ void SetAllEmptyDocFields(VariableRegistry& registry, const std::string& field_n
                           const std::string& field_val)
 {
   const auto var_names = registry.RegisteredVariableNames();
-  for (const auto& instr_name : var_names)
+  for (const auto& var_name : var_names)
   {
-    if (registry.GetDocumentation(instr_name).GetField(field_name).empty())
+    if (registry.GetDocumentation(var_name).GetField(field_name).empty())
     {
-      registry.SetDocumentationField(instr_name, field_name, field_val);
+      registry.SetDocumentationField(var_name, field_name, field_val);
     }
   }
+}
+
+std::set<std::string> GetAllPluginNames(const VariableRegistry& registry)
+{
+  std::set<std::string> result{};
+  const auto variables = registry.RegisteredVariableNames();
+  for (const auto& var : variables)
+  {
+    const auto doc = registry.GetDocumentation(var);
+    const auto plugin_name = doc.GetField(Constants::VAR_DOC_PLUGIN_NAME);
+    if (!plugin_name.empty() && (plugin_name != Constants::DOC_CORE_LIBRARY_NAME))
+    {
+      result.insert(plugin_name);
+    }
+  }
+  return result;
+}
+
+std::vector<std::string> GetVariablesFromPlugin(const VariableRegistry& registry,
+                                                const std::string& plugin_name)
+{
+  std::vector<std::string> result{};
+  const auto variables = registry.RegisteredVariableNames();
+  for (const auto& var : variables)
+  {
+    const auto doc = registry.GetDocumentation(var);
+    const auto plugin = doc.GetField(Constants::VAR_DOC_PLUGIN_NAME);
+    if (plugin == plugin_name)
+    {
+      result.push_back(var);
+    }
+  }
+  return result;
+}
+
+std::string GetPluginForVariable(const VariableRegistry& registry, const std::string& var_name)
+{
+  try
+  {
+    const auto doc = registry.GetDocumentation(var_name);
+    return doc.GetField(Constants::VAR_DOC_PLUGIN_NAME);
+  }
+  catch(const InvalidOperationException&)
+  {
+    // do nothing
+  }
+  return {};
 }
 
 bool VariableRegistry::IsRegisteredVariableName(const std::string& name) const

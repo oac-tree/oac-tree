@@ -28,6 +28,7 @@
 
 #include <map>
 #include <memory>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -75,7 +76,7 @@ public:
    * @param name Name under which the variable was registered.
    * @throws InvalidOperationException when the variable was not found.
    */
-  DocumentationEntry GetDocumentation(const std::string& name);
+  DocumentationEntry GetDocumentation(const std::string& name) const;
 
   /**
    * @brief Set documentation object field for the given variable.
@@ -120,6 +121,39 @@ private:
  */
 void SetAllEmptyDocFields(VariableRegistry& registry, const std::string& field_name,
                           const std::string& field_val);
+
+/**
+ * @brief Get all plugin names found in the documentation of the variables in the registry.
+ *
+ * @note 'CORE' and empty plugin names are filtered out.
+ *
+ * @param registry Registry to query.
+ * @return List of plugin names.
+ */
+std::set<std::string> GetAllPluginNames(const VariableRegistry& registry);
+
+/**
+ * @brief Get all variables from the provided plugin (must be loaded).
+ *
+ * @note Use 'CORE' as plugin name to get all core variables.
+ * @note Use empty plugin_name for all variables that have no registered plugin name.
+ *
+ * @param registry Registry to query.
+ * @param plugin_name Plugin name as it is registered in the registry.
+ * @return List of variable names belonging to the plugin.
+ */
+std::vector<std::string> GetVariablesFromPlugin(const VariableRegistry& registry,
+                                                const std::string& plugin_name);
+
+/**
+ * @brief Get the plugin name under which a variable is registered.
+ *
+ * @param registry Registry to query.
+ * @param var_name Variable name.
+ * @return Plugin name (if variable from plugin), `CORE` (for core variables) or empty
+ * (if variable does not exist).
+ */
+std::string GetPluginForVariable(const VariableRegistry& registry, const std::string& var_name);
 
 VariableRegistry &GlobalVariableRegistry();
 

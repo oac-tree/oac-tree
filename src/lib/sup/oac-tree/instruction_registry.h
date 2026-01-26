@@ -138,6 +138,7 @@ std::set<std::string> GetAllPluginNames(const InstructionRegistry& registry);
  * @brief Get all instructions from the provided plugin (must be loaded).
  *
  * @note Use 'CORE' as plugin name to get all core instructions.
+ * @note Use empty plugin_name for all instructions that have no registered plugin name.
  *
  * @param registry Registry to query.
  * @param plugin_name Plugin name as it is registered in the registry.

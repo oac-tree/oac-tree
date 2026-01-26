@@ -143,6 +143,33 @@ TEST_F(VariableRegistryTest, BaseVariables)
   }
 }
 
+TEST_F(VariableRegistryTest, QueryRegistry)
+{
+  const auto& registry = GlobalVariableRegistry();
+  const auto registered_names = registry.RegisteredVariableNames();
+
+  // No plugins registered
+  const auto plugin_names = GetAllPluginNames(registry);
+  EXPECT_TRUE(plugin_names.empty());
+
+  // Get all core variables
+  const auto core_variables = GetVariablesFromPlugin(registry, Constants::DOC_CORE_LIBRARY_NAME);
+  for (const auto& core_var : core_variables)
+  {
+    EXPECT_EQ(GetPluginForVariable(registry, core_var), Constants::DOC_CORE_LIBRARY_NAME);
+  }
+  // Get custom variables that were directly registered (without plugin name)
+  const auto custom_variables = GetVariablesFromPlugin(registry, "");
+  const std::string empty{};
+  for (const auto& custom_var : custom_variables)
+  {
+    EXPECT_EQ(GetPluginForVariable(registry, custom_var), empty);
+  }
+  // Since there are no plugins loaded, these two categories should add up to all registered
+  // variables
+  EXPECT_EQ(core_variables.size() + custom_variables.size(), registered_names.size());
+}
+
 TEST_F(VariableRegistryTest, VariableDocs)
 {
   VariableRegistry registry{};

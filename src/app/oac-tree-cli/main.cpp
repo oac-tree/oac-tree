@@ -21,6 +21,7 @@
  ******************************************************************************/
 
 #include "cl_interface.h"
+#include "cl_utils.h"
 
 #include <sup/cli/command_line_parser.h>
 #include <sup/log/default_loggers.h>
@@ -88,6 +89,9 @@ int main(int argc, char* argv[])
     logger.LogMessage(log::SUP_SEQ_LOG_ERR, error_msg);
     return 1;
   }
+
+  // Log loaded plugins.
+  logger.LogMessage(log::SUP_SEQ_LOG_INFO, GetLoadedPluginMessage());
 
   if (parser.IsSet("--validate"))
   {

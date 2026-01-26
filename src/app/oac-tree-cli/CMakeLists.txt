@@ -1,6 +1,7 @@
 target_sources(oac-tree-app-interfaces
   PRIVATE
   cl_interface.cpp
+  cl_utils.cpp
 )
 
 add_executable(oac-tree-cli)

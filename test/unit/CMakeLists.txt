@@ -17,6 +17,7 @@ target_sources(${unit-tests}
     attribute_utils_tests.cpp
     choice_tests.cpp
     cl_interface_tests.cpp
+    cl_utils_tests.cpp
     comparison_tests.cpp
     compound_instruction_tests.cpp
     condition_tests.cpp

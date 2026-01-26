@@ -1,6 +1,7 @@
 Changes for 4.5.0:
 
 - Provide info on plugin provider for instructions/variables
+- Allow platform-independent plugin names in procedure files
 
 Changes for 4.4.0:
 

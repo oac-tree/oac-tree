@@ -38,11 +38,12 @@ namespace sup
 {
 namespace oac_tree
 {
-void LoadPlugin(const std::string& name)
+utils::LibraryHandle LoadPlugin(const std::string& name)
 {
-  (void)utils::LoadLibrary(name);
+  const auto handle = utils::LoadLibrary(name);
   SetAllEmptyDocFields(GlobalInstructionRegistry(), Constants::INSTR_DOC_PLUGIN_NAME, name);
   SetAllEmptyDocFields(GlobalVariableRegistry(), Constants::VAR_DOC_PLUGIN_NAME, name);
+  return handle;
 }
 
 std::unique_ptr<Procedure> ParseProcedureFile(const std::string& filename)

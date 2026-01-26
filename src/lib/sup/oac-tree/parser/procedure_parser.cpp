@@ -77,7 +77,7 @@ void ParsePreamble(Procedure* procedure, const sup::xml::TreeData& data)
     if (child.GetNodeName() == Constants::PLUGIN_ELEMENT_NAME)
     {
       auto plugin_name = child.GetContent();
-      LoadPlugin(HandleRelativePathName(procedure, plugin_name));
+      (void)LoadPlugin(HandleRelativePathName(procedure, plugin_name));
       procedure->GetPreamble().AddPluginPath(plugin_name);
     }
     else if (child.GetNodeName() == Constants::REGISTERTYPE_ELEMENT_NAME)

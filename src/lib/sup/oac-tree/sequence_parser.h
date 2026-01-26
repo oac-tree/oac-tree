@@ -23,6 +23,7 @@
 #ifndef SUP_OAC_TREE_SEQUENCE_PARSER_H_
 #define SUP_OAC_TREE_SEQUENCE_PARSER_H_
 
+#include <sup/oac-tree/generic_utils.h>
 #include <sup/oac-tree/procedure.h>
 
 #include <memory>
@@ -32,7 +33,7 @@ namespace sup
 {
 namespace oac_tree
 {
-void LoadPlugin(const std::string& name);
+utils::LibraryHandle LoadPlugin(const std::string& name);
 
 std::unique_ptr<Procedure> ParseProcedureFile(const std::string& filename);
 

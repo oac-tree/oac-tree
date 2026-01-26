@@ -73,7 +73,7 @@ std::unique_ptr<Instruction> InstructionRegistry::Create(const std::string& name
   return std::unique_ptr<Instruction>(entry->second.ctor());
 }
 
-DocumentationEntry InstructionRegistry::GetDocumentation(const std::string& name)
+DocumentationEntry InstructionRegistry::GetDocumentation(const std::string& name) const
 {
   auto entry = m_instruction_entries.find(name);
   if (entry == m_instruction_entries.end())
@@ -121,6 +121,54 @@ void SetAllEmptyDocFields(InstructionRegistry& registry, const std::string& fiel
       registry.SetDocumentationField(instr_name, field_name, field_val);
     }
   }
+}
+
+std::set<std::string> GetAllPluginNames(const InstructionRegistry& registry)
+{
+  std::set<std::string> result{};
+  const auto instructions = registry.RegisteredInstructionNames();
+  for (const auto& instr : instructions)
+  {
+    const auto doc = registry.GetDocumentation(instr);
+    const auto plugin_name = doc.GetField(Constants::INSTR_DOC_PLUGIN_NAME);
+    if (!plugin_name.empty() && (plugin_name != Constants::DOC_CORE_LIBRARY_NAME))
+    {
+      result.insert(plugin_name);
+    }
+  }
+  return result;
+}
+
+std::vector<std::string> GetInstructionsFromPlugin(const InstructionRegistry& registry,
+                                                   const std::string& plugin_name)
+{
+  std::vector<std::string> result{};
+  const auto instructions = registry.RegisteredInstructionNames();
+  for (const auto& instr : instructions)
+  {
+    const auto doc = registry.GetDocumentation(instr);
+    const auto plugin = doc.GetField(Constants::INSTR_DOC_PLUGIN_NAME);
+    if (plugin == plugin_name)
+    {
+      result.push_back(instr);
+    }
+  }
+  return result;
+}
+
+std::string GetPluginForInstruction(const InstructionRegistry& registry,
+                                    const std::string& instr_name)
+{
+  try
+  {
+    const auto doc = registry.GetDocumentation(instr_name);
+    return doc.GetField(Constants::INSTR_DOC_PLUGIN_NAME);
+  }
+  catch(const InvalidOperationException&)
+  {
+    // do nothing
+  }
+  return {};
 }
 
 bool InstructionRegistry::IsRegisteredInstructionName(const std::string& name) const

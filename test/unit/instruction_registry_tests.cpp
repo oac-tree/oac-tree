@@ -122,6 +122,34 @@ TEST(InstructionRegistryTest, BaseInstructions)
   }
 }
 
+TEST(InstructionRegistryTest, QueryRegistry)
+{
+  const auto& registry = GlobalInstructionRegistry();
+  const auto registered_names = registry.RegisteredInstructionNames();
+
+  // No plugins registered
+  const auto plugin_names = GetAllPluginNames(registry);
+  EXPECT_TRUE(plugin_names.empty());
+
+  // Get all core instructions
+  const auto core_instructions = GetInstructionsFromPlugin(registry,
+                                                           Constants::DOC_CORE_LIBRARY_NAME);
+  for (const auto& core_instr : core_instructions)
+  {
+    EXPECT_EQ(GetPluginForInstruction(registry, core_instr), Constants::DOC_CORE_LIBRARY_NAME);
+  }
+  // Get custom instructions that were directly registered (without plugin name)
+  const auto custom_instructions = GetInstructionsFromPlugin(registry, "");
+  const std::string empty{};
+  for (const auto& custom_instr : custom_instructions)
+  {
+    EXPECT_EQ(GetPluginForInstruction(registry, custom_instr), empty);
+  }
+  // Since there are no plugins loaded, these two categories should add up to all registered
+  // instructions
+  EXPECT_EQ(core_instructions.size() + custom_instructions.size(), registered_names.size());
+}
+
 TEST(InstructionRegistryTest, CreateFailure)
 {
   EXPECT_THROW(GlobalInstructionRegistry().Create("UndefinedInstructionName"),

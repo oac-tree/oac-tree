@@ -28,6 +28,7 @@
 
 #include <map>
 #include <memory>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -77,7 +78,7 @@ public:
    * @param name Name under which the instruction was registered.
    * @throws InvalidOperationException when the instruction was not found.
    */
-  DocumentationEntry GetDocumentation(const std::string& name);
+  DocumentationEntry GetDocumentation(const std::string& name) const;
 
   /**
    * @brief Set documentation object field for the given instruction.
@@ -122,6 +123,39 @@ private:
  */
 void SetAllEmptyDocFields(InstructionRegistry& registry, const std::string& field_name,
                           const std::string& field_val);
+
+/**
+ * @brief Get all plugin names found in the documentation of the instructions in the registry.
+ *
+ * @note 'CORE' and empty plugin names are filtered out.
+ *
+ * @param registry Registry to query.
+ * @return List of plugin names.
+ */
+std::set<std::string> GetAllPluginNames(const InstructionRegistry& registry);
+
+/**
+ * @brief Get all instructions from the provided plugin (must be loaded).
+ *
+ * @note Use 'CORE' as plugin name to get all core instructions.
+ *
+ * @param registry Registry to query.
+ * @param plugin_name Plugin name as it is registered in the registry.
+ * @return List of instruction names belonging to the plugin.
+ */
+std::vector<std::string> GetInstructionsFromPlugin(const InstructionRegistry& registry,
+                                                   const std::string& plugin_name);
+
+/**
+ * @brief Get the plugin name under which an instruction is registered.
+ *
+ * @param registry Registry to query.
+ * @param instr_name Instruction name.
+ * @return Plugin name (if instruction from plugin), `CORE` (for core instructions) or empty
+ * (if instruction does not exist).
+ */
+std::string GetPluginForInstruction(const InstructionRegistry& registry,
+                                    const std::string& instr_name);
 
 InstructionRegistry &GlobalInstructionRegistry();
 

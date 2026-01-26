@@ -155,13 +155,23 @@ TEST_F(SequencerParserTest, NonExistentVariableError)
 TEST_F(SequencerParserTest, NonExistentPluginError)
 {
   const std::string body{R"(
-    <Plugin>libNonExistent.so</Plugin>
+    <Plugin>NonExistent</Plugin>
     <Sequence name="Main Sequence">
         <Wait name="Immediate success"/>
         <Wait name="One" timeout="1.0"/>
     </Sequence>
 )"};
-  EXPECT_THROW(CreateProcedure(body), RuntimeException);
+  try
+  {
+    auto proc = CreateProcedure(body);
+    FAIL();  // previous statement should trhow
+  }
+  catch(const RuntimeException& e)
+  {
+    const std::string error{e.what()};
+    auto pos = error.find("libNonExistent.so");
+    EXPECT_NE(pos, std::string::npos);
+  }
 }
 
 TEST_F(SequencerParserTest, UnnamedPluginError)

@@ -45,7 +45,8 @@ The main sections of a procedure, their multiplicity, description and attributes
 Plugins Section
 ----------------
 
-The plugins section Contains the name of the dynamic libraries to be loaded at runtime. Plugins allow to extend the existing oac-tree functionalities by providing new instructions or variables. In the XML procedure file, plugins are defined using the XML element *<Plugin>*. The plugin element has no attributes.
+The plugins section Contains the name of the dynamic libraries to be loaded at runtime. Plugins allow to extend the existing oac-tree functionalities by providing new instructions or variables. In the XML procedure file, plugins are defined using the XML element *<Plugin>*. The plugin element has no attributes. Provided plugin names can omit platform-dependent library pre- and postfixes, such as `lib` and `.so` on Linux. This allows to make procedure files platform independent.
+
 For a complete list of supported plugins, please refer to the plugins documentation ``TBD``.
 
 .. list-table::
@@ -58,7 +59,7 @@ For a complete list of supported plugins, please refer to the plugins documentat
     - | N/A
   * - Example
     - | <Plugin>liboac-tree-ca.so</Plugin>
-      | <Plugin>liboac-tree-pvxs.so</Plugin>
+      | <Plugin>oac-tree-pvxs</Plugin>
 
 
 Type Declarations Section

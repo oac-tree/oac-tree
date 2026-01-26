@@ -62,4 +62,4 @@ To use variables and instructions of any plugin within your procedure, declare t
 
 .. code-block:: xml
 
-   <Plugin>liboac-tree-example.so</Plugin>
+   <Plugin>oac-tree-example</Plugin>

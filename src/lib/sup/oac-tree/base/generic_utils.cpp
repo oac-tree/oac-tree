@@ -64,12 +64,6 @@ bool FileExists(const std::string& filename)
 
 LibraryHandle LoadLibrary(const std::string& libname)
 {
-  if (libname.empty())
-  {
-    std::string error_message =
-    "utils::LoadLibrary(): trying to load library with empty name";
-    throw InvalidOperationException(error_message);
-  }
   LibraryHandle handle = sup::platform::LoadLibrary(libname);
   if (handle == nullptr)
   {

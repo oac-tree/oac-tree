@@ -31,6 +31,7 @@
 #include <sup/oac-tree/instruction_registry.h>
 #include <sup/oac-tree/variable_registry.h>
 
+#include <sup/platform/library_names.h>
 #include <sup/xml/tree_data_parser.h>
 #include <sup/xml/tree_data_serialize.h>
 
@@ -40,9 +41,16 @@ namespace oac_tree
 {
 utils::LibraryHandle LoadPlugin(const std::string& name)
 {
-  const auto handle = utils::LoadLibrary(name);
-  SetAllEmptyDocFields(GlobalInstructionRegistry(), Constants::INSTR_DOC_PLUGIN_NAME, name);
-  SetAllEmptyDocFields(GlobalVariableRegistry(), Constants::VAR_DOC_PLUGIN_NAME, name);
+  const auto [path, stripped_basename] = sup::platform::SplitDynamicLibFilename(name);
+  if (stripped_basename.empty())
+  {
+    std::string error_message = "LoadPlugin(): trying to load plugin with empty name";
+    throw InvalidOperationException(error_message);
+  }
+  const auto libname = sup::platform::CreateFullDynamicLibPath(path, stripped_basename);
+  const auto handle = utils::LoadLibrary(libname);
+  SetAllEmptyDocFields(GlobalInstructionRegistry(), Constants::INSTR_DOC_PLUGIN_NAME, libname);
+  SetAllEmptyDocFields(GlobalVariableRegistry(), Constants::VAR_DOC_PLUGIN_NAME, libname);
   return handle;
 }
 

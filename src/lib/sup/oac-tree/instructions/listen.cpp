@@ -134,17 +134,18 @@ void Listen::InitVariableCache(const std::vector<std::string>& var_names)
   }
 }
 
-void Listen::UpdateCallback(const std::string& name, const sup::dto::AnyValue& val)
+void Listen::UpdateCallback(const std::string& name, const sup::dto::AnyValue& val, bool connected)
 {
   {
     std::lock_guard<std::mutex> lk(m_mtx);
     auto it = m_var_cache.find(name);
-    if (it == m_var_cache.end() || it->second == val)
+    if (it == m_var_cache.end() || (it->second.first == val && it->second.second == connected))
     {
       return;
     }
     m_var_changed = true;
-    it->second = val;
+    it->second.first = val;
+    it->second.second = connected;
   }
   m_cv.notify_one();
 }
@@ -157,9 +158,9 @@ void Listen::RegisterCallbacks(
   {
     (void)ws->RegisterCallback(
         var_name,
-        [this, var_name](const sup::dto::AnyValue& val, bool)
+        [this, var_name](const sup::dto::AnyValue& val, bool connected)
         {
-          UpdateCallback(var_name, val);
+          UpdateCallback(var_name, val, connected);
         }, this);
   }
 }

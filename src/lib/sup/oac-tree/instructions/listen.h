@@ -31,6 +31,7 @@
 #include <map>
 #include <memory>
 #include <mutex>
+#include <utility>
 
 namespace sup
 {
@@ -49,9 +50,10 @@ public:
   static const std::string Type;
 
 private:
+  using VarState = std::pair<sup::dto::AnyValue, bool>;
   bool m_force_success;
   bool m_blocking;
-  std::map<std::string, sup::dto::AnyValue> m_var_cache;
+  std::map<std::string, VarState> m_var_cache;
   bool m_var_changed;
   std::mutex m_mtx;
   std::condition_variable m_cv;
@@ -73,7 +75,7 @@ private:
 
   void InitVariableCache(const std::vector<std::string>& var_names);
 
-  void UpdateCallback(const std::string& name, const sup::dto::AnyValue& val);
+  void UpdateCallback(const std::string& name, const sup::dto::AnyValue& val, bool connected);
 
   void RegisterCallbacks(Workspace* ws, std::vector<std::string> var_names);
 

@@ -31,12 +31,52 @@
 
 using namespace sup::oac_tree;
 
+const sup::dto::AnyValue FixedVarValue{sup::dto::UnsignedInteger16Type,42U};
+
+/**
+ * @brief This variable will disconnect automatically after the first GetValue.
+ */
+class ListenVariable : public Variable
+{
+public:
+  ListenVariable() : Variable{Type}, m_connected{true} {}
+  ~ListenVariable() override {}
+
+  static const std::string Type;
+
+private:
+  mutable bool m_connected;
+  bool GetValueImpl(sup::dto::AnyValue &val) const override
+  {
+    if (m_connected)
+    {
+      val = FixedVarValue;
+      m_connected = false;
+      Notify(FixedVarValue, false);
+      return true;
+    }
+    return m_connected;
+  }
+  bool SetValueImpl(const sup::dto::AnyValue &) override
+  {
+    Notify(FixedVarValue, m_connected);
+    return m_connected;
+  }
+};
+
+const std::string ListenVariable::Type = "TestVariable";
+
 //! Testing Listen instruction.
 class ListenTest : public ::testing::Test
 {
 protected:
   ListenTest() = default;
   ~ListenTest() = default;
+
+  std::unique_ptr<Variable> GetListenVariable()
+  {
+    return std::make_unique<ListenVariable>();
+  }
 };
 
 TEST_F(ListenTest, Setup)
@@ -412,4 +452,50 @@ R"RAW(
   const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
   auto proc = ParseProcedureString(procedure_string);
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+}
+
+TEST_F(ListenTest, TriggerOnDisconnect)
+{
+  static const std::string procedure_body{
+R"RAW(
+  <Sequence>
+    <ForceSuccess>
+      <Listen varNames="monitor">
+        <Sequence>
+          <Increment varName="counter"/>
+          <Copy inputVar="monitor" outputVar="cache"/>
+        </Sequence>
+      </Listen>
+    </ForceSuccess>
+    <Equals leftVar="counter" rightVar="two"/>
+  </Sequence>
+  <Workspace>
+    <Local name="counter"
+           type='{"type":"uint16"}'
+           value='0'/>
+    <Local name="two"
+           type='{"type":"uint16"}'
+           value='2'/>
+    <Local name="cache" dynamicType="true"/>
+  </Workspace>
+)RAW"};
+
+  const auto procedure_string = sup::UnitTestHelper::CreateProcedureString(procedure_body);
+
+  sup::UnitTestHelper::EmptyUserInterface ui{};
+
+  auto proc = ParseProcedureString(procedure_string);
+  ASSERT_NE(proc.get(), nullptr);
+  auto& ws = proc->GetWorkspace();
+  auto monitor = GetListenVariable();
+  ws.AddVariable("monitor", std::move(monitor));
+
+  EXPECT_TRUE(
+    sup::UnitTestHelper::TryAndExecuteNoReset(proc, ui, ExecutionStatus::SUCCESS));
+
+  // check result variable
+  sup::dto::AnyValue result{sup::dto::UnsignedInteger16Type};
+  EXPECT_FALSE(ws.GetValue("monitor", result));
+  EXPECT_TRUE(ws.GetValue("counter", result));
+  EXPECT_EQ(result.As<sup::dto::uint16>(), 2u);
 }

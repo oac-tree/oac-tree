@@ -35,9 +35,11 @@
 
 namespace
 {
+using sup::oac_tree::ExecutionStatus;
 using sup::oac_tree::Instruction;
 using sup::oac_tree::Workspace;
 using sup::oac_tree::UserInterface;
+bool ShouldNotUpdate(const ExecutionStatus& old_status, const ExecutionStatus& new_status);
 std::string WrapOptionalInstructionNameString(const std::string& instr_name);
 std::string InstructionSetupExceptionMessage(const Instruction& instruction,
                                              const std::vector<std::string>& failed_constraints);
@@ -120,9 +122,8 @@ void Instruction::ExecuteSingle(UserInterface& ui, Workspace& ws)
   m_status_before = GetStatus();
   if (NeedsExecute(m_status_before) && !IsHaltRequested())
   {
-    SetStatus(ExecuteSingleImpl(ui, ws));
+    SetStatus(ExecuteSingleImpl(ui, ws), ui);
   }
-  Postamble(ui);
 }
 
 void Instruction::Halt()
@@ -134,13 +135,7 @@ void Instruction::Halt()
 void Instruction::Reset(UserInterface& ui)
 {
   ResetHook(ui);
-  m_status_before = GetStatus();
-  SetStatus(ExecutionStatus::NOT_STARTED);
-  auto new_status = GetStatus();
-  if (new_status != m_status_before)
-  {
-    ui.UpdateInstructionStatus(this, new_status);
-  }
+  SetStatus(ExecutionStatus::NOT_STARTED, ui);
   m_attribute_handler.ClearFailedConstraints();
   m_halt_requested.store(false);
   ResetBreakpoint();
@@ -291,10 +286,17 @@ void Instruction::AddConstraint(Constraint constraint)
   return m_attribute_handler.AddConstraint(constraint);
 }
 
-void Instruction::SetStatus(ExecutionStatus status)
+void Instruction::SetStatus(ExecutionStatus status, UserInterface& ui)
 {
-  std::lock_guard<std::mutex> lock(m_status_mutex);
-  m_status = status;
+  {
+    std::lock_guard<std::mutex> lock(m_status_mutex);
+    if (ShouldNotUpdate(m_status, status))
+    {
+      return;
+    }
+    m_status = status;
+  }
+  ui.UpdateInstructionStatus(this, status);
 }
 
 void Instruction::Preamble(UserInterface& ui, Workspace& ws)
@@ -303,23 +305,12 @@ void Instruction::Preamble(UserInterface& ui, Workspace& ws)
   {
     if (!InitHook(ui, ws))
     {
-      SetStatus(ExecutionStatus::FAILURE);
-      ui.UpdateInstructionStatus(this, ExecutionStatus::FAILURE);
+      SetStatus(ExecutionStatus::FAILURE, ui);
     }
     else
     {
-      SetStatus(ExecutionStatus::NOT_FINISHED);
-      ui.UpdateInstructionStatus(this, ExecutionStatus::NOT_FINISHED);
+      SetStatus(ExecutionStatus::NOT_FINISHED, ui);
     }
-  }
-}
-
-void Instruction::Postamble(UserInterface& ui)
-{
-  auto new_status = GetStatus();
-  if (new_status != m_status_before)
-  {
-    ui.UpdateInstructionStatus(this, new_status);
   }
 }
 
@@ -494,6 +485,11 @@ bool IsDefinedAttributeName(const Instruction& instruction, const std::string& a
 
 namespace
 {
+bool ShouldNotUpdate(const ExecutionStatus& old_status, const ExecutionStatus& new_status)
+{
+  return old_status == new_status;
+}
+
 std::string WrapOptionalInstructionNameString(const std::string& instr_name)
 {
   if (instr_name.empty())

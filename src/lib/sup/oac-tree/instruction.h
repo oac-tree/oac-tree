@@ -367,11 +367,11 @@ private:
   mutable std::atomic<Breakpoint::State> m_breakpoint_state;
 
   /**
-   * @brief Set the Instruction's execution status.
+   * @brief Set the Instruction's execution status and notify the user interface if it changed.
    *
    * @note Provided for thread safety.
    */
-  void SetStatus(ExecutionStatus status);
+  void SetStatus(ExecutionStatus status, UserInterface& ui);
 
   /**
    * @brief Private method that is always called before delegating further execution to the
@@ -382,16 +382,6 @@ private:
    * status change.
    */
   void Preamble(UserInterface& ui, Workspace& ws);
-
-  /**
-   * @brief Private method that is always called the delegated execution to the
-   * private virutal Instruction::ExecuteSingleImple(UserInterface * ui, Workspace * ws).
-   *
-   * @details This method first checks if the instruction's status was changed as a consequence
-   * of the call to Instruction::ExecuteSingleImple(UserInterface * ui, Workspace * ws). If so,
-   * it informs the user interface of this status change.
-   */
-  void Postamble(UserInterface& ui);
 
   /**
    * @brief Check is a breakpoint is set and if so, set it to kHit and return true. Also reset the

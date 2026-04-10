@@ -237,6 +237,11 @@ std::string Procedure::GetAttributeString(const std::string &name) const
   return GetStringAttributeValue(m_attribute_handler.GetStringAttributes(), name);
 }
 
+const StringAttributeList& Procedure::GetStringAttributes() const
+{
+  return m_attribute_handler.GetStringAttributes();
+}
+
 bool Procedure::AddAttribute(const std::string &name, const std::string &value)
 {
   return m_attribute_handler.AddStringAttribute(name, value);

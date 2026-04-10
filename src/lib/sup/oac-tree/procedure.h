@@ -228,6 +228,13 @@ public:
   std::string GetAttributeString(const std::string& name) const;
 
   /**
+   * @brief Get all attributes.
+   *
+   * @return List containing all attributes.
+   */
+  const StringAttributeList& GetStringAttributes() const;
+
+  /**
    * @brief Set attribute with given name and value.
    *
    * @param name Attribute name.

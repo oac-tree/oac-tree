@@ -86,6 +86,10 @@ namespace oac_tree
 std::unique_ptr<sup::xml::TreeData> ToTreeData(const Procedure& procedure)
 {
   auto result = std::make_unique<sup::xml::TreeData>(Constants::PROCEDURE_ELEMENT_NAME);
+  for (const auto& [attr_name, attr_value] : procedure.GetStringAttributes())
+  {
+    result->AddAttribute(attr_name, attr_value);
+  }
   internal::AddPreamble(*result, procedure.GetPreamble());
   for (auto instruction : procedure.GetTopInstructions())
   {

@@ -53,7 +53,11 @@ TEST(ExecutionStatus, EnumeratorStrings)
   EXPECT_FALSE(status_str.empty());
   insert_result = status_strings.insert(status_str);
   EXPECT_TRUE(insert_result.second);
-  EXPECT_EQ(status_strings.size(), 5u) << "All existing ExecutionStatus enumerators should "
+  status_str = StatusToString(ExecutionStatus::HALTED);
+  EXPECT_FALSE(status_str.empty());
+  insert_result = status_strings.insert(status_str);
+  EXPECT_TRUE(insert_result.second);
+  EXPECT_EQ(status_strings.size(), 6u) << "All existing ExecutionStatus enumerators should "
                                           "have different string representations.";
 
   // Test undefined enumeration values
@@ -61,5 +65,5 @@ TEST(ExecutionStatus, EnumeratorStrings)
   EXPECT_FALSE(status_str.empty());
   insert_result = status_strings.insert(status_str);
   EXPECT_TRUE(insert_result.second);
-  EXPECT_EQ(status_strings.size(), 6u);
+  EXPECT_EQ(status_strings.size(), 7u);
 }

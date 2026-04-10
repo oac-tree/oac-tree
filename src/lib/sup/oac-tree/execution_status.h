@@ -41,7 +41,8 @@ enum class ExecutionStatus
   NOT_FINISHED,  // Started and waiting for next tick.
   RUNNING,       // Started and (child) running asynchronously.
   SUCCESS,       // Finished successfully.
-  FAILURE        // Finished unsuccessfully.
+  FAILURE,       // Finished unsuccessfully.
+  HALTED         // Instruction was halted before finishing.
 };
 
 /**

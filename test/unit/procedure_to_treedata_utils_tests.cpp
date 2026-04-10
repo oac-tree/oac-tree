@@ -36,6 +36,7 @@
 #include <sup/oac-tree/workspace.h>
 
 #include <sup/xml/tree_data.h>
+#include <sup/xml/tree_data_serialize.h>
 
 #include <gtest/gtest.h>
 
@@ -239,6 +240,39 @@ TEST_F(ProcedureToTreeDataUtilsTest, ProcedureWithSequenceToTreeData)
   auto wait_data = sequence_data.Children().at(0);
   EXPECT_EQ(wait_data.GetNodeName(), Wait::Type);
   ASSERT_EQ(wait_data.GetNumberOfChildren(), 0);
+}
+
+TEST_F(ProcedureToTreeDataUtilsTest, ProcedureWithAttributesToTreeData)
+{
+  Procedure procedure;
+  const std::string proc_name{"My procedure"};
+  const std::string custom_attr_name("customAttr");
+  const std::string custom_attr_value("42");
+  procedure.AddAttribute(Constants::NAME_ATTRIBUTE_NAME, proc_name);
+  procedure.AddAttribute(custom_attr_name, custom_attr_value);
+
+  auto tree_data = ToTreeData(procedure);
+  // TODO: remove this and its header:
+  std::cout << sup::xml::TreeDataToString(*tree_data) << std::endl;
+
+  EXPECT_EQ(tree_data->GetNodeName(), Constants::PROCEDURE_ELEMENT_NAME);
+  EXPECT_TRUE(tree_data->GetContent().empty());
+  ASSERT_EQ(tree_data->GetNumberOfChildren(), 1); // sequence, workspace
+  ASSERT_EQ(tree_data->GetNumberOfAttributes(), 2);
+  const auto attrs = tree_data->Attributes();
+  ASSERT_EQ(attrs.size(), 2);
+  {
+    // Check name attribute
+    const auto attr = attrs[0];
+    EXPECT_EQ(attr.first, Constants::NAME_ATTRIBUTE_NAME);
+    EXPECT_EQ(attr.second, proc_name);
+  }
+  {
+    // Check custom attribute
+    const auto attr = attrs[1];
+    EXPECT_EQ(attr.first, custom_attr_name);
+    EXPECT_EQ(attr.second, custom_attr_value);
+  }
 }
 
 TEST_F(ProcedureToTreeDataUtilsTest, ProcedurePreamble)

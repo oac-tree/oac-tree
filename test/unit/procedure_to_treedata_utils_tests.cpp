@@ -22,10 +22,11 @@
 
 #include <sup/oac-tree/parser/procedure_to_treedata_utils.h>
 
-#include <sup/oac-tree/variables/file_variable.h>
-#include <sup/oac-tree/variables/local_variable.h>
 #include <sup/oac-tree/instructions/sequence.h>
 #include <sup/oac-tree/instructions/wait.h>
+#include <sup/oac-tree/parser/procedure_parser.h>
+#include <sup/oac-tree/variables/file_variable.h>
+#include <sup/oac-tree/variables/local_variable.h>
 
 #include <sup/oac-tree/constants.h>
 #include <sup/oac-tree/instruction.h>
@@ -36,7 +37,6 @@
 #include <sup/oac-tree/workspace.h>
 
 #include <sup/xml/tree_data.h>
-#include <sup/xml/tree_data_serialize.h>
 
 #include <gtest/gtest.h>
 
@@ -252,8 +252,6 @@ TEST_F(ProcedureToTreeDataUtilsTest, ProcedureWithAttributesToTreeData)
   procedure.AddAttribute(custom_attr_name, custom_attr_value);
 
   auto tree_data = ToTreeData(procedure);
-  // TODO: remove this and its header:
-  std::cout << sup::xml::TreeDataToString(*tree_data) << std::endl;
 
   EXPECT_EQ(tree_data->GetNodeName(), Constants::PROCEDURE_ELEMENT_NAME);
   EXPECT_TRUE(tree_data->GetContent().empty());
@@ -270,6 +268,24 @@ TEST_F(ProcedureToTreeDataUtilsTest, ProcedureWithAttributesToTreeData)
   {
     // Check custom attribute
     const auto attr = attrs[1];
+    EXPECT_EQ(attr.first, custom_attr_name);
+    EXPECT_EQ(attr.second, custom_attr_value);
+  }
+
+  // Check if parser revocers those procedure attributes:
+  auto parsed_proc = ParseProcedure(*tree_data);
+  ASSERT_NE(parsed_proc.get(), nullptr);
+  const auto parsed_attrs = parsed_proc->GetStringAttributes();
+  ASSERT_EQ(parsed_attrs.size(), 2);
+  {
+    // Check name attribute
+    const auto attr = parsed_attrs[0];
+    EXPECT_EQ(attr.first, Constants::NAME_ATTRIBUTE_NAME);
+    EXPECT_EQ(attr.second, proc_name);
+  }
+  {
+    // Check custom attribute
+    const auto attr = parsed_attrs[1];
     EXPECT_EQ(attr.first, custom_attr_name);
     EXPECT_EQ(attr.second, custom_attr_value);
   }

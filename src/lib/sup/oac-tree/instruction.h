@@ -369,7 +369,11 @@ private:
   /**
    * @brief Set the Instruction's execution status and notify the user interface if it changed.
    *
-   * @note Provided for thread safety.
+   * @note The status of this instruction will not be changed, and no notification will be
+   * triggered if:
+   *   - The current status is the same as the update status
+   *   - The current status is Halted and the update status is not NotStarted
+   *   - The update status is Halted and the current status is not NotFinished/Running
    */
   void SetStatus(ExecutionStatus status, UserInterface& ui);
 

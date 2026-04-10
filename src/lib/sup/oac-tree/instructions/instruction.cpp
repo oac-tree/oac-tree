@@ -128,7 +128,10 @@ void Instruction::ExecuteSingle(UserInterface& ui, Workspace& ws)
 
 void Instruction::Halt()
 {
+  // 1. Set status to halted if allowed
+  // 2. Atomic store is at least std::memory_order_release
   m_halt_requested.store(true);
+  // 3. Propagate halt
   HaltImpl();
 }
 

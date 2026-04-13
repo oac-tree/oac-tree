@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/oac-tree" version="1.0"
+           name="Trivial procedure for testing purposes"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/oac-tree oac-tree.xsd">
+    <ReactiveSequence>
+        <ReactiveFallback>
+            <Equals leftVar="failure" rightVar="zero"/>
+            <Wait timeout="120"/>
+        </ReactiveFallback>
+        <Wait timeout="120"/>
+    </ReactiveSequence>
+    <Workspace>
+        <Local name="failure" type='{"type":"uint32"}' value="0"/>
+        <Local name="zero" type='{"type":"uint32"}' value="0"/>
+    </Workspace>
+</Procedure>

@@ -272,7 +272,7 @@ TEST_F(ProcedureToTreeDataUtilsTest, ProcedureWithAttributesToTreeData)
     EXPECT_EQ(attr.second, custom_attr_value);
   }
 
-  // Check if parser revocers those procedure attributes:
+  // Check if parser recovers those procedure attributes:
   auto parsed_proc = ParseProcedure(*tree_data);
   ASSERT_NE(parsed_proc.get(), nullptr);
   const auto parsed_attrs = parsed_proc->GetStringAttributes();

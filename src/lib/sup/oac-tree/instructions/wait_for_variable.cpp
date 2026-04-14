@@ -100,8 +100,9 @@ ExecutionStatus WaitForVariable::ExecuteSingleImpl(UserInterface& ui, Workspace&
   return ExecutionStatus::RUNNING;
 }
 
-void WaitForVariable::HaltImpl()
+void WaitForVariable::HaltImpl(UserInterface& ui)
 {
+  (void)ui;
   {
     std::lock_guard<std::mutex> lock(m_mtx);  // Avoid lost wakeup
     m_cv.notify_one();

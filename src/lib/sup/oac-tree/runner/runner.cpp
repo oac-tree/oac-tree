@@ -123,7 +123,7 @@ void Runner::Halt()
   m_halt.store(true);
   if (m_proc)
   {
-    m_proc->Halt();
+    m_proc->Halt(m_ui);
   }
 }
 

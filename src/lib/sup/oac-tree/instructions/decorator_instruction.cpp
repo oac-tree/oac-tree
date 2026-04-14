@@ -78,11 +78,11 @@ void DecoratorInstruction::ResetChild(UserInterface& ui)
   }
 }
 
-void DecoratorInstruction::HaltChild()
+void DecoratorInstruction::HaltChild(UserInterface& ui)
 {
   if (m_child)
   {
-    m_child->Halt();
+    m_child->Halt(ui);
   }
 }
 
@@ -91,9 +91,9 @@ void DecoratorInstruction::ResetHook(UserInterface& ui)
   ResetChild(ui);
 }
 
-void DecoratorInstruction::HaltImpl()
+void DecoratorInstruction::HaltImpl(UserInterface& ui)
 {
-  HaltChild();
+  HaltChild(ui);
 }
 
 std::vector<const Instruction*> DecoratorInstruction::ChildInstructionsImpl() const

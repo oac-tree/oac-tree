@@ -189,10 +189,12 @@ public:
   /**
    * @brief Halt the procedure's execution.
    *
+   * @param ui UserInterface to use for instruction status updates.
+   *
    * @note This is mainly used for interrupting all instructions that are running in a separate
    * thread.
    */
-  void Halt();
+  void Halt(UserInterface& ui);
 
   /**
    * @brief Reset the procedure to its initial state after setup.

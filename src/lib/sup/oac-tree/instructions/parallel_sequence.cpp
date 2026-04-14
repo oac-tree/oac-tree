@@ -65,7 +65,8 @@ ExecutionStatus ParallelSequence::ExecuteSingleImpl(UserInterface& ui, Workspace
   auto status = CalculateCompoundStatus();
   if (IsFinishedStatus(status))
   {
-    Halt();
+    // TODO: call halt only on child nodes that require it?
+    Halt(ui);
   }
   return status;
 }
@@ -76,7 +77,7 @@ void ParallelSequence::ResetHook(UserInterface& ui)
   auto status = GetStatus();
   if (status == ExecutionStatus::RUNNING || status == ExecutionStatus::NOT_FINISHED)
   {
-    Halt();
+    Halt(ui);
   }
   // wait for child threads to terminate
   m_wrappers.clear();

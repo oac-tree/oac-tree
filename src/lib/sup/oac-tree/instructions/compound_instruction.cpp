@@ -63,11 +63,11 @@ void CompoundInstruction::ResetChildren(UserInterface& ui)
   }
 }
 
-void CompoundInstruction::HaltChildren()
+void CompoundInstruction::HaltChildren(UserInterface& ui)
 {
   for (auto& instruction : m_children)
   {
-    instruction->Halt();
+    instruction->Halt(ui);
   }
 }
 
@@ -76,9 +76,9 @@ void CompoundInstruction::ResetHook(UserInterface& ui)
   ResetChildren(ui);
 }
 
-void CompoundInstruction::HaltImpl()
+void CompoundInstruction::HaltImpl(UserInterface& ui)
 {
-  HaltChildren();
+  HaltChildren(ui);
 }
 
 std::vector<const Instruction*> CompoundInstruction::ChildInstructionsImpl() const

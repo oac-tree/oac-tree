@@ -198,13 +198,13 @@ void Procedure::ExecuteSingle(UserInterface& ui)
   RootInstruction()->ExecuteSingle(ui, *m_workspace);
 }
 
-void Procedure::Halt()
+void Procedure::Halt(UserInterface& ui)
 {
   if (RootInstruction() == nullptr)
   {
     return;
   }
-  RootInstruction()->Halt();
+  RootInstruction()->Halt(ui);
 }
 
 void Procedure::Reset(UserInterface& ui)

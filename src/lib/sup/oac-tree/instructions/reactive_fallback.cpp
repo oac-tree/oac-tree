@@ -60,7 +60,7 @@ ExecutionStatus ReactiveFallback::ExecuteSingleImpl(UserInterface& ui, Workspace
   auto status = CalculateCompoundStatus();
   if (IsFinishedStatus(status))
   {
-    Halt();
+    Halt(ui);
   }
   return status;
 }

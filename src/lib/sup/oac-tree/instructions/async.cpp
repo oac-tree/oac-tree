@@ -63,7 +63,7 @@ void Async::ResetHook(UserInterface& ui)
   auto status = GetStatus();
   if (status == ExecutionStatus::RUNNING)
   {
-    Halt();
+    Halt(ui);
   }
   // wait for child thread to terminate
   m_wrapper.reset();

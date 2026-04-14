@@ -126,13 +126,10 @@ void Instruction::ExecuteSingle(UserInterface& ui, Workspace& ws)
   }
 }
 
-void Instruction::Halt()
+void Instruction::Halt(UserInterface& ui)
 {
-  // 1. Set status to halted if allowed
-  // 2. Atomic store is at least std::memory_order_release
   m_halt_requested.store(true);
-  // 3. Propagate halt
-  HaltImpl();
+  HaltImpl(ui);
 }
 
 void Instruction::Reset(UserInterface& ui)
@@ -346,7 +343,7 @@ bool Instruction::InitHook(UserInterface&, Workspace&)
   return true;
 }
 
-void Instruction::HaltImpl() {}
+void Instruction::HaltImpl(UserInterface&) {}
 
 void Instruction::ResetHook(UserInterface&) {}
 

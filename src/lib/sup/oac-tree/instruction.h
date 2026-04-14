@@ -126,10 +126,9 @@ public:
    * @brief Halt execution.
    * @details Only meaningful when the instruction is running asynchronously.
    * This method only sets an atomic boolean member variable. It is up to implementations
-   * of the Instruction to check this variable regularly to prevent long blocking. It is
-   * expected that an instruction will fail if it is interrupted (status: FAILURE).
+   * of the Instruction to check this variable regularly to prevent long blocking.
    */
-  void Halt();
+  void Halt(UserInterface& ui);
 
   /**
    * @brief Reset execution status, so the instruction can be executed again with initial conditions.
@@ -439,7 +438,7 @@ private:
    * @details This hook is meant to propagate the call to Instruction::Halt() to
    * the instructions's child instructions.
    */
-  virtual void HaltImpl();
+  virtual void HaltImpl(UserInterface& ui);
 
   /**
    * @brief Private hook that is always called during a call to Instruction::Reset().

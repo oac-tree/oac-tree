@@ -104,12 +104,13 @@ ExecutionStatus UserChoice::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 void UserChoice::ResetHook(UserInterface& ui)
 {
   m_choice = -1;
-  Halt();
+  Halt(ui);
   ResetChildren(ui);
 }
 
-void UserChoice::HaltImpl()
+void UserChoice::HaltImpl(UserInterface& ui)
 {
+  (void)ui;
   m_future.reset();
 }
 

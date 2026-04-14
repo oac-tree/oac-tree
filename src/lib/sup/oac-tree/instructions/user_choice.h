@@ -57,7 +57,7 @@ private:
 
   void ResetHook(UserInterface& ui) override;
 
-  void HaltImpl() override;
+  void HaltImpl(UserInterface& ui) override;
 
   /**
    * @brief Construct a list of choices from the available child instructions.

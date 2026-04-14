@@ -63,7 +63,7 @@ private:
 
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 
-  void HaltImpl() override;
+  void HaltImpl(UserInterface& ui) override;
 
   void ResetHook(UserInterface& ui) override;
 

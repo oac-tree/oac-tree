@@ -87,11 +87,11 @@ protected:
   /**
    * @brief Call Instruction::Halt() on the child instruction.
    */
-  void HaltChild();
+  void HaltChild(UserInterface& ui);
 
 private:
   void ResetHook(UserInterface& ui) override;
-  void HaltImpl() override;
+  void HaltImpl(UserInterface& ui) override;
   std::vector<const Instruction*> ChildInstructionsImpl() const override;
   int ChildrenCountImpl() const override;
   bool InsertInstructionImpl(std::unique_ptr<Instruction>&& child, int index) override;

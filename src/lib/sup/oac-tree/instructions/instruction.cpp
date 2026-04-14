@@ -128,7 +128,10 @@ void Instruction::ExecuteSingle(UserInterface& ui, Workspace& ws)
 
 void Instruction::Halt(UserInterface& ui)
 {
-  m_halt_requested.store(true);
+  {
+    std::lock_guard<std::mutex> lk{m_status_mutex};
+    m_halt_requested = true;
+  }
   HaltImpl(ui);
 }
 
@@ -137,7 +140,10 @@ void Instruction::Reset(UserInterface& ui)
   ResetHook(ui);
   SetStatus(ExecutionStatus::NOT_STARTED, ui);
   m_attribute_handler.ClearFailedConstraints();
-  m_halt_requested.store(false);
+  {
+    std::lock_guard<std::mutex> lk{m_status_mutex};
+    m_halt_requested = false;
+  }
   ResetBreakpoint();
 }
 
@@ -225,7 +231,8 @@ std::unique_ptr<Instruction> Instruction::TakeInstruction(int index)
 }
 bool Instruction::IsHaltRequested() const
 {
-  return m_halt_requested.load();
+  std::lock_guard<std::mutex> lk{m_status_mutex};
+  return m_halt_requested;
 }
 
 void Instruction::SetBreakpoint() const

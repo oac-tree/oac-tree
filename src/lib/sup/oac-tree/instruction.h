@@ -344,9 +344,9 @@ private:
 
   ExecutionStatus m_status_before;
   /**
-   * @brief Atomic flag that indicates if a request was made to halt the instruction.
+   * @brief Flag that indicates if a request was made to halt the instruction.
    */
-  std::atomic_bool m_halt_requested;
+  bool m_halt_requested;
 
   /**
    * @brief Attribute handler.

@@ -42,7 +42,7 @@ enum class ExecutionStatus
   RUNNING,       // Started and (child) running asynchronously.
   SUCCESS,       // Finished successfully.
   FAILURE,       // Finished unsuccessfully.
-  HALTED         // Instruction was halted before finishing.
+  HALTED         // Instruction was halted before finishing. Only used for reporting to UserInterface.
 };
 
 /**

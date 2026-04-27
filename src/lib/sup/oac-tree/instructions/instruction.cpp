@@ -39,7 +39,7 @@ using sup::oac_tree::ExecutionStatus;
 using sup::oac_tree::Instruction;
 using sup::oac_tree::Workspace;
 using sup::oac_tree::UserInterface;
-bool ShouldNotUpdate(const ExecutionStatus& old_status, const ExecutionStatus& new_status);
+ExecutionStatus NotificationStatus(bool halt_requested, const ExecutionStatus& status);
 std::string WrapOptionalInstructionNameString(const std::string& instr_name);
 std::string InstructionSetupExceptionMessage(const Instruction& instruction,
                                              const std::vector<std::string>& failed_constraints);
@@ -56,7 +56,6 @@ namespace oac_tree
 Instruction::Instruction(const std::string &type)
     : m_type{type}
     , m_status{ExecutionStatus::NOT_STARTED}
-    , m_status_before{ExecutionStatus::NOT_STARTED}
     , m_halt_requested{false}
     , m_attribute_handler{}
     , m_status_mutex{}
@@ -119,8 +118,7 @@ void Instruction::ExecuteSingle(UserInterface& ui, Workspace& ws)
     return;
   }
   Preamble(ui, ws);
-  m_status_before = GetStatus();
-  if (NeedsExecute(m_status_before) && !IsHaltRequested())
+  if (NeedsExecute(GetStatus()) && !IsHaltRequested())
   {
     SetStatus(ExecuteSingleImpl(ui, ws), ui);
   }
@@ -128,22 +126,37 @@ void Instruction::ExecuteSingle(UserInterface& ui, Workspace& ws)
 
 void Instruction::Halt(UserInterface& ui)
 {
+  bool status_updated{false};
+  ExecutionStatus status{ExecutionStatus::NOT_STARTED};
   {
     std::lock_guard<std::mutex> lk{m_status_mutex};
+    status_updated = (NotificationStatus(true, m_status)
+                      != NotificationStatus(m_halt_requested, m_status));
     m_halt_requested = true;
+    status = m_status;
+  }
+  if (status_updated)
+  {
+    ui.UpdateInstructionStatus(this, NotificationStatus(true, status));
   }
   HaltImpl(ui);
 }
 
 void Instruction::Reset(UserInterface& ui)
 {
+  bool status_updated{false};
   ResetHook(ui);
-  SetStatus(ExecutionStatus::NOT_STARTED, ui);
-  m_attribute_handler.ClearFailedConstraints();
   {
     std::lock_guard<std::mutex> lk{m_status_mutex};
+    status_updated = (m_status != ExecutionStatus::NOT_STARTED);
     m_halt_requested = false;
+    m_status = ExecutionStatus::NOT_STARTED;
   }
+  if (status_updated)
+  {
+    ui.UpdateInstructionStatus(this, ExecutionStatus::NOT_STARTED);
+  }
+  m_attribute_handler.ClearFailedConstraints();
   ResetBreakpoint();
 }
 
@@ -295,15 +308,17 @@ void Instruction::AddConstraint(Constraint constraint)
 
 void Instruction::SetStatus(ExecutionStatus status, UserInterface& ui)
 {
+  bool halt_requested{false};
   {
     std::lock_guard<std::mutex> lock(m_status_mutex);
-    if (ShouldNotUpdate(m_status, status))
+    halt_requested = m_halt_requested;
+    if (m_status == status)
     {
       return;
     }
     m_status = status;
   }
-  ui.UpdateInstructionStatus(this, status);
+  ui.UpdateInstructionStatus(this, NotificationStatus(halt_requested, status));
 }
 
 void Instruction::Preamble(UserInterface& ui, Workspace& ws)
@@ -492,9 +507,13 @@ bool IsDefinedAttributeName(const Instruction& instruction, const std::string& a
 
 namespace
 {
-bool ShouldNotUpdate(const ExecutionStatus& old_status, const ExecutionStatus& new_status)
+ExecutionStatus NotificationStatus(bool halt_requested, const ExecutionStatus& status)
 {
-  return old_status == new_status;
+  if (halt_requested && IsExecutingStatus(status))
+  {
+    return ExecutionStatus::HALTED;
+  }
+  return status;
 }
 
 std::string WrapOptionalInstructionNameString(const std::string& instr_name)

@@ -342,7 +342,6 @@ private:
 
   ExecutionStatus m_status;
 
-  ExecutionStatus m_status_before;
   /**
    * @brief Flag that indicates if a request was made to halt the instruction.
    */

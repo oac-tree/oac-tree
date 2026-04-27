@@ -129,10 +129,10 @@ TEST_F(LocalJobTest, Start)
 TEST_F(LocalJobTest, Step)
 {
   EXPECT_CALL(m_test_job_info_io, InitNumberOfInstructions(3)).Times(Exactly(1));
-  // Sequence has 2 updates: NOT_STARTED -> NOT_FINISHED
-  // First Copy has 3 updates: NOT_STARTED -> NOT_FINISHED -> SUCCESS
+  // Sequence has 2 updates: NOT_STARTED -> NOT_FINISHED -> HALTED
+  // First Copy has 2 updates: NOT_STARTED -> NOT_FINISHED -> SUCCESS
   // Second Copy has no updates
-  EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(3));
+  EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(4));
   // All variables get an initial update and one of them is overwritten:
   EXPECT_CALL(m_test_job_info_io, VariableUpdated(_, _, true)).Times(Exactly(4));
   EXPECT_CALL(m_test_job_info_io, ProcedureTicked()).Times(Exactly(1));
@@ -151,10 +151,10 @@ TEST_F(LocalJobTest, Step)
 TEST_F(LocalJobTest, HaltReset)
 {
   EXPECT_CALL(m_test_job_info_io, InitNumberOfInstructions(3)).Times(Exactly(1));
-  // Sequence has 2 updates: NOT_STARTED -> NOT_FINISHED -> NOT_STARTED
+  // Sequence has 2 updates: NOT_STARTED -> NOT_FINISHED -> HALTED -> NOT_STARTED
   // First Copy has 3 updates: NOT_STARTED -> NOT_FINISHED -> SUCCESS -> NOT_STARTED
   // Second Copy has no updates
-  EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(5));
+  EXPECT_CALL(m_test_job_info_io, InstructionStateUpdated(_, _)).Times(Exactly(6));
   // All variables get an initial update and one of them is overwritten; upon reset,
   // they will all again receive updates of their initial values
   EXPECT_CALL(m_test_job_info_io, VariableUpdated(_, _, true)).Times(Exactly(7));

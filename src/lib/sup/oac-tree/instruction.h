@@ -124,9 +124,12 @@ public:
 
   /**
    * @brief Halt execution.
-   * @details Only meaningful when the instruction is running asynchronously.
-   * This method only sets an atomic boolean member variable. It is up to implementations
-   * of the Instruction to check this variable regularly to prevent long blocking.
+   *
+   * @param ui UserInterface to handle status updates.
+   *
+   * @details This method only sets an atomic boolean member variable and updates the reported
+   * status if needed. It is up to implementations of the Instruction to check regularly if
+   * a halt was requested and handle that appropriately, e.g. by interrupting managed threads.
    */
   void Halt(UserInterface& ui);
 
@@ -139,9 +142,6 @@ public:
    * initial Setup call.
    * This method call blocks until the termination of all descendant instructions
    * running in a separate thread. Destruction of this instruction is safe afterwards.
-   * @note This method should only be called on instruction objects that are not currently
-   * executing. This is taken care of by waiting for child termination before calling their
-   * Instruction::Reset() method.
    */
   void Reset(UserInterface& ui);
 
@@ -366,12 +366,6 @@ private:
 
   /**
    * @brief Set the Instruction's execution status and notify the user interface if it changed.
-   *
-   * @note The status of this instruction will not be changed, and no notification will be
-   * triggered if:
-   *   - The current status is the same as the update status
-   *   - The current status is Halted and the update status is not NotStarted
-   *   - The update status is Halted and the current status is not NotFinished/Running
    */
   void SetStatus(ExecutionStatus status, UserInterface& ui);
 

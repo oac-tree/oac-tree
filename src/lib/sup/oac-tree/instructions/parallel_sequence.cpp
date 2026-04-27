@@ -65,7 +65,6 @@ ExecutionStatus ParallelSequence::ExecuteSingleImpl(UserInterface& ui, Workspace
   auto status = CalculateCompoundStatus();
   if (IsFinishedStatus(status))
   {
-    // TODO: call halt only on child nodes that require it?
     Halt(ui);
   }
   return status;

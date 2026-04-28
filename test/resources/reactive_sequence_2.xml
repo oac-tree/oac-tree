@@ -7,9 +7,7 @@
         <Inverter>
             <ReactiveSequence>
                 <Equals leftVar="break" rightVar="zero"/>
-                <Async>
-                    <Wait timeout="10.0"/>
-                </Async>
+                <Wait timeout="10.0"/>
             </ReactiveSequence>
         </Inverter>
         <Sequence>

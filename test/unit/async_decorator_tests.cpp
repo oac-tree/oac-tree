@@ -40,7 +40,7 @@ const std::string AsyncDecoratorString =
         <ReactiveFallback>
             <Equals leftVar="break" rightVar="one"/>
             <Async>
-                <Wait timeout="10.0"/>
+                <Wait timeout="10.0" blocking="true"/>
             </Async>
         </ReactiveFallback>
         <Sequence>

@@ -40,6 +40,8 @@ using sup::oac_tree::Instruction;
 using sup::oac_tree::Workspace;
 using sup::oac_tree::UserInterface;
 ExecutionStatus NotificationStatus(bool halt_requested, const ExecutionStatus& status);
+bool DoNotUpdateStatus(const ExecutionStatus& old_status, const ExecutionStatus& new_status,
+                       bool halt_requested);
 std::string WrapOptionalInstructionNameString(const std::string& instr_name);
 std::string InstructionSetupExceptionMessage(const Instruction& instruction,
                                              const std::vector<std::string>& failed_constraints);
@@ -312,7 +314,7 @@ void Instruction::SetStatus(ExecutionStatus status, UserInterface& ui)
   {
     std::lock_guard<std::mutex> lock(m_status_mutex);
     halt_requested = m_halt_requested;
-    if (m_status == status)
+    if (DoNotUpdateStatus(m_status, status, halt_requested))
     {
       return;
     }
@@ -514,6 +516,14 @@ ExecutionStatus NotificationStatus(bool halt_requested, const ExecutionStatus& s
     return ExecutionStatus::HALTED;
   }
   return status;
+}
+
+bool DoNotUpdateStatus(const ExecutionStatus& old_status, const ExecutionStatus& new_status,
+                       bool halt_requested)
+{
+  const auto same_status = (new_status == old_status);
+  const auto finished_when_halted = halt_requested && IsFinishedStatus(new_status);
+  return same_status || finished_when_halted;
 }
 
 std::string WrapOptionalInstructionNameString(const std::string& instr_name)

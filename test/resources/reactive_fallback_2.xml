@@ -6,9 +6,7 @@
     <ParallelSequence>
         <ReactiveFallback>
             <Equals leftVar="break" rightVar="one"/>
-            <Async>
-                <Wait timeout="10.0" blocking="true"/>
-            </Async>
+            <Wait timeout="10.0"/>
         </ReactiveFallback>
         <Sequence>
             <Wait timeout="1.0" />

@@ -65,7 +65,7 @@ ExecutionStatus ParallelSequence::ExecuteSingleImpl(UserInterface& ui, Workspace
   auto status = CalculateCompoundStatus();
   if (IsFinishedStatus(status))
   {
-    Halt(ui);
+    HaltChildren(ui);
   }
   return status;
 }

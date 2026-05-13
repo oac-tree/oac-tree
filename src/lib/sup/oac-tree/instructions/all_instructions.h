@@ -53,6 +53,7 @@
 #include "parallel_sequence.h"
 #include "reactive_fallback.h"
 #include "reactive_sequence.h"
+#include "read_file.h"
 #include "repeat.h"
 #include "reset_variable.h"
 #include "sequence.h"

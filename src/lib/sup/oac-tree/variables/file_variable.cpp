@@ -25,6 +25,7 @@
 #include <sup/oac-tree/concrete_constraints.h>
 #include <sup/oac-tree/constants.h>
 #include <sup/oac-tree/generic_utils.h>
+#include <sup/oac-tree/instruction_utils.h>
 #include <sup/oac-tree/procedure.h>
 #include <sup/oac-tree/workspace.h>
 
@@ -110,16 +111,9 @@ bool FileVariable::IsAvailableImpl() const
 
 std::unique_ptr<sup::dto::AnyValue> FileVariable::ReadValue() const
 {
-  std::unique_ptr<sup::dto::AnyValue> result;
-  sup::dto::JSONAnyValueParser parser;
   auto filename = GetFullPathName(m_workspace_path,
                                   GetAttributeString(Constants::FILENAME_ATTRIBUTE_NAME));
-  if (!parser.ParseFile(filename))
-  {
-    return result;
-  }
-  result = std::make_unique<sup::dto::AnyValue>(parser.MoveAnyValue());
-  return result;
+  return instruction_utils::ReadFile(filename);
 }
 
 }  // namespace oac_tree

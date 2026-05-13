@@ -25,8 +25,9 @@
 
 #include <sup/oac-tree/instruction.h>
 
-#include <sup/dto/basic_scalar_types.h>
+#include <sup/dto/anyvalue.h>
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -79,6 +80,15 @@ bool GetVariableTimeoutAttribute(const Instruction& instr, UserInterface& ui, Wo
  */
 std::vector<std::string> VariableNamesFromAttribute(const Instruction& instr,
                                                     const std::string& attr_name);
+
+/**
+ * @brief Try to parse the given JSON file as an AnyValue
+ *
+ * @param filename Name of the file to parse.
+ *
+ * @return Unique pointer to the parsed AnyValue or nullptr if parsing failed.
+ */
+std::unique_ptr<sup::dto::AnyValue> ReadFile(const std::string& filename);
 
 }  // namespace instruction_utils
 

@@ -218,6 +218,7 @@ void InitInstructionRegistry(InstructionRegistry& registry)
   (void)RegisterInstruction<Message>(registry);
   (void)RegisterInstruction<Output>(registry);
   (void)RegisterInstruction<ResetVariable>(registry);
+  (void)RegisterInstruction<ReadFile>(registry);
   (void)RegisterInstruction<Succeed>(registry);
   (void)RegisterInstruction<UserConfirmation>(registry);
   (void)RegisterInstruction<VarExistsInstruction>(registry);

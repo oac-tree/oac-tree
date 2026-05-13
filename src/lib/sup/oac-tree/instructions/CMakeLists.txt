@@ -40,6 +40,7 @@ target_sources(sup-oac-tree-shared
     parallel_sequence.cpp
     reactive_fallback.cpp
     reactive_sequence.cpp
+    read_file.cpp
     repeat.cpp
     reset_variable.cpp
     sequence.cpp

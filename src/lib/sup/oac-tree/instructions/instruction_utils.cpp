@@ -20,7 +20,8 @@
  * of the distribution package.
  ******************************************************************************/
 
-#include <sup/dto/basic_scalar_types.h>
+#include <sup/dto/json_value_parser.h>
+
 #include <sup/oac-tree/instruction_utils.h>
 
 #include <sup/oac-tree/constants.h>
@@ -93,6 +94,17 @@ std::vector<std::string> VariableNamesFromAttribute(const Instruction& instr,
     pos = var_names_attr.find_first_not_of(DefaultSettings::VARNAME_DELIMITER, next);
   }
   return result;
+}
+
+std::unique_ptr<sup::dto::AnyValue> ReadFile(const std::string& filename)
+{
+  std::unique_ptr<sup::dto::AnyValue> result;
+  sup::dto::JSONAnyValueParser parser;
+  if (!parser.ParseFile(filename))
+  {
+    return {};
+  }
+  return std::make_unique<sup::dto::AnyValue>(parser.MoveAnyValue());
 }
 
 }  // namespace instruction_utils

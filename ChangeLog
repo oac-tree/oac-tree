@@ -2,6 +2,7 @@ Changes for 4.6.0:
 
 - Serialize procedure attributes to XML
 - Report HALTED status to UserInterface when halted during execution
+- Added ReadFile and WriteFile instructions
 
 Changes for 4.5.0:
 

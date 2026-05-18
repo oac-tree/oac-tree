@@ -216,6 +216,41 @@ TEST_F(WriteFileTest, WriteAndReadBack)
   EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
 }
 
+TEST_F(WriteFileTest, PrettyJson)
+{
+  const std::string body{R"(
+    <Sequence>
+        <WriteFile inputVar="input" file="write_file_test.json" pretty="true"/>
+    </Sequence>
+    <Workspace>
+        <Local name="input"
+            type='{"type":"","attributes":[{"name":{"type":"string"}},{"count":{"type":"uint32"}}]}'
+            value='{"name":"hello","count":5}'/>
+    </Workspace>
+)"};
+
+  auto proc_str = sup::UnitTestHelper::CreateProcedureString(body);
+
+  auto proc = ParseProcedureString(proc_str);
+  ASSERT_TRUE(proc.get() != nullptr);
+  ASSERT_NO_THROW(proc->Setup());
+
+  sup::UnitTestHelper::EmptyUserInterface ui;
+  EXPECT_TRUE(sup::UnitTestHelper::TryAndExecute(proc, ui));
+
+  EXPECT_TRUE(utils::FileExists("write_file_test.json"));
+
+  // Verify the file contains newlines (pretty printed)
+  auto content = sup::UnitTestHelper::GetTextFileContent("write_file_test.json");
+  EXPECT_EQ(content.find("[\n"), 0);
+
+  // Verify the content is still valid and parseable
+  sup::dto::JSONAnyValueParser parser;
+  EXPECT_TRUE(parser.ParseFile("write_file_test.json"));
+  auto value = parser.MoveAnyValue();
+  EXPECT_EQ(value["name"], sup::dto::AnyValue(sup::dto::StringType, "hello"));
+  EXPECT_EQ(value["count"], static_cast<sup::dto::uint32>(5));
+}
 TEST_F(WriteFileTest, WriteAndReadBackWithFileVariable)
 {
   const std::string body{R"(

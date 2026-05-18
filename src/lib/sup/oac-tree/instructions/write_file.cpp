@@ -41,6 +41,7 @@ WriteFile::WriteFile()
     .SetCategory(AttributeCategory::kVariableName).SetMandatory();
   (void)AddAttributeDefinition(Constants::FILENAME_ATTRIBUTE_NAME, sup::dto::StringType)
     .SetCategory(AttributeCategory::kBoth).SetMandatory();
+  (void)AddAttributeDefinition(Constants::PRETTY_JSON_ATTRIBUTE_NAME, sup::dto::BooleanType);
 }
 
 WriteFile::~WriteFile() = default;
@@ -52,6 +53,11 @@ void WriteFile::SetupImpl(const Procedure& proc)
 
 ExecutionStatus WriteFile::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
+  bool pretty_json = false;
+  if (!GetAttributeValueAs(Constants::PRETTY_JSON_ATTRIBUTE_NAME, ws, ui, pretty_json))
+  {
+    return ExecutionStatus::FAILURE;
+  }
   sup::dto::AnyValue value;
   if (!GetAttributeValue(Constants::INPUT_VARIABLE_NAME_ATTRIBUTE_NAME, ws, ui, value))
   {
@@ -65,7 +71,7 @@ ExecutionStatus WriteFile::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
   auto filename = GetFullPathName(m_proc_path, local_filename);
   try
   {
-    sup::dto::AnyValueToJSONFile(value, filename);
+    sup::dto::AnyValueToJSONFile(value, filename, pretty_json);
   }
   catch (const sup::dto::SerializeException&)
   {

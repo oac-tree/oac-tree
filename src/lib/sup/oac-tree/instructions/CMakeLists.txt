@@ -42,6 +42,7 @@ target_sources(sup-oac-tree-shared
     reactive_sequence.cpp
     read_file.cpp
     repeat.cpp
+    write_file.cpp
     reset_variable.cpp
     sequence.cpp
     succeed.cpp

@@ -63,5 +63,6 @@
 #include "wait.h"
 #include "wait_for_variable.h"
 #include "wait_for_variables.h"
+#include "write_file.h"
 
 #endif  // SUP_OAC_TREE_ALL_INSTRUCTIONS_H_

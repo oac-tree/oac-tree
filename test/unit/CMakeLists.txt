@@ -90,6 +90,7 @@ target_sources(${unit-tests}
     wait_for_variables_tests.cpp
     workspace_info_tests.cpp
     workspace_tests.cpp
+    write_file_tests.cpp
 )
 
 target_include_directories(${unit-tests} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/../../src)

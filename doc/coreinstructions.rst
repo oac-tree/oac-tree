@@ -1182,6 +1182,43 @@ Attributes:
        <Local name="var1" type='{"type":"uint32"}' value='42' />
    </Workspace>
 
+ReadFile
+^^^^^^^^
+
+Instruction for reading a JSON file into a variable.
+
+Attributes:
+
+.. list-table::
+   :widths: 25 25 15 50
+   :header-rows: 1
+
+   * - Attribute name
+     - Attribute type
+     - Mandatory
+     - Description
+   * - file
+     - StringType
+     - yes
+     - Name of the JSON file to read
+   * - outputVar
+     - StringType
+     - yes
+     - Name of the variable to store the parsed value
+
+**Example**
+
+.. code-block:: xml
+
+   <Sequence>
+       <ReadFile file="data.json" outputVar="result"/>
+   </Sequence>
+   <Workspace>
+       <Local name="result" dynamicType="true"/>
+   </Workspace>
+
+The ``file`` attribute also supports variable references using the ``@`` prefix (e.g. ``file="@filename"``), allowing the filename to be read from a workspace variable at runtime.
+
 ResetVariable
 ^^^^^^^^^^^^^
 
@@ -1357,3 +1394,46 @@ Attributes:
      - BooleanType
      - no
      - Use a blocking implementation, which is less CPU consuming
+
+WriteFile
+^^^^^^^^^
+
+Instruction for writing a variable to a JSON file.
+
+Attributes:
+
+.. list-table::
+   :widths: 25 25 15 50
+   :header-rows: 1
+
+   * - Attribute name
+     - Attribute type
+     - Mandatory
+     - Description
+   * - inputVar
+     - StringType
+     - yes
+     - Name of the variable to write
+   * - file
+     - StringType
+     - yes
+     - Name of the JSON file to write to
+   * - pretty
+     - BooleanType
+     - no
+     - If true, the JSON output will be pretty-printed with indentation
+
+**Example**
+
+.. code-block:: xml
+
+   <Sequence>
+       <WriteFile inputVar="data" file="output.json" pretty="true"/>
+   </Sequence>
+   <Workspace>
+       <Local name="data"
+           type='{"type":"","attributes":[{"name":{"type":"string"}},{"count":{"type":"uint32"}}]}'
+           value='{"name":"test","count":7}'/>
+   </Workspace>
+
+The ``file`` attribute also supports variable references using the ``@`` prefix (e.g. ``file="@filename"``), allowing the filename to be read from a workspace variable at runtime.

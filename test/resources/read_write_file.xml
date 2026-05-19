@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/oac-tree" version="1.0"
+           name="Trivial procedure for testing purposes"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/oac-tree oac-tree.xsd">
+    <Sequence>
+        <WriteFile inputVar="init" file="init.json" pretty="true"/>
+        <ReadFile file="init.json" outputVar="out"/>
+        <Equals leftVar="out" rightVar="init"/>
+        <Output fromVar="out"/>
+    </Sequence>
+    <Workspace>
+        <Local name="init" type='{"type":"struct","attributes":[{"flag":{"type":"bool"}},{"mode":{"type":"uint16"}}]}' value='{"flag":true,"mode":5}'/>
+        <Local dynamicType="true" name="out" type='{"type":"int16"}' value="0"/>
+    </Workspace>
+</Procedure>

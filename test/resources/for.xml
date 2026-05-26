@@ -5,11 +5,11 @@
            xs:schemaLocation="http://codac.iter.org/sup/oac-tree oac-tree.xsd">
     <Sequence>
         <For elementVar="i" arrayVar="arr">
-            <Increment varName="i"/>
+            <Output fromVar="i"/>
         </For>
     </Sequence>
     <Workspace>
-        <Local name="arr" type='{"type":"uint32_arr","element":{"type":"string"}}' value='["one","two","three"]'/>
+        <Local name="arr" type='{"type":"uint32_arr","element":{"type":"uint16"}}' value='[1,2,3]'/>
         <Local name="i" type='{"type":"uint16"}' value='0' />
     </Workspace>
 </Procedure>
